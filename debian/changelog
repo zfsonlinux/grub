@@ -1,3 +1,14 @@
+grub2 (1.91-0) unstable; urgency=low
+
+  * New upstream release. Closes: #331211
+  * debian/watch: added.
+  * debian/control.in, debian/control: Add libncurses5-dev in
+    Build-Depends. Closes: #304638
+  * Remove Robert Millan as uploader;
+  * Add myself as uploader;
+
+ -- Otavio Salvador <otavio@debian.org>  Sat, 12 Nov 2005 16:35:18 -0200
+
 grub2 (0.6+20050203-2) unstable; urgency=low
 
   * Disable for powerpc.  Reportedly it fails to boot.
