@@ -1,3 +1,17 @@
+grub2 (1.92-1) unstable; urgency=low
+
+  * New upstream release.
+    - Add support for GPT partition table format.
+    - Add a new command "play" to play an audio file on PC.
+    - Add support for Linux/ADFS partition table format.
+    - Add support for BASH-like scripting.
+    - Add support for Apple HFS+ filesystems.
+  * 01_fix_grub-install.patch: Added. Fix grub-install to use
+    /bin/grub-mkimage instead of /sbin/grub-mkimage. Closes: #338824
+  * Do not use CDBS tarball mode anymore. Closes: #344272  
+  
+ -- Otavio Salvador <otavio@debian.org>  Thu,  5 Jan 2006 15:20:40 -0200
+
 grub2 (1.91-0) unstable; urgency=low
 
   * New upstream release. Closes: #331211
