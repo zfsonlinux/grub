@@ -1,6 +1,6 @@
 #! /usr/bin/ruby -w
 #
-# Copyright (C) 2002,2003,2004,2005  Free Software Foundation, Inc.
+# Copyright (C) 2002,2003,2004,2005,2006  Free Software Foundation, Inc.
 #
 # This genmk.rb is free software; the author
 # gives unlimited permission to copy and/or distribute it,
@@ -60,7 +60,7 @@ MOSTLYCLEANFILES += #{deps_str}
 	$(OBJCOPY) -O binary -R .note -R .comment $< $@
 
 #{exe}: #{objs_str}
-	$(CC) -o $@ $^ $(LDFLAGS) $(#{prefix}_LDFLAGS)
+	$(TARGET_CC) -o $@ $^ $(TARGET_LDFLAGS) $(#{prefix}_LDFLAGS)
 
 " + objs.collect_with_index do |obj, i|
       src = sources[i]
@@ -71,11 +71,11 @@ MOSTLYCLEANFILES += #{deps_str}
       dir = File.dirname(src)
       
       "#{obj}: #{src}
-	$(CC) -I#{dir} -I$(srcdir)/#{dir} $(CPPFLAGS) #{extra_flags} $(#{flag}) $(#{prefix}_#{flag}) -c -o $@ $<
+	$(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) #{extra_flags} $(TARGET_#{flag}) $(#{prefix}_#{flag}) -c -o $@ $<
 
 #{dep}: #{src}
 	set -e; \
-	  $(CC) -I#{dir} -I$(srcdir)/#{dir} $(CPPFLAGS) #{extra_flags} $(#{flag}) $(#{prefix}_#{flag}) -M $< \
+	  $(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) #{extra_flags} $(TARGET_#{flag}) $(#{prefix}_#{flag}) -M $< \
 	  | sed 's,#{Regexp.quote(fake_obj)}[ :]*,#{obj} $@ : ,g' > $@; \
 	  [ -s $@ ] || rm -f $@
 
@@ -111,28 +111,33 @@ class PModule
     mod_name = File.basename(@name, '.mod')
     symbolic_name = mod_name.sub(/\.[^\.]*$/, '')
     
-    "CLEANFILES += #{@name} #{mod_obj} #{mod_src} #{pre_obj} #{objs_str} #{defsym} #{undsym}
-MOSTLYCLEANFILES += #{deps_str}
+    "CLEANFILES += #{@name} #{mod_obj} #{mod_src} #{pre_obj} #{objs_str} #{undsym}
+ifneq ($(#{prefix}_EXPORTS),no)
+CLEANFILES += #{defsym}
 DEFSYMFILES += #{defsym}
+endif
+MOSTLYCLEANFILES += #{deps_str}
 UNDSYMFILES += #{undsym}
 
 #{@name}: #{pre_obj} #{mod_obj}
 	-rm -f $@
-	$(LD) $(#{prefix}_LDFLAGS) $(LDFLAGS) -r -d -o $@ $^
+	$(TARGET_CC) $(#{prefix}_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 #{pre_obj}: #{objs_str}
 	-rm -f $@
-	$(LD) $(#{prefix}_LDFLAGS) -r -d -o $@ $^
+	$(TARGET_CC) $(#{prefix}_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
 
 #{mod_obj}: #{mod_src}
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(#{prefix}_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(#{prefix}_CFLAGS) -c -o $@ $<
 
 #{mod_src}: moddep.lst genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh '#{mod_name}' $< > $@ || (rm -f $@; exit 1)
 
+ifneq ($(#{prefix}_EXPORTS),no)
 #{defsym}: #{pre_obj}
 	$(NM) -g --defined-only -P -p $< | sed 's/^\\([^ ]*\\).*/\\1 #{mod_name}/' > $@
+endif
 
 #{undsym}: #{pre_obj}
 	echo '#{mod_name}' > $@
@@ -148,11 +153,11 @@ UNDSYMFILES += #{undsym}
       dir = File.dirname(src)
 
       "#{obj}: #{src}
-	$(CC) -I#{dir} -I$(srcdir)/#{dir} $(CPPFLAGS) $(#{flag}) $(#{prefix}_#{flag}) -c -o $@ $<
+	$(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) $(TARGET_#{flag}) $(#{prefix}_#{flag}) -c -o $@ $<
 
 #{dep}: #{src}
 	set -e; \
-	  $(CC) -I#{dir} -I$(srcdir)/#{dir} $(CPPFLAGS) $(#{flag}) $(#{prefix}_#{flag}) -M $< \
+	  $(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) $(TARGET_#{flag}) $(#{prefix}_#{flag}) -M $< \
 	  | sed 's,#{Regexp.quote(fake_obj)}[ :]*,#{obj} $@ : ,g' > $@; \
 	  [ -s $@ ] || rm -f $@
 
@@ -164,12 +169,12 @@ FSFILES += #{fs}
 
 #{command}: #{src} gencmdlist.sh
 	set -e; \
-	  $(CC) -I#{dir} -I$(srcdir)/#{dir} $(CPPFLAGS) $(#{flag}) $(#{prefix}_#{flag}) -E $< \
+	  $(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) $(TARGET_#{flag}) $(#{prefix}_#{flag}) -E $< \
 	  | sh $(srcdir)/gencmdlist.sh #{symbolic_name} > $@ || (rm -f $@; exit 1)
 
 #{fs}: #{src} genfslist.sh
 	set -e; \
-	  $(CC) -I#{dir} -I$(srcdir)/#{dir} $(CPPFLAGS) $(#{flag}) $(#{prefix}_#{flag}) -E $< \
+	  $(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) $(TARGET_#{flag}) $(#{prefix}_#{flag}) -E $< \
 	  | sh $(srcdir)/genfslist.sh #{symbolic_name} > $@ || (rm -f $@; exit 1)
 
 
@@ -199,7 +204,7 @@ class Utility
 MOSTLYCLEANFILES += #{deps_str}
 
 #{@name}: #{objs_str}
-	$(BUILD_CC) -o $@ $^ $(BUILD_LDFLAGS) $(#{prefix}_LDFLAGS)
+	$(CC) -o $@ $^ $(LDFLAGS) $(#{prefix}_LDFLAGS)
 
 " + objs.collect_with_index do |obj, i|
       src = sources[i]
@@ -208,11 +213,11 @@ MOSTLYCLEANFILES += #{deps_str}
       dir = File.dirname(src)
 
       "#{obj}: #{src}
-	$(BUILD_CC) -I#{dir} -I$(srcdir)/#{dir} $(BUILD_CPPFLAGS) $(BUILD_CFLAGS) -DGRUB_UTIL=1 $(#{prefix}_CFLAGS) -c -o $@ $<
+	$(CC) -I#{dir} -I$(srcdir)/#{dir} $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(#{prefix}_CFLAGS) -c -o $@ $<
 
 #{dep}: #{src}
 	set -e; \
-	  $(BUILD_CC) -I#{dir} -I$(srcdir)/#{dir} $(BUILD_CPPFLAGS) $(BUILD_CFLAGS) -DGRUB_UTIL=1 $(#{prefix}_CFLAGS) -M $< \
+	  $(CC) -I#{dir} -I$(srcdir)/#{dir} $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(#{prefix}_CFLAGS) -M $< \
 	  | sed 's,#{Regexp.quote(fake_obj)}[ :]*,#{obj} $@ : ,g' > $@; \
 	  [ -s $@ ] || rm -f $@
 
@@ -244,7 +249,7 @@ class Program
 MOSTLYCLEANFILES += #{deps_str}
 
 #{@name}: #{objs_str}
-	$(CC) -o $@ $^ $(LDFLAGS) $(#{prefix}_LDFLAGS)
+	$(TARGET_CC) -o $@ $^ $(TARGET_LDFLAGS) $(#{prefix}_LDFLAGS)
 
 " + objs.collect_with_index do |obj, i|
       src = sources[i]
@@ -253,11 +258,11 @@ MOSTLYCLEANFILES += #{deps_str}
       dir = File.dirname(src)
 
       "#{obj}: #{src}
-	$(CC) -I#{dir} -I$(srcdir)/#{dir} $(CPPFLAGS) $(CFLAGS) $(#{prefix}_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(#{prefix}_CFLAGS) -c -o $@ $<
 
 #{dep}: #{src}
 	set -e; \
-	  $(CC) -I#{dir} -I$(srcdir)/#{dir} $(CPPFLAGS) $(CFLAGS) $(#{prefix}_CFLAGS) -M $< \
+	  $(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(#{prefix}_CFLAGS) -M $< \
 	  | sed 's,#{Regexp.quote(fake_obj)}[ :]*,#{obj} $@ : ,g' > $@; \
 	  [ -s $@ ] || rm -f $@
 

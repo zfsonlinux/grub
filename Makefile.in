@@ -1,6 +1,6 @@
 # -*- makefile -*-
 #
-# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2004,2005 Free Software Foundation, Inc.
+# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2004,2005,2006 Free Software Foundation, Inc.
 #
 # This Makefile.in is free software; the author
 # gives unlimited permission to copy and/or distribute it,
@@ -34,8 +34,8 @@ libdir = @libdir@
 infodir = @infodir@
 mandir = @mandir@
 includedir = @includedir@
-pkgdatadir = $(datadir)/@PACKAGE_TARNAME@/$(host_cpu)-$(host_vendor)
-pkglibdir = $(libdir)/@PACKAGE_TARNAME@
+pkgdatadir = $(datadir)/@PACKAGE_TARNAME@
+pkglibdir = $(libdir)/@PACKAGE_TARNAME@/$(target_cpu)-$(platform)
 
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
@@ -43,8 +43,8 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 
-host_cpu = @host_cpu@
-host_vendor = @host_vendor@
+target_cpu = @target_cpu@
+platform = @platform@
 
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -56,23 +56,27 @@ mkinstalldirs = $(srcdir)/mkinstalldirs
 
 CC = @CC@
 CFLAGS = @CFLAGS@
-CPPFLAGS = -I. -Iinclude -I$(srcdir)/include -Wall -W
-BUILD_CC = @BUILD_CC@
-BUILD_CFLAGS = -g -O2
-BUILD_CPPFLAGS = -I. -Iinclude -I$(srcdir)/include -Wall -W \
-	-DGRUB_DATADIR=\"$(pkgdatadir)\"
+LDFLAGS = @LDFLAGS@
+CPPFLAGS = @CPPFLAGS@ -I. -Iinclude -I$(srcdir)/include -Wall -W \
+	 -DGRUB_LIBDIR=\"$(pkglibdir)\"
+TARGET_CC = @TARGET_CC@
+TARGET_CFLAGS = @TARGET_CFLAGS@
+TARGET_CPPFLAGS = @TARGET_CPPFLAGS@ -I. -Iinclude -I$(srcdir)/include \
+	-Wall -W
+TARGET_LDFLAGS = @TARGET_LDFLAGS@
 OBJCOPY = @OBJCOPY@
 STRIP = @STRIP@
 NM = @NM@
-LD = @LD@
 RUBY = @RUBY@
+AWK = @AWK@
 LIBCURSES = @LIBCURSES@
 LIBLZO = @LIBLZO@
+YACC = @YACC@
 
 ### General variables.
 
 RMKFILES = $(addprefix conf/,common.rmk i386-pc.rmk powerpc-ieee1275.rmk \
-	sparc64-ieee1275.rmk)
+	sparc64-ieee1275.rmk i386-efi.rmk)
 MKFILES = $(patsubst %.rmk,%.mk,$(RMKFILES))
 
 DATA = $(pkgdata_IMAGES) $(pkgdata_MODULES) $(pkgdata_PROGRAMS) \
@@ -83,7 +87,8 @@ SCRIPTS = $(sbin_SCRIPTS)
 CLEANFILES =
 MOSTLYCLEANFILES = 
 DISTCLEANFILES = config.status config.cache config.log config.h \
-	Makefile stamp-h include/grub/cpu include/grub/machine
+	Makefile stamp-h include/grub/cpu include/grub/machine \
+	gensymlist.sh genkernsyms.sh
 MAINTAINER_CLEANFILES = $(srcdir)/configure $(addprefix $(srcdir)/,$(MKFILES))
 
 # The default target.
@@ -97,14 +102,15 @@ $(addprefix $(srcdir)/,$(MKFILES)): %.mk: %.rmk genmk.rb
 	  $(RUBY) $(srcdir)/genmk.rb < $< > $@; \
 	fi
 
-include $(srcdir)/conf/$(host_cpu)-$(host_vendor).mk
+include $(srcdir)/conf/$(target_cpu)-$(platform).mk
 
 ### General targets.
 
 CLEANFILES += moddep.lst command.lst fs.lst
 pkgdata_DATA += moddep.lst command.lst fs.lst
-moddep.lst: $(DEFSYMFILES) $(UNDSYMFILES) genmoddep
-	cat $(DEFSYMFILES) /dev/null | ./genmoddep $(UNDSYMFILES) > $@ \
+moddep.lst: $(DEFSYMFILES) $(UNDSYMFILES) genmoddep.awk
+	cat $(DEFSYMFILES) /dev/null \
+	  | $(AWK) -f $(srcdir)/genmoddep.awk $(UNDSYMFILES) > $@ \
 	  || (rm -f $@; exit 1)
 
 command.lst: $(COMMANDFILES)
@@ -118,12 +124,12 @@ all-local: $(PROGRAMS) $(DATA) $(SCRIPTS) $(MKFILES)
 install: install-local
 
 install-local: all
-	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
+	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
 	@list='$(DATA)'; \
 	for file in $$list; do \
 	  if test -f "$$file"; then dir=; else dir="$(srcdir)"; fi; \
 	  dest="`echo $$file | sed 's,.*/,,'`"; \
-	  $(INSTALL_DATA) $$dir$$file $(DESTDIR)$(pkgdatadir)/$$dest; \
+	  $(INSTALL_DATA) $$dir$$file $(DESTDIR)$(pkglibdir)/$$dest; \
 	done
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	@list='$(bin_UTILITIES)'; for file in $$list; do \
@@ -150,7 +156,7 @@ uninstall:
 	@list='$(DATA)'; \
 	for file in $$list; do \
 	  dest="`echo $$file | sed 's,.*/,,'`"; \
-	  rm -f $(DESTDIR)$(pkgdatadir)/$$dest; \
+	  rm -f $(DESTDIR)$(pkglibdir)/$$dest; \
 	done
 	@list='$(bin_UTILITIES)'; for file in $$list; do \
 	  dest="`echo $$file | sed 's,.*/,,'`"; \
@@ -248,6 +254,12 @@ Makefile: Makefile.in config.status
 
 config.status: configure
 	./config.status --recheck
+
+gensymlist.sh: gensymlist.sh.in config.status
+	./config.status
+
+genkernsyms.sh: genkernsyms.sh.in config.status
+	./config.status
 
 .PHONY: all install install-strip uninstall clean mostlyclean distclean
 .PHONY: maintainer-clean info dvi dist check

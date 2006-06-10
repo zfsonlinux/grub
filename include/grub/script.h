@@ -17,8 +17,14 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+
+#ifndef GRUB_SCRIPT_HEADER
+#define GRUB_SCRIPT_HEADER	1
+
 #include <grub/types.h>
 #include <grub/err.h>
+#include <grub/parser.h>
+#include "grub_script.tab.h"
 
 struct grub_script_mem;
 
@@ -94,37 +100,123 @@ struct grub_script_cmdif
 {
   struct grub_script_cmd cmd;
 
-  /* The command used to check if the if is true or false.  */
-  struct grub_script_cmd *bool;
+  /* The command used to check if the 'if' is true or false.  */
+  struct grub_script_cmd *exec_to_evaluate;
 
-  /* The code executed in case the result if bool was true.  */
-  struct grub_script_cmd *true;
+  /* The code executed in case the result of 'if' was true.  */
+  struct grub_script_cmd *exec_on_true;
 
-  /* The code executed in case the result if bool was false.  */
-  struct grub_script_cmd *false;
+  /* The code executed in case the result of 'if' was false.  */
+  struct grub_script_cmd *exec_on_false;
+};
+
+/* A menu entry generate statement.  */
+struct grub_script_cmd_menuentry
+{
+  struct grub_script_cmd cmd;
+
+  /* The title of the menu entry.  */
+  struct grub_script_arg *title;
+
+  /* The sourcecode the entry will be generated from.  */
+  const char *sourcecode;
+
+  /* Options.  XXX: Not used yet.  */
+  int options;
+};
+
+/* State of the lexer as passed to the lexer.  */
+struct grub_lexer_param
+{
+  /* Set to 0 when the lexer is done.  */
+  int done;
+
+  /* State of the state machine.  */
+  grub_parser_state_t state;
+
+  /* Function used by the lexer to get a new line when more input is
+     expected, but not available.  */
+  grub_err_t (*getline) (char **);
+
+  /* A reference counter.  If this is >0 it means that the parser
+     expects more tokens and `getline' should be called to fetch more.
+     Otherwise the lexer can stop processing if the current buffer is
+     depleted.  */
+  int refs;
+
+  /* The character stream that has to be parsed.  */
+  char *script;
+  char *newscript; /* XXX */
+
+  /* While walking through the databuffer, `record' the characters to
+     this other buffer.  It can be used to edit the menu entry at a
+     later moment.  */
+
+  /* If true, recording is enabled.  */
+  int record;
+
+  /* Points to the recording.  */
+  char *recording;
+
+  /* index in the RECORDING.  */ 
+  int recordpos;
+
+  /* Size of RECORDING.  */
+  int recordlen;
+};
+
+/* State of the parser as passes to the parser.  */
+struct grub_parser_param
+{
+  /* Keep track of the memory allocated for this specific
+     function.  */
+  struct grub_script_mem *func_mem;
+
+  /* When set to 0, no errors have occured during parsing.  */
+  int err;
+
+  /* The memory that was used while parsing and scanning.  */
+  struct grub_script_mem *memused;
+
+  /* The result of the parser.  */
+  struct grub_script_cmd *parsed;
+
+  struct grub_lexer_param *lexerstate;
 };
 
 struct grub_script_arglist *
-grub_script_create_arglist (void);
+grub_script_create_arglist (struct grub_parser_param *state);
 
 struct grub_script_arglist *
-grub_script_add_arglist (struct grub_script_arglist *list,
+grub_script_add_arglist (struct grub_parser_param *state,
+			 struct grub_script_arglist *list,
 			 struct grub_script_arg *arg);
 struct grub_script_cmd *
-grub_script_create_cmdline (char *cmdname,
+grub_script_create_cmdline (struct grub_parser_param *state,
+			    char *cmdname,
 			    struct grub_script_arglist *arglist);
 struct grub_script_cmd *
-grub_script_create_cmdblock (void);
+grub_script_create_cmdblock (struct grub_parser_param *state);
 
 struct grub_script_cmd *
-grub_script_create_cmdif (struct grub_script_cmd *bool,
-			  struct grub_script_cmd *true,
-			  struct grub_script_cmd *false);
+grub_script_create_cmdif (struct grub_parser_param *state,
+			  struct grub_script_cmd *exec_to_evaluate,
+			  struct grub_script_cmd *exec_on_true,
+			  struct grub_script_cmd *exec_on_false);
+
 struct grub_script_cmd *
-grub_script_add_cmd (struct grub_script_cmdblock *cmdblock,
+grub_script_create_cmdmenu (struct grub_parser_param *state,
+			    struct grub_script_arg *title,
+			    char *sourcecode,
+			    int options);
+
+struct grub_script_cmd *
+grub_script_add_cmd (struct grub_parser_param *state,
+		     struct grub_script_cmdblock *cmdblock,
 		     struct grub_script_cmd *cmd);
 struct grub_script_arg *
-grub_script_arg_add (struct grub_script_arg *arg,
+grub_script_arg_add (struct grub_parser_param *state,
+		     struct grub_script_arg *arg,
 		     grub_script_arg_type_t type, char *str);
 
 struct grub_script *grub_script_parse (char *script,
@@ -133,24 +225,29 @@ void grub_script_free (struct grub_script *script);
 struct grub_script *grub_script_create (struct grub_script_cmd *cmd,
 					struct grub_script_mem *mem);
 
-void grub_script_lexer_init (char *s, grub_err_t (*getline) (char **));
-void grub_script_lexer_ref (void);
-void grub_script_lexer_deref (void);
+struct grub_lexer_param *grub_script_lexer_init (char *s,
+						 grub_err_t (*getline) (char **));
+void grub_script_lexer_ref (struct grub_lexer_param *);
+void grub_script_lexer_deref (struct grub_lexer_param *);
+void grub_script_lexer_record_start (struct grub_lexer_param *);
+char *grub_script_lexer_record_stop (struct grub_lexer_param *);
 
 /* Functions to track allocated memory.  */
-void *grub_script_malloc (grub_size_t size);
-struct grub_script_mem *grub_script_mem_record (void);
-struct grub_script_mem *grub_script_mem_record_stop (struct grub_script_mem *restore);
+struct grub_script_mem *grub_script_mem_record (struct grub_parser_param *state);
+struct grub_script_mem *grub_script_mem_record_stop (struct grub_parser_param *state, 
+						     struct grub_script_mem *restore);
+void *grub_script_malloc (struct grub_parser_param *state, grub_size_t size);
 
 /* Functions used by bison.  */
-int grub_script_yylex (void);
-int grub_script_yyparse (void);
-void grub_script_yyerror (char const *err);
+int grub_script_yylex (YYSTYPE *, struct grub_parser_param *);
+int grub_script_yyparse (struct grub_parser_param *);
+void grub_script_yyerror (struct grub_parser_param *, char const *);
 
 /* Commands to execute, don't use these directly.  */
 grub_err_t grub_script_execute_cmdline (struct grub_script_cmd *cmd);
 grub_err_t grub_script_execute_cmdblock (struct grub_script_cmd *cmd);
 grub_err_t grub_script_execute_cmdif (struct grub_script_cmd *cmd);
+grub_err_t grub_script_execute_menuentry (struct grub_script_cmd *cmd);
 
 /* Execute any GRUB pre-parsed command or script.  */
 grub_err_t grub_script_execute (struct grub_script *script);
@@ -187,3 +284,5 @@ grub_script_function_t grub_script_function_find (char *functionname);
 int grub_script_function_iterate (int (*iterate) (grub_script_function_t));
 int grub_script_function_call (grub_script_function_t func,
 			       int argc, char **args);
+
+#endif /* ! GRUB_SCRIPT_HEADER */
