@@ -129,16 +129,18 @@ grub_printf (const char *fmt, ...)
 }  
 
 void
-grub_real_dprintf(const char *file, const int line, const char *condition,
-                  const char *fmt, ...)
+grub_real_dprintf (const char *file, const int line, const char *condition,
+		   const char *fmt, ...)
 {
   va_list args;
   const char *debug = grub_env_get ("debug");
+  
   if (! debug)
     return;
+  
   if (grub_strword (debug, "all") || grub_strword (debug, condition))
     {
-      grub_printf ("%s,%d : ", file, line);
+      grub_printf ("%s:%d: ", file, line);
       va_start (args, fmt);
       grub_vprintf (fmt, args);
       va_end (args);
@@ -499,6 +501,69 @@ grub_itoa (char *str, int c, unsigned n)
   return p;
 }
 
+/* Convert a long long value to a string. This function avoids 64-bit
+   modular arithmetic or divisions.  */
+static char *
+grub_lltoa (char *str, int c, unsigned long long n)
+{
+  unsigned base = (c == 'x') ? 16 : 10;
+  char *p;
+  
+  if ((long long) n < 0 && c == 'd')
+    {
+      n = (unsigned long long) (-((long long) n));
+      *str++ = '-';
+    }
+
+  p = str;
+
+  if (base == 16)
+    do
+      {
+	unsigned d = (unsigned) (n & 0xf);
+	*p++ = (d > 9) ? d + 'a' - 10 : d + '0';
+      }
+    while (n >>= 4);
+  else
+    /* BASE == 10 */
+    do
+      {
+	/* This algorithm is typically implemented by hardware. The idea
+	   is to get the highest bit in N, 64 times, by keeping
+	   upper(N * 2^i) = upper((Q * 10 + M) * 2^i), where upper
+	   represents the high 64 bits in 128-bits space.  */
+	unsigned bits = sizeof (unsigned long long) * 8;
+	unsigned long long q = 0;
+	unsigned m = 0;
+
+	while (bits--)
+	  {
+	    m <<= 1;
+	    
+	    if ((long long ) n < 0)
+	      m |= 1;
+
+	    q <<= 1;
+	    n <<= 1;
+
+	    if (m >= 10)
+	      {
+		q |= 1;
+		m -= 10;
+	      }
+	  }
+
+	*p++ = m + '0';
+	n = q;
+      }
+    while (n);
+  
+  *p = 0;
+
+  grub_reverse (str);
+  return p;
+}
+
 static char *
 grub_ftoa (char *str, double f, int round)
 {
@@ -555,7 +620,7 @@ grub_vsprintf (char *str, const char *fmt, va_list args)
 	write_char (c);
       else
 	{
-	  char tmp[16];
+	  char tmp[32];
 	  char *p;
 	  unsigned int format1 = 0;
 	  unsigned int format2 = 3;
@@ -563,6 +628,7 @@ grub_vsprintf (char *str, const char *fmt, va_list args)
 	  int rightfill = 0;
 	  int n;
 	  int longfmt = 0;
+	  int longlongfmt = 0;
 
 	  if (*fmt && *fmt =='-')
 	    {
@@ -606,6 +672,11 @@ grub_vsprintf (char *str, const char *fmt, va_list args)
 	    {
 	      longfmt = 1;
 	      c = *fmt++;
+	      if (c == 'l')
+		{
+		  longlongfmt = 1;
+		  c = *fmt++;
+		}
 	    }
 
 	  switch (c)
@@ -613,16 +684,27 @@ grub_vsprintf (char *str, const char *fmt, va_list args)
 	    case 'p':
 	      write_str ("0x");
 	      c = 'x';
+	      longlongfmt = (sizeof (void *) == sizeof (long long));
 	      /* fall through */
 	    case 'x':
 	    case 'u':
 	    case 'd':
-	      if (longfmt)
-		n = va_arg (args, long);
+	      if (longlongfmt)
+		{
+		  long long ll;
+
+		  ll = va_arg (args, long long);
+		  grub_lltoa (tmp, c, ll);
+		}
 	      else
-		n = va_arg (args, int);
-	      grub_itoa (tmp, c, n);
-	      if (!rightfill && grub_strlen (tmp) < format1)
+		{
+		  if (longfmt)
+		    n = va_arg (args, long);
+		  else
+		    n = va_arg (args, int);
+		  grub_itoa (tmp, c, n);
+		}
+	      if (! rightfill && grub_strlen (tmp) < format1)
 		write_fill (zerofill, format1 - grub_strlen (tmp));
 	      write_str (tmp);
 	      if (rightfill && grub_strlen (tmp) < format1)
@@ -875,3 +957,18 @@ grub_utf8_to_ucs4 (grub_uint32_t *dest, const grub_uint8_t *src,
 
   return p - dest;
 }
+
+/* Abort GRUB. This function does not return.  */
+void
+grub_abort (void)
+{
+  if (grub_term_get_current ())
+    {
+      grub_printf ("\nAborted. Press any key to exit.");
+      grub_getkey ();
+    }
+
+  grub_exit ();
+}
+/* GCC emits references to abort().  */
+void abort (void) __attribute__ ((alias ("grub_abort")));

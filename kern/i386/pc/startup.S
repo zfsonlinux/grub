@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2005 Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2005,2006 Free Software Foundation, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@
 #include <grub/machine/boot.h>
 #include <grub/machine/memory.h>
 #include <grub/machine/console.h>
-#include <grub/machine/linux.h>
+#include <grub/cpu/linux.h>
 #include <grub/machine/kernel.h>
 #include <grub/machine/multiboot.h>
 		
@@ -626,6 +626,19 @@ FUNCTION(grub_stop_floppy)
 	ret
 
 /*
+ * grub_exit()
+ *
+ * Exit the system.
+ */
+FUNCTION(grub_exit)
+	call	prot_to_real
+	.code16
+	/* Tell the BIOS a boot failure. If this does not work, reboot.  */
+	int	$0x18
+	jmp	cold_reboot
+	.code32
+	
+/*
  * grub_reboot()
  *
  * Reboot the system. At the moment, rely on BIOS.
@@ -633,6 +646,7 @@ FUNCTION(grub_stop_floppy)
 FUNCTION(grub_reboot)
 	call	prot_to_real
 	.code16
+cold_reboot:	
 	/* cold boot */
 	movw	$0x0472, %di
 	movw	%ax, (%di)
@@ -1758,14 +1772,15 @@ FUNCTION(grub_vga_get_font)
 	ret
 
 /*
- * grub_vbe_status_t grub_vbe_get_controller_info (struct grub_vbe_info_block *controller_info)
+ * grub_vbe_bios_status_t grub_vbe_get_controller_info (struct grub_vbe_info_block *controller_info)
  *
  * Register allocations for parameters:
  * %eax		*controller_info
  */
-FUNCTION(grub_vbe_get_controller_info)
+FUNCTION(grub_vbe_bios_get_controller_info)
 	pushl	%ebp
 	pushl	%edi
+	pushl	%edx
 
 	movw	%ax, %di	/* Store *controller_info to %edx:%di.  */
 	xorw	%ax, %ax
@@ -1791,19 +1806,20 @@ FUNCTION(grub_vbe_get_controller_info)
 	movl	%edx, %eax
 	andl	$0x0FFFF, %eax	/* Return value in %eax.  */
 	
+	pop	%edx
 	popl	%edi
 	popl	%ebp
 	ret
 
 /*
- * grub_vbe_status_t grub_vbe_get_mode_info (grub_uint32_t mode,
- *					     struct grub_vbe_mode_info_block *mode_info)
+ * grub_vbe_status_t grub_vbe_bios_get_mode_info (grub_uint32_t mode,
+ *						  struct grub_vbe_mode_info_block *mode_info)
  *
  * Register allocations for parameters:
  * %eax		mode
  * %edx		*mode_info
  */
-FUNCTION(grub_vbe_get_mode_info)
+FUNCTION(grub_vbe_bios_get_mode_info)
 	pushl   %ebp
 	pushl   %edi
 
@@ -1837,16 +1853,17 @@ FUNCTION(grub_vbe_get_mode_info)
 	ret
 
 /*
- * grub_vbe_status_t grub_vbe_set_mode (grub_uint32_t mode,
- *					struct grub_vbe_crtc_info_block *crtc_info)
+ * grub_vbe_status_t grub_vbe_bios_set_mode (grub_uint32_t mode,
+ *					     struct grub_vbe_crtc_info_block *crtc_info)
  *
  * Register allocations for parameters:
  * %eax		mode
  * %edx		*crtc_info
  */
-FUNCTION(grub_vbe_set_mode)
+FUNCTION(grub_vbe_bios_set_mode)
 	pushl	%ebp
 	pushl	%ebx
+	pushl	%edi
 
 	movl	%eax, %ebx	/* Store mode in %ebx.  */
 
@@ -1874,19 +1891,22 @@ FUNCTION(grub_vbe_set_mode)
 	movw	%dx, %ax
 	andl	$0xFFFF, %eax	/* Return value in %eax.  */
 
+	popl	%edi
 	popl	%ebx
 	popl	%ebp
 	ret
 
 /*
- * grub_vbe_status_t grub_vbe_get_mode (grub_uint32_t *mode)
+ * grub_vbe_status_t grub_vbe_bios_get_mode (grub_uint32_t *mode)
  *
  * Register allocations for parameters:
  * %eax		*mode
  */
-FUNCTION(grub_vbe_get_mode)
+FUNCTION(grub_vbe_bios_get_mode)
 	pushl   %ebp
 	pushl   %ebx
+	pushl	%edi
+	pushl	%edx
 	pushl	%eax		/* Push *mode to stack.  */
 
 	call    prot_to_real
@@ -1907,19 +1927,21 @@ FUNCTION(grub_vbe_get_mode)
 	movw	%dx, %ax
 	andl	$0xFFFF, %eax	/* Return value in %eax.  */
 
+	popl	%edx
+	popl	%edi
 	popl    %ebx
 	popl    %ebp
 	ret
 
 /*
- * grub_vbe_status_t grub_vbe_set_memory_window (grub_uint32_t window,
- *						 grub_uint32_t position);
+ * grub_vbe_status_t grub_vbe_bios_set_memory_window (grub_uint32_t window,
+ *						      grub_uint32_t position);
  *
  * Register allocations for parameters:
  * %eax		window
  * %edx		position
  */
-FUNCTION(grub_vbe_set_memory_window)
+FUNCTION(grub_vbe_bios_set_memory_window)
 	pushl	%ebp
 	pushl	%ebx
 
@@ -1945,16 +1967,17 @@ FUNCTION(grub_vbe_set_memory_window)
 	ret
 
 /*
- * grub_vbe_status_t grub_vbe_get_memory_window (grub_uint32_t window,
- * 						 grub_uint32_t *position);
+ * grub_vbe_status_t grub_vbe_bios_get_memory_window (grub_uint32_t window,
+ * 						      grub_uint32_t *position);
  *
  * Register allocations for parameters:
  * %eax		window
  * %edx		*position
  */
-FUNCTION(grub_vbe_get_memory_window)
+FUNCTION(grub_vbe_bios_get_memory_window)
 	pushl   %ebp
 	pushl   %ebx
+	pushl	%edi
 	pushl	%edx		/* Push *position to stack.  */
 
 	movl	%eax, %ebx	/* Store window in %ebx.  */
@@ -1979,19 +2002,21 @@ FUNCTION(grub_vbe_get_memory_window)
 	movw	%bx, %ax
 	andl	$0xFFFF, %eax	/* Return value in %eax.  */
 
+	popl	%edi
 	popl    %ebx
 	popl    %ebp
 	ret
 
 /*
- * grub_vbe_status_t grub_vbe_set_scanline_length (grub_uint32_t length)
+ * grub_vbe_status_t grub_vbe_bios_set_scanline_length (grub_uint32_t length)
  *
  * Register allocations for parameters:
  * %eax		length
  */
-FUNCTION(grub_vbe_set_scanline_length)
+FUNCTION(grub_vbe_bios_set_scanline_length)
 	pushl	%ebp
 	pushl	%ebx
+	pushl	%edx
 
 	movl	%eax, %ecx	/* Store length in %ecx.  */
 
@@ -2010,19 +2035,21 @@ FUNCTION(grub_vbe_set_scanline_length)
 	movw	%dx, %ax
 	andl	$0xFFFF, %eax	/* Return value in %eax.  */
 
+	popl	%edx
 	popl	%ebx
 	popl	%ebp
 	ret
 
 /*
- * grub_vbe_status_t grub_vbe_get_scanline_length (grub_uint32_t *length)
+ * grub_vbe_status_t grub_vbe_bios_get_scanline_length (grub_uint32_t *length)
  *
  * Register allocations for parameters:
  * %eax		*length
  */
-FUNCTION(grub_vbe_get_scanline_length)
+FUNCTION(grub_vbe_bios_get_scanline_length)
 	pushl   %ebp
 	pushl   %ebx
+	pushl	%edi
 	pushl	%edx		/* Push *length to stack.  */
 
 	call    prot_to_real
@@ -2044,19 +2071,20 @@ FUNCTION(grub_vbe_get_scanline_length)
 	movw	%dx, %ax
 	andl	$0xFFFF, %eax	/* Return value in %eax.  */
 
+	popl	%edi
 	popl    %ebx
 	popl    %ebp
 	ret
 
 /*
- * grub_vbe_status_t grub_vbe_set_display_start (grub_uint32_t x,
- *						 grub_uint32_t y)
+ * grub_vbe_status_t grub_vbe_bios_set_display_start (grub_uint32_t x,
+ *						      grub_uint32_t y)
  *
  * Register allocations for parameters:
  * %eax		x
  * %edx		y
  */
-FUNCTION(grub_vbe_set_display_start)
+FUNCTION(grub_vbe_bios_set_display_start)
 	pushl	%ebp
 	pushl	%ebx
 
@@ -2083,16 +2111,17 @@ FUNCTION(grub_vbe_set_display_start)
 	ret
 
 /*
- * grub_vbe_status_t grub_vbe_get_display_start (grub_uint32_t *x,
- *						 grub_uint32_t *y)
+ * grub_vbe_status_t grub_vbe_bios_get_display_start (grub_uint32_t *x,
+ *						      grub_uint32_t *y)
  *
  * Register allocations for parameters:
  * %eax		*x
  * %edx		*y
  */
-FUNCTION(grub_vbe_get_display_start)
+FUNCTION(grub_vbe_bios_get_display_start)
 	pushl   %ebp
 	pushl   %ebx
+	pushl	%edi
 	pushl	%eax		/* Push *x to stack.  */
 	pushl	%edx		/* Push *y to stack.  */
 
@@ -2119,23 +2148,25 @@ FUNCTION(grub_vbe_get_display_start)
 	movw	%bx, %ax
 	andl	$0xFFFF, %eax	/* Return value in %eax.  */
 
+	popl	%edi
 	popl    %ebx
 	popl    %ebp
 	ret
 
 /*
- * grub_vbe_status_t grub_vbe_set_palette_data (grub_uint32_t color_count,
- *						grub_uint32_t start_index,
- *						struct grub_vbe_palette_data *palette_data)
+ * grub_vbe_status_t grub_vbe_bios_set_palette_data (grub_uint32_t color_count,
+ *						     grub_uint32_t start_index,
+ *						     struct grub_vbe_palette_data *palette_data)
  *
  * Register allocations for parameters:
  * %eax		color_count
  * %edx		start_index
  * %ecx		*palette_data
  */
-FUNCTION(grub_vbe_set_palette_data)
+FUNCTION(grub_vbe_bios_set_palette_data)
 	pushl	%ebp
 	pushl	%ebx
+	pushl	%edi
 
 	movl	%eax, %ebx	/* Store color_count in %ebx.  */
 
@@ -2165,6 +2196,7 @@ FUNCTION(grub_vbe_set_palette_data)
 	movw	%dx, %ax
 	andl	$0xFFFF, %eax	/* Return value in %eax.  */
 
+	popl	%edi
 	popl	%ebx
 	popl	%ebp
 	ret

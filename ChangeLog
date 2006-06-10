@@ -1,3 +1,1583 @@
+2006-06-04  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* DISTLIST: Added include/grub/i386/linux.h. Removed
+	include/grub/i386/pc/linux.h
+
+	* configure.ac (AC_INIT): Bumped to 1.94.
+
+	* config.guess: Updated from gnulib.
+	* config.sub: Likewise.
+	* install-sh: Likewise.
+	* mkinstalldirs: Likewise.
+
+2006-06-02  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* conf/common.rmk (grub_modules_init.lst): Depended on
+	grub_emu_SOURCES, excluding grub_emu_init.c, instead of
+	MODSRCFILES.
+
+	* genmk.rb (PModule::rule): Reverted the previous change.
+
+2006-06-02  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* conf/common.rmk (grub_modules_init.lst): Depends on
+	$(MODSRCFILES). Grep only the files in $(MODSRCFILES). Make sure
+	that the target does not exist before producing.
+	(grub_modules_init.h): Remove the target before generating.
+	(grub_emu_init.c): Likewise.
+
+	* genmk.rb (PModule::rule): Add source files into MODSRCFILES.
+
+2006-05-31  Jeroen Dekkers  <jeroen@dekkers.cx>
+
+	* configure.ac: Don't set host_m32 for x86_64. Also reset LIBS
+	for the target-specific tests. Make sure that we also have the
+	up-to-date target variables for those tests.
+
+2006-05-31  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* genmk.rb (Image::rule): Prefix CFLAGS or ASFLAGS with TARGET_.
+	(PModule::rule): Likewise.
+
+2006-05-31  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* genmk.rb (Image::rule): Set FLAG to CFLAGS or ASFLAGS instead of
+	TARGET_CFLAGS or TARGET_ASFLAGS. There is no reason why
+	target-specific flags should be prefixed.
+	(PModule::rule): Likewise.
+
+2006-05-30  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* configure.ac (CMP): Check if cmp is available explicitly.
+
+2006-05-29  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* util/powerpc/ieee1275/grub-install.in (host_cpu): Removed.
+	(target_cpu): New variable.
+	(pkglibdir): Use target_cpu instead of host_cpu.
+	
+	* util/i386/pc/grub-install.in (host_cpu): Removed.
+	(target_cpu): New variable.
+	(pkglibdir): Use target_cpu instead of host_cpu.
+
+	* util/genmoddep.c: Removed.
+	
+	* kern/efi/mm.c (filter_memory_map): Use GRUB_CPU_SIZEOF_VOID_P
+	instead of GRUB_HOST_SIZEOF_VOID_P.
+	* kern/dl.c: Likewise.
+
+	* include/grub/i386/types.h (GRUB_HOST_SIZEOF_VOID_P): Renamed to
+	...
+	(GRUB_TARGET_SIZEOF_VOID_P): ... this.
+	(GRUB_HOST_SIZEOF_LONG): Renamed to ...
+	(GRUB_TARGET_SIZEOF_LONG): ... this.
+	(GRUB_HOST_WORDS_BIGENDIAN): Renamed to ...
+	(GRUB_TARGET_WORDS_BIGENDIAN): ... this.
+	* include/grub/powerpc/types.h (GRUB_HOST_SIZEOF_VOID_P): Renamed
+	to ...
+	(GRUB_TARGET_SIZEOF_VOID_P): ... this.
+	(GRUB_HOST_SIZEOF_LONG): Renamed to ...
+	(GRUB_TARGET_SIZEOF_LONG): ... this.
+	(GRUB_HOST_WORDS_BIGENDIAN): Renamed to ...
+	(GRUB_TARGET_WORDS_BIGENDIAN): ... this.
+	* include/grub/sparc64/types.h (GRUB_HOST_SIZEOF_VOID_P): Renamed
+	to ...
+	(GRUB_TARGET_SIZEOF_VOID_P): ... this.
+	(GRUB_HOST_SIZEOF_LONG): Renamed to ...
+	(GRUB_TARGET_SIZEOF_LONG): ... this.
+	(GRUB_HOST_WORDS_BIGENDIAN): Renamed to ...
+	(GRUB_TARGET_WORDS_BIGENDIAN): ... this.
+
+	* include/grub/types.h [!GRUB_UTIL] (GRUB_CPU_SIZEOF_VOID_P): Use
+	GRUB_TARGET_SIZEOF_VOID_P instead of GRUB_HOST_SIZEOF_VOID_P.
+	[!GRUB_UTIL] (GRUB_CPU_SIZEOF_LONG): Use GRUB_TARGET_SIZEOF_LONG
+	instead of GRUB_HOST_SIZEOF_LONG.
+	[!GRUB_UTIL]: Refer to GRUB_TARGET_WORDS_BIGENDIAN instead of
+	GRUB_HOST_WORDS_BIGENDIAN to define or undefine
+	GRUB_CPU_WORDS_BIGENDIAN.
+	Refer to SIZEOF_VOID_P instead of GRUB_HOST_SIZEOF_VOID_P to
+	define grub_host_addr_t, grub_host_off_t, grub_host_size_t and
+	grub_host_ssize_t.
+
+	* conf/i386-efi.rmk (noinst_UTILITIES): Removed.
+	(genmoddep_SOURCES): Likewise.
+	* conf/i386-pc.rmk (noinst_UTILITIES): Likewise.
+	(genmoddep_SOURCES): Likewise.
+	* conf/conf/powerpc-ieee1275.rmk (noinst_UTILITIES): Likewise.
+	(genmoddep_SOURCES): Likewise.
+	* conf/conf/conf/sparc64-ieee1275.rmk (noinst_UTILITIES):
+	Likewise.
+	(genmoddep_SOURCES): Likewise.
+
+	* genmoddep.awk: New file.
+
+	* genmk.rb (Image::rule): Use TARGET_CC, TARGET_CPPFLAGS,
+	TARGET_CFLAGS, TARGET_ASFLAGS and TARGET_LDFLAGS instead of CC,
+	CPPFLAGS, CFLAGS, ASFLAGS and LDFLAGS, respectively.
+	(PModule::rule): Likewise.
+	(Program::rule): Likewise.
+	(Utility::rule): Use CC, CPPFLAGS, CFLAGS and LDFLAGS instead of
+	BUILD_CC, BUILD_CPPFLAGS, BUILD_CFLAGS and BUILD_LDFLAGS,
+	respectively.
+
+	* configure.ac: Rewritten intensively to use host and target
+	instead of build and host, respectively.
+
+	* Makefile.in (pkglibdir): Use target_cpu instead of host_cpu.
+	(host_cpu): Removed.
+	(target_cpu): New variable.
+	(CPPFLAGS): Added @CPPFLAGS@ and -DGRUB_LIBDIR=\"$(pkglibdir)\".
+	(BUILD_CC): Removed.
+	(BUILD_CFLAGS): Likewise.
+	(BUILD_CPPFLAGS): Likewise.
+	(TARGET_CC): New variable.
+	(TARGET_CFLAGS): Likewise.
+	(TARGET_CPPFLAGS): Likewise.
+	(TARGET_LDFLAGS): Likewise.
+	(AWK): Likewise.
+	(include): Use target_cpu instead of host_cpu.
+	(moddep.lst:): Use genmoddep.awk instead of genmoddep.
+	
+	* DISTLIST: Added genmoddep.awk. Removed util/genmoddep.c.
+
+2006-05-29  Vesa Jaaskelainen  <chaac@nic.fi>
+
+	* include/grub/script.h (grub_script_cmdif): Renamed field 'bool' to
+	'exec_to_evaluate'.  Renamed field 'true' to 'exec_on_true'.  Renamed
+	field 'false' to 'exec_on_false'.
+	(grub_script_create_cmdif): Renamed argument names to reflect above
+	changes.
+
+	* normal/execute.c (grub_script_execute_cmdif): Likewise.
+
+	* normal/script.c (grub_script_create_cmdif): Likewise.
+
+2006-05-28  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* fs/hfsplus.c (grub_hfsplus_btree_recoffset): Moved to near the
+	top.
+	(grub_hfsplus_btree_recptr): Likewise.
+	(grub_hfsplus_find_block): Do not take RETRY any longer. Use
+	FILEBLOCK both to pass a block number and store next block
+	number.
+	(grub_hfsplus_read_block): Rewritten heavily to support an extent
+	overflow file correctly. Specify errors appropriately, because
+	fshelp expects that GRUB_ERRNO is set when fails. Reuse
+	grub_hfsplus_btree_recptr to get the pointer to a found key.
+	(grub_hfsplus_btree_search): Return 1 instead of 0 when no match
+	is found.
+
+	* conf/i386-efi.rmk (pkgdata_MODULES): Added _linux.mod and
+	linux.mod.
+	(_linux_mod_SOURCES): New variable.
+	(_linux_mod_CFLAGS): Likewise.
+	(_linux_mod_LDFLAGS): Likewise.
+	(linux_mod_SOURCES): Likewise.
+	(linux_mod_CFLAGS): Likewise.
+	(linux_mod_LDFLAGS): Likewise.
+
+	* DISTLIST: Added loader/i386/efi/linux.c,
+	loader/i386/efi/linux_normal.c and
+	include/grub/i386/efi/loader.h.
+
+	* loader/i386/efi/linux.c: New file.
+	* loader/i386/efi/linux_normal.c: Likewise.
+	* include/grub/i386/efi/loader.h: Likewise.
+
+2006-05-27  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* commands/blocklist.c: New file.
+
+	* DISTLIST: Added commands/blocklist.c.
+
+	* term/efi/console.c (grub_console_highlight_color): Use a lighter
+	color for the background, and a darker color for the foreground.
+	(grub_console_checkkey): Return READ_KEY.
+	(grub_console_cls): Set the background to
+	GRUB_EFI_BACKGROUND_BLACK temporarily to clean out the screen.
+
+	* kern/efi/efi.c (grub_efi_exit_boot_services): New function.
+
+	* include/grub/i386/linux.h (struct linux_kernel_params): Fixed
+	the size of "padding5", "hd0_drive_info" and "hd1_drive_info".
+
+	* include/grub/efi/efi.h (grub_efi_exit_boot_services): New
+	prototype.
+
+	* include/grub/efi/api.h (GRUB_EFI_TEXT_ATTR): Do not shift
+	BG. The spec is wrong again.
+
+	* include/grub/normal.h [GRUB_UTIL] (grub_blocklist_init): New
+	prototype.
+	[GRUB_UTIL] (grub_blocklist_fini): Likewise.
+
+	* conf/i386-pc.rmk (grub_emu_SOURCES): Added
+	commands/blocklist.c.
+	* conf/powerpc-ieee1275.rmk (grub_emu_SOURCES): Likewise.
+	
+	* conf/common.rmk (pkgdata_MODULES): Added blocklist.mod.
+	(blocklist_mod_SOURCES): New variable.
+	(blocklist_mod_CFLAGS): Likewise.
+	(blocklist_mod_LDFLAGS): Likewise.
+
+2006-05-20  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* boot/i386/pc/boot.S (real_start): Set %si earlier to eliminate
+	duplication.
+	(lba_mode): Use %eax more intensively to reduce the code size.
+
+2006-05-20  Marco Gerards  <marco@gnu.org>
+
+	* normal/lexer.c (grub_script_yylex): Don't filter out newlines.
+
+	* normal/parser.y (commandblock): Defined as <cmd>.  A subroutine
+	for `menuentry'.
+	(script): Accept leading newlines.
+	(newlines): New rule to describe 0 or more newlines.
+	(commands): Accept `command' with trailing newline.  Fixed the
+	order in which arguments were passed to `grub_script_add_cmd'.
+	Accept commands separated by newlines.
+	(function): Changed to accept newlines.
+	(menuentry) Rewritten.
+
+	* normal/script.c (grub_script_create_cmdmenu): Add new entries in
+	front of the list, instead of to the end.
+
+2006-05-19  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* util/i386/pc/grub-install.in (bindir): New variable.
+	(grub_mkimage): Use BINDIR instead of SBINDIR. Reported by Lee
+	Shaver <lbgwjl@gmail.com>.
+
+2006-05-14  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* kern/i386/pc/startup.S: Include grub/cpu/linux.h instead of
+	grub/machine/linux.h
+	* loader/i386/pc/linux.c: Likewise.
+
+	* include/grub/i386/pc/linux.h: Moved to ...
+	* include/grub/i386/linux.h: ... here.
+
+	* include/grub/i386/linux.h (struct linux_kernel_params): New
+	struct.
+	
+2006-05-09  Vesa Jaaskelainen  <chaac@nic.fi>
+
+	* video/i386/pc/vbe.c (grub_video_vbe_fill_rect): Corrected bounds
+	checking.
+	(grub_video_vbe_blit_glyph): Likewise.
+	(grub_video_vbe_blit_bitmap): Likewise.
+	(grub_video_vbe_blit_render_target): Likewise.
+
+2006-05-09  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* configure.ac (--with-platform): Properly quote the square
+	brackets.
+
+2006-05-08  Marco Gerards  <marco@gnu.org>
+
+	* conf/powerpc-ieee1275.rmk (grubof_HEADERS): Renamed from
+	this...
+	(kernel_elf_HEADERS): ...to this.  Updated all users.
+	(grubof_symlist.c): Renamed from this...
+	(kernel_elf_symlist.c): ...to this.  Updated all users.
+	(pkgdata_PROGRAMS): Changed `grubof' to `kernel.elf'.
+	(grubof_SOURCES): Renamed from this...
+	(kernel_elf_SOURCES): ...to this.
+	(grubof_HEADERS): Renamed from this...
+	(kernel_elf_HEADERS): ...to this.
+	(grubof_CFLAGS): Renamed from this...
+	(kernel_elf_CFLAGS): ...to this.
+	(grubof_ASFLAGS): Renamed from this...
+	(kernel_elf_ASFLAGS): ...to this.
+	(grubof_LDFLAGS): Renamed from this...
+	(kernel_elf_LDFLAGS): ...to this.
+
+	* conf/sparc64-ieee1275.rmk (grubof_HEADERS): Renamed from
+	this...
+	(kernel_elf_HEADERS): ...to this.  Updated all users.
+	(grubof_symlist.c): Renamed from this...
+	(kernel_elf_symlist.c): ...to this.  Updated all users.
+	(pkgdata_PROGRAMS): Changed `grubof' to `kernel.elf'.
+	(grubof_SOURCES): Renamed from this...
+	(kernel_elf_SOURCES): ...to this.
+	(grubof_HEADERS): Renamed from this...
+	(kernel_elf_HEADERS): ...to this.
+	(grubof_CFLAGS): Renamed from this...
+	(kernel_elf_CFLAGS): ...to this.
+	(grubof_ASFLAGS): Renamed from this...
+	(kernel_elf_ASFLAGS): ...to this.
+	(grubof_LDFLAGS): Renamed from this...
+	(kernel_elf_LDFLAGS): ...to this.
+
+	* util/powerpc/ieee1275/grub-mkimage.c (add_segments): Use
+	`kernel.elf' instead of `grubof'.
+
+2006-05-08  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	Add --with-platform to configure. Use pkglibdir instead of
+	pkgdatadir. This is reported by Roger Leigh.
+
+	* util/powerpc/ieee1275/grub-install.in (datadir): Removed.
+	(host_vendor): Likewise.
+	(host_os): Likewise.
+	(pkgdatadir): Likewise.
+	(platform): New variable.
+	(pkglibdir): Likewise.
+	Use PKGLIBDIR instead of PKGDATADIR.
+	
+	* util/i386/pc/grub-install.in (datadir): Removed.
+	(host_vendor): Likewise.
+	(host_os): Likewise.
+	(pkgdatadir): Likewise.
+	(platform): New variable.
+	(pkglibdir): Likewise.
+	Use PKGLIBDIR instead of PKGDATADIR.
+
+	* util/powerpc/ieee1275/grub-mkimage.c (usage): Use GRUB_LIBDIR
+	instead of GRUB_DATADIR.
+	(main): Likewise.
+	* util/i386/pc/grub-mkimage.c (usage): Likewise.
+	(main): Likewise.
+	* util/i386/efi/grub-mkimage.c (usage): Likewise.
+	(main): Likewise.
+
+	* configure.ac (--with-platform): New option.
+	Use PLATFORM instead of HOST_VENDOR to specify a platform.
+
+	* Makefile.in: Include a makefile based on PLATFORM instead of
+	HOST_VENDOR.
+	(pkgdatadir): Not appended by the machine type.
+	(pkglibdir): Appended by the machine type.
+	(host_vendor): Removed.
+	(platform): New variable.
+	(BUILD_CPPFLAGS): Specify GRUB_LIBDIR instead of GRUB_DATADIR.
+	(install-local): Use PKGLIBDIR instead of PKGDATADIR.
+	(uninstall): Likewise.
+
+2006-05-07  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	Use the environment context in the menu. Remove the commands
+	"default" and "timeout", and use variables instead.
+	
+	* normal/menu.c: Include grub/env.h.
+	(print_entry): Cast TITLE to silence gcc.
+	(get_timeout): New function.
+	(set_timeout): Likewise.
+	(get_entry_number): Likewise.
+	(run_menu): Use a default entry, a fallback entry and a timeout
+	in the environment variables "default", "fallback" and
+	"timeout". Also, tweak the default entry if it is not within the
+	current menu entries.
+	(grub_menu_run): Use a fallback entry in the environment variable
+	"fallback".
+
+	* normal/main.c (read_config_file): Do not initialize
+	NEWMENU->DEFAULT_ENTRY, NEWMENU->FALLBACK_ENTRY or
+	NEWMENU->TIMEOUT.
+	(grub_normal_execute): Use a data slot to store the menu.
+
+	* include/grub/normal.h (struct grub_menu): Removed default_entry,
+	fallback_entry and timeout.
+	(struct grub_menu_list): Removed.
+	(grub_menu_list_t): Likewise.
+	(struct grub_context): Likewise.
+	(grub_context_t): Likewise.
+	(grub_context_get): Likewise.
+	(grub_context_get_current_menu): Likewise.
+	(grub_context_push_menu): Likewise.
+	(grub_context_pop_menu): Likewise.
+	(grub_default_init): Likewise.
+	(grub_default_fini): Likewise.
+	(grub_timeout_init): Likewise.
+	(grub_timeout_fini): Likewise.
+
+	* conf/sparc64-ieee1275.rmk (pkgdata_MODULES): Removed default.mod
+	and timeout.mod.
+	(normal_mod_SOURCES): Removed normal/context.c.
+
+	* conf/powerpc-ieee1275.rmk (grub_emu_SOURCES): Removed
+	commands/default.c, commands/timeout.c and normal/context.c.
+	(normal_mod_SOURCES): Removed normal/context.c.
+
+	* conf/i386-pc.rmk (grub_emu_SOURCES): Removed commands/default.c,
+	commands/timeout.c and normal/context.c.
+	(normal_mod_SOURCES): Removed normal/context.c.
+
+	* conf/i386-efi.rmk (grub_emu_SOURCES): Removed
+	commands/default.c, commands/timeout.c and normal/context.c.
+	(normal_mod_SOURCES): Removed normal/context.c.
+
+	* conf/common.rmk (pkgdata_MODULES): Removed default.mod and
+	timeout.mod.
+	(default_mod_SOURCES): Removed.
+	(default_mod_CFLAGS): Likewise.
+	(default_mod_LDFLAGS): Likewise.
+	(timeout_mod_SOURCES): Removed.
+	(timeout_mod_CFLAGS): Likewise.
+	(timeout_mod_LDFLAGS): Likewise.
+
+	* DISTLIST: Removed commands/default.c, commands/timeout.c and
+	normal/context.c.
+
+	* commands/default.c: Removed.
+	* commands/timeout.c: Likewise.
+	* normal/context.c: Likewise.
+
+2006-05-07  Vesa Jaaskelainen  <chaac@nic.fi>
+
+	* kern/i386/pc/startup.S (grub_exit): Added missing .code32 tag.
+
+2006-05-02  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* kern/env.c (struct grub_env_context): Removed "sorted". Renamed
+	"next" to "prev" for readability.
+	(struct grub_env_sorted_var): New struct.
+	(grub_env_context): Renamed to ...
+	(initial_context): ... this.
+	(grub_env_var_context): Renamed to ...
+	(current_context): ... this.
+	(grub_env_find): Look only at CURRENT_CONTEXT.
+	(grub_env_context_open): Rewritten to copy exported variables from
+	previous context.
+	(grub_env_context_close): Rewritten according to the new
+	scheme. Also, add an assertion to prevent the initial context from
+	removed.
+	(grub_env_insert): Removed the code for the sorted list.
+	(grub_env_remove): Likewise.
+	(grub_env_export): Simply mark the variable with
+	GRUB_ENV_VAR_GLOBAL.
+	(grub_env_set): A cosmetic change for naming consistency.
+	(grub_env_get): Likewise.
+	(grub_env_unset): Likewise.
+	(grub_env_iterate): Rewritten to sort variables within this
+	function.
+	(grub_register_variable_hook): Fixed for naming consistency. Call
+	grub_env_find again, only if NAME is not found at the first time.
+	(mangle_data_slot_name): New function.
+	(grub_env_set_data_slot): Likewise.
+	(grub_env_get_data_slot): Likewise.
+	(grub_env_unset_data_slot): Likewise.
+
+	* include/grub/env.h (grub_env_var_type): New enum.
+	(GRUB_ENV_VAR_LOCAL): New constant.
+	(GRUB_ENV_VAR_GLOBAL): Likewise.
+	(GRUB_ENV_VAR_DATA): Likewise.
+	(struct grub_env_var): Removed "sort_next" and "sort_prevp". Added
+	"type".
+	(grub_env_set): Replace VAR with NAME for consistency.
+	(grub_register_variable_hook): Likewise.
+	(grub_env_export): Specify the name of the argument.
+	(grub_env_set_data_slot): New prototype.
+	(grub_env_get_data_slot): Likewise.
+	(grub_env_unset_data_slot): Likewise.
+
+2006-04-30  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	Extend the loader so that GRUB can accept a loader which comes
+	back to GRUB when a loaded image exits. Also, this change adds
+	support for a chainloader on EFI.
+	
+	* term/efi/console.c: Include grub/misc.h.
+	(grub_console_checkkey): Display a scan code on the top for
+	debugging. This will be removed once the EFI port gets stable.
+	Correct the scan code mapping.
+
+	* kern/efi/mm.c (sort_memory_map): Sort in a descending order to
+	allocate memory from larger regions, in order to reduce the number
+	of allocated regions. Otherwise, the MacOSX loader panics.
+	(filter_memory_map): Avoid less than 1MB for compatibility with
+	other loaders.
+	(add_memory_regions): Allocate from the tail of a region, if
+	possible, to avoid allocating a region near to 1MB, for the MacOSX
+	loader.
+
+	* kern/efi/init.c (grub_efi_set_prefix): Specify
+	GRUB_EFI_IMAGE_HANDLE to grub_efi_get_loaded_image.
+
+	* kern/efi/efi.c (grub_efi_get_loaded_image): Accept a new
+	argument IMAGE_HANDLE and specify it to get a loaded image.
+	(grub_arch_modules_addr): Specify GRUB_EFI_IMAGE_HANDLE to
+	grub_efi_get_loaded_image.
+	(grub_efi_get_filename): Divide the legnth by the size of
+	grub_efi_char16_t.
+	(grub_efi_get_device_path): New function.
+	(grub_efi_print_device_path): Print End Device Path nodes. Divide
+	the length by the size of grub_efi_char16_t for a file path device
+	path node.
+
+	* kern/loader.c (grub_loader_noreturn): New variable.
+	(grub_loader_set): Accept a new argument NORETURN. Set
+	GRUB_LOADER_NORETURN to NORETURN.
+	All callers changed.
+	(grub_loader_boot): If GRUB_LOADER_NORETURN is false, do not call
+	grub_machine_fini.
+
+	* include/grub/efi/efi.h (grub_efi_get_device_path): New
+	prototype.
+	(grub_efi_get_loaded_image): Take an argument to specify an image
+	handle.
+
+	* include/grub/loader.h (grub_loader_set): Added one more argument
+	NORETURN.
+
+	* disk/efi/efidisk.c (make_devices): Use grub_efi_get_device_path
+	instead of grub_efi_open_protocol.
+	(grub_efidisk_get_device_name): Likewise.
+	(grub_efidisk_close): Print a newline.
+	(grub_efidisk_get_device_handle): Fixed to use
+	GRUB_EFI_DEVICE_PATH_SUBTYPE instead of
+	GRUB_EFI_DEVICE_PATH_TYPE.
+
+	* disk/efi/efidisk.c (device_path_guid): Moved to ...
+	* kern/efi/efi.c (device_path_guid): ... here.
+
+	* conf/i386-efi.rmk (pkgdata_MODULES): Added _chain.mod and
+	chain.mod.
+	(kernel_mod_HEADERS): Added efi/disk.h.
+	(_chain_mod_SOURCES): New variable.
+	(_chain_mod_CFLAGS): Likewise.
+	(_chain_mod_LDFLAGS): Likewise.
+	(chain_mod_SOURCES): Likewise.
+	(chain_mod_CFLAGS): Likewise.
+	(chain_mod_LDFLAGS): Likewise.
+
+	* DISTLIST: Added include/grub/efi/chainloader.h,
+	loader/efi/chainloader.c and loader/efi/chainloader_normal.c.
+
+	* include/grub/efi/chainloader.h: New file.
+	* loader/efi/chainloader.c: Likewise.
+	* loader/efi/chainloader_normal.c: Likewise.
+
+2006-04-30  Marco Gerards  <marco@gnu.org>
+
+	* commands/configfile.c (grub_cmd_source): New function.
+	(GRUB_MOD_INIT): Register the commands `source' and `.'.
+	(GRUB_MOD_FINI): De-register the commands `source' and `.'.
+
+2006-04-30  Marco Gerards  <marco@gnu.org>
+
+	* normal/execute.c (grub_script_execute_cmd): Change the return
+	type to `grub_err_t'.  Correctly return the error.
+	(grub_script_execute_cmdline): In case a command line is not a
+	command or a function, try to interpret it as an assignment.
+
+2006-04-30  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* fs/hfsplus.c (grub_hfsplus_read_block): Fixed a memory leak.
+	(grub_hfsplus_iterate_dir): Reordered to skip unknown nodes. Also,
+	skip a node whose name is obviously invalid as UTF-16,
+	i.e. contains a NUL character. Stop the iteration when the last
+	directory entry is found. Instead of using the return value of
+	grub_hfsplus_btree_iterate_node, store the value in RET and use
+	it, because the iterator can be stopped by the last directory
+	entry.
+
+2006-04-30  Marco Gerards  <marco@gnu.org>
+
+	* include/grub/env.h (grub_env_export): New prototype.  Reported
+	by Jan C. Kleinsorge <jan.kleinsorge@udo.edu>.
+
+2006-04-30  Marco Gerards  <marco@gnu.org>
+
+	* fs/hfsplus.c (grub_hfsplus_iterate_dir): Correctly calculate the
+	size of the extents in a catalog file record.
+
+2006-04-29  Marco Gerards  <marco@gnu.org>
+
+	* commands/configfile.c (grub_cmd_configfile): Execute the
+	configfile within its own context.
+
+	* include/grub/env.h (grub_env_context_open): New prototype.
+	(grub_env_context_close): Likewise.
+
+	* kern/env.c (grub_env): Removed.
+	(grub_env_sorted): Likewise.
+	(grub_env_context): New variable.
+	(grub_env_var_context): Likewise.
+	(grub_env_find): Search both the active context and the global
+	context.
+	(grub_env_context_open): New function.
+	(grub_env_context_close): Likewise.
+	(grub_env_insert): Likewise.
+	(grub_env_remove): Likewise.
+	(grub_env_export): Likewise.
+	(grub_env_set): Changed to use helper functions to avoid code
+	duplication.
+	(grub_env_iterate): Rewritten so both the current context and the
+	global context are being used.
+
+	* normal/command.c (export_command): New function.
+	(grub_command_init): Register the `export' function.
+
+2006-04-26  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* util/i386/pc/grub-mkimage.c (compress_kernel): Cast arguments
+	explicitly to suppress gcc's warnings.
+	* fs/fat.c (grub_fat_find_dir): Likewise.
+	(grub_fat_label): Likewise.
+	* fs/xfs.c (grub_xfs_read_inode): Likewise.
+	(grub_xfs_mount): Likewise.
+	(grub_xfs_label): Likewise.
+	* fs/affs.c (grub_affs_mount): Likewise.
+	(grub_affs_label): Likewise.
+	(grub_affs_iterate_dir): Likewise.
+	* fs/sfs.c (grub_sfs_mount): Likewise.
+	(grub_sfs_iterate_dir): Likewise.
+	* fs/ufs.c (grub_ufs_lookup_symlink): Likewise.
+	* fs/hfs.c (grub_hfs_mount): Likewise.
+	(grub_hfs_cmp_catkeys): Likewise.
+	(grub_hfs_find_dir): Likewise.
+	(grub_hfs_dir): Likewise.
+	(grub_hfs_label): Likewise.
+	* fs/jfs.c (grub_jfs_mount): Likewise.
+	(grub_jfs_opendir): Likewise.
+	(grub_jfs_getent): Likewise.
+	(grub_jfs_lookup_symlink): Likewise.
+	(grub_jfs_label): Likewise.
+	* fs/hfsplus.c (grub_hfsplus_cmp_catkey): Likewise.
+	(grub_hfsplus_iterate_dir): Likewise.
+	(grub_hfsplus_btree_iterate_node): Made static.
+
+	* util/grub-emu.c (prefix): New variable.
+	(grub_machine_set_prefix): New function.
+	(main): Do not set the environment variable "prefix" here. Only
+	set PREFIX, which is used later by grub_machine_set_prefix.
+
+	* include/grub/video.h: Do not include grub/symbol.h.
+	(grub_video_register): Not exported. This symbol is not defined in
+	the kernel.
+	(grub_video_unregister): Likewise.
+	(grub_video_iterate): Likewise.
+	(grub_video_setup): Likewise.
+	(grub_video_restore): Likewise.
+	(grub_video_get_info): Likewise.
+	(grub_video_get_blit_format): Likewise.
+	(grub_video_set_palette): Likewise.
+	(grub_video_get_palette): Likewise.
+	(grub_video_set_viewport): Likewise.
+	(grub_video_get_viewport): Likewise.
+	(grub_video_map_color): Likewise.
+	(grub_video_map_rgb): Likewise.
+	(grub_video_map_rgba): Likewise.
+	(grub_video_fill_rect): Likewise.
+	(grub_video_blit_glyph): Likewise.
+	(grub_video_blit_bitmap): Likewise.
+	(grub_video_blit_render_target): Likewise.
+	(grub_video_scroll): Likewise.
+	(grub_video_swap_buffers): Likewise.
+	(grub_video_create_render_target): Likewise.
+	(grub_video_delete_render_target): Likewise.
+	(grub_video_set_active_render_target): Likewise.
+
+	* include/grub/symbol.h [GRUB_SYMBOL_GENERATOR] (EXPORT_FUNC):
+	Undefined.
+	[GRUB_SYMBOL_GENERATOR] (EXPORT_VAR): Likewise.
+
+	* conf/sparc64-ieee1275.rmk (grubof_symlist.c): Depended on
+	config.h. Use gensymlist.sh instead of $(srcdir)/gensymlist.sh.
+	(kernel_syms.lst): Depended on config.h. Use genkernsyms.sh
+	instead of $(srcdir)/genkernsyms.sh.
+
+	* conf/powerpc-ieee1275.rmk (grubof_symlist.c): Depended on
+	config.h. Use gensymlist.sh instead of $(srcdir)/gensymlist.sh.
+	(kernel_syms.lst): Depended on config.h. Use genkernsyms.sh
+	instead of $(srcdir)/genkernsyms.sh.
+
+	* conf/i386-pc.rmk (symlist.c): Depended on config.h. Use
+	gensymlist.sh instead of $(srcdir)/gensymlist.sh.
+	(kernel_syms.lst): Depended on config.h. Use genkernsyms.sh
+	instead of $(srcdir)/genkernsyms.sh.
+
+	* conf/i386-efi.rmk (symlist.c): Depended on config.h. Use
+	gensymlist.sh instead of $(srcdir)/gensymlist.sh.
+	(kernel_syms.lst): Depended on config.h. Use genkernsyms.sh
+	instead of $(srcdir)/genkernsyms.sh.
+
+	* configure.ac (AC_CONFIG_FILES): Added gensymlist.sh and
+	genkernsyms.sh.
+
+	* Makefile.in (DISTCLEANFILES): Added gensymlist.sh and
+	genkernsyms.sh.
+	(gensymlist.sh): New target.
+	(genkernsyms.sh): Likewise.
+
+	* DISTLIST: Removed genkernsyms.sh and gensymlist.sh. Added
+	genkernsyms.sh.in and gensymlist.sh.in.
+
+	* genkernsyms.sh: Removed.
+	* gensymlist.sh: Likewise.
+	
+	* genkernsyms.sh.in: New file.
+	* gensymlist.sh.in: Likewise.
+
+2006-04-25  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* kern/powerpc/ieee1275/init.c (grub_machine_set_prefix): Do not
+	clobber "prefix", since we may have already set it manually.
+
+2006-04-25  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* kern/misc.c (abort): New alias for grub_abort.
+
+2006-04-25  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	A new machine-specific function "grub_machine_set_prefix" is
+	defined. This is called after loading modules, so that a prefix
+	initialization can use modules. Also, this change adds an
+	intensive debugging feature for the memory manager via the
+	configure option "--enable-mm-debug".
+	
+	* partmap/gpt.c (gpt_partition_map_iterate): Add one more into
+	PART.LEN.
+
+	* kern/sparc64/ieee1275/init.c (abort): Removed.
+	(grub_stop): Likewise.
+	(grub_exit): New function.
+	(grub_set_prefix): Renamed to ...
+	(grub_machine_set_prefix): ... this.
+	(grub_machine_init): Do not call grub_set_prefix.
+
+	* kern/powerpc/ieee1275/init.c (grub_set_prefix): Renamed to ...
+	(grub_machine_set_prefix): ... this.
+	(grub_machine_init): Do not call grub_set_prefix.
+
+	* kern/i386/pc/init.c (grub_machine_set_prefix): New function.
+	(grub_machine_init): Do not set the prefix here.
+
+	* kern/i386/efi/init.c (grub_machine_set_prefix): New function.
+
+	* kern/efi/init.c: Include grub/mm.h.
+	(grub_efi_set_prefix): New function.
+
+	* kern/efi/efi.c (grub_exit): Call grub_efi_fini.
+	(grub_efi_get_filename): New function.
+	(grub_print_device_path): Renamed to ...
+	(grub_efi_print_device_path): ... this.
+
+	* kern/mm.c [MM_DEBUG] (grub_malloc): Undefined.
+	[MM_DEBUG] (grub_realloc): Likewise.
+	[MM_DEBUG] (grub_free): Likewise.
+	[MM_DEBUG] (grub_memalign): Likewise.
+	[MM_DEBUG] (grub_mm_debug): New variable.
+	[MM_DEBUG] (grub_debug_malloc): New function.
+	[MM_DEBUG] (grub_debug_free): New function.
+	[MM_DEBUG] (grub_debug_realloc): New function.
+	[MM_DEBUG] (grub_debug_memalign): New function.
+
+	* kern/misc.c (grub_abort): Print a newline to distinguish
+	the message.
+
+	* kern/main.c (grub_main): Call grub_machine_set_prefix and
+	grub_set_root_dev after loading modules. This is necessary when
+	setting a prefix depends on modules.
+
+	* include/grub/efi/efi.h (grub_print_device_path): Renamed to ...
+	(grub_efi_print_device_path): ... this.
+	(grub_efi_get_filename): New prototype.
+	(grub_efi_set_prefix): Likewise.
+
+	* include/grub/efi/disk.h: Include grub/efi/api.h, grub/symbol.h
+	and grub/disk.h.
+	(grub_efidisk_get_device_handle): New prototype.
+	(grub_efidisk_get_device_name): Likewise.
+
+	* include/grub/mm.h: Include config.h.
+	(MM_DEBUG): Removed.
+	[MM_DEBUG && !GRUB_UTIL] (grub_mm_debug): New prototype.
+	[MM_DEBUG && !GRUB_UTIL] (grub_malloc): New macro.
+	[MM_DEBUG && !GRUB_UTIL] (grub_realloc): Likewise.
+	[MM_DEBUG && !GRUB_UTIL] (grub_memalign): Likewise.
+	[MM_DEBUG && !GRUB_UTIL] (grub_free): Likewise.
+	[MM_DEBUG && !GRUB_UTIL] (grub_debug_malloc): New prototype.
+	[MM_DEBUG && !GRUB_UTIL] (grub_debug_realloc): New prototype.
+	[MM_DEBUG && !GRUB_UTIL] (grub_debug_memalign): New prototype.
+	[MM_DEBUG && !GRUB_UTIL] (grub_debug_free): New prototype.
+
+	* include/grub/kernel.h (grub_machine_set_prefix): New prototype.
+
+	* disk/efi/efidisk.c: Include grub/partition.h.
+	(iterate_child_devices): New function.
+	(add_device): First, compare only last device path nodes, so that
+	devices are sorted by the types.
+	(grub_efidisk_get_device_handle): New function.
+	(grub_efidisk_get_device_name): Likewise.
+
+	* configure.ac (--enable-mm-debug): New option to enable the
+	memory manager debugging feature. This makes the binary much
+	bigger, so is disabled by default.
+
+2006-04-23  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	Use grub_abort instead of grub_stop, and grub_exit must be
+	define in each architecture now. Also, this change adds support
+	for EFI disks.
+	
+	* util/i386/pc/grub-probefs.c: Include grub/term.h.
+	(grub_getkey): New function.
+	(grub_term_get_current): Likewise.
+
+	* util/i386/pc/grub-setup.c: Include grub/term.h.
+	(grub_getkey): New function.
+	(grub_term_get_current): Likewise.
+
+	* util/misc.c (grub_stop): Renamed to ...
+	(grub_exit): ... this.
+
+	* kern/powerpc/ieee1275/init.c (abort): Renamed to ...
+	(grub_exit): ... this.
+	(grub_machine_init): Use grub_abort instead of abort.
+	(grub_stop): Removed.
+
+	* kern/powerpc/ieee1275/cmain.c (cmain): Use grub_abort instead of
+	abort.
+
+	* kern/i386/pc/startup.S (grub_exit): New function.
+	(cold_reboot): New label.
+
+	* kern/efi/init.c: Include grub/efi/disk.h and grub/env.h.
+	(grub_efi_init): Call grub_efidisk_init.
+	(grub_efi_fini): Call grub_efidisk_fini.
+
+	* kern/efi/efi.c: Include grub/mm.h.
+	(grub_efi_console_control_guid): Renamed to ...
+	(console_control_guid): ... this.
+	(grub_efi_loaded_image_guid): Renamed to ...
+	(loaded_image_guid): ... this.
+	(grub_efi_locate_handle): New function.
+	(grub_efi_open_protocol): Likewise.
+	(grub_efi_set_text_mode): Use CONSOLE_CONTROL_GUID instead of
+	GRUB_EFI_CONSOLE_CONTROL_GUID.
+	(grub_efi_exit): Removed.
+	(grub_stop): Likewise.
+	(grub_efi_get_loaded_image): Use grub_efi_open_protocol.
+	(grub_exit): New function.
+	(grub_print_device_path): Likewise.
+
+	* kern/rescue.c (grub_rescue_cmd_exit): New function.
+	(grub_enter_rescue_mode): Register "exit".
+
+	* kern/misc.c (grub_real_dprintf): A cosmetic change.
+	(grub_abort): New function.
+
+	* kern/err.c (grub_fatal): Use grub_abort instead of grub_stop.
+
+	* include/grub/sparc64/ieee1275/kernel.h (abort): Removed.
+
+	* include/grub/powerpc/ieee1275/kernel.h (abort): Removed.
+
+	* include/grub/efi/efi.h (grub_efi_exit): Removed.
+	(grub_print_device_path): New prototype.
+	(grub_efi_locate_handle): Likewise.
+	(grub_efi_open_protocol): Likewise.
+
+	* include/grub/efi/disk.h (grub_efidisk_fini): New file.
+	* disk/efi/efidisk.c: Likewise.
+
+	* DISTLIST: Added disk/efi/efidisk.c and include/grub/efi/disk.h.
+
+	* include/grub/efi/console_control.h
+	(GRUB_EFI_CONSOLE_CONTROL_GUID): Use an array for the last 8 bytes.
+
+	* include/grub/efi/api.h (GRUB_EFI_LOADED_IMAGE_GUID): Specify the
+	last 8 bytes as an array.
+	(GRUB_EFI_DISK_IO_GUID): New macro.
+	(GRUB_EFI_BLOCK_IO_GUID): Likewise.
+	(GRUB_EFI_DEVICE_PATH_GUID): Likewise.
+	(grub_efi_ipv6_address_t): Change the type to grub_uint16_t from
+	grub_uint8_t.
+	(struct grub_efi_guid): Use an array to specify the last 8 bytes.
+	(struct grub_efi_device_path): Rename the member "sub_type" to
+	"subtype".
+	(GRUB_EFI_DEVICE_PATH_TYPE): New macro.
+	(GRUB_EFI_DEVICE_PATH_SUBTYPE): Likewise.
+	(GRUB_EFI_DEVICE_PATH_LENGTH): Likewise.
+	(GRUB_EFI_END_DEVICE_PATH_TYPE): Likewise.
+	(GRUB_EFI_END_ENTIRE_DEVICE_PATH_SUBTYPE): Likewise.
+	(GRUB_EFI_END_THIS_DEVICE_PATH_SUBTYPE): Likewise.
+	(GRUB_EFI_END_ENTIRE_DEVICE_PATH): Likewise.
+	(GRUB_EFI_NEXT_DEVICE_PATH): Likewise.
+	(GRUB_EFI_HARDWARE_DEVICE_PATH_TYPE): Likewise.
+	(GRUB_EFI_PCI_DEVICE_PATH_SUBTYPE): Likewise.
+	(struct grub_efi_pci_device_path): New structure.
+	(grub_efi_pci_device_path_t): New type.
+	(GRUB_EFI_PCCARD_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_pccard_device_path): New structure.
+	(grub_efi_pccard_device_path_t): New type.
+	(GRUB_EFI_MEMORY_MAPPED_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_memory_mapped_device_path): New structure.
+	(grub_efi_memory_mapped_device_path_t): New type.
+	(GRUB_EFI_VENDOR_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_vendor_device_path): New structure.
+	(grub_efi_vendor_device_path_t): New type.
+	(GRUB_EFI_CONTROLLER_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_controller_device_path): New structure.
+	(grub_efi_controller_device_path_t): New type.
+	(GRUB_EFI_ACPI_DEVICE_PATH_TYPE): New macro.
+	(GRUB_EFI_ACPI_DEVICE_PATH_SUBTYPE): Likewise.
+	(struct grub_efi_acpi_device_path): New structure.
+	(grub_efi_acpi_device_path_t): New type.
+	(GRUB_EFI_EXPANDED_ACPI_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_expanded_acpi_device_path): New structure.
+	(grub_efi_expanded_acpi_device_path_t): New type.
+	(GRUB_EFI_EXPANDED_ACPI_HIDSTR): New macro.
+	(GRUB_EFI_EXPANDED_ACPI_UIDSTR): Likewise.
+	(GRUB_EFI_EXPANDED_ACPI_CIDSTR): Likewise.
+	(GRUB_EFI_MESSAGING_DEVICE_PATH_TYPE): Likewise.
+	(GRUB_EFI_ATAPI_DEVICE_PATH_SUBTYPE): Likewise.
+	(struct grub_efi_atapi_device_path): New structure.
+	(grub_efi_atapi_device_path_t): New type.
+	(GRUB_EFI_FIBRE_CHANNEL_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_fibre_channel_device_path): New structure.
+	(grub_efi_fibre_channel_device_path_t): New type.
+	(GRUB_EFI_1394_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_1394_device_path): New structure.
+	(grub_efi_1394_device_path_t): New type.
+	(GRUB_EFI_USB_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_usb_device_path): New structure.
+	(grub_efi_usb_device_path_t): New type.
+	(GRUB_EFI_USB_CLASS_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_usb_class_device_path): New structure.
+	(grub_efi_usb_class_device_path_t): New type.
+	(GRUB_EFI_I2O_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_i2o_device_path): New structure.
+	(grub_efi_i2o_device_path_t): New type.
+	(GRUB_EFI_MAC_ADDRESS_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_mac_address_device_path): New structure.
+	(grub_efi_mac_address_device_path_t): New type.
+	(GRUB_EFI_IPV4_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_ipv4_device_path): New structure.
+	(grub_efi_ipv4_device_path_t): New type.
+	(GRUB_EFI_IPV6_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_ipv6_device_path): New structure.
+	(grub_efi_ipv6_device_path_t): New type.
+	(GRUB_EFI_INFINIBAND_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_infiniband_device_path): New structure.
+	(grub_efi_infiniband_device_path_t): New type.
+	(GRUB_EFI_UART_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_uart_device_path): New structure.
+	(grub_efi_uart_device_path_t): New type.
+	(GRUB_EFI_VENDOR_MESSAGING_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_vendor_messaging_device_path): New structure.
+	(grub_efi_vendor_messaging_device_path_t): New type.
+	(GRUB_EFI_MEDIA_DEVICE_PATH_TYPE): New macro.
+	(GRUB_EFI_HARD_DRIVE_DEVICE_PATH_SUBTYPE): Likewise.
+	(struct grub_efi_hard_drive_device_path): New structure.
+	(grub_efi_hard_drive_device_path_t): New type.
+	(GRUB_EFI_CDROM_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_cdrom_device_path): New structure.
+	(grub_efi_cdrom_device_path_t): New type.
+	(GRUB_EFI_VENDOR_MEDIA_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_vendor_media_device_path): New structure.
+	(grub_efi_vendor_media_device_path_t): New type.
+	(GRUB_EFI_FILE_PATH_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_file_path_device_path): New structure.
+	(grub_efi_file_path_device_path_t): New type.
+	(GRUB_EFI_PROTOCOL_DEVICE_PATH_SUBTYPE): New macro.
+	(struct grub_efi_protocol_device_path): New structure.
+	(grub_efi_protocol_device_path_t): New type.
+	(GRUB_EFI_BIOS_DEVICE_PATH_TYPE): New macro.
+	(GRUB_EFI_BIOS_DEVICE_PATH_SUBTYPE): Likewise.
+	(struct grub_efi_bios_device_path): New structure.
+	(grub_efi_bios_device_path_t): New type.
+	(struct grub_efi_disk_io): New structure.
+	(grub_efi_disk_io_t): New type.
+	(struct grub_efi_block_io_media): New structure.
+	(grub_efi_block_io_media_t): New type.
+	(struct grub_efi_block_io): New structure.
+	(grub_efi_block_io_t): New type.
+
+	* include/grub/misc.h (grub_stop): Removed.
+	(grub_exit): New prototype.
+	(grub_abort): Likewise.
+
+	* include/grub/disk.h (enum grub_disk_dev_id): Added
+	GRUB_DISK_DEVICE_EFIDISK_ID.
+
+	* conf/i386-efi.rmk (kernel_mod_SOURCES): Added
+	disk/efi/efidisk.c.
+	(kernel_syms.lst): Remove the target if an error occurs.
+
+2006-04-22  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* kern/misc.c (grub_lltoa): Rewritten the decimal conversion part,
+	as it was simply too buggy.
+
+2006-04-21  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* kern/misc.c (grub_lltoa): New function.
+	(grub_vsprintf): Added support for the long long suffix,
+	i.e. "ll".
+
+2006-04-20  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* Makefile.in (LDFLAGS): Add variable.
+	(LD): Remove variable.
+	* configure.ac: Add -m32 to LDFLAGS.
+	* genmk.rb (PModule#rule): Use $(CC) instead of $(LD).
+	* conf/powerpc-ieee1275.rmk (COMMON_LDFLAGS): Add variable.
+	(grubof_LDFLAGS): Use $(COMMON_LDFLAGS).
+	(_linux_mod_LDFLAGS, linux_mod_LDFLAGS, normal_mod_LDFLAGS,
+	suspend_mod_LDFLAGS, reboot_mod_LDFLAGS, halt_mod_LDFLAGS): New
+	variables.
+	* conf/sparc64-ieee1275.rmk (COMMON_LDFLAGS): Add -nostdlib.
+	* conf/i386-pc.rmk (COMMON_LDFLAGS): Add -nostdlib.
+	* conf/i386-efi.rmk (COMMON_LDFLAGS): Add -nostdlib.
+
+2006-04-20  Vesa Jaaskelainen  <chaac@nic.fi>
+
+	* term/gfxterm.c (grub_gfxterm_getcharwidth): Fixed character
+	length for unknown glyph.
+
+2006-04-20  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	Add support for pre-loaded modules into the EFI port.
+	
+	* util/i386/efi/grub-mkimage.c (make_mods_section): Rewritten
+	completely. Accept one more argument DIR. The caller has changed.
+
+	* kern/i386/efi/init.c (grub_arch_modules_addr): Removed.
+
+	* kern/efi/efi.c: Include grub/efi/pe32.h and grub/kernel.h.
+	(grub_efi_loaded_image_guid): New variable.
+	(grub_efi_get_loaded_image): New function.
+	(grub_arch_modules_addr): Likewise.
+
+	* include/grub/efi/efi.h (grub_efi_get_loaded_image): New
+	prototype.
+
+	* include/grub/efi/api.h (GRUB_EFI_LOADED_IMAGE_GUID): New macro.
+	(struct grub_efi_loaded_image): New structure.
+	(grub_efi_loaded_image_t): New type.
+
+2006-04-20  Yoshinori K. Okuji  <okuji@enbug.org>
+	
+	* loader/i386/pc/linux.c (grub_rescue_cmd_linux): Compare the file
+	size with GRUB_OS_AREA_SIZE as grub_size_t instead of
+	grub_ssize_t. Reported by Jeff Chua <jeff84@silk.corp.fedex.com>.
+
+2006-04-19  Roger Leigh  <rleigh@whinlatter.ukfsn.org>
+
+	* DISTLIST: Added `util/powerpc/ieee1275/grub-install.in'.
+
+2006-04-19  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* DISTLIST: Added include/grub/efi/console.h,
+	include/grub/efi/time.h, include/grub/i386/efi/kernel.h,
+	kern/efi/init.c, kern/efi/mm.c, and term/efi/console.c.
+
+	* include/grub/efi/console.h: New file.
+	* include/grub/efi/time.h: Likewise.
+	* include/grub/i386/efi/kernel.h: Likewise.
+	* kern/efi/init.c: Likewise.
+	* kern/efi/mm.c: Likewise.
+	* term/efi/console.c: Likewise.
+	
+	* kern/i386/efi/init.c: Do not include grub/machine/time.h.
+	(grub_stop): Removed.
+	(grub_get_rtc): Likewise.
+	(grub_machine_init): Simply call grub_efi_init.
+	(grub_machine_fini): Call grub_efi_fini.
+
+	* kern/efi/efi.c: Include grub/machine/time.h and grub/term.h.
+	(grub_efi_output_string): Removed.
+	(grub_efi_stall): New function.
+	(grub_stop): Likewise.
+	(grub_get_rtc): Likewise.
+
+	* include/grub/efi/efi.h (grub_efi_output_string): Removed.
+	(grub_efi_stall): New prototype.
+	(grub_efi_allocate_pages): Likewise.
+	(grub_efi_free_pages): Likewise.
+	(grub_efi_get_memory_map): Likewise.
+	(grub_efi_mm_init): Likewise.
+	(grub_efi_mm_fini): Likewise.
+	(grub_efi_init): Likewise.
+	(grub_efi_fini): Likewise.
+
+	* include/grub/i386/efi/time.h: Do not include
+	grub/symbol.h. Include grub/efi/time.h.
+	(GRUB_TICKS_PER_SECOND): Removed.
+	(grub_get_rtc): Likewise.
+
+	* include/grub/efi/api.h (struct grub_efi_memory_descriptor):
+	Added padding. The EFI spec is buggy.
+	(GRUB_EFI_BLACK): New macro.
+	(GRUB_EFI_BLUE): Likewise.
+	(GRUB_EFI_GREEN): Likewise.
+	(GRUB_EFI_CYAN): Likewise.
+	(GRUB_EFI_RED): Likewise.
+	(GRUB_EFI_MAGENTA): Likewise.
+	(GRUB_EFI_BROWN): Likewise.
+	(GRUB_EFI_LIGHTGRAY): Likewise.
+	(GRUB_EFI_BRIGHT): Likewise.
+	(GRUB_EFI_DARKGRAY): Likewise.
+	(GRUB_EFI_LIGHTBLUE): Likewise.
+	(GRUB_EFI_LIGHTGREEN): Likewise.
+	(GRUB_EFI_LIGHTCYAN): Likewise.
+	(GRUB_EFI_LIGHTRED): Likewise.
+	(GRUB_EFI_LIGHTMAGENTA): Likewise.
+	(GRUB_EFI_YELLOW): Likewise.
+	(GRUB_EFI_WHITE): Likewise.
+	(GRUB_EFI_BACKGROUND_BLACK): Likewise.
+	(GRUB_EFI_BACKGROUND_BLUE): Likewise.
+	(GRUB_EFI_BACKGROUND_GREEN): Likewise.
+	(GRUB_EFI_BACKGROUND_CYAN): Likewise.
+	(GRUB_EFI_BACKGROUND_RED): Likewise.
+	(GRUB_EFI_BACKGROUND_MAGENTA): Likewise.
+	(GRUB_EFI_BACKGROUND_BROWN): Likewise.
+	(GRUB_EFI_BACKGROUND_LIGHTGRAY): Likewise.
+	(GRUB_EFI_TEXT_ATTR): Likewise.
+
+	* conf/i386-efi.rmk (kernel_mod_SOURCES): Added kern/efi/efi.c,
+	kern/efi/init.c, kern/efi/mm.c, and term/efi/console.c.
+	(kernel_mod_HEADERS): Added efi/time.h.
+
+2006-04-18  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* DISTLIST: Added conf/i386-efi.mk, conf/i386-efi.rmk,
+	include/grub/efi/api.h, include/grub/efi/console_control.h,
+	include/grub/efi/efi.h, include/grub/efi/pe32.h,
+	include/grub/i386/efi/time.h, kern/efi/efi.c,
+	kern/i386/efi/init.c, kern/i386/efi/startup.S,
+	and util/i386/efi/grub-mkimage.c.
+
+	* Makefile.in (RMKFILES): Added i386-efi.rmk.
+
+	* genmk.rb (PModule#rule): Do not export symbols if
+	#{prefix}_EXPORTS is set to "no".
+
+	* conf/i386-efi.mk: New file.
+	* conf/i386-efi.rmk: Likewise.
+	* include/grub/efi/api.h: Likewise.
+	* include/grub/efi/console_control.h: Likewise.
+	* include/grub/efi/efi.h: Likewise.
+	* include/grub/efi/pe32.h: Likewise.
+	* include/grub/i386/efi/time.h: Likewise.
+	* kern/efi/efi.c: Likewise.
+	* kern/i386/efi/init.c: Likewise.
+	* kern/i386/efi/startup.S: Likewise.
+	* util/i386/efi/grub-mkimage.c: Likewise.
+
+2006-04-17  Marco Gerards  <marco@gnu.org>
+
+	* include/grub/script.h: Include <grub/parser.h> and
+	"grub_script.tab.h".
+	(struct grub_lexer_param): New struct.
+	(struct grub_parser_param): Likewise.
+	(grub_script_create_arglist): Pass the state in an argument.
+	(grub_script_add_arglist): Likewise.
+	(grub_script_create_cmdline): Likewise.
+	(grub_script_create_cmdblock): Likewise.
+	(grub_script_create_cmdif): Likewise.
+	(grub_script_create_cmdmenu): Likewise.
+	(grub_script_add_cmd): Likewise.
+	(grub_script_arg_add): Likewise.
+	(grub_script_lexer_ref): Likewise.
+	(grub_script_lexer_deref): Likewise.
+	(grub_script_lexer_record_start): Likewise.
+	(grub_script_lexer_record_stop): Likewise.
+	(grub_script_mem_record): Likewise.
+	(grub_script_mem_record_stop): Likewise.
+	(grub_script_malloc): Likewise.
+	(grub_script_yylex): Likewise.
+	(grub_script_yyparse): Likewise.
+	(grub_script_yyerror): Likewise.
+	(grub_script_yylex): Likewise.
+	(grub_script_lexer_init): Return the state.
+
+	* normal/lexer.c (grub_script_lexer_state): Removed variable.
+	(grub_script_lexer_done): Likewise.
+	(grub_script_lexer_getline): Likewise.
+	(grub_script_lexer_refs): Likewise.
+	(script): Likewise.
+	(newscript): Likewise.
+	(record): Likewise.
+	(recording): Likewise.
+	(recordpos): Likewise.
+	(recordlen): Likewise.
+	(grub_script_lexer_init): Return the state instead of setting
+	global variables.
+	(grub_script_lexer_ref): Use the newly added argument for state
+	instead of globals.
+	(grub_script_lexer_deref): Likewise.
+	(grub_script_lexer_record_start): Likewise.
+	(grub_script_lexer_record_stop): Likewise.
+	(recordchar): Likewise.
+	(nextchar): Likewise.
+	(grub_script_yylex2): Likewise.
+	(grub_script_yylex): Likewise.
+	(grub_script_yyerror): Likewise.
+
+	* normal/parser.y (func_mem): Removed variable.
+	(menu_entry): Likewise.
+	(err): Likewise.
+	(%lex-param): New parser option.
+	(%parse-param): Likewise.
+	(script): Always return the AST.
+	(argument): Pass the state around.
+	(arguments): Likewise.
+	(grubcmd): Likewise.
+	(commands): Likewise.
+	(function): Likewise.
+	(menuentry): Likewise.
+	(if_statement): Likewise.
+	(if): Likewise.
+
+	* normal/script.c (grub_script_memused): Removed variable.
+	(grub_script_parsed): Likewise.
+	(grub_script_malloc): Added a state argument.  Use that instead of
+	global variables.
+	(grub_script_mem_record): Likewise.
+	(grub_script_mem_record_stop): Likewise.
+	(grub_script_arg_add): Likewise.
+	(grub_script_add_arglist): Likewise.
+	(grub_script_create_cmdline): Likewise.
+	(grub_script_create_cmdif): Likewise.
+	(grub_script_create_cmdmenu): Likewise.
+	(grub_script_add_cmd): Likewise.
+	(grub_script_parse): Setup the state before calling the parser.
+	
+2006-04-16  Marco Gerards  <marco@gnu.org>
+
+	* normal/command.c (grub_command_init): Remove the title command.
+
+	* normal/lexer.c (grub_script_yylex): Renamed from this...
+	(grub_script_yylex2): ... to this.
+	(grub_script_yylex): New function.  Temporary
+	introduced to filter some tokens.
+	(grub_script_yyerror): Print a newline.
+
+	* normal/main.c (read_config_file): Output information about the
+	lines that contain errors.  Wait for a key after all lines have
+	been processed.  Don't return an empty menu.
+
+	* normal/parser.y (func_mem): Don't initialize.
+	(menu_entry): Likewise.
+	(err): New variable.
+	(script): Don't return anything when an error was encountered.
+	(ws, returns): Removed rules.
+	(argument): Disabled concatenated variable support.
+	(arguments): Remove explicit separators.
+	(grubcmd): Likewise.
+	(function): Likewise.
+	(menuentry): Likewise.
+	(if): Likewise.
+	(commands): Likewise.  Add error handling.
+
+	* normal/script.c (grub_script_create_cmdline): If
+	`grub_script_parsed' is 0, assume the parser encountered an error.
+
+2006-04-02  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* configure.ac: Add support for EFI. Fix the typo
+	BUILD_LDDFLAGS. Restore the LDFLAGS after testing.
+
+2006-04-01  Vesa Jaaskelainen  <chaac@nic.fi>
+
+	* util/unifont2pff.rb: Removed unnecessary byte ordering.  Now
+	foreign multibyte characters should be shown correctly.
+
+2006-04-01  Vesa Jaaskelainen  <chaac@nic.fi>
+
+	* normal/main.c (grub_normal_menu_addentry): Fixed menu size
+	calculation.
+	(read_config_file): Made it to close file before returning.
+
+2006-03-31  Vesa Jaaskelainen  <chaac@nic.fi>
+
+	* DISTLIST: Added include/grub/i386/pc/vbeblit.h,
+	include/grub/i386/pc/vbefill.h, video/i386/pc/vbeblit.c,
+	video/i386/pc/vbefill.c.
+
+	* conf/i386-pc.rmk (vbe_mod_SOURCES): Added video/i386/pc/vbeblit.c,
+	video/i386/pc/vbefill.c.
+
+	* include/grub/video.h (grub_video_blit_format): New enum.
+	(grub_video_mode_info): Added new member blit_format.
+	(grub_video_get_blit_format): New function prototype.
+
+	* include/grub/i386/pc/vbe.h (grub_video_vbe_get_video_ptr): New
+	function prototype.
+	(grub_video_vbe_map_rgb): Likewise.
+	(grub_video_vbe_unmap_color): Likewise.
+
+	* include/grub/i386/pc/vbeblit.h: New file.
+
+	* include/grub/i386/pc/vbefill.h: New file.
+
+	* video/video.c (grub_video_get_blit_format): New function.
+	(grub_video_vbe_get_video_ptr): Re-declared as non-static.
+	(grub_video_vbe_map_rgb): Likewise.
+	(grub_video_vbe_unmap_color): Likewise.
+
+	* video/i386/pc/vbe.c (grub_video_vbe_fill_rect): Changed to use more
+	optimized fills.
+	(grub_video_vbe_blit_render_target): Changed to use more optimized
+	blits.
+	(grub_video_vbe_setup): Added detection for optimized settings.
+	(grub_video_vbe_create_render_target): Likewise.
+
+	* video/i386/pc/vbeblit.c: New file.
+
+	* video/i386/pc/vbefill.c: New file.
+
+2006-03-30  Vesa Jaaskelainen  <chaac@nic.fi>
+
+	* font/manager.c (grub_font_get_glyph): Removed font fixup from
+	here...
+
+	* util/unifont2pff.rb: ... and moved it to here.  Improved argument
+	parsing to support both hex and dec ranges.  If filename was missing
+	show usage information.
+
+2006-03-14  Vesa Jaaskelainen  <chaac@nic.fi>
+
+	* DISTLIST: Added include/grub/video.h, term/gfxterm.c,
+	video/video.c, commands/videotest.c.  Removed term/i386/pc/vesafb.c.
+
+	* conf/i386-pc.rmk (pkgdata_MODULES): Added video.mod,
+	gfxterm.mod, videotest.mod.  Removed vga.mod, vesafb.mod.
+	(video_mod_SOURCES): Added.
+	(video_mod_CFLAGS): Likewise.
+	(video_mod_LDFLAGS): Likewise.
+	(gfxterm_mod_SOURCES): Likewise.
+	(gfxterm_mod_CFLAGS): Likewise.
+	(gfxterm_mod_LDFLAGS): Likewise.
+	(videotest_mod_SOURCES): Likewise.
+	(videotest_mod_CFLAGS): Likewise.
+	(videotest_mod_LDFLAGS): Likewise.
+	(vesafb_mod_SOURCES): Removed.
+	(vesafb_mod_CFLAGS): Likewise.
+	(vesafb_mod_LDFLAGS): Likewise.
+	(vga_mod_SOURCES): Likewise.
+	(vga_mod_CFLAGS): Likewise.
+	(vga_mod_LDFLAGS): Likewise.
+
+	* commands/videotest.c: New file.
+
+	* font/manager.c (fill_with_default_glyph): Modified to use
+	grub_font_glyph.
+	(grub_font_get_glyph): Likewise.
+	(fontmanager): Renamed from this...
+	(font_manager): ... to this.
+
+	* include/grub/font.h (grub_font_glyph): Added new structure.
+	(grub_font_get_glyph): Modified to use grub_font_glyph.
+
+	* include/grub/misc.h (grub_abs): Added as inline function.
+
+	* include/grub/video.h: New file.
+
+	* include/grub/i386/pc/vbe.h (GRUB_VBE_STATUS_OK): New macro.
+	(GRUB_VBE_MEMORY_MODEL_PACKED_PIXEL): Likewise.
+	(GRUB_VBE_MEMORY_MODEL_DIRECT_COLOR): Likewise.
+	(grub_vbe_get_controller_info): Renamed from this...
+	(grub_vbe_bios_get_controller_info): ... to this.
+	(grub_vbe_get_mode_info): Renamed from this...
+	(grub_vbe_bios_get_mode_info): ... to this.
+	(grub_vbe_set_mode): Renamed from this...
+	(grub_vbe_bios_set_mode): ... to this.
+	(grub_vbe_get_mode): Renamed from this...
+	(grub_vbe_bios_get_mode): ... to this.
+	(grub_vbe_set_memory_window): Renamed from this...
+	(grub_vbe_bios_set_memory_window): ... to this.
+	(grub_vbe_get_memory_window): Renamed from this...
+	(grub_vbe_bios_get_memory_window): ... to this.
+	(grub_vbe_set_scanline_length): Renamed from this...
+	(grub_vbe_set_scanline_length): ... to this.
+	(grub_vbe_get_scanline_length): Renamed from this...
+	(grub_vbe_bios_get_scanline_length): ... to this.
+	(grub_vbe_set_display_start): Renamed from this...
+	(grub_vbe_bios_set_display_start): ... to this.
+	(grub_vbe_get_display_start): Renamed from this...
+	(grub_vbe_bios_get_display_start): ... to this.
+	(grub_vbe_set_palette_data): Renamed from this...
+	(grub_vbe_bios_set_palette_data): ... to this.
+	(grub_vbe_set_pixel_rgb): Removed.
+	(grub_vbe_set_pixel_index): Likewise.
+
+	* kern/i386/pc/startup.S (grub_vbe_get_controller_info): Renamed
+	from this...
+	(grub_vbe_bios_get_controller_info): ... to this.
+	(grub_vbe_get_mode_info): Renamed from this...
+	(grub_vbe_bios_get_mode_info): ... to this.
+	(grub_vbe_set_mode): Renamed from this...
+	(grub_vbe_bios_set_mode): ... to this.
+	(grub_vbe_get_mode): Renamed from this...
+	(grub_vbe_bios_get_mode): ... to this.
+	(grub_vbe_set_memory_window): Renamed from this...
+	(grub_vbe_bios_set_memory_window): ... to this.
+	(grub_vbe_get_memory_window): Renamed from this...
+	(grub_vbe_bios_get_memory_window): ... to this.
+	(grub_vbe_set_scanline_length): Renamed from this...
+	(grub_vbe_set_scanline_length): ... to this.
+	(grub_vbe_get_scanline_length): Renamed from this...
+	(grub_vbe_bios_get_scanline_length): ... to this.
+	(grub_vbe_set_display_start): Renamed from this...
+	(grub_vbe_bios_set_display_start): ... to this.
+	(grub_vbe_get_display_start): Renamed from this...
+	(grub_vbe_bios_get_display_start): ... to this.
+	(grub_vbe_set_palette_data): Renamed from this...
+	(grub_vbe_bios_set_palette_data): ... to this.
+	(grub_vbe_bios_get_controller_info): Fixed problem with registers
+	getting corrupted after calling it.  Added more pushes and pops.
+	(grub_vbe_bios_set_mode): Likewise.
+	(grub_vbe_bios_get_mode): Likewise.
+	(grub_vbe_bios_get_memory_window): Likewise.
+	(grub_vbe_bios_set_scanline_length): Likewise.
+	(grub_vbe_bios_get_scanline_length): Likewise.
+	(grub_vbe_bios_get_display_start): Likewise.
+	(grub_vbe_bios_set_palette_data): Likewise.
+
+	* normal/cmdline.c (cl_set_pos): Refresh the screen.
+	(cl_insert): Likewise.
+	(cl_delete): Likewise.
+
+	* term/gfxterm.c: New file.
+
+	* term/i386/pc/vesafb.c: Removed file.
+
+	* video/video.c: New file.
+
+	* video/i386/pc/vbe.c (real2pm): Added new function.
+	(grub_video_vbe_draw_pixel): Likewise.
+	(grub_video_vbe_get_video_ptr): Likewise.
+	(grub_video_vbe_get_pixel): Likewise
+	(grub_video_vbe_init): Likewise.
+	(grub_video_vbe_fini): Likewise.
+	(grub_video_vbe_setup): Likewise.
+	(grub_video_vbe_get_info): Likewise.
+	(grub_video_vbe_set_palette): Likewise.
+	(grub_video_vbe_get_palette): Likewise.
+	(grub_video_vbe_set_viewport): Likewise.
+	(grub_video_vbe_get_viewport): Likewise.
+	(grub_video_vbe_map_color): Likewise.
+	(grub_video_vbe_map_rgb): Likewise.
+	(grub_video_vbe_map_rgba): Likewise.
+	(grub_video_vbe_unmap_color): Likewise.
+	(grub_video_vbe_fill_rect): Likewise.
+	(grub_video_vbe_blit_glyph): Likewise.
+	(grub_video_vbe_blit_bitmap): Likewise.
+	(grub_video_vbe_blit_render_target): Likewise.
+	(grub_video_vbe_scroll): Likewise.
+	(grub_video_vbe_swap_buffers): Likewise.
+	(grub_video_vbe_create_render_target): Likewise.
+	(grub_video_vbe_delete_render_target): Likewise.
+	(grub_video_vbe_set_active_render_target): Likewise.
+	(grub_vbe_set_pixel_rgb): Remove function.
+	(grub_vbe_set_pixel_index): Likewise.
+	(index_color_mode): Remove static variable.
+	(active_mode): Likewise.
+	(framebuffer): Likewise.
+	(bytes_per_scan_line): Likewise.
+	(grub_video_vbe_adapter): Added new static variable.
+	(framebuffer): Likewise.
+	(render_target): Likewise.
+	(initial_mode): Likewise.
+	(mode_in_use): Likewise.
+	(mode_list): Likewise.
+
+2006-03-10  Marco Gerards  <marco@gnu.org>
+
+	* configure.ac (AC_INIT): Bumped to 1.93.
+
+	* DISTLIST: Added `include/grub/hfs.h'.
+
+2006-02-01  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* boot/i386/pc/boot.S (general_error): Before looping, try INT
+	18H, which might help the BIOS falling back to next boot media.
+
+2006-01-25  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* util/i386/pc/grub-install.in: Escape a backslash. Reported by
+	Poe Chen <poe.poechen@gmail.com>.
+
+2006-01-17  Marco Gerards  <marco@gnu.org>
+
+	* include/grub/normal.h: Include <grub/script.h>.
+	(grub_command_list): Removed struct.
+	(grub_command_list_t): Removed type.
+	(grub_menu_entry): Remove members `num' and `command_list'.  Add
+	members `commands' and `sourcecode'.
+	* include/grub/script.h: Add inclusion guards.
+	(grub_script_cmd_menuentry): New struct.
+	(grub_script_execute_menuentry): New prototype.
+	(grub_script_lexer_record_start): Likewise.
+	(grub_script_lexer_record_stop): Likewise.
+	* normal/execute.c (grub_script_execute_menuentry): New function.
+	* normal/lexer.c (record, recording, recordpos, recordlen): New
+	variables.
+	(grub_script_lexer_record_start): New function.
+	(grub_script_lexer_record_stop): Likewise.
+	(recordchar): Likewise.
+	(nextchar): Likewise.
+	(grub_script_yylex): Use `nextchar' to fetch new characters.  Use
+	2048 as the buffer size.  Add the tokens `menuentry' and `@'.
+	* normal/main.c: Include <grub/parser.h> and <grub/script.h>
+	(current_menu): New variable.
+	(free_menu): Mainly rewritten.
+	(grub_normal_menu_addentry): New function.
+	(read_config_file): Rewritten.
+	* normal/menu.c (run_menu_entry): Mainly rewritten.
+	* normal/menu_entry.c (make_screen): Rewritten te code to insert
+	the menu entry.
+	(run): Mainly rewritten.
+	* normal/parser.y (menu_entry): New variable.
+	(GRUB_PARSER_TOKEN_MENUENTRY): New token.
+	(menuentry): New rule.
+	(command): Add `menuentry'.
+	(if_statement): Allow additional returns before `fi'.
+	* normal/script.c (grub_script_create_cmdmenu): New function.
+
+2006-01-03  Marco Gerards  <marco@gnu.org>
+
+	* INSTALL: GNU Bison is required.
+	* configure.ac: Rewritten the test to detect Bison.
+	* Makefile.in (YACC): New variable.  Reported by Xun Sun
+	<xun.sun.cn@gmail.com>.
+
+2006-01-03  Marco Gerards  <marco@gnu.org>
+
+	* fs/hfsplus.c (grub_hfsplus_read_block): Convert the offset of
+	the HFS+ filesystem to filesystem blocks.
+	(grub_hfsplus_iterate_dir): Cast the `fileinfo' assignment so a
+	GCC warning is silenced.
+
+2006-01-03  Marco Gerards  <marco@gnu.org>
+
+	* partmap/apple.c (apple_partition_map_iterate): Convert the data
+	read from disk from big	endian to host byte order.
+
+2006-01-03  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* fs/hfs.c: Include <grub/hfs.h>.  Added reference to the official
+	documentation.
+	(GRUB_HFS_EMBED_HFSPLUS_SIG): New macro.
+	(grub_hfs_mount): Grammar fix in error. Make sure this is not an
+	embedded HFS+ filesystem.
+	(GRUB_HFS_MAGIC, grub_hfs_extent, grub_hfs_datarecord_t)
+	(grub_hfs_sblock): Move from here...
+	* include/grub/hfs.h: To here...  New file.
+	* fs/hfsplus.c: Include <grub/hfs.h>.  Added reference to the official
+	documentation.
+	(GRUB_HFSPLUS_MAGIC, GRUB_HFSPLUSX_MAGIC, GRUB_HFSPLUS_SBLOCK):
+	New macros.
+	(grub_hfsplus_volheader): Change type of member `magic' to
+	`grub_uint16_t'.
+	(grub_hfsplus_data): Add new member `embedded_offset'.
+	(grub_hfsplus_read_block): Add the HFS+ wrapper offset to the
+	returned block.
+	(grub_hfsplus_mount): Read the HFS+ wrapper if it exists.
+	Calculate the offset.
+
+2005-12-25  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* include/grub/i386/pc/boot.h (GRUB_BOOT_MACHINE_DRP_ADDR):
+	Removed.
+	(GRUB_BOOT_MACHINE_DRP_SIZE): Likewise.
+
 2005-12-25  Yoshinori K. Okuji  <okuji@enbug.org>
 
 	* kern/env.c (grub_env_set): Check if ENV->VALUE instead of

@@ -1,7 +1,7 @@
 /* hfsplus.c - HFS+ Filesystem.  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2005  Free Software Foundation, Inc.
+ *  Copyright (C) 2005, 2006  Free Software Foundation, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,6 +18,8 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+/* HFS+ is documented at http://developer.apple.com/technotes/tn/tn1150.html */
+
 #include <grub/err.h>
 #include <grub/file.h>
 #include <grub/mm.h>
@@ -26,6 +28,11 @@
 #include <grub/dl.h>
 #include <grub/types.h>
 #include <grub/fshelp.h>
+#include <grub/hfs.h>
+
+#define GRUB_HFSPLUS_MAGIC 0x482B
+#define GRUB_HFSPLUSX_MAGIC 0x4858
+#define GRUB_HFSPLUS_SBLOCK 2
 
 /* A HFS+ extent.  */
 struct grub_hfsplus_extent
@@ -48,7 +55,7 @@ struct grub_hfsplus_forkdata
 /* The HFS+ Volume Header.  */
 struct grub_hfsplus_volheader
 {
-  grub_uint8_t magic[2];
+  grub_uint16_t magic;
   grub_uint16_t version;
   grub_uint32_t attributes;
   grub_uint8_t unused[32];
@@ -208,6 +215,10 @@ struct grub_hfsplus_data
 
   struct grub_fshelp_node dirroot;
   struct grub_fshelp_node opened_file;
+
+  /* This is the offset into the physical disk for an embedded HFS+
+     filesystem (one inside a plain HFS wrapper).  */
+  int embedded_offset;
 };
 
 #ifndef GRUB_UTIL
@@ -215,15 +226,41 @@ static grub_dl_t my_mod;
 #endif
 
 
+/* Return the offset of the record with the index INDEX, in the node
+   NODE which is part of the B+ tree BTREE.  */
+static inline unsigned int
+grub_hfsplus_btree_recoffset (struct grub_hfsplus_btree *btree,
+			   struct grub_hfsplus_btnode *node, int index)
+{
+  char *cnode = (char *) node;
+  grub_uint16_t *recptr;
+  recptr = (grub_uint16_t *) (&cnode[btree->nodesize
+				     - index * sizeof (grub_uint16_t) - 2]);
+  return grub_be_to_cpu16 (*recptr);
+}
+
+/* Return a pointer to the record with the index INDEX, in the node
+   NODE which is part of the B+ tree BTREE.  */
+static inline struct grub_hfsplus_key *
+grub_hfsplus_btree_recptr (struct grub_hfsplus_btree *btree,
+			   struct grub_hfsplus_btnode *node, int index)
+{
+  char *cnode = (char *) node;
+  unsigned int offset;
+  offset = grub_hfsplus_btree_recoffset (btree, node, index);
+  return (struct grub_hfsplus_key *) &cnode[offset];
+}
+
+
 /* Find the extent that points to FILEBLOCK.  If it is not in one of
    the 8 extents described by EXTENT, return -1.  In that case set
-   RETRY to the last block that was found in the last extent.  */
+   FILEBLOCK to the next block.  */
 static int
 grub_hfsplus_find_block (struct grub_hfsplus_extent *extent,
-			 int fileblock, int *retry)
+			 int *fileblock)
 {
   int i;
-  grub_size_t blksleft = fileblock;
+  grub_size_t blksleft = *fileblock;
 
   /* First lookup the file in the given extents.  */
   for (i = 0; i < 8; i++)
@@ -233,7 +270,7 @@ grub_hfsplus_find_block (struct grub_hfsplus_extent *extent,
       blksleft -= grub_be_to_cpu32 (extent[i].count);
     }
 
-  *retry = fileblock - blksleft;
+  *fileblock = blksleft;
   return -1;
 }
 
@@ -252,61 +289,64 @@ static int grub_hfsplus_cmp_extkey (struct grub_hfsplus_key *keya,
 static int
 grub_hfsplus_read_block (grub_fshelp_node_t node, int fileblock)
 {
-  struct grub_hfsplus_extkey_internal extoverflow;
-  struct grub_hfsplus_extkey *keyfound;
-  int blk;
   struct grub_hfsplus_btnode *nnode = 0;
-  int ptr;
-  int retry = 0;
-
+  int blksleft = fileblock;
   struct grub_hfsplus_extent *extents = &node->extents[0];
 
   while (1)
     {
-      char *cnode;
+      struct grub_hfsplus_extkey *key;
+      struct grub_hfsplus_extkey_internal extoverflow;
+      int blk;
+      int ptr;
 
       /* Try to find this block in the current set of extents.  */
-      blk = grub_hfsplus_find_block (extents, fileblock, &retry);
-      if (blk != -1)
-	return blk;
+      blk = grub_hfsplus_find_block (extents, &blksleft);
 
       /* The previous iteration of this loop allocated memory.  The
 	 code above used this memory, it can be free'ed now.  */
-      if (nnode)
-	grub_free (nnode);
+      grub_free (nnode);
+      nnode = 0;
+      
+      if (blk != -1)
+	return (blk
+		+ (node->data->embedded_offset >> (node->data->log2blksize
+						   - GRUB_DISK_SECTOR_BITS)));
 
       /* For the extent overflow file, extra extents can't be found in
 	 the extent overflow file.  If this happens, you found a
 	 bug...  */
       if (node->fileid == GRUB_HFSPLUS_FILEID_OVERFLOW)
-	return -1;
+	{
+	  grub_error (GRUB_ERR_READ_ERROR,
+		      "extra extents found in an extend overflow file");
+	  break;
+	}
 
       /* Set up the key to look for in the extent overflow file.  */
       extoverflow.fileid = node->fileid;
-      extoverflow.start = retry;
+      extoverflow.start = fileblock - blksleft;
 
       if (grub_hfsplus_btree_search (&node->data->extoverflow_tree,
 				     (struct grub_hfsplus_key_internal *) &extoverflow,
 				     grub_hfsplus_cmp_extkey, &nnode, &ptr))
-	return -1;
+	{
+	  grub_error (GRUB_ERR_READ_ERROR,
+		      "no block found for the file id 0x%x and the block offset 0x%x",
+		      node->fileid, fileblock);
+	  break;
+	}
 
-      cnode = (char *) nnode;
-
-      /* The extent overflow file has a 8 extents right after the key.  */
-      keyfound = (struct grub_hfsplus_extkey *) 
-	&cnode[(int) cnode[node->data->extoverflow_tree.nodesize - ptr - 1]];
-      extents = (struct grub_hfsplus_extent *) 
-	((char *) keyfound + sizeof (struct grub_hfsplus_extkey));
+      /* The extent overflow file has 8 extents right after the key.  */
+      key = (struct grub_hfsplus_extkey *)
+	grub_hfsplus_btree_recptr (&node->data->extoverflow_tree, nnode, ptr);
+      extents = (struct grub_hfsplus_extent *) (key + 1);
 
       /* The block wasn't found.  Perhaps the next iteration will find
-	 it.  The last block we found is stored in FILEBLOCK now.  */
-      /* XXX: Multiple iterations for locating the right extent was
-	 not tested enough... */
-      fileblock = retry;
+	 it.  The last block we found is stored in BLKSLEFT now.  */
     }
 
-  if (nnode)
-    grub_free (nnode);
+  grub_free (nnode);
 
   /* Too bad, you lose.  */
   return -1;
@@ -333,6 +373,10 @@ grub_hfsplus_mount (grub_disk_t disk)
   struct grub_hfsplus_data *data;
   struct grub_hfsplus_btheader header;
   struct grub_hfsplus_btnode node;
+  union {
+    struct grub_hfs_sblock hfs;
+    struct grub_hfsplus_volheader hfsplus;
+  } volheader;
 
   data = grub_malloc (sizeof (*data));
   if (!data)
@@ -341,19 +385,50 @@ grub_hfsplus_mount (grub_disk_t disk)
   data->disk = disk;
 
   /* Read the bootblock.  */
-  grub_disk_read (disk, 2, 0, sizeof (struct grub_hfsplus_volheader),
-		  (char *) &data->volheader);
+  grub_disk_read (disk, GRUB_HFSPLUS_SBLOCK, 0, sizeof (volheader),
+		  (char *) &volheader);
   if (grub_errno)
     goto fail;
 
-  /* Make sure this is an hfs+ filesystem.  XXX: Do we really support
+  data->embedded_offset = 0;
+  if (grub_be_to_cpu16 (volheader.hfs.magic) == GRUB_HFS_MAGIC)
+    {
+      int extent_start;
+      int ablk_size;
+      int ablk_start;
+
+      /* See if there's an embedded HFS+ filesystem.  */
+      if (grub_be_to_cpu16 (volheader.hfs.embed_sig) != GRUB_HFSPLUS_MAGIC)
+	{
+	  grub_error (GRUB_ERR_BAD_FS, "not a HFS+ filesystem");
+	  goto fail;
+	}
+
+      /* Calculate the offset needed to translate HFS+ sector numbers.  */
+      extent_start = grub_be_to_cpu16 (volheader.hfs.embed_extent.first_block);
+      ablk_size = grub_be_to_cpu32 (volheader.hfs.blksz);
+      ablk_start = grub_be_to_cpu16 (volheader.hfs.first_block);
+      data->embedded_offset = (ablk_start
+			       + extent_start
+			       * (ablk_size >> GRUB_DISK_SECTOR_BITS));
+
+      grub_disk_read (disk, data->embedded_offset + GRUB_HFSPLUS_SBLOCK, 0,
+		      sizeof (volheader), (char *) &volheader);
+      if (grub_errno)
+	goto fail;
+    }
+
+  /* Make sure this is an HFS+ filesystem.  XXX: Do we really support
      HFX?  */
-  if (grub_strncmp (data->volheader.magic, "H+", 2)
-      && grub_strncmp (data->volheader.magic, "HX", 2))
+  if ((grub_be_to_cpu16 (volheader.hfsplus.magic) != GRUB_HFSPLUS_MAGIC)
+      && (grub_be_to_cpu16 (volheader.hfsplus.magic) != GRUB_HFSPLUSX_MAGIC))
     {
       grub_error (GRUB_ERR_BAD_FS, "not a HFS+ filesystem");
       goto fail;
     }
+
+  grub_memcpy (&data->volheader, &volheader.hfsplus,
+      sizeof (volheader.hfsplus));
 
   if (grub_fshelp_log2blksize (grub_be_to_cpu32 (data->volheader.blksize),
 			       &data->log2blksize))
@@ -433,7 +508,7 @@ grub_hfsplus_cmp_catkey (struct grub_hfsplus_key *keya,
 
   filename = grub_malloc (grub_be_to_cpu16 (catkey_a->namelen) + 1);
 
-  if (! grub_utf16_to_utf8 (filename, catkey_a->name,
+  if (! grub_utf16_to_utf8 ((grub_uint8_t *) filename, catkey_a->name,
 			    grub_be_to_cpu16 (catkey_a->namelen)))
     return -1; /* XXX: This error never occurs, but in case it happens
 		  just skip this entry.  */
@@ -469,32 +544,6 @@ grub_hfsplus_cmp_extkey (struct grub_hfsplus_key *keya,
   return diff;
 }
 
-/* Return the offset of the record with the index INDEX, in the node
-   NODE which is part of the B+ tree BTREE.  */
-static inline unsigned int
-grub_hfsplus_btree_recoffset (struct grub_hfsplus_btree *btree,
-			   struct grub_hfsplus_btnode *node, int index)
-{
-  char *cnode = (char *) node;
-  grub_uint16_t *recptr;
-  recptr = (grub_uint16_t *) (&cnode[btree->nodesize
-				     - index * sizeof (grub_uint16_t) - 2]);
-  return grub_be_to_cpu16 (*recptr);
-}
-
-/* Return a pointer to the record with the index INDEX, in the node
-   NODE which is part of the B+ tree BTREE.  */
-static inline struct grub_hfsplus_key *
-grub_hfsplus_btree_recptr (struct grub_hfsplus_btree *btree,
-			   struct grub_hfsplus_btnode *node, int index)
-{
-  char *cnode = (char *) node;
-  unsigned int offset;
-  offset = grub_hfsplus_btree_recoffset (btree, node, index);
-  return (struct grub_hfsplus_key *) &cnode[offset];
-}
-
-
 static char *
 grub_hfsplus_read_symlink (grub_fshelp_node_t node)
 {
@@ -516,7 +565,7 @@ grub_hfsplus_read_symlink (grub_fshelp_node_t node)
   return symlink;
 }
 
-int
+static int
 grub_hfsplus_btree_iterate_node (struct grub_hfsplus_btree *btree,
 				 struct grub_hfsplus_btnode *first_node,
 				 int first_rec,
@@ -591,8 +640,8 @@ grub_hfsplus_btree_search (struct grub_hfsplus_btree *btree,
       for (rec = 0; rec < grub_be_to_cpu16 (nodedesc->count); rec++)
 	{
 	  struct grub_hfsplus_key *currkey;
-	  currkey = grub_hfsplus_btree_recptr (btree, nodedesc, rec);
-	  
+	  currkey = grub_hfsplus_btree_recptr (btree, nodedesc, rec);	
+  
 	  /* The action that has to be taken depend on the type of
 	     record.  */
 	  if (nodedesc->type == GRUB_HFSPLUS_BTNODE_TYPE_LEAF
@@ -627,13 +676,13 @@ grub_hfsplus_btree_search (struct grub_hfsplus_btree *btree,
 	    }
 	}
 
-      /* No match was found, no record with this key exists in the
+      /* No match is found, no record with this key exists in the
 	 tree.  */
       if (! match)
 	{
 	  *matchnode = 0;
 	  grub_free (node);
-	  return 0;
+	  return 1;
 	}
     }
 }
@@ -645,48 +694,31 @@ grub_hfsplus_iterate_dir (grub_fshelp_node_t dir,
 				   enum grub_fshelp_filetype filetype,
 				   grub_fshelp_node_t node))
 {
+  int ret = 0;
+  
   auto int list_nodes (void *record);
   int list_nodes (void *record)
     {
       struct grub_hfsplus_catkey *catkey;
       char *filename;
       int i;
-      int ret = 0;
       struct grub_fshelp_node *node;
       struct grub_hfsplus_catfile *fileinfo;
       enum grub_fshelp_filetype type = GRUB_FSHELP_UNKNOWN;
 
       catkey = (struct grub_hfsplus_catkey *) record;
 
-      fileinfo = (record + grub_be_to_cpu16 (catkey->keylen)
-		  + 2 + grub_be_to_cpu16(catkey->keylen) % 2);
+      fileinfo =
+	(struct grub_hfsplus_catfile *) ((char *) record 
+					 + grub_be_to_cpu16 (catkey->keylen)
+					 + 2 + (grub_be_to_cpu16(catkey->keylen)
+						% 2));
 
-      /* Stop iterating when the last directory entry was found.  */
+      /* Stop iterating when the last directory entry is found.  */
       if (grub_be_to_cpu32 (catkey->parent) != dir->fileid)
-	return 0;
+	return 1;
 
-      filename = grub_malloc (grub_be_to_cpu16 (catkey->namelen) + 1);
-      if (! filename)
-	return 0;
-
-      /* Make sure the byte order of the UTF16 string is correct.  */
-      for (i = 0; i < grub_be_to_cpu16 (catkey->namelen); i++)
-	catkey->name[i] = grub_be_to_cpu16 (catkey->name[i]);
-
-      if (! grub_utf16_to_utf8 (filename, catkey->name,
-				grub_be_to_cpu16 (catkey->namelen)))
-	{
-	  grub_free (filename);
-	  return 0;
-	}
-
-      filename[grub_be_to_cpu16 (catkey->namelen)] = '\0';
-
-      /* Restore the byte order to what it was previously.  */
-      for (i = 0; i < grub_be_to_cpu16 (catkey->namelen); i++)
-	catkey->name[i] = grub_be_to_cpu16 (catkey->name[i]);
-
-      /* Determine the type of the node that was found.  */
+      /* Determine the type of the node that is found.  */
       if (grub_be_to_cpu16 (fileinfo->type) == GRUB_HFSPLUS_FILETYPE_REG)
 	{
 	  int mode = (grub_be_to_cpu16 (fileinfo->mode)
@@ -702,16 +734,46 @@ grub_hfsplus_iterate_dir (grub_fshelp_node_t dir,
       else if (grub_be_to_cpu16 (fileinfo->type) == GRUB_HFSPLUS_FILETYPE_DIR)
 	type = GRUB_FSHELP_DIR;
 
-      /* Only accept valid nodes.  */
-      if (type && grub_strlen (filename) == grub_be_to_cpu16 (catkey->namelen))
+      if (type == GRUB_FSHELP_UNKNOWN)
+	return 0;
+
+      /* Make sure the byte order of the UTF16 string is correct.  */
+      for (i = 0; i < grub_be_to_cpu16 (catkey->namelen); i++)
 	{
-	  /* A valid node was found; setup the node and call the
+	  catkey->name[i] = grub_be_to_cpu16 (catkey->name[i]);
+
+	  /* If the name is obviously invalid, skip this node.  */
+	  if (catkey->name[i] == 0)
+	    return 0;
+	}
+
+      filename = grub_malloc (grub_be_to_cpu16 (catkey->namelen) + 1);
+      if (! filename)
+	return 0;
+
+      if (! grub_utf16_to_utf8 ((grub_uint8_t *) filename, catkey->name,
+				grub_be_to_cpu16 (catkey->namelen)))
+	{
+	  grub_free (filename);
+	  return 0;
+	}
+
+      filename[grub_be_to_cpu16 (catkey->namelen)] = '\0';
+
+      /* Restore the byte order to what it was previously.  */
+      for (i = 0; i < grub_be_to_cpu16 (catkey->namelen); i++)
+	catkey->name[i] = grub_be_to_cpu16 (catkey->name[i]);
+
+      /* Only accept valid nodes.  */
+      if (grub_strlen (filename) == grub_be_to_cpu16 (catkey->namelen))
+	{
+	  /* A valid node is found; setup the node and call the
 	     callback function.  */
 	  node = grub_malloc (sizeof (*node));
 	  node->data = dir->data;
 	  
 	  grub_memcpy (node->extents, fileinfo->data.extents,
-		       sizeof (*node->extents));
+		       sizeof (node->extents));
 	  node->size = grub_be_to_cpu64 (fileinfo->data.size);
 	  node->fileid = grub_be_to_cpu32 (fileinfo->fileid);
 
@@ -726,7 +788,6 @@ grub_hfsplus_iterate_dir (grub_fshelp_node_t dir,
   struct grub_hfsplus_key_internal intern;
   struct grub_hfsplus_btnode *node;
   int ptr;
-  int ret;
 
   /* Create a key that points to the first entry in the directory.  */
   intern.catkey.parent = dir->fileid;
@@ -738,8 +799,8 @@ grub_hfsplus_iterate_dir (grub_fshelp_node_t dir,
     return 0;
 
   /* Iterate over all entries in this directory.  */
-  ret = grub_hfsplus_btree_iterate_node (&dir->data->catalog_tree, node, ptr,
-					 list_nodes);
+  grub_hfsplus_btree_iterate_node (&dir->data->catalog_tree, node, ptr,
+				   list_nodes);
 
   grub_free (node);
 
