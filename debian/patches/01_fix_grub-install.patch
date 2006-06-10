@@ -1,29 +1,16 @@
-diff -Nur grub2-1.92/util/i386/pc/grub-install.in grub2-1.92.new/util/i386/pc/grub-install.in
---- grub2-1.92/util/i386/pc/grub-install.in	2005-08-07 14:02:35.000000000 -0300
-+++ grub2-1.92.new/util/i386/pc/grub-install.in	2006-01-06 09:46:07.730083392 -0200
-@@ -20,6 +20,7 @@
- # Initialize some variables.
- prefix=@prefix@
- exec_prefix=@exec_prefix@
-+bindir=@bindir@
- sbindir=@sbindir@
- datadir=@datadir@
- PACKAGE_NAME=@PACKAGE_NAME@
-@@ -31,7 +32,7 @@
- pkgdatadir=${datadir}/${PACKAGE_TARNAME}/${host_cpu}-${host_vendor}
+diff -Nur grub2-1.94/conf/powerpc-ieee1275.rmk grub2-1.94.new/conf/powerpc-ieee1275.rmk
+--- grub2-1.94/conf/powerpc-ieee1275.rmk	2006-05-28 20:01:43.000000000 -0300
++++ grub2-1.94.new/conf/powerpc-ieee1275.rmk	2006-06-07 21:32:59.000000000 -0300
+@@ -26,9 +26,9 @@
+ pkgdata_PROGRAMS = kernel.elf
  
- grub_setup=${sbindir}/grub-setup
--grub_mkimage=${sbindir}/grub-mkimage
-+grub_mkimage=${bindir}/grub-mkimage
- grub_mkdevicemap=${sbindir}/grub-mkdevicemap
- grub_probefs=${sbindir}/grub-probefs
- rootdir=
-@@ -210,7 +211,7 @@
- fs_module=`$grub_probefs --device-map=${device_map} ${grubdir}`
- if test "x$fs_module" = x -a "x$modules" = x; then
-     echo "Auto-detection of a filesystem module failed." 1>&2
--    echo "Please specify the module with the option `--modules' explicitly." 1>&2
-+    echo "Please specify the module with the option \`--modules' explicitly." 1>&2
-     exit 1
- fi
- 
+ # Utilities.
+-bin_UTILITIES = grub-emu
+-sbin_UTILITIES = grub-mkimage
+-
++bin_UTILITIES = grub-mkimage
++sbin_UTILITIES = grub-emu 
++ 
+ # For grub-mkimage.
+ grub_mkimage_SOURCES = util/powerpc/ieee1275/grub-mkimage.c util/misc.c \
+         util/resolve.c 

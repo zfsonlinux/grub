@@ -25,14 +25,13 @@
 #include <grub/env.h>
 #include <grub/script.h>
 
-static int
+static grub_err_t
 grub_script_execute_cmd (struct grub_script_cmd *cmd)
 {
   if (cmd == 0)
     return 0;
-  cmd->exec (cmd);
 
-  return 0;
+  return cmd->exec (cmd);
 }
 
 /* Parse ARG and return the textual representation.  Add strings are
@@ -104,7 +103,24 @@ grub_script_execute_cmdline (struct grub_script_cmd *cmd)
       /* It's not a GRUB command, try all functions.  */
       func = grub_script_function_find (cmdline->cmdname);
       if (! func)
-	return 0;
+	{
+	  /* As a last resort, try if it is an assignment.  */
+	  char *assign = grub_strdup (cmdline->cmdname);
+	  char *eq = grub_strchr (assign, '=');
+
+	  if (eq)
+	    {
+	      /* Create two strings and set the variable.  */
+	      *eq = '\0';
+	      eq++;
+	      grub_env_set (assign, eq);
+
+	      /* This was set because the command was not found.  */
+	      grub_errno = GRUB_ERR_NONE;
+	    }
+	  grub_free (assign);
+	  return 0;
+	}
     }
 
   if (cmdline->arglist)
@@ -176,19 +192,49 @@ grub_err_t
 grub_script_execute_cmdif (struct grub_script_cmd *cmd)
 {
   struct grub_script_cmdif *cmdif = (struct grub_script_cmdif *) cmd;
-  char *bool;
+  char *result;
 
   /* Check if the commands results in a true or a false.  The value is
-     read from the env variable `RESULT'.  */
-  grub_script_execute_cmd (cmdif->bool);
-  bool = grub_env_get ("?");
+     read from the env variable `?'.  */
+  grub_script_execute_cmd (cmdif->exec_to_evaluate);
+  result = grub_env_get ("?");
 
   /* Execute the `if' or the `else' part depending on the value of
-     `RESULT'.  */
-  if (bool && ! grub_strcmp (bool, "0"))
-    return grub_script_execute_cmd (cmdif->true);
+     `?'.  */
+  if (result && ! grub_strcmp (result, "0"))
+    return grub_script_execute_cmd (cmdif->exec_on_true);
   else
-    return grub_script_execute_cmd (cmdif->false);
+    return grub_script_execute_cmd (cmdif->exec_on_false);
+}
+
+/* Execute the menu entry generate statement.  */
+grub_err_t
+grub_script_execute_menuentry (struct grub_script_cmd *cmd)
+{
+  struct grub_script_cmd_menuentry *cmd_menuentry;
+  char *title;
+  struct grub_script *script;
+
+  cmd_menuentry = (struct grub_script_cmd_menuentry *) cmd;
+
+  /* The title can contain variables, parse them and generate a string
+     from it.  */
+  title = grub_script_execute_argument_to_string (cmd_menuentry->title);
+  if (! title)
+    return grub_errno;
+
+  /* Parse the menu entry *again*.  */
+  script = grub_script_parse ((char *) cmd_menuentry->sourcecode, 0);
+
+  if (! script)
+    {
+      grub_free (title);
+      return grub_errno;
+    }
+
+  /* XXX: When this fails, the memory should be free'ed?  */
+  return grub_normal_menu_addentry (title, script,
+				    cmd_menuentry->sourcecode);
 }
 
 
