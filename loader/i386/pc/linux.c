@@ -30,7 +30,7 @@
 #include <grub/machine/memory.h>
 #include <grub/rescue.h>
 #include <grub/dl.h>
-#include <grub/machine/linux.h>
+#include <grub/cpu/linux.h>
 
 static grub_dl_t my_mod;
 
@@ -81,9 +81,11 @@ grub_rescue_cmd_linux (int argc, char *argv[])
   if (! file)
     goto fail;
 
-  if (grub_file_size (file) > (grub_ssize_t) grub_os_area_size)
+  if ((grub_size_t) grub_file_size (file) > grub_os_area_size)
     {
-      grub_error (GRUB_ERR_OUT_OF_RANGE, "too big kernel");
+      grub_error (GRUB_ERR_OUT_OF_RANGE, "too big kernel (0x%x > 0x%x)",
+		  (grub_size_t) grub_file_size (file),
+		  grub_os_area_size);
       goto fail;
     }
 
@@ -273,7 +275,7 @@ grub_rescue_cmd_linux (int argc, char *argv[])
   if (grub_errno == GRUB_ERR_NONE)
     {
       grub_linux_prot_size = prot_size;
-      grub_loader_set (grub_linux_boot, grub_linux_unload);
+      grub_loader_set (grub_linux_boot, grub_linux_unload, 1);
       loaded = 1;
     }
 
