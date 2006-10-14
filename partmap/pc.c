@@ -1,7 +1,7 @@
 /* pc.c - Read PC style partition tables.  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2004,2005 Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2004,2005,2006 Free Software Foundation, Inc.
  *
  *  GRUB is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -55,8 +55,9 @@ grub_partition_parse (const char *str)
   /* Initialize some of the fields with invalid values.  */
   pcdata->bsd_part = pcdata->dos_type = pcdata->bsd_type = p->index = -1;
 
-  /* Get the DOS partition number.  */
-  pcdata->dos_part = grub_strtoul (s, &s, 0);
+  /* Get the DOS partition number. The number is counted from one for
+     the user interface, and from zero internally.  */
+  pcdata->dos_part = grub_strtoul (s, &s, 0) - 1;
   
   if (grub_errno)
     {
@@ -137,7 +138,7 @@ pc_partition_map_iterate (grub_disk_t disk,
 	  pcdata.bsd_type = -1;
 
 	  grub_dprintf ("partition",
-			"partition %d: flag 0x%x, type 0x%x, start 0x%lx, len 0x%lx\n",
+			"partition %d: flag 0x%x, type 0x%x, start 0x%llx, len 0x%llx\n",
 			p.index, e->flag, pcdata.dos_type, p.start, p.len);
 
 	  /* If this is a GPT partition, this MBR is just a dummy.  */
@@ -237,6 +238,7 @@ pc_partition_map_probe (grub_disk_t disk, const char *str)
 		 const grub_partition_t partition)
     {
       struct grub_pc_partition *partdata = partition->data;
+
       if ((pcdata->dos_part == partdata->dos_part || pcdata->dos_part == -1)
 	  && pcdata->bsd_part == partdata->bsd_part)
 	{
@@ -283,9 +285,11 @@ pc_partition_map_get_name (const grub_partition_t p)
     return 0;
 
   if (pcdata->bsd_part < 0)
-    grub_sprintf (name, "%d", pcdata->dos_part);
+    grub_sprintf (name, "%d", pcdata->dos_part + 1);
+  else if (pcdata->dos_part < 0)
+    grub_sprintf (name, "%c", pcdata->bsd_part + 'a');
   else
-    grub_sprintf (name, "%d,%c", pcdata->dos_part, pcdata->bsd_part + 'a');
+    grub_sprintf (name, "%d,%c", pcdata->dos_part + 1, pcdata->bsd_part + 'a');
 
   return name;
 }

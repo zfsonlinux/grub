@@ -21,10 +21,10 @@
 #include <alloca.h>
 #include <stdint.h>
 #include <grub/kernel.h>
+#include <grub/misc.h>
 #include <grub/machine/kernel.h>
 #include <grub/ieee1275/ieee1275.h>
 
-/* OpenFirmware entry point passed to us from the real bootloader.  */
 int (*grub_ieee1275_entry_fn) (void *);
 
 grub_ieee1275_phandle_t grub_ieee1275_chosen;
@@ -50,19 +50,18 @@ grub_ieee1275_find_options (void)
 {
   grub_ieee1275_phandle_t options;
   grub_ieee1275_phandle_t openprom;
-  int realmode;
-  int smartfw;
+  int rc;
+  int realmode = 0;
 
   grub_ieee1275_finddevice ("/options", &options);
-  grub_ieee1275_get_property (options, "real-mode?", &realmode,
-			      sizeof (realmode), 0);
-  if (realmode)
+  rc = grub_ieee1275_get_property (options, "real-mode?", &realmode,
+				   sizeof realmode, 0);
+  if ((rc >= 0) && realmode)
     grub_ieee1275_set_flag (GRUB_IEEE1275_FLAG_REAL_MODE);
 
   grub_ieee1275_finddevice ("/openprom", &openprom);
-  smartfw = grub_ieee1275_get_property (openprom, "SmartFirmware-version",
-					0, 0, 0);
-  if (smartfw != -1)
+  rc = grub_ieee1275_get_property (openprom, "SmartFirmware-version", 0, 0, 0);
+  if (rc >= 0)
     grub_ieee1275_set_flag (GRUB_IEEE1275_FLAG_0_BASED_PARTITIONS);
 }
 
@@ -70,29 +69,7 @@ void cmain (uint32_t r3, uint32_t r4, uint32_t r5);
 void
 cmain (uint32_t r3, uint32_t r4 __attribute__((unused)), uint32_t r5)
 {
-  if (r5 == 0xdeadbeef)
-    {
-      /* Entered from Old World stage1.  */
-      extern char _start;
-      extern char _end;
-
-      grub_ieee1275_entry_fn = (int (*)(void *)) r3;
-
-      grub_ieee1275_set_flag (GRUB_IEEE1275_FLAG_NO_PARTITION_0);
-
-      /* Old World Open Firmware may use 4M-5M without claiming it.  */
-      grub_ieee1275_claim (0x00400000, 0x00100000, 0, 0);
-
-      /* Need to claim ourselves so we don't cannibalize our memory later.  */
-      if (grub_ieee1275_claim ((grub_addr_t) &_start, (grub_addr_t) &_end
-          - (grub_addr_t) &_start, 0, 0))
-	grub_abort ();
-    }
-  else
-    {
-      /* Assume we were entered from Open Firmware.  */
-      grub_ieee1275_entry_fn = (int (*)(void *)) r5;
-    }
+  grub_ieee1275_entry_fn = (int (*)(void *)) r5;
 
   grub_ieee1275_finddevice ("/chosen", &grub_ieee1275_chosen);
 
