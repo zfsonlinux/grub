@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005  Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2006  Free Software Foundation, Inc.
  *
  *  GRUB is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,46 +25,6 @@
 #include <grub/misc.h>
 #include <grub/err.h>
 #include <grub/term.h>
-
-/* Drive Parameters.  */
-struct grub_biosdisk_drp
-{
-  grub_uint16_t size;
-  grub_uint16_t flags;
-  grub_uint32_t cylinders;
-  grub_uint32_t heads;
-  grub_uint32_t sectors;
-  grub_uint64_t total_sectors;
-  grub_uint16_t bytes_per_sector;
-  /* ver 2.0 or higher */
-  grub_uint32_t EDD_configuration_parameters;
-  /* ver 3.0 or higher */
-  grub_uint16_t signature_dpi;
-  grub_uint8_t length_dpi;
-  grub_uint8_t reserved[3];
-  grub_uint8_t name_of_host_bus[4];
-  grub_uint8_t name_of_interface_type[8];
-  grub_uint8_t interface_path[8];
-  grub_uint8_t device_path[8];
-  grub_uint8_t reserved2;
-  grub_uint8_t checksum;
-  
-  /* XXX: This is necessary, because the BIOS of Thinkpad X20
-     writes a garbage to the tail of drive parameters,
-     regardless of a size specified in a caller.  */
-  grub_uint8_t dummy[16];
-} __attribute__ ((packed));
-
-/* Disk Address Packet.  */
-struct grub_biosdisk_dap
-{
-  grub_uint8_t length;
-  grub_uint8_t reserved;
-  grub_uint16_t blocks;
-  grub_uint32_t buffer;
-  grub_uint64_t block;
-} __attribute__ ((packed));
-
 
 static int
 grub_biosdisk_get_drive (const char *name)
@@ -126,7 +86,7 @@ grub_biosdisk_iterate (int (*hook) (const char *name))
 static grub_err_t
 grub_biosdisk_open (const char *name, grub_disk_t disk)
 {
-  unsigned long total_sectors = 0;
+  grub_uint64_t total_sectors = 0;
   int drive;
   struct grub_biosdisk_data *data;
 
@@ -158,13 +118,12 @@ grub_biosdisk_open (const char *name, grub_disk_t disk)
 	  /* Clear out the DRP.  */
 	  grub_memset (drp, 0, sizeof (*drp));
 	  drp->size = sizeof (*drp);
-	  if (!grub_biosdisk_get_diskinfo_int13_extensions (drive, drp))
+	  if (! grub_biosdisk_get_diskinfo_int13_extensions (drive, drp))
 	    {
 	      data->flags = GRUB_BIOSDISK_FLAG_LBA;
 
-	      /* FIXME: 2TB limit.  */
 	      if (drp->total_sectors)
-		total_sectors = drp->total_sectors & ~0L;
+		total_sectors = drp->total_sectors;
 	      else
                 /* Some buggy BIOSes doesn't return the total sectors
                    correctly but returns zero. So if it is zero, compute
@@ -204,7 +163,7 @@ grub_biosdisk_close (grub_disk_t disk)
 
 static grub_err_t
 grub_biosdisk_rw (int cmd, grub_disk_t disk,
-		  unsigned long sector, unsigned long size,
+		  grub_disk_addr_t sector, grub_size_t size,
 		  unsigned segment)
 {
   struct grub_biosdisk_data *data = disk->data;
@@ -234,9 +193,15 @@ grub_biosdisk_rw (int cmd, grub_disk_t disk,
     {
       unsigned coff, hoff, soff;
       unsigned head;
+      unsigned real_sector = (unsigned) sector;
       
-      soff = sector % data->sectors + 1;
-      head = sector / data->sectors;
+      /* It is impossible to reach over 2TB with the traditional
+	 CHS access.  */
+      if (sector > ~0UL)
+	return grub_error (GRUB_ERR_OUT_OF_RANGE, "out of disk");
+
+      soff = real_sector % data->sectors + 1;
+      head = real_sector / data->sectors;
       hoff = head % data->heads;
       coff = head / data->heads;
 
@@ -259,17 +224,36 @@ grub_biosdisk_rw (int cmd, grub_disk_t disk,
   return GRUB_ERR_NONE;
 }
 
+/* Return the number of sectors which can be read safely at a time.  */
+static grub_size_t
+get_safe_sectors (grub_disk_addr_t sector, grub_uint32_t sectors)
+{
+  grub_size_t size;
+  grub_uint32_t offset;
+
+  /* OFFSET = SECTOR % SECTORS */
+  grub_divmod64 (sector, sectors, &offset);
+
+  size = sectors - offset;
+
+  /* Limit the max to 0x7f because of Phoenix EDD.  */
+  if (size > 0x7f)
+    size = 0x7f;
+
+  return size;
+}
+
 static grub_err_t
-grub_biosdisk_read (grub_disk_t disk, unsigned long sector,
-		    unsigned long size, char *buf)
+grub_biosdisk_read (grub_disk_t disk, grub_disk_addr_t sector,
+		    grub_size_t size, char *buf)
 {
   struct grub_biosdisk_data *data = disk->data;
 
   while (size)
     {
-      unsigned long len;
+      grub_size_t len;
 
-      len = data->sectors - (sector % data->sectors);
+      len = get_safe_sectors (sector, data->sectors);
       if (len > size)
 	len = size;
 
@@ -288,16 +272,16 @@ grub_biosdisk_read (grub_disk_t disk, unsigned long sector,
 }
 
 static grub_err_t
-grub_biosdisk_write (grub_disk_t disk, unsigned long sector,
-		     unsigned long size, const char *buf)
+grub_biosdisk_write (grub_disk_t disk, grub_disk_addr_t sector,
+		     grub_size_t size, const char *buf)
 {
   struct grub_biosdisk_data *data = disk->data;
 
   while (size)
     {
-      unsigned long len;
+      grub_size_t len;
 
-      len = data->sectors - (sector % data->sectors);
+      len = get_safe_sectors (sector, data->sectors);
       if (len > size)
 	len = size;
 

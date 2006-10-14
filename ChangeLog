@@ -1,3 +1,698 @@
+2006-10-15  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* configure.ac (AC_INIT): Bumped to 1.95.
+
+2006-10-14  Robert Millan  <rmh@aybabtu.com>
+
+	* util/i386/pc/getroot.c (grub_guess_root_device): Don't compare os_dev
+	with "/dev/.static/dev/md".
+
+2006-10-14  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* util/i386/pc/grub-probe.c (probe): Print DEVICE_NAME instead of
+	DRIVE_NAME when grub_util_biosdisk_get_grub_dev fails. Open
+	DRIVE_NAME instead of DEVICE_NAME. Make sure that DEVICE_NAME and
+	DRIVE_NAME are always freed.
+
+	* util/i386/pc/biosdisk.c (make_device_name): Add one into
+	DOS_PART, as a DOS partition is counted from one instead of zero
+	now. Reported by Robert Millan.
+
+2006-10-14  Robert Millan  <rmh@aybabtu.com>
+
+	* util/i386/pc/getroot.c (grub_guess_root_device): Stop using
+	grub_util_biosdisk_get_grub_dev to convert system device to GRUB device.
+	* util/grub-emu.c (main): Use grub_util_biosdisk_get_grub_dev with the
+	string returned by grub_guess_root_device.
+	* util/i386/pc/grub-setup.c: Likewise.
+	* util/i386/pc/grub-probefs.c: Likewise.
+
+	* util/i386/pc/grub-probefs.c: Rename to ...
+	* util/i386/pc/grub-probe.c: ... this.
+	* DISTLIST: Remove grub-probefs, add grub-probe.
+	* conf/i386-efi.rmk: Likewise.
+	* conf/i386-pc.rmk: Likewise.
+	* util/i386/pc/grub-install.in: Likewise.
+
+	* util/i386/pc/grub-probe.c: Add --target=(fs|device|drive) option to
+	choose which information we want to print.
+
+2006-10-14  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* DISTLIST: Added commands/echo.c, disk/lvm.c, disk/raid.c,
+	include/grub/bitmap.h, include/grub/lvm.h, include/grub/raid.h,
+	include/grub/i386/pc/vbeutil.h, include/grub/util/lvm.h,
+	include/grub/util/raid.h, util/lvm.c, util/raid.c, video/bitmap.c,
+	video/readers/tga.c and video/i386/pc/vbeutil.c.
+
+2006-10-14  Jeroen Dekkers  <jeroen@dekkers.cx>
+
+	Added support for RAID and LVM.
+	
+	* disk/lvm.c: New file.
+	* disk/raid.c: Likewise.
+	* include/grub/lvm.h: Likewise.
+	* include/grub/raid.h: Likewise.	
+	* include/grub/util/lvm.h: Likewise.
+	* include/grub/util/raid.h: Likewise.
+	* util/lvm.c: Likewise.
+	* util/raid.c: Likewise.
+
+	* include/grub/disk.h (grub_disk_dev_id): Add
+	GRUB_DISK_DEVICE_RAID_ID and GRUB_DISK_DEVICE_LVM_ID.
+	(grub_disk_get_size): New prototype.
+	* kern/disk.c (grub_disk_open): Check whether grub_partition_probe()
+	returns a partition.
+	(grub_disk_get_size): New function.
+	
+	* kern/i386/pc/init.c (make_install_device): Copy the prefix
+	verbatim if grub_install_dos_part is -2.
+
+	* util/i386/pc/getroot.c (grub_guess_root_device): Support RAID
+	and LVM devices.
+
+	* util/i386/pc/grub-setup.c (setup): New argument
+	MUST_EMBED. Force embedding of GRUB when the argument is
+	true. Close FILE before	returning.
+	(main): Add support for RAID and LVM.
+	
+	* conf/common.rmk: Add RAID and LVM modules.
+	* conf/i386-pc.rmk (grub_setup_SOURCES): Add util/raid.c and
+	util/lvm.c.
+	(grub_emu_SOURCES): Add disk/raid.c and disk/lvm.c.
+
+	* kern/misc.c (grub_strstr): New function.
+	* include/grub/misc.h (grub_strstr): New prototype.
+
+2006-10-10  Tristan Gingold  <tristan.gingold@bull.net>
+
+	* include/grub/efi/api.h (GRUB_EFI_ERROR_CODE): Long constant.
+
+2006-10-05  Tristan Gingold  <tristan.gingold@bull.net>
+
+	* kern/misc.c (grub_strtoull): Guess the base only if not
+	specified.
+
+2005-10-01  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* kern/powerpc/ieee1275/cmain.c (cmain): Remove incomplete Old World
+	PowerMac support.
+
+2005-10-01  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* disk/ieee1275/ofdisk.c (grub_ofdisk_iterate): Cast `size' to long.
+
+	* include/grub/ieee1275/ieee1275.h (grub_ieee1275_next_property):
+	Remove `flags' argument.  All callers changed.
+	* kern/ieee1275/ieee1275.c (IEEE1275_PHANDLE_ROOT): Removed.
+	(IEEE1275_IHANDLE_INVALID): New variable.
+	(IEEE1275_CELL_INVALID): New variable.
+	(grub_ieee1275_finddevice, grub_ieee1275_get_property,
+	grub_ieee1275_get_property_length, grub_ieee1275_instance_to_package,
+	grub_ieee1275_package_to_path, grub_ieee1275_instance_to_path,
+	grub_ieee1275_peer, grub_ieee1275_child, grub_ieee1275_open,
+	grub_ieee1275_claim, grub_ieee1275_set_property): Error-check return
+	codes from Open Firmware.  All callers updated.
+	(grub_ieee1275_next_property): Directly return Open Firmware return
+	code.
+	* kern/powerpc/ieee1275/cmain.c (grub_ieee1275_find_options):
+	Standardize error checking from `grub_ieee1275_get_property'.
+	* kern/powerpc/ieee1275/openfw.c (grub_devalias_iterate): Rename
+	`devalias' to `aliases'.  Correct comments.  Consolidate error paths.
+
+2005-10-01  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* kern/ieee1275/ieee1275.c (grub_ieee1275_instance_to_path): Rename
+	`instance_to_package_args' to `instance_to_path_args'.
+
+	* kern/powerpc/ieee1275/init.c (grub_machine_init): Use
+	`grub_ieee1275_chosen'.
+
+	* term/ieee1275/ofconsole.c (grub_ofconsole_init): Call
+	`grub_ieee1275_interpret'.
+
+2005-09-25  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* util/powerpc/ieee1275/grub-mkimage.c: Include config.h.
+
+2005-09-25  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* include/grub/powerpc/libgcc.h (__floatdisf): New prototype.
+	(__cmpdi): Likewise.
+
+	* kern/powerpc/ieee1275/openfw.c (grub_devalias_iterate): Pass 0 as
+	`flags' to `grub_ieee1275_next_property'.  Change `pathlen' to type
+	`grub_ssize_t'.
+
+	* kern/powerpc/ieee1275/cmain.c: Include grub/misc.h.
+
+	* loader/powerpc/ieee1275/linux.c (grub_linux_boot): Change `actual'
+	to type `grub_ssize_t'.
+	(grub_rescue_cmd_linux): Cast -1 to `grub_off_t'.
+
+2006-09-22  Marco Gerards  <marco@gnu.org>
+
+	* normal/script.c (grub_script_create_cmdmenu): Skip leading
+	newlines.
+
+2006-09-22  Marco Gerards  <marco@gnu.org>
+
+	* commands/echo.c: New file.
+
+	* conf/i386-pc.rmk (grub_emu_SOURCES): Add `commands/echo.c'.
+
+	* conf/common.rmk (echo_mod_SOURCES): New variable.
+	(echo_mod_CFLAGS): Likewise.
+	(echo_mod_LDFLAGS): Likewise.
+
+2006-09-22  Marco Gerards  <marco@gnu.org>
+
+	* normal/main.c (get_line): Malloc memory instead of using
+	preallocated memory.  Removed the arguments `cmdline' and
+	`max_len'.  Updated all callers.
+
+2006-09-22  Marco Gerards  <marco@gnu.org>
+
+	* conf/i386-efi.rmk (grub_emu_DEPENDENCIES): New variable.
+	(normal_mod_DEPENDENCIES): Likewise.
+
+	* conf/powerpc-ieee1275.rmk (grub_emu_DEPENDENCIES): Likewise.
+	(normal_mod_DEPENDENCIES): Likewise.
+
+	* conf/sparc64-ieee1275.rmk (normal_mod_DEPENDENCIES): Likewise.
+
+2006-09-22  Johan Rydberg  <jrydberg@gnu.org>
+
+	* genmk.rb: Add DEPENDENCIES variables to modules, utilities, and
+	programs.
+	* conf/i386-pc.rmk (grub_emu_DEPENDENCIES): Declare.
+	(normal_mod_DEPENDENCIES): Likewise.
+	* conf/i386-pc.mk: Regenerate.
+	* conf/i386-efi.mk: Likewise
+	* conf/common.mk: Likewise.
+	* conf/powerpc-ieee1275.mk: Likewise.
+	* conf/sparc64-ieee1275.mk: Likewise.
+	
+2006-09-22  Robert Millan  <rmh@aybabtu.com>
+
+	Sync with i386 version.
+	* conf/powerpc-ieee1275.rmk (bin_UTILITIES): Remove grub-emu, add grub-mkimage.
+	* conf/powerpc-ieee1275.rmk (sbin_UTILITIES): Remove grub-mkimage, add grub-emu.
+
+2006-09-21  Robert Millan  <rmh@aybabtu.com>
+
+	Import from GRUB Legacy (lib/device.c):
+	* util/i386/pc/grub-mkdevicemap.c (get_i2o_disk_name): New function.
+	(init_device_map) [__linux__]: Add support for I2O devices.
+
+2006-09-14  Marco Gerards  <marco@gnu.org>
+
+	* conf/i386-pc.rmk (COMMON_LDFLAGS): Use `-m32' instead of
+	`-melf_i386'.
+
+2006-09-14  Robert Millan  <rmh@aybabtu.com>
+
+	* util/i386/pc/grub-install.in: Skip menu.lst when removing
+	/boot/grub/*.lst.
+
+	* util/i386/pc/getroot.c: Don't recurse into dotdirs (e.g. ".static").
+
+	* util/i386/pc/grub-mkdevicemap.c: Make sure the floppy device exists
+	before adding it to device.map.
+
+2006-08-15  Johan Rydberg  <jrydberg@gnu.org>
+
+	* genmk.rb: Let GCC generate dependenceies the first time it
+	compiles a file; using the -MD option.
+	* conf/common.mk: Regenerate.
+	* conf/i386-pc.mk: Likewise.
+	* conf/i386-efi.mk: Likewise.
+	* conf/powerpc-ieee1275.mk: Likewise.
+	* conf/sparc64-ieee1275.mk: Likewise.
+	
+2006-08-04  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	Move the prototypes of grub_setjmp and grub_longjmp to
+	cpu/setjmp.h, so that each architecture may specify different
+	attributes.
+	
+	* include/grub/i386/setjmp.h (grub_setjmp): New prototype.
+	(grub_longjmp): Likewise.
+	* include/grub/powerpc/setjmp.h (grub_setjmp): Likewise..
+	(grub_longjmp): Likewise.
+	* include/grub/sparc64/setjmp.h (grub_setjmp): Likewise..
+	(grub_longjmp): Likewise.
+
+	* include/grub/setjmp.h [!GRUB_UTIL] (grub_setjmp): Removed.
+	[!GRUB_UTIL] (grub_longjmp): Removed.
+
+2006-08-01  Pelletier Vincent  <subdino2004@yahoo.fr>
+
+	* kern/ieee1275/ieee1275.c (grub_ieee1275_set_color): IEEE1275
+	"color!" method does not return any value.
+
+2006-07-29  Vesa Jaaskelainen  <chaac@nic.fi>
+
+	* include/grub/bitmap.h: New file.
+
+	* include/grub/i386/pc/vbeutil.h: Likewise.
+
+	* video/bitmap.c: Likewise.
+
+	* video/readers/tga.c: Likewise.
+
+	* video/i386/pc/vbeutil.c: Likewise.
+
+	* commands/videotest.c: Code cleanup and updated to reflect to new
+	video API.
+
+	* term/gfxterm.c: Likewise.
+
+	* video/video.c: Likewise.
+
+	* conf/i386-pc.rmk (pkgdata_MODULES): Added tga.mod and bitmap.mod.
+	(vbe_mod_SOURCES): Added video/i386/pc/vbeutil.c.
+	(bitmap_mod_SOURCES): New entry.
+	(bitmap_mod_CFLAGS): Likewise.
+	(bitmap_mod_LDFLAGS): Likewise.
+	(tga_mod_SOURCES): Likewise.
+	(tga_mod_CFLAGS): Likewise.
+	(tga_mod_LDFLAGS): Likewise.
+
+	* include/grub/video.h (grub_video_blit_operators): New enum type.
+	(grub_video_render_target): Changed as forward declaration and moved
+	actual definition to be video driver specific.
+	(grub_video_adapter.blit_bitmap): Added blitting operator.
+	(grub_video_adapter.blit_render_target): Likewise.
+	(grub_video_blit_bitmap): Likewise.
+	(grub_video_blit_render_target): Likewise.
+
+	* include/grub/i386/pc/vbe.h (grub_video_render_target): Added
+	driver specific render target definition.
+	(grub_video_vbe_map_rgba): Added driver internal helper.
+	(grub_video_vbe_unmap_color): Updated to use
+	grub_video_i386_vbeblit_info.
+	(grub_video_vbe_get_video_ptr): Likewise.
+
+	* include/grub/i386/pc/vbeblit.h
+	(grub_video_i386_vbeblit_R8G8B8A8_R8G8B8A8): Updated to use
+	grub_video_i386_vbeblit_info.
+	(grub_video_i386_vbeblit_R8G8B8_R8G8B8A8): Likewise.
+	(grub_video_i386_vbeblit_index_R8G8B8A8): Likewise.
+	(grub_video_i386_vbeblit_R8G8B8A8_R8G8B8): Likewise.
+	(grub_video_i386_vbeblit_R8G8B8_R8G8B8): Likewise.
+	(grub_video_i386_vbeblit_index_R8G8B8): Likewise.
+	(grub_video_i386_vbeblit_index_index): Likewise.
+	(grub_video_i386_vbeblit_R8G8B8X8_R8G8B8X8): New blitter function.
+	(grub_video_i386_vbeblit_R8G8B8_R8G8B8X8): Likewise.
+	(grub_video_i386_vbeblit_index_R8G8B8X8): Likewise.
+	(grub_video_i386_vbeblit_blend): Added generic blitter for blend
+	operator.
+	(grub_video_i386_vbeblit_replace): Added generic blitter for replace
+	operator.
+
+	* video/i386/pc/vbeblit.c: Updated to reflect changes on
+	include/grub/i386/pc/vbeblit.h.
+
+	* include/grub/i386/pc/vbefill.h (grub_video_i386_vbefill_R8G8B8A8):
+	Updated to use grub_video_i386_vbeblit_info.
+	(grub_video_i386_vbefill_R8G8B8): Likewise.
+	(grub_video_i386_vbefill_index): Likewise.
+	(grub_video_i386_vbefill): Added generic filler.
+
+	* video/i386/pc/vbefill.c: Updated to reflect changes on
+	include/grub/i386/pc/vbefill.h.
+
+	* video/i386/pc/vbe.c (grub_video_vbe_get_video_ptr): Updated to use
+	grub_video_i386_vbeblit_info.
+	(grub_video_vbe_unmap_color): Likewise.
+	(grub_video_vbe_blit_glyph): Likewise.
+	(grub_video_vbe_scroll): Likewise.
+	(grub_video_vbe_draw_pixel): Removed function.
+	(grub_video_vbe_get_pixel): Likewise.
+	(grub_video_vbe_fill_rect): Moved all blitters to vbefill.c and
+	updated code to use it.
+	(common_blitter): Added common blitter for render target and bitmap.
+	(grub_video_vbe_blit_bitmap): Updated to use common_blitter.
+	(grub_video_vbe_blit_render_target): Likewise.
+
+2006-07-30  Johan Rydberg  <jrydberg@gnu.org>
+
+	* kern/efi/efi.c (grub_efi_set_text_mode): Assume console already
+	is in text mode if there is no console control protocol instance
+	available.
+
+2006-07-29  Vesa Jaaskelainen  <chaac@nic.fi>
+
+	* include/grub/video.h: Code cleanup.
+
+	* include/grub/i386/pc/vbe.h: Likewise.
+
+	* video/i386/pc/vbe.c: Likewise.
+
+	* video/i386/pc/vbeblit.c: Likewise.
+
+	* video/i386/pc/vbefill.c: Likewise.
+
+	* video/video.c: Likewise.  Also added more comments.
+
+2006-07-29  Vesa Jaaskelainen  <chaac@nic.fi>
+
+	* disk/i386/pc/biosdisk.c (struct grub_biosdisk_drp): Moved to ...
+	(struct grub_biosdisk_dap): Likewise.
+
+	* include/grub/i386/pc/biosdisk.h: ... to here.  Also corrected
+	linkage settings for all functions.
+
+2006-07-12  Marco Gerards  <marco@gnu.org>
+
+	* configure.ac (--enable-mm-debug): Fix typo.
+
+	* genkernsyms.sh.in: Use proper quoting for `CC'.
+
+2006-07-02  Jeroen Dekkers  <jeroen@dekkers.cx>
+
+	* conf/i386-pc.rmk (COMMON_ASFLAGS): Add "-m32".
+	(normal_mod_ASFLAGS): Remove "-m32".
+
+2006-06-14  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* util/misc.c: Include config.h.
+	[!HAVE_MEMALIGN]: Do not include malloc.h.
+	(grub_memalign): Use posix_memalign, if present. Then, use
+	memalign, if present. Otherwise, emit an error.
+
+	* util/grub-emu.c: Do not include malloc.h.
+
+	* include/grub/util/misc.h: Include unistd.h. This is required for
+	FreeBSD, because off_t is defined in unistd.h. Reported by Harley
+	D. Eades III <hde@foobar-qux.org>.
+
+	* configure.ac (AC_GNU_SOURCE): Added.
+	(AC_CHECK_FUNCS): Check posix_memalign and memalign for the host
+	type.
+
+2006-06-09  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* loader/i386/pc/linux.c (grub_rescue_cmd_initrd): Make sure that
+	ADDR_MAX does not exceed GRUB_LINUX_INITRD_MAX_ADDRESS.
+
+2006-06-07  Jeroen Dekkers  <jeroen@dekkers.cx>
+
+	* include/grub/types.h (grub_host_addr_t): Rename to
+	grub_target_addr_t.
+	(grub_host_off_t): Rename to grub_target_off_t.
+	(grub_host_size_t): Rename to grub_target_size_t.
+	(grub_host_ssize_t): Rename to grub_target_ssize_t.
+	Refer to GRUB_TARGET_SIZEOF_VOID_P to define those variables.
+
+	* include/grub/kernel.h (struct grub_module_header): Change type
+	of OFFSET to grub_target_off_t and type of SIZE to grub_target_size_t.
+	(grub_module_info): Likewise.
+	
+2006-06-05  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* loader/i386/pc/linux.c (grub_rescue_cmd_initrd): The conditional
+	of checking LINUX_MEM_SIZE was reverse. Reported by Jesus
+	Velazquez <jesus.velazquez@gmail.com>.
+
+2006-06-05  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	Count partitions from 1 instead of 0 in the string representation
+	of partitions. Still use 0-based internally.
+	
+	* partmap/sun.c (grub_sun_is_valid): A cosmetic change.
+	(sun_partition_map_iterate): Use grub_partition_t instead of
+	struct grub_partition *. Cast DESC->START_CYLINDER to
+	grub_uint64_t after converting the endian.
+	(sun_partition_map_probe): Subtract 1 for PARTNUM.
+	(sun_partition_map_get_name): Add 1 to P->INDEX.
+
+	* partmap/pc.c (grub_partition_parse): Subtract 1 for
+	PCDATA->DOS_PART.
+	(pc_partition_map_get_name): Add 1 into PCDATA->DOS_PART.
+
+	* partmap/gpt.c (gpt_partition_map_iterate): Initialize PARTNO to
+	zero instead of one.
+	(gpt_partition_map_probe): Subtract 1 for PARTNUM.
+	(gpt_partition_map_get_name): Add 1 into P->INDEX.
+
+	* partmap/apple.c (apple_partition_map_iterate): Change the type
+	of POS to unsigned.
+	(apple_partition_map_probe): Subtract 1 for PARTNUM.
+	(apple_partition_map_get_name): Add 1 into P->INDEX.
+
+	* partmap/amiga.c (amiga_partition_map_iterate): Change the type
+	of POS to unsigned.
+	(amiga_partition_map_iterate): Cast NEXT to grub_off_t to
+	calculate the offset of a partition.
+	(amiga_partition_map_probe): Subtract 1 for PARTNUM.
+	(amiga_partition_map_get_name): Add 1 into P->INDEX.
+
+	* partmap/acorn.c (acorn_partition_map_find): Change the type of
+	SECTOR to grub_disk_addr_t.
+	(acorn_partition_map_iterate): Likewise.
+	(acorn_partition_map_probe): Subtract 1 for PARTNUM.
+	Change the type of SECTOR to grub_disk_addr_t. Declare P on the
+	top.
+	(acorn_partition_map_get_name): Add 1 into P->INDEX.
+
+	* kern/i386/pc/init.c (make_install_device): Add 1 into
+	GRUB_INSTALL_DOS_PART.
+
+	* fs/iso9660.c (grub_iso9660_mount): Fixed a reversed
+	conditional.
+
+2006-06-04  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	Clean up the code to support 64-bit addressing in disks and
+	files. This change is not enough for filesystems yet.
+	
+	* util/i386/pc/grub-setup.c (struct boot_blocklist): Change the
+	type of "start" to grub_uint64_t.
+	(setup): Change the types of KERNEL_SECTOR and FIRST_SECTOR to
+	grub_disk_addr_t * and grub_disk_addr_t. Fix the format string in
+	save_first_sector and save_blocklists. Use grub_le_to_cpu64 to
+	convert addresses.
+
+	* util/i386/pc/biosdisk.c (open_device): Change the type of SECTOR
+	to grub_disk_addr_t.
+
+	* partmap/gpt.c (gpt_partition_map_iterate): Fix the format
+	string.
+
+	* partmap/pc.c (pc_partition_map_iterate): Likewise.
+
+	* partmap/amiga.c (amiga_partition_map_iterate): Cast RDSK.MAGIC
+	to char *.
+
+	* normal/script.c (grub_script_parse): Remove unused MEMFREE.
+
+	* normal/parser.y (YYLTYPE_IS_TRIVIAL): New macro.
+
+	* normal/lexer.c (grub_script_yyerror): Specify unused to LEX.
+
+	* loader/i386/pc/multiboot.c (grub_multiboot_load_elf64): Cast -1
+	to grub_off_t, to detect an error from grub_file_seek.
+	(grub_multiboot_load_elf32): Likewise.
+
+	* kern/misc.c (grub_strtoul): Use grub_strtoull. Return the
+	maximum unsigned long value when an overflow is detected.
+	(grub_strtoull): New function.
+	(grub_divmod64): Likewise.
+	(grub_lltoa): use grub_divmod64.
+
+	* kern/fs.c (struct grub_fs_block): Change the type of "offset" to
+	grub_disk_addr_t.
+	(grub_fs_blocklist_open): Increase P if P is not NULL to advance
+	the pointer to next character. Use grub_strtoull instead of
+	grub_strtoul.
+	(grub_fs_blocklist_read): Change the types of SECTOR, OFFSET and
+	SIZE to grub_disk_addr_t, grub_off_t and grub_size_t,
+	respectively.
+
+	* kern/file.c (grub_file_read): Prevent an oveflow of LEN, as the
+	return value is signed.
+	(grub_file_seek): Change the type of OLD to grub_off_t. Do not
+	test if OFFSET is less than zero, as OFFSET is unsigned now.
+
+	* kern/disk.c (struct grub_disk_cache): Change the type of
+	"sector" to grub_disk_addr_t.
+	(grub_disk_cache_get_index): Change the type of SECTOR to
+	grub_disk_addr_t. Calculate the hash with SECTOR casted to
+	unsigned after shifting.
+	(grub_disk_cache_invalidate): Change the type of SECTOR to
+	grub_disk_addr_t.
+	(grub_disk_cache_unlock): Likewise.
+	(grub_disk_cache_store): Likewise.
+	(grub_disk_check_range): Change the types of SECTOR, OFFSET, SIZE,
+	START and LEN to grub_disk_addr_t *, grub_off_t *, grub_size_t,
+	grub_disk_addr_t and grub_uint64_t, respectively.
+	(grub_disk_read): Use an unsigned variable REAL_OFFSET for the
+	body, as the value of OFFSET is tweaked by
+	grub_disk_check_range. Change the types of START_SECTOR, LEN and
+	POS to grub_disk_addr_t, grub_size_t and grub_size_t,
+	respectively.
+	(grub_disk_write): Use an unsigned variable REAL_OFFSET for the
+	body, as the value of OFFSET is tweaked by
+	grub_disk_check_range. Change the types of LEN and N to
+	grub_size_t.
+
+	* io/gzio.c (struct grub_gzio): Change the types of "data_offset"
+	and "saved_offset" to grub_off_t.
+	(test_header): Cast BUF to char *.
+	(get_byte): Cast GZIO->DATA_OFFSET to grub_off_t. Cast GZIO->INBUF
+	to char *.
+	(grub_gzio_read): Change the types of OFFSET and SIZE to
+	grub_off_t and grub_size_t, respectively.
+
+	* include/grub/i386/pc/boot.h (GRUB_BOOT_MACHINE_FORCE_LBA):
+	Removed.
+	(GRUB_BOOT_MACHINE_BOOT_DRIVE):	Changed to 0x4c.
+	(GRUB_BOOT_MACHINE_KERNEL_ADDRESS): Changed to 0x40.
+	(GRUB_BOOT_MACHINE_KERNEL_SEGMENT): Changed to 0x42.
+	(GRUB_BOOT_MACHINE_DRIVE_CHECK): Changed to 0x4e.
+	(GRUB_BOOT_MACHINE_LIST_SIZE): Increased to 12.
+
+	* include/grub/types.h (grub_off_t): Unconditionally set to
+	grub_uint64_t.
+	(grub_disk_addr_t): Changed to grub_uint64_t.
+
+	* include/grub/partition.h (struct grub_partition): Change the
+	types of "start", "len" and "offset" to grub_disk_addr_t,
+	grub_uint64_t and grub_disk_addr_t, respectively.
+	(grub_partition_get_start): Return grub_disk_addr_t.
+	(grub_partition_get_len): Return grub_uint64_t.
+
+	* include/grub/misc.h (grub_strtoull): New prototype.
+	(grub_divmod64): Likewise.
+
+	* include/grub/fshelp.h (grub_fshelp_read_file): Change the types
+	of SECTOR, LEN and FILESIZE to grub_disk_addr_t, grub_size_t and
+	grub_off_t, respectively.
+	All callers and references changed.
+
+	* include/grub/fs.h (struct grub_fs): Change the type of LEN to
+	grub_size_t in "read".
+	All callers and references changed.
+
+	* include/grub/file.h (struct grub_file): Change the types of
+	"offset" and "size" to grub_off_t and grub_off_t,
+	respectively. Change the type of SECTOR to grub_disk_addr_t in
+	"read_hook".
+	(grub_file_read): Change the type of LEN to grub_size_t.
+	(grub_file_seek): Return grub_off_t. Change the type of OFFSET to
+	grub_off_t.
+	(grub_file_size): Return grub_off_t.
+	(grub_file_tell): Likewise.
+	All callers and references changed.
+
+	* include/grub/disk.h (struct grub_disk_dev): Change the types of
+	SECTOR and SIZE to grub_disk_addr_t and grub_size_t in "read" and
+	"write".
+	(struct grub_disk): Change the type of "total_sectors" to
+	grub_uint64_t. Change the type of SECTOR to grub_disk_addr_t in
+	"read_hook". 
+	(grub_disk_read): Change the types of SECTOR, OFFSET and SIZE to
+	grub_disk_addr_t, grub_off_t and grub_size_t, respectively.
+	(grub_disk_write): Likewise.
+	All callers and references changed.
+
+	* fs/iso9660.c (grub_iso9660_susp_iterate): Cast parameters to
+	char * for grub_strncmp to silence gcc.
+	(grub_iso9660_mount): Likewise.
+	(grub_iso9660_mount): Likewise.
+	(grub_iso9660_read_symlink): Likewise. Also, remove the nonsense
+	return statement.
+	(grub_iso9660_iterate_dir): Likewise.
+	(grub_iso9660_label): Cast DATA->VOLDESC.VOLNAME to char *.
+
+	* fs/hfs.c (grub_hfs_read_file): Change the types of SECTOR and
+	LEN to grub_disk_addr_t and grub_size_t, respectively.
+
+	* fs/hfsplus.c (grub_hfsplus_read_file): Likewise.
+
+	* fs/jfs.c (grub_jfs_read_file): Likewise.
+
+	* fs/minix.c (grub_jfs_read_file): Likewise.
+
+	* fs/sfs.c (grub_jfs_read_file): Likewise.
+
+	* fs/ufs.c (grub_jfs_read_file): Likewise.
+
+	* fs/xfs.c (grub_jfs_read_file): Likewise.
+
+	* fs/fat.c (grub_fat_read_data): Change the types of SECTOR, LEN
+	and SIZE to grub_disk_addr_t, grub_size_t and grub_size_t,
+	respectively.
+
+	* fs/ext2.c (grub_ext2_read_block): When an error happens, set
+	BLKNR to -1 instead of returning GRUB_ERRNO.
+	(grub_ext2_read_file): Change the types of SECTOR and
+	LEN to grub_disk_addr_t and grub_size_t, respectively.
+
+	* fs/affs.c (grub_affs_read_file): Change the types of SECTOR and
+	LEN to grub_disk_addr_t and grub_size_t, respectively.
+
+	* font/manager.c (grub_font_get_glyph): Cast BITMAP to char * for
+	grub_file_read.
+
+	* disk/ieee1275/ofdisk.c (grub_ofdisk_read): Fix the format
+	string. Do not cast SECTOR explicitly.
+
+	* disk/i386/pc/biosdisk.c (grub_biosdisk_open): Change the type of
+	TOTAL_SECTORS to grub_uint64_t. Do not mask DRP->TOTAL_SECTORS.
+	(grub_biosdisk_rw): Change the types of SECTOR and SIZE to
+	grub_disk_addr_t and grub_size_t, respectively. If the sector is
+	over 2TB and LBA mode is not supported, raise an error.
+	(get_safe_sectors): New function.
+	(grub_biosdisk_read): Use get_safe_sectors.
+	(grub_biosdisk_write): Likewise.
+
+	* disk/efi/efidisk.c (grub_efidisk_read): Fix the format string.
+	(grub_efidisk_write): Likewise.
+
+	* disk/loopback.c (delete_loopback): Cosmetic changes.
+	(grub_cmd_loopback): Likewise. Also, test NEWDEV->FILENAME
+	correctly.
+	(grub_loopback_open): Likewise.
+	(grub_loopback_read): Likewise. Also, change the type of POS to
+	grub_off_t, and fix the usage of grub_memset.
+
+	* commands/i386/pc/play.c: Include grub/machine/time.h.
+
+	* commands/ls.c (grub_ls_list_files): Use "llu" instead of "d" to
+	print FILE->SIZE.
+
+	* commands/configfile.c: Include grub/env.h.
+
+	* commands/cmp.c (grub_cmd_cmp): Do not use ERR, but use
+	GRUB_ERRNO directly instead. Change the type of POS to
+	grub_off_t. Follow the coding standard.
+
+	* commands/blocklist.c: Include grub/partition.h.
+	(grub_cmd_blocklist): Return an error if the underlying device is
+	not a disk. Take the starting sector of a partition into account,
+	if a partition is used.
+
+	* boot/i386/pc/diskboot.S (bootloop): Adapted to the new offset of
+	a length field.
+	(lba_mode): Support 64-bit addresses.
+	(chs_mode): Likewise.
+	(copy_buffer): Adapted to the new offsets of a length field and a
+	segment field.
+	(blocklist_default_start): Allocate 64-bit space.
+
+	* boot/i386/pc/boot.S (force_lba): Removed.
+	(boot_drive): Moved to under KERNEL_SECTOR.
+	(kernel_sector): Moved to under KENREL_SEGMENT. Allocate 64-bit
+	space.
+	(real_start): Set %si earlier. Remove code for FORCE_LBA, since it
+	is useless.
+	(lba_mode): Refactored to support a 64-bit address. More size
+	optimization.
+	(setup_sectors): Likewise.
+
 2006-06-04  Yoshinori K. Okuji  <okuji@enbug.org>
 
 	* DISTLIST: Added include/grub/i386/linux.h. Removed
