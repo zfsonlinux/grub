@@ -1,7 +1,7 @@
 /* getroot.c - Get root device */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003  Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2006  Free Software Foundation, Inc.
  *
  *  GRUB is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -160,9 +160,11 @@ find_root_device (const char *dir, dev_t dev)
 	/* Don't follow symbolic links.  */
 	continue;
       
-      if (S_ISDIR (st.st_mode))
+      if (S_ISDIR (st.st_mode) && ent->d_name[0] != '.')
 	{
-	  /* Find it recursively.  */
+	  /* Find it recursively, but avoid dotdirs (like ".static") since they
+	     could contain duplicates, which would later break the
+	     pathname-based check */
 	  char *res;
 
 	  res = find_root_device (ent->d_name, dev);
@@ -221,5 +223,27 @@ grub_guess_root_device (const char *dir)
   if (! os_dev)
     return 0;
 
-  return grub_util_biosdisk_get_grub_dev (os_dev);
+#ifdef __linux__
+  /* Check for LVM.  */
+  if (!strncmp (os_dev, "/dev/mapper/", 12))
+    {
+      char *grub_dev = xmalloc (strlen (os_dev) - 12);
+
+      strcpy (grub_dev, os_dev+12);
+
+      return grub_dev;
+    }
+
+  if (!strncmp (os_dev, "/dev/md", 7))
+    {
+      char *p, *grub_dev = xmalloc (8);
+
+      p = strchr (os_dev, 'm');
+      strncpy (grub_dev, p, 8);
+
+      return grub_dev;
+    }
+#endif
+    
+  return os_dev;
 }

@@ -6,7 +6,7 @@ COMMON_LDFLAGS = -melf_i386 -nostdlib
 
 # Utilities.
 bin_UTILITIES = grub-mkimage
-#sbin_UTILITIES = grub-setup grub-emu grub-mkdevicemap grub-probefs
+#sbin_UTILITIES = grub-setup grub-emu grub-mkdevicemap grub-probe
 
 # For grub-mkimage.
 grub_mkimage_SOURCES = util/i386/efi/grub-mkimage.c util/misc.c \
@@ -23,8 +23,8 @@ grub_mkimage_SOURCES = util/i386/efi/grub-mkimage.c util/misc.c \
 # For grub-mkdevicemap.
 #grub_mkdevicemap_SOURCES = util/i386/pc/grub-mkdevicemap.c util/misc.c
 
-# For grub-probefs.
-#grub_probefs_SOURCES = util/i386/pc/grub-probefs.c	\
+# For grub-probe.
+#grub_probe_SOURCES = util/i386/pc/grub-probe.c	\
 #	util/i386/pc/biosdisk.c	util/misc.c util/i386/pc/getroot.c	\
 #	kern/device.c kern/disk.c kern/err.c kern/misc.c fs/fat.c	\
 #	fs/ext2.c kern/parser.c kern/partition.c partmap/pc.c fs/ufs.c 	\
@@ -32,6 +32,8 @@ grub_mkimage_SOURCES = util/i386/efi/grub-mkimage.c util/misc.c \
 #	fs/xfs.c fs/affs.c fs/sfs.c fs/hfsplus.c
 
 # For grub-emu.
+grub_emu_DEPENDENCIES = grub_script.tab.c grub_script.tab.h		\
+	grub_modules_init.h
 grub_emu_SOURCES = commands/boot.c commands/cat.c commands/cmp.c 	\
 	commands/configfile.c commands/help.c				\
 	commands/terminal.c commands/ls.c commands/test.c 		\
@@ -93,6 +95,7 @@ kernel_syms.lst: $(addprefix include/grub/,$(kernel_mod_HEADERS)) config.h genke
 	/bin/sh genkernsyms.sh $(filter %.h,$^) > $@ || (rm -f $@; exit 1)
 
 # For normal.mod.
+normal_mod_DEPENDENCIES = grub_script.tab.c grub_script.tab.h
 normal_mod_SOURCES = normal/arg.c normal/cmdline.c normal/command.c	\
 	normal/completion.c normal/execute.c 		\
 	normal/function.c normal/lexer.c normal/main.c normal/menu.c	\
