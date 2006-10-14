@@ -1,3 +1,99 @@
+grub2 (1.95-1) unstable; urgency=low
+
+  * New upstream release.
+    - patches/03_revert_partition_numbering.diff: Delete (obsoleted).
+
+ -- Robert Millan <rmh@aybabtu.com>  Sat, 14 Oct 2006 21:19:21 +0200
+
+grub2 (1.94+20061003-1) unstable; urgency=high
+
+  * New CVS snapshot.
+
+  [ Otavio Salvador ]
+  * Change debhelper compatibility mode to 5:
+    - debian/compat: setted to 5;
+  * control (Build-Depends): Add lib32ncurses5-dev for ppc64.
+    Closes: #389873
+  * Set urgency=high since it's experimental stuff and tagged likewise. It
+    also solved a serious bug on PowerPC that leave users with a black
+    screen.
+
+  [ Robert Millan ]
+  * control (Depends):  Add powerpc-ibm-utils for powerpc/ppc64.
+    (Closes: #372186)
+
+ -- Otavio Salvador <otavio@debian.org>  Tue,  3 Oct 2006 16:49:32 -0300
+
+grub2 (1.94+20060926-1) unstable; urgency=high
+
+  * New CVS snapshot.
+    - Command-line editting fix (Closes: #381214).
+    - Fixes runtime breakage on amd64 (not in BTS).
+    - Delete a few patches (merged).
+
+  [ Robert Millan ]
+  * Set urgency=high.  Might seem like a rush, but it can't possibly be worse than
+    1.94-5 (broken on systems that use udev, broken on amd64...).
+  * Pure ppc64 support.
+    - control (Architecture): Add any-ppc64.
+    - control (Build-Depends): Add libc6-dev-powerpc [ppc64].
+  * rules: Remove moddep.lst install command (no longer needed).
+  * patches/03_revert_partition_numbering.diff:  New.  Revert a commit that
+    broke grub-probefs.
+  * Add bug template to encourage sending upstream stuff directly to
+    upstream.
+    - presubj: New.
+
+  [ Otavio Salvador ]
+  * Add XS-X-Vcs-Svn on control file and point it to our current svn
+    repository.
+  * Add cvs-snapshot to rules.
+
+ -- Otavio Salvador <otavio@debian.org>  Tue, 26 Sep 2006 16:14:36 -0300
+
+grub2 (1.94-6) unstable; urgency=low
+
+  [ Robert Millan ]
+  * update-grub:  Set interpreter to /bin/bash to cope with non-POSIX
+    extensions.  (mentioned in #361929)
+  * patches/03_avoid_recursing_into_dot_static.diff:  New.  Avoid recursing into
+    dotdirs (e.g. ".static").
+  * patches/04_mkdevicemap_dont_assume_floppies.diff:  New.  Don't assume
+    /dev/fd0 exists when generating device.map.
+
+ -- Otavio Salvador <otavio@debian.org>  Thu, 14 Sep 2006 16:07:30 -0300
+
+grub2 (1.94-5) unstable; urgency=low
+
+  [ Robert Millan ]
+  * control (Build-Depends): s/any-amd64/amd64 kfreebsd-amd64/g (this seems to
+    confuse buildds).
+  * 02_not_remove_menu_lst.patch: New patch.  Skip menu.lst removal in
+    grub-install.  (Closes: #372934)
+
+ -- Otavio Salvador <otavio@debian.org>  Sun, 20 Aug 2006 12:02:13 -0300
+
+grub2 (1.94-4) unstable; urgency=low
+
+  [ Otavio Salvador ]
+  * 01_fix_amd64_building.patch: dropped since it now supports amd64
+    native building.
+  * Remove convert_kernel26 usage since it's not necessary anymore and due
+    initramfs-tools changes it's bug too.
+  
+  [ Robert Millan ]
+  * Fork update-grub from grub legacy, and tweak a few commands in output to
+    make it work for grub2.
+  * Update README.Debian.in with more recent (and easier) install instructions.
+  * Add grub to Conflicts/Replaces.  Too many commands with the same name,
+    even if they don't use the same path yet (but will likely do in the
+    future, see #361929).
+  * Get rid of control.in, which I introduced in 0.6+20040805-1 and turned out
+    to be an endless source of problems (and forbidden by policy as well).
+  * Fix FTBFS on amd64. Really closes: #372548.
+
+ -- Otavio Salvador <otavio@debian.org>  Fri, 18 Aug 2006 15:38:25 -0300
+
 grub2 (1.94-3) unstable; urgency=low
 
   * Fix FTBFS in amd64. Closes: 372548

@@ -1,7 +1,6 @@
 #!/usr/bin/make -f
 # This file is PUBLIC DOMAIN. 
 
-DEB_AUTO_UPDATE_DEBIAN_CONTROL := yes
 DEB_AUTO_CLEANUP_RCS           := yes
 package                        := grub2
 
@@ -9,13 +8,21 @@ include /usr/share/cdbs/1/class/autotools.mk
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
-install/$(package):: common-install-prehook-arch
-	install -m 644 $(DEB_SRCDIR)/moddep.lst \
-		debian/$(package)/usr/lib/grub/$(DEB_HOST_ARCH_CPU)-*/
+ifeq ($(DEB_HOST_ARCH_CPU), amd64)
+grub_cpu = i386
+else
+grub_cpu = $(DEB_HOST_ARCH_CPU)
+endif
 
 clean::
-	sed -e "s/@cpu@/$(DEB_HOST_GNU_CPU)/g" < debian/README.Debian.in \
+	sed -e "s/@cpu@/$(grub_cpu)/g" < debian/README.Debian.in \
 	                                       > debian/README.Debian
+	rm -f debian/grub2.substvars
+
+ifneq (, $(filter powerpc ppc64, $(DEB_HOST_ARCH_CPU)))
+common-build-arch common-build-indep::
+	echo "powerpc:Depends=powerpc-ibm-utils" >> debian/grub2.substvars
+endif
 
 # Grab fixes from CVS using our version as reference.
 cvs-sync:
@@ -25,3 +32,12 @@ cvs-sync:
 	cd grub2-cvs && \
 	cvs diff -uN -r release_$$UVERSION -r HEAD > ../debian/patches/00_cvs-sync.patch; \
 	cd .. && rm -rf grub2-cvs
+
+cvs-snapshot:
+	UVERSION=$$(dpkg-parsechangelog | grep Version \
+	                                | sed 's,Version: ,,g;s,-[0-9]*$$,,g'); \
+	cvs -d:pserver:anonymous@cvs.savannah.gnu.org:/cvsroot/grub export -d grub2-$$UVERSION -rHEAD grub2; \
+	(cd grub2-$$UVERSION ; sh autogen.sh); \
+	tar -czf grub2_$$UVERSION.orig.tar.gz grub2-$$UVERSION; \
+	rm -rf grub2-$$UVERSION; \
+	mv grub2_$$UVERSION.orig.tar.gz ../tarballs/

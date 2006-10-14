@@ -1,4 +1,4 @@
-/* grub-probefs.c - probe a filesystem module for a given path */
+/* grub-probe.c - probe device information for a given path */
 /*
  *  GRUB  --  GRand Unified Bootloader
  *  Copyright (C) 2005,2006 Free Software Foundation, Inc.
@@ -47,6 +47,12 @@
 
 #define DEFAULT_DEVICE_MAP	DEFAULT_DIRECTORY "/device.map"
 
+#define PRINT_FS	0
+#define PRINT_DRIVE	1
+#define PRINT_DEVICE	2
+
+int print = PRINT_FS;
+
 void
 grub_putchar (int c)
 {
@@ -74,18 +80,38 @@ static void
 probe (const char *path)
 {
   char *device_name;
+  char *drive_name = 0;
   grub_device_t dev;
   grub_fs_t fs;
   
   device_name = grub_guess_root_device (path);
   if (! device_name)
     {
-      fprintf (stderr, "cannot find a GRUB device for %s.\n", path);
-      return;
+      fprintf (stderr, "cannot find a device for %s.\n", path);
+      goto end;
     }
 
-  grub_util_info ("opening %s", device_name);
-  dev = grub_device_open (device_name);
+  if (print == PRINT_DEVICE)
+    {
+      printf ("%s\n", device_name);
+      goto end;
+    }
+
+  drive_name = grub_util_biosdisk_get_grub_dev (device_name);
+  if (! drive_name)
+    {
+      fprintf (stderr, "cannot find a GRUB drive for %s.\n", device_name);
+      goto end;
+    }
+
+  if (print == PRINT_DRIVE)
+    {
+      printf ("(%s)\n", drive_name);
+      goto end;
+    }
+
+  grub_util_info ("opening %s", drive_name);
+  dev = grub_device_open (drive_name);
   if (! dev)
     grub_util_error ("%s", grub_errmsg);
 
@@ -96,12 +122,17 @@ probe (const char *path)
   printf ("%s\n", fs->name);
   
   grub_device_close (dev);
+
+ end:
+  
   free (device_name);
+  free (drive_name);
 }
 
 static struct option options[] =
   {
     {"device-map", required_argument, 0, 'm'},
+    {"target", required_argument, 0, 't'},
     {"help", no_argument, 0, 'h'},
     {"version", no_argument, 0, 'V'},
     {"verbose", no_argument, 0, 'v'},
@@ -113,14 +144,15 @@ usage (int status)
 {
   if (status)
     fprintf (stderr,
-	     "Try ``grub-probefs --help'' for more information.\n");
+	     "Try ``grub-probe --help'' for more information.\n");
   else
     printf ("\
-Usage: grub-probefs [OPTION]... PATH\n\
+Usage: grub-probe [OPTION]... PATH\n\
 \n\
-Probe a filesystem module for a given path.\n\
+Probe device information for a given path.\n\
 \n\
   -m, --device-map=FILE     use FILE as the device map [default=%s]\n\
+  -t, --target=(fs|drive|device)  print filesystem module, GRUB drive or system device [default=fs]\n\
   -h, --help                display this message and exit\n\
   -V, --version             print version information and exit\n\
   -v, --verbose             print verbose messages\n\
@@ -138,12 +170,12 @@ main (int argc, char *argv[])
   char *dev_map = 0;
   char *path;
   
-  progname = "grub-probefs";
+  progname = "grub-probe";
   
   /* Check for options.  */
   while (1)
     {
-      int c = getopt_long (argc, argv, "m:hVv", options, 0);
+      int c = getopt_long (argc, argv, "m:t:hVv", options, 0);
       
       if (c == -1)
 	break;
@@ -155,6 +187,17 @@ main (int argc, char *argv[])
 	      free (dev_map);
 
 	    dev_map = xstrdup (optarg);
+	    break;
+
+	  case 't':
+	    if (!strcmp (optarg, "fs"))
+	      print = PRINT_FS;
+	    else if (!strcmp (optarg, "drive"))
+	      print = PRINT_DRIVE;
+	    else if (!strcmp (optarg, "device"))
+	      print = PRINT_DEVICE;
+	    else
+	      usage (1);
 	    break;
 
 	  case 'h':

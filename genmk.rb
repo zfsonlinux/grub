@@ -71,14 +71,7 @@ MOSTLYCLEANFILES += #{deps_str}
       dir = File.dirname(src)
       
       "#{obj}: #{src}
-	$(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) #{extra_flags} $(TARGET_#{flag}) $(#{prefix}_#{flag}) -c -o $@ $<
-
-#{dep}: #{src}
-	set -e; \
-	  $(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) #{extra_flags} $(TARGET_#{flag}) $(#{prefix}_#{flag}) -M $< \
-	  | sed 's,#{Regexp.quote(fake_obj)}[ :]*,#{obj} $@ : ,g' > $@; \
-	  [ -s $@ ] || rm -f $@
-
+	$(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) #{extra_flags} $(TARGET_#{flag}) $(#{prefix}_#{flag}) -MD -c -o $@ $<
 -include #{dep}
 
 "
@@ -124,9 +117,9 @@ UNDSYMFILES += #{undsym}
 	$(TARGET_CC) $(#{prefix}_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
-#{pre_obj}: #{objs_str}
+#{pre_obj}: $(#{prefix}_DEPENDENCIES) #{objs_str}
 	-rm -f $@
-	$(TARGET_CC) $(#{prefix}_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(#{prefix}_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ #{objs_str}
 
 #{mod_obj}: #{mod_src}
 	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(#{prefix}_CFLAGS) -c -o $@ $<
@@ -153,14 +146,7 @@ endif
       dir = File.dirname(src)
 
       "#{obj}: #{src}
-	$(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) $(TARGET_#{flag}) $(#{prefix}_#{flag}) -c -o $@ $<
-
-#{dep}: #{src}
-	set -e; \
-	  $(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) $(TARGET_#{flag}) $(#{prefix}_#{flag}) -M $< \
-	  | sed 's,#{Regexp.quote(fake_obj)}[ :]*,#{obj} $@ : ,g' > $@; \
-	  [ -s $@ ] || rm -f $@
-
+	$(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) $(TARGET_#{flag}) $(#{prefix}_#{flag}) -MD -c -o $@ $<
 -include #{dep}
 
 CLEANFILES += #{command} #{fs}
@@ -203,8 +189,8 @@ class Utility
     "CLEANFILES += #{@name} #{objs_str}
 MOSTLYCLEANFILES += #{deps_str}
 
-#{@name}: #{objs_str}
-	$(CC) -o $@ $^ $(LDFLAGS) $(#{prefix}_LDFLAGS)
+#{@name}: $(#{prefix}_DEPENDENCIES) #{objs_str}
+	$(CC) -o $@ #{objs_str} $(LDFLAGS) $(#{prefix}_LDFLAGS)
 
 " + objs.collect_with_index do |obj, i|
       src = sources[i]
@@ -213,14 +199,7 @@ MOSTLYCLEANFILES += #{deps_str}
       dir = File.dirname(src)
 
       "#{obj}: #{src}
-	$(CC) -I#{dir} -I$(srcdir)/#{dir} $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(#{prefix}_CFLAGS) -c -o $@ $<
-
-#{dep}: #{src}
-	set -e; \
-	  $(CC) -I#{dir} -I$(srcdir)/#{dir} $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(#{prefix}_CFLAGS) -M $< \
-	  | sed 's,#{Regexp.quote(fake_obj)}[ :]*,#{obj} $@ : ,g' > $@; \
-	  [ -s $@ ] || rm -f $@
-
+	$(CC) -I#{dir} -I$(srcdir)/#{dir} $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(#{prefix}_CFLAGS) -MD -c -o $@ $<
 -include #{dep}
 
 "
@@ -248,8 +227,8 @@ class Program
     "CLEANFILES += #{@name} #{objs_str}
 MOSTLYCLEANFILES += #{deps_str}
 
-#{@name}: #{objs_str}
-	$(TARGET_CC) -o $@ $^ $(TARGET_LDFLAGS) $(#{prefix}_LDFLAGS)
+#{@name}: $(#{prefix}_DEPENDENCIES) #{objs_str}
+	$(TARGET_CC) -o $@ #{objs_str} $(TARGET_LDFLAGS) $(#{prefix}_LDFLAGS)
 
 " + objs.collect_with_index do |obj, i|
       src = sources[i]
@@ -258,14 +237,7 @@ MOSTLYCLEANFILES += #{deps_str}
       dir = File.dirname(src)
 
       "#{obj}: #{src}
-	$(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(#{prefix}_CFLAGS) -c -o $@ $<
-
-#{dep}: #{src}
-	set -e; \
-	  $(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(#{prefix}_CFLAGS) -M $< \
-	  | sed 's,#{Regexp.quote(fake_obj)}[ :]*,#{obj} $@ : ,g' > $@; \
-	  [ -s $@ ] || rm -f $@
-
+	$(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(#{prefix}_CFLAGS) -MD -c -o $@ $<
 -include #{dep}
 
 "
