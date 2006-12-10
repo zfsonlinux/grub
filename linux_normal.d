@@ -1,6 +1,5 @@
-linux_normal.o: loader/i386/pc/linux_normal.c \
-  include/grub/machine/loader.h include/grub/types.h config.h \
-  include/grub/cpu/types.h include/grub/symbol.h \
-  include/grub/machine/multiboot.h include/grub/err.h \
+linux_normal.o: loader/powerpc/ieee1275/linux_normal.c \
   include/grub/normal.h include/grub/setjmp.h include/grub/cpu/setjmp.h \
-  include/grub/arg.h include/grub/dl.h
+  include/grub/symbol.h config.h include/grub/err.h include/grub/arg.h \
+  include/grub/types.h include/grub/cpu/types.h include/grub/dl.h \
+  include/grub/machine/loader.h

@@ -1,3 +1,9 @@
+grub2 (1.95-1ubuntu3) feisty; urgency=low
+
+  * Disable stack protector on powerpc.
+
+ -- Jeff Bailey <jbailey@ubuntu.com>  Sun, 10 Dec 2006 23:46:45 -0500
+
 grub2 (1.95-1ubuntu2) feisty; urgency=low
 
   * Update to current CVS snapshot
