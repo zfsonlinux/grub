@@ -1,3 +1,11 @@
+grub2 (1.95-1ubuntu2) feisty; urgency=low
+
+  * Update to current CVS snapshot
+
+  * Disable stack protector.
+
+ -- Jeff Bailey <jbailey@ubuntu.com>  Sun, 10 Dec 2006 20:42:47 -0500
+
 grub2 (1.95-1ubuntu1) feisty; urgency=low
 
   * s/any-// in debian/control -- Soyuz doesn't support it.

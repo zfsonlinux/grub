@@ -1,0 +1,11 @@
+--- conf/i386-pc.mk	2006-12-10 20:33:27.000000000 -0500
++++ conf/i386-pc.mk	2006-12-10 20:37:27.000000000 -0500
+@@ -1,7 +1,7 @@
+ # -*- makefile -*-
+ 
+ COMMON_ASFLAGS = -nostdinc -fno-builtin -m32
+-COMMON_CFLAGS = -fno-builtin -mrtd -mregparm=3 -m32
++COMMON_CFLAGS = -fno-stack-protector -fno-builtin -mrtd -mregparm=3 -m32
+ COMMON_LDFLAGS = -m32 -nostdlib
+ 
+ # Images.
