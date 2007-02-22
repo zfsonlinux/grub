@@ -1,3 +1,25 @@
+grub2 (1.95-2ubuntu1) feisty; urgency=low
+
+  * Merge from Debian unstable. Remaining changes:
+    -> Update to some CVS snapshot.
+    -> Disable stack protector.
+  * Maintainer field set to Ubuntu MOTU.
+
+ -- Jeremie Corbier <jcorbier@ubuntu.com>  Thu, 22 Feb 2007 20:10:53 -0800
+
+grub2 (1.95-2) unstable; urgency=low
+
+  [ Robert Millan ]
+  * update-grub: Fix for Xen hypervisor entries, thanks Aaron Schrab.
+    (Closes: #394706)
+  * Transition to new numbering scheme for partitions. (Closes: #395019)
+    - update-grub: Don't substract 1 when converting partition device names to
+      grub drives.
+    - Add debconf warning explaining the situation.
+  * Rewrite Architecture line back to hardcoded list :(.  (Closes: #398060)
+
+ -- Otavio Salvador <otavio@debian.org>  Mon, 11 Dec 2006 05:08:41 -0200
+
 grub2 (1.95-1ubuntu3) feisty; urgency=low
 
   * Disable stack protector on powerpc.

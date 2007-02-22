@@ -13,7 +13,7 @@ http://grub.enbug.org/GettingStarted to try diagnosing the problem.
 
 Additionaly, you can use core.img to grab a GRUB2 floppy:
 
-  $ dd if=/usr/lib/grub/powerpc-pc/boot.img of=/dev/fd0 bs=512 count=1
+  $ dd if=/usr/lib/grub/i386-pc/boot.img of=/dev/fd0 bs=512 count=1
   $ dd if=/boot/grub/core.img of=/dev/fd0 bs=512 seek=1
 
  -- Otavio Salvador <otavio@debian.org>, Wed,  7 Jun 2006 21:25:25 -0300
