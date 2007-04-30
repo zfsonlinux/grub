@@ -1,3 +1,43 @@
+grub2 (1.95-5ubuntu1) gutsy; urgency=low
+
+  * Merge from Debian unstable. Remaining Ubuntu changes:
+    -> Update to some CVS snapshot.
+    -> Disable stack protector.
+
+ -- Jeremie Corbier <jcorbier@ubuntu.com>  Mon, 30 Apr 2007 17:31:45 -0700
+
+grub2 (1.95-5) unstable; urgency=low
+
+  * Fix FTBFS on kFreeBSD. Thanks to Aurelien Jarno <aurel32@debian.org>
+    by providing the patch. Closes: #416408
+
+ -- Otavio Salvador <otavio@ossystems.com.br>  Fri, 30 Mar 2007 19:20:48 -0300
+
+grub2 (1.95-4) unstable; urgency=low
+
+  * Fix powerpc grub-install binary path. Closes: #402838
+
+ -- Otavio Salvador <otavio@ossystems.com.br>  Thu, 22 Mar 2007 23:45:56 -0300
+
+grub2 (1.95-3) unstable; urgency=low
+
+  [ Christian Perrier ]
+  * Switch to po-debconf for debconf templates. Closes: #402972
+  * Depend on ${misc:Depends} and not "debconf" to allow cdebconf to be used
+  * Debconf translations:
+    - French
+    - Czech. Closes: #413327
+    - Galician. Closes: #413323
+    - Swedish. Closes: #413325
+    - Portuguese. Closes: #413332
+    - German. Closes: #413365
+    - Tamil. Closes: #413478
+    - Russian. Closes: #413542
+    - Italian. Closes: #413904
+    - Romanian. Closes: #414443
+
+ -- Otavio Salvador <otavio@ossystems.com.br>  Tue, 20 Mar 2007 23:46:38 -0300
+
 grub2 (1.95-2ubuntu1) feisty; urgency=low
 
   * Merge from Debian unstable. Remaining changes:
