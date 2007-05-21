@@ -21,7 +21,7 @@
 #include <grub/ieee1275/ieee1275.h>
 
 #define IEEE1275_PHANDLE_INVALID  ((grub_ieee1275_phandle_t) -1)
-#define IEEE1275_IHANDLE_INVALID  ((grub_ieee1275_ihandle_t) -1)
+#define IEEE1275_IHANDLE_INVALID  ((grub_ieee1275_ihandle_t) 0)
 #define IEEE1275_CELL_INVALID     ((grub_ieee1275_cell_t) -1)
 
 
@@ -553,10 +553,11 @@ grub_ieee1275_set_color (grub_ieee1275_ihandle_t ihandle,
     grub_ieee1275_cell_t b;
     grub_ieee1275_cell_t g;
     grub_ieee1275_cell_t r;
+    grub_ieee1275_cell_t catch_result;
   }
   args;
 
-  INIT_IEEE1275_COMMON (&args.common, "call-method", 6, 0);
+  INIT_IEEE1275_COMMON (&args.common, "call-method", 6, 1);
   args.method = "color!";
   args.ihandle = ihandle;
   args.index = index;
@@ -566,7 +567,7 @@ grub_ieee1275_set_color (grub_ieee1275_ihandle_t ihandle,
 
   if (IEEE1275_CALL_ENTRY_FN (&args) == -1)
     return -1;
-  return 0;
+  return args.catch_result;
 }
 
 int

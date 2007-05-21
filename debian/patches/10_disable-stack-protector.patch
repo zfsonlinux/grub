@@ -1,22 +1,44 @@
---- conf/i386-pc.mk	2006-12-10 20:33:27.000000000 -0500
-+++ conf/i386-pc.mk	2006-12-10 20:37:27.000000000 -0500
+--- conf/i386-efi.mk	2007-05-21 19:47:26.000000000 +0200
++++ conf/i386-efi.mk	2007-05-21 19:50:53.000000000 +0200
+@@ -1,7 +1,7 @@
+ # -*- makefile -*-
+ 
+ COMMON_ASFLAGS = -nostdinc -fno-builtin -m32
+-COMMON_CFLAGS = -fno-builtin -m32
++COMMON_CFLAGS = -fno-builtin -m32 -fno-stack-protector
+ COMMON_LDFLAGS = -melf_i386 -nostdlib
+ 
+ # Utilities.
+--- conf/i386-pc.mk	2007-05-20 09:20:43.000000000 +0200
++++ conf/i386-pc.mk	2007-05-21 19:50:53.000000000 +0200
 @@ -1,7 +1,7 @@
  # -*- makefile -*-
  
  COMMON_ASFLAGS = -nostdinc -fno-builtin -m32
 -COMMON_CFLAGS = -fno-builtin -mrtd -mregparm=3 -m32
-+COMMON_CFLAGS = -fno-stack-protector -fno-builtin -mrtd -mregparm=3 -m32
++COMMON_CFLAGS = -fno-builtin -mrtd -mregparm=3 -m32 -fno-stack-protector
  COMMON_LDFLAGS = -m32 -nostdlib
  
  # Images.
---- conf/powerpc-ieee1275.mk	2006-12-10 23:43:50.000000000 -0500
-+++ conf/powerpc-ieee1275.mk	2006-12-10 23:43:29.000000000 -0500
+--- conf/powerpc-ieee1275.mk	2007-05-21 19:47:26.000000000 +0200
++++ conf/powerpc-ieee1275.mk	2007-05-21 19:50:53.000000000 +0200
 @@ -2,7 +2,7 @@
  # -*- makefile -*-
  
  COMMON_ASFLAGS = -nostdinc -D__ASSEMBLY__
 -COMMON_CFLAGS = -ffreestanding -msoft-float
-+COMMON_CFLAGS = -fno-stack-protector -ffreestanding -msoft-float
++COMMON_CFLAGS = -ffreestanding -msoft-float -fno-stack-protector
  COMMON_LDFLAGS += -nostdlib
+ 
+ # Images.
+--- conf/sparc64-ieee1275.mk	2006-12-13 23:34:04.000000000 +0100
++++ conf/sparc64-ieee1275.mk	2007-05-21 19:50:53.000000000 +0200
+@@ -2,7 +2,7 @@
+ # -*- makefile -*-
+ 
+ COMMON_ASFLAGS = -nostdinc
+-COMMON_CFLAGS = -ggdb -ffreestanding -m64 -mno-app-regs
++COMMON_CFLAGS = -ggdb -ffreestanding -m64 -mno-app-regs -fno-stack-protector
+ COMMON_LDFLAGS = -melf64_sparc -nostdlib
  
  # Images.

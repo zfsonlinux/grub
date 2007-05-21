@@ -18,6 +18,39 @@ grub_emu_init.c: $(filter-out grub_emu_init.c,$(grub_emu_SOURCES)) geninit.sh gr
 	rm -f $@; sh $(srcdir)/geninit.sh $(filter %.c,$^) > $@
 DISTCLEANFILES += grub_emu_init.c
 
+# For update-grub
+update-grub: util/update-grub.in config.status
+	./config.status --file=$@:$<
+	chmod +x $@
+sbin_SCRIPTS += update-grub
+CLEANFILES += update-grub
+
+update-grub_lib: util/update-grub_lib.in config.status
+	./config.status --file=$@:$<
+	chmod +x $@
+lib_DATA += update-grub_lib
+CLEANFILES += update-grub_lib
+
+00_header: util/grub.d/00_header.in config.status
+	./config.status --file=$@:$<
+	chmod +x $@
+update-grub_SCRIPTS += 00_header
+CLEANFILES += 00_header
+
+10_linux: util/grub.d/10_linux.in config.status
+	./config.status --file=$@:$<
+	chmod +x $@
+update-grub_SCRIPTS += 10_linux
+CLEANFILES += 10_linux
+
+10_hurd: util/grub.d/10_hurd.in config.status
+	./config.status --file=$@:$<
+	chmod +x $@
+update-grub_SCRIPTS += 10_hurd
+CLEANFILES += 10_hurd
+
+update-grub_DATA += util/grub.d/README
+
 
 # Filing systems.
 pkgdata_MODULES += fshelp.mod fat.mod ufs.mod ext2.mod		\
@@ -1826,7 +1859,59 @@ blocklist_mod_CFLAGS = $(COMMON_CFLAGS)
 blocklist_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # Misc.
-pkgdata_MODULES += gzio.mod 
+pkgdata_MODULES += gzio.mod elf.mod
+
+# For elf.mod.
+elf_mod_SOURCES = kern/elf.c
+CLEANFILES += elf.mod mod-elf.o mod-elf.c pre-elf.o elf_mod-kern_elf.o und-elf.lst
+ifneq ($(elf_mod_EXPORTS),no)
+CLEANFILES += def-elf.lst
+DEFSYMFILES += def-elf.lst
+endif
+MOSTLYCLEANFILES += elf_mod-kern_elf.d
+UNDSYMFILES += und-elf.lst
+
+elf.mod: pre-elf.o mod-elf.o
+	-rm -f $@
+	$(TARGET_CC) $(elf_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
+
+pre-elf.o: $(elf_mod_DEPENDENCIES) elf_mod-kern_elf.o
+	-rm -f $@
+	$(TARGET_CC) $(elf_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ elf_mod-kern_elf.o
+
+mod-elf.o: mod-elf.c
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(elf_mod_CFLAGS) -c -o $@ $<
+
+mod-elf.c: moddep.lst genmodsrc.sh
+	sh $(srcdir)/genmodsrc.sh 'elf' $< > $@ || (rm -f $@; exit 1)
+
+ifneq ($(elf_mod_EXPORTS),no)
+def-elf.lst: pre-elf.o
+	$(NM) -g --defined-only -P -p $< | sed 's/^\([^ ]*\).*/\1 elf/' > $@
+endif
+
+und-elf.lst: pre-elf.o
+	echo 'elf' > $@
+	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
+
+elf_mod-kern_elf.o: kern/elf.c
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(elf_mod_CFLAGS) -MD -c -o $@ $<
+-include elf_mod-kern_elf.d
+
+CLEANFILES += cmd-elf_mod-kern_elf.lst fs-elf_mod-kern_elf.lst
+COMMANDFILES += cmd-elf_mod-kern_elf.lst
+FSFILES += fs-elf_mod-kern_elf.lst
+
+cmd-elf_mod-kern_elf.lst: kern/elf.c gencmdlist.sh
+	set -e; 	  $(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(elf_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh elf > $@ || (rm -f $@; exit 1)
+
+fs-elf_mod-kern_elf.lst: kern/elf.c genfslist.sh
+	set -e; 	  $(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(elf_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh elf > $@ || (rm -f $@; exit 1)
+
+
+elf_mod_CFLAGS = $(COMMON_CFLAGS)
+elf_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For gzio.mod.
 gzio_mod_SOURCES = io/gzio.c

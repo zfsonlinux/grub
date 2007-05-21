@@ -1,6 +1,6 @@
 # Process this file with autoconf to produce a configure script.
 
-# Copyright (C) 2002,2003,2004,2005,2006  Free Software Foundation, Inc.
+# Copyright (C) 2002,2003,2004,2005,2006,2007  Free Software Foundation, Inc.
 #
 # This configure.ac is free software; the author
 # gives unlimited permission to copy and/or distribute it,
@@ -39,6 +39,9 @@ AC_CONFIG_HEADER([config.h])
 # Checks for host and target systems.
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
+
+# Program name transformations
+AC_ARG_PROGRAM
 
 case "$host_cpu" in
   powerpc64) host_m32=1 ;;
@@ -145,14 +148,6 @@ if test "$target_cpu"-"$platform" = i386-pc; then
   AC_CHECK_HEADERS(lzo/lzo1x.h lzo1x.h)
 fi
 
-# Check for curses.
-AC_CHECK_LIB(ncurses, wgetch, [LIBCURSES="-lncurses"],
-  [AC_CHECK_LIB(curses, wgetch, [LIBCURSES="-lcurses"])])
-AC_SUBST(LIBCURSES)
-
-# Check for headers.
-AC_CHECK_HEADERS(ncurses/curses.h ncurses.h curses.h)
-
 # Check for functions.
 AC_CHECK_FUNCS(posix_memalign memalign)
 
@@ -233,6 +228,18 @@ if test "x$target_m32" = x1; then
   TARGET_LDFLAGS="$TARGET_LDFLAGS -m32"
 fi
 
+#
+# Compiler features.
+#
+
+# Smashing stack protector.
+grub_CHECK_STACK_PROTECTOR
+[# Need that, because some distributions ship compilers that include
+# `-fstack-protector' in the default specs.
+if [ x"$ssp_possible" = xyes ]; then
+  TARGET_CFLAGS=$TARGET_CFLAGS\ -fno-stack-protector
+fi]
+
 AC_SUBST(TARGET_CFLAGS)
 AC_SUBST(TARGET_CPPFLAGS)
 AC_SUBST(TARGET_LDFLAGS)
@@ -265,12 +272,34 @@ CPPFLAGS="$tmp_CPPFLAGS"
 LDFLAGS="$tmp_LDFLAGS"
 LIBS="$tmp_LIBS"
 
+#
 # Check for options.
+#
+
+# Memory manager debugging.
 AC_ARG_ENABLE([mm-debug], 
 	      AS_HELP_STRING([--enable-mm-debug],
                              [include memory manager debugging]),
               [AC_DEFINE([MM_DEBUG], [1],
                          [Define to 1 if you enable memory manager debugging.])])
+
+AC_ARG_ENABLE([grub-emu],
+	      [AS_HELP_STRING([--enable-grub-emu],
+                             [build and install the `grub-emu' debugging utility])])
+[if [ x"$enable_grub_emu" = xyes ]; then
+  # Check for curses libraries.]
+  AC_CHECK_LIB([ncurses], [wgetch], [LIBCURSES="-lncurses"],
+    [AC_CHECK_LIB([curses], [wgetch], [LIBCURSES="-lcurses"],
+      [AC_MSG_ERROR([(n)curses libraries are required to build `grub-emu'])])])
+  AC_SUBST([LIBCURSES])
+
+  [# Check for headers.]
+  AC_CHECK_HEADERS([ncurses/curses.h], [],
+    [AC_CHECK_HEADERS([ncurses.h], [],
+      [AC_CHECK_HEADERS([curses.h], [],
+	[AC_MSG_ERROR([(n)curses header files are required to build `grub-emu'])])])])
+[fi]
+AC_SUBST([enable_grub_emu])
 
 # Output files.
 AC_CONFIG_LINKS([include/grub/cpu:include/grub/$target_cpu
