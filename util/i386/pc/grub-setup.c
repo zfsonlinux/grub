@@ -1,7 +1,7 @@
 /* grub-setup.c - make GRUB usable */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2006 Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2006,2007 Free Software Foundation, Inc.
  *
  *  GRUB is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <grub/partition.h>
 #include <grub/pc_partition.h>
 #include <grub/env.h>
-#include <grub/machine/util/biosdisk.h>
+#include <grub/util/biosdisk.h>
 #include <grub/machine/boot.h>
 #include <grub/machine/kernel.h>
 #include <grub/term.h>
@@ -289,21 +289,32 @@ setup (const char *prefix, const char *dir,
 	    *install_dos_part = *install_bsd_part = grub_cpu_to_le32 (-2);
 	  else if (root_dev->disk->partition)
 	    {
-	      struct grub_pc_partition *pcdata =
-		root_dev->disk->partition->data;
-	      
 	      if (strcmp (root_dev->disk->partition->partmap->name,
-			  "pc_partition_map") != 0)
+			  "pc_partition_map") == 0)
+		{
+		  struct grub_pc_partition *pcdata =
+		    root_dev->disk->partition->data;
+		  *install_dos_part
+		    = grub_cpu_to_le32 (pcdata->dos_part);
+		  *install_bsd_part
+		    = grub_cpu_to_le32 (pcdata->bsd_part);
+		}
+	      else if (strcmp (root_dev->disk->partition->partmap->name,
+			       "gpt_partition_map") == 0)
+		{
+		  *install_dos_part = grub_cpu_to_le32 (root_dev->disk->partition->index);
+		  *install_bsd_part = grub_cpu_to_le32 (-1);
+		}
+	      else
 		grub_util_error ("No PC style partitions found");
-	      
-	      *install_dos_part
-		= grub_cpu_to_le32 (pcdata->dos_part);
-	      *install_bsd_part
-		= grub_cpu_to_le32 (pcdata->bsd_part);
 	    }
 	  else
 	    *install_dos_part = *install_bsd_part = grub_cpu_to_le32 (-1);
 
+	  grub_util_info ("dos partition is %d, bsd partition is %d, prefix is %s",
+		  grub_le_to_cpu32 (*install_dos_part),
+		  grub_le_to_cpu32 (*install_bsd_part),
+		  prefix);
 	  strcpy (install_prefix, prefix);
 	  
 	  /* Write the core image onto the disk.  */
@@ -452,19 +463,27 @@ setup (const char *prefix, const char *dir,
       struct grub_pc_partition *pcdata =
 	root_dev->disk->partition->data;
 
-      if (strcmp (root_dev->disk->partition->partmap->name,
-		  "pc_partition_map") != 0)
-	grub_util_error ("No PC style partitions found");
-      
-      *install_dos_part
-	= grub_cpu_to_le32 (pcdata->dos_part);
-      *install_bsd_part
-	= grub_cpu_to_le32 (pcdata->bsd_part);
+	if (strcmp (root_dev->disk->partition->partmap->name,
+		  "pc_partition_map") == 0)
+	  {
+	    *install_dos_part
+	      = grub_cpu_to_le32 (pcdata->dos_part);
+	    *install_bsd_part
+	      = grub_cpu_to_le32 (pcdata->bsd_part);
+	  }
+	else if (strcmp (root_dev->disk->partition->partmap->name,
+		  "gpt_partition_map") == 0)
+	  {
+	    *install_dos_part = grub_cpu_to_le32 (root_dev->disk->partition->index);
+	    *install_bsd_part = grub_cpu_to_le32 (-1);
+	  }
+	else
+	  grub_util_error ("No PC style partitions found");
     }
   else
     *install_dos_part = *install_bsd_part = grub_cpu_to_le32 (-1);
-  
-  grub_util_info ("dos partition is %u, bsd partition is %u, prefix is %s",
+
+  grub_util_info ("dos partition is %d, bsd partition is %d, prefix is %s",
 		  grub_le_to_cpu32 (*install_dos_part),
 		  grub_le_to_cpu32 (*install_bsd_part),
 		  prefix);
@@ -644,12 +663,13 @@ main (int argc, char *argv[])
   /* Initialize the emulated biosdisk driver.  */
   grub_util_biosdisk_init (dev_map ? : DEFAULT_DEVICE_MAP);
   grub_pc_partition_map_init ();
+  grub_gpt_partition_map_init ();
 
   dest_dev = get_device_name (argv[optind]);
   if (! dest_dev)
     {
       /* Possibly, the user specified an OS device file.  */
-      dest_dev = grub_util_biosdisk_get_grub_dev (argv[optind]);
+      dest_dev = grub_util_get_grub_dev (argv[optind]);
       if (! dest_dev)
 	{
 	  fprintf (stderr, "Invalid device `%s'.\n", argv[optind]);
@@ -683,7 +703,7 @@ main (int argc, char *argv[])
     }
   else
     {
-      root_dev = grub_util_biosdisk_get_grub_dev (grub_guess_root_device (dir ? : DEFAULT_DIRECTORY));
+      root_dev = grub_util_get_grub_dev (grub_guess_root_device (dir ? : DEFAULT_DIRECTORY));
       if (! root_dev)
 	{
 	  grub_util_info ("guessing the root device failed, because of `%s'",
@@ -723,7 +743,7 @@ main (int argc, char *argv[])
 		 dir ? : DEFAULT_DIRECTORY,
 		 boot_file ? : DEFAULT_BOOT_FILE,
 		 core_file ? : DEFAULT_CORE_FILE,
-		 root_dev, grub_util_biosdisk_get_grub_dev (devicelist[i]), 1);
+		 root_dev, grub_util_get_grub_dev (devicelist[i]), 1);
 	}
 
       free (raid_prefix);
@@ -745,6 +765,7 @@ main (int argc, char *argv[])
   grub_hfs_fini ();
   grub_jfs_fini ();
   
+  grub_gpt_partition_map_fini ();
   grub_pc_partition_map_fini ();
   grub_util_biosdisk_fini ();
   

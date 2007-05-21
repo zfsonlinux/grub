@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# Install GRUB on your drive.
+# Install GRUB on your EFI partition.
 # Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2006 Free Software Foundation, Inc.
 #
 # This file is free software; you can redistribute it and/or modify it
@@ -32,7 +32,6 @@ target_cpu=@target_cpu@
 platform=@platform@
 pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
 
-grub_setup=${sbindir}/`echo grub-setup | sed ${transform}`
 grub_mkimage=${bindir}/`echo grub-mkimage | sed ${transform}`
 grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
 grub_probe=${sbindir}/`echo grub-probe | sed ${transform}`
@@ -40,7 +39,6 @@ rootdir=
 grub_prefix=`echo /boot/grub | sed ${transform}`
 modules=
 
-install_device=
 no_floppy=
 force_lba=
 recheck=no
@@ -50,26 +48,22 @@ debug=no
 # Print the usage.
 usage () {
     cat <<EOF
-Usage: grub-install [OPTION] install_device
-Install GRUB on your drive.
+Usage: grub-install [OPTION]
+Install GRUB on your EFI partition.
 
   -h, --help              print this message and exit
   -v, --version           print the version information and exit
   --modules=MODULES       pre-load specified modules MODULES
   --root-directory=DIR    install GRUB images under the directory DIR
                           instead of the root directory
-  --grub-setup=FILE       use FILE as grub-setup
   --grub-mkimage=FILE     use FILE as grub-mkimage
   --grub-mkdevicemap=FILE use FILE as grub-mkdevicemap
   --grub-probe=FILE       use FILE as grub-probe
   --no-floppy             do not probe any floppy drive
   --recheck               probe a device map even if it already exists
 
-INSTALL_DEVICE can be a GRUB device name or a system device filename.
-
 grub-install copies GRUB images into the DIR/boot directory specfied by
---root-directory, and uses grub-setup to install grub into the boot
-sector.
+--root-directory.
 
 Report bugs to <bug-grub@gnu.org>.
 EOF
@@ -88,8 +82,6 @@ for option in "$@"; do
 	modules=`echo "$option" | sed 's/--modules=//'` ;;
     --root-directory=*)
 	rootdir=`echo "$option" | sed 's/--root-directory=//'` ;;
-    --grub-setup=*)
-	grub_setup=`echo "$option" | sed 's/--grub-setup=//'` ;;
     --grub-mkimage=*)
 	grub_mkimage=`echo "$option" | sed 's/--grub-mkimage=//'` ;;
     --grub-mkdevicemap=*)
@@ -103,26 +95,13 @@ for option in "$@"; do
     # This is an undocumented feature...
     --debug)
 	debug=yes ;;
-    -*)
+    *)
 	echo "Unrecognized option \`$option'" 1>&2
 	usage
 	exit 1
 	;;
-    *)
-	if test "x$install_device" != x; then
-	    echo "More than one install_devices?" 1>&2
-	    usage
-	    exit 1
-	fi
-	install_device="${option}" ;;
     esac
 done
-
-if test "x$install_device" = x; then
-    echo "install_device not specified." 1>&2
-    usage
-    exit 1
-fi
 
 # If the debugging feature is enabled, print commands.
 if test $debug = yes; then
@@ -147,14 +126,6 @@ grubdir=${bootdir}/`echo grub | sed ${transform}`
 device_map=${grubdir}/device.map
 
 # Check if GRUB is installed.
-set $grub_setup dummy
-if test -f "$1"; then
-    :
-else
-    echo "$1: Not found." 1>&2
-    exit 1
-fi
-
 set $grub_mkimage dummy
 if test -f "$1"; then
     :
@@ -199,20 +170,19 @@ if test -n "$tmp"; then
 fi
 
 # Copy the GRUB images to the GRUB directory.
-for file in ${grubdir}/*.mod ${grubdir}/*.lst ${grubdir}/*.img; do
+for file in ${grubdir}/*.mod ${grubdir}/*.lst; do
     if test -f $file && [ "`basename $file`" != menu.lst ]; then
 	rm -f $file || exit 1
     fi
 done
-for file in ${pkglibdir}/*.mod ${pkglibdir}/*.lst ${pkglibdir}/*.img; do
+for file in ${pkglibdir}/*.mod ${pkglibdir}/*.lst; do
     cp -f $file ${grubdir} || exit 1
 done
 
 # Create the core image. First, auto-detect the filesystem module.
 fs_module=`$grub_probe --target=fs --device-map=${device_map} ${grubdir}`
-if test "x$fs_module" = x -a "x$modules" = x; then
-    echo "Auto-detection of a filesystem module failed." 1>&2
-    echo "Please specify the module with the option \`--modules' explicitly." 1>&2
+if test "x$fs_module" = xfat; then :; else
+    echo "${grubdir} doesn't look like an EFI partition." 1>&2
     exit 1
 fi
 
@@ -227,11 +197,7 @@ fi
 # _chain is often useful
 modules="$modules $fs_module $partmap_module _chain"
 
-$grub_mkimage --output=${grubdir}/core.img $modules || exit 1
-
-# Now perform the installation.
-$grub_setup --directory=${grubdir} --device-map=${device_map} \
-    ${install_device} || exit 1
+$grub_mkimage --output=${grubdir}/grub.efi $modules || exit 1
 
 # Prompt the user to check if the device map is correct.
 echo "Installation finished. No error reported."

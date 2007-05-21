@@ -1,7 +1,7 @@
 /* ieee1275.h - Access the Open Firmware client interface.  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2003, 2004, 2005  Free Software Foundation, Inc.
+ *  Copyright (C) 2003, 2004, 2005, 2007  Free Software Foundation, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -145,6 +145,8 @@ grub_err_t EXPORT_FUNC(grub_devalias_iterate)
      (int (*hook) (struct grub_ieee1275_devalias *alias));
 grub_err_t EXPORT_FUNC(grub_children_iterate) (char *devpath,
      int (*hook) (struct grub_ieee1275_devalias *alias));
+grub_err_t EXPORT_FUNC(grub_available_iterate)
+     (int (*hook) (grub_uint64_t, grub_uint64_t));
 int EXPORT_FUNC(grub_claimmap) (grub_addr_t addr, grub_size_t size);
 
 char *EXPORT_FUNC(grub_ieee1275_encode_devname) (const char *path);

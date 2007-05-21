@@ -1,3 +1,503 @@
+2007-05-20  Robert Millan  <rmh@aybabtu.com>
+
+	* util/update-grub_lib.in: New file.
+	* DISTLIST: Add update-grub_lib.in.
+	* conf/common.rmk: Generate update-grub_lib and install it in
+	$(lib_DATA).
+	* Makefile.in: Add install routine for $(lib_DATA).
+
+	* util/grub.d/00_header.in: Use convert_system_path_to_grub_path()
+	function provided by update-grub_lib to support arbitrary paths of
+	unifont.pff.
+	* util/update-grub.in: Use convert_system_path_to_grub_path() to
+	initialize GRUB_DRIVE_BOOT and GRUB_DRIVE_BOOT_GRUB variables.
+
+2007-05-19  Robert Millan  <rmh@aybabtu.com>
+
+	* commands/i386/cpuid.c: New module.
+	* DISTLIST: Add it.
+	* conf/i386-efi.rmk: Enable cpuid.mod.
+	* conf/i386-pc.rmk: Likewise.
+
+2007-05-18  Jeroen Dekkers  <jeroen@dekkers.cx>
+
+	* kern/disk.c (grub_disk_read): Check return value of
+	grub_realloc().
+
+2007-05-18  Jeroen Dekkers  <jeroen@dekkers.cx>
+
+	* util/getroot.c (grub_util_get_grub_dev): Support partitionable
+	arrays.
+	* disk/raid.c (grub_raid_open): Likewise.
+
+2007-05-17  Jeroen Dekkers  <jeroen@dekkers.cx>
+
+	* util/biosdisk.c (linux_find_partition): Allocate real_dev on the
+	stack instead of on the heap.
+
+	* kern/disk.c (grub_disk_read): Make sure tmp_buf is big enough
+	before doing a read on it.
+
+	* configure.ac: Only use -fno-stack-protector for the target
+	environment.
+	
+2007-05-17  Jeroen Dekkers  <jeroen@dekkers.cx>
+
+	* video/i386/pc/vbe.c (grub_video_vbe_create_render_target): Add
+	__attribute_ ((unused)) to mode_type argument.
+
+	* util/getroot.c (grub_guess_root_device): Fix #endif.
+	
+	* kern/misc.c (memcmp): Fix prototype.
+
+	* include/grub/partition.h [GRUB_UTIL]
+	(grub_gpt_partition_map_init): Add prototype.
+	(grub_gpt_partition_map_fini): Likewise.
+
+	* fs/jfs.c (struct grub_jfs_inode): Put __attribute__ ((packed)
+	at the right place.
+
+	* fs/fat.c (grub_fat_mount): Replace ~0UL with ~0U.
+	(grub_fat_read_data): Likewise.
+	(grub_fat_find_dir): Likewise.
+
+	* font/manager.c (find_glyph): Make table a const.
+	(grub_font_get_glyph): Remove bitmap from if statement.
+	
+2007-05-16  Jeroen Dekkers  <jeroen@dekkers.cx>
+
+	* util/getroot.c (grub_guess_root_device): Remove RAID and LVM
+	code, first search for device in /dev/mapper, then in /dev.
+	(grub_util_get_grub_dev): New function.
+	* include/grub/util/getroot.h (grub_util_get_grub_dev): Add
+	prototype.
+	* util/grub-probe.c (probe): Remove check for RAID, call
+	grub_util_get_grub_dev() instead of
+	grub_util_biosdisk_get_grub_dev().
+	* util/grub-emu.c (main): Call grub_util_get_grub_dev() instead of
+	grub_util_biosdisk_get_grub_dev().
+	* util/i386/pc/grub-setup.c (main): Likewise.
+
+2007-05-16  Robert Millan  <rmh@aybabtu.com>
+
+	* DISTLIST: Update for the latest changes.
+	* conf/i386-pc.rmk: Use the new paths for util/getroot.c,
+	util/grub-mkdevicemap.c, util/grub-probe.c and util/biosdisk.c.
+	* util/grub-emu.c: Replace grub/i386/pc/util/biosdisk.h with
+	grub/util/biosdisk.h.
+	* util/i386/pc/grub-setup.c: Replace grub/machine/util/biosdisk.h with
+	grub/util/biosdisk.h.
+
+2007-05-16  Robert Millan  <rmh@aybabtu.com>
+
+	* util/grub.d/00_header.in: Set default gfxmode to `640x480'.
+
+2007-05-16  Robert Millan  <rmh@aybabtu.com>
+
+	* util/i386/efi/grub-install.in: New.
+	* conf/i386-efi.rmk: Enable grub-mkdevicemap, grub-probe and the
+	newly added grub-install.
+	* util/biosdisk.c: Remove unnecessary grub/machine/biosdisk.h
+	include.
+	* util/getroot.c: Replace grub/i386/pc/util/biosdisk.h with
+	grub/util/biosdisk.h.
+	* util/grub-probe.c: Replace grub/machine/util/biosdisk.h with
+	grub/util/biosdisk.h.
+
+2007-05-16  Robert Millan  <rmh@aybabtu.com>
+
+	* include/grub/i386/pc/util/biosdisk.h: Moved to ...
+	* include/grub/util/biosdisk.h: ... here.
+	* util/i386/pc/biosdisk.c: Moved to ...
+	* util/biosdisk.c: ... here.
+	* util/i386/pc/getroot.c: Moved to ...
+	* util/getroot.c: ... here.
+	* util/i386/pc/grub-mkdevicemap.c: Moved to ...
+	* util/grub-mkdevicemap.c: ... here.
+	* util/i386/pc/grub-probe.c: Moved to ...
+	* util/grub-probe.c: ... here.
+
+2007-05-15  Robert Millan  <rmh@aybabtu.com>
+
+	* util/update-grub.in: Remove duplicated line in grub.cfg header
+	message.
+
+2007-05-13  Robert Millan  <rmh@aybabtu.com>
+
+	* util/update-grub.in: Fix a few assumptions about the devices holding
+	/, /boot and /boot/grub being the same.
+	* util/grub.d/00_header.in: Likewise.
+	* util/grub.d/10_hurd.in: Likewise.
+	* util/grub.d/10_linux.in: Likewise.
+
+	* util/grub.d/10_linux.in: Implement Linux image sorting with arbitrary
+	patterns.  Use that to define the `.old' suffix as older than `'.
+
+	* util/grub.d/00_header.in: Set default gfxmode to `800x600x16'.
+
+	* util/update-grub.in: Add a reference to ${sysconfdir}/default/grub in
+	the grub.cfg header message.
+
+2007-05-11  Robert Millan  <rmh@aybabtu.com>
+
+	* util/update-grub.in: Create device.map if it doesn't already exist,
+	before attempting to run grub-probe.
+	Check for grub-probe and grub-mkdevicemap with the same code
+	grub-install is using.
+	Remove test mode.
+
+2007-05-09  Jeroen Dekkers  <jeroen@dekkers.cx>
+
+	* Makefile.in: Add the datarootdir autoconf variable.
+
+2007-05-09  Robert Millan  <rmh@aybabtu.com>
+
+	* util/i386/pc/grub-probe.c (probe): When detecting partition map,
+        fail gracefuly if dev->disk->partition == NULL.
+
+2007-05-07  Robert Millan  <rmh@aybabtu.com>
+
+	* util/i386/pc/grub-probe.c: Add `grub-probe -t partmap' parameter to
+	determine partition map module.
+	* util/i386/pc/grub-install.in: Use this feature to decide which
+	partition module to load, instead of hardcoding pc and gpt.
+
+2007-05-07  Robert Millan  <rmh@aybabtu.com>
+
+	* Makefile.in: Fix assumption that $(srcdir) has a trailing slash when
+	source directory differs from build directory.
+
+2007-05-05  Robert Millan  <rmh@aybabtu.com>
+
+	* util/powerpc/ieee1275/grub-install.in: Fix syntax error in pkglibdir
+	initialisation.
+
+2007-05-05  Robert Millan  <rmh@aybabtu.com>
+
+	* util/update-grub.in: Create ${grub_prefix} if it doesn't exist.
+
+2007-05-05  Robert Millan  <rmh@aybabtu.com>
+
+	* util/grub.d/10_linux.in: Allow the administrator to insert Linux
+	command-line arguments via ${GRUB_CMDLINE_LINUX}.
+
+2007-05-05  Robert Millan  <rmh@aybabtu.com>
+
+	* conf/i386-pc.rmk (grub_setup_SOURCES): Add partmap/gpt.c.
+	(grub_probe_SOURCES): Likewise.
+	* util/i386/pc/biosdisk.c (grub_util_biosdisk_get_grub_dev): Detect
+	GPT and initialize dos_part and bsd_part accordingly.
+	* util/i386/pc/grub-setup.c (setup): Ditto for install_dos_part and
+	install_bsd_part.
+	(main): Activate gpt module for use during partition identification,
+	and deactivate it afterwards.
+	* util/i386/pc/grub-install.in: Add gpt module to core.img.
+	* util/i386/pc/grub-probe.c (main): Activate gpt module for use during
+	partition identification, and deactivate it afterwards.
+
+2007-05-05  Robert Millan  <rmh@aybabtu.com>
+
+	* term/i386/pc/console.c (grub_console_fini): Call
+	grub_term_set_current() before grub_term_unregister().
+
+2007-05-04  Robert Millan  <rmh@aybabtu.com>
+
+	* DISTLIST: Add util/update-grub.in, util/grub.d/00_header.in,
+	util/grub.d/10_hurd.in, util/grub.d/10_linux.in and util/grub.d/README.
+	* Makefile.in: Build update-grub_SCRIPTS.  Install update-grub_SCRIPTS
+	and update-grub_DATA.
+	* conf/common.rmk: Build and install update-grub components.
+	* conf/common.mk: Regenerate.
+	* util/update-grub.in: New.  Core of update-grub.
+	* util/grub.d/00_header.in: New.  Generates grub.cfg header.
+	* util/grub.d/10_hurd.in: New.  Generates boot entries for the Hurd.
+	* util/grub.d/10_linux.in: New.  Generates boot entries for Linux.
+	* util/grub.d/README: New.  Document grub.d directory layout.
+
+2007-05-01  Robert Millan  <rmh@aybabtu.com>
+
+	* util/grub-emu.c: Move initialization functions
+	grub_util_biosdisk_init() and grub_init_all() before
+	grub_util_biosdisk_get_grub_dev(), which relies on them.
+
+2007-04-19  Robert Millan  <rmh@aybabtu.com>
+
+	* util/powerpc/ieee1275/grub-install.in: Initialize ${bindir}, since
+	it is used later.
+
+2007-04-18  Jerone Young  <jerone@gmail.com>
+
+	* kernel/elf.c: Add missing parenthesis for conditional statement 
+	stanza.
+
+2007-04-10  Jerone Young  <jerone@gmail.com>
+
+	* util/i386/pc/getroot.c: Update so that if root device is /dev/root ,
+	continue on and look for device node with real device name.
+
+2007-04-10  Jerone Young  <jerone@gmail.com>
+	
+	* configure.ac: Add argument for autoconf to use tranformation
+	ability.
+	* Makefile.in: Add autoconf package transformation code.
+	* util/i386/pc/grub-install.in: Likewise.
+	* util/powerpc/ieee1275/grub-install.in: Likewise.
+
+2007-03-19  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* fs/ext2.c (EXT2_GOOD_OLD_REVISION): New macro.
+	(EXT2_GOOD_OLD_INODE_SIZE): Likewise.
+	(EXT2_REVISION): Likewise.
+	(EXT2_INODE_SIZE): Likewise.
+	(struct grub_ext2_block_group): Added a missing member
+	"used_dirs".
+	(grub_ext2_read_inode): Divide by the inode size in a superblock
+	instead of 128 to obtain INODES_PER_BLOCK.
+	Use the macro EXT2_INODE_SIZE instead of directly using
+	SBLOCK->INODE_SIZE.
+
+2007-03-18  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* fs/ext2.c (grub_ext2_read_inode): Use the inode size in a
+	superblock instead of the structure size to compute an
+	offset. This fixes the problem that GRUB could not read a
+	filesystem when inode size is different from 128-byte.
+
+2007-03-05  Marco Gerards  <marco@gnu.org>
+
+	* normal/main.c (read_config_file): When "menu" is not set, create
+	an initial context.
+
+2007-02-21  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* kern/powerpc/ieee1275/init.c (HEAP_SIZE): Removed.
+	(HEAP_LIMIT): New macro.
+	(grub_claim_heap): Claim memory up to `heaplimit'.
+
+2007-02-21  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* conf/powerpc-ieee1275.rmk (kernel_elf_LDFLAGS): Link at 64KB.
+	* kern/powerpc/ieee1275/init.c (_end): Add declaration.
+	(_start): Likewise.
+	(grub_arch_modules_addr): Return address after `_end'.
+	* util/powerpc/ieee1275/grub-mkimage.c: Include grub/misc.h.
+	(load_modules): Use new parameter as `p_paddr' and `p_vaddr'.
+	(add_segments): Calculate `_end' from phdr size and location.
+	(ALIGN_UP): Moved to ...
+	* include/grub/misc.h: here.
+	* include/grub/powerpc/ieee1275/kernel.h (GRUB_IEEE1275_MOD_ALIGN):
+	New macro.
+	(GRUB_IEEE1275_MODULE_BASE): Removed.
+
+2007-02-20  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* kern/powerpc/ieee1275/openfw.c (grub_available_iterate): Correct
+	loop boundary.
+
+2007-02-20  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* include/grub/elfload.h (grub_elf32_load_hook_t): Return grub_err_t.
+	All users updated.
+	(grub_elf64_load_hook_t): Likewise.
+	* kern/elf.c: Call `grub_error_push' before `grub_error'. Improve
+	debug output.
+
+2007-02-20  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* kern/mm.c: Update copyright.
+	(grub_mm_debug): Correct syntax error.
+	(grub_mm_dump_free): New function.
+	(grub_debug_free): Call `grub_free'.
+	* include/grub/mm.h: Update copyright.
+	(grub_mm_dump_free): Add declaration.
+
+2007-02-12  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* include/grub/ieee1275/ieee1275.h: Update copyright.
+	* kern/powerpc/ieee1275/init.c: Likewise.
+	* kern/powerpc/ieee1275/openfw.c: Likewise.
+
+	* loader/powerpc/ieee1275/linux.c: Likewise.
+	* include/grub/elfload.h: Likewise.
+	* kern/elf.c: Likewise.
+	(grub_elf32_load): Pass `base' and `size' parameters.  Update all
+	callers.
+	(grub_elf64_load): Likewise.
+	(grub_elf32_load_segment): Move to a nested function.
+	(grub_elf64_load_segment): Likewise.
+
+2007-02-12  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* include/grub/ieee1275/ieee1275.h (grub_available_iterate): New
+	prototype.
+	* kern/powerpc/ieee1275/init.c (grub_heap_start): Removed.
+	(grub_heap_len): Likewise.
+	(HEAP_SIZE): New macro.
+	(grub_claim_heap): New function.
+	(grub_machine_init): Don't claim heap directly.  Call
+	`grub_claim_heap'.
+	* kern/powerpc/ieee1275/openfw.c: Include alloca.h.
+	(grub_available_iterate): New function.
+
+2007-02-03  Thomas Schwinge  <tschwinge@gnu.org>
+
+	* aclocal.m4 (grub_CHECK_STACK_PROTECTOR): New definition.
+	* configure.ac: Use it for testing the HOST and TARGET compilers.
+
+2006-12-13  Thomas Schwinge  <tschwinge@gnu.org>
+
+	* Makefile.in (enable_grub_emu): New variable.
+	* configure.ac (--enable-grub-emu): New option.
+	Do the checks for (n)curses only if `--enable-grub-emu' is requested.
+	* conf/i386-efi.rmk (sbin_UTILITIES): Add `grub-emu' only if requested.
+	* conf/i386-pc.rmk: Likewise.
+	* conf/powerpc-ieee1275.rmk: Likewise.
+	* conf/sparc64-ieee1275.rmk (bin_UTILITIES): Likewise.
+
+2006-12-12  Marco Gerards  <marco@gnu.org>
+
+	* include/grub/err.h (grub_err_t): Add `GRUB_ERR_MENU'.
+
+	* kern/env.c (grub_env_unset): Don't free the member `value' when
+	the type is GRUB_ENV_VAR_DATA, in this case it's a user defined
+	pointer.
+
+	* normal/main.c (current_menu): Removed.
+	(free_menu): Unset the `menu' environment variable.
+	(grub_normal_menu_addentry): Make use of the environment variable
+	`menu', instead of using the global `current_menu'.  Allocate
+	memory for the sourcecode of this entry.
+	(read_config_file): New argument `nested', changed all callers.
+	Only in the case of a new context, initialize a new menu.  Set the
+	`menu' environment variable.
+	(grub_normal_execute): Don't set and unset the environment
+	variable `menu' here anymore.  Only free the menu when leaving the
+	context.
+
+	* util/i386/pc/biosdisk.c (linux_find_partition): Fixed a memory
+	leak.
+
+2006-12-11  Marco Gerards  <marco@gnu.org>
+
+	* normal/menu_entry.c (run): Fix off by one bug so the last line
+	is executed.  Move the loader check to outside the loop.
+
+2006-12-08  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* kern/powerpc/ieee1275/cmain.c (cmain): Mark r3 and r4 as `UNUSED'.
+
+2006-11-25  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* util/i386/pc/grub-mkimage.c (generate_image): Fix the offset of
+	the number of sectors.	Reported by Andrey Shuvikov
+	<mr_hyro@yahoo.com>.
+	
+2006-11-11  Jeroen Dekkers  <jeroen@dekkers.cx>
+
+	* kern/disk.c (grub_disk_read): When there is a read error, always
+	try to read only the necessary data.
+	
+	* conf/i386-pc.rmk (grub_probe_SOURCES): Add disk/lvm.c and
+	disk/raid.c.
+	* include/grub/disk.h [GRUB_UTIL] (grub_raid_init): New
+	prototype.
+	[GRUB_UTIL] (grub_raid_fini): Likewise.
+	[GRUB_UTIL] (grub_lvm_init): Likewise.
+	[GRUB_UTIL] (grub_lvm_fini): Likewise.	
+	* util/i386/pc/grub-probe.c (probe): Check whether DEVICE_NAME is
+	RAID device and copy DEVICE_NAME to DRIVE_NAME in that case.
+	(main): Call grub_raid_init(), grub_lvm_init(), grub_lvm_fini()
+	and grub_raid_fini().
+	
+2006-11-09  Jeroen Dekkers  <jeroen@dekkers.cx>
+
+	* include/grub/types.h (__unused): Rename to UNUSED.
+	* kern/elf.c (grub_elf32_size): Use UNUSED instead of __unused.
+	(grub_elf64_size): Likewise.
+	
+2006-11-03  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* kern/elf.c (grub_elf_file): Call grub_file_seek. Call
+	grub_error_push and grub_error_pop in the error-handling path.
+	(grub_elf32_load_segment): Only call grub_file_read with non-zero
+	length.
+
+2006-11-03  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* conf/i386-efi.rmk (grub_emu_SOURCES): Add kern/elf.c.
+	* conf/i386-pc.rmk (grub_emu_SOURCES): Likewise.
+	* conf/powerpc-ieee1275.rmk (grub_emu_SOURCES): Likewise.
+	(kernel_elf_SOURCES): Likewise.
+	* conf/i386-efi.rmk (kernel_mod_HEADERS): Add elfload.h and cache.h.
+	* conf/i386-pc.rmk (kernel_mod_HEADERS): Likewise.
+	* conf/powerpc-ieee1275.rmk (kernel_elf_HEADERS): Likewise.
+	* conf/sparc64-ieee1275.rmk (kernel_elf_HEADERS): Likewise.
+	* conf/common.rmk (pkgdata_MODULES): Add elf.mod.
+	(elf_mod_SOURCES): New variable.
+	(elf_mod_CFLAGS): Likewise.
+	(elf_mod_LDFLAGS): Likewise.
+	* include/grub/types.h (__unused): New macro.
+	* include/grub/elfload.h: New file.
+	* kern/elf.c: Likewise.
+	* loader/powerpc/ieee1275/linux.c: Include elfload.h.
+	(ELF32_LOADMASK): New macro.
+	(ELF64_LOADMASK): Likewise.
+	(vmlinux): Removed.
+	(grub_linux_load32): New function.
+	(grub_linux_load64): Likewise.
+	(grub_rescue_cmd_linux): Call grub_linux_load32 or grub_linux_load64.
+	Use grub_elf_t instead of grub_file_t.
+
+2006-11-02  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* kern/ieee1275/ieee1275.c (grub_ieee1275_set_color): Add
+	`catch_result' to struct set_color_args.
+
+2006-10-28  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* normal/menu.c: Include grub/script.h.
+	* normal/menu_entry.c: Likewise.
+	* include/grub/normal.h: Do not include grub/script.h.
+
+2006-10-27  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* kern/disk.c (grub_disk_read): Correct debug printf formatting.
+
+2006-10-27  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* kern/disk.c (grub_disk_open): Print debug messages when opening a
+	disk.
+	(grub_disk_close): Print debug messages when closing a disk.
+	(grub_disk_read): Print debug messages when disk read fails.
+	* kern/fs.c (grub_fs_probe): Print debug messages when detecting
+	filesystem type.
+	* kern/partition.c: Include misc.h.
+	(grub_partition_iterate): Print debug messages when detecting
+	partition type.
+
+2006-10-27  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* disk/ieee1275/ofdisk.c (grub_ofdisk_read): Return error if `status'
+	is negative.
+	* kern/ieee1275/ieee1275.c (IEEE1275_IHANDLE_INVALID): Change to 0.
+
+2006-10-26  Hollis Blanchard  <hollis@penguinppc.org>
+
+	* kern/powerpc/ieee1275/openfw.c (grub_ieee1275_encode_devname):
+	Reverse GRUB_IEEE1275_FLAG_0_BASED_PARTITIONS test.
+
+2006-10-25  Jeroen Dekkers  <jeroen@dekkers.cx>
+
+	* disk/lvm.c (grub_lvm_scan_device): Malloc sizeof(*lv) bytes
+	instead of sizeof(lv). Patch by Michael Guntsche.
+
+2006-10-18  Jeroen Dekkers  <jeroen@dekkers.cx>
+
+	* disk/lvm.c: Rename VGS to VG_LIST.
+	(grub_lvm_iterate): Change VGS->LV to VG-LV.
+	(grub_lvm_open): Likewise.
+	Thanks to Michael Guntsche for finding this bug.
+
 2006-10-15  Yoshinori K. Okuji  <okuji@enbug.org>
 
 	* configure.ac (AC_INIT): Bumped to 1.95.
@@ -93,12 +593,12 @@
 	* kern/misc.c (grub_strtoull): Guess the base only if not
 	specified.
 
-2005-10-01  Hollis Blanchard  <hollis@penguinppc.org>
+2006-10-01  Hollis Blanchard  <hollis@penguinppc.org>
 
 	* kern/powerpc/ieee1275/cmain.c (cmain): Remove incomplete Old World
 	PowerMac support.
 
-2005-10-01  Hollis Blanchard  <hollis@penguinppc.org>
+2006-10-01  Hollis Blanchard  <hollis@penguinppc.org>
 
 	* disk/ieee1275/ofdisk.c (grub_ofdisk_iterate): Cast `size' to long.
 
@@ -120,7 +620,7 @@
 	* kern/powerpc/ieee1275/openfw.c (grub_devalias_iterate): Rename
 	`devalias' to `aliases'.  Correct comments.  Consolidate error paths.
 
-2005-10-01  Hollis Blanchard  <hollis@penguinppc.org>
+2006-10-01  Hollis Blanchard  <hollis@penguinppc.org>
 
 	* kern/ieee1275/ieee1275.c (grub_ieee1275_instance_to_path): Rename
 	`instance_to_package_args' to `instance_to_path_args'.
@@ -131,11 +631,11 @@
 	* term/ieee1275/ofconsole.c (grub_ofconsole_init): Call
 	`grub_ieee1275_interpret'.
 
-2005-09-25  Hollis Blanchard  <hollis@penguinppc.org>
+2006-09-25  Hollis Blanchard  <hollis@penguinppc.org>
 
 	* util/powerpc/ieee1275/grub-mkimage.c: Include config.h.
 
-2005-09-25  Hollis Blanchard  <hollis@penguinppc.org>
+2006-09-25  Hollis Blanchard  <hollis@penguinppc.org>
 
 	* include/grub/powerpc/libgcc.h (__floatdisf): New prototype.
 	(__cmpdi): Likewise.

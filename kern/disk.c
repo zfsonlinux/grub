@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2003,2004,2006  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2003,2004,2006,2007  Free Software Foundation, Inc.
  *
  *  GRUB is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -214,7 +214,9 @@ grub_disk_open (const char *name)
   grub_disk_dev_t dev;
   char *raw = (char *) name;
   unsigned long current_time;
-  
+
+  grub_dprintf ("disk", "Opening `%s'...\n", name);
+
   disk = (grub_disk_t) grub_malloc (sizeof (*disk));
   if (! disk)
     return 0;
@@ -291,6 +293,10 @@ grub_disk_open (const char *name)
 
   if (grub_errno != GRUB_ERR_NONE)
     {
+      grub_error_push ();
+      grub_dprintf ("disk", "Opening `%s' failed.\n", name);
+      grub_error_pop ();
+
       grub_disk_close (disk);
       return 0;
     }
@@ -301,6 +307,8 @@ grub_disk_open (const char *name)
 void
 grub_disk_close (grub_disk_t disk)
 {
+  grub_dprintf ("disk", "Closing `%s'.\n", disk->name);
+
   if (disk->dev && disk->dev->close)
     (disk->dev->close) (disk);
 
@@ -353,7 +361,13 @@ grub_disk_read (grub_disk_t disk, grub_disk_addr_t sector,
   
   /* First of all, check if the region is within the disk.  */
   if (grub_disk_check_range (disk, &sector, &offset, size) != GRUB_ERR_NONE)
-    return grub_errno;
+    {
+      grub_error_push ();
+      grub_dprintf ("disk", "Read out of range: sector 0x%llx.\n",
+		    (unsigned long long) sector);
+      grub_error_pop ();
+      return grub_errno;
+    }
 
   real_offset = offset;
   
@@ -395,18 +409,26 @@ grub_disk_read (grub_disk_t disk, grub_disk_addr_t sector,
 	    {
 	      /* Uggh... Failed. Instead, just read necessary data.  */
 	      unsigned num;
+	      char *p;
 
 	      grub_errno = GRUB_ERR_NONE;
 
-	      /* If more data is required, no way.  */
-	      if (pos + size
-		  >= (GRUB_DISK_SECTOR_SIZE << GRUB_DISK_CACHE_BITS))
-		goto finish;
-
 	      num = ((size + GRUB_DISK_SECTOR_SIZE - 1)
 		     >> GRUB_DISK_SECTOR_BITS);
-	      if ((disk->dev->read) (disk, sector, num, tmp_buf))
+
+	      p = grub_realloc (tmp_buf, num << GRUB_DISK_SECTOR_BITS);
+	      if (!p)
 		goto finish;
+
+	      tmp_buf = p;
+	      
+	      if ((disk->dev->read) (disk, sector, num, tmp_buf))
+		{
+		  grub_error_push ();
+		  grub_dprintf ("disk", "%s read failed\n", disk->name);
+		  grub_error_pop ();
+		  goto finish;
+		}
 
 	      grub_memcpy (buf, tmp_buf + real_offset, size);
 
