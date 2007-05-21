@@ -1,8 +1,8 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2003, 2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2005  Free Software Foundation, Inc.
  *
- *  GRUB is free software; you can redistribute it and/or modify
+ *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
@@ -13,15 +13,27 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with GRUB; if not, write to the Free Software
+ *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef GRUB_UTIL_GETROOT_HEADER
-#define GRUB_UTIL_GETROOT_HEADER	1
+#include <grub/symbol.h>
 
-char *grub_guess_root_device (const char *dir);
-char *grub_get_prefix (const char *dir);
-char *grub_util_get_grub_dev (const char *os_dev);
+        .file   "setjmp.S"
 
-#endif /* ! GRUB_UTIL_GETROOT_HEADER */
+        .text
+
+/*
+ * int grub_setjmp (grub_jmp_buf env)
+ */
+FUNCTION(grub_setjmp)
+        ret
+         nop
+
+/*
+ * int grub_longjmp (grub_jmp_buf env, int val)
+ */
+FUNCTION(grub_longjmp)
+        ret
+         nop
+
