@@ -1,7 +1,7 @@
 /* getroot.c - Get root device */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2006  Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2006,2007  Free Software Foundation, Inc.
  *
  *  GRUB is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 #include <dirent.h>
 
 #include <grub/util/misc.h>
-#include <grub/i386/pc/util/biosdisk.h>
+#include <grub/util/biosdisk.h>
 
 static void
 strip_extra_slashes (char *dir)
@@ -192,6 +192,13 @@ find_root_device (const char *dir, dev_t dev)
 	  strip_extra_slashes (res);
 	  free (cwd);
 
+	  /* /dev/root is not a real block device keep looking, takes care
+	     of situation where root filesystem is on the same partition as
+	     grub files */
+
+	  if (strcmp(res, "/dev/root") == 0)
+		continue;
+
 	  if (chdir (saved_cwd) < 0)
 	    grub_util_error ("Cannot restore the original directory");
 
@@ -218,32 +225,90 @@ grub_guess_root_device (const char *dir)
   if (stat (dir, &st) < 0)
     grub_util_error ("Cannot stat `%s'", dir);
 
-  /* This might be truly slow, but is there any better way?  */
-  os_dev = find_root_device ("/dev", st.st_dev);
-  if (! os_dev)
-    return 0;
-
 #ifdef __linux__
+  /* We first try to find the device in the /dev/mapper directory.  If
+     we don't do this, we get useless device names like /dev/dm-0 for
+     LVM. */
+  os_dev = find_root_device ("/dev/mapper", st.st_dev);
+  if (!os_dev)
+#endif
+    {
+      /* This might be truly slow, but is there any better way?  */
+      os_dev = find_root_device ("/dev", st.st_dev);
+    }
+
+  return os_dev;
+}
+
+char *
+grub_util_get_grub_dev (const char *os_dev)
+{
   /* Check for LVM.  */
   if (!strncmp (os_dev, "/dev/mapper/", 12))
     {
-      char *grub_dev = xmalloc (strlen (os_dev) - 12);
+      char *grub_dev = xmalloc (strlen (os_dev) - 12 + 1);
 
       strcpy (grub_dev, os_dev+12);
 
       return grub_dev;
     }
 
+  /* Check for RAID.  */
   if (!strncmp (os_dev, "/dev/md", 7))
     {
-      char *p, *grub_dev = xmalloc (8);
+      const char *p;
+      char *grub_dev = xmalloc (20);
 
-      p = strchr (os_dev, 'm');
-      strncpy (grub_dev, p, 8);
+      if (os_dev[7] == '_' && os_dev[8] == 'd')
+	{
+	  /* This a partitionable RAID device of the form /dev/md_dNNpMM. */
+	  int i;
+
+	  grub_dev[0] = 'm';
+	  grub_dev[1] = 'd';
+	  i = 2;
+	  
+	  p = os_dev + 9;
+	  while (*p >= '0' && *p <= '9')
+	    {
+	      grub_dev[i] = *p;
+	      i++;
+	      p++;
+	    }
+
+	  if (*p == '\0')
+	    grub_dev[i] = '\0';
+	  else if (*p == 'p')
+	    {
+	      p++;
+	      grub_dev[i] = ',';
+	      i++;
+
+	      while (*p >= '0' && *p <= '9')
+		{
+		  grub_dev[i] = *p;
+		  i++;
+		  p++;
+		}
+
+	      grub_dev[i] = '\0';
+	    }
+	  else
+	    grub_util_error ("Unknown kind of RAID device `%s'", os_dev);
+	}
+      else if (os_dev[7] >= '0' && os_dev[7] <= '9')
+	{
+	  p = os_dev + 5;
+	  memcpy (grub_dev, p, 7);
+	  grub_dev[7] = '\0';
+	}
+      else
+	grub_util_error ("Unknown kind of RAID device `%s'", os_dev);
+
 
       return grub_dev;
     }
-#endif
-    
-  return os_dev;
+
+  /* If it's not RAID or LVM, it should be a biosdisk.  */
+  return grub_util_biosdisk_get_grub_dev (os_dev);
 }

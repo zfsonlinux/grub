@@ -1,3 +1,155 @@
+grub2 (1.95+20070520-1ubuntu1) gutsy; urgency=low
+
+  * Merge from Debian unstable. Remaining Ubuntu changes:
+    - Disable stack protector.
+    - Modify Maintainer value to match Debian-Maintainer-Field Spec
+
+ -- Albin Tonnerre <lut1n.tne@gmail.com>  Mon, 21 May 2007 19:54:10 +0200
+
+grub2 (1.95+20070520-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - LVM / RAID fixes.  (Closes: #423648, #381150)
+    - Fix memory management bug.  (Closes: #423409)
+    - patches/efi.diff: Remove (merged).
+    - patches/grub_probe_for_everyone.diff: Use the new paths for
+      util/grub-probe.c, util/biosdisk.c, util/getroot.c.  Enable
+      grub-mkdevicemap.  (Closes: #424985)
+  * legacy/update-grub: Get rid of all grub-set-default calls.  (Closes: #425054)
+  * grub-{pc,efi,of}.postinst: Only run update-grub if grub.cfg already exists.
+  * grub-pc.postinst: Only run GRUB Legacy compat stuff if menu.lst is found.
+  * patches/partmap_fallback.diff: New.  Implement fallback "pc gpt" for partmap
+    detection failures.  (Closes: #423022)
+  * control: Update XS-Vcs-* fields.  Thanks Sam Morris <sam@robots.org.uk>.
+    (Closes: #425146)
+  * grub-{pc,efi,of}.{dirs,postinst}: Move unifont.pff to /usr/share/grub.
+
+ -- Robert Millan <rmh@aybabtu.com>  Sun, 20 May 2007 11:13:03 +0200
+
+grub2 (1.95+20070515-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - Fix assumptions about /, /boot and /boot/grub being the same device.
+    (Closes: #423268, #422459)
+    - Proper sorting of Linux images.  (Closes: #422580)
+    - update-grub lets /etc/default/grub override its variables now.
+    (Closes: #423649)
+    - update-grub mentions /etc/default/grub in the grub.cfg header.
+    (Closes: #423651)
+    - update-grub sets 800x600x16 as the default gfxmode.  (Closes: #422794)
+    - update-grub runs grub-mkdevicemap before attempting to use grub-probe
+    (part of #423217)
+
+  [ Otavio Salvador ]
+  * Add support to DEB_BUILD_OPTIONS=noopt. Thanks to Sam Morris
+    <sam@robots.org.uk> for the patch. (Closes: #423005)
+  * Add Robert Millan as uploader.
+  * Change build-dependency from liblzo-dev to liblzo2-dev. (Closes: #423358)
+
+  [ Robert Millan ]
+  * grub-pc.postinst:
+    - Remove /boot/grub/device.map before running grub-install.
+      (Closes: #422851)
+    - Always run update-grub after grub-install. (part of #423217)
+    - Use grub-mkdevicemap instead of removing device.map, since update-grub
+      needs it but grub-install is not run unconditionaly.
+    - Redirect grub-install invocation to /dev/null, since it can mislead
+      users into thinking that MBR was overwritten.  (part of #423217)
+  * default/grub: Stop exporting the variables (update-grub does that now).
+  * Misc EFI fixes, including new grub-install.
+    - patches/efi.diff: New.
+    - patches/grub_probe_for_everyone.diff: Move some bits to efi.diff.
+    - grub-efi.install: Stop installing dummy grub-install.
+    - grub-install: Remove.
+  * grub-pc.postinst: Avoid generating core.img when menu.lst is not present,
+    to avoid duplicated work (this is specialy important for d-i).  (part of
+    #423217).
+  * See multiple references above.  (Closes: #423217)
+  * grub-{pc,efi,of}.{dirs,install}: Install presubj in the right directory
+    to make it work again (oops).
+  * Add reportbug script to gather debugging information.  (Closes: #423218)
+    - script: New.
+    - grub-{pc,efi,of}.install: Install it.
+  * Install the reportbug scripts for grub2 too, since users might still use
+    it for bugfiling.
+    - grub2.dirs
+    - grub2.install
+  * Fix some lintian warnings.
+    - control (grub2): Depend on debconf.
+    - README.Debian.in: Fix mispell.
+    - grub2.templates: Remove extra dot.
+
+ -- Robert Millan <rmh@aybabtu.com>  Tue, 15 May 2007 22:08:53 +0200
+
+grub2 (1.95+20070507-1) unstable; urgency=low
+
+  [ Robert Millan ]
+  * New CVS snapshot.
+    - patches/build_neq_src.diff: Remove (merged).
+  * Fix debhelper files to ensure each package gets the right thing.
+  * Enable gfxterm/unifont support.
+  * On grub-pc, if there's no core.img setup, create one (but do not
+    risk writing to MBR).
+  * On grub-pc, if menu.lst is found, regenerate it to include our
+    core.img.
+
+  [ Otavio Salvador ]
+  * Move debian/update-grub to debian/legacy/update-grub otherwise the
+    source gets messy.
+
+ -- Otavio Salvador <otavio@ossystems.com.br>  Mon, 07 May 2007 18:48:14 -0300
+
+grub2 (1.95+20070505.1-3) unstable; urgency=low
+
+  * Split postinst into grub2.postinst (with the transition warning) and
+    postinst.in, with update-grub invocation for grub-{pc,efi,of}.
+    - postinst.in
+    - grub2.postinst
+    - rules
+
+ -- Robert Millan <rmh@aybabtu.com>  Sun,  6 May 2007 01:20:04 +0200
+
+grub2 (1.95+20070505.1-2) unstable; urgency=low
+
+  * Add EFI build of GRUB.
+  - control: Restructure to provide 3 packages: grub-pc (x86),
+    grub-efi (x86) and grub-of (powerpc).
+  - rules: Handle a separate build for each package.
+  - patches/build_neq_src.diff: Fix builddir == srcdir assumptions.
+  - patches/grub_probe_for_everyone.diff: New (superceds
+    powerpc_probe.diff).  Enable grub-probe on powerpc and i386-efi.
+  - grub-install: Dummy informational grub-install for EFI.
+  - grub-efi.install: Installs it.
+
+ -- Robert Millan <rmh@aybabtu.com>  Sun,  6 May 2007 00:23:56 +0200
+
+grub2 (1.95+20070505.1-1) unstable; urgency=low
+
+  * New CVS snapshot.
+  * patches/powerpc_probe.diff: Add partmap/gpt.c to grub-probe.
+  * control (Architecture): Temporarily disable powerpc.  Sorry, but runtime
+    is currently broken and we don't have the hardware to debug it.  Will be
+    re-enabled in next upload.
+
+ -- Robert Millan <rmh@aybabtu.com>  Sat,  5 May 2007 21:52:49 +0200
+
+grub2 (1.95+20070505-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - Improved grub.cfg parser.  (Closes: #381215)
+    - patches/fix-grub-install.diff: Remove (merged).
+    - control (Build-Depends): Remove libncurses5-dev (no longer needed).
+    - provides update-grub2.  (Closes: #419151)
+    - Supports GPT in PC/BIOS systems.  (Closes: #409073)
+  * control (Build-Depends): Add gcc-multilib to fix FTBFS.
+  * control (Description): Make it less scary, and more informative.
+  * postinst: Run update-grub to ensure the latest improvements always are
+    applied.
+  * patches/powerpc_probe.diff: Attempt at making grub-probe build/install
+    on powerpc (and hopefuly update-grub).
+
+ -- Robert Millan <rmh@aybabtu.com>  Sat,  5 May 2007 01:49:07 +0200
+
 grub2 (1.95-5ubuntu1) gutsy; urgency=low
 
   * Merge from Debian unstable. Remaining Ubuntu changes:
@@ -333,4 +485,3 @@ pupa (0.6+20030915-1) unstable; urgency=low
   * Initial Release. (Closes: #211030)
 
  -- Robert Millan <rmh@debian.org>  Mon, 15 Sep 2003 14:58:42 +0000
-

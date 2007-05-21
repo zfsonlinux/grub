@@ -1,7 +1,7 @@
 /* grub-probe.c - probe device information for a given path */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2005,2006 Free Software Foundation, Inc.
+ *  Copyright (C) 2005,2006,2007 Free Software Foundation, Inc.
  *
  *  GRUB is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 #include <grub/fs.h>
 #include <grub/partition.h>
 #include <grub/pc_partition.h>
-#include <grub/machine/util/biosdisk.h>
+#include <grub/util/biosdisk.h>
 #include <grub/util/getroot.h>
 #include <grub/term.h>
 
@@ -50,6 +50,7 @@
 #define PRINT_FS	0
 #define PRINT_DRIVE	1
 #define PRINT_DEVICE	2
+#define PRINT_PARTMAP	3
 
 int print = PRINT_FS;
 
@@ -97,13 +98,13 @@ probe (const char *path)
       goto end;
     }
 
-  drive_name = grub_util_biosdisk_get_grub_dev (device_name);
+  drive_name = grub_util_get_grub_dev (device_name);
   if (! drive_name)
     {
       fprintf (stderr, "cannot find a GRUB drive for %s.\n", device_name);
       goto end;
     }
-
+  
   if (print == PRINT_DRIVE)
     {
       printf ("(%s)\n", drive_name);
@@ -114,6 +115,26 @@ probe (const char *path)
   dev = grub_device_open (drive_name);
   if (! dev)
     grub_util_error ("%s", grub_errmsg);
+
+  if (print == PRINT_PARTMAP)
+    {
+      if (dev->disk->partition == NULL)
+        grub_util_error ("Cannot detect partition map for %s", drive_name);
+
+      if (strcmp (dev->disk->partition->partmap->name, "amiga_partition_map") == 0)
+        printf ("amiga\n");
+      else if (strcmp (dev->disk->partition->partmap->name, "apple_partition_map") == 0)
+        printf ("apple\n");
+      else if (strcmp (dev->disk->partition->partmap->name, "gpt_partition_map") == 0)
+        printf ("gpt\n");
+      else if (strcmp (dev->disk->partition->partmap->name, "pc_partition_map") == 0)
+        printf ("pc\n");
+      else if (strcmp (dev->disk->partition->partmap->name, "sun_partition_map") == 0)
+        printf ("sun\n");
+      else
+        grub_util_error ("Unknown partition map %s", dev->disk->partition->partmap->name);
+      goto end;
+    }
 
   fs = grub_fs_probe (dev);
   if (! fs)
@@ -152,7 +173,8 @@ Usage: grub-probe [OPTION]... PATH\n\
 Probe device information for a given path.\n\
 \n\
   -m, --device-map=FILE     use FILE as the device map [default=%s]\n\
-  -t, --target=(fs|drive|device)  print filesystem module, GRUB drive or system device [default=fs]\n\
+  -t, --target=(fs|drive|device|partmap)\n\
+                            print filesystem module, GRUB drive, system device or partition map module [default=fs]\n\
   -h, --help                display this message and exit\n\
   -V, --version             print version information and exit\n\
   -v, --verbose             print verbose messages\n\
@@ -196,6 +218,8 @@ main (int argc, char *argv[])
 	      print = PRINT_DRIVE;
 	    else if (!strcmp (optarg, "device"))
 	      print = PRINT_DEVICE;
+	    else if (!strcmp (optarg, "partmap"))
+	      print = PRINT_PARTMAP;
 	    else
 	      usage (1);
 	    break;
@@ -236,7 +260,10 @@ main (int argc, char *argv[])
   /* Initialize the emulated biosdisk driver.  */
   grub_util_biosdisk_init (dev_map ? : DEFAULT_DEVICE_MAP);
   grub_pc_partition_map_init ();
-
+  grub_gpt_partition_map_init ();
+  grub_raid_init ();
+  grub_lvm_init ();
+  
   /* Initialize filesystems.  */
   grub_fat_init ();
   grub_ext2_init ();
@@ -256,6 +283,9 @@ main (int argc, char *argv[])
   grub_jfs_fini ();
   grub_xfs_fini ();
   
+  grub_lvm_fini ();
+  grub_raid_fini ();
+  grub_gpt_partition_map_fini ();
   grub_pc_partition_map_fini ();
   grub_util_biosdisk_fini ();
   

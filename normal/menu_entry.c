@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2005  Free Software Foundation, Inc.
+ *  Copyright (C) 2005,2006  Free Software Foundation, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include <grub/misc.h>
 #include <grub/mm.h>
 #include <grub/loader.h>
+#include <grub/script.h>
 
 enum update_mode
   {
@@ -1006,7 +1007,7 @@ run (struct screen *screen)
 
 
   /* Execute the script, line for line.  */
-  while (currline < screen->num_lines - 1)
+  while (currline < screen->num_lines)
     {
       editor_getline (&nextline);
       parsed_script = grub_script_parse (nextline, editor_getline);
@@ -1017,14 +1018,14 @@ run (struct screen *screen)
 	  
 	  /* The parsed script was executed, throw it away.  */
 	  grub_script_free (parsed_script);
-
-	  if (grub_errno == GRUB_ERR_NONE && grub_loader_is_loaded ())
-	    /* Implicit execution of boot, only if something is loaded.  */
-	    grub_command_execute ("boot", 0);
 	}
       else
 	break;
     }
+
+  if (grub_errno == GRUB_ERR_NONE && grub_loader_is_loaded ())
+    /* Implicit execution of boot, only if something is loaded.  */
+    grub_command_execute ("boot", 0);
 
   if (grub_errno != GRUB_ERR_NONE)
     {

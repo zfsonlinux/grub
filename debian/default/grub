@@ -1,0 +1,5 @@
+# This file is sourced by update-grub, and its variables are propagated
+# to its childs in /etc/grub.d/
+GRUB_DEFAULT=0
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR=Debian

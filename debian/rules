@@ -1,10 +1,9 @@
 #!/usr/bin/make -f
 # This file is PUBLIC DOMAIN. 
 
-DEB_AUTO_CLEANUP_RCS           := yes
-package                        := grub2
+SHELL		:= bash
+package		:= grub2
 
-include /usr/share/cdbs/1/class/autotools.mk
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
@@ -14,15 +13,48 @@ else
 grub_cpu = $(DEB_HOST_ARCH_CPU)
 endif
 
-clean::
-	sed -e "s/@cpu@/$(grub_cpu)/g" < debian/README.Debian.in \
-	                                       > debian/README.Debian
-	rm -f debian/grub2.substvars
+CFLAGS := -g -Wall
 
-ifneq (, $(filter powerpc ppc64, $(DEB_HOST_ARCH_CPU)))
-common-build-arch common-build-indep::
-	echo "powerpc:Depends=powerpc-ibm-utils" >> debian/grub2.substvars
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
 endif
+export CFLAGS
+export CXXFLAGS := $(CFLAGS)
+
+CONFIGURE = CC="cc" CXX="g++" CPPFLAGS="" LDFLAGS="" \
+	$(CURDIR)/configure --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --includedir="\$${prefix}/include" \
+	--mandir="\$${prefix}/share/man" --infodir="\$${prefix}/share/info" --sysconfdir=/etc --localstatedir=/var \
+	--libexecdir="\$${prefix}/lib/grub2" --disable-maintainer-mode --disable-dependency-tracking --srcdir=$(CURDIR)
+
+build/unifont.pff: util/unifont2pff.rb /usr/share/unifont/unifont.hex
+	mkdir -p build
+	ruby $^ > $@
+
+configure/grub-pc configure/grub-of::
+	mkdir -p $(subst configure/,build/,$@)
+	cd $(subst configure/,build/,$@) && $(CONFIGURE)
+
+configure/grub-efi::
+	mkdir -p $(subst configure/,build/,$@)
+	cd $(subst configure/,build/,$@) && $(CONFIGURE) --with-platform=efi
+
+build/grub-pc build/grub-efi build/grub-of:: build/unifont.pff
+	$(MAKE) -C $@
+
+install/grub-pc install/grub-efi install/grub-of::
+	$(MAKE) -C $(subst install/,build/,$@) install DESTDIR=$(CURDIR)/debian/$(subst install/,,$@)/
+	for i in docs ; do \
+		cp debian/$$i.in debian/$(subst install/,,$@).$$i ; \
+	done
+
+clean::
+	chmod +x debian/script
+	sed -e "s/@cpu@/$(grub_cpu)/g" < debian/README.Debian.in \
+					> debian/README.Debian
+	-rm -f debian/grub-{pc,efi,of}.docs
+	-rm -rf build
 
 # Grab fixes from CVS using our version as reference.
 cvs-sync:
@@ -37,7 +69,6 @@ cvs-snapshot:
 	UVERSION=$$(dpkg-parsechangelog | grep Version \
 	                                | sed 's,Version: ,,g;s,-[0-9]*$$,,g'); \
 	cvs -d:pserver:anonymous@cvs.savannah.gnu.org:/cvsroot/grub export -d grub2-$$UVERSION -rHEAD grub2; \
-	(cd grub2-$$UVERSION ; sh autogen.sh); \
 	tar -czf grub2_$$UVERSION.orig.tar.gz grub2-$$UVERSION; \
 	rm -rf grub2-$$UVERSION; \
 	mv grub2_$$UVERSION.orig.tar.gz ../tarballs/

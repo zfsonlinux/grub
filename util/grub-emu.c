@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2003,2004,2005,2006  Free Software Foundation, Inc.
+ *  Copyright (C) 2003,2004,2005,2006,2007  Free Software Foundation, Inc.
  *
  *  GRUB is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <grub/mm.h>
 #include <grub/setjmp.h>
 #include <grub/fs.h>
-#include <grub/i386/pc/util/biosdisk.h>
+#include <grub/util/biosdisk.h>
 #include <grub/dl.h>
 #include <grub/machine/console.h>
 #include <grub/util/misc.h>
@@ -182,10 +182,15 @@ main (int argc, char *argv[])
       sleep (1);
     }
   
+  /* XXX: This is a bit unportable.  */
+  grub_util_biosdisk_init (args.dev_map);
+
+  grub_init_all ();
+
   /* Make sure that there is a root device.  */
   if (! args.root_dev)
     {
-      args.root_dev = grub_util_biosdisk_get_grub_dev (grub_guess_root_device (args.dir ? : DEFAULT_DIRECTORY));
+      args.root_dev = grub_util_get_grub_dev (grub_guess_root_device (args.dir ? : DEFAULT_DIRECTORY));
       if (! args.root_dev)
 	{
 	  grub_util_info ("guessing the root device failed, because of `%s'",
@@ -199,11 +204,6 @@ main (int argc, char *argv[])
   sprintf (prefix, "%s%s", args.root_dev, dir);
   free (dir);
   
-  /* XXX: This is a bit unportable.  */
-  grub_util_biosdisk_init (args.dev_map);
-
-  grub_init_all ();
-
   /* Start GRUB!  */
   if (setjmp (main_env) == 0)
     grub_main ();
