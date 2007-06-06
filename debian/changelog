@@ -1,3 +1,20 @@
+grub2 (1.95+20070604-1ubuntu1) gutsy; urgency=low
+
+  * Merge from Debian unstable. Remaining Ubuntu changes:
+    - Disable stack protector.
+    - Modify Maintainer value to match Debian-Maintainer-Field Spec
+
+ -- Albin Tonnerre <lut1n.tne@gmail.com>  Wed,  6 Jun 2007 12:45:39 +0200
+
+grub2 (1.95+20070604-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - patches/grub_probe_for_everyone.diff: Remove (merged).
+    - update-grub exports user-defined GRUB_CMDLINE_LINUX.  (Closes: #425453)
+    - Fix those nasty powerpc bugs.  (Closes: #422729)
+
+ -- Robert Millan <rmh@aybabtu.com>  Mon,  4 Jun 2007 21:30:55 +0200
+
 grub2 (1.95+20070520-1ubuntu1) gutsy; urgency=low
 
   * Merge from Debian unstable. Remaining Ubuntu changes:
