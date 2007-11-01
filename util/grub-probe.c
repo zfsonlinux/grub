@@ -3,19 +3,18 @@
  *  GRUB  --  GRand Unified Bootloader
  *  Copyright (C) 2005,2006,2007 Free Software Foundation, Inc.
  *
- *  GRUB is free software; you can redistribute it and/or modify
+ *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  GRUB is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with GRUB; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <config.h>
@@ -30,6 +29,8 @@
 #include <grub/util/getroot.h>
 #include <grub/term.h>
 
+#include <grub_probe_init.h>
+
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
@@ -37,15 +38,6 @@
 
 #define _GNU_SOURCE	1
 #include <getopt.h>
-
-#ifdef __NetBSD__
-/* NetBSD uses /boot for its boot block.  */
-# define DEFAULT_DIRECTORY	"/grub"
-#else
-# define DEFAULT_DIRECTORY	"/boot/grub"
-#endif
-
-#define DEFAULT_DEVICE_MAP	DEFAULT_DIRECTORY "/device.map"
 
 #define PRINT_FS	0
 #define PRINT_DRIVE	1
@@ -81,16 +73,13 @@ static void
 probe (const char *path)
 {
   char *device_name;
-  char *drive_name = 0;
+  char *drive_name = NULL;
   grub_device_t dev;
   grub_fs_t fs;
   
   device_name = grub_guess_root_device (path);
   if (! device_name)
-    {
-      fprintf (stderr, "cannot find a device for %s.\n", path);
-      goto end;
-    }
+    grub_util_error ("cannot find a device for %s.\n", path);
 
   if (print == PRINT_DEVICE)
     {
@@ -100,10 +89,7 @@ probe (const char *path)
 
   drive_name = grub_util_get_grub_dev (device_name);
   if (! drive_name)
-    {
-      fprintf (stderr, "cannot find a GRUB drive for %s.\n", device_name);
-      goto end;
-    }
+    grub_util_error ("cannot find a GRUB drive for %s.\n", device_name);
   
   if (print == PRINT_DRIVE)
     {
@@ -259,36 +245,15 @@ main (int argc, char *argv[])
   
   /* Initialize the emulated biosdisk driver.  */
   grub_util_biosdisk_init (dev_map ? : DEFAULT_DEVICE_MAP);
-  grub_pc_partition_map_init ();
-  grub_gpt_partition_map_init ();
-  grub_apple_partition_map_init ();
-  grub_raid_init ();
-  grub_lvm_init ();
   
-  /* Initialize filesystems.  */
-  grub_fat_init ();
-  grub_ext2_init ();
-  grub_ufs_init ();
-  grub_minix_init ();
-  grub_jfs_init ();
-  grub_xfs_init ();
+  /* Initialize all modules. */
+  grub_init_all ();
 
   /* Do it.  */
   probe (path);
   
   /* Free resources.  */
-  grub_ext2_fini ();
-  grub_fat_fini ();
-  grub_ufs_fini ();
-  grub_minix_fini ();
-  grub_jfs_fini ();
-  grub_xfs_fini ();
-  
-  grub_lvm_fini ();
-  grub_raid_fini ();
-  grub_gpt_partition_map_fini ();
-  grub_apple_partition_map_fini ();
-  grub_pc_partition_map_fini ();
+  grub_fini_all ();
   grub_util_biosdisk_fini ();
   
   free (dev_map);

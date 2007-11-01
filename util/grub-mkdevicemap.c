@@ -1,21 +1,20 @@
 /* grub-mkdevicemap.c - make a device map file automatically */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005 Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2007 Free Software Foundation, Inc.
  *
- *  GRUB is free software; you can redistribute it and/or modify
+ *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  GRUB is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with GRUB; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <config.h>
@@ -34,15 +33,6 @@
 
 #define _GNU_SOURCE	1
 #include <getopt.h>
-
-#ifdef __NetBSD__
-/* NetBSD uses /boot for its boot block.  */
-# define DEFAULT_DIRECTORY	"/grub"
-#else
-# define DEFAULT_DIRECTORY	"/boot/grub"
-#endif
-
-#define DEFAULT_DEVICE_MAP	DEFAULT_DIRECTORY "/device.map"
 
 #ifdef __linux__
 # if !defined(__GLIBC__) || \
@@ -412,8 +402,11 @@ make_device_map (const char *device_map, int floppy_disks)
 	  
 	  if (realpath (discn, name))
 	    {
+	      char *p;
 	      strcat (name, "/disc");
-	      fprintf (fp, "(hd%d)\t%s\n", num_hd, name);
+	      p = grub_util_get_disk_name (num_hd, name);
+	      fprintf (fp, "(%s)\t%s\n", p, name);
+	      free (p);
 	    }
 	  
 	  num_hd++;
@@ -431,7 +424,10 @@ make_device_map (const char *device_map, int floppy_disks)
       get_ide_disk_name (name, i);
       if (check_device (name))
 	{
-	  fprintf (fp, "(hd%d)\t%s\n", num_hd, name);
+	  char *p;
+	  p = grub_util_get_disk_name (num_hd, name);
+	  fprintf (fp, "(%s)\t%s\n", p, name);
+	  free (p);
 	  num_hd++;
 	}
     }
@@ -445,7 +441,10 @@ make_device_map (const char *device_map, int floppy_disks)
       get_ataraid_disk_name (name, i);
       if (check_device (name))
 	{
-	  fprintf (fp, "(hd%d)\t%s\n", num_hd, name);
+	  char *p;
+	  p = grub_util_get_disk_name (num_hd, name);
+	  fprintf (fp, "(%s)\t%s\n", p, name);
+	  free (p);
           num_hd++;
         }
     }
@@ -459,7 +458,10 @@ make_device_map (const char *device_map, int floppy_disks)
       get_scsi_disk_name (name, i);
       if (check_device (name))
 	{
-	  fprintf (fp, "(hd%d)\t%s\n", num_hd, name);
+	  char *p;
+	  p = grub_util_get_disk_name (num_hd, name);
+	  fprintf (fp, "(%s)\t%s\n", p, name);
+	  free (p);
 	  num_hd++;
 	}
     }
@@ -482,7 +484,10 @@ make_device_map (const char *device_map, int floppy_disks)
 	    get_dac960_disk_name (name, controller, drive);
 	    if (check_device (name))
 	      {
-		fprintf (fp, "(hd%d)\t%s\n", num_hd, name);
+		char *p;
+		p = grub_util_get_disk_name (num_hd, name);
+		fprintf (fp, "(%s)\t%s\n", p, name);
+		free (p);
 		num_hd++;
 	      }
 	  }
@@ -500,7 +505,10 @@ make_device_map (const char *device_map, int floppy_disks)
 	get_i2o_disk_name (name, unit);
 	if (check_device (name))
 	  {
-	    fprintf (fp, "(hd%d)\t%s\n", num_hd, name);
+	    char *p;
+	    p = grub_util_get_disk_name (num_hd, name);
+	    fprintf (fp, "(%s)\t%s\n", p, name);
+	    free (p);
 	    num_hd++;
 	  }
       }

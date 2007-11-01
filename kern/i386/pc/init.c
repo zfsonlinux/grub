@@ -1,20 +1,19 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2003,2004,2005,2006  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2003,2004,2005,2006,2007  Free Software Foundation, Inc.
  *
- *  This program is free software; you can redistribute it and/or modify
+ *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  GRUB is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <grub/kernel.h>
@@ -22,7 +21,6 @@
 #include <grub/machine/init.h>
 #include <grub/machine/memory.h>
 #include <grub/machine/console.h>
-#include <grub/machine/biosdisk.h>
 #include <grub/machine/kernel.h>
 #include <grub/types.h>
 #include <grub/err.h>
@@ -31,6 +29,7 @@
 #include <grub/loader.h>
 #include <grub/env.h>
 #include <grub/cache.h>
+#include <grub/time.h>
 
 struct mem_region
 {
@@ -46,6 +45,12 @@ static int num_regions;
 grub_addr_t grub_os_area_addr;
 grub_size_t grub_os_area_size;
 grub_size_t grub_lower_mem, grub_upper_mem;
+
+void
+grub_millisleep (grub_uint32_t ms)
+{
+  grub_millisleep_generic (ms);
+}
 
 void 
 grub_arch_sync_caches (void *address __attribute__ ((unused)),
@@ -121,6 +126,7 @@ compact_mem_regions (void)
 	grub_memmove (mem_regions + j, mem_regions + j + 1,
 		      (num_regions - j - 1) * sizeof (struct mem_region));
 	i--;
+        num_regions--;
       }
 }
 
@@ -226,9 +232,6 @@ grub_machine_init (void)
   
   if (! grub_os_area_addr)
     grub_fatal ("no upper memory");
-  
-  /* The memory system was initialized, thus register built-in devices.  */
-  grub_biosdisk_init ();
 }
 
 void
@@ -241,7 +244,6 @@ grub_machine_set_prefix (void)
 void
 grub_machine_fini (void)
 {
-  grub_biosdisk_fini ();
   grub_console_fini ();
 }
 
