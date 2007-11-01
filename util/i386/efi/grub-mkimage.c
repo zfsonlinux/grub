@@ -1,20 +1,19 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2004,2005,2006  Free Software Foundation, Inc.
+ *  Copyright (C) 2004,2005,2006,2007  Free Software Foundation, Inc.
  *
- *  This program is free software; you can redistribute it and/or modify
+ *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  GRUB is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <stdio.h>
@@ -30,6 +29,7 @@
 #include <grub/util/resolve.h>
 #include <grub/kernel.h>
 #include <grub/efi/pe32.h>
+#include <grub/machine/kernel.h>
 
 static const grub_uint8_t stub[] = GRUB_PE32_MSDOS_STUB;
 
@@ -48,7 +48,7 @@ align_pe32_section (Elf32_Addr addr)
 /* Read the whole kernel image. Return the pointer to a read image,
    and store the size in bytes in *SIZE.  */
 static char *
-read_kernel_module (const char *dir, size_t *size)
+read_kernel_module (const char *dir, char *prefix, size_t *size)
 {
   char *kernel_image;
   char *kernel_path;
@@ -57,6 +57,10 @@ read_kernel_module (const char *dir, size_t *size)
   *size = grub_util_get_image_size (kernel_path);
   kernel_image = grub_util_read_image (kernel_path);
   free (kernel_path);
+
+  if (GRUB_KERNEL_MACHINE_PREFIX + strlen (prefix) + 1 > GRUB_KERNEL_MACHINE_DATA_END)
+    grub_util_error ("prefix too long");
+  strcpy (kernel_image + 0x34 + GRUB_KERNEL_MACHINE_PREFIX, prefix);
 
   return kernel_image;
 }
@@ -838,7 +842,7 @@ make_header (FILE *out, Elf32_Addr text_address, Elf32_Addr data_address,
 
 /* Convert an ELF relocatable object into an EFI Application (PE32).  */
 void
-convert_elf (const char *dir, FILE *out, char *mods[])
+convert_elf (const char *dir, char *prefix, FILE *out, char *mods[])
 {
   char *kernel_image;
   size_t kernel_size;
@@ -855,7 +859,7 @@ convert_elf (const char *dir, FILE *out, char *mods[])
   Elf32_Addr end_address;
 
   /* Get the kernel image and check the format.  */
-  kernel_image = read_kernel_module (dir, &kernel_size);
+  kernel_image = read_kernel_module (dir, prefix, &kernel_size);
   e = (Elf32_Ehdr *) kernel_image;
   if (! check_elf_header (e, kernel_size))
     grub_util_error ("invalid ELF header");
@@ -912,6 +916,7 @@ convert_elf (const char *dir, FILE *out, char *mods[])
 static struct option options[] =
   {
     {"directory", required_argument, 0, 'd'},
+    {"prefix", required_argument, 0, 'p'},
     {"output", required_argument, 0, 'o'},
     {"help", no_argument, 0, 'h'},
     {"version", no_argument, 0, 'V'},
@@ -931,13 +936,14 @@ Usage: grub-mkimage -o FILE [OPTION]... [MODULES]\n\
 Make a bootable image of GRUB.\n\
 \n\
 -d, --directory=DIR     use images and modules under DIR [default=%s]\n\
+-p, --prefix=DIR        set grub_prefix directory [default=%s]\n\
 -o, --output=FILE       output a generated image to FILE\n\
 -h, --help              display this message and exit\n\
 -V, --version           print version information and exit\n\
 -v, --verbose           print verbose messages\n\
 \n\
 Report bugs to <%s>.\n\
-", GRUB_LIBDIR, PACKAGE_BUGREPORT);
+", GRUB_LIBDIR, DEFAULT_DIRECTORY, PACKAGE_BUGREPORT);
 
   exit (status);
 }
@@ -948,12 +954,13 @@ main (int argc, char *argv[])
   FILE *fp;
   char *output = NULL;
   char *dir = NULL;
+  char *prefix = NULL;
 
   progname = "grub-mkimage";
 
   while (1)
     {
-      int c = getopt_long (argc, argv, "d:o:hVv", options, 0);
+      int c = getopt_long (argc, argv, "d:p:o:hVv", options, 0);
       if (c == -1)
 	break;
 
@@ -971,6 +978,11 @@ main (int argc, char *argv[])
 	    if (output)
 	      free (output);
 	    output = xstrdup (optarg);
+	    break;
+	  case 'p':
+	    if (prefix)
+	      free (prefix);
+	    prefix = xstrdup (optarg);
 	    break;
 	  case 'V':
 	    printf ("grub-mkimage (%s) %s\n", PACKAGE_NAME, PACKAGE_VERSION);
@@ -991,7 +1003,7 @@ main (int argc, char *argv[])
   if (! fp)
     grub_util_error ("cannot open %s", output);
 
-  convert_elf (dir ? : GRUB_LIBDIR, fp, argv + optind);
+  convert_elf (dir ? : GRUB_LIBDIR, prefix ? : DEFAULT_DIRECTORY, fp, argv + optind);
 
   fclose (fp);
 

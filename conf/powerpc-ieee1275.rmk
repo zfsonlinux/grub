@@ -12,8 +12,8 @@ DEFSYMFILES += kernel_syms.lst
 
 kernel_elf_HEADERS = arg.h boot.h cache.h device.h disk.h dl.h elf.h elfload.h \
 	env.h err.h file.h fs.h kernel.h misc.h mm.h net.h parser.h rescue.h \
-	symbol.h term.h types.h powerpc/libgcc.h loader.h partition.h \
-	pc_partition.h ieee1275/ieee1275.h machine/time.h machine/kernel.h
+	symbol.h term.h time.h types.h powerpc/libgcc.h loader.h partition.h \
+	pc_partition.h ieee1275/ieee1275.h machine/kernel.h
 
 kernel_elf_symlist.c: $(addprefix include/grub/,$(kernel_elf_HEADERS)) config.h gensymlist.sh
 	/bin/sh gensymlist.sh $(filter %.h,$^) > $@ || (rm -f $@; exit 1)
@@ -32,25 +32,27 @@ sbin_UTILITIES += grub-emu
 endif
  
 # For grub-mkimage.
-grub_mkimage_SOURCES = util/powerpc/ieee1275/grub-mkimage.c util/misc.c \
+grub_mkimage_SOURCES = util/elf/grub-mkimage.c util/misc.c \
         util/resolve.c 
 
 # For grub-mkdevicemap.
-grub_mkdevicemap_SOURCES = util/grub-mkdevicemap.c util/misc.c
+grub_mkdevicemap_SOURCES = util/grub-mkdevicemap.c util/misc.c		\
+	util/ieee1275/get_disk_name.c
 
 # For grub-probe.
+util/grub-probe.c_DEPENDENCIES = grub_probe_init.h
 grub_probe_SOURCES = util/grub-probe.c	\
 	util/biosdisk.c	util/misc.c util/getroot.c	\
 	kern/device.c kern/disk.c kern/err.c kern/misc.c fs/fat.c	\
 	fs/ext2.c kern/parser.c kern/partition.c 			\
 	partmap/pc.c partmap/apple.c partmap/gpt.c 			\
-	fs/ufs.c fs/minix.c fs/hfs.c fs/jfs.c kern/fs.c	\
+	fs/ufs.c fs/minix.c fs/hfs.c fs/jfs.c fs/ntfs.c kern/fs.c	\
 	kern/env.c fs/fshelp.c fs/xfs.c fs/affs.c fs/sfs.c fs/hfsplus.c	\
-	disk/lvm.c disk/raid.c
+	disk/lvm.c disk/raid.c grub_probe_init.c
 
 # For grub-emu
 grub_emu_DEPENDENCIES = grub_script.tab.c grub_script.tab.h		\
-	grub_modules_init.h
+	grub_emu_init.h
 grub_emu_SOURCES = commands/boot.c commands/cat.c commands/cmp.c 	\
 	commands/configfile.c commands/help.c				\
 	commands/search.c commands/terminal.c commands/test.c 		\
@@ -59,6 +61,7 @@ grub_emu_SOURCES = commands/boot.c commands/cat.c commands/cmp.c 	\
 	disk/loopback.c							\
 	fs/affs.c fs/ext2.c fs/fat.c fs/fshelp.c fs/hfs.c fs/iso9660.c	\
 	fs/jfs.c fs/minix.c fs/sfs.c fs/ufs.c fs/xfs.c fs/hfsplus.c	\
+	fs/ntfs.c							\
 	io/gzio.c							\
 	kern/device.c kern/disk.c kern/dl.c kern/elf.c kern/env.c	\
 	kern/err.c kern/file.c kern/fs.c kern/loader.c kern/main.c	\
@@ -70,8 +73,8 @@ grub_emu_SOURCES = commands/boot.c commands/cat.c commands/cmp.c 	\
 	normal/menu_entry.c normal/misc.c normal/script.c		\
 	partmap/amiga.c	partmap/apple.c partmap/pc.c partmap/sun.c	\
 	partmap/acorn.c							\
-	util/console.c util/grub-emu.c util/misc.c			\
-	util/i386/pc/biosdisk.c util/i386/pc/getroot.c			\
+	util/console.c util/hostfs.c util/grub-emu.c util/misc.c	\
+	util/biosdisk.c util/getroot.c			\
 	util/powerpc/ieee1275/misc.c grub_script.tab.c grub_emu_init.c
 
 grub_emu_LDFLAGS = $(LIBCURSES)
@@ -102,7 +105,9 @@ pkgdata_MODULES = halt.mod \
 	linux.mod \
 	normal.mod \
 	reboot.mod \
-	suspend.mod
+	suspend.mod \
+        _multiboot.mod \
+        multiboot.mod
 
 # For _linux.mod.
 _linux_mod_SOURCES = loader/powerpc/ieee1275/linux.c
@@ -139,6 +144,19 @@ reboot_mod_LDFLAGS = $(COMMON_LDFLAGS)
 halt_mod_SOURCES = commands/ieee1275/halt.c
 halt_mod_CFLAGS = $(COMMON_CFLAGS)
 halt_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For _multiboot.mod
+_multiboot_mod_SOURCES = loader/powerpc/ieee1275/multiboot2.c \
+                         loader/multiboot2.c \
+                         loader/multiboot_loader.c
+_multiboot_mod_CFLAGS = $(COMMON_CFLAGS)
+_multiboot_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For multiboot.mod
+multiboot_mod_SOURCES = loader/multiboot_loader_normal.c
+multiboot_mod_CFLAGS = $(COMMON_CFLAGS)
+multiboot_mod_LDFLAGS = $(COMMON_LDFLAGS) 
+
 
 include $(srcdir)/conf/common.mk
 

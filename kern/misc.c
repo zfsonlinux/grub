@@ -3,19 +3,18 @@
  *  GRUB  --  GRand Unified Bootloader
  *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2006,2007  Free Software Foundation, Inc.
  *
- *  GRUB is free software; you can redistribute it and/or modify
+ *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  GRUB is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with GRUB; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <grub/misc.h>
@@ -24,6 +23,7 @@
 #include <stdarg.h>
 #include <grub/term.h>
 #include <grub/env.h>
+#include <grub/time.h>
 
 void *
 grub_memmove (void *dest, const void *src, grub_size_t n)
@@ -961,8 +961,8 @@ grub_utf16_to_utf8 (grub_uint8_t *dest, grub_uint16_t *src,
 	    }
 	  else
 	    {
-	      *dest++ = (code >> 16) | 0xE0;
-	      *dest++ = ((code >> 12) & 0x3F) | 0x80;
+	      *dest++ = (code >> 12) | 0xE0;
+	      *dest++ = ((code >> 6) & 0x3F) | 0x80;
 	      *dest++ = (code & 0x3F) | 0x80;
 	    }
 	}
@@ -1040,6 +1040,17 @@ grub_utf8_to_ucs4 (grub_uint32_t *dest, const grub_uint8_t *src,
     }
 
   return p - dest;
+}
+
+void
+grub_millisleep_generic (grub_uint32_t ms)
+{
+  grub_uint32_t end_at;
+
+  end_at = grub_get_rtc () + grub_div_roundup (ms * GRUB_TICKS_PER_SECOND, 1000);
+
+  while (grub_get_rtc () < end_at)
+    grub_cpu_idle ();
 }
 
 /* Abort GRUB. This function does not return.  */

@@ -1958,6 +1958,7 @@ fi
 case "$target_cpu"-"$platform" in
   i386-efi) ;;
   i386-pc) ;;
+  i386-linuxbios) ;;
   powerpc-ieee1275) ;;
   sparc64-ieee1275) ;;
   *) { { echo "$as_me:$LINENO: error: unsupported machine type" >&5

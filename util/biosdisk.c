@@ -3,19 +3,18 @@
  *  GRUB  --  GRand Unified Bootloader
  *  Copyright (C) 1999,2000,2001,2002,2003,2004,2006,2007  Free Software Foundation, Inc.
  *
- *  GRUB is free software; you can redistribute it and/or modify
+ *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  GRUB is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with GRUB; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <grub/disk.h>
@@ -732,7 +731,7 @@ grub_util_biosdisk_get_grub_dev (const char *os_dev)
     int find_partition (grub_disk_t disk __attribute__ ((unused)),
 			const grub_partition_t partition)
       {
- 	struct grub_pc_partition *pcdata = 0;
+ 	struct grub_pc_partition *pcdata = NULL;
 
 	if (strcmp (partition->partmap->name, "pc_partition_map") == 0)
 	  pcdata = partition->data;

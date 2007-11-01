@@ -1,20 +1,19 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2000,2001,2002,2003,2004,2005  Free Software Foundation, Inc.
+ *  Copyright (C) 2000,2001,2002,2003,2004,2005,2007  Free Software Foundation, Inc.
  *
- *  This program is free software; you can redistribute it and/or modify
+ *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  GRUB is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <grub/machine/vga.h>
@@ -67,26 +66,6 @@ static unsigned char *vga_font;
 static unsigned char saved_map_mask;
 static int page = 0;
 
-/* Read a byte from a port.  */
-static inline unsigned char
-inb (unsigned short port)
-{
-  unsigned char value;
-
-  asm volatile ("inb    %w1, %0" : "=a" (value) : "Nd" (port));
-  asm volatile ("outb   %%al, $0x80" : : );
-  
-  return value;
-}
-
-/* Write a byte to a port.  */
-static inline void
-outb (unsigned short port, unsigned char value)
-{
-  asm volatile ("outb   %b0, %w1" : : "a" (value), "Nd" (port));
-  asm volatile ("outb   %%al, $0x80" : : );
-}
-
 #define SEQUENCER_ADDR_PORT	0x3C4
 #define SEQUENCER_DATA_PORT	0x3C5
 #define MAP_MASK_REGISTER	0x02
@@ -107,7 +86,7 @@ static inline void
 wait_vretrace (void)
 {
   /* Wait until there is a vertical retrace.  */
-  while (! (inb (INPUT_STATUS1_REGISTER) & INPUT_STATUS1_VERTR_BIT));
+  while (! (grub_inb (INPUT_STATUS1_REGISTER) & INPUT_STATUS1_VERTR_BIT));
 }
 
 /* Get Map Mask Register.  */
@@ -117,12 +96,12 @@ get_map_mask (void)
   unsigned char old_addr;
   unsigned char old_data;
   
-  old_addr = inb (SEQUENCER_ADDR_PORT);
-  outb (SEQUENCER_ADDR_PORT, MAP_MASK_REGISTER);
+  old_addr = grub_inb (SEQUENCER_ADDR_PORT);
+  grub_outb (SEQUENCER_ADDR_PORT, MAP_MASK_REGISTER);
   
-  old_data = inb (SEQUENCER_DATA_PORT);
+  old_data = grub_inb (SEQUENCER_DATA_PORT);
   
-  outb (SEQUENCER_ADDR_PORT, old_addr);
+  grub_outb (SEQUENCER_ADDR_PORT, old_addr);
 
   return old_data;
 }
@@ -133,12 +112,12 @@ set_map_mask (unsigned char mask)
 {
   unsigned char old_addr;
   
-  old_addr = inb (SEQUENCER_ADDR_PORT);
-  outb (SEQUENCER_ADDR_PORT, MAP_MASK_REGISTER);
+  old_addr = grub_inb (SEQUENCER_ADDR_PORT);
+  grub_outb (SEQUENCER_ADDR_PORT, MAP_MASK_REGISTER);
   
-  outb (SEQUENCER_DATA_PORT, mask);
+  grub_outb (SEQUENCER_DATA_PORT, mask);
   
-  outb (SEQUENCER_ADDR_PORT, old_addr);
+  grub_outb (SEQUENCER_ADDR_PORT, old_addr);
 }
 
 /* Set Read Map Register.  */
@@ -147,12 +126,12 @@ set_read_map (unsigned char map)
 {
   unsigned char old_addr;
   
-  old_addr = inb (GRAPHICS_ADDR_PORT);
+  old_addr = grub_inb (GRAPHICS_ADDR_PORT);
 
-  outb (GRAPHICS_ADDR_PORT, READ_MAP_REGISTER);
-  outb (GRAPHICS_DATA_PORT, map);
+  grub_outb (GRAPHICS_ADDR_PORT, READ_MAP_REGISTER);
+  grub_outb (GRAPHICS_DATA_PORT, map);
 
-  outb (GRAPHICS_ADDR_PORT, old_addr);
+  grub_outb (GRAPHICS_ADDR_PORT, old_addr);
 }
 
 /* Set start address.  */
@@ -161,15 +140,15 @@ set_start_address (unsigned int start)
 {
   unsigned char old_addr;
   
-  old_addr = inb (CRTC_ADDR_PORT);
+  old_addr = grub_inb (CRTC_ADDR_PORT);
   
-  outb (CRTC_ADDR_PORT, START_ADDR_LOW_REGISTER);
-  outb (CRTC_DATA_PORT, start & 0xFF);
+  grub_outb (CRTC_ADDR_PORT, START_ADDR_LOW_REGISTER);
+  grub_outb (CRTC_DATA_PORT, start & 0xFF);
   
-  outb (CRTC_ADDR_PORT, START_ADDR_HIGH_REGISTER);
-  outb (CRTC_DATA_PORT, start >> 8);
+  grub_outb (CRTC_ADDR_PORT, START_ADDR_HIGH_REGISTER);
+  grub_outb (CRTC_DATA_PORT, start >> 8);
 
-  outb (CRTC_ADDR_PORT, old_addr);
+  grub_outb (CRTC_ADDR_PORT, old_addr);
 }
 
 static grub_err_t
