@@ -1,21 +1,20 @@
 /* play.c - command to play a tune  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2005  Free Software Foundation, Inc.
+ *  Copyright (C) 2005,2007  Free Software Foundation, Inc.
  *
- *  GRUB is free software; you can redistribute it and/or modify
+ *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  GRUB is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with GRUB; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /* Lots of this file is borrowed from GNU/Hurd generic-speaker driver.  */
@@ -28,24 +27,9 @@
 #include <grub/term.h>
 #include <grub/misc.h>
 #include <grub/machine/time.h>
+#include <grub/cpu/io.h>
 
 #define BASE_TEMPO 120
-
-/* Read a byte from a port.  */
-static inline unsigned char
-inb (unsigned short port)
-{
-  unsigned char value;
-  asm volatile ("inb    %w1, %0" : "=a" (value) : "Nd" (port));
-  return value;
-}
-
-/* Write a byte to a port.  */
-static inline void
-outb (unsigned short port, unsigned char value)
-{
-  asm volatile ("outb   %b0, %w1" : : "a" (value), "Nd" (port));
-}
 
 /* The speaker port.  */
 #define SPEAKER			0x61
@@ -131,8 +115,8 @@ beep_off (void)
 {
   unsigned char status;
 
-  status = inb (SPEAKER);
-  outb (SPEAKER, status & ~(SPEAKER_TMR2 | SPEAKER_DATA));
+  status = grub_inb (SPEAKER);
+  grub_outb (SPEAKER, status & ~(SPEAKER_TMR2 | SPEAKER_DATA));
 }
 
 static void
@@ -149,14 +133,14 @@ beep_on (short pitch)
   counter = PIT_FREQUENCY / pitch;
 
   /* Program timer 2.  */
-  outb (PIT_CTRL, PIT_CTRL_SELECT_2 | PIT_CTRL_READLOAD_WORD
+  grub_outb (PIT_CTRL, PIT_CTRL_SELECT_2 | PIT_CTRL_READLOAD_WORD
 	| PIT_CTRL_SQUAREWAVE_GEN | PIT_CTRL_COUNT_BINARY);
-  outb (PIT_COUNTER_2, counter & 0xff);		/* LSB */
-  outb (PIT_COUNTER_2, (counter >> 8) & 0xff);	/* MSB */
+  grub_outb (PIT_COUNTER_2, counter & 0xff);		/* LSB */
+  grub_outb (PIT_COUNTER_2, (counter >> 8) & 0xff);	/* MSB */
 
   /* Start speaker.  */
-  status = inb (SPEAKER);
-  outb (SPEAKER, status | SPEAKER_TMR2 | SPEAKER_DATA);
+  status = grub_inb (SPEAKER);
+  grub_outb (SPEAKER, status | SPEAKER_TMR2 | SPEAKER_DATA);
 
 }
 

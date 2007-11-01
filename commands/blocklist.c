@@ -1,21 +1,20 @@
 /* blocklist.c - print the block list of a file */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2006  Free Software Foundation, Inc.
+ *  Copyright (C) 2006,2007  Free Software Foundation, Inc.
  *
- *  GRUB is free software; you can redistribute it and/or modify
+ *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  GRUB is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with GRUB; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <grub/normal.h>
@@ -37,12 +36,12 @@ grub_cmd_blocklist (struct grub_arg_list *state __attribute__ ((unused)),
   unsigned num_sectors = 0;
   int num_entries = 0;
   grub_disk_addr_t part_start = 0;
-  auto void read_blocklist (grub_disk_addr_t sector, unsigned offset,
+  auto void NESTED_FUNC_ATTR read_blocklist (grub_disk_addr_t sector, unsigned offset,
 			    unsigned length);
-  auto void print_blocklist (grub_disk_addr_t sector, unsigned num,
+  auto void NESTED_FUNC_ATTR print_blocklist (grub_disk_addr_t sector, unsigned num,
 			     unsigned offset, unsigned length);
   
-  void read_blocklist (grub_disk_addr_t sector, unsigned offset,
+  void NESTED_FUNC_ATTR read_blocklist (grub_disk_addr_t sector, unsigned offset,
 		       unsigned length)
     {
       if (num_sectors > 0)
@@ -67,7 +66,7 @@ grub_cmd_blocklist (struct grub_arg_list *state __attribute__ ((unused)),
 	print_blocklist (sector, 0, offset, length);
     }
   
-  void print_blocklist (grub_disk_addr_t sector, unsigned num,
+  void NESTED_FUNC_ATTR print_blocklist (grub_disk_addr_t sector, unsigned num,
 			unsigned offset, unsigned length)
     {
       if (num_entries++)
