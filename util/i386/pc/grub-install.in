@@ -1,21 +1,20 @@
 #! /bin/sh
 
 # Install GRUB on your drive.
-# Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2006 Free Software Foundation, Inc.
+# Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2006,2007  Free Software Foundation, Inc.
 #
-# This file is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# GRUB is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# General Public License for more details.
+# GRUB is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St - Suite 330, Boston, MA 02110, USA.
+# along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
 
 # Initialize some variables.
 transform="@program_transform_name@"
@@ -45,6 +44,9 @@ no_floppy=
 force_lba=
 recheck=no
 debug=no
+
+# for make_system_path_relative_to_its_root()
+. ${libdir}/grub/update-grub_lib
 
 # Usage: usage
 # Print the usage.
@@ -216,18 +218,15 @@ if test "x$fs_module" = x -a "x$modules" = x; then
     exit 1
 fi
 
-# Then the partition map module.
-partmap_module=`$grub_probe --target=partmap --device-map=${device_map} ${grubdir}`
-if test "x$partmap_module" = x -a "x$modules" = x; then
-    echo "Auto-detection of a partition map module failed." 1>&2
-    echo "Please specify the module with the option \`--modules' explicitly." 1>&2
-    exit 1
-fi
+# Then the partition map module.  In order to support partition-less media,
+# this command is allowed to fail (--target=fs already grants us that the
+# filesystem will be accessible).
+partmap_module=`$grub_probe --target=partmap --device-map=${device_map} ${grubdir} 2> /dev/null`
 
 # _chain is often useful
-modules="$modules $fs_module $partmap_module _chain"
+modules="$modules $fs_module $partmap_module biosdisk _chain"
 
-$grub_mkimage --output=${grubdir}/core.img $modules || exit 1
+$grub_mkimage --output=${grubdir}/core.img --prefix=`make_system_path_relative_to_its_root ${grubdir}` $modules || exit 1
 
 # Now perform the installation.
 $grub_setup --directory=${grubdir} --device-map=${device_map} \

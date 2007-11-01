@@ -1,10 +1,92 @@
-grub2 (1.95+20070604-1ubuntu1) gutsy; urgency=low
+grub2 (1.95+20071101-1) unstable; urgency=low
 
-  * Merge from Debian unstable. Remaining Ubuntu changes:
-    - Disable stack protector.
-    - Modify Maintainer value to match Debian-Maintainer-Field Spec
+  * New CVS snapshot.
+    - patches/linuxbios.diff: Remove (supported in upstream now).
 
- -- Albin Tonnerre <lut1n.tne@gmail.com>  Wed,  6 Jun 2007 12:45:39 +0200
+ -- Robert Millan <rmh@aybabtu.com>  Thu,  1 Nov 2007 13:18:51 +0100
+
+grub2 (1.95+20071004-2) unstable; urgency=low
+
+  * Rename debian/grub-of.* to debian/grub-ieee1275.*.
+  * Add debian/grub-linuxbios.{postinst,dirs,install}.
+  * rules: Fix/Overrride lintian warnings (unstripped-binary-or-object).
+  * Remove grub-linuxbios.postinst.
+
+ -- Robert Millan <rmh@aybabtu.com>  Wed, 10 Oct 2007 23:56:35 +0200
+
+grub2 (1.95+20071004-1) unstable; urgency=low
+
+  * New CVS snapshot.
+  * Add grub-linuxbios package.
+    - patches/linuxbios.diff
+    - control
+    - rules
+  * Rename grub-of to grub-ieee1275 to match with upstream conventions.
+    - control
+    - rules
+
+ -- Robert Millan <rmh@aybabtu.com>  Thu,  4 Oct 2007 14:42:30 +0200
+
+grub2 (1.95+20070829-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - Includes fix for parallel builds.
+  * rules: Append -j flag to $(MAKE) to take advantage of >1 processors.
+  * Add reference to /usr/share/common-licenses.
+    - debian/copyright
+    - debian/control (all packages): Add base-files (>= 4.0.1) dependency.
+
+ -- Robert Millan <rmh@debian.org>  Sat,  1 Sep 2007 19:00:22 +0200
+
+grub2 (1.95+20070828-2) unstable; urgency=low
+
+  * control (grub-of): Make depends on powerpc-ibm-utils versioned as
+    >= 1.0.6 (older versions don't have -a flag).
+
+ -- Robert Millan <rmh@debian.org>  Tue, 28 Aug 2007 23:32:32 +0200
+
+grub2 (1.95+20070828-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - Adds ntfs support.
+    - Fixes a pair of issues indirectly breaking grub-probe on powerpc.
+      (Closes: #431488)
+    - patches/disable_xfs.diff: Resync.
+    - copyright: License upgraded to GPLv3.
+  * control (grub-of Depends): Add powerpc-utils (for nvsetenv) and bc.
+
+ -- Robert Millan <rmh@debian.org>  Tue, 28 Aug 2007 21:24:14 +0200
+
+grub2 (1.95+20070626-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - More fixes to cope with unreadable /.  (Closes: #427289)
+    - update-grub supports multiple terminals.
+  * control (Build-Depends): Add genisoimage.
+  * patches/partmap_fallback.diff: Remove.  It didn't archieve anything as
+    it also needs support for proper identification of raid / lvm (this is
+    being worked on).
+  * patches/disable_xfs.diff: Disable xfs in grub-probe.
+  * grub-rescue-pc.README.Debian: New.  Explain how to use the rescue
+    images.
+
+ -- Robert Millan <rmh@debian.org>  Tue, 26 Jun 2007 08:39:14 +0200
+
+grub2 (1.95+20070614-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - update-grub is tollerant to unreadable / (as long as /boot is
+    accessible). (Closes: #427289)
+  * grub-pc.postinst: Generate new grub.cfg when menu.lst exists.
+  * New package grub-rescue-pc.
+    - control: Add it.
+    - README.Debian.in: Remove obsolete documentation.
+    - rules: Build rescue images using grub-mkrescue.
+    - grub-rescue-pc.dirs: Prepare their directory.
+    - grub-rescue-pc.install: Install them.
+  * legacy/update-grub: Fix core.img detection on separate /boot.
+
+ -- Robert Millan <rmh@debian.org>  Thu, 14 Jun 2007 08:17:21 +0200
 
 grub2 (1.95+20070604-1) unstable; urgency=low
 
@@ -14,14 +96,6 @@ grub2 (1.95+20070604-1) unstable; urgency=low
     - Fix those nasty powerpc bugs.  (Closes: #422729)
 
  -- Robert Millan <rmh@aybabtu.com>  Mon,  4 Jun 2007 21:30:55 +0200
-
-grub2 (1.95+20070520-1ubuntu1) gutsy; urgency=low
-
-  * Merge from Debian unstable. Remaining Ubuntu changes:
-    - Disable stack protector.
-    - Modify Maintainer value to match Debian-Maintainer-Field Spec
-
- -- Albin Tonnerre <lut1n.tne@gmail.com>  Mon, 21 May 2007 19:54:10 +0200
 
 grub2 (1.95+20070520-1) unstable; urgency=low
 
@@ -167,14 +241,6 @@ grub2 (1.95+20070505-1) unstable; urgency=low
 
  -- Robert Millan <rmh@aybabtu.com>  Sat,  5 May 2007 01:49:07 +0200
 
-grub2 (1.95-5ubuntu1) gutsy; urgency=low
-
-  * Merge from Debian unstable. Remaining Ubuntu changes:
-    -> Update to some CVS snapshot.
-    -> Disable stack protector.
-
- -- Jeremie Corbier <jcorbier@ubuntu.com>  Mon, 30 Apr 2007 17:31:45 -0700
-
 grub2 (1.95-5) unstable; urgency=low
 
   * Fix FTBFS on kFreeBSD. Thanks to Aurelien Jarno <aurel32@debian.org>
@@ -207,15 +273,6 @@ grub2 (1.95-3) unstable; urgency=low
 
  -- Otavio Salvador <otavio@ossystems.com.br>  Tue, 20 Mar 2007 23:46:38 -0300
 
-grub2 (1.95-2ubuntu1) feisty; urgency=low
-
-  * Merge from Debian unstable. Remaining changes:
-    -> Update to some CVS snapshot.
-    -> Disable stack protector.
-  * Maintainer field set to Ubuntu MOTU.
-
- -- Jeremie Corbier <jcorbier@ubuntu.com>  Thu, 22 Feb 2007 20:10:53 -0800
-
 grub2 (1.95-2) unstable; urgency=low
 
   [ Robert Millan ]
@@ -228,26 +285,6 @@ grub2 (1.95-2) unstable; urgency=low
   * Rewrite Architecture line back to hardcoded list :(.  (Closes: #398060)
 
  -- Otavio Salvador <otavio@debian.org>  Mon, 11 Dec 2006 05:08:41 -0200
-
-grub2 (1.95-1ubuntu3) feisty; urgency=low
-
-  * Disable stack protector on powerpc.
-
- -- Jeff Bailey <jbailey@ubuntu.com>  Sun, 10 Dec 2006 23:46:45 -0500
-
-grub2 (1.95-1ubuntu2) feisty; urgency=low
-
-  * Update to current CVS snapshot
-
-  * Disable stack protector.
-
- -- Jeff Bailey <jbailey@ubuntu.com>  Sun, 10 Dec 2006 20:42:47 -0500
-
-grub2 (1.95-1ubuntu1) feisty; urgency=low
-
-  * s/any-// in debian/control -- Soyuz doesn't support it.
-
- -- Scott James Remnant <scott@ubuntu.com>  Wed, 29 Nov 2006 14:02:55 +0000
 
 grub2 (1.95-1) unstable; urgency=low
 

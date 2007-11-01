@@ -1,21 +1,20 @@
 /* linux.c - boot Linux zImage or bzImage */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005  Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2007  Free Software Foundation, Inc.
  *
- *  This program is free software; you can redistribute it and/or modify
+ *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  GRUB is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <grub/loader.h>
@@ -170,7 +169,10 @@ grub_rescue_cmd_linux (int argc, char *argv[])
   if (grub_linux_real_addr + GRUB_LINUX_SETUP_MOVE_SIZE
       > (char *) grub_lower_mem)
     {
-      grub_error (GRUB_ERR_OUT_OF_RANGE, "too small lower memory");
+      grub_error (GRUB_ERR_OUT_OF_RANGE,
+		 "too small lower memory (0x%x > 0x%x)",
+		 grub_linux_real_addr + GRUB_LINUX_SETUP_MOVE_SIZE,
+		 (char *) grub_lower_mem);
       goto fail;
     }
 
