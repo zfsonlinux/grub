@@ -17,6 +17,7 @@
  */
 
 #include <grub/machine/console.h>
+#include <grub/cpu/io.h>
 #include <grub/types.h>
 
 #define COLS	80
@@ -25,6 +26,13 @@
 static int grub_curr_x, grub_curr_y;
 
 #define VGA_TEXT_SCREEN		0xb8000
+
+#define CRTC_ADDR_PORT		0x3D4
+#define CRTC_DATA_PORT		0x3D5
+
+#define CRTC_CURSOR		0x0a
+#define CRTC_CURSOR_ADDR_HIGH	0x0e
+#define CRTC_CURSOR_ADDR_LOW	0x0f
 
 static void
 screen_write_char (int x, int y, short c)
@@ -39,7 +47,17 @@ screen_read_char (int x, int y)
 }
 
 static void
-inc_y ()
+update_cursor (void)
+{
+  unsigned int pos = grub_curr_y * COLS + grub_curr_x;
+  grub_outb (CRTC_CURSOR_ADDR_HIGH, CRTC_ADDR_PORT);
+  grub_outb (pos >> 8, CRTC_DATA_PORT);
+  grub_outb (CRTC_CURSOR_ADDR_LOW, CRTC_ADDR_PORT);
+  grub_outb (pos & 0xFF, CRTC_DATA_PORT);
+}
+
+static void
+inc_y (void)
 {
   grub_curr_x = 0;
   if (grub_curr_y < ROWS - 1)
@@ -54,7 +72,7 @@ inc_y ()
 }
 
 static void
-inc_x ()
+inc_x (void)
 {
   if (grub_curr_x >= COLS - 2)
     inc_y ();
@@ -78,13 +96,16 @@ grub_console_real_putchar (int c)
 	grub_curr_x = 0;
 	break;
       default:
-	screen_write_char (grub_curr_x, grub_curr_y, c | (grub_console_cur_color << 8));
+	screen_write_char (grub_curr_x,
+			   grub_curr_y, c | (grub_console_cur_color << 8));
 	inc_x ();
     }
+
+  update_cursor ();
 }
 
 grub_uint16_t
-grub_console_getxy ()
+grub_console_getxy (void)
 {
   return (grub_curr_x << 8) | grub_curr_y;
 }
@@ -94,18 +115,22 @@ grub_console_gotoxy (grub_uint8_t x, grub_uint8_t y)
 {
   grub_curr_x = x;
   grub_curr_y = y;
+  update_cursor ();
 }
 
 void
-grub_console_cls ()
+grub_console_cls (void)
 {
   int i;
   for (i = 0; i < ROWS * COLS; i++)
-    ((short *) VGA_TEXT_SCREEN)[i] = ' ';
+    ((short *) VGA_TEXT_SCREEN)[i] = ' ' | (grub_console_cur_color << 8);
 }
 
 void
-grub_console_setcursor (int on __attribute__ ((unused)))
+grub_console_setcursor (int on)
 {
-  /* Not implemented.  */
+  grub_uint8_t old;
+  grub_outb (CRTC_CURSOR, CRTC_ADDR_PORT);
+  old = grub_inb (CRTC_DATA_PORT);
+  grub_outb ((old & ~(on << 5)), CRTC_DATA_PORT);
 }

@@ -49,7 +49,8 @@ grub_script_execute_argument_to_string (struct grub_script_arg *arg)
       if (argi->type == 1)
 	{
 	  val = grub_env_get (argi->str);
-	  size += grub_strlen (val);
+	  if (val)
+	    size += grub_strlen (val);
 	}
       else
 	size += grub_strlen (argi->str);
@@ -67,7 +68,8 @@ grub_script_execute_argument_to_string (struct grub_script_arg *arg)
       if (argi->type == 1)
 	{
 	  val = grub_env_get (argi->str);
-	  grub_strcat (chararg, val);
+	  if (val)
+	    grub_strcat (chararg, val);
 	}
       else
 	grub_strcat (chararg, argi->str);
@@ -99,6 +101,9 @@ grub_script_execute_cmdline (struct grub_script_cmd *cmd)
   grubcmd = grub_command_find (cmdline->cmdname);
   if (! grubcmd)
     {
+      /* Ignore errors.  */
+      grub_errno = GRUB_ERR_NONE;
+
       /* It's not a GRUB command, try all functions.  */
       func = grub_script_function_find (cmdline->cmdname);
       if (! func)
@@ -231,7 +236,7 @@ grub_script_execute_menuentry (struct grub_script_cmd *cmd)
       return grub_errno;
     }
 
-  /* XXX: When this fails, the memory should be free'ed?  */
+  /* XXX: When this fails, the memory should be freed?  */
   return grub_normal_menu_addentry (title, script,
 				    cmd_menuentry->sourcecode);
 }

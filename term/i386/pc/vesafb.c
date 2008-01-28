@@ -54,7 +54,7 @@ struct grub_colored_char
 
 struct grub_virtual_screen
 {
-  /* Dimensions of the virual screen.  */
+  /* Dimensions of the virtual screen.  */
   grub_uint32_t width;
   grub_uint32_t height;
 
@@ -77,7 +77,7 @@ struct grub_virtual_screen
   grub_uint8_t fg_color;
   grub_uint8_t bg_color;
 
-  /* Text buffer for virual screen. Contains (columns * rows) number
+  /* Text buffer for virtual screen. Contains (columns * rows) number
      of entries.  */
   struct grub_colored_char *text_buffer;
 };
@@ -376,7 +376,7 @@ scroll_up (void)
       virtual_screen.text_buffer[i].index = 0;
     }
 
-  /* Scroll frambuffer with one line to up.  */
+  /* Scroll framebuffer with one line to up.  */
   grub_memmove (framebuffer,
                 framebuffer
                 + bytes_per_scan_line * virtual_screen.char_height,
@@ -565,13 +565,6 @@ grub_virtual_screen_setcolorstate (grub_term_color_state state)
 }
 
 static void
-grub_virtual_screen_setcolor (grub_uint8_t normal_color __attribute__ ((unused)),
-			      grub_uint8_t highlight_color __attribute__ ((unused)))
-{
-  /* FIXME */
-}
-
-static void
 grub_vesafb_setcursor (int on)
 {
   if (virtual_screen.cursor_state != on)
@@ -599,7 +592,6 @@ static struct grub_term grub_vesafb_term =
     .gotoxy = grub_vesafb_gotoxy,
     .cls = grub_vesafb_cls,
     .setcolorstate = grub_virtual_screen_setcolorstate,
-    .setcolor = grub_virtual_screen_setcolor,
     .setcursor = grub_vesafb_setcursor,
     .flags = 0,
     .next = 0

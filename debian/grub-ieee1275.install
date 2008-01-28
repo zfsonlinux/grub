@@ -1,4 +1,5 @@
-debian/presubj		usr/share/bug/grub-ieee1275
-debian/script		usr/share/bug/grub-ieee1275
-debian/default		etc
-build/unifont.pff	usr/share/grub
+debian/presubj			usr/share/bug/grub-ieee1275
+debian/script			usr/share/bug/grub-ieee1275
+debian/default			etc
+debian/grub.d			etc
+debian/update-grub2		usr/sbin

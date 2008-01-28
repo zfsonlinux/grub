@@ -1,7 +1,7 @@
 /* grub-probe.c - probe device information for a given path */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2005,2006,2007 Free Software Foundation, Inc.
+ *  Copyright (C) 2005,2006,2007,2008 Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include <grub/util/misc.h>
 #include <grub/device.h>
 #include <grub/disk.h>
+#include <grub/file.h>
 #include <grub/fs.h>
 #include <grub/partition.h>
 #include <grub/pc_partition.h>
@@ -35,14 +36,18 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 
 #define _GNU_SOURCE	1
 #include <getopt.h>
 
-#define PRINT_FS	0
-#define PRINT_DRIVE	1
-#define PRINT_DEVICE	2
-#define PRINT_PARTMAP	3
+enum {
+  PRINT_FS,
+  PRINT_DRIVE,
+  PRINT_DEVICE,
+  PRINT_PARTMAP,
+  PRINT_ABSTRACTION,
+};
 
 int print = PRINT_FS;
 
@@ -74,8 +79,10 @@ probe (const char *path)
 {
   char *device_name;
   char *drive_name = NULL;
-  grub_device_t dev;
-  grub_fs_t fs;
+  char *grub_path = NULL;
+  char *filebuf_via_grub = NULL, *filebuf_via_sys = NULL;
+  int abstraction_type;
+  grub_device_t dev = NULL;
   
   device_name = grub_guess_root_device (path);
   if (! device_name)
@@ -84,6 +91,28 @@ probe (const char *path)
   if (print == PRINT_DEVICE)
     {
       printf ("%s\n", device_name);
+      goto end;
+    }
+
+  abstraction_type = grub_util_get_dev_abstraction (device_name);
+  /* No need to check for errors; lack of abstraction is permissible.  */
+  
+  if (print == PRINT_ABSTRACTION)
+    {
+      char *abstraction_name;
+      switch (abstraction_type)
+	{
+	case GRUB_DEV_ABSTRACTION_NONE:
+	  grub_util_info ("did not find LVM/RAID in %s, assuming raw device", device_name);
+	  goto end;
+	case GRUB_DEV_ABSTRACTION_LVM:
+	  abstraction_name = "lvm";
+	  break;
+	case GRUB_DEV_ABSTRACTION_RAID:
+	  abstraction_name = "raid";
+	  break;
+	}
+      printf ("%s\n", abstraction_name);
       goto end;
     }
 
@@ -122,16 +151,50 @@ probe (const char *path)
       goto end;
     }
 
-  fs = grub_fs_probe (dev);
-  if (! fs)
-    grub_util_error ("%s", grub_errmsg);
+  if (print == PRINT_FS)
+    {
+      struct stat st;
+      grub_fs_t fs;
 
-  printf ("%s\n", fs->name);
-  
-  grub_device_close (dev);
+      stat (path, &st);
+
+      if (st.st_mode == S_IFREG)
+	{
+	  /* Regular file.  Verify that we can read it properly.  */
+
+	  grub_file_t file;
+	  grub_util_info ("reading %s via OS facilities", path);
+	  filebuf_via_sys = grub_util_read_image (path);
+	  
+	  grub_util_info ("reading %s via GRUB facilities", path);
+	  asprintf (&grub_path, "(%s)%s", drive_name, path);
+	  file = grub_file_open (grub_path);
+	  filebuf_via_grub = xmalloc (file->size);
+	  grub_file_read (file, filebuf_via_grub, file->size);
+	  
+	  grub_util_info ("comparing");
+	  
+	  if (memcmp (filebuf_via_grub, filebuf_via_sys, file->size))
+	    grub_util_error ("files differ");
+
+	  fs = file->fs;
+	}
+      else
+	{
+	  fs = grub_fs_probe (dev);
+	  if (! fs)
+	    grub_util_error ("%s", grub_errmsg);
+	}
+
+      printf ("%s\n", fs->name);
+    }
 
  end:
-  
+  if (dev)
+    grub_device_close (dev);
+  free (grub_path);
+  free (filebuf_via_grub);
+  free (filebuf_via_sys);
   free (device_name);
   free (drive_name);
 }
@@ -159,8 +222,8 @@ Usage: grub-probe [OPTION]... PATH\n\
 Probe device information for a given path.\n\
 \n\
   -m, --device-map=FILE     use FILE as the device map [default=%s]\n\
-  -t, --target=(fs|drive|device|partmap)\n\
-                            print filesystem module, GRUB drive, system device or partition map module [default=fs]\n\
+  -t, --target=(fs|drive|device|partmap|abstraction)\n\
+                            print filesystem module, GRUB drive, system device, partition map module or abstraction module [default=fs]\n\
   -h, --help                display this message and exit\n\
   -V, --version             print version information and exit\n\
   -v, --verbose             print verbose messages\n\
@@ -206,6 +269,8 @@ main (int argc, char *argv[])
 	      print = PRINT_DEVICE;
 	    else if (!strcmp (optarg, "partmap"))
 	      print = PRINT_PARTMAP;
+	    else if (!strcmp (optarg, "abstraction"))
+	      print = PRINT_ABSTRACTION;
 	    else
 	      usage (1);
 	    break;

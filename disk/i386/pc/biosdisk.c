@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -74,7 +74,10 @@ grub_biosdisk_iterate (int (*hook) (const char *name))
     {
       if (grub_biosdisk_rw_standard (0x02, drive, 0, 0, 1, 1,
 				     GRUB_MEMORY_MACHINE_SCRATCH_SEG) != 0)
-	break;
+	{
+	  grub_dprintf ("disk", "Read error when probing drive 0x%2x\n", drive);
+	  break;
+	}
       
       if (grub_biosdisk_call_hook (hook, drive))
 	return 1;
@@ -312,12 +315,25 @@ static struct grub_disk_dev grub_biosdisk_dev =
     .next = 0
   };
 
+static void
+grub_disk_biosdisk_fini (void)
+{
+  grub_disk_dev_unregister (&grub_biosdisk_dev);
+}
+
 GRUB_MOD_INIT(biosdisk)
 {
+  if (grub_disk_firmware_is_tainted)
+    {
+      grub_printf ("Firmware is marked as tainted, refusing to initialize.\n");
+      return;
+    }
+  grub_disk_firmware_fini = grub_disk_biosdisk_fini;
+
   grub_disk_dev_register (&grub_biosdisk_dev);
 }
 
 GRUB_MOD_FINI(biosdisk)
 {
-  grub_disk_dev_unregister (&grub_biosdisk_dev);
+  grub_disk_biosdisk_fini ();
 }

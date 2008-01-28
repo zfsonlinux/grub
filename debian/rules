@@ -19,21 +19,19 @@ export CXXFLAGS := $(CFLAGS)
 CONFIGURE = CC="cc" CXX="g++" CPPFLAGS="" LDFLAGS="" \
 	$(CURDIR)/configure --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --includedir="\$${prefix}/include" \
 	--mandir="\$${prefix}/share/man" --infodir="\$${prefix}/share/info" --sysconfdir=/etc --localstatedir=/var \
-	--libexecdir="\$${prefix}/lib/$(package)" --disable-maintainer-mode --disable-dependency-tracking --srcdir=$(CURDIR)
+	--libexecdir="\$${prefix}/lib/$(package)" --disable-maintainer-mode --disable-dependency-tracking --srcdir=$(CURDIR) \
+	--enable-grub-emu
 
-build/unifont.pff: util/unifont2pff.rb /usr/share/unifont/unifont.hex
-	mkdir -p build
-	ruby $^ > $@
+AUTOGEN_FILES = configure config.h.in conf/*.mk
 
-configure/grub-pc configure/grub-ieee1275 configure/grub-efi configure/grub-linuxbios::
+$(AUTOGEN_FILES): autogen.sh configure.ac conf/*.rmk
+	./autogen.sh
+
+configure/grub-pc configure/grub-ieee1275 configure/grub-efi configure/grub-linuxbios:: $(AUTOGEN_FILES)
 	mkdir -p $(subst configure/,build/,$@)
-	for i in conf/*.rmk ; do \
-		ruby genmk.rb < $$i > `echo $$i | sed -e "s/\.rmk$$/.mk/g"` ; \
-	done
-	autoconf
 	cd $(subst configure/,build/,$@) && $(CONFIGURE) --with-platform=$(subst configure/grub-,,$@)
 
-build/grub-pc build/grub-efi build/grub-ieee1275 build/grub-linuxbios:: build/unifont.pff
+build/grub-pc build/grub-efi build/grub-ieee1275 build/grub-linuxbios::
 	$(MAKE) -C $@
 
 build/grub-rescue-pc:: build/grub-pc
@@ -62,10 +60,14 @@ install/grub-pc install/grub-efi install/grub-ieee1275 install/grub-linuxbios::
 		| sed -e "s%.*%$(subst install/,,$@): unstripped-binary-or-object &%g" \
 	> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@)
 
-clean::
-	chmod +x debian/script
+clean:: debian/legacy/update-grub
+	chmod +x debian/{script,grub.d/*,legacy/*}
 	-rm -f debian/grub-{pc,efi,ieee1275,linuxbios}.docs
 	-rm -rf build
+
+debian/legacy/update-grub:
+	svn cat svn://svn.debian.org/pkg-grub/grub/trunk/debian/update-grub > $@
+	chmod +x $@
 
 # Grab fixes from CVS using our version as reference.
 cvs-sync:

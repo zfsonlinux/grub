@@ -87,7 +87,7 @@ struct hd_geometry
   /* Runtime detection of kernel */
 # include <sys/utsname.h>
 int
-get_kfreebsd_version ()
+get_kfreebsd_version (void)
 {
   struct utsname uts;
   int major;
@@ -417,7 +417,7 @@ make_device_map (const char *device_map, int floppy_disks)
 #endif /* __linux__ */
     
   /* IDE disks.  */
-  for (i = 0; i < 8; i++)
+  for (i = 0; i < 20; i++)
     {
       char name[16];
       
