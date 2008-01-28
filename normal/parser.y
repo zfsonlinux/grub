@@ -43,7 +43,7 @@
 %token GRUB_PARSER_TOKEN_FI		"fi"
 %token GRUB_PARSER_TOKEN_NAME
 %token GRUB_PARSER_TOKEN_VAR
-%type <cmd> script grubcmd command commands commandblock menuentry if
+%type <cmd> script_init script grubcmd command commands commandblock menuentry if
 %type <arglist> arguments;
 %type <arg> argument;
 %type <string> "if" "while" "function" "else" "then" "fi"
@@ -55,10 +55,20 @@
 
 %%
 /* It should be possible to do this in a clean way...  */
-script:		{ state->err = 0} newlines commands
+script_init:	{ state->err = 0} script
 		  {
-		    state->parsed = $3;
+		    state->parsed = $2;
 		  }
+;
+
+script:		commands { $$ = $1; }
+		| function '\n' { $$ = 0; }
+		| menuentry '\n' { $$ = $1; }
+;
+
+delimiter:	'\n'
+		| ';'
+		| delimiter '\n'
 ;
 
 newlines:	/* Empty */
@@ -92,7 +102,7 @@ argument:	GRUB_PARSER_TOKEN_VAR
 		    $$ = grub_script_arg_add (state, 0, GRUB_SCRIPT_ARG_TYPE_STR, $1);
 		  }
 /* XXX: Currently disabled to simplify the parser.  This should be
-   parsed by yet another parser for readibility.  */
+   parsed by yet another parser for readability.  */
 /* 		| argument GRUB_PARSER_TOKEN_VAR */
 /* 		  { */
 /* 		    $$ = grub_script_arg_add ($1, GRUB_SCRIPT_ARG_TYPE_VAR, $2); */
@@ -124,38 +134,28 @@ grubcmd:	GRUB_PARSER_TOKEN_NAME arguments
 ;
 
 /* A single command.  */
-command:	grubcmd 	{ $$ = $1; }
-		| if 		{ $$ = $1; }
-		| function	{ $$ = 0;  }
-		| menuentry	{ $$ = $1; }
-;
-
-/* A block of commands.  */
-commands:	command '\n'
-		  { 
-		    $$ = grub_script_add_cmd (state, 0, $1);
-		  }
-		| command
-		  { 
-		    $$ = grub_script_add_cmd (state, 0, $1);
-		  }
-		| command ';' commands
-		  { 
-		    struct grub_script_cmdblock *cmd;
-		    cmd = (struct grub_script_cmdblock *) $3;
-		    $$ = grub_script_add_cmd (state, cmd, $1);
-		  }
-		| command '\n' newlines commands
-		  { 
-		    struct grub_script_cmdblock *cmd;
-		    cmd = (struct grub_script_cmdblock *) $4;
-		    $$ = grub_script_add_cmd (state, cmd, $1);
-		  }
-		| error
+command:	grubcmd delimiter { $$ = $1; }
+		| if delimiter 	{ $$ = $1; }
+		| commandblock delimiter { $$ = $1; }
+		| error delimiter
 		  {
+		    $$ = 0;
 		    yyerror (state, "Incorrect command");
 		    state->err = 1;
 		    yyerrok;
+		  }
+;
+
+/* A block of commands.  */
+commands:	command
+		  {
+		    $$ = grub_script_add_cmd (state, 0, $1);
+		  }
+		| command commands
+		  {
+		    struct grub_script_cmdblock *cmd;
+		    cmd = (struct grub_script_cmdblock *) $2;
+		    $$ = grub_script_add_cmd (state, cmd, $1);
 		  }
 ;
 
@@ -163,14 +163,14 @@ commands:	command '\n'
    change any stuff because it might seem like a fun thing to do!
    Special care was take to make sure the mid-rule actions are
    executed on the right moment.  So the `commands' rule should be
-   recognised after executing the `grub_script_mem_record; and before
+   recognized after executing the `grub_script_mem_record; and before
    `grub_script_mem_record_stop'.  */
 function:	"function" GRUB_PARSER_TOKEN_NAME
 		  { 
 		    grub_script_lexer_ref (state->lexerstate);
 		  } newlines '{'
 		  { 
-		    /* The first part of the function was recognised.
+		    /* The first part of the function was recognized.
 		       Now start recording the memory usage to store
 		       this function.  */
 		    state->func_mem = grub_script_mem_record (state);
@@ -194,7 +194,6 @@ function:	"function" GRUB_PARSER_TOKEN_NAME
 commandblock:	'{'
 		  {
 		    grub_script_lexer_ref (state->lexerstate);
-                    grub_script_lexer_record_start (state->lexerstate);
 		  }
                 newlines commands '}'
                   {
@@ -204,10 +203,17 @@ commandblock:	'{'
 ;
 
 /* A menu entry.  Carefully save the memory that is allocated.  */
-menuentry:	"menuentry" argument newlines commandblock
+menuentry:	"menuentry" argument
+		  {
+		    grub_script_lexer_ref (state->lexerstate);
+		  } newlines '{'
+		  {
+		    grub_script_lexer_record_start (state->lexerstate);
+		  } newlines commands '}'
 		  {
 		    char *menu_entry;
 		    menu_entry = grub_script_lexer_record_stop (state->lexerstate);
+		    grub_script_lexer_deref (state->lexerstate);
 		    $$ = grub_script_create_cmdmenu (state, $2, menu_entry, 0);
 		  }
 ;
@@ -218,14 +224,14 @@ if_statement:	"if" { grub_script_lexer_ref (state->lexerstate); }
 ;
 
 /* The if statement.  */
-if:		 if_statement grubcmd ';' "then" commands "fi"
+if:		 if_statement commands "then" newlines commands "fi"
 		  {
 		    $$ = grub_script_create_cmdif (state, $2, $5, 0);
 		    grub_script_lexer_deref (state->lexerstate);
 		  }
-		 | if_statement grubcmd ';' "then" commands "else" commands  "fi"
+		 | if_statement commands "then" newlines commands "else" newlines commands  "fi"
 		  {
-		    $$ = grub_script_create_cmdif (state, $2, $5, $7);
+		    $$ = grub_script_create_cmdif (state, $2, $5, $8);
 		    grub_script_lexer_deref (state->lexerstate);
 		  }
 ;

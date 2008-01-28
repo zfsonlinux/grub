@@ -1,7 +1,7 @@
 /* biosdisk.c - emulate biosdisk */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2004,2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2004,2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -425,7 +425,7 @@ grub_util_biosdisk_read (grub_disk_t disk, grub_disk_addr_t sector,
 #ifdef __linux__
   if (sector == 0 && size > 1)
     {
-      /* Work around a bug in linux's ez remapping.  Linux remaps all
+      /* Work around a bug in Linux ez remapping.  Linux remaps all
 	 sectors that are read together with the MBR in one read.  It
 	 should only remap the MBR, so we split the read in two 
 	 parts. -jochen  */
@@ -606,27 +606,24 @@ get_os_disk (const char *os_dev)
     {
       p = path + 5;
 
-      if (have_devfs ())
+      /* If this is an IDE disk.  */
+      if (strncmp ("ide/", p, 4) == 0)
 	{
-	  /* If this is an IDE disk.  */
-	  if (strncmp ("/dev/ide/", p, 9) == 0)
-	    {
-	      p = strstr (p, "part");
-	      if (p)
-		strcpy (p, "disc");
-
-	      return path;
-	    }
-
-	  /* If this is a SCSI disk.  */
-	  if (strncmp ("/dev/scsi/", p, 10) == 0)
-	    {
-	      p = strstr (p, "part");
-	      if (p)
-		strcpy (p, "disc");
-
-	      return path;
-	    }
+	  p = strstr (p, "part");
+	  if (p)
+	    strcpy (p, "disc");
+	  
+	  return path;
+	}
+      
+      /* If this is a SCSI disk.  */
+      if (strncmp ("scsi/", p, 5) == 0)
+	{
+	  p = strstr (p, "part");
+	  if (p)
+	    strcpy (p, "disc");
+	  
+	  return path;
 	}
       
       /* If this is a DAC960 disk.  */

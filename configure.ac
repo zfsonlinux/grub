@@ -1,6 +1,6 @@
 # Process this file with autoconf to produce a configure script.
 
-# Copyright (C) 2002,2003,2004,2005,2006,2007  Free Software Foundation, Inc.
+# Copyright (C) 2002,2003,2004,2005,2006,2007,2008  Free Software Foundation, Inc.
 #
 # This configure.ac is free software; the author
 # gives unlimited permission to copy and/or distribute it,
@@ -79,6 +79,7 @@ case "$target_cpu"-"$platform" in
   i386-efi) ;;
   i386-pc) ;;
   i386-linuxbios) ;;
+  i386-ieee1275) ;;
   powerpc-ieee1275) ;;
   sparc64-ieee1275) ;;
   *) AC_MSG_ERROR([unsupported machine type]) ;;
@@ -102,6 +103,13 @@ AC_CHECK_PROGS([YACC], [bison])
 if test "x$YACC" = x; then
   AC_MSG_ERROR([bison is not found])
 fi
+
+for file in /usr/share/unifont/unifont.hex ; do
+  if test -e $file ; then
+    AC_SUBST([UNIFONT_HEX], [$file])
+    break
+  fi
+done
 
 AC_PROG_INSTALL
 AC_PROG_AWK
@@ -227,6 +235,16 @@ if test "x$target_m32" = x1; then
   # Force 32-bit mode.
   TARGET_CFLAGS="$TARGET_CFLAGS -m32"
   TARGET_LDFLAGS="$TARGET_LDFLAGS -m32"
+fi
+
+AC_MSG_CHECKING([whether the linker accepts `--build-id=none'])
+save_LDFLAGS="$LDFLAGS"
+LDFLAGS="$LDFLAGS -Wl,--build-id=none"
+AC_TRY_LINK(, , build_id_flag=yes, build_id_flag=no)
+AC_MSG_RESULT([$build_id_flag])
+LDFLAGS="$save_LDFLAGS"
+if test "x$build_id_flag" = xyes; then
+  TARGET_LDFLAGS="$TARGET_LDFLAGS -Wl,--build-id=none"
 fi
 
 #

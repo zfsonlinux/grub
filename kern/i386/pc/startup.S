@@ -95,6 +95,8 @@ VARIABLE(grub_install_dos_part)
 	.long	0xFFFFFFFF
 VARIABLE(grub_install_bsd_part)
 	.long	0xFFFFFFFF
+VARIABLE(grub_memdisk_image_size)
+	.long	0
 VARIABLE(grub_prefix)
 	/* to be filled by grub-mkimage */
 
@@ -196,7 +198,7 @@ codestart:
 	call	EXT_C(grub_gate_a20)
 	
 	/* decompress the compressed part and put the result at 1MB */
-	movl	$0x100000, %esi
+	movl	$GRUB_MEMORY_MACHINE_DECOMPRESSION_ADDR, %esi
 	movl	$(START_SYMBOL + GRUB_KERNEL_MACHINE_RAW_SIZE), %edi
 
 	pushl	%esi
@@ -1089,7 +1091,7 @@ xsmap:
  * character and the attribute, and restore the current position.
  *
  * The reason why this is so complicated is that there is no easy way to
- * get the height of the screen, and the TELETYPE OUPUT BIOS call doesn't
+ * get the height of the screen, and the TELETYPE OUTPUT BIOS call doesn't
  * support setting a background attribute.
  */
 FUNCTION(grub_console_real_putchar)

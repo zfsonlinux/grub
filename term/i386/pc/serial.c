@@ -16,6 +16,7 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <grub/machine/machine.h>
 #include <grub/machine/serial.h>
 #include <grub/machine/console.h>
 #include <grub/term.h>
@@ -63,13 +64,18 @@ struct serial_port
 /* Serial port settings.  */
 static struct serial_port serial_settings;
 
+#ifdef GRUB_MACHINE_PCBIOS
+/* The BIOS data area.  */
+static const unsigned short *serial_hw_io_addr = (const unsigned short *) 0x0400;
+#else
+static const unsigned short serial_hw_io_addr[] = { 0x3f8, 0x2f8 };
+#endif
+
 /* Return the port number for the UNITth serial device.  */
 static inline unsigned short
 serial_hw_get_port (const unsigned short unit)
 {
-  /* The BIOS data area.  */
-  const unsigned short *addr = (const unsigned short *) 0x0400;
-  return addr[unit];
+  return serial_hw_io_addr[unit];
 }
 
 /* Fetch a key.  */
@@ -82,7 +88,7 @@ serial_hw_fetch (void)
   return -1;
 }
 
-/* Put a chararacter.  */
+/* Put a character.  */
 static void
 serial_hw_put (const int c)
 {
@@ -96,7 +102,7 @@ serial_hw_put (const int c)
         return;
     }
 
-  grub_outb (serial_settings.port + UART_TX, c);
+  grub_outb (c, serial_settings.port + UART_TX);
 }
 
 static void
@@ -267,27 +273,27 @@ serial_hw_init (void)
 {
   unsigned char status = 0;
 
-  /* Turn off the interupt.  */
-  grub_outb (serial_settings.port + UART_IER, 0);
+  /* Turn off the interrupt.  */
+  grub_outb (0, serial_settings.port + UART_IER);
 
   /* Set DLAB.  */
-  grub_outb (serial_settings.port + UART_LCR, UART_DLAB);
+  grub_outb (UART_DLAB, serial_settings.port + UART_LCR);
 
   /* Set the baud rate.  */
-  grub_outb (serial_settings.port + UART_DLL, serial_settings.divisor & 0xFF);
-  grub_outb (serial_settings.port + UART_DLH, serial_settings.divisor >> 8 );
+  grub_outb (serial_settings.divisor & 0xFF, serial_settings.port + UART_DLL);
+  grub_outb (serial_settings.divisor >> 8, serial_settings.port + UART_DLH);
 
   /* Set the line status.  */
   status |= (serial_settings.parity
 	     | serial_settings.word_len
 	     | serial_settings.stop_bits);
-  grub_outb (serial_settings.port + UART_LCR, status);
+  grub_outb (status, serial_settings.port + UART_LCR);
 
   /* Enable the FIFO.  */
-  grub_outb (serial_settings.port + UART_FCR, UART_ENABLE_FIFO);
+  grub_outb (UART_ENABLE_FIFO, serial_settings.port + UART_FCR);
 
   /* Turn on DTR, RTS, and OUT2.  */
-  grub_outb (serial_settings.port + UART_MCR, UART_ENABLE_MODEM);
+  grub_outb (UART_ENABLE_MODEM, serial_settings.port + UART_MCR);
 
   /* Drain the input buffer.  */
   while (grub_serial_checkkey () != -1)
@@ -448,13 +454,6 @@ grub_serial_setcolorstate (const grub_term_color_state state)
 }
 
 static void
-grub_serial_setcolor (grub_uint8_t normal_color __attribute__ ((unused)),
-                      grub_uint8_t highlight_color __attribute__ ((unused)))
-{
-  /* FIXME */
-}
-
-static void
 grub_serial_setcursor (const int on)
 {
   if (on)
@@ -477,7 +476,6 @@ static struct grub_term grub_serial_term =
   .gotoxy = grub_serial_gotoxy,
   .cls = grub_serial_cls,
   .setcolorstate = grub_serial_setcolorstate,
-  .setcolor = grub_serial_setcolor,
   .setcursor = grub_serial_setcursor,
   .flags = 0,
   .next = 0
