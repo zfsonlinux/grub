@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2003,2004,2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2003,2004,2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,6 +42,9 @@ struct grub_disk_cache
 };
 
 static struct grub_disk_cache grub_disk_cache_table[GRUB_DISK_CACHE_NUM];
+
+void (*grub_disk_firmware_fini) (void);
+int grub_disk_firmware_is_tainted;
 
 #if 0
 static unsigned long grub_disk_cache_hits;

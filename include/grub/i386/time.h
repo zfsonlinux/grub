@@ -20,9 +20,10 @@
 #define KERNEL_CPU_TIME_HEADER	1
 
 static __inline void
-grub_cpu_idle ()
+grub_cpu_idle (void)
 {
-  __asm__ __volatile__ ("hlt");
+  /* FIXME: this can't work until we handle interrupts.  */
+/*  __asm__ __volatile__ ("hlt"); */
 }
 
 #endif /* ! KERNEL_CPU_TIME_HEADER */

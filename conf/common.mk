@@ -79,9 +79,9 @@ update-grub_DATA += util/grub.d/README
 
 
 # Filing systems.
-pkgdata_MODULES += fshelp.mod fat.mod ufs.mod ext2.mod ntfs.mod	\
-	minix.mod hfs.mod jfs.mod iso9660.mod xfs.mod affs.mod	\
-	sfs.mod hfsplus.mod
+pkglib_MODULES += fshelp.mod fat.mod ufs.mod ext2.mod ntfs.mod		\
+	ntfscomp.mod minix.mod hfs.mod jfs.mod iso9660.mod xfs.mod	\
+	affs.mod sfs.mod hfsplus.mod reiserfs.mod cpio.mod
 
 # For fshelp.mod.
 fshelp_mod_SOURCES = fs/fshelp.c
@@ -342,6 +342,58 @@ fs-ntfs_mod-fs_ntfs.lst: fs/ntfs.c genfslist.sh
 
 ntfs_mod_CFLAGS = $(COMMON_CFLAGS)
 ntfs_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For ntfscomp.mod.
+ntfscomp_mod_SOURCES = fs/ntfscomp.c
+CLEANFILES += ntfscomp.mod mod-ntfscomp.o mod-ntfscomp.c pre-ntfscomp.o ntfscomp_mod-fs_ntfscomp.o und-ntfscomp.lst
+ifneq ($(ntfscomp_mod_EXPORTS),no)
+CLEANFILES += def-ntfscomp.lst
+DEFSYMFILES += def-ntfscomp.lst
+endif
+MOSTLYCLEANFILES += ntfscomp_mod-fs_ntfscomp.d
+UNDSYMFILES += und-ntfscomp.lst
+
+ntfscomp.mod: pre-ntfscomp.o mod-ntfscomp.o
+	-rm -f $@
+	$(TARGET_CC) $(ntfscomp_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
+
+pre-ntfscomp.o: $(ntfscomp_mod_DEPENDENCIES) ntfscomp_mod-fs_ntfscomp.o
+	-rm -f $@
+	$(TARGET_CC) $(ntfscomp_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ ntfscomp_mod-fs_ntfscomp.o
+
+mod-ntfscomp.o: mod-ntfscomp.c
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(ntfscomp_mod_CFLAGS) -c -o $@ $<
+
+mod-ntfscomp.c: moddep.lst genmodsrc.sh
+	sh $(srcdir)/genmodsrc.sh 'ntfscomp' $< > $@ || (rm -f $@; exit 1)
+
+ifneq ($(ntfscomp_mod_EXPORTS),no)
+def-ntfscomp.lst: pre-ntfscomp.o
+	$(NM) -g --defined-only -P -p $< | sed 's/^\([^ ]*\).*/\1 ntfscomp/' > $@
+endif
+
+und-ntfscomp.lst: pre-ntfscomp.o
+	echo 'ntfscomp' > $@
+	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
+
+ntfscomp_mod-fs_ntfscomp.o: fs/ntfscomp.c
+	$(TARGET_CC) -Ifs -I$(srcdir)/fs $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(ntfscomp_mod_CFLAGS) -MD -c -o $@ $<
+-include ntfscomp_mod-fs_ntfscomp.d
+
+CLEANFILES += cmd-ntfscomp_mod-fs_ntfscomp.lst fs-ntfscomp_mod-fs_ntfscomp.lst
+COMMANDFILES += cmd-ntfscomp_mod-fs_ntfscomp.lst
+FSFILES += fs-ntfscomp_mod-fs_ntfscomp.lst
+
+cmd-ntfscomp_mod-fs_ntfscomp.lst: fs/ntfscomp.c gencmdlist.sh
+	set -e; 	  $(TARGET_CC) -Ifs -I$(srcdir)/fs $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(ntfscomp_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh ntfscomp > $@ || (rm -f $@; exit 1)
+
+fs-ntfscomp_mod-fs_ntfscomp.lst: fs/ntfscomp.c genfslist.sh
+	set -e; 	  $(TARGET_CC) -Ifs -I$(srcdir)/fs $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(ntfscomp_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh ntfscomp > $@ || (rm -f $@; exit 1)
+
+
+ntfscomp_mod_CFLAGS = $(COMMON_CFLAGS)
+ntfscomp_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For minix.mod.
 minix_mod_SOURCES = fs/minix.c
@@ -759,8 +811,112 @@ fs-hfsplus_mod-fs_hfsplus.lst: fs/hfsplus.c genfslist.sh
 hfsplus_mod_CFLAGS = $(COMMON_CFLAGS)
 hfsplus_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
+# For reiserfs.mod.
+reiserfs_mod_SOURCES = fs/reiserfs.c
+CLEANFILES += reiserfs.mod mod-reiserfs.o mod-reiserfs.c pre-reiserfs.o reiserfs_mod-fs_reiserfs.o und-reiserfs.lst
+ifneq ($(reiserfs_mod_EXPORTS),no)
+CLEANFILES += def-reiserfs.lst
+DEFSYMFILES += def-reiserfs.lst
+endif
+MOSTLYCLEANFILES += reiserfs_mod-fs_reiserfs.d
+UNDSYMFILES += und-reiserfs.lst
+
+reiserfs.mod: pre-reiserfs.o mod-reiserfs.o
+	-rm -f $@
+	$(TARGET_CC) $(reiserfs_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
+
+pre-reiserfs.o: $(reiserfs_mod_DEPENDENCIES) reiserfs_mod-fs_reiserfs.o
+	-rm -f $@
+	$(TARGET_CC) $(reiserfs_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ reiserfs_mod-fs_reiserfs.o
+
+mod-reiserfs.o: mod-reiserfs.c
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(reiserfs_mod_CFLAGS) -c -o $@ $<
+
+mod-reiserfs.c: moddep.lst genmodsrc.sh
+	sh $(srcdir)/genmodsrc.sh 'reiserfs' $< > $@ || (rm -f $@; exit 1)
+
+ifneq ($(reiserfs_mod_EXPORTS),no)
+def-reiserfs.lst: pre-reiserfs.o
+	$(NM) -g --defined-only -P -p $< | sed 's/^\([^ ]*\).*/\1 reiserfs/' > $@
+endif
+
+und-reiserfs.lst: pre-reiserfs.o
+	echo 'reiserfs' > $@
+	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
+
+reiserfs_mod-fs_reiserfs.o: fs/reiserfs.c
+	$(TARGET_CC) -Ifs -I$(srcdir)/fs $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(reiserfs_mod_CFLAGS) -MD -c -o $@ $<
+-include reiserfs_mod-fs_reiserfs.d
+
+CLEANFILES += cmd-reiserfs_mod-fs_reiserfs.lst fs-reiserfs_mod-fs_reiserfs.lst
+COMMANDFILES += cmd-reiserfs_mod-fs_reiserfs.lst
+FSFILES += fs-reiserfs_mod-fs_reiserfs.lst
+
+cmd-reiserfs_mod-fs_reiserfs.lst: fs/reiserfs.c gencmdlist.sh
+	set -e; 	  $(TARGET_CC) -Ifs -I$(srcdir)/fs $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(reiserfs_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh reiserfs > $@ || (rm -f $@; exit 1)
+
+fs-reiserfs_mod-fs_reiserfs.lst: fs/reiserfs.c genfslist.sh
+	set -e; 	  $(TARGET_CC) -Ifs -I$(srcdir)/fs $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(reiserfs_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh reiserfs > $@ || (rm -f $@; exit 1)
+
+
+reiserfs_mod_CFLAGS = $(COMMON_CFLAGS)
+reiserfs_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For cpio.mod.
+cpio_mod_SOURCES = fs/cpio.c
+CLEANFILES += cpio.mod mod-cpio.o mod-cpio.c pre-cpio.o cpio_mod-fs_cpio.o und-cpio.lst
+ifneq ($(cpio_mod_EXPORTS),no)
+CLEANFILES += def-cpio.lst
+DEFSYMFILES += def-cpio.lst
+endif
+MOSTLYCLEANFILES += cpio_mod-fs_cpio.d
+UNDSYMFILES += und-cpio.lst
+
+cpio.mod: pre-cpio.o mod-cpio.o
+	-rm -f $@
+	$(TARGET_CC) $(cpio_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
+
+pre-cpio.o: $(cpio_mod_DEPENDENCIES) cpio_mod-fs_cpio.o
+	-rm -f $@
+	$(TARGET_CC) $(cpio_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ cpio_mod-fs_cpio.o
+
+mod-cpio.o: mod-cpio.c
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(cpio_mod_CFLAGS) -c -o $@ $<
+
+mod-cpio.c: moddep.lst genmodsrc.sh
+	sh $(srcdir)/genmodsrc.sh 'cpio' $< > $@ || (rm -f $@; exit 1)
+
+ifneq ($(cpio_mod_EXPORTS),no)
+def-cpio.lst: pre-cpio.o
+	$(NM) -g --defined-only -P -p $< | sed 's/^\([^ ]*\).*/\1 cpio/' > $@
+endif
+
+und-cpio.lst: pre-cpio.o
+	echo 'cpio' > $@
+	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
+
+cpio_mod-fs_cpio.o: fs/cpio.c
+	$(TARGET_CC) -Ifs -I$(srcdir)/fs $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(cpio_mod_CFLAGS) -MD -c -o $@ $<
+-include cpio_mod-fs_cpio.d
+
+CLEANFILES += cmd-cpio_mod-fs_cpio.lst fs-cpio_mod-fs_cpio.lst
+COMMANDFILES += cmd-cpio_mod-fs_cpio.lst
+FSFILES += fs-cpio_mod-fs_cpio.lst
+
+cmd-cpio_mod-fs_cpio.lst: fs/cpio.c gencmdlist.sh
+	set -e; 	  $(TARGET_CC) -Ifs -I$(srcdir)/fs $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(cpio_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh cpio > $@ || (rm -f $@; exit 1)
+
+fs-cpio_mod-fs_cpio.lst: fs/cpio.c genfslist.sh
+	set -e; 	  $(TARGET_CC) -Ifs -I$(srcdir)/fs $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(cpio_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh cpio > $@ || (rm -f $@; exit 1)
+
+
+cpio_mod_CFLAGS = $(COMMON_CFLAGS)
+cpio_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
 # Partition maps.
-pkgdata_MODULES += amiga.mod apple.mod pc.mod sun.mod acorn.mod gpt.mod
+pkglib_MODULES += amiga.mod apple.mod pc.mod sun.mod acorn.mod gpt.mod
 
 # For amiga.mod
 amiga_mod_SOURCES = partmap/amiga.c
@@ -1076,7 +1232,7 @@ gpt_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # Special disk structures
 
-pkgdata_MODULES += raid.mod lvm.mod
+pkglib_MODULES += raid.mod lvm.mod
 
 # For raid.mod
 raid_mod_SOURCES = disk/raid.c
@@ -1183,10 +1339,10 @@ lvm_mod_CFLAGS = $(COMMON_CFLAGS)
 lvm_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # Commands.
-pkgdata_MODULES += hello.mod boot.mod terminal.mod ls.mod	\
+pkglib_MODULES += hello.mod boot.mod terminal.mod ls.mod	\
 	cmp.mod cat.mod help.mod font.mod search.mod		\
-	loopback.mod configfile.mod				\
-	terminfo.mod test.mod blocklist.mod
+	loopback.mod configfile.mod echo.mod			\
+	terminfo.mod test.mod blocklist.mod hexdump.mod
 
 # For hello.mod.
 hello_mod_SOURCES = hello/hello.c
@@ -1502,6 +1658,53 @@ cat_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For echo.mod
 echo_mod_SOURCES = commands/echo.c
+CLEANFILES += echo.mod mod-echo.o mod-echo.c pre-echo.o echo_mod-commands_echo.o und-echo.lst
+ifneq ($(echo_mod_EXPORTS),no)
+CLEANFILES += def-echo.lst
+DEFSYMFILES += def-echo.lst
+endif
+MOSTLYCLEANFILES += echo_mod-commands_echo.d
+UNDSYMFILES += und-echo.lst
+
+echo.mod: pre-echo.o mod-echo.o
+	-rm -f $@
+	$(TARGET_CC) $(echo_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
+
+pre-echo.o: $(echo_mod_DEPENDENCIES) echo_mod-commands_echo.o
+	-rm -f $@
+	$(TARGET_CC) $(echo_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ echo_mod-commands_echo.o
+
+mod-echo.o: mod-echo.c
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(echo_mod_CFLAGS) -c -o $@ $<
+
+mod-echo.c: moddep.lst genmodsrc.sh
+	sh $(srcdir)/genmodsrc.sh 'echo' $< > $@ || (rm -f $@; exit 1)
+
+ifneq ($(echo_mod_EXPORTS),no)
+def-echo.lst: pre-echo.o
+	$(NM) -g --defined-only -P -p $< | sed 's/^\([^ ]*\).*/\1 echo/' > $@
+endif
+
+und-echo.lst: pre-echo.o
+	echo 'echo' > $@
+	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
+
+echo_mod-commands_echo.o: commands/echo.c
+	$(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(echo_mod_CFLAGS) -MD -c -o $@ $<
+-include echo_mod-commands_echo.d
+
+CLEANFILES += cmd-echo_mod-commands_echo.lst fs-echo_mod-commands_echo.lst
+COMMANDFILES += cmd-echo_mod-commands_echo.lst
+FSFILES += fs-echo_mod-commands_echo.lst
+
+cmd-echo_mod-commands_echo.lst: commands/echo.c gencmdlist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(echo_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh echo > $@ || (rm -f $@; exit 1)
+
+fs-echo_mod-commands_echo.lst: commands/echo.c genfslist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(echo_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh echo > $@ || (rm -f $@; exit 1)
+
+
 echo_mod_CFLAGS = $(COMMON_CFLAGS)
 echo_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
@@ -1936,8 +2139,60 @@ fs-blocklist_mod-commands_blocklist.lst: commands/blocklist.c genfslist.sh
 blocklist_mod_CFLAGS = $(COMMON_CFLAGS)
 blocklist_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
+# For hexdump.mod.
+hexdump_mod_SOURCES = commands/hexdump.c
+CLEANFILES += hexdump.mod mod-hexdump.o mod-hexdump.c pre-hexdump.o hexdump_mod-commands_hexdump.o und-hexdump.lst
+ifneq ($(hexdump_mod_EXPORTS),no)
+CLEANFILES += def-hexdump.lst
+DEFSYMFILES += def-hexdump.lst
+endif
+MOSTLYCLEANFILES += hexdump_mod-commands_hexdump.d
+UNDSYMFILES += und-hexdump.lst
+
+hexdump.mod: pre-hexdump.o mod-hexdump.o
+	-rm -f $@
+	$(TARGET_CC) $(hexdump_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
+
+pre-hexdump.o: $(hexdump_mod_DEPENDENCIES) hexdump_mod-commands_hexdump.o
+	-rm -f $@
+	$(TARGET_CC) $(hexdump_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ hexdump_mod-commands_hexdump.o
+
+mod-hexdump.o: mod-hexdump.c
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(hexdump_mod_CFLAGS) -c -o $@ $<
+
+mod-hexdump.c: moddep.lst genmodsrc.sh
+	sh $(srcdir)/genmodsrc.sh 'hexdump' $< > $@ || (rm -f $@; exit 1)
+
+ifneq ($(hexdump_mod_EXPORTS),no)
+def-hexdump.lst: pre-hexdump.o
+	$(NM) -g --defined-only -P -p $< | sed 's/^\([^ ]*\).*/\1 hexdump/' > $@
+endif
+
+und-hexdump.lst: pre-hexdump.o
+	echo 'hexdump' > $@
+	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
+
+hexdump_mod-commands_hexdump.o: commands/hexdump.c
+	$(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(hexdump_mod_CFLAGS) -MD -c -o $@ $<
+-include hexdump_mod-commands_hexdump.d
+
+CLEANFILES += cmd-hexdump_mod-commands_hexdump.lst fs-hexdump_mod-commands_hexdump.lst
+COMMANDFILES += cmd-hexdump_mod-commands_hexdump.lst
+FSFILES += fs-hexdump_mod-commands_hexdump.lst
+
+cmd-hexdump_mod-commands_hexdump.lst: commands/hexdump.c gencmdlist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(hexdump_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh hexdump > $@ || (rm -f $@; exit 1)
+
+fs-hexdump_mod-commands_hexdump.lst: commands/hexdump.c genfslist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(hexdump_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh hexdump > $@ || (rm -f $@; exit 1)
+
+
+hexdump_mod_CFLAGS = $(COMMON_CFLAGS)
+hexdump_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
 # Misc.
-pkgdata_MODULES += gzio.mod elf.mod
+pkglib_MODULES += gzio.mod elf.mod
 
 # For elf.mod.
 elf_mod_SOURCES = kern/elf.c

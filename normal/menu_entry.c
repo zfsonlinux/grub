@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2005,2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2005,2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -335,7 +335,7 @@ insert_string (struct screen *screen, char *s, int update)
 	  int size;
 	  int orig_num, new_num;
 
-	  /* Find a string delimitted by LF.  */
+	  /* Find a string delimited by LF.  */
 	  p = grub_strchr (s, '\n');
 	  if (! p)
 	    p = s + grub_strlen (s);
@@ -1030,10 +1030,7 @@ run (struct screen *screen)
     {
       grub_print_error ();
       grub_errno = GRUB_ERR_NONE;
-      /* Wait until the user pushes any key so that the user
-	 can see what happened.  */
-      grub_printf ("\nPress any key to continue...");
-      (void) grub_getkey ();
+      grub_wait_after_message ();
     }
 
   return 1;

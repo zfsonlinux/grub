@@ -576,7 +576,7 @@ grub_divmod64 (grub_uint64_t n, grub_uint32_t d, grub_uint32_t *r)
   unsigned long long q = 0;
   unsigned m = 0;
 
-  /* Skip the slow computation, if 32-bit arithmetics are possible.  */
+  /* Skip the slow computation if 32-bit arithmetic is possible.  */
   if (n < 0xffffffff)
     {
       if (r)
@@ -768,7 +768,7 @@ grub_vsprintf (char *str, const char *fmt, va_list args)
 	    case 'p':
 	      write_str ("0x");
 	      c = 'x';
-	      longlongfmt = (sizeof (void *) == sizeof (long long));
+	      longlongfmt |= (sizeof (void *) == sizeof (long long));
 	      /* fall through */
 	    case 'x':
 	    case 'u':

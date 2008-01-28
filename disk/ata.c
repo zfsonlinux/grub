@@ -21,10 +21,9 @@
 #include <grub/misc.h>
 #include <grub/disk.h>
 #include <grub/mm.h>
+#include <grub/time.h>
 /* XXX: For now this only works on i386.  */
 #include <grub/cpu/io.h>
-#include <grub/machine/time.h>
-#include <grub/machine/biosdisk.h>
 
 typedef enum
   {
@@ -142,10 +141,7 @@ grub_ata_wait_drq (struct grub_ata_device *dev)
 static inline void
 grub_ata_wait (void)
 {
-  grub_uint32_t  time;
-  time = grub_get_rtc ();
-
-  while (time + 1 > grub_get_rtc ());
+  grub_millisleep (50);
 }
 
 /* Byteorder has to be changed before strings can be read.  */
@@ -168,9 +164,6 @@ grub_ata_pio_read (struct grub_ata_device *dev, char *buf,
   grub_uint16_t *buf16 = (grub_uint16_t *) buf;
   unsigned int i;
 
-  /* Make sure the read command is processed.  */
-  grub_ata_wait ();
-
   if (grub_ata_regget (dev, GRUB_ATA_REG_STATUS) & 1)
     return grub_ata_regget (dev, GRUB_ATA_REG_ERROR);
 
@@ -181,7 +174,8 @@ grub_ata_pio_read (struct grub_ata_device *dev, char *buf,
   for (i = 0; i < size / 2; i++)
     buf16[i] = grub_le_to_cpu16 (grub_inw(dev->ioaddress + GRUB_ATA_REG_DATA));
 
-  /* XXX: Do some error checks.  */
+  if (grub_ata_regget (dev, GRUB_ATA_REG_STATUS) & 1)
+    return grub_ata_regget (dev, GRUB_ATA_REG_ERROR);
 
   return 0;
 }
@@ -193,9 +187,6 @@ grub_ata_pio_write (struct grub_ata_device *dev, char *buf,
   grub_uint16_t *buf16 = (grub_uint16_t *) buf;
   unsigned int i;
 
-  /* Make sure the write command is processed.  */
-  grub_ata_wait ();
-
   /* Wait until the device is ready to write.  */
   grub_ata_wait_drq (dev);
 
@@ -203,7 +194,8 @@ grub_ata_pio_write (struct grub_ata_device *dev, char *buf,
   for (i = 0; i < size / 2; i++)
     grub_outw(grub_cpu_to_le16 (buf16[i]), dev->ioaddress + GRUB_ATA_REG_DATA);
 
-  /* XXX: Do some error checks.  */
+  if (grub_ata_regget (dev, GRUB_ATA_REG_STATUS) & 1)
+    return grub_ata_regget (dev, GRUB_ATA_REG_ERROR);
 
   return 0;
 }
@@ -240,6 +232,7 @@ grub_atapi_identify (struct grub_ata_device *dev)
   grub_ata_regset (dev, GRUB_ATA_REG_DISK, 0xE0 | dev->device << 4);
   grub_ata_regset (dev, GRUB_ATA_REG_CMD,
 		   GRUB_ATA_CMD_IDENTIFY_PACKET_DEVICE);
+  grub_ata_wait ();
 
   grub_ata_pio_read (dev, info, 256);
 
@@ -261,6 +254,7 @@ grub_atapi_packet (struct grub_ata_device *dev, char *packet)
   grub_ata_regset (dev, GRUB_ATA_REG_LBAHIGH, 0xFF);
   grub_ata_regset (dev, GRUB_ATA_REG_LBAMID, 0xFF);
   grub_ata_regset (dev, GRUB_ATA_REG_CMD, GRUB_ATA_CMD_PACKET);
+  grub_ata_wait ();
 
   grub_ata_pio_write (dev, packet, 12);
 
@@ -284,6 +278,7 @@ grub_ata_identify (struct grub_ata_device *dev)
 
   grub_ata_regset (dev, GRUB_ATA_REG_DISK, 0xE0 | dev->device << 4);
   grub_ata_regset (dev, GRUB_ATA_REG_CMD, GRUB_ATA_CMD_IDENTIFY_DEVICE);
+  grub_ata_wait ();
 
   ataerr = grub_ata_pio_read (dev, info, GRUB_DISK_SECTOR_SIZE);
   if (ataerr & 4)
@@ -492,6 +487,7 @@ grub_ata_readwrite (grub_disk_t disk, grub_disk_addr_t sector,
   grub_ata_addressing_t addressing;
   int cmd;
   int cmd_write;
+  unsigned int sect;
 
   addressing = dev->addr;
 
@@ -523,21 +519,30 @@ grub_ata_readwrite (grub_disk_t disk, grub_disk_addr_t sector,
 	{
 	  /* Read 256/65536 sectors.  */
 	  grub_ata_regset (dev, GRUB_ATA_REG_CMD, cmd);
-	  if (grub_ata_pio_read (dev, buf,
-				 batch * GRUB_DISK_SECTOR_SIZE))
-	    return grub_errno;
+	  grub_ata_wait ();
+	  for (sect = 0; sect < batch; sect++)
+	    {
+	      if (grub_ata_pio_read (dev, buf,
+				     GRUB_DISK_SECTOR_SIZE))
+		return grub_error (GRUB_ERR_READ_ERROR, "ATA read error");
+	      buf += GRUB_DISK_SECTOR_SIZE;
+	      sector++;
+	    }
 	}
       else
 	{
 	  /* Write 256/65536 sectors.  */
 	  grub_ata_regset (dev, GRUB_ATA_REG_CMD, cmd_write);
-	  if (grub_ata_pio_write (dev, buf,
-				  batch * GRUB_DISK_SECTOR_SIZE))
-	    return grub_errno;
+	  grub_ata_wait ();
+	  for (sect = 0; sect < batch; sect++)
+	    {
+	      if (grub_ata_pio_write (dev, buf,
+				      GRUB_DISK_SECTOR_SIZE))
+		return grub_error (GRUB_ERR_WRITE_ERROR, "ATA write error");
+	      buf += GRUB_DISK_SECTOR_SIZE;
+	    }
 	}
-
-      buf += batch * GRUB_DISK_SECTOR_SIZE;
-      sector += batch * GRUB_DISK_SECTOR_SIZE;
+      sector += batch;
     }
 
   /* Read/write just a "few" sectors.  */
@@ -548,15 +553,24 @@ grub_ata_readwrite (grub_disk_t disk, grub_disk_addr_t sector,
     {
       /* Read sectors.  */
       grub_ata_regset (dev, GRUB_ATA_REG_CMD, cmd);
-      if (grub_ata_pio_read (dev, buf,
-			     (size % batch) * GRUB_DISK_SECTOR_SIZE))
-	return grub_errno;
+      grub_ata_wait ();
+      for (sect = 0; sect < (size % batch); sect++)
+	{
+	  if (grub_ata_pio_read (dev, buf, GRUB_DISK_SECTOR_SIZE))
+	    return grub_error (GRUB_ERR_READ_ERROR, "ATA read error");
+	  buf += GRUB_DISK_SECTOR_SIZE;
+	}
     } else {
       /* Write sectors.  */
       grub_ata_regset (dev, GRUB_ATA_REG_CMD, cmd_write);
-      if (grub_ata_pio_write (dev, buf,
-			      (size % batch) * GRUB_DISK_SECTOR_SIZE))
-	return grub_errno;
+      grub_ata_wait ();
+      for (sect = 0; sect < batch; sect++)
+	{
+	  if (grub_ata_pio_write (dev, buf,
+				  (size % batch) * GRUB_DISK_SECTOR_SIZE))
+	    return grub_error (GRUB_ERR_WRITE_ERROR, "ATA write error");
+	  buf += GRUB_DISK_SECTOR_SIZE;
+	}
     }
 
   return GRUB_ERR_NONE;
@@ -636,6 +650,7 @@ grub_atapi_readsector (struct grub_ata_device *dev,
   readcmd.length = grub_cpu_to_be32 (1);
 
   grub_atapi_packet (dev, (char *) &readcmd);
+  grub_ata_wait ();
   grub_ata_pio_read (dev, buf, GRUB_CDROM_SECTOR_SIZE);
 
   return 0;
@@ -717,8 +732,13 @@ GRUB_MOD_INIT(ata)
 {
   (void) mod;			/* To stop warning. */
 
-  /* XXX: To prevent two drivers operating on the same disks.  */
-  grub_biosdisk_fini ();
+  /* To prevent two drivers operating on the same disks.  */
+  grub_disk_firmware_is_tainted = 1;
+  if (grub_disk_firmware_fini)
+    {
+      grub_disk_firmware_fini ();
+      grub_disk_firmware_fini = NULL;
+    }
   
   /* ATA initialization.  */
   grub_ata_initialize ();

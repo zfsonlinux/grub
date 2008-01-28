@@ -1,7 +1,7 @@
 /*  init.c -- Initialize GRUB on the newworld mac (PPC).  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2003, 2004, 2005, 2007 Free Software Foundation, Inc.
+ *  Copyright (C) 2003,2004,2005,2007,2008 Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -55,10 +55,7 @@ grub_millisleep (grub_uint32_t ms)
 void
 grub_exit (void)
 {
-  /* Trap to Open Firmware.  */
-  asm ("trap");
-
-  for (;;);
+  grub_ieee1275_exit ();
 }
 
 /* Translate an OF filesystem path (separated by backslashes), into a GRUB
@@ -127,7 +124,7 @@ grub_machine_set_prefix (void)
 }
 
 /* Claim some available memory in the first /memory node. */
-static void grub_claim_heap ()
+static void grub_claim_heap (void)
 {
   unsigned long total = 0;
 
@@ -145,6 +142,17 @@ static void grub_claim_heap ()
         (addr + len > HEAP_MAX_ADDR) &&				/* if it wasn't available anyway, don't bother */
         (total + (HEAP_MAX_ADDR - addr) > HEAP_MIN_SIZE))	/* only limit ourselves when we can afford to */
        len = HEAP_MAX_ADDR - addr;
+
+    /* In theory, firmware should already prevent this from happening by not
+       listing our own image in /memory/available.  The check below is intended
+       as a safegard in case that doesn't happen.  It does, however, not protect
+       us from corrupting our module area, which extends up to a
+       yet-undetermined region above _end.  */
+    if ((addr < _end) && ((addr + len) > _start))
+      {
+        grub_printf ("Warning: attempt to claim over our own code!\n");
+        len = 0;
+      }
 
     if (len)
       {
@@ -173,6 +181,9 @@ grub_machine_init (void)
   int actual;
 
   grub_console_init ();
+#ifdef __i386__
+  grub_keyboard_controller_init ();
+#endif
   grub_claim_heap ();
   grub_ofdisk_init ();
 
@@ -231,5 +242,10 @@ grub_get_rtc (void)
 grub_addr_t
 grub_arch_modules_addr (void)
 {
-  return ALIGN_UP(_end, GRUB_MOD_ALIGN);
+/* Only needed for Apple hardware (therefore, powerpc).  */
+#ifndef GRUB_MOD_GAP
+#define GRUB_MOD_GAP 0
+#endif
+
+  return ALIGN_UP(_end + GRUB_MOD_GAP, GRUB_MOD_ALIGN);
 }
