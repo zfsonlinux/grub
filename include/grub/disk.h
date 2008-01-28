@@ -35,7 +35,8 @@ enum grub_disk_dev_id
     GRUB_DISK_DEVICE_RAID_ID,
     GRUB_DISK_DEVICE_LVM_ID,
     GRUB_DISK_DEVICE_HOST_ID,
-    GRUB_DISK_DEVICE_ATA_ID
+    GRUB_DISK_DEVICE_ATA_ID,
+    GRUB_DISK_DEVICE_MEMDISK_ID,
   };
 
 struct grub_disk;
@@ -136,6 +137,9 @@ grub_err_t EXPORT_FUNC(grub_disk_write) (grub_disk_t disk,
 					 const char *buf);
 
 grub_uint64_t EXPORT_FUNC(grub_disk_get_size) (grub_disk_t disk);
+
+extern void (* EXPORT_VAR(grub_disk_firmware_fini)) (void);
+extern int EXPORT_VAR(grub_disk_firmware_is_tainted);
 
 #ifdef GRUB_UTIL
 void grub_raid_init (void);

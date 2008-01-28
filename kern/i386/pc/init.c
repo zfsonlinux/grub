@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2003,2004,2005,2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2003,2004,2005,2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -64,7 +64,12 @@ make_install_device (void)
   /* XXX: This should be enough.  */
   char dev[100];
 
-  if (grub_install_dos_part != -2)
+  if (grub_memdisk_image_size)
+    {
+      grub_sprintf (dev, "(memdisk)%s", grub_prefix);
+      grub_strcpy (grub_prefix, dev);
+    }
+  else if (grub_install_dos_part != -2)
     {
       grub_sprintf (dev, "(%cd%u",
 		    (grub_boot_drive & 0x80) ? 'h' : 'f',
@@ -199,13 +204,8 @@ grub_machine_init (void)
 
       if (eisa_mmap)
 	{
-	  if ((eisa_mmap & 0xFFFF) == 0x3C00)
-	    add_mem_region (0x100000, (eisa_mmap << 16) + 0x100000 * 15);
-	  else
-	    {
-	      add_mem_region (0x100000, (eisa_mmap & 0xFFFF) << 10);
-	      add_mem_region (0x1000000, eisa_mmap << 16);
-	    }
+	  add_mem_region (0x100000, (eisa_mmap & 0xFFFF) << 10);
+	  add_mem_region (0x1000000, eisa_mmap & ~0xFFFF);
 	}
       else
 	add_mem_region (0x100000, grub_get_memsize (1) << 10);
@@ -252,4 +252,20 @@ grub_addr_t
 grub_arch_modules_addr (void)
 {
   return grub_end_addr;
+}
+
+/* Return the start of the memdisk image.  */
+grub_addr_t
+grub_arch_memdisk_addr (void)
+{
+  return GRUB_MEMORY_MACHINE_DECOMPRESSION_ADDR
+    + (grub_kernel_image_size - GRUB_KERNEL_MACHINE_RAW_SIZE)
+    + grub_total_module_size;
+}
+
+/* Return the size of the memdisk image.  */
+grub_off_t
+grub_arch_memdisk_size (void)
+{
+  return grub_memdisk_image_size;
 }

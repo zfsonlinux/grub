@@ -18,6 +18,7 @@
  */
 
 #include <multiboot2.h>
+#include <grub/machine/machine.h>
 #include <grub/multiboot_loader.h>
 #include <grub/multiboot.h>
 #include <grub/multiboot2.h>
@@ -35,8 +36,8 @@ grub_dl_t my_mod;
 /* This tracks which version of multiboot to use when using
  * the module command. By default use multiboot version 1.
  * values:
- *      1 - Mulitboot version 1 
- *      2 - Mutliboot version 2
+ *      1 - Multiboot version 1 
+ *      2 - Multiboot version 2
  */
 
 static unsigned int module_version_status = 1; 
@@ -113,7 +114,7 @@ grub_rescue_cmd_multiboot_loader (int argc, char *argv[])
 
    /* XXX Find a better way to identify this. 
       This is for i386-pc */
-#ifdef __i386__
+#ifdef GRUB_MACHINE_PCBIOS
   if (header_multi_ver_found == 1)
     {
       grub_dprintf ("multiboot_loader",
@@ -125,7 +126,7 @@ grub_rescue_cmd_multiboot_loader (int argc, char *argv[])
   if (header_multi_ver_found == 0 || header_multi_ver_found == 2)
     {
       grub_dprintf ("multiboot_loader",
-           "Launching mulitboot 2 grub_multiboot2() function\n");
+           "Launching multiboot 2 grub_multiboot2() function\n");
       grub_multiboot2 (argc, argv);
       module_version_status = 2;
     }
@@ -143,7 +144,7 @@ void
 grub_rescue_cmd_module_loader (int argc, char *argv[])
 {
 
-#ifdef __i386__
+#ifdef GRUB_MACHINE_PCBIOS
   if (module_version_status == 1)
     {
       grub_dprintf("multiboot_loader",
@@ -171,6 +172,6 @@ GRUB_MOD_INIT(multiboot)
 
 GRUB_MOD_FINI(multiboot)
 {
-  grub_rescue_unregister_command ("mulitboot");
+  grub_rescue_unregister_command ("multiboot");
   grub_rescue_unregister_command ("module");
 }

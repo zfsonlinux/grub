@@ -22,9 +22,6 @@
 #include <grub/types.h>
 #include <grub/symbol.h>
 
-extern grub_addr_t EXPORT_VAR(grub_os_area_addr);
-extern grub_size_t EXPORT_VAR(grub_os_area_size);
-
 /* Get the memory size in KB. If EXTENDED is zero, return conventional
    memory, otherwise return extended memory.  */
 grub_uint16_t grub_get_memsize (int extended);
@@ -39,7 +36,7 @@ struct grub_machine_mmap_entry
   grub_uint64_t addr;
   grub_uint64_t len;
   grub_uint32_t type;
-};
+} __attribute__((packed));
 
 /* Get a memory map entry. Return next continuation value. Zero means
    the end.  */

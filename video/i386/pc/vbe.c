@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2005,2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2005,2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 #include <grub/err.h>
 #include <grub/machine/memory.h>
+#include <grub/machine/vga.h>
 #include <grub/machine/vbe.h>
 #include <grub/machine/vbeblit.h>
 #include <grub/machine/vbefill.h>
@@ -193,7 +194,7 @@ grub_vbe_set_video_mode (grub_uint32_t mode,
   if (mode < 0x100)
     {
       /* If this is not a VESA mode, guess address.  */
-      framebuffer.ptr = (grub_uint8_t *) 0xA0000;
+      framebuffer.ptr = (grub_uint8_t *) GRUB_MEMORY_MACHINE_VGA_ADDR;
       framebuffer.index_color_mode = 1;
     }
   else
@@ -606,7 +607,7 @@ grub_video_vbe_set_viewport (unsigned int x, unsigned int y,
                              unsigned int width, unsigned int height)
 {
   /* Make sure viewport is withing screen dimensions.  If viewport was set
-     to be out of the reqion, mark its size as zero.  */
+     to be out of the region, mark its size as zero.  */
   if (x > active_mode_info.x_resolution)
     {
       x = 0;
@@ -754,11 +755,25 @@ grub_video_vbe_map_rgba (grub_uint8_t red, grub_uint8_t green,
     }
 }
 
+grub_err_t grub_video_vbe_unmap_color (grub_video_color_t color,
+                                       grub_uint8_t *red, grub_uint8_t *green,
+                                       grub_uint8_t *blue, grub_uint8_t *alpha)
+{
+  struct grub_video_i386_vbeblit_info target_info;
+
+  target_info.mode_info = &render_target->mode_info;
+  target_info.data = render_target->data;
+
+  grub_video_vbe_unmap_color_int (&target_info, color, red, green, blue, alpha);
+  
+  return GRUB_ERR_NONE;
+}
+
 void
-grub_video_vbe_unmap_color (struct grub_video_i386_vbeblit_info * source,
-                            grub_video_color_t color,
-                            grub_uint8_t *red, grub_uint8_t *green,
-                            grub_uint8_t *blue, grub_uint8_t *alpha)
+grub_video_vbe_unmap_color_int (struct grub_video_i386_vbeblit_info * source,
+                                grub_video_color_t color,
+                                grub_uint8_t *red, grub_uint8_t *green,
+                                grub_uint8_t *blue, grub_uint8_t *alpha)
 {
   struct grub_video_mode_info *mode_info;
   mode_info = source->mode_info;
@@ -766,7 +781,7 @@ grub_video_vbe_unmap_color (struct grub_video_i386_vbeblit_info * source,
   if ((mode_info->mode_type 
        & GRUB_VIDEO_MODE_TYPE_INDEX_COLOR) != 0)
     {
-      /* If we have out of bounds color, return trasnparent black.  */
+      /* If we have an out-of-bounds color, return transparent black.  */
       if (color > 255)
         {
           *red = 0;
@@ -958,7 +973,7 @@ grub_video_vbe_blit_glyph (struct grub_font_glyph * glyph,
   return GRUB_ERR_NONE;
 }
 
-/* NOTE: This function assumes that given coordiantes are within bounds of 
+/* NOTE: This function assumes that given coordinates are within bounds of 
    handled data.  */
 static void
 common_blitter (struct grub_video_i386_vbeblit_info *target,
@@ -1435,7 +1450,7 @@ grub_video_vbe_create_render_target (struct grub_video_render_target **result,
   target->mode_info.bpp = 32;
   target->mode_info.bytes_per_pixel = 4;
   target->mode_info.pitch = target->mode_info.bytes_per_pixel * width;
-  target->mode_info.number_of_colors = 256; /* Emulated paletted.  */
+  target->mode_info.number_of_colors = 256; /* Emulated palette.  */
   target->mode_info.red_mask_size = 8;
   target->mode_info.red_field_pos = 0;
   target->mode_info.green_mask_size = 8;
@@ -1510,6 +1525,14 @@ grub_video_vbe_set_active_render_target (struct grub_video_render_target *target
   return GRUB_ERR_NONE;
 }
 
+static grub_err_t
+grub_video_vbe_get_active_render_target (struct grub_video_render_target **target)
+{
+  *target = render_target;
+  
+  return GRUB_ERR_NONE;
+}
+
 static struct grub_video_adapter grub_video_vbe_adapter =
   {
     .name = "VESA BIOS Extension Video Driver",
@@ -1525,6 +1548,7 @@ static struct grub_video_adapter grub_video_vbe_adapter =
     .map_color = grub_video_vbe_map_color,
     .map_rgb = grub_video_vbe_map_rgb,
     .map_rgba = grub_video_vbe_map_rgba,
+    .unmap_color = grub_video_vbe_unmap_color,
     .fill_rect = grub_video_vbe_fill_rect,
     .blit_glyph = grub_video_vbe_blit_glyph,
     .blit_bitmap = grub_video_vbe_blit_bitmap,
@@ -1534,6 +1558,7 @@ static struct grub_video_adapter grub_video_vbe_adapter =
     .create_render_target = grub_video_vbe_create_render_target,
     .delete_render_target = grub_video_vbe_delete_render_target,
     .set_active_render_target = grub_video_vbe_set_active_render_target,
+    .get_active_render_target = grub_video_vbe_get_active_render_target,
 
     .next = 0
   };
