@@ -1,3 +1,186 @@
+2008-02-03  Robert Millan  <rmh@aybabtu.com>
+
+	* util/i386/pc/grub-mkrescue.in: Rewrite most of image generation to
+	use `cdboot.img' for cdrom images.
+
+2008-02-03  Robert Millan  <rmh@aybabtu.com>
+
+	* util/grub.d/00_header.in: Issue scripting commands for GRUB to
+	only setup gfxterm when `font' command has succeeded.
+
+2008-02-03  Robert Millan  <rmh@aybabtu.com>
+
+	* loader/multiboot_loader.c [GRUB_MACHINE_LINUXBIOS]
+	(grub_rescue_cmd_multiboot_loader)
+	(grub_rescue_cmd_module_loader): Enable multiboot1 calls.
+
+2008-02-03  Pavel Roskin  <proski@gnu.org>
+
+	* a/kern/i386/pc/startup.S (grub_chainloader_real_boot): Pop
+	%edx and %esi from stack only after grub_gate_a20() is called.
+	grub_gate_a20() clobbers %edx.
+
+2008-02-03  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* configure.ac (AC_INIT): Bumped to 1.96.
+
+	* DISTLIST: Added boot/i386/pc/cdboot.S, bus/pci.c,
+	commands/lspci.c,disk/memdisk.c, include/grub/pci.h,
+	include/grub/i386/pc/pci.h, video/readers/jpeg.c, and
+	video/readers/png.c.
+
+2008-01-31  Bean  <bean123ch@gmail.com>
+
+	* conf/i386-pc.rmk (pkglib_IMAGES): Add cdboot.img.
+	(cdboot_img_SOURCES): New variable.
+	(cdboot_img_ASFLAGS): New variable.
+	(cdboot_img_LDFLAGS): New variable.
+
+	* boot/i386/pc/cdboot.S: New file.
+
+	* disk/i386/pc/biosdisk.c (cd_start): New variable.
+	(cd_count): Likewise.
+	(grub_biosdisk_get_drive): Add support for cd device.
+	(grub_biosdisk_call_hook): Likewise.
+	(grub_biosdisk_iterate): Likewise.
+	(grub_biosdisk_open): Likewise.
+	(GRUB_BIOSDISK_CDROM_RETRY_COUNT): New macro.
+	(grub_biosdisk_rw): Support reading from cd device.
+	(GRUB_MOD_INIT): Iterate cd devices.
+
+	* include/grub/i386/pc/biosdisk.h (GRUB_BIOSDISK_FLAG_CDROM): New macro.
+	(GRUB_BIOSDISK_MACHINE_CDROM_START): Likewise.
+	(GRUB_BIOSDISK_MACHINE_CDROM_END): Likewise.
+
+	* kern/i386/pc/init.c (make_install_device): Check for cd device.
+
+2008-02-02  Robert Millan  <rmh@aybabtu.com>
+
+	* commands/read.c: New file.
+	* conf/common.rmk (pkglib_MODULES): Add `commands/read.c'.
+	(read_mod_SOURCES): New variable.
+	(read_mod_CFLAGS): Likewise.
+	(read_mod_LDFLAGS): Likewise.
+
+2008-02-02  Robert Millan  <rmh@aybabtu.com>
+
+	* normal/main.c (grub_normal_execute): Check for `menu->size' when
+	determining whether menu has to be displayed.
+
+2008-02-02  Marco Gerards  <marco@gnu.org>
+
+	* bus/pci.c: New file.
+
+	* include/grub/pci.h: Likewise.
+
+	* include/grub/i386/pc/pci.h: Likewise.
+
+	* commands/lspci.c: Likewise.
+
+	* conf/i386-pc.rmk (pkglib_MODULES): Add `pci.mod' and
+	`lspci.mod'.
+	(pci_mod_SOURCES): New variable.
+	(pci_mod_CFLAGS): Likewise.
+	(pci_mod_LDFLAGS): Likewise.
+	(lspci_mod_SOURCES): Likewise.
+	(lspci_mod_CFLAGS): Likewise.
+	(lspci_mod_LDFLAGS): Likewise.	
+
+2008-02-02  Bean  <bean123ch@gmail.com>
+
+	* fs/ufs.c (INODE_BLKSZ): Fix incorrect value.
+	(grub_ufs_get_file_block): Fix indirect block calculation problem.
+
+	* fs/xfs.c (grub_xfs_sblock): New member log2_dirblk.
+	(grub_xfs_btree_node): New structure.
+	(grub_xfs_btree_root): New structure.
+	(grub_xfs_inode): New members nblocks, extsize, nextents and btree.
+	(GRUB_XFS_EXTENT_OFFSET): Use exts instead of inode->data.extents.
+	(GRUB_XFS_EXTENT_BLOCK): Likewise.
+	(GRUB_XFS_EXTENT_SIZE): Likewise.
+	(grub_xfs_read_block): Support btree format type.
+	(grub_xfs_iterate_dir): Use NESTED_FUNC_ATTR in call_hook.
+	Use directory block as basic unit.
+
+	* fs/fshelp.c (grub_fshelp_read_file): Bug fix for sparse block.
+
+	* aclocal.m4 (grub_i386_CHECK_REGPARM_BUG): Define NESTED_FUNC_ATTR as
+	__attribute__ ((__regparm__ (1))).
+
+2008-02-01  Robert Millan  <rmh@aybabtu.com>
+
+	Correct a mistake in previous commit.
+
+	* conf/i386-pc.rmk (normal/execute.c_DEPENDENCIES): Move to the
+	top.
+	(normal/command.c_DEPENDENCIES): New variable.
+
+2008-02-01  Robert Millan  <rmh@aybabtu.com>
+
+	* conf/i386-efi.rmk (normal/execute.c_DEPENDENCIES): Move to the
+	top.
+	(normal/command.c_DEPENDENCIES): New variable.
+	(grub-emu_DEPENDENCIES, normal_mod_DEPENDENCIES): Remove variables.
+	* conf/i386-ieee1275.rmk: Likewise.
+	* conf/i386-linuxbios.rmk: Likewise.
+	* conf/i386-pc.rmk: Likewise.
+	* conf/sparc64-ieee1275.rmk: Likewise.
+	* conf/powerpc-ieee1275.rmk: Likewise.
+	(grub_emu_SOURCES): Add `fs/fshelp.c'.
+
+	* genmk.rb: Add `$(#{src}_DEPENDENCIES)' in targets that require it.
+
+2008-02-01  Robert Millan  <rmh@aybabtu.com>
+
+	* kern/disk.c (grub_disk_read, grub_disk_write): Add grub_dprintf()
+	call at beginning of function.
+
+2008-01-31  Pavel Roskin  <proski@gnu.org>
+
+	* util/powerpc/ieee1275/grub-mkrescue.in: New file.
+	* conf/powerpc-ieee1275.rmk (bin_SCRIPTS): New variable.
+	(grub_mkrescue_SOURCES): Likewise.
+	* DISTLIST: Add util/powerpc/ieee1275/grub-mkrescue.in.
+
+2008-01-30  Robert Millan  <rmh@aybabtu.com>
+
+	* conf/i386-pc.rmk (sbin_UTILITIES): Remove `grub-probe'.
+	(util/grub-probe.c_DEPENDENCIES, grub_probe_SOURCES): Moved from here ...
+	* conf/common.rmk (util/grub-probe.c_DEPENDENCIES)
+	(grub_probe_SOURCES): ... to here.
+
+	* conf/i386-efi.rmk (sbin_UTILITIES): Remove `grub-probe'.
+	(util/grub-probe.c_DEPENDENCIES, grub_probe_SOURCES): Remove.
+	* conf/i386-ieee1275.rmk: Likewise.
+	* conf/i386-linuxbios.rmk: Likewise.
+	* conf/powerpc-ieee1275.rmk: Likewise.
+
+2008-01-30  Tristan Gingold  <gingold@free.fr>
+
+	* kern/rescue.c: Silently accept empty lines.
+
+2008-01-29  Bean  <bean123ch@gmail.com>
+
+	* boot/i386/pc/lnxboot.S (data_start): Code cleanup.
+	(real_code_2): Code cleanup and change comment style.
+	(move_memory): Avoid using 32-bit address mode.
+
+2008-01-29  Bean  <bean123ch@gmail.com>
+
+	* conf/i386-pc.rmk (pkglib_MODULES): Add `png.mod'.
+	(png_mod_SOURCES): New variable.
+	(png_mod_CFLAGS): Likewise.
+	(png_mod_LDFLAGS): Likewise.
+
+	* video/readers/png.c: New file.
+
+2008-01-28  Robert Millan  <rmh@aybabtu.com>
+
+	* include/grub/i386/linuxbios/kernel.h (GRUB_MOD_GAP): New macro.
+	* kern/powerpc/ieee1275/init.c (grub_arch_modules_addr): Remove
+	`ifndef GRUB_MOD_GAP' hack.
+	* util/elf/grub-mkimage.c (add_segments): Likewise.
+
 2008-01-27  Robert Millan  <rmh@aybabtu.com>
 
 	* kern/powerpc/ieee1275/init.c (grub_arch_modules_addr): Skip

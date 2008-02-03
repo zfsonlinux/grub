@@ -42,18 +42,16 @@ Make GRUB rescue image.
   -h, --help              print this message and exit
   -v, --version           print the version information and exit
   --modules=MODULES       pre-load specified modules MODULES
-  --overlay=DIR           overlay directory DIR in the memdisk image
-  --pkglibdir=DIR         use images from directory DIR instead of ${pkglibdir}
+  --pkglibdir=DIR         use images from directory DIR
+                          default: ${pkglibdir}
   --grub-mkimage=FILE     use FILE as grub-mkimage
-  --image-type=TYPE       select floppy or cdrom (default)
 
-grub-mkimage generates a bootable rescue image of the specified type.
+grub-mkimage generates a bootable rescue CD image for PowerMac and CHRP.
 
 Report bugs to <grub-devel@gnu.org>.
 EOF
 }
 
-image_type=cdrom
 input_dir=${pkglibdir}
 grub_mkimage=grub-mkimage
 
@@ -68,20 +66,10 @@ for option in "$@"; do
 	exit 0 ;;
     --modules=*)
 	modules=`echo "$option" | sed 's/--modules=//'` ;;
-    --overlay=*)
-	overlay=`echo "$option" | sed 's/--overlay=//'` ;;
     --pkglibdir=*)
 	input_dir=`echo "$option" | sed 's/--pkglibdir=//'` ;;
     --grub-mkimage=*)
 	grub_mkimage=`echo "$option" | sed 's/--grub-mkimage=//'` ;;
-    --image-type=*)
-    	image_type=`echo "$option" | sed 's/--image-type=//'`
-        case "$image_type" in
-          floppy|cdrom) ;;
-          *)
-            echo "Unknown image type \`$image_type'" 1>&2
-            exit 1 ;;
-        esac ;;
     -*)
 	echo "Unrecognized option \`$option'" 1>&2
 	usage
@@ -102,45 +90,27 @@ if test "x$output_image" = x; then
   exit 1
 fi
 
-aux_dir=`mktemp -d`
-mkdir -p ${aux_dir}/boot/grub
-
-cp ${input_dir}/*.mod \
-  ${input_dir}/command.lst ${input_dir}/moddep.lst ${input_dir}/fs.lst \
-  ${aux_dir}/boot/grub/
-
-if test "x$overlay" = x ; then : ; else
-  cp -dpR ${overlay}/* ${aux_dir}/
+if [ "x${modules}" = "x" ] ; then
+  modules=`cd ${input_dir}/ && ls *.mod`
 fi
 
-if [ "x${image_type}" = "xfloppy" ] ; then
-  # build memdisk
-  memdisk_img=`mktemp`
-  tar -C ${aux_dir} -cf ${memdisk_img} boot
-  rm -rf ${aux_dir}
+map_file=`mktemp`
+cat >${map_file} <<EOF
+# EXTN          XLate   CREATOR   TYPE     Comment
+grub.img        Raw     'UNIX'    'tbxi'   "bootstrap"
+EOF
 
-  # build core.img
-  core_img=`mktemp`
-  ${grub_mkimage} -d ${input_dir}/ -m ${memdisk_img} -o ${core_img} memdisk cpio biosdisk ${modules}
-  rm -f ${memdisk_img}
+iso_dir=`mktemp -d`
+boot_dir=${iso_dir}/boot/grub
+mkdir ${iso_dir}/boot
+mkdir ${boot_dir}
+core_img=${boot_dir}/grub.img
+${grub_mkimage} -n -d ${input_dir}/ -o ${core_img} ${modules}
+genisoimage -hfs -part -no-desktop -r -J -o ${output_image} \
+ -map ${map_file} -hfs-bless ${boot_dir} -chrp-boot -sysid PPC \
+ ${iso_dir}
 
-  # build floppy image
-  cat ${input_dir}/boot.img ${core_img} /dev/zero | dd bs=1024 count=1440 > $output_image
-  rm -f ${core_img}
-else
-  # build core.img
-  core_img=`mktemp`
-  ${grub_mkimage} -d ${input_dir}/ -o ${core_img} biosdisk iso9660 ${modules}
-
-  # build grub_eltorito image
-  cat ${input_dir}/cdboot.img ${core_img} > ${aux_dir}/boot/grub/grub_eltorito
-  rm -f ${core_img}
-
-  # build iso image
-  genisoimage -b boot/grub/grub_eltorito \
-    -no-emul-boot -boot-load-size 4 -boot-info-table \
-    -o ${output_image} -r ${aux_dir}
-  rm -rf ${aux_dir}
-fi
+rm -rf ${iso_dir}
+rm -f ${map_file}
 
 exit 0

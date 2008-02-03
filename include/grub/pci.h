@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2005,2006,2007,2008  Free Software Foundation, Inc.
+ *  Copyright (C) 2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,14 +16,22 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GRUB_KERNEL_MACHINE_HEADER
-#define GRUB_KERNEL_MACHINE_HEADER	1
+#ifndef	GRUB_PCI_H
+#define	GRUB_PCI_H	1
 
+#include <grub/types.h>
 #include <grub/symbol.h>
 
-#define GRUB_MOD_ALIGN 0x1000
+typedef grub_uint32_t grub_pci_id_t;
+typedef int (*grub_pci_iteratefunc_t) (int bus, int device, int func,
+				       grub_pci_id_t pciid);
+typedef grub_uint32_t grub_pci_address_t;
 
-/* Non-zero value is only needed for some IEEE-1275 platforms.  */
-#define GRUB_MOD_GAP 0
+grub_pci_address_t EXPORT_FUNC(grub_pci_make_address) (int bus, int device,
+						       int function, int reg);
 
-#endif /* ! GRUB_KERNEL_MACHINE_HEADER */
+void EXPORT_FUNC(grub_pci_iterate) (grub_pci_iteratefunc_t hook);
+
+#include <grub/machine/pci.h>
+
+#endif /* GRUB_PCI_H */
