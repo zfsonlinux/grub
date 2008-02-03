@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2005,2006,2007,2008  Free Software Foundation, Inc.
+ *  Copyright (C) 2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,14 +16,20 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GRUB_KERNEL_MACHINE_HEADER
-#define GRUB_KERNEL_MACHINE_HEADER	1
+#ifndef	GRUB_CPU_PCI_H
+#define	GRUB_CPU_PCI_H	1
 
-#include <grub/symbol.h>
+#include <grub/types.h>
+#include <grub/i386/io.h>
 
-#define GRUB_MOD_ALIGN 0x1000
+#define GRUB_PCI_ADDR_REG	0xcf8
+#define GRUB_PCI_DATA_REG	0xcfc
 
-/* Non-zero value is only needed for some IEEE-1275 platforms.  */
-#define GRUB_MOD_GAP 0
+static inline grub_uint32_t
+grub_pci_read (grub_pci_address_t addr)
+{
+  grub_outl (addr, GRUB_PCI_ADDR_REG);
+  return grub_inl (GRUB_PCI_DATA_REG);
+}
 
-#endif /* ! GRUB_KERNEL_MACHINE_HEADER */
+#endif /* GRUB_CPU_PCI_H */

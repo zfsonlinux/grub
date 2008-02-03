@@ -3,19 +3,46 @@
 # for convert_system_path_to_grub_path()
 source /usr/lib/grub/update-grub_lib
 
-if [ "$GRUB_TERMINAL" = "gfxterm" ] \
-    && bg=`convert_system_path_to_grub_path /usr/share/images/desktop-base/debian-blueish-wallpaper-640x480.tga` ; then
-  echo "Found Debian background: `basename ${bg}`" >&2
-  cat << EOF
-insmod tga
-background_image ${bg}
-set color_normal=black/black
-set color_highlight=magenta/black
-EOF
-else
-  # set the traditional Debian blue theme
+set_blue_theme()
+{
   cat << EOF
 set menu_color_normal=cyan/blue
 set menu_color_highlight=white/blue
 EOF
+}
+
+# check for usable backgrounds
+use_bg=false
+if [ "$GRUB_TERMINAL" = "gfxterm" ] ; then
+  for i in /usr/share/images/desktop-base/debian-blueish-wallpaper-640x480.{png,tga} ; do
+    if bg=`convert_system_path_to_grub_path $i` ; then 
+      echo "Found Debian background: `basename ${bg}`" >&2
+      use_bg=true
+      break
+    fi
+  done
+fi
+
+# set the background if possible
+if ${use_bg} ; then
+  case ${bg} in
+    *.png)		reader=png ;;
+    *.tga)		reader=tga ;;
+    *.jpg|*.jpeg)	reader=jpeg ;;
+  esac
+  cat << EOF
+insmod ${reader}
+if background_image ${bg} ; then
+  set color_normal=black/black
+  set color_highlight=magenta/black
+else
+EOF
+fi
+
+# otherwise, set the traditional Debian blue theme
+if ${use_bg} ; then
+  set_blue_theme | sed -e "s/^/  /g"
+  echo "fi"
+else
+  set_blue_theme
 fi
