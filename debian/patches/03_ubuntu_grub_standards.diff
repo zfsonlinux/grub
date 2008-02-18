@@ -1,0 +1,12 @@
+diff -Nur -x '*.orig' -x '*~' grub2-1.96+20080203/util/grub.d/10_linux.in grub2-1.96+20080203.new/util/grub.d/10_linux.in
+--- grub2-1.96+20080203/util/grub.d/10_linux.in	2008-01-14 06:24:48.000000000 -0600
++++ grub2-1.96+20080203.new/util/grub.d/10_linux.in	2008-02-18 14:17:50.000000000 -0600
+@@ -24,7 +24,7 @@
+ if [ "x${GRUB_DISTRIBUTOR}" = "x" ] ; then
+   OS=GNU/Linux
+ else
+-  OS="${GRUB_DISTRIBUTOR} GNU/Linux"
++  OS="${GRUB_DISTRIBUTOR}"
+ fi
+ 
+ test_numeric ()

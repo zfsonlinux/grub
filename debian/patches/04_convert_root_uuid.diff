@@ -1,0 +1,58 @@
+diff -Nur -x '*.orig' -x '*~' grub2-1.96+20080203/util/update-grub.in grub2-1.96+20080203.new/util/update-grub.in
+--- grub2-1.96+20080203/util/update-grub.in	2008-01-12 09:11:56.000000000 -0600
++++ grub2-1.96+20080203.new/util/update-grub.in	2008-02-18 16:16:46.000000000 -0600
+@@ -71,6 +71,8 @@
+ 
+ # Device containing our userland.  Typically used for root= parameter.
+ GRUB_DEVICE="`grub-probe --target=device /`"
++#Convert this to a UUID
++GRUB_DEVICE="`convert_root_to_uuid $GRUB_DEVICE`"
+ 
+ # Filesystem for the device containing our userland.  Used for stuff like
+ # choosing Hurd filesystem module.
+diff -Nur -x '*.orig' -x '*~' grub2-1.96+20080203/util/update-grub_lib.in grub2-1.96+20080203.new/util/update-grub_lib.in
+--- grub2-1.96+20080203/util/update-grub_lib.in	2008-01-12 09:11:56.000000000 -0600
++++ grub2-1.96+20080203.new/util/update-grub_lib.in	2008-02-18 16:16:09.000000000 -0600
+@@ -120,3 +120,42 @@
+   fi
+   return 0
+ }
++
++convert_root_to_uuid()
++{
++	local root; root=$1
++
++	convert=false
++	root=$(echo "$root" | sed 's/.*root=//;s/ .*//')
++	case "$root" in
++		UUID=*|LABEL=*)
++			;;
++		/dev/disk/*)
++			;;
++		/dev/mapper/*)
++			;;
++		/dev/evms/[hs]d[a-z][0-9]*)
++			convert=:
++			;;
++		/dev/evms/*)
++			;;
++		/dev/md[0-9]*)
++			;;
++		/dev/*)
++			convert=:
++			;;
++	esac
++	if $convert; then
++		if [ -L "$DEV" ] && readlink "$DEV" | grep -q "^/dev/mapper/"
++		then
++			:
++		elif [ -b "$root" ]; then
++			uuid=$(/sbin/vol_id -u "$root" || true)
++			if [ -n "$uuid" ]; then
++				root="UUID=$uuid"
++			fi
++		fi
++	fi
++
++	echo "$root"
++}
