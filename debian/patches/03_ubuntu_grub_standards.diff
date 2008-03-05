@@ -1,6 +1,6 @@
 diff -Nur -x '*.orig' -x '*~' grub2-1.96+20080203/util/grub.d/10_linux.in grub2-1.96+20080203.new/util/grub.d/10_linux.in
 --- grub2-1.96+20080203/util/grub.d/10_linux.in	2008-01-14 06:24:48.000000000 -0600
-+++ grub2-1.96+20080203.new/util/grub.d/10_linux.in	2008-02-18 14:17:50.000000000 -0600
++++ grub2-1.96+20080203.new/util/grub.d/10_linux.in	2008-03-05 19:05:01.000000000 -0600
 @@ -24,7 +24,7 @@
  if [ "x${GRUB_DISTRIBUTOR}" = "x" ] ; then
    OS=GNU/Linux
@@ -10,3 +10,12 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.96+20080203/util/grub.d/10_linux.in grub2-
  fi
  
  test_numeric ()
+@@ -118,7 +118,7 @@
+ 
+   cat << EOF
+ menuentry "${OS}, linux ${version} (single-user mode)" {
+-	linux	${grub_dirname}/${basename} root=${GRUB_DEVICE} ro single ${GRUB_CMDLINE_LINUX}
++	linux	${grub_dirname}/${basename} root=${GRUB_DEVICE} ro single
+ EOF
+   if test -n "${initrd}" ; then
+     cat << EOF
