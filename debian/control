@@ -43,11 +43,11 @@ Description: GRand Unified Bootloader, version 2 (common files)
 
 Package: grub-pc
 Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (>> 1.96+20080413-1), debconf, liblzo2-2 (>= 2.03)
+Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (>> 1.96+20080413-1), debconf, liblzo2-2 (>= 2.03), os-prober
 Provides: grub
 Replaces: pupa, grub, grub2 (<< ${Source-Version}), grub-common (<= 1.96+20080413-1)
 Conflicts: pupa, grub, desktop-base (= 4.0.5)
-Suggests: desktop-base (>= 4.0.6), os-prober
+Suggests: desktop-base (>= 4.0.6)
 Description: GRand Unified Bootloader, version 2 (PC/BIOS version)
  GRUB is a portable, powerful bootloader.  This version of GRUB is based on a
  cleaner design than its predecessors, and provides the following new features:

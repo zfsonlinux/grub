@@ -1,5 +1,6 @@
---- ../grub2/docs/grub.cfg	2008-04-29 14:17:33.000000000 +0200
-+++ docs/grub.cfg	2008-04-29 14:52:22.000000000 +0200
+diff -Nur -x '*.orig' -x '*~' grub2-1.96+20080512/docs/grub.cfg grub2-1.96+20080512.new/docs/grub.cfg
+--- grub2-1.96+20080512/docs/grub.cfg	2008-04-29 07:17:33.000000000 -0500
++++ grub2-1.96+20080512.new/docs/grub.cfg	2008-05-28 09:34:41.000000000 -0500
 @@ -2,6 +2,10 @@
  # Sample GRUB configuration file
  #
