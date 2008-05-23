@@ -1,3 +1,23 @@
+grub2 (1.96+20080512-1ubuntu2) intrepid; urgency=low
+
+  [ Onkar Shinde ]
+  * debian/patches:
+    - Add 03_ubuntu_grub_standards to remove GNU/Linux from the
+      default string. (LP: #192955) Don't show splash screen or quiet mode
+      in single user mode.
+    - Add 04_convert_root_uuid.diff to default to using UUIDs
+      on new GRUB2 installations.  (LP: #192956)
+  * debian/control:
+    - Move os-prober to 'Depends' since Ubuntu version does not suffer from
+      the mount problem in Debian version. 'os-prober' is needed for probing
+      other operating systems. (LP: #214642)
+  * Other bugs fixed - LP: #219580
+
+  [ Mario Limonciello ]
+  * Add items from missed merge bug (LP: #234288)
+
+ -- Onkar Shinde <onkarshinde@gmail.com>  Fri, 23 May 2008 14:28:36 +0530
+
 grub2 (1.96+20080512-1ubuntu1) intrepid; urgency=low
 
   * Merge from debian unstable, remaining changes:
@@ -195,7 +215,30 @@ grub2 (1.96+20080203-1ubuntu1) hardy; urgency=low
 
   * debian/default/grub
     - Show lsb_release rather than statically displaying "Debian" (LP: #192955)
-    - Include Ubuntu specific "quiet splash" on default grub command line. 
+    - Include Ubuntu specific "quiet splash" on default grub command line.
+      (LP: #193024)
+  * debian/patches:
+    - Add 03_ubuntu_grub_standards to remove GNU/Linux from the
+      default string. (LP: #192955)
+    - Add 04_convert_root_uuid.diff to default to using UUIDs
+      on new GRUB2 installations.  (LP: #192956)
+  * debian/control:
+    - Update maintainer per XSBC-Original-Maintainer spec.
+
+ -- Mario Limonciello <mario_limonciello@dell.com>  Mon, 18 Feb 2008 14:05:06 -0600
+
+grub2 (1.96+20080203-1ubuntu2) hardy; urgency=low
+
+  * Update 03_ubuntu_grub_standards.
+    - Don't show splash screen or quiet mode in single user mode.
+
+ -- Mario Limonciello <mario_limonciello@dell.com>  Wed, 05 Mar 2008 19:05:04 -0600
+
+grub2 (1.96+20080203-1ubuntu1) hardy; urgency=low
+
+  * debian/default/grub
+    - Show lsb_release rather than statically displaying "Debian" (LP: #192955)
+    - Include Ubuntu specific "quiet splash" on default grub command line.
       (LP: #193024)
   * debian/patches:
     - Add 03_ubuntu_grub_standards to remove GNU/Linux from the
@@ -693,7 +736,7 @@ grub2 (1.94-4) unstable; urgency=low
     native building.
   * Remove convert_kernel26 usage since it's not necessary anymore and due
     initramfs-tools changes it's bug too.
-  
+
   [ Robert Millan ]
   * Fork update-grub from grub legacy, and tweak a few commands in output to
     make it work for grub2.
@@ -727,7 +770,7 @@ grub2 (1.94-1) unstable; urgency=low
   * New upstream release.
     - Fix powerpc building. Closes: #370259
     - 01_fix_grub-install.patch: merged upstream.
-    - Moved modules to /usr/lib/grub since they are architecture 
+    - Moved modules to /usr/lib/grub since they are architecture
       dependent.
   * Leave CDBS set debhelper compatibility level.
   * Allow amd64 build to happen. Closes: #364956
@@ -763,8 +806,8 @@ grub2 (1.92-1) unstable; urgency=low
     - Add support for Apple HFS+ filesystems.
   * 01_fix_grub-install.patch: Added. Fix grub-install to use
     /bin/grub-mkimage instead of /sbin/grub-mkimage. Closes: #338824
-  * Do not use CDBS tarball mode anymore. Closes: #344272  
-  
+  * Do not use CDBS tarball mode anymore. Closes: #344272
+
  -- Otavio Salvador <otavio@debian.org>  Thu,  5 Jan 2006 15:20:40 -0200
 
 grub2 (1.91-0) unstable; urgency=low
@@ -864,4 +907,5 @@ pupa (0.6+20030915-1) unstable; urgency=low
   * Initial Release. (Closes: #211030)
 
  -- Robert Millan <rmh@debian.org>  Mon, 15 Sep 2003 14:58:42 +0000
+
 
