@@ -7,6 +7,8 @@ COMMON_LDFLAGS = -melf_i386 -nostdlib
 # Used by various components.  These rules need to precede them.
 normal/execute.c_DEPENDENCIES = grub_script.tab.h
 normal/command.c_DEPENDENCIES = grub_script.tab.h
+normal/function.c_DEPENDENCIES = grub_script.tab.h
+normal/lexer.c_DEPENDENCIES = grub_script.tab.h
 
 # Utilities.
 bin_UTILITIES = grub-mkimage
@@ -37,14 +39,14 @@ grub_emu_SOURCES = commands/boot.c commands/cat.c commands/cmp.c 	\
 	commands/configfile.c commands/help.c				\
 	commands/terminal.c commands/ls.c commands/test.c 		\
 	commands/search.c commands/hexdump.c				\
-	commands/i386/pc/halt.c commands/i386/pc/reboot.c		\
+	commands/halt.c commands/reboot.c				\
 	commands/i386/cpuid.c						\
 	disk/loopback.c							\
 	\
 	fs/affs.c fs/cpio.c fs/ext2.c fs/fat.c fs/hfs.c			\
-	fs/hfsplus.c fs/iso9660.c fs/jfs.c fs/minix.c			\
+	fs/hfsplus.c fs/iso9660.c fs/udf.c fs/jfs.c fs/minix.c		\
 	fs/ntfs.c fs/ntfscomp.c fs/reiserfs.c fs/sfs.c			\
-	fs/ufs.c fs/xfs.c						\
+	fs/ufs.c fs/xfs.c fs/afs.c					\
 	\
 	io/gzio.c							\
 	kern/device.c kern/disk.c kern/dl.c kern/elf.c kern/env.c	\
@@ -59,8 +61,11 @@ grub_emu_SOURCES = commands/boot.c commands/cat.c commands/cmp.c 	\
 	partmap/amiga.c	partmap/apple.c partmap/pc.c partmap/sun.c	\
 	partmap/acorn.c partmap/gpt.c					\
 	util/console.c util/hostfs.c util/grub-emu.c util/misc.c	\
-	util/biosdisk.c util/getroot.c			\
-	util/i386/pc/misc.c grub_emu_init.c
+	util/biosdisk.c util/getroot.c					\
+	util/i386/pc/misc.c						\
+	\
+	disk/raid.c disk/lvm.c						\
+	grub_emu_init.c
 
 grub_emu_LDFLAGS = $(LIBCURSES)
 
@@ -72,7 +77,7 @@ grub_install_SOURCES = util/i386/efi/grub-install.in
 
 # Modules.
 pkglib_MODULES = kernel.mod normal.mod _chain.mod chain.mod \
-	_linux.mod linux.mod cpuid.mod
+	_linux.mod linux.mod cpuid.mod halt.mod reboot.mod
 
 # For kernel.mod.
 kernel_mod_EXPORTS = no
@@ -134,5 +139,15 @@ linux_mod_LDFLAGS = $(COMMON_LDFLAGS)
 cpuid_mod_SOURCES = commands/i386/cpuid.c
 cpuid_mod_CFLAGS = $(COMMON_CFLAGS)
 cpuid_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For halt.mod.
+halt_mod_SOURCES = commands/halt.c
+halt_mod_CFLAGS = $(COMMON_CFLAGS)
+halt_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For reboot.mod.
+reboot_mod_SOURCES = commands/reboot.c
+reboot_mod_CFLAGS = $(COMMON_CFLAGS)
+reboot_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 include $(srcdir)/conf/common.mk

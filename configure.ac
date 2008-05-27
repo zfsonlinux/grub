@@ -115,8 +115,9 @@ AC_PROG_INSTALL
 AC_PROG_AWK
 AC_PROG_MAKE_SET
 
-# This is not a "must".
+# These are not a "must".
 AC_PATH_PROG(RUBY, ruby)
+AC_PATH_PROG(HELP2MAN, help2man)
 
 #
 # Checks for host programs.
@@ -206,11 +207,11 @@ if test "x$TARGET_CFLAGS" = x; then
                  -Wundef -Wstrict-prototypes -g"
 
   # optimization flags.
-  AC_CACHE_CHECK([whether optimization for size works], size_flag, [
+  AC_CACHE_CHECK([whether optimization for size works], grub_cv_cc_Os, [
     CFLAGS=-Os
-    AC_TRY_COMPILE(, , size_flag=yes, size_flag=no)
+    AC_TRY_COMPILE(, , grub_cv_cc_Os=yes, grub_cv_cc_Os=no)
   ])
-  if test "x$size_flag" = xyes; then
+  if test "x$grub_cv_cc_Os" = xyes; then
     TARGET_CFLAGS="$TARGET_CFLAGS -Os"
   else
     TARGET_CFLAGS="$TARGET_CFLAGS -O2 -fno-strength-reduce -fno-unroll-loops"
@@ -218,12 +219,12 @@ if test "x$TARGET_CFLAGS" = x; then
 
   # Force no alignment to save space on i386.
   if test "x$target_cpu" = xi386; then
-    AC_CACHE_CHECK([whether -falign-loops works], [falign_loop_flag], [
+    AC_CACHE_CHECK([whether -falign-loops works], [grub_cv_cc_falign_loop], [
       CFLAGS="-falign-loops=1"
-      AC_TRY_COMPILE(, , [falign_loop_flag=yes], [falign_loop_flag=no])
+      AC_TRY_COMPILE(, , [grub_cv_cc_falign_loop=yes], [grub_cv_cc_falign_loop=no])
     ])
 
-    if test "x$falign_loop_flag" = xyes; then
+    if test "x$grub_cv_cc_falign_loop" = xyes; then
       TARGET_CFLAGS="$TARGET_CFLAGS -falign-jumps=1 -falign-loops=1 -falign-functions=1"
     else
       TARGET_CFLAGS="$TARGET_CFLAGS -malign-jumps=1 -malign-loops=1 -malign-functions=1"
@@ -237,27 +238,17 @@ if test "x$target_m32" = x1; then
   TARGET_LDFLAGS="$TARGET_LDFLAGS -m32"
 fi
 
-AC_MSG_CHECKING([whether the linker accepts `--build-id=none'])
-save_LDFLAGS="$LDFLAGS"
-LDFLAGS="$LDFLAGS -Wl,--build-id=none"
-AC_TRY_LINK(, , build_id_flag=yes, build_id_flag=no)
-AC_MSG_RESULT([$build_id_flag])
-LDFLAGS="$save_LDFLAGS"
-if test "x$build_id_flag" = xyes; then
-  TARGET_LDFLAGS="$TARGET_LDFLAGS -Wl,--build-id=none"
-fi
-
 #
 # Compiler features.
 #
 
 # Smashing stack protector.
 grub_CHECK_STACK_PROTECTOR
-[# Need that, because some distributions ship compilers that include
+# Need that, because some distributions ship compilers that include
 # `-fstack-protector' in the default specs.
-if [ x"$ssp_possible" = xyes ]; then
-  TARGET_CFLAGS=$TARGET_CFLAGS\ -fno-stack-protector
-fi]
+if test "x$ssp_possible" = xyes; then
+  TARGET_CFLAGS="$TARGET_CFLAGS -fno-stack-protector"
+fi
 
 AC_SUBST(TARGET_CFLAGS)
 AC_SUBST(TARGET_CPPFLAGS)
@@ -319,6 +310,11 @@ AC_ARG_ENABLE([grub-emu],
 	[AC_MSG_ERROR([(n)curses header files are required to build `grub-emu'])])])])
 [fi]
 AC_SUBST([enable_grub_emu])
+
+AC_ARG_ENABLE([grub-fstest],
+	      [AS_HELP_STRING([--enable-grub-fstest],
+                             [build and install the `grub-fstest' debugging utility])])
+AC_SUBST([enable_grub_fstest])
 
 # Output files.
 AC_CONFIG_LINKS([include/grub/cpu:include/grub/$target_cpu

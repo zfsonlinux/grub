@@ -1,7 +1,7 @@
 /* misc.c - definitions of misc functions */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -94,8 +94,11 @@ grub_strcat (char *dest, const char *src)
   while (*p)
     p++;
 
-  while ((*p++ = *src++) != '\0')
-    ;
+  while ((*p = *src) != '\0')
+    {
+      p++;
+      src++;
+    }
 
   return dest;
 }
@@ -108,10 +111,14 @@ grub_strncat (char *dest, const char *src, int c)
   while (*p)
     p++;
 
-  while ((*p++ = *src++) != '\0' && --c)
-    ;
-  *(--p) = '\0';
-  
+  while ((*p = *src) != '\0' && c--)
+    {
+      p++;
+      src++;
+    }
+
+  *p = '\0';
+
   return dest;
 }
 

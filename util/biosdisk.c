@@ -23,6 +23,7 @@
 #include <grub/types.h>
 #include <grub/err.h>
 #include <grub/util/misc.h>
+#include <grub/util/biosdisk.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -167,7 +168,7 @@ grub_util_biosdisk_open (const char *name, grub_disk_t disk)
     int fd;
 
     fd = open (map[drive], O_RDONLY);
-    if (! fd)
+    if (fd == -1)
       return grub_error (GRUB_ERR_BAD_DEVICE, "cannot open `%s'", map[drive]);
 
     if (fstat (fd, &st) < 0 || ! S_ISBLK (st.st_mode))
@@ -226,15 +227,28 @@ linux_find_partition (char *dev, unsigned long sector)
       format = "part%d";
     }
   else if ((strncmp (real_dev + 5, "hd", 2) == 0
+	    || strncmp (real_dev + 5, "vd", 2) == 0
 	    || strncmp (real_dev + 5, "sd", 2) == 0)
 	   && real_dev[7] >= 'a' && real_dev[7] <= 'z')
     {
       p = real_dev + 8;
       format = "%d";
     }
-  else if (strncmp (real_dev + 5, "rd/c", 4) == 0)
+  else if (strncmp (real_dev + 5, "rd/c", 4) == 0)	/* dac960 */
     {
       p = strchr (real_dev + 9, 'd');
+      if (! p)
+	return 0;
+
+      p++;
+      while (*p && isdigit (*p))
+	p++;
+
+      format = "p%d";
+    }
+  else if (strncmp (real_dev + 5, "cciss/c", sizeof("cciss/c")-1) == 0)
+    {
+      p = strchr (real_dev + 5 + sizeof("cciss/c")-1, 'd');
       if (! p)
 	return 0;
 
@@ -254,7 +268,7 @@ linux_find_partition (char *dev, unsigned long sector)
       
       sprintf (p, format, i);
       fd = open (real_dev, O_RDONLY);
-      if (! fd)
+      if (fd == -1)
 	return 0;
 
       if (ioctl (fd, HDIO_GETGEO, &hdg))
@@ -485,8 +499,9 @@ read_device_map (const char *dev_map)
   FILE *fp;
   char buf[1024];	/* XXX */
   int lineno = 0;
-  auto void show_error (const char *msg);
+  struct stat st;
 
+  auto void show_error (const char *msg);
   void show_error (const char *msg)
     {
       grub_util_error ("%s:%d: %s", dev_map, lineno, msg);
@@ -541,6 +556,12 @@ read_device_map (const char *dev_map)
       /* Multiple entries for a given drive is not allowed.  */
       if (map[drive])
 	show_error ("Duplicated entry found");
+
+      if (stat (p, &st) == -1)
+	{
+	  grub_util_info ("Cannot stat `%s', skipping", p);
+	  continue;
+	}
 
 #ifdef __linux__
       /* On Linux, the devfs uses symbolic links horribly, and that
@@ -637,13 +658,33 @@ get_os_disk (const char *os_dev)
 	  return path;
 	}
       
-      /* If this is an IDE disk or a SCSI disk.  */
+      /* If this is a CCISS disk.  */
+      if (strncmp ("cciss/c", p, sizeof ("cciss/c") - 1) == 0)
+	{
+	  /* /dev/cciss/c[0-9]+d[0-9]+(p[0-9]+)? */
+	  p = strchr (p, 'p');
+	  if (p)
+	    *p = '\0';
+
+	  return path;
+	}
+      
+      /* If this is an IDE, SCSI or Virtio disk.  */
       if ((strncmp ("hd", p, 2) == 0
+	   || strncmp ("vd", p, 2) == 0
 	   || strncmp ("sd", p, 2) == 0)
 	  && p[2] >= 'a' && p[2] <= 'z')
 	{
-	  /* /dev/[hs]d[a-z][0-9]* */
+	  /* /dev/[hsv]d[a-z][0-9]* */
 	  p[3] = '\0';
+	  return path;
+	}
+
+      /* If this is a Xen virtual block device.  */
+      if ((strncmp ("xvd", p, 3) == 0) && p[3] >= 'a' && p[3] <= 'z')
+	{
+	  /* /dev/xvd[a-z][0-9]* */
+	  p[4] = '\0';
 	  return path;
 	}
     }
@@ -773,7 +814,7 @@ grub_util_biosdisk_get_grub_dev (const char *os_dev)
       return name;
     
     fd = open (os_dev, O_RDONLY);
-    if (! fd)
+    if (fd == -1)
       {
 	grub_error (GRUB_ERR_BAD_DEVICE, "cannot open `%s'", os_dev);
 	free (name);

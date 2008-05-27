@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2003,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2003,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -71,7 +71,10 @@ extern grub_int32_t grub_memdisk_image_size;
 extern char grub_prefix[];
 
 /* The boot BIOS drive number.  */
-extern grub_int32_t grub_boot_drive;
+extern grub_int32_t EXPORT_VAR(grub_boot_drive);
+
+/* The root BIOS drive number.  */
+extern grub_int32_t grub_root_drive;
 
 /* The end address of the kernel.  */
 extern grub_addr_t grub_end_addr;

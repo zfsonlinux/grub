@@ -1,6 +1,6 @@
 #! /usr/bin/ruby -w
 #
-# Copyright (C) 2002,2003,2004,2005,2006,2007  Free Software Foundation, Inc.
+# Copyright (C) 2002,2003,2004,2005,2006,2007,2008  Free Software Foundation, Inc.
 #
 # This genmk.rb is free software; the author
 # gives unlimited permission to copy and/or distribute it,
@@ -57,7 +57,7 @@ class Image
 MOSTLYCLEANFILES += #{deps_str}
 
 #{@name}: #{exe}
-	$(OBJCOPY) -O binary -R .note -R .comment $< $@
+	$(OBJCOPY) -O binary -R .note -R .comment -R .note.gnu.build-id $< $@
 
 #{exe}: #{objs_str}
 	$(TARGET_CC) -o $@ $^ $(TARGET_LDFLAGS) $(#{prefix}_LDFLAGS)
@@ -141,6 +141,7 @@ endif
       fake_obj = File.basename(src).suffix('o')
       command = 'cmd-' + obj.suffix('lst')
       fs = 'fs-' + obj.suffix('lst')
+      partmap = 'partmap-' + obj.suffix('lst')
       dep = deps[i]
       flag = if /\.c$/ =~ src then 'CFLAGS' else 'ASFLAGS' end
       extra_flags = if /\.S$/ =~ src then '-DASM_FILE=1' else '' end
@@ -150,9 +151,10 @@ endif
 	$(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) #{extra_flags} $(TARGET_#{flag}) $(#{prefix}_#{flag}) -MD -c -o $@ $<
 -include #{dep}
 
-CLEANFILES += #{command} #{fs}
+CLEANFILES += #{command} #{fs} #{partmap}
 COMMANDFILES += #{command}
 FSFILES += #{fs}
+PARTMAPFILES += #{partmap}
 
 #{command}: #{src} $(#{src}_DEPENDENCIES) gencmdlist.sh
 	set -e; \
@@ -163,6 +165,11 @@ FSFILES += #{fs}
 	set -e; \
 	  $(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) $(TARGET_#{flag}) $(#{prefix}_#{flag}) -E $< \
 	  | sh $(srcdir)/genfslist.sh #{symbolic_name} > $@ || (rm -f $@; exit 1)
+
+#{partmap}: #{src} $(#{src}_DEPENDENCIES) genpartmaplist.sh
+	set -e; \
+	  $(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) $(TARGET_#{flag}) $(#{prefix}_#{flag}) -E $< \
+	  | sh $(srcdir)/genpartmaplist.sh #{symbolic_name} > $@ || (rm -f $@; exit 1)
 
 
 "
