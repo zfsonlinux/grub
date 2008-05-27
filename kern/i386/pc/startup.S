@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2005,2006,2007 Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2005,2006,2007,2008 Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@
 #include <grub/machine/console.h>
 #include <grub/cpu/linux.h>
 #include <grub/machine/kernel.h>
+#include <grub/term.h>
 #include <multiboot.h>
 #include <multiboot2.h>
 		
@@ -162,6 +163,7 @@ multiboot_trampoline:
 	movl	%ebx, EXT_C(grub_install_bsd_part)
 2:
 	shrl	$24, %edx
+        movb    $0xFF, %dh
 	/* enter the usual booting */
 	call	prot_to_real
 	.code16
@@ -182,8 +184,9 @@ codestart:
 
 	sti		/* we're safe again */
 
-	/* save boot drive reference */
+	/* save boot and root drive references */
 	ADDR32	movb	%dl, EXT_C(grub_boot_drive)
+	ADDR32	movb	%dh, EXT_C(grub_root_drive)
 
 	/* reset disk system (%ah = 0) */
 	int	$0x13
@@ -255,6 +258,9 @@ codestart:
 VARIABLE(grub_boot_drive)
 	.long	0
 
+VARIABLE(grub_root_drive)
+	.long	0
+
 VARIABLE(grub_start_addr)
 	.long	START_SYMBOL
 
@@ -285,7 +291,7 @@ real_to_prot:
 	cli
 
 	/* load the GDT register */
-	DATA32	ADDR32	lgdt	gdtdesc
+	DATA32	ADDR32	lgdt	%cs:gdtdesc
 
 	/* turn on protected mode */
 	movl	%cr0, %eax
@@ -472,6 +478,11 @@ gate_a20_check_state:
 
 #include "lzo1x.S"
 
+/*
+ * The code beyond this point is compressed.  Assert that the uncompressed
+ * code fits GRUB_KERNEL_MACHINE_RAW_SIZE.
+ */
+	. = EXT_C(start) + GRUB_KERNEL_MACHINE_RAW_SIZE
 
 /*
  *  This call is special...  it never returns...  in fact it should simply
@@ -638,9 +649,6 @@ FUNCTION(grub_biosdisk_rw_int13_extensions)
 	movw	%cx, %ds
 	int	$0x13		/* do the operation */
 	movb	%ah, %dl	/* save return value */
-	/* clear the data segment */
-	xorw	%ax, %ax
-	movw	%ax, %ds
 	/* back to protected mode */
 	DATA32	call	real_to_prot
 	.code32
@@ -774,6 +782,17 @@ FUNCTION(grub_biosdisk_check_int13_extensions)
 
 
 /*
+ *   int grub_biosdisk_get_cdinfo_int13_extensions (int drive, void *cdrp)
+ *
+ *   Return the cdrom information of DRIVE in CDRP. If an error occurs,
+ *   then return non-zero, otherwise zero.
+ */
+
+FUNCTION(grub_biosdisk_get_cdinfo_int13_extensions)
+	movw	$0x4B01, %cx
+	jmp	1f
+
+/*
  *   int grub_biosdisk_get_diskinfo_int13_extensions (int drive, void *drp)
  *
  *   Return the geometry of DRIVE in a drive parameters, DRP. If an error
@@ -781,13 +800,15 @@ FUNCTION(grub_biosdisk_check_int13_extensions)
  */
 
 FUNCTION(grub_biosdisk_get_diskinfo_int13_extensions)
+	movb	$0x48, %ch
+1:
 	pushl	%ebp
 	pushl	%ebx
 	pushl	%esi
 
 	/* compute the address of drive parameters */
 	movw	%dx, %si
-	xorw	%dx, %dx
+	andl	$0xf, %esi
 	shrl	$4, %edx
 	movw	%dx, %bx	/* save the segment into %bx */
 	/* drive */
@@ -796,13 +817,10 @@ FUNCTION(grub_biosdisk_get_diskinfo_int13_extensions)
 	call	prot_to_real
 
 	.code16
-	movb	$0x48, %ah
+	movw	%cx, %ax
 	movw	%bx, %ds
 	int	$0x13		/* do the operation */
 	movb	%ah, %bl	/* save return value in %bl */
-	/* clear the data segment */
-	xorw	%ax, %ax
-	movw	%ax, %ds
 	/* back to protected mode */
 	DATA32	call	real_to_prot
 	.code32
@@ -1174,16 +1192,16 @@ FUNCTION(grub_console_real_putchar)
 
 /* this table is used in translate_keycode below */
 translation_table:
-	.word	GRUB_CONSOLE_KEY_LEFT, 2
-	.word	GRUB_CONSOLE_KEY_RIGHT, 6
-	.word	GRUB_CONSOLE_KEY_UP, 16
-	.word	GRUB_CONSOLE_KEY_DOWN, 14
-	.word	GRUB_CONSOLE_KEY_HOME, 1
-	.word	GRUB_CONSOLE_KEY_END, 5
-	.word	GRUB_CONSOLE_KEY_DC, 4
-	.word	GRUB_CONSOLE_KEY_BACKSPACE, 8
-	.word	GRUB_CONSOLE_KEY_PPAGE, 7
-	.word	GRUB_CONSOLE_KEY_NPAGE, 3
+	.word	GRUB_CONSOLE_KEY_LEFT, GRUB_TERM_LEFT
+	.word	GRUB_CONSOLE_KEY_RIGHT, GRUB_TERM_RIGHT
+	.word	GRUB_CONSOLE_KEY_UP, GRUB_TERM_UP
+	.word	GRUB_CONSOLE_KEY_DOWN, GRUB_TERM_DOWN
+	.word	GRUB_CONSOLE_KEY_HOME, GRUB_TERM_HOME
+	.word	GRUB_CONSOLE_KEY_END, GRUB_TERM_END
+	.word	GRUB_CONSOLE_KEY_DC, GRUB_TERM_DC
+	.word	GRUB_CONSOLE_KEY_BACKSPACE, GRUB_TERM_BACKSPACE
+	.word	GRUB_CONSOLE_KEY_PPAGE, GRUB_TERM_PPAGE
+	.word	GRUB_CONSOLE_KEY_NPAGE, GRUB_TERM_NPAGE
 	.word	0
 	
 /*

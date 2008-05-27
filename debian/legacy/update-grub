@@ -2,10 +2,11 @@
 #
 # Insert a list of installed kernels in a grub config file
 #   Copyright 2001 Wichert Akkerman <wichert@linux.com>
+#   Copyright (C) 2007,2008  Free Software Foundation, Inc.
 #
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful, but
@@ -14,8 +15,7 @@
 # General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+# along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Contributors:
 #	Jason Thomas <jason@debian.org>
@@ -41,7 +41,7 @@ find_grub_dir ()
 {
 	echo  -n "Searching for GRUB installation directory ... " >&2
 
-	for d in $grub_dirs ; do
+	for d in /boot/grub /boot/boot/grub ; do
 		if [ -d "$d" ] ; then
 			grub_dir="$d"
 			break
@@ -57,48 +57,65 @@ find_grub_dir ()
 	echo $grub_dir
 }
 
-find_device ()
+# This function was borrowed from grub2/util/update-grub_lib.in
+make_system_path_relative_to_its_root ()
 {
-	mount_point=$1
+  path=$1
+  # abort if file doesn't exist
+  if test -e $path ; then : ;else
+    return 1
+  fi
 
-	# Autodetect current root device
-	device=
-	if [ -f /etc/fstab ] ; then
-		while read DEV MNT FOO; do
-			if `echo "$DEV" | grep -q "^#"`; then
-				continue
-			fi
-			if [ "$MNT" = "$mount_point" ]; then
-				device="$DEV";
-			fi
-		done < /etc/fstab
-	fi
+  # canonicalize
+  if path=`readlink -f $path` ; then : ; else
+    return 1
+  fi
 
-	if [ -n "$device" ] ; then
-		case "$device" in
-			LABEL=* | UUID=*)
-				device=`readlink -f "$(findfs $device)"`
-			;;
-			*)
-				device=`readlink -f "$device"`
-			;;
-		esac
-	fi
+  # if not a directory, climb up to the directory containing it
+  if test -d $path ; then
+    dir=$path
+  else
+    dir=`echo $path | sed -e "s,/[^/]*$,,g"`
+  fi
 
-	echo $device
+  num=`stat -c %d $dir`
+
+  # this loop sets $dir to the root directory of the filesystem we're inspecting
+  while : ; do
+    parent=`readlink -f $dir/..`
+    if [ "x`stat -c %d $parent`" = "x$num" ] ; then : ; else
+      # $parent is another filesystem; we found it.
+      break
+    fi
+    if [ "x$dir" = "x/" ] ; then
+      # / is our root.
+      break
+    fi
+    dir=$parent
+  done
+
+  # This function never prints trailing slashes (so that its output can be
+  # appended a slash unconditionally).  Each slash in $dir is considered a
+  # preceding slash, and therefore the root directory is an empty string.
+  if [ "$dir" = "/" ] ; then
+    dir=""
+  fi
+
+  echo $path | sed -e "s,^$dir,,g"
 }
 
-find_root_device ()
+# The grub installation directory
+grub_dir=$(find_grub_dir)
+
+# Full path to the device.map
+device_map=$grub_dir/device.map
+
+find_device ()
 {
-	device=$(find_device "/")
-
-	if [ -z "$device" ]; then
-		echo "Cannot determine root device.  Assuming /dev/hda1" >&2
-		echo "This error is probably caused by an invalid /etc/fstab" >&2
-		device=/dev/hda1
+	if ! test -e ${device_map} ; then
+		echo quit | grub --batch --no-floppy --device-map=${device_map} > /dev/null
 	fi
-
-	echo $device
+	grub-probe --device-map=${device_map} -t device $1
 }
 
 # Usage: convert_raid1 os_device
@@ -107,7 +124,7 @@ find_root_device ()
 convert_raid1 ()
 {
     case $1 in
-        /dev/md[0-9])
+        /dev/md[0-9] | /dev/md/[0-9])
             : ;; # Continue
         *)
             return 1 ;;
@@ -131,115 +148,15 @@ convert_raid1 ()
 
 # Usage: convert os_device
 # Convert an OS device to the corresponding GRUB drive.
-# This part is OS-specific.
 convert () {
-    # First, check if the device file exists.
-    if test -e "$1"; then
-		:
-    else
-		echo "$1: Not found or not a block device." 1>&2
-		exit 1
-    fi
-
-	host_os=`uname -s | tr '[[:upper:]]' '[[:lower:]]'`
-
-    # Break the device name into the disk part and the partition part.
-    case "$host_os" in
-    linux)
-		tmp_disk=`echo "$1" | sed -e 's%\([sh]d[[:lower:]]\)[0-9]*$%\1%' \
-				  -e 's%\(fd[0-9]*\)$%\1%' \
-				  -e 's%/part[0-9]*$%/disc%' \
-				  -e 's%\(c[0-7]d[0-9]*\).*$%\1%'`
-		tmp_part=`echo "$1" | sed -e 's%.*/[sh]d[[:lower:]]\([0-9]*\)$%\1%' \
-				  -e 's%.*/fd[0-9]*$%%' \
-				  -e 's%.*/floppy/[0-9]*$%%' \
-				  -e 's%.*/\(disc\|part\([0-9]*\)\)$%\2%' \
-				  -e 's%.*c[0-7]d[0-9]*p*%%'`
-	;;
-    gnu)
-		tmp_disk=`echo "$1" | sed 's%\([sh]d[0-9]*\).*%\1%'`
-		tmp_part=`echo "$1" | sed "s%$tmp_disk%%"` ;;
-    freebsd|*/kfreebsd)
-		tmp_disk=`echo "$1" | sed 's%r\{0,1\}\([saw]d[0-9]*\).*$%\1%' \
-			    | sed 's%r\{0,1\}\(da[0-9]*\).*$%\1%'`
-		tmp_part=`echo "$1" \
-	    		| sed "s%.*/r\{0,1\}[saw]d[0-9]\(s[0-9]*[a-h]\)%\1%" \
-       	    	| sed "s%.*/r\{0,1\}da[0-9]\(s[0-9]*[a-h]\)%\1%"`
-	;;
-    netbsd|*/knetbsd)
-		tmp_disk=`echo "$1" | sed 's%r\{0,1\}\([sw]d[0-9]*\).*$%r\1d%' \
-	    		| sed 's%r\{0,1\}\(fd[0-9]*\).*$%r\1a%'`
-		tmp_part=`echo "$1" \
-	    		| sed "s%.*/r\{0,1\}[sw]d[0-9]\([abe-p]\)%\1%"`
-	;;
-    *)
-		echo "update-grub does not support your OS yet." 1>&2
-		exit 1 ;;
-    esac
-
-    # Get the drive name.
-    tmp_drive=`grep -v '^#' $device_map | grep "$tmp_disk *$" \
-			| sed 's%.*\(([hf]d[0-9][a-z0-9,]*)\).*%\1%'`
-
-    # If not found, print an error message and exit.
-    if test "x$tmp_drive" = x; then
-		echo "$1 does not have any corresponding BIOS drive." 1>&2
-		exit 1
-    fi
-
-    if test "x$tmp_part" != x; then
-		# If a partition is specified, we need to translate it into the
-		# GRUB's syntax.
-		case "$host_os" in
-		linux)
-	    	  echo "$tmp_drive" | sed "s%)$%,`expr $tmp_part - 1`)%" ;;
-		gnu)
-	    	  if echo $tmp_part | grep "^s" >/dev/null; then
-				tmp_pc_slice=`echo $tmp_part \
-		    		| sed "s%s\([0-9]*\)[a-z]*$%\1%"`
-				tmp_drive=`echo "$tmp_drive" \
-		    		| sed "s%)%,\`expr "$tmp_pc_slice" - 1\`)%"`
-	    	  fi
-	    	  if echo $tmp_part | grep "[a-z]$" >/dev/null; then
-				tmp_bsd_partition=`echo "$tmp_part" \
-		    		| sed "s%[^a-z]*\([a-z]\)$%\1%"`
-				tmp_drive=`echo "$tmp_drive" \
-		    		| sed "s%)%,$tmp_bsd_partition)%"`
-	    	  fi
-	    	  echo "$tmp_drive" ;;
-		freebsd|*/kfreebsd)
-	    	  if echo $tmp_part | grep "^s" >/dev/null; then
-				tmp_pc_slice=`echo $tmp_part \
-		    		| sed "s%s\([0-9]*\)[a-h]*$%\1%"`
-				tmp_drive=`echo "$tmp_drive" \
-		    		| sed "s%)%,\`expr "$tmp_pc_slice" - 1\`)%"`
-	    	  fi
-	    	  if echo $tmp_part | grep "[a-h]$" >/dev/null; then
-				tmp_bsd_partition=`echo "$tmp_part" \
-		    		| sed "s%s\{0,1\}[0-9]*\([a-h]\)$%\1%"`
-				tmp_drive=`echo "$tmp_drive" \
-		    		| sed "s%)%,$tmp_bsd_partition)%"`
-	    	  fi
-	    	  echo "$tmp_drive" ;;
-		netbsd|*/knetbsd)
-	    	  if echo $tmp_part | grep "^[abe-p]$" >/dev/null; then
-				tmp_bsd_partition=`echo "$tmp_part" \
-		    		| sed "s%\([a-p]\)$%\1%"`
-				tmp_drive=`echo "$tmp_drive" \
-		    		| sed "s%)%,$tmp_bsd_partition)%"`
-	    	  fi
-	    	  echo "$tmp_drive" ;;
-		esac
-    else
-		# If no partition is specified, just print the drive name.
-		echo "$tmp_drive"
-    fi
+	if ! test -e ${device_map} ; then
+		echo quit | grub --batch --no-floppy --device-map=${device_map} > /dev/null
+	fi
+	GRUB_LEGACY_0_BASED_PARTITIONS=1 grub-probe --device-map=${device_map} -t drive -d "$1"
 }
 
 # Usage: convert_default os_device
 # Convert an OS device to the corresponding GRUB drive.
-# Calls OS-specific convert, and returns a default of
-# (hd0,0) if anything goes wrong
 convert_default () {
 	# Check if device is software raid1 array
 	if tmp_dev=$(convert_raid1 $1 2>/dev/null) ; then
@@ -248,19 +165,10 @@ convert_default () {
 		tmp_dev=$1
 	fi
 
-	if tmp=$(convert $tmp_dev 2>/dev/null) ; then
-		echo $tmp
-	else
-		echo "(hd0,0)"
-	fi
+	convert $tmp_dev
 }
 
 ## Configuration Options
-# directory's to look for the grub installation and the menu file
-grub_dirs="/boot/grub /boot/boot/grub"
-
-# The grub installation directory
-grub_dir=$(find_grub_dir)
 
 # Full path to the menu.lst
 menu_file_basename=menu.lst
@@ -271,13 +179,13 @@ default_file_basename=default
 default_file=$grub_dir/$default_file_basename
 
 # the device for the / filesystem
-root_device=$(find_root_device)
+root_device=$(find_device "/")
 
 # the device for the /boot filesystem
 boot_device=$(find_device "/boot")
 
-# Full path to the device.map
-device_map=$grub_dir/device.map
+# where grub looks for the kernels at boot time
+kernel_dir=`make_system_path_relative_to_its_root /boot`
 
 # Default kernel options, overidden by the kopt statement in the menufile.
 kopt="root=$root_device ro"
@@ -290,16 +198,7 @@ updatedefaultentry="false"
 
 # Drive(in GRUB terms) where the kernel is located. Overridden by the
 # kopt statement in menufile.
-# if we don't have a device.map then we can't use the convert function.
-if test -f "$device_map" ; then
-	if test -z "$boot_device" ; then
-		grub_root_device=$(convert_default "$root_device")
-	else
-		grub_root_device=$(convert_default "$boot_device")
-	fi
-else
-	grub_root_device="(hd0,0)"
-fi
+grub_root_device=$(convert_default "$boot_device")
 
 # should grub create the alternative boot options in the menu
 	alternative="true"
@@ -330,6 +229,9 @@ fi
 # should grub create a memtest86 entry
 	memtest86="true"
 
+# should grub add "savedefault" to default boot options
+	savedefault="false"
+
 # stores the command line arguments
 	command_line_arguments=$1
 
@@ -346,7 +248,7 @@ cat > "$newtemplate" <<EOF
 # $menu_file_basename - See: grub(8), info grub, update-grub(8)
 #            grub-install(8), grub-floppy(8),
 #            grub-md5-crypt, /usr/share/doc/grub
-#            and /usr/share/doc/grub-doc/.
+#            and /usr/share/doc/grub-legacy-doc/.
 
 ## default num
 # Set the default entry to the entry number NUM. Numbering starts from 0, and
@@ -753,6 +655,8 @@ memtest86=$(GetMenuOpt "memtest86" "$memtest86")
 # Extract the updatedefaultentry option
 updatedefaultentry=$(GetMenuOpt "updatedefaultentry" "$updatedefaultentry")
 
+# Extract the savedefault option
+savedefault=$(GetMenuOpt "savedefault" "$savedefault")
 
 # Generate the menu options we want to insert
 buffer=$(tempfile)
@@ -848,12 +752,17 @@ echo "## can be true or false" >> $buffer
 echo "# updatedefaultentry=$updatedefaultentry" >> $buffer
 echo >> $buffer
 
+echo "## should update-grub add savedefault to the default options" >> $buffer
+echo "## can be true or false" >> $buffer
+echo "# savedefault=$savedefault" >> $buffer
+echo >> $buffer
+
 echo "## ## End Default Options ##" >> $buffer
 echo >> $buffer
 
 echo -n "Searching for splash image ... " >&2
 current_splash=`grep '^splashimage=' ${menu_file} || true`
-splashimage_path="splashimage=${grub_root_device}${grub_dir##${boot_device:+/boot}}/splash.xpm.gz"
+splashimage_path="splashimage=${grub_root_device}${grub_dir##${kernel_dir}}/splash.xpm.gz"
 if [ `sed -e "/^$start/,/^$end/d" $menu_file | grep -c '^splashimage='` != "0" ] ; then
        #checks for splashscreen defined outside the autoupdated part
        splashimage=$(grep '^splashimage=' ${menu_file})
@@ -949,12 +858,6 @@ for hyp in /boot/xen-*.gz; do
     fi
 done
 
-# figure out where grub looks for the kernels at boot time
-kernel_dir=/boot
-if [ -n "$boot_device" ] ; then
-	kernel_dir=
-fi
-
 #Finding the value the default line
 use_grub_set_default="false"
 if test "$updatedefaultentry" = "true" ; then
@@ -983,22 +886,33 @@ case "$host_os" in
     else
       kernel=/boot/loader
     fi
-    write_kernel_entry "" "" "" "$grub_root_device" "$kernel" "" "" "" "true" ""
+    write_kernel_entry "" "" "" "$grub_root_device" "$kernel" "" "" "" "$savedefault" ""
   ;;
 esac
 
 ## heres where we start writing out the kernel entries
 counter=0
 
+grub2name="${kernel_dir}/grub/core.img"
 if [ "$LET_US_TRY_GRUB_2" = "true" ] \
   && test -f /boot/grub/core.img ; then
-	grub2name="$kernel_dir/grub/core.img"
 	echo "Found GRUB 2: $grub2name" >&2
 	cat >> $buffer << EOF
 title		Chainload into GRUB 2
 root		$grub_root_device
 kernel		$grub2name
-savedefault
+
+title		`echo ───────────────────────────────────────────────────────────────────── | iconv -f utf-8 -t cp437`
+root
+		
+title		When you have verified GRUB 2 works, you can use this command to
+root
+
+title		complete the upgrade:  upgrade-from-grub-legacy
+root
+
+title		`echo ───────────────────────────────────────────────────────────────────── | iconv -f utf-8 -t cp437`
+root
 
 EOF
 fi
@@ -1037,7 +951,7 @@ for kern in $xenKernels ; do
 			echo "Found Xen hypervisor $hypervisorVersion,  kernel: $kernel" >&2
 
 			write_kernel_entry "$kernelVersion" '' '' "$grub_root_device" \
-			  "$kernel" "$currentOpt $xenkopt" '' "$initrd" true '' \
+			  "$kernel" "$currentOpt $xenkopt" '' "$initrd" "$savedefault" '' \
 			  Xen "$hypervisor" "$hypervisorVersion" "$xenhopt"
 	        counter=$(($counter + 1))
 		fi
@@ -1050,7 +964,7 @@ for kern in $xenKernels ; do
 			echo "Found Xen hypervisor $hypVersion,  kernel: $kernel" >&2
 
 			write_kernel_entry "$kernelVersion" '' '' "$grub_root_device" \
-			  "$kernel" "$currentOpt $xenkopt" '' "$initrd" true '' \
+			  "$kernel" "$currentOpt $xenkopt" '' "$initrd" "$savedefault" '' \
 			  Xen "$kernel_dir/$hypervisor" "$hypVersion" "$xenhopt"
 	        counter=$(($counter + 1))
 		done
@@ -1103,7 +1017,7 @@ for kern in $sortedKernels ; do
 	[ $counter -eq 1 ] && do_lockold=false
 
 	write_kernel_entry "$kernelVersion" "" "" "$grub_root_device" "$kernel" \
-		"$currentOpt $defoptions" "" "$initrd" "true" "$do_lockold"
+		"$currentOpt $defoptions" "" "$initrd" "$savedefault" "$do_lockold"
 
 	# insert the alternative boot options
 	if test ! x"$alternative" = x"false" ; then
@@ -1115,7 +1029,7 @@ for kern in $sortedKernels ; do
 			test x"$lockalternative" = x"true" && do_lockold=false
 			write_kernel_entry "$kernelVersion" "$descr" "$lockalternative" \
 				"$grub_root_device" "$kernel" "$currentOpt" "$suffix" "$initrd" \
-				"true" "$do_lockold"
+				"$savedefault" "$do_lockold"
 
 		done
 	fi
