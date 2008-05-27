@@ -228,9 +228,14 @@ grub_guess_root_device (const char *dir)
 #ifdef __linux__
   /* We first try to find the device in the /dev/mapper directory.  If
      we don't do this, we get useless device names like /dev/dm-0 for
-     LVM. */
+     LVM.  */
   os_dev = find_root_device ("/dev/mapper", st.st_dev);
-  if (!os_dev)
+
+  /* The same applies to /dev/evms directory (for EVMS volumes).  */
+  if (! os_dev)
+    os_dev = find_root_device ("/dev/evms", st.st_dev);
+
+  if (! os_dev)
 #endif
     {
       /* This might be truly slow, but is there any better way?  */
@@ -326,4 +331,18 @@ grub_util_get_grub_dev (const char *os_dev)
     }
 
   return grub_dev;
+}
+
+const char *
+grub_util_check_block_device (const char *blk_dev)
+{
+  struct stat st;
+
+  if (stat (blk_dev, &st) < 0)
+    grub_util_error ("Cannot stat `%s'", blk_dev);
+
+  if (S_ISBLK (st.st_mode))
+    return (blk_dev);
+  else
+    return 0;
 }

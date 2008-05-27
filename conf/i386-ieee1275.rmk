@@ -7,14 +7,16 @@ COMMON_LDFLAGS	= -nostdlib -static -lgcc
 # Used by various components.  These rules need to precede them.
 normal/execute.c_DEPENDENCIES = grub_script.tab.h
 normal/command.c_DEPENDENCIES = grub_script.tab.h
+normal/function.c_DEPENDENCIES = grub_script.tab.h
+normal/lexer.c_DEPENDENCIES = grub_script.tab.h
 
 # Images.
 pkglib_PROGRAMS = kernel.elf
 
 # For kernel.elf.
 kernel_elf_SOURCES = kern/i386/ieee1275/startup.S kern/i386/ieee1275/init.c \
-	kern/powerpc/ieee1275/init.c \
-	kern/powerpc/ieee1275/cmain.c kern/powerpc/ieee1275/openfw.c \
+	kern/ieee1275/init.c \
+	kern/ieee1275/cmain.c kern/ieee1275/openfw.c \
 	kern/main.c kern/device.c \
 	kern/disk.c kern/dl.c kern/file.c kern/fs.c kern/err.c \
 	kern/misc.c kern/mm.c kern/loader.c kern/rescue.c kern/term.c \
@@ -62,14 +64,14 @@ grub_emu_SOURCES = commands/boot.c commands/cat.c commands/cmp.c	\
 	commands/configfile.c commands/echo.c commands/help.c		\
 	commands/terminal.c commands/ls.c commands/test.c 		\
 	commands/search.c commands/blocklist.c commands/hexdump.c	\
-	commands/ieee1275/halt.c commands/ieee1275/reboot.c		\
+	commands/halt.c commands/reboot.c				\
 	commands/i386/cpuid.c						\
-	disk/host.c disk/loopback.c	disk/raid.c disk/lvm.c		\
+	disk/host.c disk/loopback.c					\
 	\
 	fs/affs.c fs/cpio.c fs/ext2.c fs/fat.c fs/hfs.c			\
-	fs/hfsplus.c fs/iso9660.c fs/jfs.c fs/minix.c			\
+	fs/hfsplus.c fs/iso9660.c fs/udf.c fs/jfs.c fs/minix.c		\
 	fs/ntfs.c fs/ntfscomp.c fs/reiserfs.c fs/sfs.c			\
-	fs/ufs.c fs/xfs.c						\
+	fs/ufs.c fs/xfs.c fs/afs.c					\
 	\
 	fs/fshelp.c							\
 	io/gzio.c							\
@@ -85,14 +87,18 @@ grub_emu_SOURCES = commands/boot.c commands/cat.c commands/cmp.c	\
 	partmap/amiga.c	partmap/apple.c partmap/pc.c partmap/sun.c	\
 	partmap/acorn.c partmap/gpt.c					\
 	util/console.c util/hostfs.c util/grub-emu.c util/misc.c	\
-	util/biosdisk.c util/getroot.c			\
-	util/i386/pc/misc.c grub_emu_init.c
+	util/biosdisk.c util/getroot.c					\
+	util/i386/pc/misc.c						\
+	\
+	disk/raid.c disk/lvm.c						\
+	grub_emu_init.c
 
 grub_emu_LDFLAGS = $(LIBCURSES)
 
 # Modules.
 pkglib_MODULES = normal.mod halt.mod reboot.mod suspend.mod cpuid.mod	\
-	multiboot.mod _multiboot.mod serial.mod
+	multiboot.mod _multiboot.mod aout.mod serial.mod linux.mod	\
+	_linux.mod nand.mod
 
 # For normal.mod.
 normal_mod_SOURCES = normal/arg.c normal/cmdline.c normal/command.c	\
@@ -105,7 +111,7 @@ normal_mod_ASFLAGS = $(COMMON_ASFLAGS)
 normal_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For _multiboot.mod.
-_multiboot_mod_SOURCES = loader/powerpc/ieee1275/multiboot2.c \
+_multiboot_mod_SOURCES = loader/ieee1275/multiboot2.c \
 			 loader/multiboot2.c \
 			 loader/multiboot_loader.c
 _multiboot_mod_CFLAGS = $(COMMON_CFLAGS)
@@ -116,18 +122,23 @@ multiboot_mod_SOURCES = loader/multiboot_loader_normal.c
 multiboot_mod_CFLAGS = $(COMMON_CFLAGS)
 multiboot_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
+# For aout.mod.
+aout_mod_SOURCES = loader/aout.c
+aout_mod_CFLAGS = $(COMMON_CFLAGS)
+aout_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
 # For suspend.mod
 suspend_mod_SOURCES = commands/ieee1275/suspend.c
 suspend_mod_CFLAGS = $(COMMON_CFLAGS)
 suspend_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For reboot.mod
-reboot_mod_SOURCES = commands/ieee1275/reboot.c
+reboot_mod_SOURCES = commands/reboot.c
 reboot_mod_CFLAGS = $(COMMON_CFLAGS)
 reboot_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For halt.mod
-halt_mod_SOURCES = commands/ieee1275/halt.c
+halt_mod_SOURCES = commands/halt.c
 halt_mod_CFLAGS = $(COMMON_CFLAGS)
 halt_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
@@ -140,5 +151,20 @@ cpuid_mod_LDFLAGS = $(COMMON_LDFLAGS)
 serial_mod_SOURCES = term/i386/pc/serial.c
 serial_mod_CFLAGS = $(COMMON_CFLAGS)
 serial_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For _linux.mod.
+_linux_mod_SOURCES = loader/i386/ieee1275/linux.c
+_linux_mod_CFLAGS = $(COMMON_CFLAGS)
+_linux_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For linux.mod.
+linux_mod_SOURCES = loader/i386/ieee1275/linux_normal.c
+linux_mod_CFLAGS = $(COMMON_CFLAGS)
+linux_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For nand.mod.
+nand_mod_SOURCES = disk/ieee1275/nand.c
+nand_mod_CFLAGS = $(COMMON_CFLAGS)
+nand_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 include $(srcdir)/conf/common.mk
