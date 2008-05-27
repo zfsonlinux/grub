@@ -20,6 +20,7 @@ SHELL = /bin/sh
 transform = @program_transform_name@
 
 srcdir = @srcdir@
+builddir = @builddir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
 prefix = @prefix@
@@ -71,6 +72,12 @@ OBJCOPY = @OBJCOPY@
 STRIP = @STRIP@
 NM = @NM@
 RUBY = @RUBY@
+HELP2MAN = @HELP2MAN@
+ifeq (, $(HELP2MAN))
+HELP2MAN = true
+else
+HELP2MAN := LANG=C $(HELP2MAN) --no-info --source=FSF
+endif
 AWK = @AWK@
 LIBCURSES = @LIBCURSES@
 LIBLZO = @LIBLZO@
@@ -79,11 +86,12 @@ UNIFONT_HEX = @UNIFONT_HEX@
 
 # Options.
 enable_grub_emu = @enable_grub_emu@
+enable_grub_fstest = @enable_grub_fstest@
 
 ### General variables.
 
 RMKFILES = $(addprefix conf/,common.rmk i386-pc.rmk powerpc-ieee1275.rmk \
-	sparc64-ieee1275.rmk i386-efi.rmk)
+	sparc64-ieee1275.rmk i386-efi.rmk i386-ieee1275.rmk i386-linuxbios.rmk)
 MKFILES = $(patsubst %.rmk,%.mk,$(RMKFILES))
 
 PKGLIB = $(pkglib_IMAGES) $(pkglib_MODULES) $(pkglib_PROGRAMS) \
@@ -115,7 +123,7 @@ include $(srcdir)/conf/$(target_cpu)-$(platform).mk
 ### General targets.
 
 CLEANFILES += $(pkglib_DATA) $(pkgdata_DATA)
-pkglib_DATA += moddep.lst command.lst fs.lst
+pkglib_DATA += moddep.lst command.lst fs.lst partmap.lst
 moddep.lst: $(DEFSYMFILES) $(UNDSYMFILES) genmoddep.awk
 	cat $(DEFSYMFILES) /dev/null \
 	  | $(AWK) -f $(srcdir)/genmoddep.awk $(UNDSYMFILES) > $@ \
@@ -125,6 +133,9 @@ command.lst: $(COMMANDFILES)
 	cat $^ /dev/null | sort > $@
 
 fs.lst: $(FSFILES)
+	cat $^ /dev/null | sort > $@
+
+partmap.lst: $(PARTMAPFILES)
 	cat $^ /dev/null | sort > $@
 
 ifeq (, $(UNIFONT_HEX))
@@ -156,27 +167,31 @@ install-local: all
 	  dest="`echo $$file | sed 's,.*/,,'`"; \
 	  $(INSTALL_DATA) $$dir$$file $(DESTDIR)$(pkgdatadir)/$$dest; \
 	done
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	$(mkinstalldirs) $(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man1
 	@list='$(bin_UTILITIES)'; for file in $$list; do \
 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  $(INSTALL_PROGRAM) $$dir$$file $(DESTDIR)$(bindir)/$$dest; \
+	  $(HELP2MAN) --section=1 $(builddir)/$$file > $(DESTDIR)$(mandir)/man1/$$dest.1; \
 	done
-	$(mkinstalldirs) $(DESTDIR)$(sbindir)
+	$(mkinstalldirs) $(DESTDIR)$(sbindir) $(DESTDIR)$(mandir)/man8
 	@list='$(sbin_UTILITIES)'; for file in $$list; do \
 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  $(INSTALL_PROGRAM) $$dir$$file $(DESTDIR)$(sbindir)/$$dest; \
+	  $(HELP2MAN) --section=8 $(builddir)/$$file > $(DESTDIR)$(mandir)/man8/$$dest.8; \
 	done
 	@list='$(bin_SCRIPTS)'; for file in $$list; do \
 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  $(INSTALL_SCRIPT) $$dir$$file $(DESTDIR)$(bindir)/$$dest; \
+	  $(HELP2MAN) --section=1 $(builddir)/$$file > $(DESTDIR)$(mandir)/man1/$$dest.1; \
 	done
 	@list='$(sbin_SCRIPTS)'; for file in $$list; do \
 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  $(INSTALL_SCRIPT) $$dir$$file $(DESTDIR)$(sbindir)/$$dest; \
+	  $(HELP2MAN) --section=8 $(builddir)/$$file > $(DESTDIR)$(mandir)/man8/$$dest.8; \
 	done
 	$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/grub.d
 	@list='$(update-grub_SCRIPTS)'; for file in $$list; do \

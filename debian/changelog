@@ -1,3 +1,189 @@
+grub2 (1.96+20080512-1ubuntu1) intrepid; urgency=low
+
+  * Merge from debian unstable, remaining changes:
+    - Adjust debian/default/grub for default Ubuntu boot options.
+
+ -- Mario Limonciello <mario_limonciello@dell.com>  Tue, 27 May 2008 11:32:41 -0500
+
+grub2 (1.96+20080512-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - Adds support for default-only Linux cmdline options.  (Closes: #460843)
+    - Supports Xen virtual block devices.  (Closes: #456777)
+    - Supports Virtio block devices.  (Closes: #479056)
+    - Supports CCISS block devices.  (Closes: #479735)
+    - Fixes handling of more LVM abnormal conditions.  (Closes: #474343,
+      #474931, #477175)
+
+  * Switch to liblzo2 now that it's GPLv3-compatible.  (Closes: #466375)
+  * grub-pc.postinst: Escape \ and / in cmdline sed invokation.
+    (Closes: #479279)
+
+  [ Updated translations ]
+  * Italian (it.po) by Luca Monducci  (Closes: #480740)
+
+ -- Robert Millan <rmh@aybabtu.com>  Mon, 12 May 2008 17:46:38 +0200
+
+grub2 (1.96+20080429-1) unstable; urgency=high
+
+  * New CVS snapshot.
+    - Includes sample grub.cfg file; we use it for grub-rescue-pc.
+      (Closes: #478324)
+  * grub-common: Upgrade Replaces to << 1.96+20080426-3.  (Closes: #478224,
+    #478353, #478144)
+
+  [ Updated translations ]
+  * French (fr.po) by Christian Perrier  (Closes: #471291)
+
+ -- Robert Millan <rmh@aybabtu.com>  Tue, 29 Apr 2008 13:27:52 +0200
+
+grub2 (1.96+20080426-1) unstable; urgency=high
+
+  * New CVS snapshot.
+    - Fixes syntax error when setting GRUB_PRELOAD_MODULES.  (Closes: #476517)
+  * Move os-prober to Suggests, to avoid trouble with #476184.
+    (Closes: #476684)
+  * patches/04_run_grub_mkdevicemap_when_grub_probe_fails.diff: New patch,
+    does what its name says.  (Closes: #467127)
+    - Also move grub-mkdevicemap from grub-pc to grub-common, so that GRUB
+      Legacy can use it.
+
+  [ Updated translations ]
+  * Basque (eu.po) by Piarres Beobide  (Closes: #476708)
+
+ -- Robert Millan <rmh@aybabtu.com>  Sat, 26 Apr 2008 20:06:55 +0200
+
+grub2 (1.96+20080413-1) unstable; urgency=high
+
+  * New CVS snapshot.
+    - Provides 30_os-prober update-grub add-on.  Thanks Fabian Greffrath.
+      (Closes: #461442)
+    - Improves robustness when handling LVM.
+      (Closes: #474931, #474343)
+  * patches/03_disable_floppy_support_in_util_biosdisk.diff: New.  Does
+    what its name says.  (Closes: #475177)
+
+ -- Robert Millan <rmh@aybabtu.com>  Sun, 13 Apr 2008 13:53:28 +0200
+
+grub2 (1.96+20080408-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - grub-probe skips non-existant devices when processing device.map.
+    (Closes: #473209)
+  * control: Fix syntax error.
+
+  [ Updated translations ]
+  * Finnish (fi.po) by Esko Arajärvi (Closes: #468641)
+
+ -- Robert Millan <rmh@aybabtu.com>  Tue,  8 Apr 2008 15:45:25 +0200
+
+grub2 (1.96+20080228-1) unstable; urgency=low
+
+  * New CVS snapshot.
+  * Split grub-probe into grub-common package.  Make all flavours depend on it.
+    (Closes: #241972)
+  * Suggest multiboot-doc.
+  * patches/01_grub_legacy_0_based_partitions.diff: New patch.  Add a hack that
+    tells grub-probe you want 0-based partition count
+    (GRUB_LEGACY_0_BASED_PARTITIONS variable)
+  * Stop depending on lsb-release (too heavy! we don't need python in base).
+    Instead of assuming it's there, try calling it and otherwise just echo
+    Debian.
+
+ -- Robert Millan <rmh@aybabtu.com>  Thu, 28 Feb 2008 16:43:40 +0100
+
+grub2 (1.96+20080219-3) unstable; urgency=low
+
+  * default/grub: Use lsb_release to support Debian derivatives.
+    (Closes: #466561)
+  * grub.d/05_debian_theme: Only setup background image when a reader for it
+    is present in /boot/grub.  (Closes: #467111)
+
+  [ Updated translations ]
+  * Russian (ru.po) by Yuri Kozlov (Closes: #467181)
+
+ -- Robert Millan <rmh@aybabtu.com>  Sun, 24 Feb 2008 15:39:50 +0100
+
+grub2 (1.96+20080219-2) unstable; urgency=high
+
+  * grub-pc.postinst: Create /boot/grub if it doesn't exist.
+
+ -- Robert Millan <rmh@aybabtu.com>  Wed, 20 Feb 2008 07:15:14 +0100
+
+grub2 (1.96+20080219-1) unstable; urgency=high
+
+  * New CVS snapshot.
+    - Improves GPT support, allowing it to work without blocklists.
+
+ -- Robert Millan <rmh@aybabtu.com>  Tue, 19 Feb 2008 15:05:10 +0100
+
+grub2 (1.96+20080216-1) unstable; urgency=high
+
+  * New CVS snapshot.
+    - Fixes offset calculation issue when installing on GPT (urgency set
+      to high because of this).
+  * Fix Vcs-Browser tag.  Thanks James.  (Closes: #465697)
+  * Only process grub-pc/linux_cmdline if /boot/grub/menu.lst exists.
+    (Closes: #465708)
+
+  [ Updated translations ]
+  * French (fr.po) by Christian Perrier  (Closes: #465706)
+
+ -- Robert Millan <rmh@aybabtu.com>  Sat, 16 Feb 2008 23:30:55 +0100
+
+grub2 (1.96+20080213-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - Failure to read one device in a RAID-1 array no longer causes boot
+      to fail (so long as there's a member that works).  (Closes: #426341)
+  * script: For /proc/mounts, only report lines that start with /dev/.
+  * Add new upgrade-from-grub-legacy script for the user to complete the upgrade
+    process from GRUB Legacy, and advertise it prominently in menu.lst.
+    (Closes: #464912)
+  * Add a hack to support gfxterm / background_image on systems where /usr
+    isn't accessible.  (Closes: #464911, #463144)
+    - grub-pc.postinst
+    - grub.d/05_debian_theme
+  * Fix a pair of spelling mistakes in debconf.  (Closes: #465296)
+  * Migrate kopt from menu.lst.  (Closes: #461164, #464918)
+
+  [ Updated translations ]
+  * Portuguese (pt.po) by Ricardo Silva (Closes: #465137)
+  * German (de.po) by Helge Kreutzmann (Closes: #465295)
+
+ -- Robert Millan <rmh@aybabtu.com>  Wed, 13 Feb 2008 16:37:13 +0100
+
+grub2 (1.96+20080210-1) unstable; urgency=high
+
+  * New CVS snapshot.
+    - Errors that cause GRUB to enter rescue mode are displayed now.
+      (Closes: #425149)
+    - Build LVM/RAID modules into a few commands that were missing them
+      (notably, grub-setup).  (Closes: #465033)
+  * Fix license violation (incompatibility between GRUB and LZO2).
+    (Closes: #465056)
+    - Urgency set to high.
+    - control: Move liblzo2-dev from Build-Depends to Build-Conflicts
+      (leaving liblzo-dev as the only option).
+
+ -- Robert Millan <rmh@aybabtu.com>  Sun, 10 Feb 2008 17:09:15 +0100
+
+grub2 (1.96+20080209-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - Fix a root device setting issue in grub-setup.  (Closes: #463391)
+    - Fix partmap detection under LVM/RAID.
+    - Add scripting commands that would allow user to implement hiddenmenu-like
+      functionality (http://grub.enbug.org/Hiddenmenu).
+    - Provide manpages for grub-setup, grub-emu, grub-mkimage and others.
+      (Closes: #333516, #372890)
+  * Fix a pair of spelling errors in debconf templates.  Thanks Christian
+    Perrier.  (Closes: #464133)
+  * Run debconf-updatepo.  (Closes: #463918)
+  * Lower base-files versioned dependency to >= 4.0.1~bpo40+1.
+
+ -- Robert Millan <rmh@aybabtu.com>  Sat,  9 Feb 2008 13:43:49 +0100
+
 grub2 (1.96+20080203-1ubuntu2) hardy; urgency=low
 
   * Update 03_ubuntu_grub_standards.
@@ -678,3 +864,4 @@ pupa (0.6+20030915-1) unstable; urgency=low
   * Initial Release. (Closes: #211030)
 
  -- Robert Millan <rmh@debian.org>  Mon, 15 Sep 2003 14:58:42 +0000
+

@@ -23,6 +23,7 @@
 #include <grub/misc.h>
 #include <grub/mm.h>
 #include <grub/types.h>
+#include <grub/machine/kernel.h>
 
 static grub_addr_t memdisk_addr;
 static grub_off_t memdisk_size = 0;
@@ -40,7 +41,7 @@ grub_memdisk_open (const char *name, grub_disk_t disk)
       return grub_error (GRUB_ERR_UNKNOWN_DEVICE, "not a memdisk");
 
   disk->total_sectors = memdisk_size / GRUB_DISK_SECTOR_SIZE;
-  disk->id = (int) 'mdsk';
+  disk->id = (unsigned long) "mdsk";
   disk->has_partitions = 0;
 
   return GRUB_ERR_NONE;
