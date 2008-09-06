@@ -73,20 +73,6 @@ grub_exit (void)
 }
 
 void
-grub_reboot (void)
-{
-  grub_printf ("grub_reboot() is not implemented.\n");
-  grub_stop ();
-}
-
-void
-grub_halt (int no_apm __attribute__ ((unused)))
-{
-  grub_printf ("grub_halt() is not implemented.\n");
-  grub_stop ();
-}
-
-void
 grub_arch_sync_caches (void *address __attribute__ ((unused)),
 		       grub_size_t len __attribute__ ((unused)))
 {
@@ -154,7 +140,7 @@ grub_machine_init (void)
 			     quarter);
       }
     else
-      grub_mm_init_region ((void *) addr, (grub_size_t) size);
+      grub_mm_init_region ((void *) (grub_addr_t) addr, (grub_size_t) size);
 
     return 0;
   }
@@ -182,5 +168,5 @@ grub_machine_fini (void)
 grub_addr_t
 grub_arch_modules_addr (void)
 {
-  return ALIGN_UP(_end, GRUB_MOD_ALIGN);
+  return ALIGN_UP((grub_addr_t) _end, GRUB_MOD_ALIGN);
 }

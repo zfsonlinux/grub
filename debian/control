@@ -3,22 +3,25 @@ Section: admin
 Priority: extra
 Maintainer: GRUB Maintainers <pkg-grub-devel@lists.alioth.debian.org>
 Uploaders: Jason Thomas <jason@debian.org>, Otavio Salvador <otavio@debian.org>, Robert Millan <rmh@aybabtu.com>
-Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 5), patchutils (>= 0.2.25), autoconf, liblzo2-dev | liblzo-dev,
- ruby, bison, dpkg-dev (>= 1.13.12), unifont-bin,
+Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 5), patchutils (>= 0.2.25), autoconf,
+ ruby, bison, dpkg-dev (>= 1.13.12), po-debconf,
  genisoimage [i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64],
  libc6-dev-i386 [amd64], libc0.1-dev-i386 [kfreebsd-amd64], libc6-dev-powerpc [ppc64],
  gcc-multilib [amd64 kfreebsd-amd64 ppc64] | gcc-4.1 (<< 4.1.2) [amd64 kfreebsd-amd64 ppc64],
- libncurses5-dev
-Build-Conflicts: autoconf2.13
-Standards-Version: 3.7.2
+ libncurses5-dev,
+ liblzo2-dev (>= 2.03) [i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64] | liblzo-dev [i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64],
+ unifont (>= 1:5.1.20080820-1),
+ help2man
+Build-Conflicts: autoconf2.13, liblzo2-dev (<< 2.02)
+Standards-Version: 3.8.0
 Homepage: http://www.gnu.org/software/grub/grub-2.en.html
 Vcs-Svn: svn://svn.debian.org/svn/pkg-grub/grub2/
-Vcs-Browser: svn://svn.debian.org/pkg-grub/
+Vcs-Browser: http://svn.debian.org/wsvn/pkg-grub/grub2/
 
 
 Package: grub2
 Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 powerpc ppc64
-Depends: debconf, grub-pc [i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64] | grub-ieee1275 [powerpc ppc64]
+Depends: ${misc:Depends} , grub-pc [i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64] | grub-ieee1275 [powerpc ppc64]
 Description: GRand Unified Bootloader, version 2 (dummy package)
  This is a dummy transitional package to handle GRUB 2 upgrades.  It can be
  safely removed.
@@ -30,13 +33,21 @@ Description: GRand Unified Bootloader, version 2 [dummy]
  This is a dummy transitional package that depends on grub-ieee1275.
 
 
+Package: grub-common
+Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 powerpc ppc64
+Depends: ${shlibs:Depends}, ${misc:Depends}, base-files (>= 4.0.1~)
+Replaces: grub-pc (<< 1.96+20080426-3), grub-ieee1275 (<< 1.96+20080426-3), grub-linuxbios (<< 1.96+20080426-3), grub-efi (<< 1.96+20080426-3)
+Suggests: multiboot-doc [i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64]
+Description: GRand Unified Bootloader, version 2 (common files)
+ This package contains common files shared by the distinct flavours of GRUB.
+
 Package: grub-pc
 Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, base-files (>= 4.0.1), debconf
+Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (>> 1.96+20080413-1), ${grub-pc:Depends}
 Provides: grub
-Replaces: pupa, grub, grub2 (<< ${Source-Version})
+Replaces: pupa, grub, grub2 (<< ${Source-Version}), grub-common (<= 1.96+20080413-1)
 Conflicts: pupa, grub, desktop-base (= 4.0.5)
-Suggests: desktop-base (>= 4.0.6)
+Suggests: desktop-base (>= 4.0.6), os-prober
 Description: GRand Unified Bootloader, version 2 (PC/BIOS version)
  GRUB is a portable, powerful bootloader.  This version of GRUB is based on a
  cleaner design than its predecessors, and provides the following new features:
@@ -56,7 +67,7 @@ Description: GRand Unified Bootloader, version 2 (PC/BIOS version)
 
 Package: grub-rescue-pc
 Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64
-Depends: base-files (>= 4.0.1)
+Depends: base-files (>= 4.0.1~)
 Description: GRUB bootable rescue images, version 2 (PC/BIOS version)
  This package contains two GRUB rescue images that have been built for use with
  traditional PC/BIOS architecture:
@@ -66,10 +77,11 @@ Description: GRUB bootable rescue images, version 2 (PC/BIOS version)
 
 Package: grub-linuxbios
 Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, base-files (>= 4.0.1)
+Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (>> 1.96+20080413-1)
 Provides: grub
-Replaces: pupa, grub, grub2 (<< ${Source-Version})
+Replaces: pupa, grub, grub2 (<< ${Source-Version}), grub-common (<= 1.96+20080413-1)
 Conflicts: pupa, grub
+Suggests: os-prober
 Description: GRand Unified Bootloader, version 2 (LinuxBIOS version)
  GRUB is a portable, powerful bootloader.  This version of GRUB is based on a
  cleaner design than its predecessors, and provides the following new features:
@@ -85,10 +97,11 @@ Description: GRand Unified Bootloader, version 2 (LinuxBIOS version)
 
 Package: grub-efi
 Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, base-files (>= 4.0.1)
+Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (>> 1.96+20080413-1)
 Provides: grub
-Replaces: pupa, grub, grub2 (<< ${Source-Version})
+Replaces: pupa, grub, grub2 (<< ${Source-Version}), grub-common (<= 1.96+20080413-1)
 Conflicts: pupa, grub
+Suggests: os-prober
 Description: GRand Unified Bootloader, version 2 (EFI version)
  GRUB is a portable, powerful bootloader.  This version of GRUB is based on a
  cleaner design than its predecessors, and provides the following new features:
@@ -100,16 +113,17 @@ Description: GRand Unified Bootloader, version 2 (EFI version)
     update-grub2.
  .
  This package contains a version of GRUB that has been built for use with
- EFI architecture, such as the one provided by Intel Macs (that is, unless
- they are in MBR emulation mode).
+ EFI architecture, such as the one provided by Intel Macs (that is, unless a
+ BIOS interface has been activated).
 
 Package: grub-ieee1275
 Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 powerpc ppc64
-Depends: ${shlibs:Depends}, ${misc:Depends}, base-files (>= 4.0.1),
+Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (>> 1.96+20080413-1),
  powerpc-ibm-utils [powerpc ppc64], powerpc-utils [powerpc ppc64], bc [powerpc ppc64]
 Provides: grub
-Replaces: pupa, grub, grub2 (<< ${Source-Version})
+Replaces: pupa, grub, grub2 (<< ${Source-Version}), grub-common (<= 1.96+20080413-1)
 Conflicts: pupa, grub
+Suggests: os-prober
 Description: GRand Unified Bootloader, version 2 (Open Firmware version)
  GRUB is a portable, powerful bootloader.  This version of GRUB is based on a
  cleaner design than its predecessors, and provides the following new features:

@@ -1,0 +1,102 @@
+2008-09-05  Bean  <bean123ch@gmail.com>
+
+	* fs/fshelp.c (grub_fshelp_find_file): Handle case insensitive names.
+
+	* fs/ntfs.c (list_file): Ignore names in DOS namespace, set the case
+	insensitive bit for names in Win32 and Win32 & DOS namespace.
+
+	* include/grub/fshelp.h (GRUB_FSHELP_CASE_INSENSITIVE): New macro.
+
+	* include/grub/types.h (LONG_MAX): Likewise.
+
+Index: fs/ntfs.c
+===================================================================
+--- fs/ntfs.c	(revision 1851)
++++ fs/ntfs.c	(revision 1852)
+@@ -575,13 +575,20 @@
+ 
+   while (1)
+     {
+-      char *ustr;
++      char *ustr, namespace;
++
+       if (pos[0xC] & 2)		/* end signature */
+ 	break;
+ 
+-      np = pos + 0x52;
+-      ns = (unsigned char) *(np - 2);
+-      if (ns)
++      np = pos + 0x50;
++      ns = (unsigned char) *(np++);
++      namespace = *(np++);
++
++      /*
++       *  Ignore files in DOS namespace, as they will reappear as Win32
++       *  names.
++       */
++      if ((ns) && (namespace != 2))
+ 	{
+ 	  enum grub_fshelp_filetype type;
+ 	  struct grub_ntfs_file *fdiro;
+@@ -610,6 +617,9 @@
+ 	  *grub_utf16_to_utf8 ((grub_uint8_t *) ustr, (grub_uint16_t *) np,
+ 			       ns) = '\0';
+ 
++          if (namespace)
++            type |= GRUB_FSHELP_CASE_INSENSITIVE;
++
+ 	  if (hook (ustr, type, fdiro))
+ 	    {
+ 	      grub_free (ustr);
+Index: fs/fshelp.c
+===================================================================
+--- fs/fshelp.c	(revision 1851)
++++ fs/fshelp.c	(revision 1852)
+@@ -80,14 +80,17 @@
+ 				    enum grub_fshelp_filetype filetype,
+ 				    grub_fshelp_node_t node)
+ 	{
+-	  if (type == GRUB_FSHELP_UNKNOWN || grub_strcmp (name, filename))
++	  if (filetype == GRUB_FSHELP_UNKNOWN ||
++              (grub_strcmp (name, filename) &&
++               (! (filetype & GRUB_FSHELP_CASE_INSENSITIVE) ||
++                grub_strncasecmp (name, filename, LONG_MAX))))
+ 	    {
+ 	      grub_free (node);
+ 	      return 0;
+ 	    }
+ 	  
+ 	  /* The node is found, stop iterating over the nodes.  */
+-	  type = filetype;
++	  type = filetype & ~GRUB_FSHELP_CASE_INSENSITIVE;
+ 	  oldnode = currnode;
+ 	  currnode = node;
+ 	  
+Index: include/grub/types.h
+===================================================================
+--- include/grub/types.h	(revision 1851)
++++ include/grub/types.h	(revision 1852)
+@@ -94,8 +94,10 @@
+ 
+ #if GRUB_CPU_SIZEOF_VOID_P == 8
+ # define ULONG_MAX 18446744073709551615UL
++# define LONG_MAX 9223372036854775807UL
+ #else
+ # define ULONG_MAX 4294967295UL
++# define LONG_MAX 2147483647UL
+ #endif
+ 
+ /* The type for representing a file offset.  */
+Index: include/grub/fshelp.h
+===================================================================
+--- include/grub/fshelp.h	(revision 1851)
++++ include/grub/fshelp.h	(revision 1852)
+@@ -26,6 +26,8 @@
+ 
+ typedef struct grub_fshelp_node *grub_fshelp_node_t;
+ 
++#define GRUB_FSHELP_CASE_INSENSITIVE	0x100
++
+ enum grub_fshelp_filetype
+   {
+     GRUB_FSHELP_UNKNOWN,

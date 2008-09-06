@@ -124,7 +124,7 @@ grub_env_context_close (void)
     {
       struct grub_env_var *p, *q;
       
-      for (p = current_context->prev->vars[i]; p; p = q)
+      for (p = current_context->vars[i]; p; p = q)
 	{
 	  q = p->next;
 	  grub_free (p);
@@ -331,12 +331,7 @@ grub_register_variable_hook (const char *name,
 
   if (! var)
     {
-      char *val = grub_strdup ("");
-
-      if (! val)
-	return grub_errno;
-      
-      if (grub_env_set (name, val) != GRUB_ERR_NONE)
+      if (grub_env_set (name, "") != GRUB_ERR_NONE)
 	return grub_errno;
       
       var = grub_env_find (name);

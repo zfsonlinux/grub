@@ -49,11 +49,6 @@ esac
 
 case "$target_cpu" in
   i[[3456]]86) target_cpu=i386 ;;
-  x86_64) target_cpu=i386 target_m32=1 ;;
-  powerpc) ;;
-  powerpc64) target_cpu=powerpc target_m32=1;;
-  sparc64) ;;
-  *) AC_MSG_ERROR([unsupported CPU type]) ;;
 esac
 
 # Specify the platform (such as firmware).
@@ -66,23 +61,42 @@ if test "x$with_platform" = x; then
   case "$target_cpu"-"$target_vendor" in
     i386-apple) platform=efi ;;
     i386-*) platform=pc ;;
+    x86_64-apple) platform=efi ;;
+    x86_64-*) platform=pc ;;
     powerpc-*) platform=ieee1275 ;;
+    powerpc64-*) platform=ieee1275 ;;
     sparc64-*) platform=ieee1275 ;;
-    *) AC_MSG_ERROR([unsupported machine type]) ;;
+    *) AC_MSG_ERROR([unsupported CPU: "$target_cpu"]) ;;
   esac
 else
   platform="$with_platform"
 fi
 
-# Sanity check.
+# Adjust CPU unless target was explicitly specified.
+if test -z "$target_alias"; then
+  case "$target_cpu"-"$platform" in
+    x86_64-efi) ;;
+    x86_64-*) target_cpu=i386 ;;
+    powerpc64-ieee1275) target_cpu=powerpc ;;
+  esac
+fi
+
+# Check if the platform is supported, make final adjustments.
 case "$target_cpu"-"$platform" in
   i386-efi) ;;
+  x86_64-efi) ;;
   i386-pc) ;;
-  i386-linuxbios) ;;
+  i386-coreboot) ;;
+  i386-linuxbios) platform=coreboot ;;
   i386-ieee1275) ;;
   powerpc-ieee1275) ;;
   sparc64-ieee1275) ;;
-  *) AC_MSG_ERROR([unsupported machine type]) ;;
+  *) AC_MSG_ERROR([platform "$platform" is not supported for target CPU "$target_cpu"]) ;;
+esac
+
+case "$target_cpu" in
+  i386 | powerpc) target_m32=1 ;;
+  x86_64 | sparc64) target_m64=1 ;;
 esac
 
 AC_SUBST(target_cpu)
@@ -115,8 +129,9 @@ AC_PROG_INSTALL
 AC_PROG_AWK
 AC_PROG_MAKE_SET
 
-# This is not a "must".
+# These are not a "must".
 AC_PATH_PROG(RUBY, ruby)
+AC_PATH_PROG(HELP2MAN, help2man)
 
 #
 # Checks for host programs.
@@ -142,19 +157,28 @@ fi
 
 # Check LZO when compiling for the i386-pc.
 if test "$target_cpu"-"$platform" = i386-pc; then
-  # There are three possibilities. LZO version 2 installed with the name
-  # liblzo2, with the name liblzo, and LZO version 1.
-  AC_CHECK_LIB(lzo2, __lzo_init_v2, [LIBLZO="-llzo2"],
-    AC_CHECK_LIB(lzo, __lzo_init_v2, [LIBLZO="-llzo"],
-      AC_CHECK_LIB(lzo, __lzo_init2, [LIBLZO="-llzo"],
-	       AC_MSG_ERROR([LZO library version 1.02 or later is required]))))
-  AC_SUBST(LIBLZO)
-  LIBS="$LIBS $LIBLZO"
-  AC_CHECK_FUNC(lzo1x_999_compress, , 
+  AC_ARG_ENABLE([lzo],
+	      [AS_HELP_STRING([--enable-lzo],
+                             [use lzo to compress kernel (default is lzma)])])
+  [if [ x"$enable_lzo" = xyes ]; then
+    # There are three possibilities. LZO version 2 installed with the name
+    # liblzo2, with the name liblzo, and LZO version 1.]
+    AC_DEFINE([ENABLE_LZO], [1], [Use lzo compression])
+    AC_CHECK_LIB([lzo2], [__lzo_init_v2], [LIBLZO="-llzo2"],
+      [AC_CHECK_LIB([lzo], [__lzo_init_v2], [LIBLZO="-llzo"],
+        [AC_CHECK_LIB([lzo], [__lzo_init2], [LIBLZO="-llzo"],
+	       [AC_MSG_ERROR([LZO library version 1.02 or later is required])])])])
+    AC_SUBST([LIBLZO])
+    [LIBS="$LIBS $LIBLZO"]
+    AC_CHECK_FUNC([lzo1x_999_compress], ,
 	        [AC_MSG_ERROR([LZO1X-999 must be enabled])])
 
-  # LZO version 2 uses lzo/lzo1x.h, while LZO version 1 uses lzo1x.h.
-  AC_CHECK_HEADERS(lzo/lzo1x.h lzo1x.h)
+    [# LZO version 2 uses lzo/lzo1x.h, while LZO version 1 uses lzo1x.h.]
+    AC_CHECK_HEADERS([lzo/lzo1x.h lzo1x.h])
+  [else]
+    AC_DEFINE([ENABLE_LZMA], [1], [Use lzma compression])
+  [fi]
+  AC_SUBST([enable_lzo])
 fi
 
 # Check for functions.
@@ -206,11 +230,11 @@ if test "x$TARGET_CFLAGS" = x; then
                  -Wundef -Wstrict-prototypes -g"
 
   # optimization flags.
-  AC_CACHE_CHECK([whether optimization for size works], size_flag, [
+  AC_CACHE_CHECK([whether optimization for size works], grub_cv_cc_Os, [
     CFLAGS=-Os
-    AC_TRY_COMPILE(, , size_flag=yes, size_flag=no)
+    AC_TRY_COMPILE(, , grub_cv_cc_Os=yes, grub_cv_cc_Os=no)
   ])
-  if test "x$size_flag" = xyes; then
+  if test "x$grub_cv_cc_Os" = xyes; then
     TARGET_CFLAGS="$TARGET_CFLAGS -Os"
   else
     TARGET_CFLAGS="$TARGET_CFLAGS -O2 -fno-strength-reduce -fno-unroll-loops"
@@ -218,12 +242,12 @@ if test "x$TARGET_CFLAGS" = x; then
 
   # Force no alignment to save space on i386.
   if test "x$target_cpu" = xi386; then
-    AC_CACHE_CHECK([whether -falign-loops works], [falign_loop_flag], [
+    AC_CACHE_CHECK([whether -falign-loops works], [grub_cv_cc_falign_loop], [
       CFLAGS="-falign-loops=1"
-      AC_TRY_COMPILE(, , [falign_loop_flag=yes], [falign_loop_flag=no])
+      AC_TRY_COMPILE(, , [grub_cv_cc_falign_loop=yes], [grub_cv_cc_falign_loop=no])
     ])
 
-    if test "x$falign_loop_flag" = xyes; then
+    if test "x$grub_cv_cc_falign_loop" = xyes; then
       TARGET_CFLAGS="$TARGET_CFLAGS -falign-jumps=1 -falign-loops=1 -falign-functions=1"
     else
       TARGET_CFLAGS="$TARGET_CFLAGS -malign-jumps=1 -malign-loops=1 -malign-functions=1"
@@ -237,14 +261,10 @@ if test "x$target_m32" = x1; then
   TARGET_LDFLAGS="$TARGET_LDFLAGS -m32"
 fi
 
-AC_MSG_CHECKING([whether the linker accepts `--build-id=none'])
-save_LDFLAGS="$LDFLAGS"
-LDFLAGS="$LDFLAGS -Wl,--build-id=none"
-AC_TRY_LINK(, , build_id_flag=yes, build_id_flag=no)
-AC_MSG_RESULT([$build_id_flag])
-LDFLAGS="$save_LDFLAGS"
-if test "x$build_id_flag" = xyes; then
-  TARGET_LDFLAGS="$TARGET_LDFLAGS -Wl,--build-id=none"
+if test "x$target_m64" = x1; then
+  # Force 64-bit mode.
+  TARGET_CFLAGS="$TARGET_CFLAGS -m64"
+  TARGET_LDFLAGS="$TARGET_LDFLAGS -m64"
 fi
 
 #
@@ -253,15 +273,16 @@ fi
 
 # Smashing stack protector.
 grub_CHECK_STACK_PROTECTOR
-[# Need that, because some distributions ship compilers that include
+# Need that, because some distributions ship compilers that include
 # `-fstack-protector' in the default specs.
-if [ x"$ssp_possible" = xyes ]; then
-  TARGET_CFLAGS=$TARGET_CFLAGS\ -fno-stack-protector
-fi]
+if test "x$ssp_possible" = xyes; then
+  TARGET_CFLAGS="$TARGET_CFLAGS -fno-stack-protector"
+fi
 
 AC_SUBST(TARGET_CFLAGS)
 AC_SUBST(TARGET_CPPFLAGS)
 AC_SUBST(TARGET_LDFLAGS)
+AC_SUBST(MODULE_LDFLAGS)
 
 # Set them to their new values for the tests below.
 CC="$TARGET_CC"
@@ -270,7 +291,9 @@ CPPFLAGS="$TARGET_CPPFLAGS"
 LDFLAGS="$TARGET_LDFLAGS"
 
 # Defined in aclocal.m4.
+grub_PROG_TARGET_CC
 grub_PROG_OBJCOPY_ABSOLUTE
+grub_PROG_LD_BUILD_ID_NONE
 grub_ASM_USCORE
 if test "x$target_cpu" = xi386; then
   grub_CHECK_START_SYMBOL
@@ -319,6 +342,11 @@ AC_ARG_ENABLE([grub-emu],
 	[AC_MSG_ERROR([(n)curses header files are required to build `grub-emu'])])])])
 [fi]
 AC_SUBST([enable_grub_emu])
+
+AC_ARG_ENABLE([grub-fstest],
+	      [AS_HELP_STRING([--enable-grub-fstest],
+                             [build and install the `grub-fstest' debugging utility])])
+AC_SUBST([enable_grub_fstest])
 
 # Output files.
 AC_CONFIG_LINKS([include/grub/cpu:include/grub/$target_cpu

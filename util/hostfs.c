@@ -1,7 +1,7 @@
 /* hostfs.c - Dummy filesystem to provide access to the hosts filesystem  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #include <grub/file.h>
 #include <grub/disk.h>
 #include <grub/misc.h>
+#include <grub/dl.h>
 
 #include <dirent.h>
 #include <stdio.h>
@@ -100,9 +101,9 @@ grub_hostfs_open (struct grub_file *file, const char *name)
 		       "can't open `%s'", name);
   file->data = f;
 
-  fseek (f, 0, SEEK_END);
-  file->size = ftell (f);
-  fseek (f, 0, SEEK_SET);
+  fseeko (f, 0, SEEK_END);
+  file->size = ftello (f);
+  fseeko (f, 0, SEEK_SET);
 
   return GRUB_ERR_NONE;
 }
@@ -113,7 +114,7 @@ grub_hostfs_read (grub_file_t file, char *buf, grub_size_t len)
   FILE *f;
 
   f = (FILE *) file->data;
-  fseek (f, file->offset, SEEK_SET);
+  fseeko (f, file->offset, SEEK_SET);
   int s = fread (buf, 1, len, f);
 
   return s;
@@ -151,14 +152,12 @@ static struct grub_fs grub_hostfs_fs =
 
 
 
-void
-grub_hostfs_init (void)
+GRUB_MOD_INIT(hostfs)
 {
   grub_fs_register (&grub_hostfs_fs);
 }
 
-void
-grub_hostfs_fini (void)
+GRUB_MOD_FINI(hostfs)
 {
   grub_fs_unregister (&grub_hostfs_fs);
 }

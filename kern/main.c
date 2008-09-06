@@ -102,8 +102,8 @@ grub_load_normal_mode (void)
   /* Load the module.  */
   grub_dl_load ("normal");
   
-  /* Ignore any error, because we have the rescue mode anyway.  */
-  grub_errno = GRUB_ERR_NONE;
+  /* Something went wrong.  Print errors here to let user know why we're entering rescue mode.  */
+  grub_print_error ();
 }
 
 /* The main routine.  */
@@ -125,6 +125,7 @@ grub_main (void)
   /* It is better to set the root device as soon as possible,
      for convenience.  */
   grub_machine_set_prefix ();
+  grub_env_export ("prefix");
   grub_set_root_dev ();
 
   /* Load the normal mode module.  */
