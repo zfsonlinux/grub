@@ -1,0 +1,10 @@
+--- kern/device.c	2008-07-04 00:56:43.000000000 +0200
++++ kern/device.c.new	2008-08-26 23:44:32.000000000 +0200
+@@ -50,7 +50,6 @@
+   disk = grub_disk_open (name);
+   if (! disk)
+     {
+-      grub_error (GRUB_ERR_BAD_DEVICE, "unknown device %s", name);
+       goto fail;
+     }
+ 

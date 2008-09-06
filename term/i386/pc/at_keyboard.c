@@ -17,8 +17,10 @@
  */
 
 #include <grub/machine/console.h>
+#include <grub/machine/machine.h>
 #include <grub/cpu/io.h>
 #include <grub/misc.h>
+#include <grub/term.h>
 
 #define SHIFT_L		0x2a
 #define SHIFT_R		0x36
@@ -50,34 +52,45 @@
 
 static short at_keyboard_status = 0;
 
+#ifdef GRUB_MACHINE_IEEE1275
+#define OLPC_UP		GRUB_TERM_UP
+#define OLPC_DOWN	GRUB_TERM_DOWN
+#define OLPC_LEFT	GRUB_TERM_LEFT
+#define OLPC_RIGHT	GRUB_TERM_RIGHT
+#else
+#define OLPC_UP		'\0'
+#define OLPC_DOWN	'\0'
+#define OLPC_LEFT	'\0'
+#define OLPC_RIGHT	'\0'
+#endif
+
 static char keyboard_map[128] =
 {
-  '\0', '\0', '1', '2', '3', '4', '5', '6',
-  '7', '8', '9', '0', '-', '=', '\b', '\t',
+  '\0', GRUB_TERM_ESC, '1', '2', '3', '4', '5', '6',
+  '7', '8', '9', '0', '-', '=', GRUB_TERM_BACKSPACE, GRUB_TERM_TAB,
   'q', 'w', 'e', 'r', 't', 'y', 'u', 'i',
   'o', 'p', '[', ']', '\n', '\0', 'a', 's',
   'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',
   '\'', '`', '\0', '\\', 'z', 'x', 'c', 'v',
   'b', 'n', 'm', ',', '.', '/', '\0', '*',
   '\0', ' ', '\0', '\0', '\0', '\0', '\0', '\0',
-  '\0', '\0', '\0', '\0', '\0', '\0', '\0', '7',
-  '8', '9', '-', '4', '5', '6', '+', '1',
-  '2', '3',
+  '\0', '\0', '\0', '\0', '\0', '\0', '\0', GRUB_TERM_HOME,
+  GRUB_TERM_UP, GRUB_TERM_NPAGE, '-', GRUB_TERM_LEFT, '\0', GRUB_TERM_RIGHT, '+', GRUB_TERM_END,
+  GRUB_TERM_DOWN, GRUB_TERM_PPAGE, '\0', GRUB_TERM_DC, '\0', '\0', '\0', '\0',
+  '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0',
+  '\0', '\0', '\0', '\0', '\0', OLPC_UP, OLPC_DOWN, OLPC_LEFT,
+  OLPC_RIGHT
 };
 
 static char keyboard_map_shift[128] =
 {
   '\0', '\0', '!', '@', '#', '$', '%', '^',
-  '&', '*', '(', ')', '_', '+', '\b', '\t',
+  '&', '*', '(', ')', '_', '+', '\0', '\0',
   'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I',
   'O', 'P', '{', '}', '\n', '\0', 'A', 'S',
   'D', 'F', 'G', 'H', 'J', 'K', 'L', ':',
   '\"', '~', '\0', '|', 'Z', 'X', 'C', 'V',
-  'B', 'N', 'M', '<', '>', '?', '\0', '*',
-  '\0', ' ', '\0', '\0', '\0', '\0', '\0', '\0',
-  '\0', '\0', '\0', '\0', '\0', '\0', '\0', '7',
-  '8', '9', '-', '4', '5', '6', '+', '1',
-  '2', '3',
+  'B', 'N', 'M', '<', '>', '?'
 };
 
 static void
@@ -170,30 +183,36 @@ grub_keyboard_getkey (void)
 int
 grub_console_checkkey (void)
 {
-  int key;
-  key = grub_keyboard_getkey ();
-  if (key == -1)
+  int code, key;
+  code = grub_keyboard_getkey ();
+  if (code == -1)
     return -1;
 #ifdef DEBUG_AT_KEYBOARD
   grub_dprintf ("atkeyb", "Detected key 0x%x\n", key);
 #endif
-  switch (key)
+  switch (code)
     {
       case CAPS_LOCK:
-	if (at_keyboard_status & KEYBOARD_STATUS_CAPS_LOCK)
-	  at_keyboard_status &= ~KEYBOARD_STATUS_CAPS_LOCK;
-	else
-	  at_keyboard_status |= KEYBOARD_STATUS_CAPS_LOCK;
+	at_keyboard_status ^= KEYBOARD_STATUS_CAPS_LOCK;
+	/* Caps lock sends scan code twice.  Get the second one and discard it.  */
+	while (grub_keyboard_getkey () == -1);
 #ifdef DEBUG_AT_KEYBOARD
 	grub_dprintf ("atkeyb", "caps_lock = %d\n", !!(at_keyboard_status & KEYBOARD_STATUS_CAPS_LOCK));
 #endif
 	key = -1;
 	break;
       default:
-	if (at_keyboard_status & (KEYBOARD_STATUS_SHIFT_L | KEYBOARD_STATUS_SHIFT_R))
-	  key = keyboard_map_shift[key];
+	if (at_keyboard_status & (KEYBOARD_STATUS_CTRL_L | KEYBOARD_STATUS_CTRL_R))
+	  key = keyboard_map[code] - 'a' + 1;
+	else if ((at_keyboard_status & (KEYBOARD_STATUS_SHIFT_L | KEYBOARD_STATUS_SHIFT_R))
+	    && keyboard_map_shift[code])
+	  key = keyboard_map_shift[code];
 	else
-	  key = keyboard_map[key];
+	  key = keyboard_map[code];
+
+	if (key == 0)
+	  grub_dprintf ("atkeyb", "Unknown key 0x%x detected\n", code);
+
 	if (at_keyboard_status & KEYBOARD_STATUS_CAPS_LOCK)
 	  {
 	    if ((key >= 'a') && (key <= 'z'))

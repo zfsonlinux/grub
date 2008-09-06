@@ -1,3 +1,444 @@
+grub2 (1.96+20080724-10) unstable; urgency=high
+
+  * patches/03_disable_floppies.diff: Free .drive struct member when skipping
+    floppy drives.  (Closes: #496040)
+  * patches/902_boot_blocklist_hack.diff: Support separate /boot when using
+    blocklists.  (Closes: #496820, #489287, #494589)
+  * patches/00_ntfs_insensitive.diff: They say NTFS is an insensitive fool.
+    It must be true! (use case insensitive match in NTFS) (Closes: #497889)
+
+ -- Robert Millan <rmh@aybabtu.com>  Sat,  6 Sep 2008 14:56:38 +0200
+
+grub2 (1.96+20080724-9) unstable; urgency=high
+
+  [ Felix Zielcke ]
+  * Remove build-depency of unifont-bin and bump version of unifont to
+    (>= 1:5.1.20080820-1), this avoids licensing problems (Closes: #496061)
+  * patches/00_skip_dev_leading_dot.diff: Add patch from Robert to skip
+    all devices which start with a dot not just directories (Closes: #486624)
+  * Fix a bit the changelog entry from me of previous version
+    - Colon missing on `Closes' for #494383.
+    - #464215 was on wrong line, it's about LVM dash problem not /dev/md/N.
+    - Align to 80 chars.
+  * patches/02_mdraid_sb_raid_disks.diff: Use raid_disks field of the mdraid
+    superblock instead of nr_disks (Closes: #496573)
+
+  [ Robert Millan ]
+  * Detect when grub-setup leaves core.img in filesystem, and include that
+    info in bug report templates.
+    - debian/patches/08_core_in_fs.diff
+    - debian/script
+  * Remove a red herring error message so that the real errors are displayed
+    (does not fix, but problem can be seen in #496040)
+    - debian/patches/00_kern_device_red_herring.diff
+
+ -- Robert Millan <rmh@aybabtu.com>  Tue, 26 Aug 2008 23:40:47 +0200
+
+grub2 (1.96+20080724-8) unstable; urgency=high
+
+  [ Felix Zielcke ]
+  * patches/00_fix_raid0.diff: Fix a `small' incorrect calculation for raid 0.
+  * patches/09_handle_md_slash_N.diff: Add support for /dev/md/N style mdraid
+    devices. (Closes: #475585)
+  * patches/10_handle_lvm_dash_escaping.diff: LVM escapes a dash with a dash
+    and GRUB doestn't like that, so remove the double dashes. (Closes: #494383,
+    #464215)
+
+  [ Robert Millan ]
+  * Handle errors in RAID/LVM scan routine (rather than letting the upper
+    layer cope with them).  (Closes: #494501, #495049)
+    - debian/patches/00_raid_lvm_error_handling.diff: Fix the actual problem.
+    - debian/patches/00_grub_print_error.diff: Fix a bug exposed by
+      00_raid_lvm_error_handling.diff.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sat, 23 Aug 2008 15:04:22 +0200
+
+grub2 (1.96+20080724-7) unstable; urgency=high
+
+  * Make build-dependency on unifont-bin versioned (<< 1:5.1.20080706-1)
+    (or unifont >= 1:5.1.20080808-2) to avoid being hit by #494473.
+    (Closes: #494460)
+  * patches/02_dpkg_version_comparison.diff: Replace with
+    patches/901_dpkg_version_comparison.diff (new patch), based on the
+    implementation in grub 0.97-46.  (Closes: #494158)
+
+ -- Robert Millan <rmh@aybabtu.com>  Sat,  9 Aug 2008 21:21:00 +0200
+
+grub2 (1.96+20080724-6) unstable; urgency=high
+
+  * patches/02_old_linux_version_comparison.diff: Replace with ...
+  * patches/02_dpkg_version_comparison.diff: ... this.
+    Use dpkg --compare-versions in update-grub. (Closes: #494158)
+  * fixed 2 double slashes in the spanish translation (es.po) (Closes: #493744)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sun, 03 Aug 2008 17:53:33 +0200
+
+grub2 (1.96+20080724-5) unstable; urgency=high
+
+  [ Felix Zielcke ]
+  * patches/00_getline.diff: Fix access to a pointer which has been free'd
+    before in the configline parser from grub's menu (Closes: #493289)
+  * patches/00_fix_double_prefix.diff: Fix double prefix with chainloading
+    from grub-legacy (Closes: #487565)
+
+  [ Updated translations ]
+  * Japanese (ja.po) by Hideki Yamane (Closes: #493347)
+
+  [ Robert Millan ]
+  * patches/07_skip_invalid_bsd_parts.diff: Add patch from Felix to skip
+    invalid/corrupt partitions gracefuly.  (Closes: #478238)
+
+ -- Robert Millan <rmh@aybabtu.com>  Sat,  2 Aug 2008 22:49:05 +0200
+
+grub2 (1.96+20080724-4) unstable; urgency=high
+
+  * patches/00_fix_overflow.diff: fix overflow with a big grub.cfg.
+    (Closes: #473543)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 29 Jul 2008 17:10:59 +0200
+
+grub2 (1.96+20080724-3) unstable; urgency=low
+
+  [ Felix Zielcke ]
+  * changed depency for debconf to also support debconf-2.0. (Closes: #492543)
+  * patches/00_xfs.diff: Fix "out of partition" error with XFS.
+    (Closes: #436943)
+
+  [ Robert Millan ]
+  * patches/00_raid_duped_disks.diff: Do not abort when two RAID disks with
+    the same number are found.  (Closes: #492656)
+  * patches/00_strengthen_apple_partmap_check.diff: Be more strict when probing
+    for Apple partition maps (this prevents false positives on i386-pc
+    installs).  (Closes: #475718)
+
+ -- Robert Millan <rmh@aybabtu.com>  Tue, 29 Jul 2008 00:48:01 +0200
+
+grub2 (1.96+20080724-2) unstable; urgency=high
+
+  [ Felix Zielcke ]
+  * fixed lintian override for kernel.elf
+  * debian/rules: changed cvs targets to use svn
+
+  [ Robert Millan ]
+  * patches/00_skip_dev_dm.diff: Skip /dev/dm-[0-9] devices also (implicitly)
+    for RAID.  (Closes: #491977)
+  * patches/00_uuid_boot.diff: Fix cross-disk installs by using UUIDs.
+    (Closes: #492204)
+
+ -- Robert Millan <rmh@aybabtu.com>  Sat, 26 Jul 2008 01:06:07 +0200
+
+grub2 (1.96+20080724-1) unstable; urgency=high
+
+  * New SVN snapshot.
+    - Support for ext4dev extents.
+    - patches/00_speed_up_font_load.diff: Remove (merged).
+
+  [ Felix Zielcke ]
+  * upgrade-from-grub-legacy now calls update-grub if grub.cfg doestn't exist
+    and prints a big warning if it failed.
+  * Update Standards version to 3.8.0. No changes need.
+  * Added Build-Dep for po-debconf and a lintian override, to make it happy.
+
+  [ Updated translations ]
+  * Swedish (sv.po) by Martin Ågren (Closes: #492056)
+
+  [ Robert Millan ]
+  * Revert r844.  grub-coreboot is stuck on NEW, and it was too early
+    for branching.
+
+ -- Robert Millan <rmh@aybabtu.com>  Thu, 24 Jul 2008 13:27:53 +0200
+
+grub2 (1.96+20080717-1) experimental; urgency=low
+
+  * New SVN snapshot.
+    - Provides LZMA support (not yet used in the package).
+    - Fix grub-mkrescue manpage generation.  (Closes: #489440)
+
+  * Rename grub-linuxbios to grub-coreboot (and leave a dummy grub-linuxbios
+    package to handle upgrades).
+
+  [ Updated translations ]
+  * Spanish (es.po) by Maria Germana Oliveira Blazetic  (Closes: #489877)
+  * Portuguese (pt.po) by Ricardo Silva  (Closes: #489807)
+
+ -- Robert Millan <rmh@aybabtu.com>  Sat, 12 Jul 2008 17:47:09 +0200
+
+grub2 (1.96+20080704-2) unstable; urgency=high
+
+  * patches/02_old_linux_version_comparison.diff: Set interpreter to /bin/bash.
+    (Closes: #489426, #489446)
+
+ -- Robert Millan <rmh@aybabtu.com>  Mon,  7 Jul 2008 15:17:58 +0200
+
+grub2 (1.96+20080704-1) unstable; urgency=high
+
+  * New SVN snapshot.
+  * default/grub: Add commented example to disable graphical terminal.
+  * Use substvars to support linking with liblzo1.
+  * Bring 03_disable_floppies.diff to pre-r805 state.  (Closes: #488375)
+  * patches/02_old_linux_version_comparison.diff: New patch.  Steal version
+    comparison code from GRUB Legacy's update-grub.  (Closes: #464086, #489133)
+  * patches/00_speed_up_font_load.diff: New patch.  Generate font files with
+    only the needed characters.  (Closes: #476479, #477083)
+
+ -- Robert Millan <rmh@aybabtu.com>  Fri,  4 Jul 2008 21:39:07 +0200
+
+grub2 (1.96+20080626-1) unstable; urgency=high
+
+  * New CVS snapshot.
+    - Avoids passing UUID to Linux when not using initrd.  (Closes: #484228)
+    - patches/04_uuids_and_abstraction_dont_play_along_nicely.diff: Resync.
+
+ -- Robert Millan <rmh@aybabtu.com>  Thu, 26 Jun 2008 16:43:48 +0200
+
+grub2 (1.96+20080621-1) unstable; urgency=high
+
+  * Urgency set to "high" because of #482688.
+  * New CVS snapshot.
+    - Fix module load hook in prepare_grub_to_access_device().
+      (Closes: #486804)
+    - Call prepare_grub_to_access_device() before accessing devices, never
+      afterwards.  (Closes: #487198)
+  * grub.d/05_debian_theme: Prefer /boot/grub over /usr for image
+    loading, since chances are it's less LVMed.
+
+ -- Robert Millan <rmh@aybabtu.com>  Sat, 21 Jun 2008 15:52:48 +0200
+
+grub2 (1.96+20080617-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - Supports IDA block devices.  (Closes: #483858)
+    - Fixes some problems in ext2/ext3.  (Closes: #485068, #485065)
+    - Uses EUID instead of UID in update-grub.  (Closes: #486043, #486039,
+      #486040, #486041).
+    - Fixes incomplete I2O device support.  Thanks Sven Mueller.
+      (Closes: #486505)
+    - Fixes recent regressions in fs/ext2.c.  (Closes: #485279)
+    - Only use UUIDs when requested device is not the same as the one
+      providing /boot.  (Closes: #486119)
+    - patches/02_libgcc_powerpc_hack.diff: Remove.  Probably not needed
+      anymore.
+    - patches/04_uuids_and_abstraction_dont_play_along_nicely.diff: Update.
+  * patches/06_olpc_prefix_hack.diff: Hardcode prefix to (sd,1) on OLPC.
+  * Refurbish 03_disable_floppy_support_in_util_biosdisk.diff into
+    03_disable_floppies.diff.
+
+ -- Robert Millan <rmh@aybabtu.com>  Tue, 17 Jun 2008 01:07:52 +0200
+
+grub2 (1.96+20080601-2) unstable; urgency=low
+
+  * 04_run_grub_mkdevicemap_when_grub_probe_fails.diff: Remove.  Argueably
+    makes grub-probe unreliable and is quite annoying.
+  * 04_uuids_and_abstraction_dont_play_along_nicely.diff: New patch.  Disable
+    UUID parameter to Linux when LVM or dmRAID is in use.  (Closes: #484228)
+    This is a workaround for bug #484297 in udev.
+
+ -- Robert Millan <rmh@aybabtu.com>  Tue,  3 Jun 2008 16:29:53 +0200
+
+grub2 (1.96+20080601-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - patches/06_backward_compat_in_uuid_support.diff: Merged.
+    - Fixes NULL pointer dereference in biosdisk.c.  (Closes: #483895, #483900)
+    - Extends UUID support for XFS and ReiserFS.
+
+ -- Robert Millan <rmh@aybabtu.com>  Sun,  1 Jun 2008 15:44:08 +0200
+
+grub2 (1.96+20080531-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - Work around BIOS bug affecting keyboard on macbooks.  (Closes: #482860)
+    - Adjust grub.d/05_debian_theme to use the new UUID-compatible API.
+    - default/grub: Add commented GRUB_DISABLE_LINUX_UUID variable.
+    - patches/06_backward_compat_in_uuid_support.diff: New.  Make update-grub
+      generate code that is compatible with older GRUB installs.
+    - util/biosdisk.c no longer complains about duplicated device.map entries.
+      (Closes: #481236)
+
+  [ Updated translations ]
+  * Galician (gl.po) by Jacobo Tarrio  (Closes: #480977)
+
+ -- Robert Millan <rmh@aybabtu.com>  Sat, 31 May 2008 00:02:54 +0200
+
+grub2 (1.96+20080512-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - Adds support for default-only Linux cmdline options.  (Closes: #460843)
+    - Supports Xen virtual block devices.  (Closes: #456777)
+    - Supports Virtio block devices.  (Closes: #479056)
+    - Supports CCISS block devices.  (Closes: #479735)
+    - Fixes handling of more LVM abnormal conditions.  (Closes: #474343,
+      #474931, #477175)
+
+  * Switch to liblzo2 now that it's GPLv3-compatible.  (Closes: #466375)
+  * grub-pc.postinst: Escape \ and / in cmdline sed invokation.
+    (Closes: #479279)
+
+  [ Updated translations ]
+  * Italian (it.po) by Luca Monducci  (Closes: #480740)
+
+ -- Robert Millan <rmh@aybabtu.com>  Mon, 12 May 2008 17:46:38 +0200
+
+grub2 (1.96+20080429-1) unstable; urgency=high
+
+  * New CVS snapshot.
+    - Includes sample grub.cfg file; we use it for grub-rescue-pc.
+      (Closes: #478324)
+  * grub-common: Upgrade Replaces to << 1.96+20080426-3.  (Closes: #478224,
+    #478353, #478144)
+
+  [ Updated translations ]
+  * French (fr.po) by Christian Perrier  (Closes: #471291)
+
+ -- Robert Millan <rmh@aybabtu.com>  Tue, 29 Apr 2008 13:27:52 +0200
+
+grub2 (1.96+20080426-1) unstable; urgency=high
+
+  * New CVS snapshot.
+    - Fixes syntax error when setting GRUB_PRELOAD_MODULES.  (Closes: #476517)
+  * Move os-prober to Suggests, to avoid trouble with #476184.
+    (Closes: #476684)
+  * patches/04_run_grub_mkdevicemap_when_grub_probe_fails.diff: New patch,
+    does what its name says.  (Closes: #467127)
+    - Also move grub-mkdevicemap from grub-pc to grub-common, so that GRUB
+      Legacy can use it.
+
+  [ Updated translations ]
+  * Basque (eu.po) by Piarres Beobide  (Closes: #476708)
+
+ -- Robert Millan <rmh@aybabtu.com>  Sat, 26 Apr 2008 20:06:55 +0200
+
+grub2 (1.96+20080413-1) unstable; urgency=high
+
+  * New CVS snapshot.
+    - Provides 30_os-prober update-grub add-on.  Thanks Fabian Greffrath.
+      (Closes: #461442)
+    - Improves robustness when handling LVM.
+      (Closes: #474931, #474343)
+  * patches/03_disable_floppy_support_in_util_biosdisk.diff: New.  Does
+    what its name says.  (Closes: #475177)
+
+ -- Robert Millan <rmh@aybabtu.com>  Sun, 13 Apr 2008 13:53:28 +0200
+
+grub2 (1.96+20080408-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - grub-probe skips non-existant devices when processing device.map.
+    (Closes: #473209)
+  * control: Fix syntax error.
+
+  [ Updated translations ]
+  * Finnish (fi.po) by Esko Arajärvi (Closes: #468641)
+
+ -- Robert Millan <rmh@aybabtu.com>  Tue,  8 Apr 2008 15:45:25 +0200
+
+grub2 (1.96+20080228-1) unstable; urgency=low
+
+  * New CVS snapshot.
+  * Split grub-probe into grub-common package.  Make all flavours depend on it.
+    (Closes: #241972)
+  * Suggest multiboot-doc.
+  * patches/01_grub_legacy_0_based_partitions.diff: New patch.  Add a hack that
+    tells grub-probe you want 0-based partition count
+    (GRUB_LEGACY_0_BASED_PARTITIONS variable)
+  * Stop depending on lsb-release (too heavy! we don't need python in base).
+    Instead of assuming it's there, try calling it and otherwise just echo
+    Debian.
+
+ -- Robert Millan <rmh@aybabtu.com>  Thu, 28 Feb 2008 16:43:40 +0100
+
+grub2 (1.96+20080219-3) unstable; urgency=low
+
+  * default/grub: Use lsb_release to support Debian derivatives.
+    (Closes: #466561)
+  * grub.d/05_debian_theme: Only setup background image when a reader for it
+    is present in /boot/grub.  (Closes: #467111)
+
+  [ Updated translations ]
+  * Russian (ru.po) by Yuri Kozlov (Closes: #467181)
+
+ -- Robert Millan <rmh@aybabtu.com>  Sun, 24 Feb 2008 15:39:50 +0100
+
+grub2 (1.96+20080219-2) unstable; urgency=high
+
+  * grub-pc.postinst: Create /boot/grub if it doesn't exist.
+
+ -- Robert Millan <rmh@aybabtu.com>  Wed, 20 Feb 2008 07:15:14 +0100
+
+grub2 (1.96+20080219-1) unstable; urgency=high
+
+  * New CVS snapshot.
+    - Improves GPT support, allowing it to work without blocklists.
+
+ -- Robert Millan <rmh@aybabtu.com>  Tue, 19 Feb 2008 15:05:10 +0100
+
+grub2 (1.96+20080216-1) unstable; urgency=high
+
+  * New CVS snapshot.
+    - Fixes offset calculation issue when installing on GPT (urgency set
+      to high because of this).
+  * Fix Vcs-Browser tag.  Thanks James.  (Closes: #465697)
+  * Only process grub-pc/linux_cmdline if /boot/grub/menu.lst exists.
+    (Closes: #465708)
+
+  [ Updated translations ]
+  * French (fr.po) by Christian Perrier  (Closes: #465706)
+
+ -- Robert Millan <rmh@aybabtu.com>  Sat, 16 Feb 2008 23:30:55 +0100
+
+grub2 (1.96+20080213-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - Failure to read one device in a RAID-1 array no longer causes boot
+      to fail (so long as there's a member that works).  (Closes: #426341)
+  * script: For /proc/mounts, only report lines that start with /dev/.
+  * Add new upgrade-from-grub-legacy script for the user to complete the upgrade
+    process from GRUB Legacy, and advertise it prominently in menu.lst.
+    (Closes: #464912)
+  * Add a hack to support gfxterm / background_image on systems where /usr
+    isn't accessible.  (Closes: #464911, #463144)
+    - grub-pc.postinst
+    - grub.d/05_debian_theme
+  * Fix a pair of spelling mistakes in debconf.  (Closes: #465296)
+  * Migrate kopt from menu.lst.  (Closes: #461164, #464918)
+
+  [ Updated translations ]
+  * Portuguese (pt.po) by Ricardo Silva (Closes: #465137)
+  * German (de.po) by Helge Kreutzmann (Closes: #465295)
+
+ -- Robert Millan <rmh@aybabtu.com>  Wed, 13 Feb 2008 16:37:13 +0100
+
+grub2 (1.96+20080210-1) unstable; urgency=high
+
+  * New CVS snapshot.
+    - Errors that cause GRUB to enter rescue mode are displayed now.
+      (Closes: #425149)
+    - Build LVM/RAID modules into a few commands that were missing them
+      (notably, grub-setup).  (Closes: #465033)
+  * Fix license violation (incompatibility between GRUB and LZO2).
+    (Closes: #465056)
+    - Urgency set to high.
+    - control: Move liblzo2-dev from Build-Depends to Build-Conflicts
+      (leaving liblzo-dev as the only option).
+
+ -- Robert Millan <rmh@aybabtu.com>  Sun, 10 Feb 2008 17:09:15 +0100
+
+grub2 (1.96+20080209-1) unstable; urgency=low
+
+  * New CVS snapshot.
+    - Fix a root device setting issue in grub-setup.  (Closes: #463391)
+    - Fix partmap detection under LVM/RAID.
+    - Add scripting commands that would allow user to implement hiddenmenu-like
+      functionality (http://grub.enbug.org/Hiddenmenu).
+    - Provide manpages for grub-setup, grub-emu, grub-mkimage and others.
+      (Closes: #333516, #372890)
+  * Fix a pair of spelling errors in debconf templates.  Thanks Christian
+    Perrier.  (Closes: #464133)
+  * Run debconf-updatepo.  (Closes: #463918)
+  * Lower base-files versioned dependency to >= 4.0.1~bpo40+1.
+
+ -- Robert Millan <rmh@aybabtu.com>  Sat,  9 Feb 2008 13:43:49 +0100
+
 grub2 (1.96+20080203-1) unstable; urgency=low
 
   * New CVS snapshot (and release, but we skipped that ;-))

@@ -13,6 +13,12 @@
 /* Define it to \"data32\" or \"data32;\" to make GAS happy */
 #undef DATA32
 
+/* Use lzma compression */
+#undef ENABLE_LZMA
+
+/* Use lzo compression */
+#undef ENABLE_LZO
+
 /* Define it to either end or _end */
 #undef END_SYMBOL
 
@@ -88,10 +94,10 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
-/* The size of a `long', as computed by sizeof. */
+/* The size of `long', as computed by sizeof. */
 #undef SIZEOF_LONG
 
-/* The size of a `void *', as computed by sizeof. */
+/* The size of `void *', as computed by sizeof. */
 #undef SIZEOF_VOID_P
 
 /* Define it to either start or _start */
