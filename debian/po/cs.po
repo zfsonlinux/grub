@@ -1,14 +1,14 @@
-# SOME DESCRIPTIVE TITLE.
+# Czech translation of grub2 debconf messages.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the grub2 package.
+# Miroslav Kure <kurem@debian.cz>, 2008
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: grub2\n"
 "Report-Msgid-Bugs-To: pkg-grub-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2008-02-13 14:53+0100\n"
-"PO-Revision-Date: 2007-03-04 12:11+0100\n"
+"POT-Creation-Date: 2008-10-26 15:44+0100\n"
+"PO-Revision-Date: 2008-10-28 09:44+0100\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -68,13 +68,15 @@ msgstr ""
 #. Description
 #: ../grub-pc.templates:1001
 msgid "Chainload from menu.lst?"
-msgstr ""
+msgstr "Zavést přes menu.lst?"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates:1001
 msgid "GRUB upgrade scripts have detected a GRUB Legacy setup in /boot/grub."
 msgstr ""
+"Aktualizační skripty GRUBu rozpoznaly v /boot/grub nastavení pro předchozí "
+"verzi GRUBu (tzv. GRUB Legacy)."
 
 #. Type: boolean
 #. Description
@@ -85,6 +87,9 @@ msgid ""
 "your existing GRUB Legacy setup.  This step may be automaticaly performed "
 "now."
 msgstr ""
+"Abyste na svém systému nahradili zastaralou verzi GRUBu, je doporučeno "
+"upravit /boot/grub/menu.lst tak, aby zavedl GRUB 2 pomocí stávajícího GRUB "
+"Legacy. Tento krok je nyní možno provést automaticky."
 
 #. Type: boolean
 #. Description
@@ -94,6 +99,9 @@ msgid ""
 "verify that your new GRUB 2 setup is functional for you, before you install "
 "it directly to your MBR (Master Boot Record)."
 msgstr ""
+"Před instalací GRUBu 2 přímo do MBR (Master Boot Record) se doporučuje "
+"nejprve vyzkoušet zavedení GRUBu 2 skrze menu.lst a teprve po ověření, že "
+"vše funguje očekávaným způsobem, zkusit instalaci do MBR."
 
 #. Type: boolean
 #. Description
@@ -102,9 +110,29 @@ msgid ""
 "In either case, whenever you want GRUB 2 to be loaded directly from MBR, you "
 "can do so by issuing (as root) the following command:"
 msgstr ""
+"Až se rozhodnete zavádět GRUB 2 přímo z MBR, stačí jako uživatel root "
+"spustit příkaz:"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates:1001
 msgid "upgrade-from-grub-legacy"
+msgstr "upgrade-from-grub-legacy"
+
+#. Type: string
+#. Description
+#: ../grub-pc.templates:2001
+msgid "Linux command line:"
+msgstr "Parametry pro Linux:"
+
+#. Type: string
+#. Description
+#: ../grub-pc.templates:2001
+msgid ""
+"The following Linux command line was extracted from the `kopt' parameter in "
+"GRUB Legacy's menu.lst.  Please verify that it is correct, and modify it if "
+"necessary."
 msgstr ""
+"Následující řádka s linuxovými parametry byla získána ze starého souboru "
+"menu.lst z parametru „kopt“. Zkontrolujte prosím, zda jsou parametry v "
+"pořádku a případně je upravte do požadované podoby."
