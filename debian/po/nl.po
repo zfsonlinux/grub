@@ -1,26 +1,27 @@
-# translation of eu.po to Euskara
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# translation of grub2_1.96+20080724-10_nl.po to Dutch
+# Copyright (C) 2008 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the grub2 package.
 #
-# Piarres Beobide <pi@beobide.net>, 2008.
+# Paul Gevers <paul@climbing.nl>, 2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: eu\n"
+"Project-Id-Version: grub2_1.96+20080724-10_nl\n"
 "Report-Msgid-Bugs-To: pkg-grub-devel@lists.alioth.debian.org\n"
 "POT-Creation-Date: 2008-10-26 18:22+0100\n"
-"PO-Revision-Date: 2008-04-18 17:34+0200\n"
-"Last-Translator: Piarres Beobide <pi@beobide.net>\n"
-"Language-Team: Euskara <debian-l10n-basque@lists.debian.org>\n"
+"PO-Revision-Date: 2008-09-26 22:07-0500\n"
+"Last-Translator: Paul Gevers <paul@climbing.nl>\n"
+"Language-Team: Dutch <debian-l10n-dutch@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #. Type: note
 #. Description
 #: ../grub2.templates:1001
 msgid "GRUB 1.95 numbering scheme transition"
-msgstr "GRUB 1.95 zenbatze eskema aldaketa"
+msgstr "GRUB 1.95 transitie van benummeringsschema"
 
 #. Type: note
 #. Description
@@ -32,11 +33,11 @@ msgid ""
 "example, when using Linux as the kernel, \"(hd0,1)\" refers to the same "
 "partition as the /dev/sda1 device node."
 msgstr ""
-"1.95 bertsiotik aurrera, GRUB 2-ak zenbatze eskema aldatu du.  Partizioak "
-"orain 1-etik hasiko dira zenbatzen 0-tik beharrean.  Hau Linux eta Debianen "
-"erabiltzen diren kernel ezberdinekin bateragarritasuna mantentzeko egiten "
-"da.  Adibidez, kernel bezala Linux erabiltzean, \"(hd0,)\" Eta /dev/sda1 "
-"gailu nodoa partizio berdina dira."
+"Vanaf versie 1.95 heeft GRUB2 zijn benummeringsschema gewijzigd. Partities "
+"worden nu genummerd beginnend met 1 in plaats van 0. Dit is gedaan om het "
+"consistent te maken met de apparaatnamen van Linux en andere Debian kernels. "
+"Bijvoorbeeld, indien gebruik gemaakt wordt van de Linux kernel, dan verwijst "
+"\"(hd0,1)\" naar dezelfde partitie als de /dev/sda1 apparaatsnode."
 
 #. Type: note
 #. Description
@@ -47,10 +48,11 @@ msgid ""
 "installed GRUB won't yet be able to parse correctly.  To ensure your system "
 "will be able to boot, you have to:"
 msgstr ""
-"Hau dela eta aukera bat dago zure sistema abioezina geratzeko update-grub(8) "
-"GRUB bertsio berritu ondoren exekutatzen bada instalaturiko GRUB-ek "
-"analizatu ezin duen grub.cfg fitxategi bat sortuaz.  Zure sistema abiatu "
-"ahal izango duzula ziurtatzeko:"
+"Als gevolg hiervan is er een kans dat uw systeem niet meer wil opstarten als "
+"'update-grub(8)' gedraaid wordt voordat GRUB is vernieuwd. Er is dan een "
+"grub.cfg bestand gemaakt dat niet correct door de geïnstalleerde GRUB "
+"ontleed kan worden. Om er zeker van te zijn dat uw systeem op kan starten "
+"dient u:"
 
 #. Type: note
 #. Description
@@ -59,22 +61,23 @@ msgid ""
 " - Reinstall GRUB (typically, by running grub-install).\n"
 " - Rerun update-grub to generate a new grub.cfg."
 msgstr ""
-" - GRUB berrinstalatu (normalean grub-install exekutatuaz).\n"
-" - update-grub berriz exekutatu grub.cfg berri sortzeko."
+" - GRUB te herinstalleren (normaal gesproken door 'grub-install' te "
+"draaien).\n"
+" - 'update-grub' opnieuw te draaien om een nieuwe grub.cfg te genereren."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates:1001
 msgid "Chainload from menu.lst?"
-msgstr "Kargatu menu.lst bidez?"
+msgstr "Doorschakel vanuit menu.lst?"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates:1001
 msgid "GRUB upgrade scripts have detected a GRUB Legacy setup in /boot/grub."
 msgstr ""
-"GRUB eguneraketa skriptak GRUB zahar konfigurazioa aurkitu dute /boot/grub-"
-"en."
+"GRUB's opwaardeerscripts hebben een overgeërfde GRUB opstelling in /boot/"
+"grub gedetecteerd."
 
 #. Type: boolean
 #. Description
@@ -85,9 +88,10 @@ msgid ""
 "your existing GRUB Legacy setup.  This step may be automaticaly performed "
 "now."
 msgstr ""
-"GRUB zaharraren bertsioa behar bezala ordezkatzeko, gomendagarria da /boot/"
-"grub/menu.lst doitzea GRUB 2 dagoeneko instalaturik duzun GRUB zaharraren "
-"bidez kargatzea.  Urrats hau automatikoki egin daiteke orain."
+"Om de overgeërfde versie van GRUB op uw systeem te vervangen wordt het "
+"aangeraden om het /boot/grub/menu.lst bestand zo te laten aanpassen dat "
+"GRUB2 wordt doorgeschakeld (chainloading) vanuit uw bestaande overgeërfde "
+"GRUB opstelling. Deze stap kan nu automatisch worden uitgevoerd."
 
 #. Type: boolean
 #. Description
@@ -97,9 +101,9 @@ msgid ""
 "verify that your new GRUB 2 setup is functional for you, before you install "
 "it directly to your MBR (Master Boot Record)."
 msgstr ""
-"Gomendagarria da GRUB 2 menu.lst bidez kargatzea onartzea, GRUB 2 "
-"konfigurazioak zure beharrak betetzen dituela egiatzatzeko MBR-ran (Master "
-"Boot Record) zuzenean instalatu beharrean."
+"U wordt aangeraden om het doorschakelen van GRUB2 vanuit menu.lst te "
+"accepteren en daarna te verifiëren dat uw nieuwe GRUB2 opstelling werkt "
+"voordat u het in de MBR (Master Boot Record) installeert."
 
 #. Type: boolean
 #. Description
@@ -108,14 +112,14 @@ msgid ""
 "In either case, whenever you want GRUB 2 to be loaded directly from MBR, you "
 "can do so by issuing (as root) the following command:"
 msgstr ""
-"Edozein kasutan, GRUB 2 zuzenean zure MBR-tik kargatzea nahi duzunean "
-"komando hau exekutatuaz (root gisa) lortu dezakezu:"
+"Waar u ook voor kiest, als u GRUB2 direct in de MBR wilt laden kunt u dat "
+"doen door het volgende commando uit te voeren (met beheerdersrechten (root)):"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates:1001
 msgid "upgrade-from-grub-legacy"
-msgstr "eguneratu-grub-zaharretik"
+msgstr "upgrade-from-grub-legacy"
 
 #. Type: string
 #. Description

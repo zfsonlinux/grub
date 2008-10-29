@@ -1,3 +1,29 @@
+grub2 (1.96+20080724-11) unstable; urgency=high
+
+  [ Felix Zielcke ]
+  * patches/00_trailing_slash.diff: New patch to remove the trailing slash on
+    grub prefix to avoid a double slash, which is a problem for JFS.
+    (Closes: #500112)
+  * patches/00_lvm_circular_metadata.diff: New patch to handle circular LVM
+    metadata. (Closes: #462835, #502953)
+  * Make grub-pc/linux_cmdline debconf template translatable. (Closes #503478).
+
+  [ Robert Millan ]
+  * Fix NULL dereference and failure paths in LVM.  Thanks Guillem Jover.
+    (Closes: #500482)
+    - patches/11_lvm-Fix-possible-NULL-value-handling.diff
+    - patches/12_lvm-Fix-error-recovery-by-only-adding-objects-when.diff
+
+  [ Updated translations ]
+  * Dutch (nl.po) by Paul Gevers. (Closes: #500514)
+  * French (fr.po) by Christian Perrier. (Closes: #503708)
+  * Georgian (ka.po) by Aiet Kolkhi. (Closes: #503715)
+  * Czech (cs.po) by Miroslav Kure. (Closes: #503809)
+  * German (de.po) by Helge Kreutzmann. (Closes: #503841)
+  * Japanese (ja.po) by Hideki Yamane. (Closes: #503869)
+
+ -- Robert Millan <rmh@aybabtu.com>  Wed, 29 Oct 2008 19:27:00 +0100
+
 grub2 (1.96+20080724-10) unstable; urgency=high
 
   * patches/03_disable_floppies.diff: Free .drive struct member when skipping

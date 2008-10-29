@@ -60,7 +60,7 @@ diff -ur grub2/util/i386/pc/grub-install.in grub2.new/util/i386/pc/grub-install.
 -modules="$modules $fs_module $partmap_module biosdisk $devabstraction_module"
 -
  $grub_mkimage --output=${grubdir}/core.img \
-     --prefix=${prefix_drive}`make_system_path_relative_to_its_root ${grubdir}`/ \
+     --prefix=${prefix_drive}`make_system_path_relative_to_its_root ${grubdir}` \
      $modules || exit 1
 diff -ur grub2/util/i386/pc/grub-setup.c grub2.new/util/i386/pc/grub-setup.c
 --- grub2/util/i386/pc/grub-setup.c	2008-07-01 01:52:24.000000000 +0200
