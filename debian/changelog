@@ -1,3 +1,22 @@
+grub2 (1.96+20080724-12) unstable; urgency=high
+
+  [ Updated translations ]
+  * Italian (it.po) by Luca Monducci. (Closes: #504076)
+  * Swedish (sv.po) by Martin Ågren. (Closes: #504207)
+  * Arabic (ar.po) by Ossama Khayat. (Closes: #504254)
+  * Portuguese (pt.po) by Miguel Figueiredo. (Closes: #504280)
+  * Russian (ru.po) by Yuri Kozlov. (Closes: #504324)
+  * Finnish (fi.po) by Esko Arajärvi. (Closes: #504310)
+  * Basque (eu.po) by Piarres Beobide. (Closes: #504466)
+  * Dutch (nl.po) by Paul Gevers. (Closes: #504683)
+
+  [ Robert Millan ]
+  * Update to new debian theme.
+    - grub-pc.postinst: Switch to moreblue-orbit-grub.png.
+    - grub.d/05_debian_theme: Likewise.
+
+ -- Robert Millan <rmh@aybabtu.com>  Mon, 10 Nov 2008 16:18:14 +0100
+
 grub2 (1.96+20080724-11) unstable; urgency=high
 
   [ Felix Zielcke ]

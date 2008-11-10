@@ -759,35 +759,9 @@ else
 fi
 
 xen0Kernels=""
-# First old style non-CONFIG_PARAVIRT kernels with xen0 support.
+# First kernels with xen0 support.
 for ver in `grep -l CONFIG_XEN=y /boot/config* | sed -e s%/boot/config-%%`; do
   if ! grep -q CONFIG_XEN_PRIVILEGED_GUEST=y /boot/config-$ver ; then
-      continue
-  fi
-  # ver is a kernel version
-  kern="/boot/vmlinuz-$ver"
-  if [ -r $kern ] ; then
-       newerKernels=""
-       for i in $xen0Kernels ; do
-                res=$(CompareVersions "$kern" "$i")
-                if [ "$kern" != "" ] && [ "$res" -gt 0 ] ; then
-                        newerKernels="$newerKernels $kern $i"
-                        kern=""
-                else
-                        newerKernels="$newerKernels $i"
-                fi
-        done
-        if [ "$kern" != "" ] ; then
-                newerKernels="$newerKernels $kern"
-        fi
-        xen0Kernels="$newerKernels"
-    fi
-done
-
-# Second new style CONFIG_PARAVIRT kernels with xen support. There is
-# no distinction between xen0 and xenU in these kernels.
-for ver in `grep -l CONFIG_PARAVIRT=y /boot/config* | sed -e s%/boot/config-%%`; do
-  if ! grep -q CONFIG_XEN=y /boot/config-$ver ; then
       continue
   fi
   # ver is a kernel version
