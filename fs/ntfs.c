@@ -1,7 +1,7 @@
 /* ntfs.c - NTFS filesystem */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2007 Free Software Foundation, Inc.
+ *  Copyright (C) 2007,2008 Free Software Foundation, Inc.
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -331,8 +331,8 @@ retry:
   return 0;
 }
 
-static int
-grub_ntfs_read_block (grub_fshelp_node_t node, int block)
+static grub_disk_addr_t
+grub_ntfs_read_block (grub_fshelp_node_t node, grub_disk_addr_t block)
 {
   struct grub_ntfs_rlst *ctx;
 
@@ -830,6 +830,8 @@ grub_ntfs_mount (grub_disk_t disk)
       (disk, data->mft_start, 0, data->mft_size << BLK_SHR, data->mmft.buf))
     goto fail;
 
+  data->uuid = grub_le_to_cpu64 (bpb.num_serial);
+
   if (fixup (data, data->mmft.buf, data->mft_size, "FILE"))
     goto fail;
 
@@ -1078,6 +1080,34 @@ fail:
   return grub_errno;
 }
 
+static grub_err_t
+grub_ntfs_uuid (grub_device_t device, char **uuid)
+{
+  struct grub_ntfs_data *data;
+  grub_disk_t disk = device->disk;
+
+#ifndef GRUB_UTIL
+  grub_dl_ref (my_mod);
+#endif
+
+  data = grub_ntfs_mount (disk);
+  if (data)
+    {
+      *uuid = grub_malloc (16 + sizeof ('\0'));
+      grub_sprintf (*uuid, "%016llx", (unsigned long long) data->uuid);
+    }
+  else
+    *uuid = NULL;
+
+#ifndef GRUB_UTIL
+  grub_dl_unref (my_mod);
+#endif
+
+  grub_free (data);
+
+  return grub_errno;
+}
+
 static struct grub_fs grub_ntfs_fs = {
   .name = "ntfs",
   .dir = grub_ntfs_dir,
@@ -1085,6 +1115,7 @@ static struct grub_fs grub_ntfs_fs = {
   .read = grub_ntfs_read,
   .close = grub_ntfs_close,
   .label = grub_ntfs_label,
+  .uuid = grub_ntfs_uuid,
   .next = 0
 };
 

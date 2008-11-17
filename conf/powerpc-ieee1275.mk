@@ -2,18 +2,15 @@
 # -*- makefile -*-
 
 COMMON_ASFLAGS = -nostdinc -D__ASSEMBLY__
-COMMON_CFLAGS = -ffreestanding -msoft-float
+COMMON_CFLAGS = -ffreestanding
 COMMON_LDFLAGS += -nostdlib
 
 # Used by various components.  These rules need to precede them.
-normal/execute.c_DEPENDENCIES = grub_script.tab.h
-normal/command.c_DEPENDENCIES = grub_script.tab.h
-normal/function.c_DEPENDENCIES = grub_script.tab.h
 normal/lexer.c_DEPENDENCIES = grub_script.tab.h
 
 # Images.
 
-MOSTLYCLEANFILES += kernel_elf_symlist.c kernel_syms.lst
+MOSTLYCLEANFILES += symlist.c kernel_syms.lst
 DEFSYMFILES += kernel_syms.lst
 
 kernel_elf_HEADERS = arg.h boot.h cache.h device.h disk.h dl.h elf.h elfload.h \
@@ -21,7 +18,7 @@ kernel_elf_HEADERS = arg.h boot.h cache.h device.h disk.h dl.h elf.h elfload.h \
 	symbol.h term.h time.h types.h powerpc/libgcc.h loader.h partition.h \
 	pc_partition.h ieee1275/ieee1275.h machine/kernel.h
 
-kernel_elf_symlist.c: $(addprefix include/grub/,$(kernel_elf_HEADERS)) config.h gensymlist.sh
+symlist.c: $(addprefix include/grub/,$(kernel_elf_HEADERS)) config.h gensymlist.sh
 	/bin/sh gensymlist.sh $(filter %.h,$^) > $@ || (rm -f $@; exit 1)
 
 kernel_syms.lst: $(addprefix include/grub/,$(kernel_elf_HEADERS)) config.h genkernsyms.sh
@@ -58,6 +55,7 @@ grub_mkimage-util_resolve.o: util/resolve.c $(util/resolve.c_DEPENDENCIES)
 	$(CC) -Iutil -I$(srcdir)/util $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(grub_mkimage_CFLAGS) -MD -c -o $@ $<
 -include grub_mkimage-util_resolve.d
 
+util/elf/grub-mkimage.c_DEPENDENCIES = Makefile
 
 # For grub-mkdevicemap.
 grub_mkdevicemap_SOURCES = util/grub-mkdevicemap.c util/misc.c		\
@@ -437,12 +435,12 @@ kernel_elf_SOURCES = kern/powerpc/ieee1275/crt0.S kern/ieee1275/cmain.c \
 	kern/ieee1275/init.c term/ieee1275/ofconsole.c 		\
 	kern/ieee1275/openfw.c disk/ieee1275/ofdisk.c 		\
 	kern/parser.c kern/partition.c kern/env.c kern/powerpc/dl.c 	\
-	kernel_elf_symlist.c kern/powerpc/cache.S
-CLEANFILES += kernel.elf kernel_elf-kern_powerpc_ieee1275_crt0.o kernel_elf-kern_ieee1275_cmain.o kernel_elf-kern_ieee1275_ieee1275.o kernel_elf-kern_main.o kernel_elf-kern_device.o kernel_elf-kern_disk.o kernel_elf-kern_dl.o kernel_elf-kern_err.o kernel_elf-kern_file.o kernel_elf-kern_fs.o kernel_elf-kern_misc.o kernel_elf-kern_mm.o kernel_elf-kern_loader.o kernel_elf-kern_rescue.o kernel_elf-kern_term.o kernel_elf-kern_ieee1275_init.o kernel_elf-term_ieee1275_ofconsole.o kernel_elf-kern_ieee1275_openfw.o kernel_elf-disk_ieee1275_ofdisk.o kernel_elf-kern_parser.o kernel_elf-kern_partition.o kernel_elf-kern_env.o kernel_elf-kern_powerpc_dl.o kernel_elf-kernel_elf_symlist.o kernel_elf-kern_powerpc_cache.o
-MOSTLYCLEANFILES += kernel_elf-kern_powerpc_ieee1275_crt0.d kernel_elf-kern_ieee1275_cmain.d kernel_elf-kern_ieee1275_ieee1275.d kernel_elf-kern_main.d kernel_elf-kern_device.d kernel_elf-kern_disk.d kernel_elf-kern_dl.d kernel_elf-kern_err.d kernel_elf-kern_file.d kernel_elf-kern_fs.d kernel_elf-kern_misc.d kernel_elf-kern_mm.d kernel_elf-kern_loader.d kernel_elf-kern_rescue.d kernel_elf-kern_term.d kernel_elf-kern_ieee1275_init.d kernel_elf-term_ieee1275_ofconsole.d kernel_elf-kern_ieee1275_openfw.d kernel_elf-disk_ieee1275_ofdisk.d kernel_elf-kern_parser.d kernel_elf-kern_partition.d kernel_elf-kern_env.d kernel_elf-kern_powerpc_dl.d kernel_elf-kernel_elf_symlist.d kernel_elf-kern_powerpc_cache.d
+	symlist.c kern/powerpc/cache.S
+CLEANFILES += kernel.elf kernel_elf-kern_powerpc_ieee1275_crt0.o kernel_elf-kern_ieee1275_cmain.o kernel_elf-kern_ieee1275_ieee1275.o kernel_elf-kern_main.o kernel_elf-kern_device.o kernel_elf-kern_disk.o kernel_elf-kern_dl.o kernel_elf-kern_err.o kernel_elf-kern_file.o kernel_elf-kern_fs.o kernel_elf-kern_misc.o kernel_elf-kern_mm.o kernel_elf-kern_loader.o kernel_elf-kern_rescue.o kernel_elf-kern_term.o kernel_elf-kern_ieee1275_init.o kernel_elf-term_ieee1275_ofconsole.o kernel_elf-kern_ieee1275_openfw.o kernel_elf-disk_ieee1275_ofdisk.o kernel_elf-kern_parser.o kernel_elf-kern_partition.o kernel_elf-kern_env.o kernel_elf-kern_powerpc_dl.o kernel_elf-symlist.o kernel_elf-kern_powerpc_cache.o
+MOSTLYCLEANFILES += kernel_elf-kern_powerpc_ieee1275_crt0.d kernel_elf-kern_ieee1275_cmain.d kernel_elf-kern_ieee1275_ieee1275.d kernel_elf-kern_main.d kernel_elf-kern_device.d kernel_elf-kern_disk.d kernel_elf-kern_dl.d kernel_elf-kern_err.d kernel_elf-kern_file.d kernel_elf-kern_fs.d kernel_elf-kern_misc.d kernel_elf-kern_mm.d kernel_elf-kern_loader.d kernel_elf-kern_rescue.d kernel_elf-kern_term.d kernel_elf-kern_ieee1275_init.d kernel_elf-term_ieee1275_ofconsole.d kernel_elf-kern_ieee1275_openfw.d kernel_elf-disk_ieee1275_ofdisk.d kernel_elf-kern_parser.d kernel_elf-kern_partition.d kernel_elf-kern_env.d kernel_elf-kern_powerpc_dl.d kernel_elf-symlist.d kernel_elf-kern_powerpc_cache.d
 
-kernel.elf: $(kernel_elf_DEPENDENCIES) kernel_elf-kern_powerpc_ieee1275_crt0.o kernel_elf-kern_ieee1275_cmain.o kernel_elf-kern_ieee1275_ieee1275.o kernel_elf-kern_main.o kernel_elf-kern_device.o kernel_elf-kern_disk.o kernel_elf-kern_dl.o kernel_elf-kern_err.o kernel_elf-kern_file.o kernel_elf-kern_fs.o kernel_elf-kern_misc.o kernel_elf-kern_mm.o kernel_elf-kern_loader.o kernel_elf-kern_rescue.o kernel_elf-kern_term.o kernel_elf-kern_ieee1275_init.o kernel_elf-term_ieee1275_ofconsole.o kernel_elf-kern_ieee1275_openfw.o kernel_elf-disk_ieee1275_ofdisk.o kernel_elf-kern_parser.o kernel_elf-kern_partition.o kernel_elf-kern_env.o kernel_elf-kern_powerpc_dl.o kernel_elf-kernel_elf_symlist.o kernel_elf-kern_powerpc_cache.o
-	$(TARGET_CC) -o $@ kernel_elf-kern_powerpc_ieee1275_crt0.o kernel_elf-kern_ieee1275_cmain.o kernel_elf-kern_ieee1275_ieee1275.o kernel_elf-kern_main.o kernel_elf-kern_device.o kernel_elf-kern_disk.o kernel_elf-kern_dl.o kernel_elf-kern_err.o kernel_elf-kern_file.o kernel_elf-kern_fs.o kernel_elf-kern_misc.o kernel_elf-kern_mm.o kernel_elf-kern_loader.o kernel_elf-kern_rescue.o kernel_elf-kern_term.o kernel_elf-kern_ieee1275_init.o kernel_elf-term_ieee1275_ofconsole.o kernel_elf-kern_ieee1275_openfw.o kernel_elf-disk_ieee1275_ofdisk.o kernel_elf-kern_parser.o kernel_elf-kern_partition.o kernel_elf-kern_env.o kernel_elf-kern_powerpc_dl.o kernel_elf-kernel_elf_symlist.o kernel_elf-kern_powerpc_cache.o $(TARGET_LDFLAGS) $(kernel_elf_LDFLAGS)
+kernel.elf: $(kernel_elf_DEPENDENCIES) kernel_elf-kern_powerpc_ieee1275_crt0.o kernel_elf-kern_ieee1275_cmain.o kernel_elf-kern_ieee1275_ieee1275.o kernel_elf-kern_main.o kernel_elf-kern_device.o kernel_elf-kern_disk.o kernel_elf-kern_dl.o kernel_elf-kern_err.o kernel_elf-kern_file.o kernel_elf-kern_fs.o kernel_elf-kern_misc.o kernel_elf-kern_mm.o kernel_elf-kern_loader.o kernel_elf-kern_rescue.o kernel_elf-kern_term.o kernel_elf-kern_ieee1275_init.o kernel_elf-term_ieee1275_ofconsole.o kernel_elf-kern_ieee1275_openfw.o kernel_elf-disk_ieee1275_ofdisk.o kernel_elf-kern_parser.o kernel_elf-kern_partition.o kernel_elf-kern_env.o kernel_elf-kern_powerpc_dl.o kernel_elf-symlist.o kernel_elf-kern_powerpc_cache.o
+	$(TARGET_CC) -o $@ kernel_elf-kern_powerpc_ieee1275_crt0.o kernel_elf-kern_ieee1275_cmain.o kernel_elf-kern_ieee1275_ieee1275.o kernel_elf-kern_main.o kernel_elf-kern_device.o kernel_elf-kern_disk.o kernel_elf-kern_dl.o kernel_elf-kern_err.o kernel_elf-kern_file.o kernel_elf-kern_fs.o kernel_elf-kern_misc.o kernel_elf-kern_mm.o kernel_elf-kern_loader.o kernel_elf-kern_rescue.o kernel_elf-kern_term.o kernel_elf-kern_ieee1275_init.o kernel_elf-term_ieee1275_ofconsole.o kernel_elf-kern_ieee1275_openfw.o kernel_elf-disk_ieee1275_ofdisk.o kernel_elf-kern_parser.o kernel_elf-kern_partition.o kernel_elf-kern_env.o kernel_elf-kern_powerpc_dl.o kernel_elf-symlist.o kernel_elf-kern_powerpc_cache.o $(TARGET_LDFLAGS) $(kernel_elf_LDFLAGS)
 
 kernel_elf-kern_powerpc_ieee1275_crt0.o: kern/powerpc/ieee1275/crt0.S $(kern/powerpc/ieee1275/crt0.S_DEPENDENCIES)
 	$(TARGET_CC) -Ikern/powerpc/ieee1275 -I$(srcdir)/kern/powerpc/ieee1275 $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(kernel_elf_CFLAGS) -MD -c -o $@ $<
@@ -536,9 +534,9 @@ kernel_elf-kern_powerpc_dl.o: kern/powerpc/dl.c $(kern/powerpc/dl.c_DEPENDENCIES
 	$(TARGET_CC) -Ikern/powerpc -I$(srcdir)/kern/powerpc $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(kernel_elf_CFLAGS) -MD -c -o $@ $<
 -include kernel_elf-kern_powerpc_dl.d
 
-kernel_elf-kernel_elf_symlist.o: kernel_elf_symlist.c $(kernel_elf_symlist.c_DEPENDENCIES)
+kernel_elf-symlist.o: symlist.c $(symlist.c_DEPENDENCIES)
 	$(TARGET_CC) -I. -I$(srcdir)/. $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(kernel_elf_CFLAGS) -MD -c -o $@ $<
--include kernel_elf-kernel_elf_symlist.d
+-include kernel_elf-symlist.d
 
 kernel_elf-kern_powerpc_cache.o: kern/powerpc/cache.S $(kern/powerpc/cache.S_DEPENDENCIES)
 	$(TARGET_CC) -Ikern/powerpc -I$(srcdir)/kern/powerpc $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(kernel_elf_CFLAGS) -MD -c -o $@ $<
@@ -555,11 +553,11 @@ sbin_SCRIPTS = grub-install
 bin_SCRIPTS = grub-mkrescue
 
 # For grub-install.
-grub_install_SOURCES = util/powerpc/ieee1275/grub-install.in
+grub_install_SOURCES = util/ieee1275/grub-install.in
 CLEANFILES += grub-install
 
-grub-install: util/powerpc/ieee1275/grub-install.in $(util/powerpc/ieee1275/grub-install.in_DEPENDENCIES) config.status
-	./config.status --file=grub-install:util/powerpc/ieee1275/grub-install.in
+grub-install: util/ieee1275/grub-install.in $(util/ieee1275/grub-install.in_DEPENDENCIES) config.status
+	./config.status --file=grub-install:util/ieee1275/grub-install.in
 	chmod +x $@
 
 
@@ -594,7 +592,7 @@ UNDSYMFILES += und-_linux.lst
 
 _linux.mod: pre-_linux.o mod-_linux.o
 	-rm -f $@
-	$(TARGET_CC) $(_linux_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(_linux_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-_linux.o: $(_linux_mod_DEPENDENCIES) _linux_mod-loader_powerpc_ieee1275_linux.o
@@ -650,7 +648,7 @@ UNDSYMFILES += und-linux.lst
 
 linux.mod: pre-linux.o mod-linux.o
 	-rm -f $@
-	$(TARGET_CC) $(linux_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(linux_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-linux.o: $(linux_mod_DEPENDENCIES) linux_mod-loader_powerpc_ieee1275_linux_normal.o
@@ -710,7 +708,7 @@ UNDSYMFILES += und-normal.lst
 
 normal.mod: pre-normal.o mod-normal.o
 	-rm -f $@
-	$(TARGET_CC) $(normal_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(normal_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-normal.o: $(normal_mod_DEPENDENCIES) normal_mod-normal_arg.o normal_mod-normal_cmdline.o normal_mod-normal_command.o normal_mod-normal_completion.o normal_mod-normal_execute.o normal_mod-normal_function.o normal_mod-normal_lexer.o normal_mod-normal_main.o normal_mod-normal_menu.o normal_mod-normal_menu_entry.o normal_mod-normal_misc.o normal_mod-grub_script_tab.o normal_mod-normal_script.o normal_mod-normal_powerpc_setjmp.o normal_mod-normal_color.o
@@ -1033,7 +1031,7 @@ UNDSYMFILES += und-suspend.lst
 
 suspend.mod: pre-suspend.o mod-suspend.o
 	-rm -f $@
-	$(TARGET_CC) $(suspend_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(suspend_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-suspend.o: $(suspend_mod_DEPENDENCIES) suspend_mod-commands_ieee1275_suspend.o
@@ -1089,7 +1087,7 @@ UNDSYMFILES += und-reboot.lst
 
 reboot.mod: pre-reboot.o mod-reboot.o
 	-rm -f $@
-	$(TARGET_CC) $(reboot_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(reboot_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-reboot.o: $(reboot_mod_DEPENDENCIES) reboot_mod-commands_reboot.o
@@ -1145,7 +1143,7 @@ UNDSYMFILES += und-halt.lst
 
 halt.mod: pre-halt.o mod-halt.o
 	-rm -f $@
-	$(TARGET_CC) $(halt_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(halt_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-halt.o: $(halt_mod_DEPENDENCIES) halt_mod-commands_halt.o
@@ -1203,7 +1201,7 @@ UNDSYMFILES += und-_multiboot.lst
 
 _multiboot.mod: pre-_multiboot.o mod-_multiboot.o
 	-rm -f $@
-	$(TARGET_CC) $(_multiboot_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(_multiboot_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-_multiboot.o: $(_multiboot_mod_DEPENDENCIES) _multiboot_mod-loader_ieee1275_multiboot2.o _multiboot_mod-loader_multiboot2.o _multiboot_mod-loader_multiboot_loader.o
@@ -1297,7 +1295,7 @@ UNDSYMFILES += und-multiboot.lst
 
 multiboot.mod: pre-multiboot.o mod-multiboot.o
 	-rm -f $@
-	$(TARGET_CC) $(multiboot_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(multiboot_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-multiboot.o: $(multiboot_mod_DEPENDENCIES) multiboot_mod-loader_multiboot_loader_normal.o

@@ -1,6 +1,6 @@
-diff -Nur -x '*.orig' -x '*~' grub2-1.96+20080512/util/grub.d/10_linux.in grub2-1.96+20080512.new/util/grub.d/10_linux.in
---- grub2-1.96+20080512/util/grub.d/10_linux.in	2008-04-30 06:06:27.000000000 -0500
-+++ grub2-1.96+20080512.new/util/grub.d/10_linux.in	2008-05-28 09:33:56.000000000 -0500
+diff -Nur -x '*.orig' -x '*~' grub2-1.96+20080724/util/grub.d/10_linux.in grub2-1.96+20080724.new/util/grub.d/10_linux.in
+--- grub2-1.96+20080724/util/grub.d/10_linux.in	2008-06-26 17:03:26.000000000 +1000
++++ grub2-1.96+20080724.new/util/grub.d/10_linux.in	2008-11-17 11:25:53.000000000 +1100
 @@ -24,7 +24,7 @@
  if [ "x${GRUB_DISTRIBUTOR}" = "x" ] ; then
    OS=GNU/Linux
@@ -9,13 +9,4 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.96+20080512/util/grub.d/10_linux.in grub2-
 +  OS="${GRUB_DISTRIBUTOR}"
  fi
  
- test_numeric ()
-@@ -118,7 +118,7 @@
- 
-   cat << EOF
- menuentry "${OS}, linux ${version} (single-user mode)" {
--	linux	${grub_dirname}/${basename} root=${GRUB_DEVICE} ro single ${GRUB_CMDLINE_LINUX}
-+	linux	${grub_dirname}/${basename} root=${GRUB_DEVICE} ro single
- EOF
-   if test -n "${initrd}" ; then
-     cat << EOF
+ # loop-AES arranges things so that /dev/loop/X can be our root device, but

@@ -16,13 +16,9 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GRUB_INIT_I386_LINUXBIOS_HEADER
-#define GRUB_INIT_I386_LINUXBIOS_HEADER		1
+#ifndef GRUB_MACHINE_MACHINE_HEADER
+#define GRUB_MACHINE_MACHINE_HEADER	1
 
-#include <grub/symbol.h>
-#include <grub/i386/pc/memory.h>
+#define GRUB_MACHINE_EFI	1
 
-void EXPORT_FUNC(grub_stop) (void);
-void EXPORT_FUNC(grub_stop_floppy) (void);
-
-#endif
+#endif /* ! GRUB_MACHINE_MACHINE_HEADER */
