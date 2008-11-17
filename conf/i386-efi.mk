@@ -5,9 +5,6 @@ COMMON_CFLAGS = -fno-builtin -m32
 COMMON_LDFLAGS = -melf_i386 -nostdlib
 
 # Used by various components.  These rules need to precede them.
-normal/execute.c_DEPENDENCIES = grub_script.tab.h
-normal/command.c_DEPENDENCIES = grub_script.tab.h
-normal/function.c_DEPENDENCIES = grub_script.tab.h
 normal/lexer.c_DEPENDENCIES = grub_script.tab.h
 
 # Utilities.
@@ -38,6 +35,7 @@ grub_mkimage-util_resolve.o: util/resolve.c $(util/resolve.c_DEPENDENCIES)
 	$(CC) -Iutil -I$(srcdir)/util $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(grub_mkimage_CFLAGS) -MD -c -o $@ $<
 -include grub_mkimage-util_resolve.d
 
+util/i386/efi/grub-mkimage.c_DEPENDENCIES = Makefile
 
 # For grub-setup.
 #grub_setup_SOURCES = util/i386/pc/grub-setup.c util/biosdisk.c	\
@@ -118,8 +116,8 @@ grub-install: util/i386/efi/grub-install.in $(util/i386/efi/grub-install.in_DEPE
 
 
 # Modules.
-pkglib_MODULES = kernel.mod normal.mod _chain.mod chain.mod \
-	_linux.mod linux.mod cpuid.mod halt.mod reboot.mod
+pkglib_MODULES = kernel.mod normal.mod _chain.mod chain.mod appleldr.mod \
+	_linux.mod linux.mod cpuid.mod halt.mod reboot.mod pci.mod lspci.mod
 
 # For kernel.mod.
 kernel_mod_EXPORTS = no
@@ -139,7 +137,7 @@ UNDSYMFILES += und-kernel.lst
 
 kernel.mod: pre-kernel.o mod-kernel.o
 	-rm -f $@
-	$(TARGET_CC) $(kernel_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(kernel_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-kernel.o: $(kernel_mod_DEPENDENCIES) kernel_mod-kern_i386_efi_startup.o kernel_mod-kern_main.o kernel_mod-kern_device.o kernel_mod-kern_disk.o kernel_mod-kern_dl.o kernel_mod-kern_file.o kernel_mod-kern_fs.o kernel_mod-kern_err.o kernel_mod-kern_misc.o kernel_mod-kern_mm.o kernel_mod-kern_loader.o kernel_mod-kern_rescue.o kernel_mod-kern_term.o kernel_mod-kern_i386_dl.o kernel_mod-kern_i386_efi_init.o kernel_mod-kern_parser.o kernel_mod-kern_partition.o kernel_mod-kern_env.o kernel_mod-symlist.o kernel_mod-kern_efi_efi.o kernel_mod-kern_efi_init.o kernel_mod-kern_efi_mm.o kernel_mod-term_efi_console.o kernel_mod-disk_efi_efidisk.o
@@ -651,7 +649,7 @@ UNDSYMFILES += und-normal.lst
 
 normal.mod: pre-normal.o mod-normal.o
 	-rm -f $@
-	$(TARGET_CC) $(normal_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(normal_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-normal.o: $(normal_mod_DEPENDENCIES) normal_mod-normal_arg.o normal_mod-normal_cmdline.o normal_mod-normal_command.o normal_mod-normal_completion.o normal_mod-normal_execute.o normal_mod-normal_function.o normal_mod-normal_lexer.o normal_mod-normal_main.o normal_mod-normal_menu.o normal_mod-normal_menu_entry.o normal_mod-normal_misc.o normal_mod-grub_script_tab.o normal_mod-normal_script.o normal_mod-normal_i386_setjmp.o normal_mod-normal_color.o
@@ -974,7 +972,7 @@ UNDSYMFILES += und-_chain.lst
 
 _chain.mod: pre-_chain.o mod-_chain.o
 	-rm -f $@
-	$(TARGET_CC) $(_chain_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(_chain_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-_chain.o: $(_chain_mod_DEPENDENCIES) _chain_mod-loader_efi_chainloader.o
@@ -1030,7 +1028,7 @@ UNDSYMFILES += und-chain.lst
 
 chain.mod: pre-chain.o mod-chain.o
 	-rm -f $@
-	$(TARGET_CC) $(chain_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(chain_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-chain.o: $(chain_mod_DEPENDENCIES) chain_mod-loader_efi_chainloader_normal.o
@@ -1074,6 +1072,62 @@ partmap-chain_mod-loader_efi_chainloader_normal.lst: loader/efi/chainloader_norm
 chain_mod_CFLAGS = $(COMMON_CFLAGS)
 chain_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
+# For appleldr.mod.
+appleldr_mod_SOURCES = loader/efi/appleloader.c
+CLEANFILES += appleldr.mod mod-appleldr.o mod-appleldr.c pre-appleldr.o appleldr_mod-loader_efi_appleloader.o und-appleldr.lst
+ifneq ($(appleldr_mod_EXPORTS),no)
+CLEANFILES += def-appleldr.lst
+DEFSYMFILES += def-appleldr.lst
+endif
+MOSTLYCLEANFILES += appleldr_mod-loader_efi_appleloader.d
+UNDSYMFILES += und-appleldr.lst
+
+appleldr.mod: pre-appleldr.o mod-appleldr.o
+	-rm -f $@
+	$(TARGET_CC) $(appleldr_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
+
+pre-appleldr.o: $(appleldr_mod_DEPENDENCIES) appleldr_mod-loader_efi_appleloader.o
+	-rm -f $@
+	$(TARGET_CC) $(appleldr_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ appleldr_mod-loader_efi_appleloader.o
+
+mod-appleldr.o: mod-appleldr.c
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(appleldr_mod_CFLAGS) -c -o $@ $<
+
+mod-appleldr.c: moddep.lst genmodsrc.sh
+	sh $(srcdir)/genmodsrc.sh 'appleldr' $< > $@ || (rm -f $@; exit 1)
+
+ifneq ($(appleldr_mod_EXPORTS),no)
+def-appleldr.lst: pre-appleldr.o
+	$(NM) -g --defined-only -P -p $< | sed 's/^\([^ ]*\).*/\1 appleldr/' > $@
+endif
+
+und-appleldr.lst: pre-appleldr.o
+	echo 'appleldr' > $@
+	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
+
+appleldr_mod-loader_efi_appleloader.o: loader/efi/appleloader.c $(loader/efi/appleloader.c_DEPENDENCIES)
+	$(TARGET_CC) -Iloader/efi -I$(srcdir)/loader/efi $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(appleldr_mod_CFLAGS) -MD -c -o $@ $<
+-include appleldr_mod-loader_efi_appleloader.d
+
+CLEANFILES += cmd-appleldr_mod-loader_efi_appleloader.lst fs-appleldr_mod-loader_efi_appleloader.lst partmap-appleldr_mod-loader_efi_appleloader.lst
+COMMANDFILES += cmd-appleldr_mod-loader_efi_appleloader.lst
+FSFILES += fs-appleldr_mod-loader_efi_appleloader.lst
+PARTMAPFILES += partmap-appleldr_mod-loader_efi_appleloader.lst
+
+cmd-appleldr_mod-loader_efi_appleloader.lst: loader/efi/appleloader.c $(loader/efi/appleloader.c_DEPENDENCIES) gencmdlist.sh
+	set -e; 	  $(TARGET_CC) -Iloader/efi -I$(srcdir)/loader/efi $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(appleldr_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh appleldr > $@ || (rm -f $@; exit 1)
+
+fs-appleldr_mod-loader_efi_appleloader.lst: loader/efi/appleloader.c $(loader/efi/appleloader.c_DEPENDENCIES) genfslist.sh
+	set -e; 	  $(TARGET_CC) -Iloader/efi -I$(srcdir)/loader/efi $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(appleldr_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh appleldr > $@ || (rm -f $@; exit 1)
+
+partmap-appleldr_mod-loader_efi_appleloader.lst: loader/efi/appleloader.c $(loader/efi/appleloader.c_DEPENDENCIES) genpartmaplist.sh
+	set -e; 	  $(TARGET_CC) -Iloader/efi -I$(srcdir)/loader/efi $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(appleldr_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh appleldr > $@ || (rm -f $@; exit 1)
+
+
+appleldr_mod_CFLAGS = $(COMMON_CFLAGS)
+appleldr_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
 # For _linux.mod.
 _linux_mod_SOURCES = loader/i386/efi/linux.c
 CLEANFILES += _linux.mod mod-_linux.o mod-_linux.c pre-_linux.o _linux_mod-loader_i386_efi_linux.o und-_linux.lst
@@ -1086,7 +1140,7 @@ UNDSYMFILES += und-_linux.lst
 
 _linux.mod: pre-_linux.o mod-_linux.o
 	-rm -f $@
-	$(TARGET_CC) $(_linux_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(_linux_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-_linux.o: $(_linux_mod_DEPENDENCIES) _linux_mod-loader_i386_efi_linux.o
@@ -1142,7 +1196,7 @@ UNDSYMFILES += und-linux.lst
 
 linux.mod: pre-linux.o mod-linux.o
 	-rm -f $@
-	$(TARGET_CC) $(linux_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(linux_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-linux.o: $(linux_mod_DEPENDENCIES) linux_mod-loader_i386_efi_linux_normal.o
@@ -1198,7 +1252,7 @@ UNDSYMFILES += und-cpuid.lst
 
 cpuid.mod: pre-cpuid.o mod-cpuid.o
 	-rm -f $@
-	$(TARGET_CC) $(cpuid_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(cpuid_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-cpuid.o: $(cpuid_mod_DEPENDENCIES) cpuid_mod-commands_i386_cpuid.o
@@ -1254,7 +1308,7 @@ UNDSYMFILES += und-halt.lst
 
 halt.mod: pre-halt.o mod-halt.o
 	-rm -f $@
-	$(TARGET_CC) $(halt_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(halt_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-halt.o: $(halt_mod_DEPENDENCIES) halt_mod-commands_halt.o
@@ -1310,7 +1364,7 @@ UNDSYMFILES += und-reboot.lst
 
 reboot.mod: pre-reboot.o mod-reboot.o
 	-rm -f $@
-	$(TARGET_CC) $(reboot_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(TARGET_CC) $(reboot_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
 	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
 
 pre-reboot.o: $(reboot_mod_DEPENDENCIES) reboot_mod-commands_reboot.o
@@ -1353,5 +1407,117 @@ partmap-reboot_mod-commands_reboot.lst: commands/reboot.c $(commands/reboot.c_DE
 
 reboot_mod_CFLAGS = $(COMMON_CFLAGS)
 reboot_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For pci.mod
+pci_mod_SOURCES = bus/pci.c
+CLEANFILES += pci.mod mod-pci.o mod-pci.c pre-pci.o pci_mod-bus_pci.o und-pci.lst
+ifneq ($(pci_mod_EXPORTS),no)
+CLEANFILES += def-pci.lst
+DEFSYMFILES += def-pci.lst
+endif
+MOSTLYCLEANFILES += pci_mod-bus_pci.d
+UNDSYMFILES += und-pci.lst
+
+pci.mod: pre-pci.o mod-pci.o
+	-rm -f $@
+	$(TARGET_CC) $(pci_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
+
+pre-pci.o: $(pci_mod_DEPENDENCIES) pci_mod-bus_pci.o
+	-rm -f $@
+	$(TARGET_CC) $(pci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pci_mod-bus_pci.o
+
+mod-pci.o: mod-pci.c
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(pci_mod_CFLAGS) -c -o $@ $<
+
+mod-pci.c: moddep.lst genmodsrc.sh
+	sh $(srcdir)/genmodsrc.sh 'pci' $< > $@ || (rm -f $@; exit 1)
+
+ifneq ($(pci_mod_EXPORTS),no)
+def-pci.lst: pre-pci.o
+	$(NM) -g --defined-only -P -p $< | sed 's/^\([^ ]*\).*/\1 pci/' > $@
+endif
+
+und-pci.lst: pre-pci.o
+	echo 'pci' > $@
+	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
+
+pci_mod-bus_pci.o: bus/pci.c $(bus/pci.c_DEPENDENCIES)
+	$(TARGET_CC) -Ibus -I$(srcdir)/bus $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(pci_mod_CFLAGS) -MD -c -o $@ $<
+-include pci_mod-bus_pci.d
+
+CLEANFILES += cmd-pci_mod-bus_pci.lst fs-pci_mod-bus_pci.lst partmap-pci_mod-bus_pci.lst
+COMMANDFILES += cmd-pci_mod-bus_pci.lst
+FSFILES += fs-pci_mod-bus_pci.lst
+PARTMAPFILES += partmap-pci_mod-bus_pci.lst
+
+cmd-pci_mod-bus_pci.lst: bus/pci.c $(bus/pci.c_DEPENDENCIES) gencmdlist.sh
+	set -e; 	  $(TARGET_CC) -Ibus -I$(srcdir)/bus $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(pci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh pci > $@ || (rm -f $@; exit 1)
+
+fs-pci_mod-bus_pci.lst: bus/pci.c $(bus/pci.c_DEPENDENCIES) genfslist.sh
+	set -e; 	  $(TARGET_CC) -Ibus -I$(srcdir)/bus $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(pci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh pci > $@ || (rm -f $@; exit 1)
+
+partmap-pci_mod-bus_pci.lst: bus/pci.c $(bus/pci.c_DEPENDENCIES) genpartmaplist.sh
+	set -e; 	  $(TARGET_CC) -Ibus -I$(srcdir)/bus $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(pci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh pci > $@ || (rm -f $@; exit 1)
+
+
+pci_mod_CFLAGS = $(COMMON_CFLAGS)
+pci_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For lspci.mod
+lspci_mod_SOURCES = commands/lspci.c
+CLEANFILES += lspci.mod mod-lspci.o mod-lspci.c pre-lspci.o lspci_mod-commands_lspci.o und-lspci.lst
+ifneq ($(lspci_mod_EXPORTS),no)
+CLEANFILES += def-lspci.lst
+DEFSYMFILES += def-lspci.lst
+endif
+MOSTLYCLEANFILES += lspci_mod-commands_lspci.d
+UNDSYMFILES += und-lspci.lst
+
+lspci.mod: pre-lspci.o mod-lspci.o
+	-rm -f $@
+	$(TARGET_CC) $(lspci_mod_LDFLAGS) $(TARGET_LDFLAGS) $(MODULE_LDFLAGS) -Wl,-r,-d -o $@ $^
+	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -R .note -R .comment $@
+
+pre-lspci.o: $(lspci_mod_DEPENDENCIES) lspci_mod-commands_lspci.o
+	-rm -f $@
+	$(TARGET_CC) $(lspci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ lspci_mod-commands_lspci.o
+
+mod-lspci.o: mod-lspci.c
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -c -o $@ $<
+
+mod-lspci.c: moddep.lst genmodsrc.sh
+	sh $(srcdir)/genmodsrc.sh 'lspci' $< > $@ || (rm -f $@; exit 1)
+
+ifneq ($(lspci_mod_EXPORTS),no)
+def-lspci.lst: pre-lspci.o
+	$(NM) -g --defined-only -P -p $< | sed 's/^\([^ ]*\).*/\1 lspci/' > $@
+endif
+
+und-lspci.lst: pre-lspci.o
+	echo 'lspci' > $@
+	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
+
+lspci_mod-commands_lspci.o: commands/lspci.c $(commands/lspci.c_DEPENDENCIES)
+	$(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -MD -c -o $@ $<
+-include lspci_mod-commands_lspci.d
+
+CLEANFILES += cmd-lspci_mod-commands_lspci.lst fs-lspci_mod-commands_lspci.lst partmap-lspci_mod-commands_lspci.lst
+COMMANDFILES += cmd-lspci_mod-commands_lspci.lst
+FSFILES += fs-lspci_mod-commands_lspci.lst
+PARTMAPFILES += partmap-lspci_mod-commands_lspci.lst
+
+cmd-lspci_mod-commands_lspci.lst: commands/lspci.c $(commands/lspci.c_DEPENDENCIES) gencmdlist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh lspci > $@ || (rm -f $@; exit 1)
+
+fs-lspci_mod-commands_lspci.lst: commands/lspci.c $(commands/lspci.c_DEPENDENCIES) genfslist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh lspci > $@ || (rm -f $@; exit 1)
+
+partmap-lspci_mod-commands_lspci.lst: commands/lspci.c $(commands/lspci.c_DEPENDENCIES) genpartmaplist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh lspci > $@ || (rm -f $@; exit 1)
+
+
+lspci_mod_CFLAGS = $(COMMON_CFLAGS)
+lspci_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 include $(srcdir)/conf/common.mk
