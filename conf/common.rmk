@@ -94,6 +94,11 @@ grub_fstest_init.c: grub_fstest_init.lst $(filter-out grub_fstest_init.c,$(grub_
 	rm -f $@; sh $(srcdir)/geninit.sh $< $(filter %.c,$^) > $@
 DISTCLEANFILES += grub_fstest_init.c
 
+# for grub-editenv
+bin_UTILITIES += grub-editenv
+grub_editenv_SOURCES = util/grub-editenv.c util/envblk.c util/misc.c kern/misc.c kern/err.c
+CLEANFILES += grub-editenv
+
 # For update-grub
 update-grub: util/update-grub.in config.status
 	./config.status --file=$@:$<
@@ -107,29 +112,11 @@ update-grub_lib: util/update-grub_lib.in config.status
 lib_DATA += update-grub_lib
 CLEANFILES += update-grub_lib
 
-00_header: util/grub.d/00_header.in config.status
+%: util/grub.d/%.in config.status
 	./config.status --file=$@:$<
 	chmod +x $@
-update-grub_SCRIPTS += 00_header
-CLEANFILES += 00_header
-
-10_linux: util/grub.d/10_linux.in config.status
-	./config.status --file=$@:$<
-	chmod +x $@
-update-grub_SCRIPTS += 10_linux
-CLEANFILES += 10_linux
-
-10_hurd: util/grub.d/10_hurd.in config.status
-	./config.status --file=$@:$<
-	chmod +x $@
-update-grub_SCRIPTS += 10_hurd
-CLEANFILES += 10_hurd
-
-30_os-prober: util/grub.d/30_os-prober.in config.status
-	./config.status --file=$@:$<
-	chmod +x $@
-update-grub_SCRIPTS += 30_os-prober
-CLEANFILES += 30_os-prober
+update-grub_SCRIPTS = 00_header 10_linux 10_hurd 30_os-prober 40_custom
+CLEANFILES += $(update-grub_SCRIPTS)
 
 update-grub_DATA += util/grub.d/README
 
@@ -280,9 +267,9 @@ lvm_mod_LDFLAGS = $(COMMON_LDFLAGS)
 # Commands.
 pkglib_MODULES += hello.mod boot.mod terminal.mod ls.mod	\
 	cmp.mod cat.mod help.mod font.mod search.mod		\
-	loopback.mod configfile.mod echo.mod			\
+	loopback.mod fs_uuid.mod configfile.mod echo.mod	\
 	terminfo.mod test.mod blocklist.mod hexdump.mod		\
-	read.mod sleep.mod
+	read.mod sleep.mod loadenv.mod
 
 # For hello.mod.
 hello_mod_SOURCES = hello/hello.c
@@ -344,6 +331,11 @@ loopback_mod_SOURCES = disk/loopback.c
 loopback_mod_CFLAGS = $(COMMON_CFLAGS)
 loopback_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
+# For fs_uuid.mod
+fs_uuid_mod_SOURCES = disk/fs_uuid.c
+fs_uuid_mod_CFLAGS = $(COMMON_CFLAGS)
+fs_uuid_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
 # For configfile.mod
 configfile_mod_SOURCES = commands/configfile.c
 configfile_mod_CFLAGS = $(COMMON_CFLAGS)
@@ -364,6 +356,21 @@ hexdump_mod_SOURCES = commands/hexdump.c
 hexdump_mod_CFLAGS = $(COMMON_CFLAGS)
 hexdump_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
+# For read.mod.
+read_mod_SOURCES = commands/read.c
+read_mod_CFLAGS = $(COMMON_CFLAGS)
+read_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For sleep.mod.
+sleep_mod_SOURCES = commands/sleep.c
+sleep_mod_CFLAGS = $(COMMON_CFLAGS)
+sleep_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For loadenv.mod.
+loadenv_mod_SOURCES = commands/loadenv.c util/envblk.c
+loadenv_mod_CFLAGS = $(COMMON_CFLAGS)
+loadenv_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
 # Misc.
 pkglib_MODULES += gzio.mod elf.mod
 
@@ -376,13 +383,3 @@ elf_mod_LDFLAGS = $(COMMON_LDFLAGS)
 gzio_mod_SOURCES = io/gzio.c
 gzio_mod_CFLAGS = $(COMMON_CFLAGS)
 gzio_mod_LDFLAGS = $(COMMON_LDFLAGS)
-
-# For read.mod.
-read_mod_SOURCES = commands/read.c
-read_mod_CFLAGS = $(COMMON_CFLAGS)
-read_mod_LDFLAGS = $(COMMON_LDFLAGS)
-
-# For sleep.mod.
-sleep_mod_SOURCES = commands/sleep.c
-sleep_mod_CFLAGS = $(COMMON_CFLAGS)
-sleep_mod_LDFLAGS = $(COMMON_LDFLAGS)

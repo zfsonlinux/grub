@@ -1,7 +1,7 @@
 /* grub-mkdevicemap.c - make a device map file automatically */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2007 Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2007,2008 Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -297,6 +297,18 @@ get_cciss_disk_name (char *name, int controller, int drive)
 }
 
 static void
+get_ida_disk_name (char *name, int controller, int drive)
+{
+  sprintf (name, "/dev/ida/c%dd%d", controller, drive);
+}
+
+static void
+get_mmc_disk_name (char *name, int unit)
+{
+  sprintf (name, "/dev/mmcblk%d", unit);
+}
+
+static void
 get_xvd_disk_name (char *name, int unit)
 {
   sprintf (name, "/dev/xvd%c", unit + 'a');
@@ -577,6 +589,30 @@ make_device_map (const char *device_map, int floppy_disks)
 	  }
       }
   }
+
+  /* This is for Compaq Intelligent Drive Array - we have
+     /dev/ida/c<controller>d<logical drive>p<partition>.  */
+  {
+    int controller, drive;
+    
+    for (controller = 0; controller < 3; controller++)
+      {
+	for (drive = 0; drive < 10; drive++)
+	  {
+	    char name[24];
+	    
+	    get_ida_disk_name (name, controller, drive);
+	    if (check_device (name))
+	      {
+		char *p;
+		p = grub_util_get_disk_name (num_hd, name);
+		fprintf (fp, "(%s)\t%s\n", p, name);
+		free (p);
+		num_hd++;
+	      }
+	  }
+      }
+  }
     
   /* This is for I2O - we have /dev/i2o/hd<logical drive><partition> */
   {
@@ -597,6 +633,22 @@ make_device_map (const char *device_map, int floppy_disks)
 	  }
       }
   }
+
+  /* MultiMediaCard (MMC).  */
+  for (i = 0; i < 10; i++)
+    {
+      char name[16];
+      
+      get_mmc_disk_name (name, i);
+      if (check_device (name))
+	{
+	  char *p;
+	  p = grub_util_get_disk_name (num_hd, name);
+	  fprintf (fp, "(%s)\t%s\n", p, name);
+	  free (p);
+	  num_hd++;
+	}
+    }
 
  finish:
 #endif /* __linux__ */

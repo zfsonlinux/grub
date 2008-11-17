@@ -7,9 +7,6 @@ COMMON_CFLAGS = -fno-builtin -mrtd -mregparm=3 -m32
 COMMON_LDFLAGS = -m32 -nostdlib
 
 # Used by various components.  These rules need to precede them.
-normal/execute.c_DEPENDENCIES = grub_script.tab.h
-normal/command.c_DEPENDENCIES = grub_script.tab.h
-normal/function.c_DEPENDENCIES = grub_script.tab.h
 normal/lexer.c_DEPENDENCIES = grub_script.tab.h
 
 # Images.
@@ -75,10 +72,16 @@ sbin_UTILITIES += grub-emu
 endif
 
 # For grub-mkimage.
+ifeq ($(enable_lzo), yes)
 grub_mkimage_SOURCES = util/i386/pc/grub-mkimage.c util/misc.c \
 	util/resolve.c
-grub_mkimage_CFLAGS = -DGRUB_MEMORY_MACHINE_LINK_ADDR=$(GRUB_MEMORY_MACHINE_LINK_ADDR)
 grub_mkimage_LDFLAGS = $(LIBLZO)
+else
+grub_mkimage_SOURCES = util/i386/pc/grub-mkimage.c util/misc.c \
+	util/resolve.c lib/LzmaEnc.c lib/LzFind.c
+endif
+grub_mkimage_CFLAGS = -DGRUB_MEMORY_MACHINE_LINK_ADDR=$(GRUB_MEMORY_MACHINE_LINK_ADDR)
+util/i386/pc/grub-mkimage.c_DEPENDENCIES = Makefile
 
 # For grub-setup.
 util/i386/pc/grub-setup.c_DEPENDENCIES = grub_setup_init.h

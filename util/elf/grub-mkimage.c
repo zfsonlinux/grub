@@ -88,7 +88,7 @@ load_note (Elf32_Phdr *phdr, FILE *out)
   /* Fill in the rest of the segment header.  */
   phdr->p_type = grub_host_to_target32 (PT_NOTE);
   phdr->p_flags = grub_host_to_target32 (PF_R);
-  phdr->p_align = grub_host_to_target32 (sizeof (long));
+  phdr->p_align = grub_host_to_target32 (GRUB_TARGET_SIZEOF_LONG);
   phdr->p_vaddr = 0;
   phdr->p_paddr = 0;
   phdr->p_filesz = grub_host_to_target32 (note_size);
@@ -150,7 +150,7 @@ load_modules (grub_addr_t modbase, Elf32_Phdr *phdr, const char *dir,
   /* Fill in the rest of the segment header.  */
   phdr->p_type = grub_host_to_target32 (PT_LOAD);
   phdr->p_flags = grub_host_to_target32 (PF_R | PF_W | PF_X);
-  phdr->p_align = grub_host_to_target32 (sizeof (long));
+  phdr->p_align = grub_host_to_target32 (GRUB_TARGET_SIZEOF_LONG);
   phdr->p_vaddr = grub_host_to_target32 (modbase);
   phdr->p_paddr = grub_host_to_target32 (modbase);
   phdr->p_filesz = grub_host_to_target32 (total_module_size);
@@ -166,8 +166,8 @@ add_segments (char *dir, FILE *out, int chrp, char *mods[])
   FILE *in;
   char *kernel_path;
   grub_addr_t grub_end = 0;
-  off_t phdroff;
-  int i;
+  off_t offset;
+  int i, phdr_size;
 
   /* Read ELF header.  */
   kernel_path = grub_util_get_path (dir, "kernel.elf");
@@ -177,8 +177,21 @@ add_segments (char *dir, FILE *out, int chrp, char *mods[])
 
   grub_util_read_at (&ehdr, sizeof (ehdr), 0, in);
   
-  phdrs = xmalloc (grub_target_to_host16 (ehdr.e_phentsize)
-		   * (grub_target_to_host16 (ehdr.e_phnum) + 2));
+  offset = ALIGN_UP (sizeof (ehdr), GRUB_TARGET_SIZEOF_LONG);
+  ehdr.e_phoff = grub_host_to_target32 (offset);
+
+  phdr_size = (grub_target_to_host16 (ehdr.e_phentsize) *
+               grub_target_to_host16 (ehdr.e_phnum));
+
+  if (mods[0] != NULL)
+    phdr_size += grub_target_to_host16 (ehdr.e_phentsize);
+
+  if (chrp)
+    phdr_size += grub_target_to_host16 (ehdr.e_phentsize);
+
+  phdrs = xmalloc (phdr_size);
+  offset += ALIGN_UP (phdr_size, GRUB_TARGET_SIZEOF_LONG);
+
   /* Copy all existing segments.  */
   for (i = 0; i < grub_target_to_host16 (ehdr.e_phnum); i++)
     {
@@ -207,8 +220,12 @@ add_segments (char *dir, FILE *out, int chrp, char *mods[])
   
       grub_util_read_at (segment_img, grub_target_to_host32 (phdr->p_filesz),
 			 grub_target_to_host32 (phdr->p_offset), in);
+
+      phdr->p_offset = grub_host_to_target32 (offset);
       grub_util_write_image_at (segment_img, grub_target_to_host32 (phdr->p_filesz),
-				grub_target_to_host32 (phdr->p_offset), out);
+				offset, out);
+      offset += ALIGN_UP (grub_target_to_host32 (phdr->p_filesz),
+			  GRUB_TARGET_SIZEOF_LONG);
 
       free (segment_img);
     }
@@ -226,7 +243,7 @@ add_segments (char *dir, FILE *out, int chrp, char *mods[])
 
       /* Fill in p_offset so the callees know where to write.  */
       phdr->p_offset = grub_host_to_target32 (ALIGN_UP (grub_util_get_fp_size (out),
-						   sizeof (long)));
+							GRUB_TARGET_SIZEOF_LONG));
 
       load_modules (modbase, phdr, dir, mods, out);
     }
@@ -239,7 +256,7 @@ add_segments (char *dir, FILE *out, int chrp, char *mods[])
 
       /* Fill in p_offset so the callees know where to write.  */
       phdr->p_offset = grub_host_to_target32 (ALIGN_UP (grub_util_get_fp_size (out),
-						   sizeof (long)));
+							GRUB_TARGET_SIZEOF_LONG));
 
       load_note (phdr, out);
     }
@@ -249,14 +266,10 @@ add_segments (char *dir, FILE *out, int chrp, char *mods[])
   ehdr.e_shnum = 0;
   ehdr.e_shstrndx = 0;
 
-  /* Append entire segment table to the file.  */
-  phdroff = ALIGN_UP (grub_util_get_fp_size (out), sizeof (long));
-  grub_util_write_image_at (phdrs, grub_target_to_host16 (ehdr.e_phentsize)
-			    * grub_target_to_host16 (ehdr.e_phnum), phdroff,
-			    out);
+  /* Write entire segment table to the file.  */
+  grub_util_write_image_at (phdrs, phdr_size, grub_target_to_host32 (ehdr.e_phoff), out);
 
   /* Write ELF header.  */
-  ehdr.e_phoff = grub_host_to_target32 (phdroff);
   grub_util_write_image_at (&ehdr, sizeof (ehdr), 0, out);
 
   free (phdrs);
