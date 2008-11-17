@@ -1,0 +1,111 @@
+
+Prevents error handling fixes in disk/{raid,lvm}.c from breaking scripts
+that rely on grub-probe.
+
+2008-08-14  Felix Zielcke  <fzielcke@z-51.de>
+
+        * include/grub/err.h (grub_err_printf): New function prototype.
+        * util/misc.c (grub_err_printf): New function.
+        * kern/misc.c [! GRUB_UTIL] (grub_err_printf): New alias for
+        grub_printf.
+        * kern/err.c (grub_print_error): Use grub_err_printf.
+
+Index: kern/err.c
+===================================================================
+--- kern/err.c	(revision 1804)
++++ kern/err.c	(revision 1805)
+@@ -1,7 +1,7 @@
+ /* err.c - error handling routines */
+ /*
+  *  GRUB  --  GRand Unified Bootloader
+- *  Copyright (C) 2002,2005,2007  Free Software Foundation, Inc.
++ *  Copyright (C) 2002,2005,2007,2008  Free Software Foundation, Inc.
+  *
+  *  GRUB is free software: you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published by
+@@ -121,14 +121,14 @@
+   do
+     {
+       if (grub_errno != GRUB_ERR_NONE)
+-        grub_printf ("error: %s\n", grub_errmsg);
++        grub_err_printf ("error: %s\n", grub_errmsg);
+     } 
+   while (grub_error_pop ());
+   
+   /* If there was an assert while using error stack, report about it.  */
+   if (grub_error_stack_assert)
+     {
+-      grub_printf ("assert: error stack overflow detected!\n");
++      grub_err_printf ("assert: error stack overflow detected!\n");
+       grub_error_stack_assert = 0;
+     }
+ }
+Index: kern/misc.c
+===================================================================
+--- kern/misc.c	(revision 1804)
++++ kern/misc.c	(revision 1805)
+@@ -134,6 +134,11 @@
+   return ret;
+ }  
+ 
++#ifndef GRUB_UTIL
++int grub_err_printf (const char *fmt, ...)
++__attribute__ ((alias("grub_printf")));
++#endif
++
+ void
+ grub_real_dprintf (const char *file, const int line, const char *condition,
+ 		   const char *fmt, ...)
+Index: include/grub/err.h
+===================================================================
+--- include/grub/err.h	(revision 1804)
++++ include/grub/err.h	(revision 1805)
+@@ -1,7 +1,7 @@
+ /* err.h - error numbers and prototypes */
+ /*
+  *  GRUB  --  GRand Unified Bootloader
+- *  Copyright (C) 2002,2005,2007  Free Software Foundation, Inc.
++ *  Copyright (C) 2002,2005,2007,2008 Free Software Foundation, Inc.
+  *
+  *  GRUB is free software: you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published by
+@@ -64,5 +64,7 @@
+ void EXPORT_FUNC(grub_error_push) (void);
+ int EXPORT_FUNC(grub_error_pop) (void);
+ void EXPORT_FUNC(grub_print_error) (void);
++int EXPORT_FUNC(grub_err_printf) (const char *fmt, ...)
++__attribute__ ((format (printf, 1, 2)));
+ 
+ #endif /* ! GRUB_ERR_HEADER */
+Index: util/misc.c
+===================================================================
+--- util/misc.c	(revision 1804)
++++ util/misc.c	(revision 1805)
+@@ -1,6 +1,6 @@
+ /*
+  *  GRUB  --  GRand Unified Bootloader
+- *  Copyright (C) 2002,2003,2005,2006,2007  Free Software Foundation, Inc.
++ *  Copyright (C) 2002,2003,2005,2006,2007,2008  Free Software Foundation, Inc.
+  *
+  *  GRUB is free software: you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published by
+@@ -74,6 +74,19 @@
+   exit (1);
+ }
+ 
++int
++grub_err_printf (const char *fmt, ...)
++{
++  va_list ap;
++  int ret;
++  
++  va_start (ap, fmt);
++  ret = vfprintf (stderr, fmt, ap);
++  va_end (ap);
++
++  return ret;
++}
++
+ void *
+ xmalloc (size_t size)
+ {

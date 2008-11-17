@@ -1,3 +1,19 @@
+dnl Check whether target compiler is working
+AC_DEFUN(grub_PROG_TARGET_CC,
+[AC_MSG_CHECKING([whether target compiler is working])
+AC_CACHE_VAL(grub_cv_prog_target_cc,
+[AC_TRY_LINK([], [],
+   grub_cv_prog_target_cc=yes,
+   grub_cv_prog_target_cc=no)
+])
+AC_MSG_RESULT([$grub_cv_prog_target_cc])
+
+if test "x$grub_cv_prog_target_cc" = xno; then
+  AC_MSG_ERROR([cannot compile for the target])
+fi
+])
+
+
 dnl grub_ASM_USCORE checks if C symbols get an underscore after
 dnl compiling to assembler.
 dnl Written by Pavel Roskin. Based on grub_ASM_EXT_C written by
@@ -77,6 +93,26 @@ AC_MSG_RESULT([$grub_cv_prog_objcopy_absolute])
 
 if test "x$grub_cv_prog_objcopy_absolute" = xno; then
   AC_MSG_ERROR([GRUB requires a working absolute objcopy; upgrade your binutils])
+fi
+])
+
+
+dnl Supply --build-id=none to ld if building modules.
+dnl This suppresses warnings from ld on some systems
+AC_DEFUN(grub_PROG_LD_BUILD_ID_NONE,
+[AC_MSG_CHECKING([whether linker accepts --build-id=none])
+AC_CACHE_VAL(grub_cv_prog_ld_build_id_none,
+[save_LDFLAGS="$LDFLAGS"
+LDFLAGS="$LDFLAGS -Wl,--build-id=none"
+AC_TRY_LINK([], [],
+   grub_cv_prog_ld_build_id_none=yes,
+   grub_cv_prog_ld_build_id_none=no)
+LDFLAGS="$save_LDFLAGS"
+])
+AC_MSG_RESULT([$grub_cv_prog_ld_build_id_none])
+
+if test "x$grub_cv_prog_ld_build_id_none" = xyes; then
+  MODULE_LDFLAGS="$MODULE_LDFLAGS -Wl,--build-id=none"
 fi
 ])
 

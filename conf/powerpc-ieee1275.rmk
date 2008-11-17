@@ -2,18 +2,15 @@
 # -*- makefile -*-
 
 COMMON_ASFLAGS = -nostdinc -D__ASSEMBLY__
-COMMON_CFLAGS = -ffreestanding -msoft-float
+COMMON_CFLAGS = -ffreestanding
 COMMON_LDFLAGS += -nostdlib
 
 # Used by various components.  These rules need to precede them.
-normal/execute.c_DEPENDENCIES = grub_script.tab.h
-normal/command.c_DEPENDENCIES = grub_script.tab.h
-normal/function.c_DEPENDENCIES = grub_script.tab.h
 normal/lexer.c_DEPENDENCIES = grub_script.tab.h
 
 # Images.
 
-MOSTLYCLEANFILES += kernel_elf_symlist.c kernel_syms.lst
+MOSTLYCLEANFILES += symlist.c kernel_syms.lst
 DEFSYMFILES += kernel_syms.lst
 
 kernel_elf_HEADERS = arg.h boot.h cache.h device.h disk.h dl.h elf.h elfload.h \
@@ -21,7 +18,7 @@ kernel_elf_HEADERS = arg.h boot.h cache.h device.h disk.h dl.h elf.h elfload.h \
 	symbol.h term.h time.h types.h powerpc/libgcc.h loader.h partition.h \
 	pc_partition.h ieee1275/ieee1275.h machine/kernel.h
 
-kernel_elf_symlist.c: $(addprefix include/grub/,$(kernel_elf_HEADERS)) config.h gensymlist.sh
+symlist.c: $(addprefix include/grub/,$(kernel_elf_HEADERS)) config.h gensymlist.sh
 	/bin/sh gensymlist.sh $(filter %.h,$^) > $@ || (rm -f $@; exit 1)
 
 kernel_syms.lst: $(addprefix include/grub/,$(kernel_elf_HEADERS)) config.h genkernsyms.sh
@@ -40,6 +37,7 @@ endif
 # For grub-mkimage.
 grub_mkimage_SOURCES = util/elf/grub-mkimage.c util/misc.c \
         util/resolve.c 
+util/elf/grub-mkimage.c_DEPENDENCIES = Makefile
 
 # For grub-mkdevicemap.
 grub_mkdevicemap_SOURCES = util/grub-mkdevicemap.c util/misc.c		\
@@ -87,7 +85,7 @@ kernel_elf_SOURCES = kern/powerpc/ieee1275/crt0.S kern/ieee1275/cmain.c \
 	kern/ieee1275/init.c term/ieee1275/ofconsole.c 		\
 	kern/ieee1275/openfw.c disk/ieee1275/ofdisk.c 		\
 	kern/parser.c kern/partition.c kern/env.c kern/powerpc/dl.c 	\
-	kernel_elf_symlist.c kern/powerpc/cache.S
+	symlist.c kern/powerpc/cache.S
 kernel_elf_HEADERS = grub/powerpc/ieee1275/ieee1275.h
 kernel_elf_CFLAGS = $(COMMON_CFLAGS)
 kernel_elf_ASFLAGS = $(COMMON_ASFLAGS)
@@ -99,7 +97,7 @@ sbin_SCRIPTS = grub-install
 bin_SCRIPTS = grub-mkrescue
 
 # For grub-install.
-grub_install_SOURCES = util/powerpc/ieee1275/grub-install.in
+grub_install_SOURCES = util/ieee1275/grub-install.in
 
 # For grub-mkrescue.
 grub_mkrescue_SOURCES = util/powerpc/ieee1275/grub-mkrescue.in

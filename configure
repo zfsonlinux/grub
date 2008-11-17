@@ -686,6 +686,7 @@ CPP
 GREP
 EGREP
 LIBLZO
+enable_lzo
 TARGET_CC
 ac_ct_TARGET_CC
 OBJCOPY
@@ -694,6 +695,7 @@ NM
 TARGET_CFLAGS
 TARGET_CPPFLAGS
 TARGET_LDFLAGS
+MODULE_LDFLAGS
 LIBCURSES
 enable_grub_emu
 enable_grub_fstest
@@ -1290,6 +1292,7 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --disable-largefile     omit support for large files
+  --enable-lzo            use lzo to compress kernel (default is lzma)
   --enable-mm-debug       include memory manager debugging
   --enable-grub-emu       build and install the `grub-emu' debugging utility
   --enable-grub-fstest    build and install the `grub-fstest' debugging
@@ -1927,13 +1930,6 @@ esac
 
 case "$target_cpu" in
   i[3456]86) target_cpu=i386 ;;
-  x86_64) target_cpu=i386 target_m32=1 ;;
-  powerpc) ;;
-  powerpc64) target_cpu=powerpc target_m32=1;;
-  sparc64) ;;
-  *) { { echo "$as_me:$LINENO: error: unsupported CPU type" >&5
-echo "$as_me: error: unsupported CPU type" >&2;}
-   { (exit 1); exit 1; }; } ;;
 esac
 
 # Specify the platform (such as firmware).
@@ -1949,27 +1945,46 @@ if test "x$with_platform" = x; then
   case "$target_cpu"-"$target_vendor" in
     i386-apple) platform=efi ;;
     i386-*) platform=pc ;;
+    x86_64-apple) platform=efi ;;
+    x86_64-*) platform=pc ;;
     powerpc-*) platform=ieee1275 ;;
+    powerpc64-*) platform=ieee1275 ;;
     sparc64-*) platform=ieee1275 ;;
-    *) { { echo "$as_me:$LINENO: error: unsupported machine type" >&5
-echo "$as_me: error: unsupported machine type" >&2;}
+    *) { { echo "$as_me:$LINENO: error: unsupported CPU: \"$target_cpu\"" >&5
+echo "$as_me: error: unsupported CPU: \"$target_cpu\"" >&2;}
    { (exit 1); exit 1; }; } ;;
   esac
 else
   platform="$with_platform"
 fi
 
-# Sanity check.
+# Adjust CPU unless target was explicitly specified.
+if test -z "$target_alias"; then
+  case "$target_cpu"-"$platform" in
+    x86_64-efi) ;;
+    x86_64-*) target_cpu=i386 ;;
+    powerpc64-ieee1275) target_cpu=powerpc ;;
+  esac
+fi
+
+# Check if the platform is supported, make final adjustments.
 case "$target_cpu"-"$platform" in
   i386-efi) ;;
+  x86_64-efi) ;;
   i386-pc) ;;
-  i386-linuxbios) ;;
+  i386-coreboot) ;;
+  i386-linuxbios) platform=coreboot ;;
   i386-ieee1275) ;;
   powerpc-ieee1275) ;;
   sparc64-ieee1275) ;;
-  *) { { echo "$as_me:$LINENO: error: unsupported machine type" >&5
-echo "$as_me: error: unsupported machine type" >&2;}
+  *) { { echo "$as_me:$LINENO: error: platform \"$platform\" is not supported for target CPU \"$target_cpu\"" >&5
+echo "$as_me: error: platform \"$platform\" is not supported for target CPU \"$target_cpu\"" >&2;}
    { (exit 1); exit 1; }; } ;;
+esac
+
+case "$target_cpu" in
+  i386 | powerpc) target_m32=1 ;;
+  x86_64 | sparc64) target_m64=1 ;;
 esac
 
 
@@ -5298,9 +5313,20 @@ fi
 
 # Check LZO when compiling for the i386-pc.
 if test "$target_cpu"-"$platform" = i386-pc; then
-  # There are three possibilities. LZO version 2 installed with the name
-  # liblzo2, with the name liblzo, and LZO version 1.
-  { echo "$as_me:$LINENO: checking for __lzo_init_v2 in -llzo2" >&5
+  # Check whether --enable-lzo was given.
+if test "${enable_lzo+set}" = set; then
+  enableval=$enable_lzo;
+fi
+
+  if [ x"$enable_lzo" = xyes ]; then
+    # There are three possibilities. LZO version 2 installed with the name
+    # liblzo2, with the name liblzo, and LZO version 1.
+
+cat >>confdefs.h <<\_ACEOF
+#define ENABLE_LZO 1
+_ACEOF
+
+    { echo "$as_me:$LINENO: checking for __lzo_init_v2 in -llzo2" >&5
 echo $ECHO_N "checking for __lzo_init_v2 in -llzo2... $ECHO_C" >&6; }
 if test "${ac_cv_lib_lzo2___lzo_init_v2+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -5502,8 +5528,8 @@ fi
 fi
 
 
-  LIBS="$LIBS $LIBLZO"
-  { echo "$as_me:$LINENO: checking for lzo1x_999_compress" >&5
+    LIBS="$LIBS $LIBLZO"
+    { echo "$as_me:$LINENO: checking for lzo1x_999_compress" >&5
 echo $ECHO_N "checking for lzo1x_999_compress... $ECHO_C" >&6; }
 if test "${ac_cv_func_lzo1x_999_compress+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -5593,7 +5619,7 @@ echo "$as_me: error: LZO1X-999 must be enabled" >&2;}
 fi
 
 
-  # LZO version 2 uses lzo/lzo1x.h, while LZO version 1 uses lzo1x.h.
+    # LZO version 2 uses lzo/lzo1x.h, while LZO version 1 uses lzo1x.h.
 
 
 for ac_header in lzo/lzo1x.h lzo1x.h
@@ -5739,6 +5765,14 @@ _ACEOF
 fi
 
 done
+
+  else
+
+cat >>confdefs.h <<\_ACEOF
+#define ENABLE_LZMA 1
+_ACEOF
+
+  fi
 
 fi
 
@@ -6686,6 +6720,12 @@ if test "x$target_m32" = x1; then
   TARGET_LDFLAGS="$TARGET_LDFLAGS -m32"
 fi
 
+if test "x$target_m64" = x1; then
+  # Force 64-bit mode.
+  TARGET_CFLAGS="$TARGET_CFLAGS -m64"
+  TARGET_LDFLAGS="$TARGET_LDFLAGS -m64"
+fi
+
 #
 # Compiler features.
 #
@@ -6723,6 +6763,7 @@ fi
 
 
 
+
 # Set them to their new values for the tests below.
 CC="$TARGET_CC"
 CFLAGS="$TARGET_CFLAGS"
@@ -6730,6 +6771,66 @@ CPPFLAGS="$TARGET_CPPFLAGS"
 LDFLAGS="$TARGET_LDFLAGS"
 
 # Defined in aclocal.m4.
+{ echo "$as_me:$LINENO: checking whether target compiler is working" >&5
+echo $ECHO_N "checking whether target compiler is working... $ECHO_C" >&6; }
+if test "${grub_cv_prog_target_cc+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  grub_cv_prog_target_cc=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	grub_cv_prog_target_cc=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+
+fi
+
+{ echo "$as_me:$LINENO: result: $grub_cv_prog_target_cc" >&5
+echo "${ECHO_T}$grub_cv_prog_target_cc" >&6; }
+
+if test "x$grub_cv_prog_target_cc" = xno; then
+  { { echo "$as_me:$LINENO: error: cannot compile for the target" >&5
+echo "$as_me: error: cannot compile for the target" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
 { echo "$as_me:$LINENO: checking whether ${OBJCOPY} works for absolute addresses" >&5
 echo $ECHO_N "checking whether ${OBJCOPY} works for absolute addresses... $ECHO_C" >&6; }
 if test "${grub_cv_prog_objcopy_absolute+set}" = set; then
@@ -6799,6 +6900,67 @@ if test "x$grub_cv_prog_objcopy_absolute" = xno; then
   { { echo "$as_me:$LINENO: error: GRUB requires a working absolute objcopy; upgrade your binutils" >&5
 echo "$as_me: error: GRUB requires a working absolute objcopy; upgrade your binutils" >&2;}
    { (exit 1); exit 1; }; }
+fi
+
+{ echo "$as_me:$LINENO: checking whether linker accepts --build-id=none" >&5
+echo $ECHO_N "checking whether linker accepts --build-id=none... $ECHO_C" >&6; }
+if test "${grub_cv_prog_ld_build_id_none+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  save_LDFLAGS="$LDFLAGS"
+LDFLAGS="$LDFLAGS -Wl,--build-id=none"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  grub_cv_prog_ld_build_id_none=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	grub_cv_prog_ld_build_id_none=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LDFLAGS="$save_LDFLAGS"
+
+fi
+
+{ echo "$as_me:$LINENO: result: $grub_cv_prog_ld_build_id_none" >&5
+echo "${ECHO_T}$grub_cv_prog_ld_build_id_none" >&6; }
+
+if test "x$grub_cv_prog_ld_build_id_none" = xyes; then
+  MODULE_LDFLAGS="$MODULE_LDFLAGS -Wl,--build-id=none"
 fi
 
 
@@ -8843,6 +9005,7 @@ CPP!$CPP$ac_delim
 GREP!$GREP$ac_delim
 EGREP!$EGREP$ac_delim
 LIBLZO!$LIBLZO$ac_delim
+enable_lzo!$enable_lzo$ac_delim
 TARGET_CC!$TARGET_CC$ac_delim
 ac_ct_TARGET_CC!$ac_ct_TARGET_CC$ac_delim
 OBJCOPY!$OBJCOPY$ac_delim
@@ -8851,6 +9014,7 @@ NM!$NM$ac_delim
 TARGET_CFLAGS!$TARGET_CFLAGS$ac_delim
 TARGET_CPPFLAGS!$TARGET_CPPFLAGS$ac_delim
 TARGET_LDFLAGS!$TARGET_LDFLAGS$ac_delim
+MODULE_LDFLAGS!$MODULE_LDFLAGS$ac_delim
 LIBCURSES!$LIBCURSES$ac_delim
 enable_grub_emu!$enable_grub_emu$ac_delim
 enable_grub_fstest!$enable_grub_fstest$ac_delim
@@ -8858,7 +9022,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 84; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 86; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
