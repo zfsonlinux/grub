@@ -1,0 +1,59 @@
+2008-08-01  Robert Millan  <rmh@aybabtu.com>
+
+	* util/grub.d/10_linux.in: Use prepare_grub_to_access_device() from
+	within menuentries, not before them.
+	util/grub.d/10_hurd.in: Likewise.
+
+Index: util/grub.d/10_linux.in
+===================================================================
+--- util/grub.d/10_linux.in	(Revision 1757)
++++ util/grub.d/10_linux.in	(Revision 1758)
+@@ -97,10 +97,6 @@
+         if grub_file_is_not_garbage "$i" ; then echo -n "$i " ; fi
+       done`
+ 
+-if [ "x$list" != "x" ] ; then
+-  prepare_grub_to_access_device ${GRUB_DEVICE_BOOT}
+-fi
+-
+ while [ "x$list" != "x" ] ; do
+   linux=`find_latest $list`
+   echo "Found linux image: $linux" >&2
+@@ -128,6 +124,9 @@
+ 
+   cat << EOF
+ menuentry "${OS}, linux ${version}" {
++EOF
++  prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/"
++  cat << EOF
+ 	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}
+ EOF
+   if test -n "${initrd}" ; then
+@@ -141,6 +140,9 @@
+ 
+   cat << EOF
+ menuentry "${OS}, linux ${version} (single-user mode)" {
++EOF
++  prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/"
++  cat << EOF
+ 	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro single ${GRUB_CMDLINE_LINUX}
+ EOF
+   if test -n "${initrd}" ; then
+Index: util/grub.d/10_hurd.in
+===================================================================
+--- util/grub.d/10_hurd.in	(Revision 1757)
++++ util/grub.d/10_hurd.in	(Revision 1758)
+@@ -68,10 +68,11 @@
+   exit 1
+ fi
+ 
+-prepare_grub_to_access_device ${GRUB_DEVICE}
+-
+ cat << EOF
+ menuentry "${OS}" {
++EOF
++prepare_grub_to_access_device ${GRUB_DEVICE} | sed -e "s/^/\t/"
++cat << EOF
+ 	multiboot ${kernel} root=device:${GRUB_DEVICE}
+ 	module /hurd/${hurd_fs}.static --readonly \\
+ 			--multiboot-command-line='\${kernel-command-line}' \\
