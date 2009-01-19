@@ -1,3 +1,17 @@
+grub2 (1.96+20080724-14) unstable; urgency=high
+
+  * 00_use_setroot_inside_menuentrys.diff: New patch to use `set root' inside
+  the menuentrys instead of outside. (Closes: #508567)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Mon, 19 Jan 2009 17:15:07 +0100
+
+grub2 (1.96+20080724-13) unstable; urgency=low
+
+  [ Updated translations ]
+  * Romanien (ro.po) by Eddy Petrișor. (Closes: #506039)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 18 Nov 2008 10:58:02 +0100
+
 grub2 (1.96+20080724-12) unstable; urgency=high
 
   [ Updated translations ]
