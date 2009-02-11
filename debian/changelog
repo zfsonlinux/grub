@@ -1,3 +1,20 @@
+grub2 (1.96+20080724-16) unstable; urgency=high
+
+  * Brown paper bag upload.  Add the missing bits of Guillem's patch so 10_hurd
+    won't abort due to missing make_system_path_relative_to_its_root.
+    (Really closes: #512968)
+
+ -- Robert Millan <rmh@aybabtu.com>  Wed, 11 Feb 2009 01:40:06 +0100
+
+grub2 (1.96+20080724-15) unstable; urgency=high
+
+  * Avoid mounting ext2 partitions with backward-incompatible features.
+    (Closes: #502333)
+  * patches/13_update_grub_gnumach.diff: Temporary hack to prevent gnumach
+    from triggering postinst failure.  (Closes: #512968)
+
+ -- Robert Millan <rmh@aybabtu.com>  Mon,  9 Feb 2009 18:56:00 +0100
+
 grub2 (1.96+20080724-14) unstable; urgency=high
 
   * 00_use_setroot_inside_menuentrys.diff: New patch to use `set root' inside
