@@ -1,16 +1,16 @@
 Source: grub2
 Section: admin
 Priority: extra
-Maintainer: Ubuntu MOTU <ubuntu-motu@lists.ubuntu.com>
+Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: GRUB Maintainers <pkg-grub-devel@lists.alioth.debian.org>
 Uploaders: Jason Thomas <jason@debian.org>, Otavio Salvador <otavio@debian.org>, Robert Millan <rmh@aybabtu.com>
 Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 5), patchutils (>= 0.2.25), autoconf,
  ruby, bison, dpkg-dev (>= 1.13.12), po-debconf,
- genisoimage [i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64],
+ genisoimage [i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 lpia],
  libc6-dev-i386 [amd64], libc0.1-dev-i386 [kfreebsd-amd64], libc6-dev-powerpc [ppc64],
  gcc-multilib [amd64 kfreebsd-amd64 ppc64] | gcc-4.1 (<< 4.1.2) [amd64 kfreebsd-amd64 ppc64],
  libncurses5-dev,
- liblzo2-dev (>= 2.03) [i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64] | liblzo-dev [i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64],
+ liblzo2-dev (>= 2.03) [i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 lpia] | liblzo-dev [i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 lpia],
  unifont (>= 1:5.1.20080820-1),
  help2man
 Build-Conflicts: autoconf2.13, liblzo2-dev (<< 2.02)
@@ -21,8 +21,8 @@ Vcs-Browser: http://svn.debian.org/wsvn/pkg-grub/grub2/
 
 
 Package: grub2
-Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 powerpc ppc64
-Depends: ${misc:Depends} , grub-pc [i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64] | grub-ieee1275 [powerpc ppc64]
+Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 lpia powerpc ppc64
+Depends: ${misc:Depends} , grub-pc [i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 lpia] | grub-ieee1275 [powerpc ppc64]
 Description: GRand Unified Bootloader, version 2 (dummy package)
  This is a dummy transitional package to handle GRUB 2 upgrades.  It can be
  safely removed.
@@ -35,15 +35,15 @@ Description: GRand Unified Bootloader, version 2 [dummy]
 
 
 Package: grub-common
-Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 powerpc ppc64
+Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 lpia powerpc ppc64
 Depends: ${shlibs:Depends}, ${misc:Depends}, base-files (>= 4.0.1~)
 Replaces: grub-pc (<< 1.96+20080426-3), grub-ieee1275 (<< 1.96+20080426-3), grub-linuxbios (<< 1.96+20080426-3), grub-efi (<< 1.96+20080426-3)
-Suggests: multiboot-doc [i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64]
+Suggests: multiboot-doc [i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 lpia]
 Description: GRand Unified Bootloader, version 2 (common files)
  This package contains common files shared by the distinct flavours of GRUB.
 
 Package: grub-pc
-Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64
+Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 lpia
 Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (>> 1.96+20080413-1), ${grub-pc:Depends}, os-prober
 Provides: grub
 Replaces: pupa, grub, grub2 (<< ${Source-Version}), grub-common (<= 1.96+20080413-1)
@@ -67,7 +67,7 @@ Description: GRand Unified Bootloader, version 2 (PC/BIOS version)
  traditional PC/BIOS architecture.
 
 Package: grub-rescue-pc
-Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64
+Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 lpia
 Depends: base-files (>= 4.0.1~)
 Description: GRUB bootable rescue images, version 2 (PC/BIOS version)
  This package contains two GRUB rescue images that have been built for use with
@@ -77,7 +77,7 @@ Description: GRUB bootable rescue images, version 2 (PC/BIOS version)
   - grub-rescue-cdrom.iso: El Torito CDROM image.
 
 Package: grub-linuxbios
-Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64
+Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 lpia
 Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (>> 1.96+20080413-1)
 Provides: grub
 Replaces: pupa, grub, grub2 (<< ${Source-Version}), grub-common (<= 1.96+20080413-1)
@@ -97,7 +97,7 @@ Description: GRand Unified Bootloader, version 2 (LinuxBIOS version)
  platforms running the LinuxBIOS firmware.
 
 Package: grub-efi
-Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64
+Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 lpia
 Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (>> 1.96+20080413-1)
 Provides: grub
 Replaces: pupa, grub, grub2 (<< ${Source-Version}), grub-common (<= 1.96+20080413-1)
@@ -118,7 +118,7 @@ Description: GRand Unified Bootloader, version 2 (EFI version)
  BIOS interface has been activated).
 
 Package: grub-ieee1275
-Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 powerpc ppc64
+Architecture: i386 kfreebsd-i386 hurd-i386 amd64 kfreebsd-amd64 lpia powerpc ppc64
 Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (>> 1.96+20080413-1),
  powerpc-ibm-utils [powerpc ppc64], powerpc-utils [powerpc ppc64], bc [powerpc ppc64]
 Provides: grub
