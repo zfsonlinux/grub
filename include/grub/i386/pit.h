@@ -20,8 +20,7 @@
 #define KERNEL_CPU_PIT_HEADER   1
 
 #include <grub/types.h>
-#include <grub/err.h>
 
-void EXPORT_FUNC(grub_pit_wait) (grub_uint16_t tics);
+extern void grub_pit_wait (grub_uint16_t tics);
 
 #endif /* ! KERNEL_CPU_PIT_HEADER */

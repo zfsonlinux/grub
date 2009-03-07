@@ -22,7 +22,7 @@
 #include <grub/env.h>
 #include <grub/misc.h>
 #include <grub/normal.h>
-#include <grub/datetime.h>
+#include <grub/lib/datetime.h>
 
 static char *grub_datetime_names[] =
 {
@@ -86,6 +86,7 @@ grub_read_hook_datetime (struct grub_env_var *var,
 
 GRUB_MOD_INIT(datetime)
 {
+  (void)mod;			/* To stop warning. */
   int i;
 
   for (i = 0; i < 7; i++)
