@@ -1,7 +1,7 @@
 /* dl.c - loadable module support */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2003,2004,2005,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2003,2004,2005,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -454,7 +454,7 @@ grub_dl_resolve_dependencies (grub_dl_t mod, Elf_Ehdr *e)
 	const char *name = (char *) e + s->sh_offset;
 	const char *max = name + s->sh_size;
 
-	while (name < max)
+	while ((name < max) && (*name))
 	  {
 	    grub_dl_t m;
 	    grub_dl_dep_t dep;

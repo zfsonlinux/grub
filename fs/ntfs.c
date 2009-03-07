@@ -575,13 +575,20 @@ list_file (struct grub_ntfs_file *diro, char *pos,
 
   while (1)
     {
-      char *ustr;
+      char *ustr, namespace;
+
       if (pos[0xC] & 2)		/* end signature */
 	break;
 
-      np = pos + 0x52;
-      ns = (unsigned char) *(np - 2);
-      if (ns)
+      np = pos + 0x50;
+      ns = (unsigned char) *(np++);
+      namespace = *(np++);
+
+      /*
+       *  Ignore files in DOS namespace, as they will reappear as Win32
+       *  names.
+       */
+      if ((ns) && (namespace != 2))
 	{
 	  enum grub_fshelp_filetype type;
 	  struct grub_ntfs_file *fdiro;
@@ -609,6 +616,9 @@ list_file (struct grub_ntfs_file *diro, char *pos,
 	    return 0;
 	  *grub_utf16_to_utf8 ((grub_uint8_t *) ustr, (grub_uint16_t *) np,
 			       ns) = '\0';
+
+          if (namespace)
+            type |= GRUB_FSHELP_CASE_INSENSITIVE;
 
 	  if (hook (ustr, type, fdiro))
 	    {
@@ -687,35 +697,32 @@ grub_ntfs_iterate_dir (grub_fshelp_node_t dir,
 	  (u32at (cur_pos, ofs) == 0x490024) &&
 	  (u32at (cur_pos, ofs + 4) == 0x300033))
 	{
-	  if ((at->flags & AF_ALST) && (cur_pos[8] == 0))
-	    {
-	      grub_error (GRUB_ERR_BAD_FS,
-			  "$BITMAP should be non-resident when in attribute list");
-	      goto done;
-	    }
-	  if (cur_pos[8] == 0)
-	    {
-	      bitmap = (unsigned char *) (cur_pos + u16at (cur_pos, 0x14));
-	      bitmap_len = u32at (cur_pos, 0x10);
-	      break;
-	    }
-	  if (u32at (cur_pos, 0x28) > BMP_LEN)
-	    {
-	      grub_error (GRUB_ERR_BAD_FS, "Non-resident $BITMAP too large");
-	      goto done;
-	    }
-	  bmp = grub_malloc (u32at (cur_pos, 0x28));
-	  if (bmp == NULL)
-	    goto done;
+          int is_resident = (cur_pos[8] == 0);
 
-	  bitmap = (unsigned char *) bmp;
-	  bitmap_len = u32at (cur_pos, 0x30);
-	  if (read_data (at, cur_pos, bmp, 0, u32at (cur_pos, 0x28), 0, 0))
+          bitmap_len = ((is_resident) ? u32at (cur_pos, 0x10) :
+                        u32at (cur_pos, 0x28));
+
+          bmp = grub_malloc (bitmap_len);
+          if (bmp == NULL)
+            goto done;
+
+	  if (is_resident)
 	    {
-	      grub_error (GRUB_ERR_BAD_FS,
-			  "Fails to read non-resident $BITMAP");
-	      goto done;
+              grub_memcpy (bmp, (char *) (cur_pos + u16at (cur_pos, 0x14)),
+                           bitmap_len);
 	    }
+          else
+            {
+              if (read_data (at, cur_pos, bmp, 0, bitmap_len, 0, 0))
+                {
+                  grub_error (GRUB_ERR_BAD_FS,
+                              "Fails to read non-resident $BITMAP");
+                  goto done;
+                }
+              bitmap_len = u32at (cur_pos, 0x30);
+            }
+
+          bitmap = (unsigned char *) bmp;
 	  break;
 	}
     }
@@ -850,6 +857,7 @@ fail:
     {
       free_file (&data->mmft);
       free_file (&data->cmft);
+      grub_free (data);
     }
   return 0;
 }

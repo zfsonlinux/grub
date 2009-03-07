@@ -1,7 +1,7 @@
 /* efi.h - declare EFI types and functions */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -86,6 +86,26 @@
 #define GRUB_EFI_DEVICE_PATH_GUID	\
   { 0x09576e91, 0x6d3f, 0x11d2, \
     { 0x8e, 0x39, 0x00, 0xa0, 0xc9, 0x69, 0x72, 0x3b } \
+  }
+
+#define GRUB_EFI_MPS_TABLE_GUID	\
+  { 0xeb9d2d2f, 0x2d88, 0x11d3, \
+    { 0x9a, 0x16, 0x0, 0x90, 0x27, 0x3f, 0xc1, 0x4d } \
+  }
+
+#define GRUB_EFI_ACPI_TABLE_GUID	\
+  { 0xeb9d2d30, 0x2d88, 0x11d3, \
+    { 0x9a, 0x16, 0x0, 0x90, 0x27, 0x3f, 0xc1, 0x4d } \
+  }
+
+#define GRUB_EFI_ACPI_20_TABLE_GUID	\
+  { 0x8868e871, 0xe4f1, 0x11d3, \
+    { 0xbc, 0x22, 0x0, 0x80, 0xc7, 0x3c, 0x88, 0x81 } \
+  }
+
+#define GRUB_EFI_SMBIOS_TABLE_GUID	\
+  { 0xeb9d2d31, 0x2d88, 0x11d3, \
+    { 0x9a, 0x16, 0x0, 0x90, 0x27, 0x3f, 0xc1, 0x4d } \
   }
 
 /* Enumerations.  */
@@ -1104,16 +1124,31 @@ typedef struct grub_efi_block_io grub_efi_block_io_t;
 #define efi_call_4(func, a, b, c, d)	func(a, b, c, d)
 #define efi_call_5(func, a, b, c, d, e)	func(a, b, c, d, e)
 #define efi_call_6(func, a, b, c, d, e, f) func(a, b, c, d, e, f)
+#define efi_call_10(func, a, b, c, d, e, f, g, h, i, j)	func(a, b, c, d, e, f, g, h, i, j)
 
 #else
 
-#define efi_call_0(func)		efi_wrap_0(func)
-#define efi_call_1(func, a)		efi_wrap_1(func, (grub_uint64_t) a)
-#define efi_call_2(func, a, b)		efi_wrap_2(func, (grub_uint64_t) a, (grub_uint64_t) b)
-#define efi_call_3(func, a, b, c)	efi_wrap_3(func, (grub_uint64_t) a, (grub_uint64_t) b, (grub_uint64_t) c)
-#define efi_call_4(func, a, b, c, d)	efi_wrap_4(func, (grub_uint64_t) a, (grub_uint64_t) b, (grub_uint64_t) c, (grub_uint64_t) d)
-#define efi_call_5(func, a, b, c, d, e)	efi_wrap_5(func, (grub_uint64_t) a, (grub_uint64_t) b, (grub_uint64_t) c, (grub_uint64_t) d, (grub_uint64_t) e)
-#define efi_call_6(func, a, b, c, d, e, f) efi_wrap_6(func, (grub_uint64_t) a, (grub_uint64_t) b, (grub_uint64_t) c, (grub_uint64_t) d, (grub_uint64_t) e, (grub_uint64_t) f)
+#define efi_call_0(func) \
+  efi_wrap_0(func)
+#define efi_call_1(func, a) \
+  efi_wrap_1(func, (grub_uint64_t) a)
+#define efi_call_2(func, a, b) \
+  efi_wrap_2(func, (grub_uint64_t) a, (grub_uint64_t) b)
+#define efi_call_3(func, a, b, c) \
+  efi_wrap_3(func, (grub_uint64_t) a, (grub_uint64_t) b, (grub_uint64_t) c)
+#define efi_call_4(func, a, b, c, d) \
+  efi_wrap_4(func, (grub_uint64_t) a, (grub_uint64_t) b, (grub_uint64_t) c, \
+  (grub_uint64_t) d)
+#define efi_call_5(func, a, b, c, d, e)	\
+  efi_wrap_5(func, (grub_uint64_t) a, (grub_uint64_t) b, (grub_uint64_t) c, \
+  (grub_uint64_t) d, (grub_uint64_t) e)
+#define efi_call_6(func, a, b, c, d, e, f) \
+  efi_wrap_6(func, (grub_uint64_t) a, (grub_uint64_t) b, (grub_uint64_t) c, \
+  (grub_uint64_t) d, (grub_uint64_t) e, (grub_uint64_t) f)
+#define efi_call_10(func, a, b, c, d, e, f, g, h, i, j) \
+  efi_wrap_10(func, (grub_uint64_t) a, (grub_uint64_t) b, (grub_uint64_t) c, \
+  (grub_uint64_t) d, (grub_uint64_t) e, (grub_uint64_t) f, (grub_uint64_t) g, \
+  (grub_uint64_t) h, (grub_uint64_t) i, (grub_uint64_t) j)
 
 grub_uint64_t EXPORT_FUNC(efi_wrap_0) (void *func);
 grub_uint64_t EXPORT_FUNC(efi_wrap_1) (void *func, grub_uint64_t arg1);
@@ -1131,6 +1166,12 @@ grub_uint64_t EXPORT_FUNC(efi_wrap_6) (void *func, grub_uint64_t arg1,
                                        grub_uint64_t arg2, grub_uint64_t arg3,
                                        grub_uint64_t arg4, grub_uint64_t arg5,
                                        grub_uint64_t arg6);
+grub_uint64_t EXPORT_FUNC(efi_wrap_10) (void *func, grub_uint64_t arg1,
+                                        grub_uint64_t arg2, grub_uint64_t arg3,
+                                        grub_uint64_t arg4, grub_uint64_t arg5,
+                                        grub_uint64_t arg6, grub_uint64_t arg7,
+                                        grub_uint64_t arg8, grub_uint64_t arg9,
+                                        grub_uint64_t arg10);
 #endif
 
 #endif /* ! GRUB_EFI_API_HEADER */

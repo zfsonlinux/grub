@@ -28,7 +28,7 @@
 #include <grub/pc_partition.h>
 #include <grub/gpt_partition.h>
 #include <grub/env.h>
-#include <grub/util/biosdisk.h>
+#include <grub/util/hostdisk.h>
 #include <grub/machine/boot.h>
 #include <grub/machine/kernel.h>
 #include <grub/term.h>
@@ -74,11 +74,8 @@ grub_getkey (void)
   return -1;
 }
 
-grub_term_t
-grub_term_get_current (void)
-{
-  return 0;
-}
+struct grub_handler_class grub_term_input_class;
+struct grub_handler_class grub_term_output_class;
 
 void
 grub_refresh (void)
@@ -339,17 +336,11 @@ setup (const char *dir,
 	  if (grub_disk_write (dest_dev->disk, embed_region.start, 0, core_size, core_img))
 	    grub_util_error ("%s", grub_errmsg);
 
-	  /* The boot image and the core image are on the same drive,
-	     so there is no need to specify the boot drive explicitly.  */
-	  *boot_drive = 0xff;
-	  *kernel_sector = grub_cpu_to_le64 (embed_region.start);
+	  /* FIXME: can this be skipped?  */
+	  *boot_drive = 0xFF;
+	  *root_drive = 0xFF;
 
-          /* If the root device is different from the destination device,
-             it is necessary to embed the root drive explicitly.  */
-          if (root_dev->disk->id != dest_dev->disk->id)
-            *root_drive = (grub_uint8_t) root_dev->disk->id;
-          else
-            *root_drive = 0xFF;
+	  *kernel_sector = grub_cpu_to_le64 (embed_region.start);
 
 	  /* Write the boot image onto the disk.  */
 	  if (grub_disk_write (dest_dev->disk, 0, 0, GRUB_DISK_SECTOR_SIZE,
@@ -373,7 +364,7 @@ setup (const char *dir,
   
   /* Make sure that GRUB reads the identical image as the OS.  */
   tmp_img = xmalloc (core_size);
-  core_path_dev = grub_util_get_path (DEFAULT_DIRECTORY, core_file);
+  core_path_dev = grub_util_get_path (dir, core_file);
   
   /* It is a Good Thing to sync two times.  */
   sync ();
@@ -480,15 +471,8 @@ setup (const char *dir,
   
   *kernel_sector = grub_cpu_to_le64 (first_sector);
 
-  /* If the destination device is different from the root device,
-     it is necessary to embed the boot drive explicitly.  */
-  if (root_dev->disk->id != dest_dev->disk->id)
-    *boot_drive = (grub_uint8_t) root_dev->disk->id;
-  else
-    *boot_drive = 0xFF;
-
-  /* When the core image is not embedded, the root device always follows
-     the boot device.  */
+  /* FIXME: can this be skipped?  */
+  *boot_drive = 0xFF;
   *root_drive = 0xFF;
 
   *install_dos_part = grub_cpu_to_le32 (dos_part);

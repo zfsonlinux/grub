@@ -224,7 +224,7 @@ title="Debian GNU/`uname -s | sed -e s,GNU/,,g`"
 updatedefaultentry="false"
 
 # Drive(in GRUB terms) where the kernel is located. Overridden by the
-# kopt statement in menufile.
+# groot statement in menufile.
 grub_root_device=$(convert_default "$boot_device")
 
 # should grub create the alternative boot options in the menu

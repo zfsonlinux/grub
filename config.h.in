@@ -25,6 +25,9 @@
 /* Define if C symbols get an underscore after compilation */
 #undef HAVE_ASM_USCORE
 
+/* Define to 1 if you have the `asprintf' function. */
+#undef HAVE_ASPRINTF
+
 /* Define to 1 if you have the <curses.h> header file. */
 #undef HAVE_CURSES_H
 
@@ -73,8 +76,14 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
+/* Define to 1 if you have the <usb.h> header file. */
+#undef HAVE_USB_H
+
 /* Define to 1 if you enable memory manager debugging. */
 #undef MM_DEBUG
+
+/* Define to 1 if GCC generates calls to __enable_execute_stack() */
+#undef NEED_ENABLE_EXECUTE_STACK
 
 /* Catch gcc bug */
 #undef NESTED_FUNC_ATTR

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ro\n"
 "Report-Msgid-Bugs-To: pkg-grub-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2008-10-26 18:22+0100\n"
+"POT-Creation-Date: 2008-10-26 15:44+0100\n"
 "PO-Revision-Date: 2008-11-13 10:41+0200\n"
 "Last-Translator: Eddy Petrișor <eddy.petrisor@gmail.com>\n"
 "Language-Team: Romanian <debian-l10n-romanian@lists.debian.org>\n"
@@ -19,52 +19,6 @@ msgstr ""
 "Plural-Forms:  nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
 "X-Generator: KBabel 1.11.4\n"
-
-#. Type: note
-#. Description
-#: ../grub2.templates:1001
-msgid "GRUB 1.95 numbering scheme transition"
-msgstr "Tranziția la schema de numerotare pentru GRUB 1.95"
-
-#. Type: note
-#. Description
-#: ../grub2.templates:1001
-msgid ""
-"As of version 1.95, GRUB 2 has changed its numbering scheme.  Partitions are "
-"now counted starting from 1 rather than 0.  This is to make it consistent "
-"with device names of Linux and the other kernels used in Debian.  For "
-"example, when using Linux as the kernel, \"(hd0,1)\" refers to the same "
-"partition as the /dev/sda1 device node."
-msgstr ""
-"Începând cu versiunea 1.95, GRUB 2 și-a schimbat schema de numerotare. "
-"Partițiile sunt acum numerotate începând de la 1 (în loc de 0). Acest lucru "
-"este consecvent cu numele de dispozitive ale Linux-ului și a altor nuclee "
-"folosite în Debian. De exemplu, când se folosește nucleul Linux, „(hd0,1)” "
-"se referă la aceiași partiție ca și nodul de dispozitiv /dev/sda1."
-
-#. Type: note
-#. Description
-#: ../grub2.templates:1001
-msgid ""
-"Because of this, there's a chance your system becomes unbootable if update-"
-"grub(8) is run before GRUB is updated, generating a grub.cfg file that your "
-"installed GRUB won't yet be able to parse correctly.  To ensure your system "
-"will be able to boot, you have to:"
-msgstr ""
-"De aceea, există riscul ca sistemul să nu mai pornească dacă update-grub(8) "
-"este rulat înainte ca GRUB să fie actualizat, generând astfel un fișier grub."
-"cfg pe care GRUB-ul instalat nu-l va putea încă analiza corect. Pentru a vă "
-"asigura că sistemul va putea porni, va trebui să:"
-
-#. Type: note
-#. Description
-#: ../grub2.templates:1001
-msgid ""
-" - Reinstall GRUB (typically, by running grub-install).\n"
-" - Rerun update-grub to generate a new grub.cfg."
-msgstr ""
-" - Reinstalați GRUB (în mod normal, prin rularea lui grub-install).\n"
-" - Rulați din nou update-grub pentru a genera un nou grub.cfg."
 
 #. Type: boolean
 #. Description
@@ -138,3 +92,38 @@ msgstr ""
 "Această linie de comandă Linux a fost extrasă din parametrul „kopt” din "
 "fișierul menu.lst al vechiului GRUB. Verificați corectitudinea acesteia și "
 "corectați-o, dacă este nevoie."
+
+#~ msgid "GRUB 1.95 numbering scheme transition"
+#~ msgstr "Tranziția la schema de numerotare pentru GRUB 1.95"
+
+#~ msgid ""
+#~ "As of version 1.95, GRUB 2 has changed its numbering scheme.  Partitions "
+#~ "are now counted starting from 1 rather than 0.  This is to make it "
+#~ "consistent with device names of Linux and the other kernels used in "
+#~ "Debian.  For example, when using Linux as the kernel, \"(hd0,1)\" refers "
+#~ "to the same partition as the /dev/sda1 device node."
+#~ msgstr ""
+#~ "Începând cu versiunea 1.95, GRUB 2 și-a schimbat schema de numerotare. "
+#~ "Partițiile sunt acum numerotate începând de la 1 (în loc de 0). Acest "
+#~ "lucru este consecvent cu numele de dispozitive ale Linux-ului și a altor "
+#~ "nuclee folosite în Debian. De exemplu, când se folosește nucleul Linux, "
+#~ "„(hd0,1)” se referă la aceiași partiție ca și nodul de dispozitiv /dev/"
+#~ "sda1."
+
+#~ msgid ""
+#~ "Because of this, there's a chance your system becomes unbootable if "
+#~ "update-grub(8) is run before GRUB is updated, generating a grub.cfg file "
+#~ "that your installed GRUB won't yet be able to parse correctly.  To ensure "
+#~ "your system will be able to boot, you have to:"
+#~ msgstr ""
+#~ "De aceea, există riscul ca sistemul să nu mai pornească dacă update-grub"
+#~ "(8) este rulat înainte ca GRUB să fie actualizat, generând astfel un "
+#~ "fișier grub.cfg pe care GRUB-ul instalat nu-l va putea încă analiza "
+#~ "corect. Pentru a vă asigura că sistemul va putea porni, va trebui să:"
+
+#~ msgid ""
+#~ " - Reinstall GRUB (typically, by running grub-install).\n"
+#~ " - Rerun update-grub to generate a new grub.cfg."
+#~ msgstr ""
+#~ " - Reinstalați GRUB (în mod normal, prin rularea lui grub-install).\n"
+#~ " - Rulați din nou update-grub pentru a genera un nou grub.cfg."
