@@ -1,7 +1,7 @@
 /* fat.c - FAT filesystem */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2000,2001,2002,2003,2004,2005,2007,2008  Free Software Foundation, Inc.
+ *  Copyright (C) 2000,2001,2002,2003,2004,2005,2007,2008,2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,6 +34,8 @@
 #define GRUB_FAT_ATTR_VOLUME_ID	0x08
 #define GRUB_FAT_ATTR_DIRECTORY	0x10
 #define GRUB_FAT_ATTR_ARCHIVE	0x20
+
+#define GRUB_FAT_MAXFILE	256
 
 #define GRUB_FAT_ATTR_LONG_NAME	(GRUB_FAT_ATTR_READ_ONLY \
 				 | GRUB_FAT_ATTR_HIDDEN \
@@ -185,6 +187,11 @@ grub_fat_mount (grub_disk_t disk)
   if (grub_disk_read (disk, 0, 0, sizeof (bpb), (char *) &bpb))
     goto fail;
 
+  if (grub_strncmp((const char *) bpb.version_specific.fat12_or_fat16.fstype, "FAT12", 5)
+      && grub_strncmp((const char *) bpb.version_specific.fat12_or_fat16.fstype, "FAT16", 5)
+      && grub_strncmp((const char *) bpb.version_specific.fat32.fstype, "FAT32", 5))
+    goto fail;
+  
   /* Get the sizes of logical sectors and clusters.  */
   data->logical_sector_bits =
     fat_log2 (grub_le_to_cpu16 (bpb.bytes_per_sector));
@@ -629,7 +636,7 @@ grub_fat_find_dir (grub_disk_t disk, struct grub_fat_data *data,
 	  if (hook (filename, dir.attr & GRUB_FAT_ATTR_DIRECTORY))
 	    break;
 	}
-      else if (grub_strcmp (dirname, filename) == 0)
+      else if (grub_strncasecmp (dirname, filename, GRUB_FAT_MAXFILE) == 0)
 	{
 	  if (call_hook)
 	    hook (filename, dir.attr & GRUB_FAT_ATTR_DIRECTORY);
@@ -839,7 +846,7 @@ grub_fat_uuid (grub_device_t device, char **uuid)
   if (data)
     {
       *uuid = grub_malloc (sizeof ("xxxx-xxxx"));
-      grub_sprintf (*uuid, "%04x-%04x", (grub_uint16_t) (data->uuid >> 8),
+      grub_sprintf (*uuid, "%04x-%04x", (grub_uint16_t) (data->uuid >> 16),
 		    (grub_uint16_t) data->uuid);
     }
   else

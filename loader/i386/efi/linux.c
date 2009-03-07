@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2006,2007,2008,2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,10 +31,9 @@
 #include <grub/efi/api.h>
 #include <grub/efi/efi.h>
 #include <grub/efi/uga_draw.h>
-#include <grub/pci.h>
 
-#define GRUB_EFI_CL_OFFSET	0x1000
-#define GRUB_EFI_CL_END_OFFSET	0x2000
+#define GRUB_LINUX_CL_OFFSET		0x1000
+#define GRUB_LINUX_CL_END_OFFSET	0x2000
 
 #define NEXT_MEMORY_DESCRIPTOR(desc, size)      \
   ((grub_efi_memory_descriptor_t *) ((char *) (desc) + (size)))
@@ -166,7 +165,7 @@ allocate_pages (grub_size_t prot_size)
   grub_size_t real_size;
   
   /* Make sure that each size is aligned to a page boundary.  */
-  real_size = GRUB_EFI_CL_END_OFFSET;
+  real_size = GRUB_LINUX_CL_END_OFFSET;
   prot_size = page_align (prot_size);
   mmap_size = find_mmap_size ();
 
@@ -284,6 +283,57 @@ grub_e820_add_region (struct grub_e820_mmap *e820_map, int *e820_num,
     }
 }
 
+static grub_efi_guid_t acpi_guid = GRUB_EFI_ACPI_TABLE_GUID;
+static grub_efi_guid_t acpi2_guid = GRUB_EFI_ACPI_20_TABLE_GUID;
+
+#define EBDA_SEG_ADDR	0x40e
+#define LOW_MEM_ADDR	0x413
+#define FAKE_EBDA_SEG	0x9fc0
+
+static void
+fake_bios_data (void)
+{
+  unsigned i;
+  void *acpi;
+  grub_uint16_t *ebda_seg_ptr, *low_mem_ptr;
+
+  acpi = 0;
+  for (i = 0; i < grub_efi_system_table->num_table_entries; i++)
+    {
+      grub_efi_guid_t *guid =
+	&grub_efi_system_table->configuration_table[i].vendor_guid;
+
+      if (! grub_memcmp (guid, &acpi2_guid, sizeof (grub_efi_guid_t)))
+	{
+	  acpi = grub_efi_system_table->configuration_table[i].vendor_table;
+	  grub_printf ("ACPI2: %p\n", acpi);
+	}
+      else if (! grub_memcmp (guid, &acpi_guid, sizeof (grub_efi_guid_t)))
+	{
+	  void *t;
+
+	  t = grub_efi_system_table->configuration_table[i].vendor_table;
+	  if (! acpi)
+	    acpi = t;
+	  grub_printf ("ACPI: %p\n", t);
+	}
+    }
+
+  if (acpi == 0)
+    return;
+
+  ebda_seg_ptr = (grub_uint16_t *) EBDA_SEG_ADDR;
+  low_mem_ptr = (grub_uint16_t *) LOW_MEM_ADDR;
+
+  if ((*ebda_seg_ptr) || (*low_mem_ptr))
+    return;
+
+  *ebda_seg_ptr = FAKE_EBDA_SEG;
+  *low_mem_ptr = FAKE_EBDA_SEG >> 6;
+
+  grub_memcpy ((char *) (FAKE_EBDA_SEG << 4), acpi, 1024);
+}
+
 #ifdef __x86_64__
 struct
 {
@@ -303,6 +353,8 @@ grub_linux_boot (void)
   grub_efi_memory_descriptor_t *desc;
   int e820_num;
   
+  fake_bios_data ();
+
   params = real_mode_mem;
 
   grub_dprintf ("linux", "code32_start = %x, idt_desc = %lx, gdt_desc = %lx\n",
@@ -458,68 +510,59 @@ grub_linux_unload (void)
   return GRUB_ERR_NONE;
 }
 
-grub_uint64_t video_base;
+static grub_efi_guid_t uga_draw_guid = GRUB_EFI_UGA_DRAW_GUID;
+
+
+#define RGB_MASK	0xffffff
+#define RGB_MAGIC	0x121314
+#define LINE_MIN	800
+#define LINE_MAX	4096
+#define FBTEST_STEP	(0x10000 >> 2)
+#define FBTEST_COUNT	8
+
+static grub_uint32_t fb_list[]=
+  {0x40000000, 0x80000000, 0xc0000000, 0};
 
 static int
-grub_find_video_card (int bus, int dev, int func,
-                      grub_pci_id_t pciid __attribute__ ((unused)))
+find_framebuf (grub_uint32_t *fb_base, grub_uint32_t *line_len)
 {
-  grub_pci_address_t addr;
+  grub_uint32_t *fb;
 
-  addr = grub_pci_make_address (bus, dev, func, 2);
-
-  if (grub_pci_read (addr) >> 24 == 0x3)
+  for (fb = fb_list; *fb; fb++)
     {
+      grub_uint32_t *base = (grub_uint32_t *) (grub_target_addr_t) *fb;
       int i;
 
-      addr = grub_pci_make_address (bus, dev, func, 4);
-      for (i = 0; i < 6; i++, addr += 4)
+      for (i = 0; i < FBTEST_COUNT; i++, base += FBTEST_STEP)
         {
-          grub_uint32_t base, type;
+	  if ((*base & RGB_MASK) == RGB_MAGIC)
+	    {
+	      int j;
 
-          base = grub_pci_read (addr);
-
-          if ((base == 0) || (base == 0xffffffff) ||
-              (base & GRUB_PCI_ADDR_SPACE_IO))
-            continue;
-
-          type = base & GRUB_PCI_ADDR_MEM_TYPE_MASK;
-          if (! (addr & GRUB_PCI_ADDR_MEM_PREFETCH))
+	      for (j = LINE_MIN; j <= LINE_MAX; j++)
             {
-              if (type == GRUB_PCI_ADDR_MEM_TYPE_64)
+		  if ((base[j] & RGB_MASK) == RGB_MAGIC)
                 {
-                  i++;
-                  addr +=4 ;
+		      *fb_base = (grub_uint32_t) (grub_target_addr_t) base;
+		      *line_len = j << 2;
+
+		      return 0;
                 }
-              continue;
             }
 
-          base &= GRUB_PCI_ADDR_MEM_MASK;
-          if (type == GRUB_PCI_ADDR_MEM_TYPE_64)
-            {
-              if (i == 5)
                 break;
-
-              video_base = grub_pci_read (addr + 4);
-              video_base <<= 32;
             }
-
-          video_base |= base;
-
-          return 1;
         }
     }
-
-  return 0;
+  return 1;
 }
-
-static grub_efi_guid_t uga_draw_guid = GRUB_EFI_UGA_DRAW_GUID;
 
 static int
 grub_linux_setup_video (struct linux_kernel_params *params)
 {
   grub_efi_uga_draw_protocol_t *c;
-  grub_uint32_t width, height, depth, rate;
+  grub_uint32_t width, height, depth, rate, pixel, fb_base, line_len;
+  int ret;
 
   c = grub_efi_locate_protocol (&uga_draw_guid, 0);
   if (! c)
@@ -530,26 +573,29 @@ grub_linux_setup_video (struct linux_kernel_params *params)
 
   grub_printf ("Video mode: %ux%u-%u@%u\n", width, height, depth, rate);
 
-  video_base = 0;
-  grub_pci_iterate (grub_find_video_card);
+  grub_efi_set_text_mode (0);
+  pixel = RGB_MAGIC;
+  efi_call_10 (c->blt, c, (struct grub_efi_uga_pixel *) &pixel,
+	       GRUB_EFI_UGA_VIDEO_FILL, 0, 0, 0, 0, 1, height, 0);
+  ret = find_framebuf (&fb_base, &line_len);
+  grub_efi_set_text_mode (1);
 
-  if (! video_base)
+  if (ret)
     {
       grub_printf ("Can\'t find frame buffer address\n");
       return 1;
     }
 
-  grub_printf ("Video frame buffer: %llx\n", (unsigned long long) video_base);
+  grub_printf ("Video frame buffer: 0x%x\n", fb_base);
+  grub_printf ("Video line length: %d\n", line_len);
 
   params->lfb_width = width;
   params->lfb_height = height;
   params->lfb_depth = depth;
+  params->lfb_line_len = line_len;
 
-  /* FIXME: shouldn't use fixed value.  */
-  params->lfb_line_len = 8192;
-
-  params->lfb_base = video_base;
-  params->lfb_size = (params->lfb_line_len * params->lfb_height + 65535) >> 16;
+  params->lfb_base = fb_base;
+  params->lfb_size = (line_len * params->lfb_height + 65535) >> 16;
 
   params->red_mask_size = 8;
   params->red_field_pos = 16;
@@ -634,7 +680,7 @@ grub_rescue_cmd_linux (int argc, char *argv[])
     goto fail;
   
   params = (struct linux_kernel_params *) real_mode_mem;
-  grub_memset (params, 0, GRUB_EFI_CL_END_OFFSET);
+  grub_memset (params, 0, GRUB_LINUX_CL_END_OFFSET);
   grub_memcpy (&params->setup_sects, &lh.setup_sects, sizeof (lh) - 0x1F1);
 
   params->ps_mouse = params->padding10 =  0;
@@ -647,7 +693,7 @@ grub_rescue_cmd_linux (int argc, char *argv[])
     }
 
   /* XXX Linux assumes that only elilo can boot Linux on EFI!!!  */
-  params->type_of_loader = 0x50;
+  params->type_of_loader = (LINUX_LOADER_ID_ELILO << 4);
 
   params->cl_magic = GRUB_LINUX_CL_MAGIC;
   params->cl_offset = 0x1000;
@@ -664,8 +710,8 @@ grub_rescue_cmd_linux (int argc, char *argv[])
   params->ext_mem = ((32 * 0x100000) >> 10);
   params->alt_mem = ((32 * 0x100000) >> 10);
   
-  params->video_cursor_x = grub_efi_system_table->con_out->mode->cursor_column;
-  params->video_cursor_y = grub_efi_system_table->con_out->mode->cursor_row;
+  params->video_cursor_x = grub_getxy () >> 8;
+  params->video_cursor_y = grub_getxy () & 0xff;
   params->video_page = 0; /* ??? */
   params->video_mode = grub_efi_system_table->con_out->mode->mode;
   params->video_width = (grub_getwh () >> 8);
@@ -758,7 +804,7 @@ grub_rescue_cmd_linux (int argc, char *argv[])
   grub_file_seek (file, real_size + GRUB_DISK_SECTOR_SIZE);
 
   /* XXX there is no way to know if the kernel really supports EFI.  */
-  grub_printf ("   [Linux-EFI, setup=0x%x, size=0x%x]\n",
+  grub_printf ("   [Linux-bzImage, setup=0x%x, size=0x%x]\n",
 	       (unsigned) real_size, (unsigned) prot_size);
 
   /* Detect explicitly specified memory size, if any.  */
@@ -814,7 +860,7 @@ grub_rescue_cmd_linux (int argc, char *argv[])
     }
 
   /* Specify the boot file.  */
-  dest = grub_stpcpy ((char *) real_mode_mem + GRUB_EFI_CL_OFFSET,
+  dest = grub_stpcpy ((char *) real_mode_mem + GRUB_LINUX_CL_OFFSET,
 		      "BOOT_IMAGE=");
   dest = grub_stpcpy (dest, argv[0]);
   
@@ -822,7 +868,7 @@ grub_rescue_cmd_linux (int argc, char *argv[])
   for (i = 1;
        i < argc
 	 && dest + grub_strlen (argv[i]) + 1 < ((char *) real_mode_mem
-						+ GRUB_EFI_CL_END_OFFSET);
+						+ GRUB_LINUX_CL_END_OFFSET);
        i++)
     {
       *dest++ = ' ';
@@ -917,11 +963,15 @@ grub_rescue_cmd_initrd (int argc, char *argv[])
 	  if (physical_end > addr_max)
 	    physical_end = addr_max;
 
-          if (physical_end < addr_min)
+	  if (physical_end < page_align (size))
             continue;
 
-	  if (physical_end > addr)
-	    addr = physical_end - page_align (size);
+	  physical_end -= page_align (size);
+
+	  if ((physical_end >= addr_min) &&
+	      (physical_end >= desc->physical_start) &&
+	      (physical_end > addr))
+	    addr = physical_end;
 	}
     }
 

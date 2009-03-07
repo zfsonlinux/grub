@@ -26,7 +26,7 @@
 #include <grub/fs.h>
 #include <grub/partition.h>
 #include <grub/pc_partition.h>
-#include <grub/util/biosdisk.h>
+#include <grub/util/hostdisk.h>
 #include <grub/util/getroot.h>
 #include <grub/term.h>
 #include <grub/env.h>
@@ -66,11 +66,8 @@ grub_getkey (void)
   return -1;
 }
 
-grub_term_t
-grub_term_get_current (void)
-{
-  return 0;
-}
+struct grub_handler_class grub_term_input_class;
+struct grub_handler_class grub_term_output_class;
 
 void
 grub_refresh (void)
@@ -142,7 +139,7 @@ probe (const char *path, char *device_name)
 	  abstraction_name = "lvm";
 	  break;
 	case GRUB_DEV_ABSTRACTION_RAID:
-	  abstraction_name = "raid";
+	  abstraction_name = "raid mdraid";
 	  break;
 	default:
 	  grub_util_info ("did not find LVM/RAID in %s, assuming raw device", device_name);

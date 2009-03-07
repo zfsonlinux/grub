@@ -1,7 +1,7 @@
 /* jfs.c - JFS.  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2004,2005,2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2004,2005,2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -614,8 +614,8 @@ grub_jfs_find_file (struct grub_jfs_data *data, const char *path)
   if (grub_jfs_read_inode (data, GRUB_JFS_AGGR_INODE, &data->currinode))
     return grub_errno;
 
-  /* Skip the first slash.  */
-  if (name[0] == '/')
+  /* Skip the first slashes.  */
+  while (*name == '/')
     {
       name++;
       if (!*name)
@@ -626,10 +626,12 @@ grub_jfs_find_file (struct grub_jfs_data *data, const char *path)
   next = grub_strchr (name, '/');
   if (next)
     {
-      next[0] = '\0';
-      next++;
+      while (*next == '/')
+	{
+	  next[0] = '\0';
+	  next++;
+	}
     }
-  
   diro = grub_jfs_opendir (data, &data->currinode);
   if (!diro)
     return grub_errno;

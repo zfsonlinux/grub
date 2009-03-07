@@ -22,13 +22,13 @@
 #include <grub/types.h>
 #include <grub/partition.h>
 #include <grub/misc.h>
-#include <grub/machine/time.h>
+#include <grub/time.h>
 #include <grub/file.h>
 
 #define	GRUB_CACHE_TIMEOUT	2
 
 /* The last time the disk was used.  */
-static unsigned long grub_last_time = 0;
+static grub_uint64_t grub_last_time = 0;
 
 
 /* Disk cache.  */
@@ -45,6 +45,10 @@ static struct grub_disk_cache grub_disk_cache_table[GRUB_DISK_CACHE_NUM];
 
 void (*grub_disk_firmware_fini) (void);
 int grub_disk_firmware_is_tainted;
+
+grub_err_t (* grub_disk_ata_pass_through) (grub_disk_t,
+	    struct grub_disk_ata_pass_through_parms *);
+
 
 #if 0
 static unsigned long grub_disk_cache_hits;
@@ -215,7 +219,7 @@ grub_disk_open (const char *name)
   grub_disk_t disk;
   grub_disk_dev_t dev;
   char *raw = (char *) name;
-  unsigned long current_time;
+  grub_uint64_t current_time;
 
   grub_dprintf ("disk", "Opening `%s'...\n", name);
 
@@ -280,10 +284,10 @@ grub_disk_open (const char *name)
 
   /* The cache will be invalidated about 2 seconds after a device was
      closed.  */
-  current_time = grub_get_rtc ();
+  current_time = grub_get_time_ms ();
 
   if (current_time > (grub_last_time
-		      + GRUB_CACHE_TIMEOUT * GRUB_TICKS_PER_SECOND))
+		      + GRUB_CACHE_TIMEOUT * 1000))
     grub_disk_cache_invalidate_all ();
   
   grub_last_time = current_time;
@@ -315,7 +319,7 @@ grub_disk_close (grub_disk_t disk)
     (disk->dev->close) (disk);
 
   /* Reset the timer.  */
-  grub_last_time = grub_get_rtc ();
+  grub_last_time = grub_get_time_ms ();
 
   grub_free (disk->partition);
   grub_free ((void *) disk->name);

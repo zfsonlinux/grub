@@ -96,8 +96,6 @@ VARIABLE(grub_install_dos_part)
 	.long	0xFFFFFFFF
 VARIABLE(grub_install_bsd_part)
 	.long	0xFFFFFFFF
-VARIABLE(grub_memdisk_image_size)
-	.long	0
 VARIABLE(grub_prefix)
 	/* to be filled by grub-mkimage */
 
@@ -112,6 +110,7 @@ VARIABLE(grub_prefix)
  * This uses the a.out kludge to load raw binary to the area starting at 1MB,
  * and relocates itself after loaded.
  */
+	.p2align	2	/* force 4-byte alignment */
 multiboot_header:
 	/* magic */
 	.long	0x1BADB002
@@ -211,7 +210,6 @@ codestart:
 	call	lzo1x_decompress
 	addl	$12, %esp
 
-	/* copy back the decompressed part */
 	movl	%eax, %ecx
 	cld
 #elif defined(ENABLE_LZMA)
@@ -221,19 +219,22 @@ codestart:
 	pushl	%esi
 	movl	EXT_C(grub_kernel_image_size), %ecx
 	addl	EXT_C(grub_total_module_size), %ecx
-	addl	EXT_C(grub_memdisk_image_size), %ecx
 	subl	$GRUB_KERNEL_MACHINE_RAW_SIZE, %ecx
 	pushl	%ecx
 	leal	(%edi, %ecx), %ebx
 	call	_LzmaDecodeA
+	/* _LzmaDecodeA clears DF, so no need to run cld */
 	popl	%ecx
 	popl	%edi
 	popl	%esi
 #endif
 
+	/* copy back the decompressed part (except the modules) */
+	subl	EXT_C(grub_total_module_size), %ecx
 	rep
 	movsb
 
+#if 0
 	/* copy modules before cleaning out the bss */
 	movl	EXT_C(grub_total_module_size), %ecx
 	movl	EXT_C(grub_kernel_image_size), %esi
@@ -246,6 +247,7 @@ codestart:
 	std
 	rep
 	movsb
+#endif
 	
 	/* clean out the bss */
 	movl	$BSS_START_SYMBOL, %edi
@@ -2051,5 +2053,104 @@ FUNCTION(grub_vbe_bios_set_palette_data)
 
 	popl	%edi
 	popl	%ebx
+	popl	%ebp
+	ret
+
+
+pxe_rm_entry:
+	.long	0
+
+/*
+ * struct grub_pxenv *grub_pxe_scan (void);
+ */
+FUNCTION(grub_pxe_scan)
+	pushl	%ebp
+	pushl	%ebx
+
+	xorl	%ebx, %ebx
+	xorl	%ecx, %ecx
+
+	call    prot_to_real
+	.code16
+
+	pushw	%es
+
+	movw	$0x5650, %ax
+	int	$0x1A
+	cmpw	$0x564E, %ax
+	jnz	1f
+	cmpl	$0x4E455850, %es:(%bx)		/* PXEN(V+)  */
+	jnz	1f
+	cmpw	$0x201, %es:6(%bx)		/* API version  */
+	jb	1f
+	lesw	%es:0x28(%bx), %bx		/* !PXE structure  */
+	cmpl	$0x45585021, %es:(%bx)		/* !PXE  */
+	jnz	1f
+	movw	%es, %cx
+	jmp	2f
+1:
+	xorw	%bx, %bx
+	xorw	%cx, %cx
+2:
+
+	popw	%es
+
+	DATA32 call	real_to_prot
+	.code32
+
+	xorl	%eax, %eax
+	leal	(%eax, %ecx, 4), %ecx
+	leal	(%ebx, %ecx, 4), %eax		/* eax = ecx * 16 + ebx  */
+
+	orl	%eax, %eax
+	jz	1f
+
+	movl	0x10(%eax), %ecx
+	movl	%ecx, pxe_rm_entry
+
+1:
+
+	popl	%ebx
+	popl	%ebp
+	ret
+
+/*
+ * int grub_pxe_call (int func, void* data);
+ */
+FUNCTION(grub_pxe_call)
+	pushl	%ebp
+	movl	%esp, %ebp
+	pushl	%esi
+	pushl	%edi
+	pushl	%ebx
+
+	movl	%eax, %ecx
+	movl	%edx, %eax
+	andl	$0xF, %eax
+	shrl	$4, %edx
+	shll	$16, %edx
+	addl	%eax, %edx
+	movl	pxe_rm_entry, %ebx
+
+	call    prot_to_real
+	.code16
+
+	pushl	%ebx
+	pushl	%edx
+	pushw	%cx
+	movw	%sp, %bx
+	lcall	*%ss:6(%bx)
+	cld
+	addw	$10, %sp
+	movw	%ax, %cx
+
+	DATA32  call	real_to_prot
+	.code32
+
+	movzwl	%cx, %eax
+
+	popl	%ebx
+	popl	%edi
+	popl	%esi
 	popl	%ebp
 	ret

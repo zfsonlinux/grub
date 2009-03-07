@@ -1,7 +1,7 @@
 /* dl.h - types and prototypes for loadable module support */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2004,2005,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2004,2005,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,10 +41,10 @@ static void \
 grub_mod_fini (void)
 
 #define GRUB_MOD_NAME(name)	\
-__asm__ (".section .modname,\"S\"\n.string \"" #name "\"\n.previous")
+__asm__ (".section .modname\n.string \"" #name "\"\n")
 
 #define GRUB_MOD_DEP(name)	\
-__asm__ (".section .moddeps,\"S\"\n.string \"" #name "\"\n.previous")
+__asm__ (".section .moddeps\n.string \"" #name "\"\n")
 
 struct grub_dl_segment
 {

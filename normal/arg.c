@@ -1,7 +1,7 @@
 /* arg.c - argument parser */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2003,2004,2005,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2003,2004,2005,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -156,10 +156,21 @@ grub_arg_show_help (grub_command_t cmd)
 		}
 	    }
 
-	  while (spacing-- > 0)
-	    grub_putchar (' ');
+	  const char *doc = opt->doc;
+	  for (;;)
+	    {
+	      while (spacing-- > 0)
+		grub_putchar (' ');
 
-	  grub_printf ("%s\n", opt->doc);
+	      while (*doc && *doc != '\n')
+		grub_putchar (*doc++);
+	      grub_putchar ('\n');
+
+	      if (! *doc)
+		break;
+	      doc++;
+	      spacing = 4 + 20;
+	    }
 
 	  switch (opt->shortarg)
 	    {
