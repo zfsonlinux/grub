@@ -51,7 +51,6 @@ grub_libusb_devices (void)
       for (usbdev = bus->devices; usbdev; usbdev = usbdev->next)
 	{
 	  struct usb_device_descriptor *desc = &usbdev->descriptor;
-	  grub_err_t err;
 
 	  if (! desc->bcdUSB)
 	    continue;
@@ -63,12 +62,7 @@ grub_libusb_devices (void)
 	  dev->data = usbdev;
 
 	  /* Fill in all descriptors.  */
-	  err = grub_usb_device_initialize (dev);
-	  if (err)
-	    {
-	      grub_errno = GRUB_ERR_NONE;
-	      continue;
-	    }
+	  grub_usb_device_initialize (dev);
 
 	  /* Register the device.  */
 	  grub_usb_devs[last++] = dev;
@@ -76,6 +70,27 @@ grub_libusb_devices (void)
     }
 
   return GRUB_USB_ERR_NONE;
+}
+
+grub_err_t
+grub_libusb_init (void)
+{
+  usb_init();
+  usb_find_busses();
+  usb_find_devices();
+
+  if (grub_libusb_devices ())
+    return grub_errno;
+
+  grub_usb_controller_dev_register (&usb_controller);  
+
+  return 0;
+}
+
+grub_err_t
+grub_libusb_fini (void)
+{
+  return 0;
 }
 
 
@@ -173,23 +188,4 @@ grub_usb_bulk_write (grub_usb_device_t dev,
  fail:
   usb_close (devh);
   return GRUB_USB_ERR_STALL;
-}
-
-GRUB_MOD_INIT (libusb)
-{
-  usb_init();
-  usb_find_busses();
-  usb_find_devices();
-
-  if (grub_libusb_devices ())
-    return;
-
-  grub_usb_controller_dev_register (&usb_controller);
-
-  return;
-}
-
-GRUB_MOD_FINI (libusb)
-{
-  return;
 }
