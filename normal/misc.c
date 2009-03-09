@@ -23,7 +23,6 @@
 #include <grub/err.h>
 #include <grub/misc.h>
 #include <grub/mm.h>
-#include <grub/datetime.h>
 
 /* Print the information on the device NAME.  */
 grub_err_t
@@ -37,7 +36,7 @@ grub_normal_print_device_info (const char *name)
     grub_printf ("\tPartition %s: ", name);
   else
     grub_printf ("Device %s: ", name);
-
+  
   dev = grub_device_open (name);
   if (! dev)
     grub_printf ("Filesystem cannot be accessed");
@@ -64,23 +63,6 @@ grub_normal_print_device_info (const char *name)
 		}
 	      grub_errno = GRUB_ERR_NONE;
 	    }
-	  if (fs->mtime)
-	    {
-	      grub_int32_t tm;
-	      struct grub_datetime datetime;
-	      (fs->mtime) (dev, &tm);
-	      if (grub_errno == GRUB_ERR_NONE)
-		{
-		  grub_unixtime2datetime (tm, &datetime);
-		  grub_printf (", Last modification time %d-%02d-%02d "
-			       "%02d:%02d:%02d %s",
-			       datetime.year, datetime.month, datetime.day,
-			       datetime.hour, datetime.minute, datetime.second,
-			       grub_get_weekday_name (&datetime));
-
-		}
-	      grub_errno = GRUB_ERR_NONE;
-	    }
 	  if (fs->uuid)
 	    {
 	      char *uuid;
@@ -98,7 +80,7 @@ grub_normal_print_device_info (const char *name)
 	grub_printf ("Unknown filesystem");
       else
 	grub_printf ("Partition table");
-
+	  
       grub_device_close (dev);
     }
 

@@ -16,6 +16,8 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#define ASM_FILE	1
+
 #include <grub/symbol.h>
 #include <grub/machine/memory.h>
 #include <grub/cpu/linux.h>
@@ -42,7 +44,7 @@ _start:
 	 *  This is a special data area at a fixed offset from the beginning.
 	 */
 
-	. = _start + GRUB_KERNEL_CPU_PREFIX
+	. = EXT_C(start) + GRUB_KERNEL_CPU_PREFIX
 
 VARIABLE(grub_prefix)
 	/* to be filled by grub-mkimage */
@@ -51,7 +53,7 @@ VARIABLE(grub_prefix)
 	 *  Leave some breathing room for the prefix.
 	 */
 
-	. = _start + GRUB_KERNEL_CPU_DATA_END
+	. = EXT_C(start) + GRUB_KERNEL_CPU_DATA_END
 
 /*
  *  Support for booting GRUB from a Multiboot boot loader (e.g. GRUB itself).
@@ -76,6 +78,14 @@ codestart:
 
 	/* jump to the main body of C code */
 	jmp EXT_C(grub_main)
+
+/*
+ *  This call is special...  it never returns...  in fact it should simply
+ *  hang at this point!
+ */
+FUNCTION(grub_stop)
+	hlt
+	jmp EXT_C(grub_stop)
 
 /*
  *  prot_to_real and associated structures (but NOT real_to_prot, that is

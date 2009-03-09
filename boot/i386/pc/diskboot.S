@@ -16,14 +16,19 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <grub/symbol.h>
 #include <grub/machine/boot.h>
-
+	
 /*
  *  defines for the code go here
  */
 
-#define MSG(x)	movw $x, %si; call LOCAL(message)
+	/* Absolute addresses
+	   This makes the assembler generate the address without support
+	   from the linker. (ELF can't relocate 16-bit addresses!) */
+#define ABS(x) (x-_start+GRUB_BOOT_MACHINE_KERNEL_ADDR)
+	
+	/* Print message string */
+#define MSG(x)	movw $ABS(x), %si; call message
 
 	.file	"diskboot.S"
 
@@ -35,18 +40,18 @@
 
 	.globl	start, _start
 start:
-_start:
+_start:	
 	/*
 	 * _start is loaded at 0x2000 and is jumped to with
 	 * CS:IP 0:0x2000 in kernel.
 	 */
 
-	/*
+	/* 
 	 * we continue to use the stack for boot.img and assume that
 	 * some registers are set to correct values. See boot.S
 	 * for more information.
 	 */
-
+	
 	/* save drive reference first thing! */
 	pushw	%dx
 
@@ -54,29 +59,30 @@ _start:
 	pushw	%si
 	MSG(notification_string)
 	popw	%si
-
+	
 	/* this sets up for the first run through "bootloop" */
-	movw	$(firstlist - GRUB_BOOT_MACHINE_LIST_SIZE), %di
+	movw	$ABS(firstlist - GRUB_BOOT_MACHINE_LIST_SIZE), %di
 
 	/* save the sector number of the second sector in %ebp */
 	movl	(%di), %ebp
 
         /* this is the loop for reading the rest of the kernel in */
-LOCAL(bootloop):
+bootloop:
 
 	/* check the number of sectors to read */
 	cmpw	$0, 8(%di)
 
 	/* if zero, go to the start function */
-	je	LOCAL(bootit)
+	je	bootit
 
-LOCAL(setup_sectors):
+setup_sectors:	
 	/* check if we use LBA or CHS */
 	cmpb	$0, -1(%si)
 
-	/* use CHS if zero, LBA otherwise */
-	je	LOCAL(chs_mode)
+	/* jump to chs_mode if zero */
+	je	chs_mode
 
+lba_mode:	
 	/* load logical sector start */
 	movl	(%di), %ebx
 	movl	4(%di), %ecx
@@ -94,7 +100,7 @@ LOCAL(setup_sectors):
 	/* if less than, set to total */
 	movw	8(%di), %ax
 
-1:
+1:	
 	/* subtract from total */
 	subw	%ax, 8(%di)
 
@@ -135,16 +141,16 @@ LOCAL(setup_sectors):
 	movb	$0x42, %ah
 	int	$0x13
 
-	jc	LOCAL(read_error)
+	jc	read_error
 
 	movw	$GRUB_BOOT_MACHINE_BUFFER_SEG, %bx
-	jmp	LOCAL(copy_buffer)
-
-LOCAL(chs_mode):
+	jmp	copy_buffer
+			
+chs_mode:	
 	/* load logical sector start (top half) */
 	movl	4(%di), %eax
 	orl	%eax, %eax
-	jnz	LOCAL(geometry_error)
+	jnz	geometry_error
 
 	/* load logical sector start (bottom half) */
 	movl	(%di), %eax
@@ -169,7 +175,7 @@ LOCAL(chs_mode):
 
 	/* do we need too many cylinders? */
 	cmpw	8(%si), %ax
-	jge	LOCAL(geometry_error)
+	jge	geometry_error
 
 	/* determine the maximum sector length of this read */
 	movw	(%si), %ax	/* get number of sectors per track/head */
@@ -187,7 +193,7 @@ LOCAL(chs_mode):
 	/* if less than, set to total */
 	movw	8(%di), %ax
 
-2:
+2:	
 	/* subtract from total */
 	subw	%ax, 8(%di)
 
@@ -239,12 +245,12 @@ LOCAL(chs_mode):
 	movb	$0x2, %ah	/* function 2 */
 	int	$0x13
 
-	jc	LOCAL(read_error)
+	jc	read_error
 
 	/* save source segment */
 	movw	%es, %bx
-
-LOCAL(copy_buffer):
+	
+copy_buffer:	
 
 	/* load addresses for copy from disk buffer to destination */
 	movw	10(%di), %es	/* load destination segment */
@@ -276,7 +282,7 @@ LOCAL(copy_buffer):
 	rep		/* sets a repeat */
 	movsw		/* this runs the actual copy */
 
-	/* restore addressing regs and print a dot with correct DS
+	/* restore addressing regs and print a dot with correct DS 
 	   (MSG modifies SI, which is saved, and unused AX and BX) */
 	popw	%ds
 	MSG(notification_step)
@@ -284,17 +290,17 @@ LOCAL(copy_buffer):
 
 	/* check if finished with this dataset */
 	cmpw	$0, 8(%di)
-	jne	LOCAL(setup_sectors)
+	jne	setup_sectors
 
 	/* update position to load from */
 	subw	$GRUB_BOOT_MACHINE_LIST_SIZE, %di
 
 	/* jump to bootloop */
-	jmp	LOCAL(bootloop)
+	jmp	bootloop
 
 /* END OF MAIN LOOP */
 
-LOCAL(bootit):
+bootit:
 	/* print a newline */
 	MSG(notification_done)
 	popw	%dx	/* this makes sure %dl is our "boot" drive */
@@ -304,30 +310,30 @@ LOCAL(bootit):
 /*
  * BIOS Geometry translation error (past the end of the disk geometry!).
  */
-LOCAL(geometry_error):
+geometry_error:
 	MSG(geometry_error_string)
-	jmp	LOCAL(general_error)
+	jmp	general_error
 
 /*
  * Read error on the disk.
  */
-LOCAL(read_error):
+read_error:
 	MSG(read_error_string)
 
-LOCAL(general_error):
+general_error:
 	MSG(general_error_string)
 
 /* go here when you need to stop the machine hard after an error condition */
-LOCAL(stop):	jmp	LOCAL(stop)
+stop:	jmp	stop
 
-notification_string:	.asciz "loading"
+notification_string:	.string "loading"
 
-notification_step:	.asciz "."
-notification_done:	.asciz "\r\n"
-
-geometry_error_string:	.asciz "Geom"
-read_error_string:	.asciz "Read"
-general_error_string:	.asciz " Error"
+notification_step:	.string "."
+notification_done:	.string "\r\n"
+	
+geometry_error_string:	.string "Geom"
+read_error_string:	.string "Read"
+general_error_string:	.string " Error"
 
 /*
  * message: write the string pointed to by %si
@@ -346,11 +352,12 @@ general_error_string:	.asciz " Error"
 	int	$0x10		/* display a byte */
 
 	incw	%si
-LOCAL(message):
+message:
 	movb	(%si), %al
 	cmpb	$0, %al
 	jne	1b	/* if not end of string, jmp to display */
 	ret
+lastlist:
 
 /*
  *  This area is an empty space between the main body of code below which
@@ -363,7 +370,7 @@ LOCAL(message):
 	.word 0
 
 	. = _start + 0x200 - GRUB_BOOT_MACHINE_LIST_SIZE
-
+	
         /* fill the first data listing with the default */
 blocklist_default_start:
 	/* this is the sector start parameter, in logical sectors from
@@ -376,5 +383,5 @@ blocklist_default_len:
 blocklist_default_seg:
 	/* this is the segment of the starting address to load the data into */
 	.word (GRUB_BOOT_MACHINE_KERNEL_SEG + 0x20)
-
+	
 firstlist:	/* this label has to be after the list data!!! */
