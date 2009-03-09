@@ -34,9 +34,7 @@
 
 #ifndef ASM_FILE
 
-#ifndef __WORDSIZE
-#include <stdint.h>
-#endif
+#include "stdint.h"
 
 /* XXX not portable? */
 #if __WORDSIZE == 64
