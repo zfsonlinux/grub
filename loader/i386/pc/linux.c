@@ -27,9 +27,9 @@
 #include <grub/types.h>
 #include <grub/machine/init.h>
 #include <grub/machine/memory.h>
+#include <grub/rescue.h>
 #include <grub/dl.h>
 #include <grub/cpu/linux.h>
-#include <grub/command.h>
 
 #define GRUB_LINUX_CL_OFFSET		0x9000
 #define GRUB_LINUX_CL_END_OFFSET	0x90FF
@@ -47,9 +47,8 @@ grub_linux_unload (void)
   return GRUB_ERR_NONE;
 }
 
-static grub_err_t
-grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
-		int argc, char *argv[])
+void
+grub_rescue_cmd_linux (int argc, char *argv[])
 {
   grub_file_t file = 0;
   struct linux_kernel_header lh;
@@ -60,7 +59,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   char *dest;
 
   grub_dl_ref (my_mod);
-
+  
   if (argc == 0)
     {
       grub_error (GRUB_ERR_BAD_ARGUMENT, "no kernel specified");
@@ -79,7 +78,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
       goto fail;
     }
 
-  if (grub_file_read (file, &lh, sizeof (lh)) != sizeof (lh))
+  if (grub_file_read (file, (char *) &lh, sizeof (lh)) != sizeof (lh))
     {
       grub_error (GRUB_ERR_READ_ERROR, "cannot read the linux header");
       goto fail;
@@ -100,27 +99,26 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   grub_linux_is_bzimage = 0;
   setup_sects = lh.setup_sects;
   linux_mem_size = 0;
-
+  
   if (lh.header == grub_cpu_to_le32 (GRUB_LINUX_MAGIC_SIGNATURE)
       && grub_le_to_cpu16 (lh.version) >= 0x0200)
     {
       grub_linux_is_bzimage = (lh.loadflags & GRUB_LINUX_FLAG_BIG_KERNEL);
       lh.type_of_loader = GRUB_LINUX_BOOT_LOADER_TYPE;
-
+      
       /* Put the real mode part at as a high location as possible.  */
-      grub_linux_real_addr
-	= (char *) UINT_TO_PTR (grub_mmap_get_lower ()
-				- GRUB_LINUX_SETUP_MOVE_SIZE);
+      grub_linux_real_addr = (char *) (grub_lower_mem
+				       - GRUB_LINUX_SETUP_MOVE_SIZE);
       /* But it must not exceed the traditional area.  */
       if (grub_linux_real_addr > (char *) GRUB_LINUX_OLD_REAL_MODE_ADDR)
 	grub_linux_real_addr = (char *) GRUB_LINUX_OLD_REAL_MODE_ADDR;
-
+      
       if (grub_le_to_cpu16 (lh.version) >= 0x0201)
 	{
 	  lh.heap_end_ptr = grub_cpu_to_le16 (GRUB_LINUX_HEAP_END_OFFSET);
 	  lh.loadflags |= GRUB_LINUX_FLAG_CAN_USE_HEAP;
 	}
-
+      
       if (grub_le_to_cpu16 (lh.version) >= 0x0202)
 	lh.cmd_line_ptr = grub_linux_real_addr + GRUB_LINUX_CL_OFFSET;
       else
@@ -135,19 +133,19 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
       /* Your kernel is quite old...  */
       lh.cl_magic = grub_cpu_to_le16 (GRUB_LINUX_CL_MAGIC);
       lh.cl_offset = grub_cpu_to_le16 (GRUB_LINUX_CL_OFFSET);
-
+      
       setup_sects = GRUB_LINUX_DEFAULT_SETUP_SECTS;
-
+      
       grub_linux_real_addr = (char *) GRUB_LINUX_OLD_REAL_MODE_ADDR;
     }
-
+  
   /* If SETUP_SECTS is not set, set it to the default (4).  */
   if (! setup_sects)
     setup_sects = GRUB_LINUX_DEFAULT_SETUP_SECTS;
-
+  
   real_size = setup_sects << GRUB_DISK_SECTOR_BITS;
   prot_size = grub_file_size (file) - real_size - GRUB_DISK_SECTOR_SIZE;
-
+  
   grub_linux_tmp_addr = (char *) GRUB_LINUX_BZIMAGE_ADDR + prot_size;
 
   if (! grub_linux_is_bzimage
@@ -158,14 +156,14 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 		  (grub_size_t) grub_linux_real_addr);
       goto fail;
     }
-
+  
   if (grub_linux_real_addr + GRUB_LINUX_SETUP_MOVE_SIZE
-      > (char *) UINT_TO_PTR (grub_mmap_get_lower ()))
+      > (char *) grub_lower_mem)
     {
       grub_error (GRUB_ERR_OUT_OF_RANGE,
 		 "too small lower memory (0x%x > 0x%x)",
-		  grub_linux_real_addr + GRUB_LINUX_SETUP_MOVE_SIZE,
-		  (int) grub_mmap_get_lower ());
+		 grub_linux_real_addr + GRUB_LINUX_SETUP_MOVE_SIZE,
+		 (char *) grub_lower_mem);
       goto fail;
     }
 
@@ -196,9 +194,9 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
     else if (grub_memcmp (argv[i], "mem=", 4) == 0)
       {
 	char *val = argv[i] + 4;
-
+	  
 	linux_mem_size = grub_strtoul (val, &val, 0);
-
+	
 	if (grub_errno)
 	  {
 	    grub_errno = GRUB_ERR_NONE;
@@ -207,7 +205,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 	else
 	  {
 	    int shift = 0;
-
+	    
 	    switch (grub_tolower (val[0]))
 	      {
 	      case 'g':
@@ -251,7 +249,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   dest = grub_stpcpy (grub_linux_tmp_addr + GRUB_LINUX_CL_OFFSET,
 		      "BOOT_IMAGE=");
   dest = grub_stpcpy (dest, argv[0]);
-
+  
   /* Copy kernel parameters.  */
   for (i = 1;
        i < argc
@@ -264,18 +262,18 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
     }
 
   len = prot_size;
-  if (grub_file_read (file, (void *) GRUB_LINUX_BZIMAGE_ADDR, len) != len)
+  if (grub_file_read (file, (char *) GRUB_LINUX_BZIMAGE_ADDR, len) != len)
     grub_error (GRUB_ERR_FILE_READ_ERROR, "Couldn't read file");
-
+ 
   if (grub_errno == GRUB_ERR_NONE)
     {
       grub_linux_prot_size = prot_size;
-      grub_loader_set (grub_linux16_boot, grub_linux_unload, 1);
+      grub_loader_set (grub_linux_boot, grub_linux_unload, 1);
       loaded = 1;
     }
 
  fail:
-
+  
   if (file)
     grub_file_close (file);
 
@@ -284,13 +282,10 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
       grub_dl_unref (my_mod);
       loaded = 0;
     }
-
-  return grub_errno;
 }
 
-static grub_err_t
-grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
-		 int argc, char *argv[])
+void
+grub_rescue_cmd_initrd (int argc, char *argv[])
 {
   grub_file_t file = 0;
   grub_ssize_t size;
@@ -302,7 +297,7 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
       grub_error (GRUB_ERR_BAD_ARGUMENT, "No module specified");
       goto fail;
     }
-
+  
   if (!loaded)
     {
       grub_error (GRUB_ERR_BAD_ARGUMENT, "You need to load the kernel first.");
@@ -361,7 +356,7 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
       goto fail;
     }
 
-  if (grub_file_read (file, (void *) addr, size) != size)
+  if (grub_file_read (file, (void *)addr, size) != size)
     {
       grub_error (GRUB_ERR_FILE_READ_ERROR, "Couldn't read file");
       goto fail;
@@ -369,29 +364,26 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
 
   lh->ramdisk_image = addr;
   lh->ramdisk_size = size;
-
+  
  fail:
   if (file)
     grub_file_close (file);
-
-  return grub_errno;
 }
 
-static grub_command_t cmd_linux, cmd_initrd;
 
-GRUB_MOD_INIT(linux16)
+GRUB_MOD_INIT(linux)
 {
-  cmd_linux =
-    grub_register_command ("linux16", grub_cmd_linux,
-			   0, "load linux");
-  cmd_initrd =
-    grub_register_command ("initrd16", grub_cmd_initrd,
-			   0, "load initrd");
+  grub_rescue_register_command ("linux",
+				grub_rescue_cmd_linux,
+				"load linux");
+  grub_rescue_register_command ("initrd",
+				grub_rescue_cmd_initrd,
+				"load initrd");
   my_mod = mod;
 }
 
-GRUB_MOD_FINI(linux16)
+GRUB_MOD_FINI(linux)
 {
-  grub_unregister_command (cmd_linux);
-  grub_unregister_command (cmd_initrd);
+  grub_rescue_unregister_command ("linux");
+  grub_rescue_unregister_command ("initrd");
 }
