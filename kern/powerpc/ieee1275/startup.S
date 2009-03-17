@@ -30,7 +30,7 @@ start:
 _start:
 	b	codestart
 
-	. = _start + GRUB_KERNEL_CPU_PREFIX
+	. = EXT_C(start) + GRUB_KERNEL_CPU_PREFIX
 
 VARIABLE(grub_prefix)
 	/* to be filled by grub-mkelfimage */
@@ -39,7 +39,7 @@ VARIABLE(grub_prefix)
 	 *  Leave some breathing room for the prefix.
 	 */
 
-	. = _start + GRUB_KERNEL_CPU_DATA_END
+	. = EXT_C(start) + GRUB_KERNEL_CPU_DATA_END
 
 codestart:
 	li      2, 0

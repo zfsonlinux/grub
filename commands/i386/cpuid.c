@@ -18,11 +18,12 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <grub/normal.h>
 #include <grub/dl.h>
+#include <grub/arg.h>
 #include <grub/misc.h>
 #include <grub/mm.h>
 #include <grub/env.h>
-#include <grub/command.h>
 
 #define cpuid(num,a,b,c,d) \
   asm volatile ("xchgl %%ebx, %1; cpuid; xchgl %%ebx, %1" \
@@ -33,15 +34,19 @@
 
 static unsigned char has_longmode = 0;
 
+static const struct grub_arg_option options[] =
+  {
+    {"long-mode", 'l', 0, "check for long mode flag (default)", 0, 0},
+    {0, 0, 0, 0, 0, 0}
+  };
+
 static grub_err_t
-grub_cmd_cpuid (struct grub_command *cmd __attribute__ ((unused)),
+grub_cmd_cpuid (struct grub_arg_list *state __attribute__ ((unused)),
 	       int argc __attribute__ ((unused)),
 	       char **args __attribute__ ((unused)))
 {
   return !has_longmode;
 }
-
-static grub_command_t cmd;
 
 GRUB_MOD_INIT(cpuid)
 {
@@ -78,11 +83,11 @@ GRUB_MOD_INIT(cpuid)
 done:
 #endif
 
-  cmd = grub_register_command ("cpuid", grub_cmd_cpuid,
-			       0, "Check for CPU features");
+  grub_register_command ("cpuid", grub_cmd_cpuid, GRUB_COMMAND_FLAG_CMDLINE,
+			 "cpuid", "Check for CPU features", options);
 }
 
 GRUB_MOD_FINI(cpuid)
 {
-  grub_unregister_command (cmd);
+  grub_unregister_command ("cpuid");
 }
