@@ -25,7 +25,6 @@
 #include <grub/disk.h>
 #include <grub/file.h>
 #include <grub/parser.h>
-#include <grub/extcmd.h>
 
 /* The current word.  */
 static char *current_word;
@@ -69,7 +68,7 @@ add_completion (const char *completion, const char *extra,
 	case 2:
 	  if (print_func)
 	    print_func (match, type, 0);
-
+	  
 	  /* Fall through.  */
 
 	default:
@@ -79,7 +78,7 @@ add_completion (const char *completion, const char *extra,
 
 	    if (print_func)
 	      print_func (completion, type, num_found - 1);
-
+			    
 	    /* Detect the matched portion.  */
 	    while (*s && *t && *s == *t)
 	      {
@@ -92,7 +91,7 @@ add_completion (const char *completion, const char *extra,
 	  break;
 	}
     }
-
+      
   return 0;
 }
 
@@ -103,7 +102,7 @@ iterate_partition (grub_disk_t disk, const grub_partition_t p)
   char *partition_name = grub_partition_get_name (p);
   char *name;
   int ret;
-
+  
   if (! partition_name)
     return 1;
 
@@ -117,16 +116,16 @@ iterate_partition (grub_disk_t disk, const grub_partition_t p)
 
   grub_sprintf (name, "%s,%s", disk_name, partition_name);
   grub_free (partition_name);
-
+  
   ret = add_completion (name, ")", GRUB_COMPLETION_TYPE_PARTITION);
   grub_free (name);
   return ret;
 }
 
 static int
-iterate_dir (const char *filename, const struct grub_dirhook_info *info)
+iterate_dir (const char *filename, int dir)
 {
-  if (! info->dir)
+  if (! dir)
     {
       const char *prefix;
       if (cmdline_state == GRUB_PARSER_STATE_DQUOTE)
@@ -147,7 +146,7 @@ iterate_dir (const char *filename, const struct grub_dirhook_info *info)
       if (add_completion (fname, "", GRUB_COMPLETION_TYPE_FILE))
 	return 1;
     }
-
+  
   return 0;
 }
 
@@ -155,10 +154,10 @@ static int
 iterate_dev (const char *devname)
 {
   grub_device_t dev;
-
+  
   /* Complete the partition part.  */
   dev = grub_device_open (devname);
-
+  
   if (dev)
     {
       if (dev->disk && dev->disk->has_partitions)
@@ -172,7 +171,7 @@ iterate_dev (const char *devname)
 	    return 1;
 	}
     }
-
+  
   grub_errno = GRUB_ERR_NONE;
   return 0;
 }
@@ -180,7 +179,7 @@ iterate_dev (const char *devname)
 static int
 iterate_command (grub_command_t cmd)
 {
-  if (cmd->prio & GRUB_PRIO_LIST_FLAG_ACTIVE)
+  if (grub_command_find (cmd->name))
     {
       if (cmd->flags & GRUB_COMMAND_FLAG_CMDLINE)
 	{
@@ -188,7 +187,7 @@ iterate_command (grub_command_t cmd)
 	    return 1;
 	}
     }
-
+  
   return 0;
 }
 
@@ -199,7 +198,7 @@ complete_device (void)
   /* Check if this is a device or a partition.  */
   char *p = grub_strchr (++current_word, ',');
   grub_device_t dev;
-
+  
   if (! p)
     {
       /* Complete the disk part.  */
@@ -213,7 +212,7 @@ complete_device (void)
       dev = grub_device_open (current_word);
       *p = ',';
       grub_errno = GRUB_ERR_NONE;
-
+      
       if (dev)
 	{
 	  if (dev->disk && dev->disk->has_partitions)
@@ -224,7 +223,7 @@ complete_device (void)
 		  return 1;
 		}
 	    }
-
+	  
 	  grub_device_close (dev);
 	}
       else
@@ -244,18 +243,18 @@ complete_file (void)
   grub_fs_t fs;
   grub_device_t dev;
   int ret = 0;
-
+  
   device = grub_file_get_device_name (current_word);
   if (grub_errno != GRUB_ERR_NONE)
     return 1;
-
+  
   dev = grub_device_open (device);
   if (! dev)
     {
       ret = 1;
       goto fail;
     }
-
+  
   fs = grub_fs_probe (dev);
   if (! fs)
     {
@@ -268,25 +267,25 @@ complete_file (void)
   if (dir)
     {
       char *dirfile;
-
+      
       current_word = last_dir + 1;
-
+      
       dir = grub_strdup (dir);
       if (! dir)
 	{
 	  ret = 1;
 	  goto fail;
 	}
-
+      
       /* Cut away the filename part.  */
       dirfile = grub_strrchr (dir, '/');
       dirfile[1] = '\0';
-
+      
       /* Iterate the directory.  */
       (fs->dir) (dev, dir, iterate_dir);
-
+      
       grub_free (dir);
-
+      
       if (grub_errno)
 	{
 	  ret = 1;
@@ -302,7 +301,7 @@ complete_file (void)
 	  ret = 1;
 	  goto fail;
 	}
-
+      
       suffix = "";
       num_found = 1;
     }
@@ -319,24 +318,19 @@ static int
 complete_arguments (char *command)
 {
   grub_command_t cmd;
-  grub_extcmd_t ext;
   const struct grub_arg_option *option;
   char shortarg[] = "- ";
 
-  cmd = grub_command_find (command);
+  cmd = grub_command_find (command); 
 
-  if (!cmd || !(cmd->flags & GRUB_COMMAND_FLAG_EXTCMD))
-    return 0;
-
-  ext = cmd->data;
-  if (!ext->options)
+  if (!cmd || !cmd->options)
     return 0;
 
   if (add_completion ("-u", " ", GRUB_COMPLETION_TYPE_ARGUMENT))
     return 1;
 
   /* Add the short arguments.  */
-  for (option = ext->options; option->doc; option++)
+  for (option = cmd->options; option->doc; option++)
     {
       if (! option->shortarg)
 	continue;
@@ -354,7 +348,7 @@ complete_arguments (char *command)
     return 1;
 
   /* Add the long arguments.  */
-  for (option = ext->options; option->doc; option++)
+  for (option = cmd->options; option->doc; option++)
     {
       char *longarg;
       if (!option->longarg)
@@ -418,7 +412,7 @@ grub_normal_do_completion (char *buf, int *restore,
   if (argc == 0)
     {
       /* Complete a command.  */
-      if (grub_command_iterate (iterate_command))
+      if (grub_iterate_commands (iterate_command))
 	goto fail;
     }
   else if (*current_word == '-')
@@ -478,13 +472,13 @@ grub_normal_do_completion (char *buf, int *restore,
 
       if (num_found == 1)
 	grub_strcat (ret, suffix);
-
+      
       if (*ret == '\0')
 	{
 	  grub_free (ret);
           goto fail;
 	}
-
+      
       grub_free (argv[0]);
       grub_free (match);
       return ret;
