@@ -41,7 +41,6 @@ enum grub_disk_dev_id
     GRUB_DISK_DEVICE_UUID_ID,
     GRUB_DISK_DEVICE_PXE_ID,
     GRUB_DISK_DEVICE_SCSI_ID,
-    GRUB_DISK_DEVICE_FILE_ID,
   };
 
 struct grub_disk;
@@ -56,8 +55,8 @@ struct grub_disk_dev
   const char *name;
 
   /* The device id used by the cache manager.  */
-  enum grub_disk_dev_id id;
-
+  unsigned long id;
+  
   /* Call HOOK with each device name, until HOOK returns non-zero.  */
   int (*iterate) (int (*hook) (const char *name));
 
@@ -103,7 +102,7 @@ struct grub_disk
 
   /* The id used by the disk cache manager.  */
   unsigned long id;
-
+  
   /* The partition information. This is machine-specific.  */
   struct grub_partition *partition;
 
@@ -150,12 +149,12 @@ grub_err_t EXPORT_FUNC(grub_disk_read) (grub_disk_t disk,
 					grub_disk_addr_t sector,
 					grub_off_t offset,
 					grub_size_t size,
-					void *buf);
+					char *buf);
 grub_err_t EXPORT_FUNC(grub_disk_write) (grub_disk_t disk,
 					 grub_disk_addr_t sector,
 					 grub_off_t offset,
 					 grub_size_t size,
-					 const void *buf);
+					 const char *buf);
 
 grub_uint64_t EXPORT_FUNC(grub_disk_get_size) (grub_disk_t disk);
 
@@ -172,5 +171,12 @@ struct grub_disk_ata_pass_through_parms
 
 extern grub_err_t (* EXPORT_VAR(grub_disk_ata_pass_through)) (grub_disk_t,
 		   struct grub_disk_ata_pass_through_parms *);
+
+#ifdef GRUB_UTIL
+void grub_raid_init (void);
+void grub_raid_fini (void);
+void grub_lvm_init (void);
+void grub_lvm_fini (void);
+#endif
 
 #endif /* ! GRUB_DISK_HEADER */

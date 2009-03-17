@@ -17,9 +17,10 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <grub/normal.h>
 #include <grub/dl.h>
+#include <grub/arg.h>
 #include <grub/misc.h>
-#include <grub/extcmd.h>
 
 static const struct grub_arg_option options[] =
   {
@@ -28,10 +29,10 @@ static const struct grub_arg_option options[] =
     {0, 0, 0, 0, 0, 0}
   };
 
+
 static grub_err_t
-grub_cmd_echo (grub_extcmd_t cmd, int argc, char **args)
+grub_cmd_echo (struct grub_arg_list *state, int argc, char **args)
 {
-  struct grub_arg_list *state = cmd->state;
   int newline = 1;
   int i;
 
@@ -90,7 +91,7 @@ grub_cmd_echo (grub_extcmd_t cmd, int argc, char **args)
 	      arg++;
 	      continue;
 	    }
-
+	  
 	  /* This was not an escaped character, or escaping is not
 	     enabled.  */
 	  grub_printf ("%c", *arg);
@@ -108,16 +109,16 @@ grub_cmd_echo (grub_extcmd_t cmd, int argc, char **args)
   return 0;
 }
 
-static grub_extcmd_t cmd;
 
 GRUB_MOD_INIT(echo)
 {
-  cmd = grub_register_extcmd ("echo", grub_cmd_echo, GRUB_COMMAND_FLAG_BOTH,
-			      "echo [-e|-n] STRING", "Display a line of text.",
-			      options);
+  (void) mod;			/* To stop warning. */
+  grub_register_command ("echo", grub_cmd_echo, GRUB_COMMAND_FLAG_BOTH,
+			 "echo [-e|-n] FILE", "Display a line of text.",
+			 options);
 }
 
 GRUB_MOD_FINI(echo)
 {
-  grub_unregister_extcmd (cmd);
+  grub_unregister_command ("echo");
 }

@@ -36,7 +36,7 @@ grub_usb_control_msg (grub_usb_device_t dev,
   int datablocks;
   struct grub_usb_packet_setup setupdata;
   grub_usb_err_t err;
-  unsigned int max;
+  int max;
 
   grub_dprintf ("usb",
 		"control: reqtype=0x%02x req=0x%02x val=0x%02x idx=0x%02x size=%d\n",
@@ -54,7 +54,7 @@ grub_usb_control_msg (grub_usb_device_t dev,
     max = 64;
 
   datablocks = (size + max - 1) / max;
-
+  
   /* XXX: Discriminate between different types of control
      messages.  */
   transfer->transcnt = datablocks + 2;
@@ -74,7 +74,7 @@ grub_usb_control_msg (grub_usb_device_t dev,
       return grub_errno;
     }
 
-  /* Build a Setup packet.  XXX: Endianness.  */
+  /* Build a Setup packet.  XXX: Endianess.  */
   setupdata.reqtype = reqtype;
   setupdata.request = request;
   setupdata.value = value;
@@ -110,7 +110,7 @@ grub_usb_control_msg (grub_usb_device_t dev,
     transfer->transactions[datablocks + 1].pid = GRUB_USB_TRANSFER_TYPE_OUT;
   else
     transfer->transactions[datablocks + 1].pid = GRUB_USB_TRANSFER_TYPE_IN;
-
+  
   transfer->transactions[datablocks + 1].toggle = 1;
 
   err = dev->controller.dev->transfer (&dev->controller, transfer);
@@ -184,7 +184,7 @@ grub_usb_bulk_readwrite (grub_usb_device_t dev,
       tr->data = &data[i * max];
       size -= tr->size;
     }
-
+ 
   err = dev->controller.dev->transfer (&dev->controller, transfer);
   grub_dprintf ("usb", "toggle=%d\n", toggle);
   dev->toggle[endpoint] = toggle;

@@ -18,7 +18,6 @@
 
 #include <grub/cpu/io.h>
 #include <grub/cpu/halt.h>
-#include <grub/machine/init.h>
 #include <grub/misc.h>
 
 const char bochs_shutdown[] = "Shutdown";
@@ -26,7 +25,7 @@ const char bochs_shutdown[] = "Shutdown";
 void
 grub_halt (void)
 {
-  unsigned int i;
+  int i;
 
   /* Disable interrupts.  */
   __asm__ __volatile__ ("cli");
