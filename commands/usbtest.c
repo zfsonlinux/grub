@@ -22,8 +22,8 @@
 #include <grub/mm.h>
 #include <grub/err.h>
 #include <grub/dl.h>
+#include <grub/normal.h>
 #include <grub/usb.h>
-#include <grub/command.h>
 
 static const char *usb_classes[] =
   {
@@ -51,7 +51,7 @@ static const char *usb_endp_type[] =
     "Interrupt"
   };
 
-static const char *usb_devspeed[] =
+static const char *usb_devspeed[] = 
   {
     "",
     "Low",
@@ -84,7 +84,7 @@ usb_iterate (grub_usb_device_t dev)
   usb_print_str ("Product", dev, descdev->strprod);
   usb_print_str ("Vendor", dev, descdev->strvendor);
   usb_print_str ("Serial", dev, descdev->strserial);
-
+  
   if (descdev->class > 0 && descdev->class <= 0x0E)
     grub_printf ("Class: (0x%02x) %s, Subclass: 0x%02x, Protocol: 0x%02x\n",
 		 descdev->class, usb_classes[descdev->class],
@@ -137,7 +137,7 @@ usb_iterate (grub_usb_device_t dev)
 }
 
 static grub_err_t
-grub_cmd_usbtest (grub_command_t cmd __attribute__ ((unused)),
+grub_cmd_usbtest (struct grub_arg_list *state __attribute__ ((unused)),
 		  int argc __attribute__ ((unused)),
 		  char **args __attribute__ ((unused)))
 {
@@ -147,15 +147,14 @@ grub_cmd_usbtest (grub_command_t cmd __attribute__ ((unused)),
   return 0;
 }
 
-static grub_command_t cmd;
-
 GRUB_MOD_INIT(usbtest)
 {
-  cmd = grub_register_command ("usb", grub_cmd_usbtest,
-			       0, "Test USB support");
+  (void)mod;			/* To stop warning. */
+  grub_register_command ("usb", grub_cmd_usbtest, GRUB_COMMAND_FLAG_BOTH,
+			 "usb", "Test USB support", 0);
 }
 
 GRUB_MOD_FINI(usbtest)
 {
-  grub_unregister_command (cmd);
+  grub_unregister_command ("usb");
 }
