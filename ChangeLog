@@ -1,3 +1,45 @@
+2009-03-14  Robert Millan  <rmh@aybabtu.com>
+
+	Fix build on powerpc.
+	* conf/powerpc-ieee1275.rmk (kernel_elf_HEADERS): Add `handler.h'.
+
+2009-03-12  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	* term/gfxterm.c (GRUB_MOD_FINI(term_gfxterm)): Correct name of
+	background image command.
+
+2009-03-12  Colin D Bennett  <colin@gibibit.com>
+
+	* term/gfxterm.c (draw_cursor): Ensure character is redrawn.
+	(grub_gfxterm_putchar): Extract pairs of identical calls to
+	draw_cursor out of conditional blocks.
+
+2009-03-11  Pavel Roskin  <proski@gnu.org>
+
+	* fs/hfs.c (grub_hfs_strncasecmp): New function.
+	(grub_hfs_cmp_catkeys): Use HFS specific string comparison.
+
+2009-03-11  Robert Millan  <rmh@aybabtu.com>
+
+	* loader/i386/multiboot_elfxx.c
+	(CONCAT(grub_multiboot_load_elf, XX)): Do not reject ET_DYN files.
+
+2009-03-11  Felix Zielcke  <fzielcke@z-51.de>
+
+	* conf/powerpc-ieee1275.rmk (kernel_elf_SOURCES): Add `kern/list.c' and
+	`kern/handler.c'.
+
+2009-03-11  Robert Millan  <rmh@aybabtu.com>
+
+	* loader/i386/multiboot.c (code_size): New variable.
+	(grub_multiboot): Define offsets by adding to `code_size' rather
+	than substracting from `grub_multiboot_payload_size'.  Provide
+	4-byte alignment to MBI and others by increasing
+	`boot_loader_name_length' appropiately.
+
+	* loader/i386/multiboot_elfxx.c
+	(CONCAT(grub_multiboot_load_elf, XX)): Initialize `code_size'.
+
 2009-03-09  Felix Zielcke  <fzielcke@z-51.de>
 
 	* conf/powerpc-ieee1275.rmk (grub_emu_SOURCES): Remove duplicated
