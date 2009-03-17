@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2003,2004,2005,2006,2007,2008,2009  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2003,2004,2005,2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 #include <grub/machine/memory.h>
 #include <grub/machine/console.h>
 #include <grub/machine/kernel.h>
-#include <grub/machine/machine.h>
 #include <grub/types.h>
 #include <grub/err.h>
 #include <grub/dl.h>
@@ -35,7 +34,6 @@
 #include <grub/symbol.h>
 #include <grub/cpu/io.h>
 #include <grub/cpu/kernel.h>
-#include <grub/cpu/tsc.h>
 
 #define GRUB_FLOPPY_REG_DIGITAL_OUTPUT		0x3f2
 
@@ -76,17 +74,23 @@ grub_machine_init (void)
 {
   /* Initialize the console as early as possible.  */
   grub_vga_text_init ();
+  grub_at_keyboard_init ();
 
   auto int NESTED_FUNC_ATTR heap_init (grub_uint64_t, grub_uint64_t, grub_uint32_t);
   int NESTED_FUNC_ATTR heap_init (grub_uint64_t addr, grub_uint64_t size, grub_uint32_t type)
   {
 #if GRUB_CPU_SIZEOF_VOID_P == 4
     /* Restrict ourselves to 32-bit memory space.  */
-    if (addr > GRUB_ULONG_MAX)
-      return 0;
-    if (addr + size > GRUB_ULONG_MAX)
-      size = GRUB_ULONG_MAX - addr;
+    if (addr > ULONG_MAX)
+      {
+	grub_upper_mem = ULONG_MAX;
+	return 0;
+      }
+    if (addr + size > ULONG_MAX)
+      size = ULONG_MAX - addr;
 #endif
+
+    grub_upper_mem = grub_max (grub_upper_mem, addr + size);
 
     if (type != GRUB_MACHINE_MEMORY_AVAILABLE)
       return 0;
@@ -124,6 +128,9 @@ grub_machine_init (void)
   grub_machine_mmap_init ();
   grub_machine_mmap_iterate (heap_init);
 
+  /* This variable indicates size, not offset.  */
+  grub_upper_mem -= GRUB_MEMORY_MACHINE_UPPER_START;
+
   grub_tsc_init ();
 }
 
@@ -137,17 +144,13 @@ grub_machine_set_prefix (void)
 void
 grub_machine_fini (void)
 {
+  grub_at_keyboard_fini ();
   grub_vga_text_fini ();
-  grub_stop_floppy ();
 }
 
 /* Return the end of the core image.  */
 grub_addr_t
 grub_arch_modules_addr (void)
 {
-#ifdef GRUB_MACHINE_QEMU
-  return grub_core_entry_addr + grub_kernel_image_size;
-#else
   return ALIGN_UP((grub_addr_t) _end, GRUB_MOD_ALIGN);
-#endif
 }
