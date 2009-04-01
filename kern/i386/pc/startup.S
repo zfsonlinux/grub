@@ -53,7 +53,7 @@
 #include <multiboot.h>
 #include <multiboot2.h>
 		
-#define ABS(x)	((x) - EXT_C(start) + GRUB_BOOT_MACHINE_KERNEL_ADDR + 0x200)
+#define ABS(x)	((x) - _start + GRUB_BOOT_MACHINE_KERNEL_ADDR + 0x200)
 	
 	.file	"startup.S"
 
@@ -77,14 +77,14 @@ _start:
 	 *  These MUST be at byte offset 6 and 7 of the executable
 	 *  DO NOT MOVE !!!
 	 */
-	. = EXT_C(start) + 0x6
+	. = _start + 0x6
 	.byte	GRUB_BOOT_VERSION_MAJOR, GRUB_BOOT_VERSION_MINOR
 
 	/*
 	 *  This is a special data area 8 bytes from the beginning.
 	 */
 
-	. = EXT_C(start) + 0x8
+	. = _start + 0x8
 
 VARIABLE(grub_total_module_size)
 	.long	0
@@ -103,7 +103,7 @@ VARIABLE(grub_prefix)
 	 *  Leave some breathing room for the prefix.
 	 */
 
-	. = EXT_C(start) + GRUB_KERNEL_MACHINE_DATA_END
+	. = _start + GRUB_KERNEL_MACHINE_DATA_END
 
 /*
  * Support for booting GRUB from a Multiboot boot loader (e.g. GRUB itself).
@@ -202,7 +202,7 @@ codestart:
 #if defined(ENABLE_LZO)
 	/* decompress the compressed part and put the result at 1MB */
 	movl	$GRUB_MEMORY_MACHINE_DECOMPRESSION_ADDR, %esi
-	movl	$(START_SYMBOL + GRUB_KERNEL_MACHINE_RAW_SIZE), %edi
+	movl	$(_start + GRUB_KERNEL_MACHINE_RAW_SIZE), %edi
 
 	pushl	%esi
 	pushl	EXT_C(grub_compressed_size)
@@ -214,7 +214,7 @@ codestart:
 	cld
 #elif defined(ENABLE_LZMA)
 	movl	$GRUB_MEMORY_MACHINE_DECOMPRESSION_ADDR, %edi
-	movl	$(START_SYMBOL + GRUB_KERNEL_MACHINE_RAW_SIZE), %esi
+	movl	$(_start + GRUB_KERNEL_MACHINE_RAW_SIZE), %esi
 	pushl	%edi
 	pushl	%esi
 	movl	EXT_C(grub_kernel_image_size), %ecx
@@ -239,7 +239,7 @@ codestart:
 	movl	EXT_C(grub_total_module_size), %ecx
 	movl	EXT_C(grub_kernel_image_size), %esi
 	addl	%ecx, %esi
-	addl	$START_SYMBOL, %esi
+	addl	$_start, %esi
 	decl	%esi
 	movl	$END_SYMBOL, %edi
 	addl	%ecx, %edi
@@ -282,7 +282,7 @@ VARIABLE(grub_root_drive)
 	.long	0
 
 VARIABLE(grub_start_addr)
-	.long	START_SYMBOL
+	.long	_start
 
 VARIABLE(grub_end_addr)
 	.long	END_SYMBOL
@@ -510,7 +510,7 @@ gate_a20_check_state:
  * The code beyond this point is compressed.  Assert that the uncompressed
  * code fits GRUB_KERNEL_MACHINE_RAW_SIZE.
  */
-	. = EXT_C(start) + GRUB_KERNEL_MACHINE_RAW_SIZE
+	. = _start + GRUB_KERNEL_MACHINE_RAW_SIZE
 
 /*
  *  This call is special...  it never returns...  in fact it should simply
