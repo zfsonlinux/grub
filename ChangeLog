@@ -1,3 +1,440 @@
+2009-03-30  Robert Millan  <rmh@aybabtu.com>
+
+	Fix i386-ieee1275 build.
+
+	* include/grub/i386/ieee1275/loader.h (grub_multiboot2_real_boot):
+	Remove declaration.
+
+2009-03-30  Pavel Roskin  <proski@gnu.org>
+
+	* fs/hfs.c (grub_hfs_strncasecmp): Integrate into ...
+	(grub_hfs_cmp_catkeys): ... this.  Don't assume strings to be
+	zero-terminated, rely only on the strlen value.  Fix comparison
+	of strings differing in length.
+
+2009-03-30  Robert Millan  <rmh@aybabtu.com>
+
+	* loader/i386/linux.c (grub_cmd_linux): Check for zImage before
+	checking for abi version.  Improve error messages on BIOS to notify
+	user about `linux16' command.
+
+2009-03-29  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	Leak fixes
+
+	* kern/disk.c (grub_disk_cache_store): Invalidate previous cache
+	in case of collision
+	* disk/scsi.c (grub_scsi_open): free scsi in case of error
+
+2009-03-29  Robert Millan  <rmh@aybabtu.com>
+
+	* loader/i386/linux.c (grub_cmd_linux): Parse "vga=" parameter and
+	set `vid_mode' accordingly.
+	(grub_linux_boot): Process `vid_mode' and set video mode.
+
+2009-03-29  Robert Millan  <rmh@aybabtu.com>
+
+	* util/grub.d/10_linux.in (linux_entry): New function.
+	Factorize generation of Linux boot entries.
+
+2009-03-29  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	Make the format of Environment Block plain text. The boot loader
+	part is not tested well yet.
+	
+	* util/grub-editenv.c (DEFAULT_ENVBLK_SIZE): New macro.
+	(buffer): Removed.
+	(envblk): Likewise.
+	(usage): Remove "info" and "clear". Add "unset". Update the
+	description of "set", as this does not delete variables any
+	longer.
+	(create_envblk_file): Complete rewrite.
+	(open_envblk_file): Likewise.
+	(cmd_info): Removed.
+	(cmd_list): Likewise.
+	(cmd_set): Likewise.
+	(cmd_clear): Likewise.
+	(list_variables): New function.
+	(write_envblk): Likewise.
+	(set_variables): Likewise.
+	(unset_variables): Likewise.
+	(main): Complete rewrite.
+
+	* commands/loadenv.c (buffer): Removed.
+	(envblk): Likewise.
+	(open_envblk_file): New function.
+	(read_envblk_file): Complete rewrite.
+	(grub_cmd_load_env): Likewise.
+	(grub_cmd_list_env): Likewise.
+	(struct blocklist): New struct.
+	(free_blocklists): New function.
+	(check_blocklists): Likewise.
+	(write_blocklists): Likewise.
+	(grub_cmd_save_env): Complete rewrite.
+
+	* include/grub/lib/envblk.h (GRUB_ENVBLK_SIGNATURE): Replaced with
+	a plain text signature.
+	(GRUB_ENVBLK_MAXLEN): Removed.
+	(struct grub_envblk): Complete rewrite.
+	(grub_envblk_find): Removed.
+	(grub_envblk_insert): Likewise.
+	(grub_envblk_open): New prototype.
+	(grub_envblk_set): Likewise.
+	(grub_envblk_delete): Put const to VALUE.
+	(grub_envblk_iterate): Put const to NAME and VALUE.
+	(grub_envblk_close): New prototype.
+	(grub_envblk_buffer): New inline function.
+	(grub_envblk_size): Likewise.
+
+	* lib/envblk.c: Include grub/mm.h.
+	(grub_env_find): Removed.
+	(grub_envblk_open): New function.
+	(grub_envblk_close): Likewise.
+	(escaped_value_len): Likewise.
+	(find_next_line): Likewise.
+	(grub_envblk_insert): Removed.
+	(grub_envblk_set): New function.
+	(grub_envblk_delete): Complete rewrite.
+	(grub_envblk_iterate): Likewise.
+
+2009-03-28  Robert Millan  <rmh@aybabtu.com>
+
+	* conf/i386-pc.rmk (pkglib_MODULES): Add `linux16.mod'.
+	(linux16_mod_SOURCES, linux16_mod_CFLAGS, linux16_mod_LDFLAGS): New
+	variables.  Use 16-bit loader.
+	(linux_mod_SOURCES, linux_mod_CFLAGS, linux_mod_LDFLAGS): Use 32-bit
+	loader.
+	* kern/i386/loader.S (grub_linux_boot): Rename to ...
+	(grub_linux16_boot): ... this.  Update all users.
+	* loader/i386/linux.c (grub_linux32_boot): Rename to ...
+	(grub_linux_boot): ... this.  Update all users.
+
+	* loader/i386/pc/linux.c (GRUB_MOD_INIT(linux)): Rename to ...
+	(GRUB_MOD_INIT(linux16)): ... this.  Rename `linux' and `initrd'
+	commands to `linux16' and `initrd16'.
+	(GRUB_MOD_FINI(linux)): Rename to ...
+	(GRUB_MOD_FINI(linux16)): ... this.
+
+2009-03-24  Pavel Roskin  <proski@gnu.org>
+
+	* genmk.rb: Define ASM_FILE for *.S files for *.lst generation,
+	not just for compilation.
+
+2009-03-22  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	Move multiboot helper out of kernel
+
+	* conf/i386-pc.rmk (multiboot_mod_SOURCES): Add
+	`loader/i386/multiboot_helper.S'.
+	* conf/i386-coreboot.rmk: Likewise
+	* conf/i386-ieee1275.rmk: Likewise
+
+	* kern/i386/loader.S: Move multiboot helpers from here...
+	* loader/i386/multiboot_helper.S: ...moved here
+	* include/grub/i386/loader.h: Move declarations of multiboot
+	helpers from here...
+	* include/grub/i386/multiboot.h: ...moved here
+	* loader/i386/multiboot.c: Added include of grub/cpu/multiboot.h
+
+2009-03-22  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* kern/env.c (grub_env_context_open): Added an argument to specify
+	whether a new context inherits exported variables from current
+	one. This is useful when making a sandbox to interpret a config
+	file.
+	All callers updated.
+
+	* include/grub/env.h (grub_env_context_open): Updated the prototype.
+
+2009-03-22  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* kern/env.c (grub_env_context_close): Fix memory leaks.
+
+2009-03-22  Yoshinori K. Okuji  <okuji@enbug.org>
+
+	* normal/main.c (grub_normal_execute): Added an argument
+	BATCH to specify if an interactive interface should be provided
+	after reading a config file.
+	All callers updated.
+	(read_command_list): Prevent being executed twice.
+	(read_fs_list): Likewise.
+
+	* include/grub/normal.h (grub_normal_execute): Updated the
+	prototype.
+
+2009-03-22  Pavel Roskin  <proski@gno.org>
+
+	* kern/powerpc/ieee1275/startup.S: Replace EXT_C(start) with
+	_start.
+	* kern/i386/pc/startup.S: Likewise.
+	* kern/i386/efi/startup.S: Likewise.
+	* kern/i386/ieee1275/startup.S: Likewise.
+	* kern/i386/coreboot/startup.S: Likewise.
+	* kern/x86_64/efi/startup.S: Likewise.
+
+	* aclocal.m4 (grub_CHECK_START_SYMBOL): Remove.
+	* configure.ac: Don't call grub_CHECK_START_SYMBOL.
+	* kern/i386/pc/startup.S: Use _start instead of START_SYMBOL.
+
+2009-03-21  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	Bugfixes in multiboot for bugs uncovered by solaris kernel.
+
+	* loader/i386/multiboot_elfxx.c (grub_multiboot_load_elf): Corrected
+	limit detection.
+	Use vaddr of correct segment for entry_point.
+
+2009-03-21  Bean  <bean123ch@gmail.com>
+
+	* commands/blocklist.c: Add include file <grub/command.h>, remove
+	<grub/normal.h> and <grub/arg.h>.
+	(grub_cmd_blocklist): Use the new command interface.
+	(GRUB_MOD_INIT): Likewise.
+	(GRUB_MOD_FINI): Likewise.
+	* commands/boot.c: Likewise.
+	* commands/cat.c: Likewise.
+	* commands/cmp.c: Likewise.
+	* commands/configfile.c: Likewise.
+	* commands/crc.c: Likewise.
+	* commands/echo.c: Likewise.
+	* commands/halt.c: Likewise.
+	* commands/handler.c: Likewise.
+	* commands/hdparm.c: Likewise.
+	* commands/help.c: Likewise.
+	* commands/hexdump.c: Likewise.
+	* commands/loadenv.c: Likewise.
+	* commands/ls.c: Likewise.
+	* commands/lsmmap.c: Likewise.
+	* commands/lspci.c: Likewise.
+	* commands/loadenv.c: Likewise.
+	* commands/read.c: Likewise.
+	* commands/reboot.c: Likewise.
+	* commands/search.c: Likewise.
+	* commands/sleep.c: Likewise.
+	* commands/test.c: Likewise.
+	* commands/usbtest.c: Likewise.
+	* commands/videotest.c: Likewise.
+	* commands/i386/cpuid.c: Likewise.
+	* commands/i386/pc/halt.c: Likewise.
+	* commands/i386/pc/play.c: Likewise.
+	* commands/i386/pc/pxecmd.c: Likewise.
+	* commands/i386/pc/vbeinfo.c: Likewise.
+	* commands/i386/pc/vbetest.c: Likewise.
+	* commands/ieee1275/suspend.c: Likewise.
+	* disk/loopback.c: Likewise.
+	* font/font_cmd.c: Likewise.
+	* hello/hello.c: Likewise.
+	* loader/efi/appleloader.c: Likewise.
+	* loader/efi/chainloader.c: Likewise.
+	* loader/i386/bsd.c: Likewise.
+	* loader/i386/efi/linux.c: Likewise.
+	* loader/i386/ieee1275/linux.c: Likewise.
+	* loader/i386/linux.c: Likewise.
+	* loader/i386/pc/chainloader.c: Likewise.
+	* loader/i386/pc/linux.c: Likewise.
+	* loader/powerpc/ieee1275/linux.c: Likewise.
+	* loader/multiboot_loader.c: Likewise.
+	* term/gfxterm.c: Likewise.
+	* term/i386/pc/serial.c: Likewise.
+	* term/terminfo.c: Likewise.
+
+	* term/i386/pc/vesafb.c: Removed <grub/arg.h>.
+	* term/i386/pc/vga.c: Likewise.
+	* video/readers/jpeg.c: Likewise.
+	* video/readers/png.c: Likewise.
+	* video/readers/tga.c: Likewise.
+
+	* util/grub-fstest (cmd_loopback): Removed.
+	(cmd_blocklist): Likewise.
+	(cmd_ls): Likewise.
+	(grub_register_command): Likewise.
+	(grub_unregister_command): Likewise.
+	(execute_command): Use grub_command_find to locate command and execute
+	it.
+
+	* include/grub/efi/chainloader.h: Removed.
+	* loader/efi/chainloader_normal.c: Likewise.
+	* loader/i386/bsd_normal.c: Likewise.
+	* loader/i386/pc/chainloader_normal.c: Likewise.
+	* loader/i386/pc/multiboot_normal.c: Likewise.
+	* loader/linux_normal.c: Likewise.
+	* loader/multiboot_loader_normal.c: Likewise.
+	* loader/powerpc/ieee1275/linux_normal.c: Likewise.
+
+	* gencmdlist.sh: Scan new registration command grub_register_extcmd
+	and grub_register_command_p1.
+
+	* conf/common.rmk (grub_fstest_SOURCES): Add kern/list.c,
+	kern/command.c, lib/arg.c and commands/extcmd.c.
+	(pkglib_MODULES): Remove boot.mod, and minicmd.mod and extcmd.mod.
+	(minicmd_mod_SOURCES): New variable.
+	(minicmd_mod_CFLAGS): Likewise.
+	(minicmd_mod_LDFLAGS): Likewise.
+	(extcmd_mod_SOURCES): Likewise.
+	(extcmd_mod_CFLAGS): Likewise.
+	(extcmd_mod_LDFLAGS): Likewise.
+	(boot_mod_SOURCES): Removed.
+	(boot_mod_CFLAGS): Likewise.
+	(boot_mod_LDFLAGS): Likewise.
+
+	* conf/i386-pc.rmk (kernel_img_SOURCES): Add kern/command.c and
+	kern/corecmd.c.
+	(kernel_img_HEADERS): Add command.h.
+	(grub_emu_SOURCES): Remove commands/boot.c and normal/arg.c, add
+	commands/minicmd.c, kern/command.c, kern/corecmd.c, commands/extcmd.c
+	and lib/arg.c.
+	(pkglib_MODULES): Change _linux.mod, _chain.mod, _bsd.mod and
+	_multiboot.mod as linux.mod, chain.mod, bsd.mod and multiboot.mod,
+	remove the corresponding normal mode command.
+	(normal_mod_SOURCES): Remove normal/arg.c.
+	* conf/i386-coreboot.rmk: Likewise.
+	* conf/i386-efi.rmk: Likewise.
+	* conf/i386-ieee1275.rmk: Likewise.
+	* conf/powerpc-ieee1275.rmk: Likewise.
+	* conf/x86_64-efi.rmk: Likewise.
+
+	* include/grub/arg.h: Move from here ...
+	* include/grub/lib/arg.h: ... to here.
+
+	* normal/arg.c: Move from here ...
+	* lib/arg.c: ... to here.
+
+	* commands/extcmd.c: New file.
+	* commands/minicmd.c: Likewise.
+	* include/grub/command.h: Likewise.
+	* include/grub/extcmd.h: Likewise.
+	* kern/command.c: Likewise.
+	* kern/corecmd.c: Likewise.
+
+	* kern/list.c (grub_list_iterate): Return int instead of void.
+	(grub_list_insert): New function.
+	(grub_prio_list_insert): Likewise.
+
+	* kern/rescue.c (grub_rescue_command): Removed.
+	(grub_rescue_command_list): Likewise.
+	(grub_rescue_register_command): Likewise.
+	(grub_rescue_unregister_command): Likewise.
+	(grub_rescue_cmd_boot): Move to minicmd.c
+	(grub_rescue_cmd_help): Likewise.
+	(grub_rescue_cmd_info): Likewise.
+	(grub_rescue_cmd_boot): Likewise.
+	(grub_rescue_cmd_testload): Likewise.
+	(grub_rescue_cmd_dump): Likewise.
+	(grub_rescue_cmd_rmmod): Likewise.
+	(grub_rescue_cmd_lsmod): Likewise.
+	(grub_rescue_cmd_exit): Likewise.
+	(grub_rescue_print_devices): Moved to corecmd.c.
+	(grub_rescue_print_files): Likewise.
+	(grub_rescue_cmd_ls): Likewise.
+	(grub_rescue_cmd_insmod): Likewise.
+	(grub_rescue_cmd_set): Likewise.
+	(grub_rescue_cmd_unset): Likewise.
+	(attempt_normal_mode): Use grub_command_find to get normal module.
+	(grub_enter_rescue_mode): Use grub_register_core_commands to register
+	commands, remove grub_rescue_register_command calls.
+
+	* normal/command.c (grub_register_command): Removed.
+	(grub_unregister_command): Likewise.
+	(grub_command_find): Likewise.
+	(grub_iterate_commands): Likewise.
+	(rescue_command): Likewise.
+	(export_command): Moved to corecmd.c.
+	(set_command): Removed.
+	(unset_command): Likewise.
+	(insmod_command): Likewise.
+	(rmmod_command): Likewise.
+	(lsmod_command): Likewise.
+	(grub_command_init): Likewise.
+
+	* normal/completion.c (iterate_command): Use cmd->prio to check for
+	active command.
+	(complete_arguments): Use grub_extcmd_t structure to find options.
+	(grub_normal_do_completion): Change function grub_iterate_commands to
+	grub_command_iterate.
+
+	* normal/execute.c (grub_script_execute_cmd): No need to parse
+	argument here.
+
+	* normal/main.c (grub_dyncmd_dispatcher): New function.
+	(read_command_list): Register unload commands as dyncmd.
+	(grub_cmd_normal): Use new command interface, register rescue,
+	unregister normal at entry, register normal, unregister rescue at exit.
+
+	* include/grub/list.h (grub_list_test_t): New type.
+	(grub_list_iterate): Return int instead of void.
+	(grub_list_insert): New function.
+	(GRUB_AS_NAMED_LIST_P): New macro.
+	(GRUB_AS_PRIO_LIST): Likewise.
+	(GRUB_AS_PRIO_LIST_P): Likewise.
+	(GRUB_PRIO_LIST_PRIO_MASK): New constant.
+	(GRUB_PRIO_LIST_FLAG_ACTIVE): Likewise.
+	(grub_prio_list): New structure.
+	(grub_prio_list_insert): New function.
+	(grub_prio_list_remove): New inline function.
+
+	* include/grub/normal.h: Remove <grub/arg.h>, add <grub/command.h>.
+	(GRUB_COMMAND_FLAG_CMDLINE): Moved to command.h.
+	(GRUB_COMMAND_FLAG_MENU): Likewise.
+	(GRUB_COMMAND_FLAG_BOTH): Likewise.
+	(GRUB_COMMAND_FLAG_TITLE): Likewise.
+	(GRUB_COMMAND_FLAG_NO_ECHO): Likewise.
+	(GRUB_COMMAND_FLAG_NO_ARG_PARSE): Removed.
+	(GRUB_COMMAND_FLAG_NOT_LOADED): Likewise.
+	(grub_command): Likewise.
+	(grub_register_command): Likewise.
+	(grub_command_find): Likewise.
+	(grub_iterate_commands): Likewise.
+	(grub_command_init): Likewise.
+	(grub_arg_parse): Likewise.
+	(grub_arg_show_help): Likewise.
+
+	* include/grub/rescue.h (grub_rescue_register_command): Removed.
+	(grub_rescue_unregister_command): Likewise.
+
+	* include/grub/i386/bsd.h: Remove grub_rescue_cmd_freebsd,
+	grub_rescue_cmd_openbsd, grub_rescue_cmd_netbsd,
+	grub_rescue_cmd_freebsd_loadenv and grub_rescue_cmd_freebsd_module.
+
+	* include/grub/i386/efi/loader.h: Remove grub_rescue_cmd_linux and
+	grub_rescue_cmd_initrd.
+	* include/grub/i386/loader.h: Likewise.
+	* include/grub/x86_64/loader.h: Likewise.
+
+	* include/grub/i386/pc/chainloader.h: Remove grub_chainloader_cmd.
+
+2009-03-21  Bean  <bean123ch@gmail.com>
+
+	* util/hostdisk.c (read_device_map): Use grub_util_get_disk_size
+	instead of stat in mingw environment.
+
+	* util/misc.c (grub_millisleep): Use Sleep in mingw environment.
+
+	* aclocal.m4 (grub_CHECK_LINK_DIR): New function.
+
+	* configure.ac: Use grub_CHECK_LINK_DIR to determine whether to use
+	AC_CONFIG_LINKS.
+
+2009-03-21  Bean  <bean123ch@gmail.com>
+
+	* fs/ext2.c (grub_ext2_mount): Change errno to GRUB_ERR_BAD_FS for
+	out of range error.
+
+2009-03-18  Michel Dänzer  <michel@daenzer.net>
+
+	* fs/ext2.c (grub_ext2_read_block): Take endianness into account when
+	checking inode flags for EXT4_EXTENTS_FLAG.
+
+2009-03-18  Robert Millan  <rmh@aybabtu.com>
+
+	* loader/i386/linux.c: Include `<grub/video.h>' and
+	`<grub/i386/pc/vbe.h>'..
+	(grub_linux_setup_video): New function.  Loosely based on the EFI one.
+	(grub_linux32_boot): Attempt to configure video settings with
+	grub_linux_setup_video().
+	(grub_rescue_cmd_linux): Set noreturn=0 in grub_loader_set, in order
+	to avoid grub_console_fini() which would step out of graphical mode
+	unconditionally.
+
 2009-03-14  Robert Millan  <rmh@aybabtu.com>
 
 	Fix build on powerpc.
@@ -33,9 +470,9 @@
 
 	* loader/i386/multiboot.c (code_size): New variable.
 	(grub_multiboot): Define offsets by adding to `code_size' rather
-	than substracting from `grub_multiboot_payload_size'.  Provide
+	than subtracting from `grub_multiboot_payload_size'.  Provide
 	4-byte alignment to MBI and others by increasing
-	`boot_loader_name_length' appropiately.
+	`boot_loader_name_length' appropriately.
 
 	* loader/i386/multiboot_elfxx.c
 	(CONCAT(grub_multiboot_load_elf, XX)): Initialize `code_size'.
@@ -65,7 +502,7 @@
 	(e.g. gfxterm with resolution higher than 640x480).
 
 	* normal/main.c (grub_normal_init_page): Display title text in a
-	position relative to the center of the terminal instead of reliing
+	position relative to the center of the terminal instead of relying
 	on a hardcoded offset.
 
 2009-03-04  Robert Millan  <rmh@aybabtu.com>
