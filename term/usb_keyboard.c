@@ -67,7 +67,7 @@ grub_usb_hid (void)
   int usb_iterate (grub_usb_device_t dev)
     {
       descdev = &dev->descdev;
-
+      
       grub_dprintf ("usb_keyboard", "%x %x %x\n",
 		   descdev->class, descdev->subclass, descdev->protocol);
 
@@ -92,7 +92,7 @@ grub_usb_hid (void)
   /* Place the device in boot mode.  */
   grub_usb_control_msg (usbdev, 0x21, 0x0B, 0, 0, 0, 0);
 
-  /* Reports every time an event occurs and not more often than that.  */
+  /* Reports everytime an event occurs and not more often than that.  */
   grub_usb_control_msg (usbdev, 0x21, 0x0A, 0<<8, 0, 0, 0);
 }
 
@@ -173,6 +173,7 @@ static int
 grub_usb_keyboard_getkey (void)
 {
   int key;
+  int key_release;
   grub_err_t err;
   unsigned char data[8];
   grub_uint64_t currtime;
@@ -191,14 +192,14 @@ grub_usb_keyboard_getkey (void)
 
   switch (repeat)
     {
+    case GRUB_HIDBOOT_REPEAT_NONE:
+      timeout = 100;
+      break;
     case GRUB_HIDBOOT_REPEAT_FIRST:
       timeout = 500;
       break;
     case GRUB_HIDBOOT_REPEAT:
       timeout = 50;
-      break;
-    default:
-      timeout = 100;
       break;
     }
 
@@ -244,8 +245,10 @@ static struct grub_term_input grub_usb_keyboard_term =
 
 GRUB_MOD_INIT(usb_keyboard)
 {
+  (void) mod;			/* To stop warning. */
+
   grub_usb_hid ();
-  grub_term_register_input ("usb_keyboard", &grub_usb_keyboard_term);
+  grub_term_register_input (&grub_usb_keyboard_term);
 }
 
 GRUB_MOD_FINI(usb_keyboard)

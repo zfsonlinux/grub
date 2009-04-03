@@ -21,15 +21,14 @@
 
 	/* Start with the prehistoric environment... */
 	.code16
-
+	
 	/* Let's go */
-.globl start, _start;
-_start:
-start:
+.globl _start; _start:
 
-	/* Use drive number 0x7F for PXE */
+        /* Root drive will default to boot drive */
+        movb	$0xFF, %dh
         movb	$0x7F, %dl
-
+        
 	/* Jump to the real world */
 	ljmp	$0, $0x8200
 

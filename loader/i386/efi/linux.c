@@ -30,9 +30,7 @@
 #include <grub/efi/api.h>
 #include <grub/efi/efi.h>
 #include <grub/efi/uga_draw.h>
-#include <grub/pci.h>
 #include <grub/command.h>
-#include <grub/memory.h>
 
 #define GRUB_LINUX_CL_OFFSET		0x1000
 #define GRUB_LINUX_CL_END_OFFSET	0x2000
@@ -103,21 +101,21 @@ find_mmap_size (void)
 
   if (mmap_size != 0)
     return mmap_size;
-
+  
   mmap_size = (1 << 12);
   while (1)
     {
       int ret;
       grub_efi_memory_descriptor_t *mmap;
       grub_efi_uintn_t desc_size;
-
+      
       mmap = grub_malloc (mmap_size);
       if (! mmap)
 	return 0;
 
       ret = grub_efi_get_memory_map (&mmap_size, mmap, 0, &desc_size, 0);
       grub_free (mmap);
-
+      
       if (ret < 0)
 	grub_fatal ("cannot get memory map");
       else if (ret > 0)
@@ -147,7 +145,7 @@ free_pages (void)
       grub_efi_free_pages ((grub_addr_t) prot_mode_mem, prot_mode_pages);
       prot_mode_mem = 0;
     }
-
+  
   if (initrd_mem)
     {
       grub_efi_free_pages ((grub_addr_t) initrd_mem, initrd_pages);
@@ -165,7 +163,7 @@ allocate_pages (grub_size_t prot_size)
   grub_efi_uintn_t mmap_size, tmp_mmap_size;
   grub_efi_memory_descriptor_t *desc;
   grub_size_t real_size;
-
+  
   /* Make sure that each size is aligned to a page boundary.  */
   real_size = GRUB_LINUX_CL_END_OFFSET;
   prot_size = page_align (prot_size);
@@ -173,16 +171,16 @@ allocate_pages (grub_size_t prot_size)
 
   grub_dprintf ("linux", "real_size = %x, prot_size = %x, mmap_size = %x\n",
 		(unsigned) real_size, (unsigned) prot_size, (unsigned) mmap_size);
-
+  
   /* Calculate the number of pages; Combine the real mode code with
      the memory map buffer for simplicity.  */
   real_mode_pages = ((real_size + mmap_size) >> 12);
   prot_mode_pages = (prot_size >> 12);
-
+  
   /* Initialize the memory pointers with NULL for convenience.  */
   real_mode_mem = 0;
   prot_mode_mem = 0;
-
+  
   /* Read the memory map temporarily, to find free space.  */
   mmap = grub_malloc (mmap_size);
   if (! mmap)
@@ -193,7 +191,7 @@ allocate_pages (grub_size_t prot_size)
     grub_fatal ("cannot get memory map");
 
   mmap_end = NEXT_MEMORY_DESCRIPTOR (mmap, tmp_mmap_size);
-
+  
   /* First, find free pages for the real mode code
      and the memory map buffer.  */
   for (desc = mmap;
@@ -208,7 +206,7 @@ allocate_pages (grub_size_t prot_size)
 	{
 	  grub_efi_physical_address_t physical_end;
 	  grub_efi_physical_address_t addr;
-
+	  
 	  physical_end = desc->physical_start + (desc->num_pages << 12);
 	  if (physical_end > 0x90000)
 	    physical_end = 0x90000;
@@ -225,7 +223,7 @@ allocate_pages (grub_size_t prot_size)
 	  real_mode_mem = grub_efi_allocate_pages (addr, real_mode_pages);
 	  if (! real_mode_mem)
 	    grub_fatal ("cannot allocate pages");
-
+	  
 	  desc->num_pages -= real_mode_pages;
 	  break;
 	}
@@ -238,10 +236,10 @@ allocate_pages (grub_size_t prot_size)
     }
 
   mmap_buf = (void *) ((char *) real_mode_mem + real_size);
-
+	      
   /* Next, find free pages for the protected mode code.  */
   /* XXX what happens if anything is using this address?  */
-  prot_mode_mem = grub_efi_allocate_pages (0x100000, prot_mode_pages + 1);
+  prot_mode_mem = grub_efi_allocate_pages (0x100000, prot_mode_pages);
   if (! prot_mode_mem)
     {
       grub_error (GRUB_ERR_OUT_OF_MEMORY,
@@ -250,9 +248,9 @@ allocate_pages (grub_size_t prot_size)
     }
 
   grub_dprintf ("linux", "real_mode_mem = %lx, real_mode_pages = %x, "
-		"prot_mode_mem = %lx, prot_mode_pages = %x\n",
-		(unsigned long) real_mode_mem, (unsigned) real_mode_pages,
-		(unsigned long) prot_mode_mem, (unsigned) prot_mode_pages);
+                "prot_mode_mem = %lx, prot_mode_pages = %x\n",
+                (unsigned long) real_mode_mem, (unsigned) real_mode_pages,
+                (unsigned long) prot_mode_mem, (unsigned) prot_mode_pages);
 
   grub_free (mmap);
   return 1;
@@ -265,8 +263,8 @@ allocate_pages (grub_size_t prot_size)
 
 static void
 grub_e820_add_region (struct grub_e820_mmap *e820_map, int *e820_num,
-		      grub_uint64_t start, grub_uint64_t size,
-		      grub_uint32_t type)
+                      grub_uint64_t start, grub_uint64_t size,
+                      grub_uint32_t type)
 {
   int n = *e820_num;
 
@@ -285,9 +283,63 @@ grub_e820_add_region (struct grub_e820_mmap *e820_map, int *e820_num,
     }
 }
 
+static grub_efi_guid_t acpi_guid = GRUB_EFI_ACPI_TABLE_GUID;
+static grub_efi_guid_t acpi2_guid = GRUB_EFI_ACPI_20_TABLE_GUID;
+
+#define EBDA_SEG_ADDR	0x40e
+#define LOW_MEM_ADDR	0x413
+#define FAKE_EBDA_SEG	0x9fc0
+
+static void
+fake_bios_data (void)
+{
+  unsigned i;
+  void *acpi;
+  grub_uint16_t *ebda_seg_ptr, *low_mem_ptr;
+
+  acpi = 0;
+  for (i = 0; i < grub_efi_system_table->num_table_entries; i++)
+    {
+      grub_efi_guid_t *guid =
+	&grub_efi_system_table->configuration_table[i].vendor_guid;
+
+      if (! grub_memcmp (guid, &acpi2_guid, sizeof (grub_efi_guid_t)))
+	{
+	  acpi = grub_efi_system_table->configuration_table[i].vendor_table;
+	  grub_printf ("ACPI2: %p\n", acpi);
+	}
+      else if (! grub_memcmp (guid, &acpi_guid, sizeof (grub_efi_guid_t)))
+	{
+	  void *t;
+
+	  t = grub_efi_system_table->configuration_table[i].vendor_table;
+	  if (! acpi)
+	    acpi = t;
+	  grub_printf ("ACPI: %p\n", t);
+	}
+    }
+
+  if (acpi == 0)
+    return;
+
+  ebda_seg_ptr = (grub_uint16_t *) EBDA_SEG_ADDR;
+  low_mem_ptr = (grub_uint16_t *) LOW_MEM_ADDR;
+
+  if ((*ebda_seg_ptr) || (*low_mem_ptr))
+    return;
+
+  *ebda_seg_ptr = FAKE_EBDA_SEG;
+  *low_mem_ptr = FAKE_EBDA_SEG >> 6;
+
+  grub_memcpy ((char *) (FAKE_EBDA_SEG << 4), acpi, 1024);
+}
+
 #ifdef __x86_64__
-extern grub_uint8_t grub_linux_trampoline_start[];
-extern grub_uint8_t grub_linux_trampoline_end[];
+struct
+{
+  grub_uint32_t kernel_entry;
+  grub_uint32_t kernel_cs;
+} jumpvector;
 #endif
 
 static grub_err_t
@@ -298,64 +350,98 @@ grub_linux_boot (void)
   grub_efi_uintn_t map_key;
   grub_efi_uintn_t desc_size;
   grub_efi_uint32_t desc_version;
+  grub_efi_memory_descriptor_t *desc;
   int e820_num;
+  
+  fake_bios_data ();
 
   params = real_mode_mem;
 
   grub_dprintf ("linux", "code32_start = %x, idt_desc = %lx, gdt_desc = %lx\n",
 		(unsigned) params->code32_start,
-		(unsigned long) &(idt_desc.limit),
+                (unsigned long) &(idt_desc.limit),
 		(unsigned long) &(gdt_desc.limit));
   grub_dprintf ("linux", "idt = %x:%lx, gdt = %x:%lx\n",
 		(unsigned) idt_desc.limit, (unsigned long) idt_desc.base,
 		(unsigned) gdt_desc.limit, (unsigned long) gdt_desc.base);
 
-  auto int NESTED_FUNC_ATTR hook (grub_uint64_t, grub_uint64_t, grub_uint32_t);
-  int NESTED_FUNC_ATTR hook (grub_uint64_t addr, grub_uint64_t size, grub_uint32_t type)
-    {
-      switch (type)
-        {
-        case GRUB_MACHINE_MEMORY_AVAILABLE:
-	  grub_e820_add_region (params->e820_map, &e820_num,
-				addr, size, GRUB_E820_RAM);
-	  break;
-
-#ifdef GRUB_MACHINE_MEMORY_ACPI
-        case GRUB_MACHINE_MEMORY_ACPI:
-	  grub_e820_add_region (params->e820_map, &e820_num,
-				addr, size, GRUB_E820_ACPI);
-	  break;
-#endif
-
-#ifdef GRUB_MACHINE_MEMORY_NVS
-        case GRUB_MACHINE_MEMORY_NVS:
-	  grub_e820_add_region (params->e820_map, &e820_num,
-				addr, size, GRUB_E820_NVS);
-	  break;
-#endif
-
-#ifdef GRUB_MACHINE_MEMORY_CODE
-        case GRUB_MACHINE_MEMORY_CODE:
-	  grub_e820_add_region (params->e820_map, &e820_num,
-				addr, size, GRUB_E820_EXEC_CODE);
-	  break;
-#endif
-
-        default:
-          grub_e820_add_region (params->e820_map, &e820_num,
-                                addr, size, GRUB_E820_RESERVED);
-        }
-      return 0;
-    }
-
-  e820_num = 0;
-  grub_mmap_iterate (hook);
-  params->mmap_size = e820_num;
-
   mmap_size = find_mmap_size ();
   if (grub_efi_get_memory_map (&mmap_size, mmap_buf, &map_key,
 			       &desc_size, &desc_version) <= 0)
     grub_fatal ("cannot get memory map");
+
+  e820_num = 0;
+  for (desc = mmap_buf;
+       desc < NEXT_MEMORY_DESCRIPTOR (mmap_buf, mmap_size);
+       desc = NEXT_MEMORY_DESCRIPTOR (desc, desc_size))
+    {
+      switch (desc->type)
+        {
+        case GRUB_EFI_ACPI_RECLAIM_MEMORY:
+          grub_e820_add_region (params->e820_map, &e820_num,
+                                desc->physical_start,
+                                desc->num_pages << 12,
+                                GRUB_E820_ACPI);
+          break;
+
+        case GRUB_EFI_ACPI_MEMORY_NVS:
+          grub_e820_add_region (params->e820_map, &e820_num,
+                                desc->physical_start,
+                                desc->num_pages << 12,
+                                GRUB_E820_NVS);
+          break;
+
+        case GRUB_EFI_RUNTIME_SERVICES_CODE:
+          grub_e820_add_region (params->e820_map, &e820_num,
+                                desc->physical_start,
+                                desc->num_pages << 12,
+                                GRUB_E820_EXEC_CODE);
+          break;
+
+        case GRUB_EFI_LOADER_CODE:
+        case GRUB_EFI_LOADER_DATA:
+        case GRUB_EFI_BOOT_SERVICES_CODE:
+        case GRUB_EFI_BOOT_SERVICES_DATA:
+        case GRUB_EFI_CONVENTIONAL_MEMORY:
+          {
+            grub_uint64_t start, size, end;
+
+            start = desc->physical_start;
+            size = desc->num_pages << 12;
+            end = start + size;
+
+            /* Skip A0000 - 100000 region.  */
+            if ((start < 0x100000ULL) && (end > 0xA0000ULL))
+              {
+                if (start < 0xA0000ULL)
+                  {
+                    grub_e820_add_region (params->e820_map, &e820_num,
+                                          start,
+                                          0xA0000ULL - start,
+                                          GRUB_E820_RAM);
+                  }
+
+                if (end <= 0x100000ULL)
+                  continue;
+
+                start = 0x100000ULL;
+                size = end - start;
+              }
+
+            grub_e820_add_region (params->e820_map, &e820_num,
+                                  start, size, GRUB_E820_RAM);
+            break;
+          }
+
+        default:
+          grub_e820_add_region (params->e820_map, &e820_num,
+                                desc->physical_start,
+                                desc->num_pages << 12,
+                                GRUB_E820_RESERVED);
+        }
+    }
+
+  params->mmap_size = e820_num;
 
   if (! grub_efi_exit_boot_services (map_key))
      grub_fatal ("cannot exit boot services");
@@ -381,24 +467,24 @@ grub_linux_boot (void)
       params->v0204.efi_mmap_size = mmap_size;
     }
 
-#ifdef __x86_64__
-
-  grub_memcpy ((char *) prot_mode_mem + (prot_mode_pages << 12),
-	       grub_linux_trampoline_start,
-	       grub_linux_trampoline_end - grub_linux_trampoline_start);
-
-  ((void (*) (unsigned long, void *)) ((char *) prot_mode_mem
-                                     + (prot_mode_pages << 12)))
-    (params->code32_start, real_mode_mem);
-
-#else
-
   /* Hardware interrupts are not safe any longer.  */
   asm volatile ("cli" : : );
-
+  
   /* Load the IDT and the GDT for the bootstrap.  */
   asm volatile ("lidt %0" : : "m" (idt_desc));
   asm volatile ("lgdt %0" : : "m" (gdt_desc));
+
+#ifdef __x86_64__
+
+  jumpvector.kernel_entry = (grub_uint64_t) grub_linux_real_boot;
+  jumpvector.kernel_cs = 0x10;
+
+  asm volatile ( "mov %0, %%rbx" : : "m" (params->code32_start));
+  asm volatile ( "mov %0, %%rsi" : : "m" (real_mode_mem));
+
+  asm volatile ( "ljmp *%0" : : "m" (jumpvector));
+
+#else
 
   /* Pass parameters.  */
   asm volatile ("movl %0, %%ecx" : : "m" (params->code32_start));
@@ -408,7 +494,7 @@ grub_linux_boot (void)
 
   /* Enter Linux.  */
   asm volatile ("jmp *%%ecx" : : );
-
+  
 #endif
 
   /* Never reach here.  */
@@ -434,106 +520,41 @@ static grub_efi_guid_t uga_draw_guid = GRUB_EFI_UGA_DRAW_GUID;
 #define FBTEST_STEP	(0x10000 >> 2)
 #define FBTEST_COUNT	8
 
-static int
-find_line_len (grub_uint32_t *fb_base, grub_uint32_t *line_len)
-{
-  grub_uint32_t *base = (grub_uint32_t *) (grub_target_addr_t) *fb_base;
-  int i;
-
-  for (i = 0; i < FBTEST_COUNT; i++, base += FBTEST_STEP)
-    {
-      if ((*base & RGB_MASK) == RGB_MAGIC)
-	{
-	  int j;
-
-	  for (j = LINE_MIN; j <= LINE_MAX; j++)
-	    {
-	      if ((base[j] & RGB_MASK) == RGB_MAGIC)
-		{
-		  *fb_base = (grub_uint32_t) (grub_target_addr_t) base;
-		  *line_len = j << 2;
-
-		  return 1;
-		}
-	    }
-
-	  break;
-	}
-    }
-
-  return 0;
-}
+static grub_uint32_t fb_list[]=
+  {0x40000000, 0x80000000, 0xc0000000, 0};
 
 static int
 find_framebuf (grub_uint32_t *fb_base, grub_uint32_t *line_len)
 {
-  int found = 0;
+  grub_uint32_t *fb;
 
-  auto int NESTED_FUNC_ATTR find_card (int bus, int dev, int func,
-				       grub_pci_id_t pciid);
-
-  int NESTED_FUNC_ATTR find_card (int bus, int dev, int func,
-				  grub_pci_id_t pciid)
+  for (fb = fb_list; *fb; fb++)
     {
-      grub_pci_address_t addr;
+      grub_uint32_t *base = (grub_uint32_t *) (grub_target_addr_t) *fb;
+      int i;
 
-      addr = grub_pci_make_address (bus, dev, func, 2);
-      if (grub_pci_read (addr) >> 24 == 0x3)
-	{
-	  int i;
-
-	  grub_printf ("Display controller: %d:%d.%d\nDevice id: %x\n",
-		       bus, dev, func, pciid);
-	  addr += 8;
-	  for (i = 0; i < 6; i++, addr += 4)
+      for (i = 0; i < FBTEST_COUNT; i++, base += FBTEST_STEP)
+        {
+	  if ((*base & RGB_MASK) == RGB_MAGIC)
 	    {
-	      grub_uint32_t old_bar1, old_bar2, type;
-	      grub_uint64_t base64;
+	      int j;
 
-	      old_bar1 = grub_pci_read (addr);
-	      if ((! old_bar1) || (old_bar1 & GRUB_PCI_ADDR_SPACE_IO))
-		continue;
+	      for (j = LINE_MIN; j <= LINE_MAX; j++)
+            {
+		  if ((base[j] & RGB_MASK) == RGB_MAGIC)
+                {
+		      *fb_base = (grub_uint32_t) (grub_target_addr_t) base;
+		      *line_len = j << 2;
 
-	      type = old_bar1 & GRUB_PCI_ADDR_MEM_TYPE_MASK;
-	      if (type == GRUB_PCI_ADDR_MEM_TYPE_64)
-		{
-		  if (i == 5)
-		    break;
+		      return 0;
+                }
+            }
 
-		  old_bar2 = grub_pci_read (addr + 4);
-		}
-	      else
-		old_bar2 = 0;
-
-	      base64 = old_bar2;
-	      base64 <<= 32;
-	      base64 |= (old_bar1 & GRUB_PCI_ADDR_MEM_MASK);
-
-	      grub_printf ("%s(%d): 0x%llx\n",
-			   ((old_bar1 & GRUB_PCI_ADDR_MEM_PREFETCH) ?
-			    "VMEM" : "MMIO"), i,
-			   (unsigned long long) base64);
-
-	      if ((old_bar1 & GRUB_PCI_ADDR_MEM_PREFETCH) && (! found))
-		{
-		  *fb_base = base64;
-		  if (find_line_len (fb_base, line_len))
-		    found++;
-		}
-
-	      if (type == GRUB_PCI_ADDR_MEM_TYPE_64)
-		{
-		  i++;
-		  addr += 4;
-		}
-	    }
-	}
-
-      return found;
+                break;
+            }
+        }
     }
-
-  grub_pci_iterate (find_card);
-  return found;
+  return 1;
 }
 
 static int
@@ -559,13 +580,13 @@ grub_linux_setup_video (struct linux_kernel_params *params)
   ret = find_framebuf (&fb_base, &line_len);
   grub_efi_set_text_mode (1);
 
-  if (! ret)
+  if (ret)
     {
       grub_printf ("Can\'t find frame buffer address\n");
       return 1;
     }
 
-  grub_printf ("Frame buffer base: 0x%x\n", fb_base);
+  grub_printf ("Video frame buffer: 0x%x\n", fb_base);
   grub_printf ("Video line length: %d\n", line_len);
 
   params->lfb_width = width;
@@ -585,9 +606,6 @@ grub_linux_setup_video (struct linux_kernel_params *params)
   params->reserved_mask_size = 8;
   params->reserved_field_pos = 24;
 
-  params->have_vga = GRUB_VIDEO_TYPE_VLFB;
-  params->vid_mode = 0x338;  /* 1024x768x32  */
-
   return 0;
 }
 
@@ -603,9 +621,10 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   grub_ssize_t len;
   int i;
   char *dest;
+  int video_type;
 
   grub_dl_ref (my_mod);
-
+  
   if (argc == 0)
     {
       grub_error (GRUB_ERR_BAD_ARGUMENT, "no kernel specified");
@@ -616,7 +635,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   if (! file)
     goto fail;
 
-  if (grub_file_read (file, &lh, sizeof (lh)) != sizeof (lh))
+  if (grub_file_read (file, (char *) &lh, sizeof (lh)) != sizeof (lh))
     {
       grub_error (GRUB_ERR_READ_ERROR, "cannot read the linux header");
       goto fail;
@@ -650,17 +669,17 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
     }
 
   setup_sects = lh.setup_sects;
-
+  
   /* If SETUP_SECTS is not set, set it to the default (4).  */
   if (! setup_sects)
     setup_sects = GRUB_LINUX_DEFAULT_SETUP_SECTS;
 
   real_size = setup_sects << GRUB_DISK_SECTOR_BITS;
   prot_size = grub_file_size (file) - real_size - GRUB_DISK_SECTOR_SIZE;
-
+  
   if (! allocate_pages (prot_size))
     goto fail;
-
+  
   params = (struct linux_kernel_params *) real_mode_mem;
   grub_memset (params, 0, GRUB_LINUX_CL_END_OFFSET);
   grub_memcpy (&params->setup_sects, &lh.setup_sects, sizeof (lh) - 0x1F1);
@@ -691,7 +710,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
      space.  */
   params->ext_mem = ((32 * 0x100000) >> 10);
   params->alt_mem = ((32 * 0x100000) >> 10);
-
+  
   params->video_cursor_x = grub_getxy () >> 8;
   params->video_cursor_y = grub_getxy () & 0xff;
   params->video_page = 0; /* ??? */
@@ -778,7 +797,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   grub_memset (params->padding7, 0, sizeof (params->padding7));
   grub_memset (params->padding8, 0, sizeof (params->padding8));
   grub_memset (params->padding9, 0, sizeof (params->padding9));
-
+  
 #endif
 
   /* The other EFI parameters are filled when booting.  */
@@ -789,17 +808,16 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   grub_printf ("   [Linux-bzImage, setup=0x%x, size=0x%x]\n",
 	       (unsigned) real_size, (unsigned) prot_size);
 
-  grub_linux_setup_video (params);
-
   /* Detect explicitly specified memory size, if any.  */
   linux_mem_size = 0;
+  video_type = 0;
   for (i = 1; i < argc; i++)
     if (grub_memcmp (argv[i], "mem=", 4) == 0)
       {
 	char *val = argv[i] + 4;
-
+	  
 	linux_mem_size = grub_strtoul (val, &val, 0);
-
+	
 	if (grub_errno)
 	  {
 	    grub_errno = GRUB_ERR_NONE;
@@ -808,7 +826,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 	else
 	  {
 	    int shift = 0;
-
+	    
 	    switch (grub_tolower (val[0]))
 	      {
 	      case 'g':
@@ -828,17 +846,25 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 	      linux_mem_size <<= shift;
 	  }
       }
-    else if (grub_memcmp (argv[i], "video=efifb", 11) == 0)
+    else if (grub_memcmp (argv[i], "video=", 6) == 0)
       {
-	if (params->have_vga)
-	  params->have_vga = GRUB_VIDEO_TYPE_EFI;
+        if (grub_memcmp (&argv[i][6], "vesafb", 6) == 0)
+          video_type = GRUB_VIDEO_TYPE_VLFB;
+        else if (grub_memcmp (&argv[i][6], "efifb", 5) == 0)
+          video_type = GRUB_VIDEO_TYPE_EFI;
       }
+
+  if (video_type)
+    {
+      if (!  grub_linux_setup_video (params))
+        params->have_vga = video_type;
+    }
 
   /* Specify the boot file.  */
   dest = grub_stpcpy ((char *) real_mode_mem + GRUB_LINUX_CL_OFFSET,
 		      "BOOT_IMAGE=");
   dest = grub_stpcpy (dest, argv[0]);
-
+  
   /* Copy kernel parameters.  */
   for (i = 1;
        i < argc
@@ -851,7 +877,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
     }
 
   len = prot_size;
-  if (grub_file_read (file, (void *) GRUB_LINUX_BZIMAGE_ADDR, len) != len)
+  if (grub_file_read (file, (char *) GRUB_LINUX_BZIMAGE_ADDR, len) != len)
     grub_error (GRUB_ERR_FILE_READ_ERROR, "Couldn't read file");
 
   if (grub_errno == GRUB_ERR_NONE)
@@ -861,7 +887,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
     }
 
  fail:
-
+  
   if (file)
     grub_file_close (file);
 
@@ -886,13 +912,13 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
   grub_efi_memory_descriptor_t *desc;
   grub_efi_uintn_t desc_size;
   struct linux_kernel_header *lh;
-
+  
   if (argc == 0)
     {
       grub_error (GRUB_ERR_BAD_ARGUMENT, "No module specified");
       goto fail;
     }
-
+  
   if (! loaded)
     {
       grub_error (GRUB_ERR_BAD_ARGUMENT, "You need to load the kernel first.");
@@ -907,11 +933,11 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
   initrd_pages = (page_align (size) >> 12);
 
   lh = (struct linux_kernel_header *) real_mode_mem;
-
+  
   addr_max = (grub_cpu_to_le32 (lh->initrd_addr_max) << 10);
   if (linux_mem_size != 0 && linux_mem_size < addr_max)
     addr_max = linux_mem_size;
-
+  
   /* Linux 2.3.xx has a bug in the memory range check, so avoid
      the last page.
      Linux 2.2.xx has a bug in the memory range check, which is
@@ -920,8 +946,8 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
 
   /* Usually, the compression ratio is about 50%.  */
   addr_min = (grub_addr_t) prot_mode_mem + ((prot_mode_pages * 3) << 12)
-	     + page_align (size);
-
+             + page_align (size);
+  
   /* Find the highest address to put the initrd.  */
   mmap_size = find_mmap_size ();
   if (grub_efi_get_memory_map (&mmap_size, mmap_buf, 0, &desc_size, 0) <= 0)
@@ -936,13 +962,13 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
 	  && desc->num_pages >= initrd_pages)
 	{
 	  grub_efi_physical_address_t physical_end;
-
+	  
 	  physical_end = desc->physical_start + (desc->num_pages << 12);
 	  if (physical_end > addr_max)
 	    physical_end = addr_max;
 
 	  if (physical_end < page_align (size))
-	    continue;
+            continue;
 
 	  physical_end -= page_align (size);
 
@@ -958,11 +984,11 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
       grub_error (GRUB_ERR_OUT_OF_MEMORY, "no free pages available");
       goto fail;
     }
-
+  
   initrd_mem = grub_efi_allocate_pages (addr, initrd_pages);
   if (! initrd_mem)
     grub_fatal ("cannot allocate pages");
-
+  
   if (grub_file_read (file, initrd_mem, size) != size)
     {
       grub_error (GRUB_ERR_FILE_READ_ERROR, "Couldn't read file");
@@ -971,11 +997,11 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
 
   grub_printf ("   [Initrd, addr=0x%x, size=0x%x]\n",
 	       (unsigned) addr, (unsigned) size);
-
+  
   lh->ramdisk_image = addr;
   lh->ramdisk_size = size;
   lh->root_dev = 0x0100; /* XXX */
-
+  
  fail:
   if (file)
     grub_file_close (file);
