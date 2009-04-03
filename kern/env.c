@@ -29,7 +29,7 @@ struct grub_env_context
 {
   /* A hash table for variables.  */
   struct grub_env_var *vars[HASHSZ];
-
+  
   /* One level deeper on the stack.  */
   struct grub_env_context *prev;
 };
@@ -80,10 +80,11 @@ grub_env_context_open (int export)
   struct grub_env_context *context;
   int i;
 
-  context = grub_zalloc (sizeof (*context));
+  context = grub_malloc (sizeof (*context));
   if (! context)
     return grub_errno;
 
+  grub_memset (context, 0, sizeof (*context));
   context->prev = current_context;
   current_context = context;
 
@@ -91,7 +92,7 @@ grub_env_context_open (int export)
   for (i = 0; i < HASHSZ; i++)
     {
       struct grub_env_var *var;
-
+      
       for (var = context->prev->vars[i]; var; var = var->next)
 	{
 	  if (export && var->type == GRUB_ENV_VAR_GLOBAL)
@@ -105,7 +106,7 @@ grub_env_context_open (int export)
 	    }
 	}
     }
-
+  
   return GRUB_ERR_NONE;
 }
 
@@ -117,12 +118,12 @@ grub_env_context_close (void)
 
   if (! current_context->prev)
     grub_fatal ("cannot close the initial context");
-
+  
   /* Free the variables associated with this context.  */
   for (i = 0; i < HASHSZ; i++)
     {
       struct grub_env_var *p, *q;
-
+      
       for (p = current_context->vars[i]; p; p = q)
 	{
 	  q = p->next;
@@ -191,7 +192,7 @@ grub_env_set (const char *name, const char *val)
 	var->value = var->write_hook (var, val);
       else
 	var->value = grub_strdup (val);
-
+      
       if (! var->value)
 	{
 	  var->value = old;
@@ -203,18 +204,20 @@ grub_env_set (const char *name, const char *val)
     }
 
   /* The variable does not exist, so create a new one.  */
-  var = grub_zalloc (sizeof (*var));
+  var = grub_malloc (sizeof (*var));
   if (! var)
     return grub_errno;
+  
+  grub_memset (var, 0, sizeof (*var));
 
   /* This is not necessary, because GRUB_ENV_VAR_LOCAL == 0. But leave
      this for readability.  */
   var->type = GRUB_ENV_VAR_LOCAL;
-
+  
   var->name = grub_strdup (name);
   if (! var->name)
     goto fail;
-
+  
   var->value = grub_strdup (val);
   if (! var->value)
     goto fail;
@@ -235,7 +238,7 @@ char *
 grub_env_get (const char *name)
 {
   struct grub_env_var *var;
-
+  
   var = grub_env_find (name);
   if (! var)
     return 0;
@@ -250,7 +253,7 @@ void
 grub_env_unset (const char *name)
 {
   struct grub_env_var *var;
-
+  
   var = grub_env_find (name);
   if (! var)
     return;
@@ -274,12 +277,12 @@ grub_env_iterate (int (*func) (struct grub_env_var *var))
   struct grub_env_sorted_var *sorted_list = 0;
   struct grub_env_sorted_var *sorted_var;
   int i;
-
+  
   /* Add variables associated with this context into a sorted list.  */
   for (i = 0; i < HASHSZ; i++)
     {
       struct grub_env_var *var;
-
+      
       for (var = current_context->vars[i]; var; var = var->next)
 	{
 	  struct grub_env_sorted_var *p, **q;
@@ -287,7 +290,7 @@ grub_env_iterate (int (*func) (struct grub_env_var *var))
 	  /* Ignore data slots.  */
 	  if (var->type == GRUB_ENV_VAR_DATA)
 	    continue;
-
+	  
 	  sorted_var = grub_malloc (sizeof (*sorted_var));
 	  if (! sorted_var)
 	    goto fail;
@@ -299,7 +302,7 @@ grub_env_iterate (int (*func) (struct grub_env_var *var))
 	      if (grub_strcmp (p->var->name, var->name) > 0)
 		break;
 	    }
-
+	  
 	  sorted_var->next = *q;
 	  *q = sorted_var;
 	}
@@ -333,11 +336,11 @@ grub_register_variable_hook (const char *name,
     {
       if (grub_env_set (name, "") != GRUB_ERR_NONE)
 	return grub_errno;
-
+      
       var = grub_env_find (name);
       /* XXX Insert an assertion?  */
     }
-
+  
   var->read_hook = read_hook;
   var->write_hook = write_hook;
 
@@ -352,7 +355,7 @@ mangle_data_slot_name (const char *name)
   mangled_name = grub_malloc (grub_strlen (name) + 2);
   if (! mangled_name)
     return 0;
-
+  
   grub_sprintf (mangled_name, "\e%s", name);
   return mangled_name;
 }
@@ -376,9 +379,11 @@ grub_env_set_data_slot (const char *name, const void *ptr)
     }
 
   /* The variable does not exist, so create a new one.  */
-  var = grub_zalloc (sizeof (*var));
+  var = grub_malloc (sizeof (*var));
   if (! var)
     goto fail;
+  
+  grub_memset (var, 0, sizeof (*var));
 
   var->type = GRUB_ENV_VAR_DATA;
   var->name = mangled_name;
@@ -399,7 +404,7 @@ grub_env_get_data_slot (const char *name)
 {
   char *mangled_name;
   void *ptr = 0;
-
+  
   mangled_name = mangle_data_slot_name (name);
   if (! mangled_name)
     goto fail;
@@ -408,7 +413,7 @@ grub_env_get_data_slot (const char *name)
   grub_free (mangled_name);
 
  fail:
-
+  
   return ptr;
 }
 
@@ -416,7 +421,7 @@ void
 grub_env_unset_data_slot (const char *name)
 {
   char *mangled_name;
-
+  
   mangled_name = mangle_data_slot_name (name);
   if (! mangled_name)
     return;

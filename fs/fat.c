@@ -45,8 +45,7 @@
 				 | GRUB_FAT_ATTR_HIDDEN \
 				 | GRUB_FAT_ATTR_SYSTEM \
 				 | GRUB_FAT_ATTR_DIRECTORY \
-				 | GRUB_FAT_ATTR_ARCHIVE \
-				 | GRUB_FAT_ATTR_VOLUME_ID)
+				 | GRUB_FAT_ATTR_ARCHIVE)
 
 struct grub_fat_bpb
 {
@@ -126,15 +125,15 @@ struct grub_fat_data
 {
   int logical_sector_bits;
   grub_uint32_t num_sectors;
-
+  
   grub_uint16_t fat_sector;
   grub_uint32_t sectors_per_fat;
   int fat_size;
-
+  
   grub_uint32_t root_cluster;
   grub_uint32_t root_sector;
   grub_uint32_t num_root_sectors;
-
+  
   int cluster_bits;
   grub_uint32_t cluster_eof_mark;
   grub_uint32_t cluster_sector;
@@ -149,13 +148,15 @@ struct grub_fat_data
   grub_uint32_t uuid;
 };
 
+#ifndef GRUB_UTIL
 static grub_dl_t my_mod;
+#endif
 
 static int
 fat_log2 (unsigned x)
 {
   int i;
-
+  
   if (x == 0)
     return -1;
 
@@ -183,21 +184,21 @@ grub_fat_mount (grub_disk_t disk)
     goto fail;
 
   /* Read the BPB.  */
-  if (grub_disk_read (disk, 0, 0, sizeof (bpb), &bpb))
+  if (grub_disk_read (disk, 0, 0, sizeof (bpb), (char *) &bpb))
     goto fail;
 
   if (grub_strncmp((const char *) bpb.version_specific.fat12_or_fat16.fstype, "FAT12", 5)
       && grub_strncmp((const char *) bpb.version_specific.fat12_or_fat16.fstype, "FAT16", 5)
       && grub_strncmp((const char *) bpb.version_specific.fat32.fstype, "FAT32", 5))
     goto fail;
-
+  
   /* Get the sizes of logical sectors and clusters.  */
   data->logical_sector_bits =
     fat_log2 (grub_le_to_cpu16 (bpb.bytes_per_sector));
   if (data->logical_sector_bits < GRUB_DISK_SECTOR_BITS)
     goto fail;
   data->logical_sector_bits -= GRUB_DISK_SECTOR_BITS;
-
+  
   data->cluster_bits = fat_log2 (bpb.sectors_per_cluster);
   if (data->cluster_bits < 0)
     goto fail;
@@ -248,16 +249,16 @@ grub_fat_mount (grub_disk_t disk)
     {
       /* FAT32.  */
       grub_uint16_t flags = grub_le_to_cpu16 (bpb.version_specific.fat32.extended_flags);
-
+      
       data->root_cluster = grub_le_to_cpu32 (bpb.version_specific.fat32.root_cluster);
       data->fat_size = 32;
       data->cluster_eof_mark = 0x0ffffff8;
-
+      
       if (flags & 0x80)
 	{
 	  /* Get an active FAT.  */
 	  unsigned active_fat = flags & 0xf;
-
+	  
 	  if (active_fat > bpb.num_fats)
 	    goto fail;
 
@@ -294,7 +295,7 @@ grub_fat_mount (grub_disk_t disk)
 		      data->fat_sector,
 		      0,
 		      sizeof (first_fat),
-		      &first_fat))
+		      (char *) &first_fat))
     goto fail;
 
   first_fat = grub_le_to_cpu32 (first_fat);
@@ -320,7 +321,7 @@ grub_fat_mount (grub_disk_t disk)
     data->uuid = grub_le_to_cpu32 (bpb.version_specific.fat12_or_fat16.num_serial);
   else
     data->uuid = grub_le_to_cpu32 (bpb.version_specific.fat32.num_serial);
-
+  
   /* Ignore the 3rd bit, because some BIOSes assigns 0xF0 to the media
      descriptor, even if it is a so-called superfloppy (e.g. an USB key).
      The check may be too strict for this kind of stupid BIOSes, as
@@ -352,7 +353,7 @@ grub_fat_read_data (grub_disk_t disk, struct grub_fat_data *data,
   unsigned logical_cluster_bits;
   grub_ssize_t ret = 0;
   unsigned long sector;
-
+  
   /* This is a special case. FAT12 and FAT16 doesn't have the root directory
      in clusters.  */
   if (data->file_cluster == ~0U)
@@ -417,14 +418,16 @@ grub_fat_read_data (grub_disk_t disk, struct grub_fat_data *data,
 	    case 12:
 	      if (data->cur_cluster & 1)
 		next_cluster >>= 4;
-
+	      
 	      next_cluster &= 0x0FFF;
 	      break;
 	    }
 
-	  grub_dprintf ("fat", "fat_size=%d, next_cluster=%u\n",
-			data->fat_size, next_cluster);
-
+#if 0
+	  grub_printf ("%s:%d: fat_size=%d, next_cluster=%u\n",
+		       __FILE__, __LINE__, data->fat_size, next_cluster);
+#endif
+	  
 	  /* Check the end.  */
 	  if (next_cluster >= data->cluster_eof_mark)
 	    return ret;
@@ -464,21 +467,51 @@ grub_fat_read_data (grub_disk_t disk, struct grub_fat_data *data,
   return ret;
 }
 
-static grub_err_t
-grub_fat_iterate_dir (grub_disk_t disk, struct grub_fat_data *data,
-		      int (*hook) (const char *filename,
-				   struct grub_fat_dir_entry *dir))
+/* Find the underlying directory or file in PATH and return the
+   next path. If there is no next path or an error occurs, return NULL.
+   If HOOK is specified, call it with each file name.  */
+static char *
+grub_fat_find_dir (grub_disk_t disk, struct grub_fat_data *data,
+		   const char *path,
+		   int (*hook) (const char *filename, int dir))
 {
   struct grub_fat_dir_entry dir;
+  char *dirname, *dirp;
   char *filename, *filep = 0;
   grub_uint16_t *unibuf;
   int slot = -1, slots = -1;
   int checksum = -1;
   grub_ssize_t offset = -sizeof(dir);
-
+  int call_hook;
+  
   if (! (data->attr & GRUB_FAT_ATTR_DIRECTORY))
-    return grub_error (GRUB_ERR_BAD_FILE_TYPE, "not a directory");
+    {
+      grub_error (GRUB_ERR_BAD_FILE_TYPE, "not a directory");
+      return 0;
+    }
+  
+  /* Extract a directory name.  */
+  while (*path == '/')
+    path++;
 
+  dirp = grub_strchr (path, '/');
+  if (dirp)
+    {
+      unsigned len = dirp - path;
+      
+      dirname = grub_malloc (len + 1);
+      if (! dirname)
+	return 0;
+
+      grub_memcpy (dirname, path, len);
+      dirname[len] = '\0';
+    }
+  else
+    /* This is actually a file.  */
+    dirname = grub_strdup (path);
+
+  call_hook = (! dirp && hook);
+  
   /* Allocate space enough to hold a long name.  */
   filename = grub_malloc (0x40 * 13 * 4 + 1);
   unibuf = (grub_uint16_t *) grub_malloc (0x40 * 13 * 2);
@@ -486,9 +519,10 @@ grub_fat_iterate_dir (grub_disk_t disk, struct grub_fat_data *data,
     {
       grub_free (filename);
       grub_free (unibuf);
+      grub_free (dirname);
       return 0;
     }
-
+      
   while (1)
     {
       unsigned i;
@@ -499,15 +533,22 @@ grub_fat_iterate_dir (grub_disk_t disk, struct grub_fat_data *data,
       /* Read a directory entry.  */
       if ((grub_fat_read_data (disk, data, 0,
 			       offset, sizeof (dir), (char *) &dir)
-	   != sizeof (dir) || dir.name[0] == 0))
-	break;
+	   != sizeof (dir))
+	  || dir.name[0] == 0)
+	{
+	  if (grub_errno == GRUB_ERR_NONE && ! call_hook)
+	    grub_error (GRUB_ERR_FILE_NOT_FOUND, "file not found");
+
+	  break;
+	}
+
       /* Handle long name entries.  */
       if (dir.attr == GRUB_FAT_ATTR_LONG_NAME)
 	{
 	  struct grub_fat_long_name_entry *long_name
 	    = (struct grub_fat_long_name_entry *) &dir;
 	  grub_uint8_t id = long_name->id;
-
+	  
 	  if (id & 0x40)
 	    {
 	      id &= 0x3f;
@@ -535,11 +576,11 @@ grub_fat_iterate_dir (grub_disk_t disk, struct grub_fat_data *data,
       /* This is a workaround for Japanese.  */
       if (dir.name[0] == 0x05)
 	dir.name[0] = 0xe5;
-
+      
       if (checksum != -1 && slot == 0)
 	{
 	  grub_uint8_t sum;
-
+	  
 	  for (sum = 0, i = 0; i < sizeof (dir.name); i++)
 	    sum = ((sum >> 1) | (sum << 7)) + dir.name[i];
 
@@ -549,15 +590,26 @@ grub_fat_iterate_dir (grub_disk_t disk, struct grub_fat_data *data,
 
 	      for (u = 0; u < slots * 13; u++)
 		unibuf[u] = grub_le_to_cpu16 (unibuf[u]);
-
+	      
 	      *grub_utf16_to_utf8 ((grub_uint8_t *) filename, unibuf,
 				   slots * 13) = '\0';
+	      
+	      if (*dirname == '\0' && call_hook)
+		{
+		  if (hook (filename, dir.attr & GRUB_FAT_ATTR_DIRECTORY))
+		    break;
+		  
+		  checksum = -1;
+		  continue;
+		}
 
-	      if (hook (filename, &dir))
-		break;
-
-	      checksum = -1;
-	      continue;
+	      if (grub_strcmp (dirname, filename) == 0)
+		{
+		  if (call_hook)
+		    hook (filename, dir.attr & GRUB_FAT_ATTR_DIRECTORY);
+		  
+		  break;
+		}
 	    }
 
 	  checksum = -1;
@@ -565,122 +617,49 @@ grub_fat_iterate_dir (grub_disk_t disk, struct grub_fat_data *data,
 
       /* Convert the 8.3 file name.  */
       filep = filename;
-      if (dir.attr & GRUB_FAT_ATTR_VOLUME_ID)
-	{
-	  for (i = 0; i < sizeof (dir.name) && dir.name[i]
-		 && ! grub_isspace (dir.name[i]); i++)
-	    *filep++ = dir.name[i];
-	}
-      else
-	{
-	  for (i = 0; i < 8 && dir.name[i] && ! grub_isspace (dir.name[i]); i++)
-	    *filep++ = grub_tolower (dir.name[i]);
+      
+      for (i = 0; i < 8 && dir.name[i] && ! grub_isspace (dir.name[i]); i++)
+	*filep++ = grub_tolower (dir.name[i]);
+      
+      *filep = '.';
+      
+      for (i = 8; i < 11 && dir.name[i] && ! grub_isspace (dir.name[i]); i++)
+	*++filep = grub_tolower (dir.name[i]);
 
-	  *filep = '.';
-
-	  for (i = 8; i < 11 && dir.name[i] && ! grub_isspace (dir.name[i]); i++)
-	    *++filep = grub_tolower (dir.name[i]);
-
-	  if (*filep != '.')
-	    filep++;
-	}
+      if (*filep != '.')
+	filep++;
+      
       *filep = '\0';
 
-      if (hook (filename, &dir))
-	break;
+      if (*dirname == '\0' && call_hook)
+	{
+	  if (hook (filename, dir.attr & GRUB_FAT_ATTR_DIRECTORY))
+	    break;
+	}
+      else if (grub_strncasecmp (dirname, filename, GRUB_FAT_MAXFILE) == 0)
+	{
+	  if (call_hook)
+	    hook (filename, dir.attr & GRUB_FAT_ATTR_DIRECTORY);
+
+	  break;
+	}
     }
 
   grub_free (filename);
-
-  return grub_errno;
-}
-
-
-/* Find the underlying directory or file in PATH and return the
-   next path. If there is no next path or an error occurs, return NULL.
-   If HOOK is specified, call it with each file name.  */
-static char *
-grub_fat_find_dir (grub_disk_t disk, struct grub_fat_data *data,
-		   const char *path,
-		   int (*hook) (const char *filename,
-				const struct grub_dirhook_info *info))
-{
-  char *dirname, *dirp;
-  int call_hook;
-  int found = 0;
-
-  auto int iter_hook (const char *filename, struct grub_fat_dir_entry *dir);
-  int iter_hook (const char *filename, struct grub_fat_dir_entry *dir)
-  {
-    struct grub_dirhook_info info;
-    grub_memset (&info, 0, sizeof (info));
-
-    info.dir = !! (dir->attr & GRUB_FAT_ATTR_DIRECTORY);
-    info.case_insensitive = 1;
-
-    if (dir->attr & GRUB_FAT_ATTR_VOLUME_ID)
-      return 0;
-    if (*dirname == '\0' && call_hook)
-      return hook (filename, &info);
-
-    if (grub_strcasecmp (dirname, filename) == 0)
-      {
-	found = 1;
-	data->attr = dir->attr;
-	data->file_size = grub_le_to_cpu32 (dir->file_size);
-	data->file_cluster = ((grub_le_to_cpu16 (dir->first_cluster_high) << 16)
-			      | grub_le_to_cpu16 (dir->first_cluster_low));
-	data->cur_cluster_num = ~0U;
-
-	if (call_hook)
-	  hook (filename, &info);
-
-	return 1;
-      }
-    return 0;
-  }
-
-  if (! (data->attr & GRUB_FAT_ATTR_DIRECTORY))
-    {
-      grub_error (GRUB_ERR_BAD_FILE_TYPE, "not a directory");
-      return 0;
-    }
-
-  /* Extract a directory name.  */
-  while (*path == '/')
-    path++;
-
-  dirp = grub_strchr (path, '/');
-  if (dirp)
-    {
-      unsigned len = dirp - path;
-
-      dirname = grub_malloc (len + 1);
-      if (! dirname)
-	return 0;
-
-      grub_memcpy (dirname, path, len);
-      dirname[len] = '\0';
-    }
-  else
-    /* This is actually a file.  */
-    dirname = grub_strdup (path);
-
-  call_hook = (! dirp && hook);
-
-  grub_fat_iterate_dir (disk, data, iter_hook);
-  if (grub_errno == GRUB_ERR_NONE && ! found && !call_hook)
-    grub_error (GRUB_ERR_FILE_NOT_FOUND, "file not found");
-
   grub_free (dirname);
 
-  return found ? dirp : 0;
+  data->attr = dir.attr;
+  data->file_size = grub_le_to_cpu32 (dir.file_size);
+  data->file_cluster = ((grub_le_to_cpu16 (dir.first_cluster_high) << 16)
+			| grub_le_to_cpu16 (dir.first_cluster_low));
+  data->cur_cluster_num = ~0U;
+  
+  return dirp;
 }
 
 static grub_err_t
 grub_fat_dir (grub_device_t device, const char *path,
-	      int (*hook) (const char *filename,
-			   const struct grub_dirhook_info *info))
+	      int (*hook) (const char *filename, int dir))
 {
   struct grub_fat_data *data = 0;
   grub_disk_t disk = device->disk;
@@ -688,8 +667,10 @@ grub_fat_dir (grub_device_t device, const char *path,
   char *dirname = 0;
   char *p;
 
+#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
-
+#endif
+  
   data = grub_fat_mount (disk);
   if (! data)
     goto fail;
@@ -705,7 +686,7 @@ grub_fat_dir (grub_device_t device, const char *path,
     *p++ = '/';
   *p = '\0';
   p = dirname;
-
+  
   do
     {
       p = grub_fat_find_dir (disk, data, p, hook);
@@ -716,9 +697,11 @@ grub_fat_dir (grub_device_t device, const char *path,
 
   grub_free (dirname);
   grub_free (data);
-
+  
+#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-
+#endif
+  
   return grub_errno;
 }
 
@@ -728,8 +711,10 @@ grub_fat_open (grub_file_t file, const char *name)
   struct grub_fat_data *data = 0;
   char *p = (char *) name;
 
+#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
-
+#endif
+  
   data = grub_fat_mount (file->device->disk);
   if (! data)
     goto fail;
@@ -750,15 +735,17 @@ grub_fat_open (grub_file_t file, const char *name)
 
   file->data = data;
   file->size = data->file_size;
-
+  
   return GRUB_ERR_NONE;
 
  fail:
-
+  
   grub_free (data);
-
+  
+#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-
+#endif
+  
   return grub_errno;
 }
 
@@ -773,9 +760,11 @@ static grub_err_t
 grub_fat_close (grub_file_t file)
 {
   grub_free (file->data);
-
+  
+#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-
+#endif
+  
   return grub_errno;
 }
 
@@ -784,20 +773,13 @@ grub_fat_label (grub_device_t device, char **label)
 {
   struct grub_fat_data *data;
   grub_disk_t disk = device->disk;
+  grub_ssize_t offset = -sizeof(struct grub_fat_dir_entry);
 
-  auto int iter_hook (const char *filename, struct grub_fat_dir_entry *dir);
-  int iter_hook (const char *filename, struct grub_fat_dir_entry *dir)
-  {
-    if (dir->attr == GRUB_FAT_ATTR_VOLUME_ID)
-      {
-	*label = grub_strdup (filename);
-	return 1;
-      }
-    return 0;
-  }
 
+#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
-
+#endif
+  
   data = grub_fat_mount (disk);
   if (! data)
     goto fail;
@@ -808,13 +790,42 @@ grub_fat_label (grub_device_t device, char **label)
       return 0;
     }
 
+  while (1)
+    {
+      struct grub_fat_dir_entry dir;
+
+      /* Adjust the offset.  */
+      offset += sizeof (dir);
+      
+      /* Read a directory entry.  */
+      if ((grub_fat_read_data (disk, data, 0,
+			       offset, sizeof (dir), (char *) &dir)
+	   != sizeof (dir))
+	  || dir.name[0] == 0)
+	{
+	  if (grub_errno != GRUB_ERR_NONE)
+	    goto fail;
+	  else
+	    {
+	      *label = 0;
+	      return GRUB_ERR_NONE;
+	    }
+	}
+
+      if (dir.attr == GRUB_FAT_ATTR_VOLUME_ID)
+	{
+	  *label = grub_strndup ((char *) dir.name, 11);
+	  return GRUB_ERR_NONE;
+	}
+    }
+
   *label = 0;
-
-  grub_fat_iterate_dir (disk, data, iter_hook);
-
+  
  fail:
 
+#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
+#endif
 
   grub_free (data);
 
@@ -827,7 +838,9 @@ grub_fat_uuid (grub_device_t device, char **uuid)
   struct grub_fat_data *data;
   grub_disk_t disk = device->disk;
 
+#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
+#endif
 
   data = grub_fat_mount (disk);
   if (data)
@@ -839,7 +852,9 @@ grub_fat_uuid (grub_device_t device, char **uuid)
   else
     *uuid = NULL;
 
+#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
+#endif
 
   grub_free (data);
 
@@ -855,16 +870,15 @@ static struct grub_fs grub_fat_fs =
     .close = grub_fat_close,
     .label = grub_fat_label,
     .uuid = grub_fat_uuid,
-#ifdef GRUB_UTIL
-    .reserved_first_sector = 1,
-#endif
     .next = 0
   };
 
 GRUB_MOD_INIT(fat)
 {
   grub_fs_register (&grub_fat_fs);
+#ifndef GRUB_UTIL
   my_mod = mod;
+#endif
 }
 
 GRUB_MOD_FINI(fat)
