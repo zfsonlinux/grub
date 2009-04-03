@@ -22,6 +22,7 @@
 #include <grub/disk.h>
 #include <grub/misc.h>
 #include <grub/gzio.h>
+#include <grub/partition.h>
 #include <grub/lib/hexdump.h>
 #include <grub/extcmd.h>
 
@@ -61,20 +62,25 @@ grub_cmd_hexdump (grub_extcmd_t cmd, int argc, char **args)
       if (! disk)
         return 0;
 
+      if (disk->partition)
+        skip += grub_partition_get_start (disk->partition) << GRUB_DISK_SECTOR_BITS;
+
       sector = (skip >> (GRUB_DISK_SECTOR_BITS + 2)) * 4;
       ofs = skip & (GRUB_DISK_SECTOR_SIZE * 4 - 1);
       while (length)
         {
-          grub_size_t len;
+          grub_size_t len, n;
 
           len = length;
-          if (len > sizeof (buf))
-            len = sizeof (buf);
+          if (ofs + len > sizeof (buf))
+            len = sizeof (buf) - ofs;
 
-          if (grub_disk_read (disk, sector, ofs, len, buf))
+          n = ((ofs + len + GRUB_DISK_SECTOR_SIZE - 1)
+               >> GRUB_DISK_SECTOR_BITS);
+          if (disk->dev->read (disk, sector, n, buf))
             break;
 
-          hexdump (skip, buf, len);
+          hexdump (skip, &buf[ofs], len);
 
           ofs = 0;
           skip += len;
@@ -119,6 +125,7 @@ static grub_extcmd_t cmd;
 
 GRUB_MOD_INIT (hexdump)
 {
+  (void) mod;			/* To stop warning. */
   cmd = grub_register_extcmd ("hexdump", grub_cmd_hexdump,
 			      GRUB_COMMAND_FLAG_BOTH,
 			      "hexdump [OPTIONS] FILE_OR_DEVICE",

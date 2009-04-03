@@ -58,19 +58,6 @@ static char keyboard_map_shift[128] =
 
 static grub_usb_device_t usbdev;
 
-/* Valid values for bmRequestType.  See HID definition version 1.11 section
-   7.2.  */
-#define USB_HID_HOST_TO_DEVICE	0x21
-#define USB_HID_DEVICE_TO_HOST	0xA1
-
-/* Valid values for bRequest.  See HID definition version 1.11 section 7.2. */
-#define USB_HID_GET_REPORT	0x01
-#define USB_HID_GET_IDLE	0x02
-#define USB_HID_GET_PROTOCOL	0x03
-#define USB_HID_SET_REPORT	0x09
-#define USB_HID_SET_IDLE	0x0A
-#define USB_HID_SET_PROTOCOL	0x0B
-
 static void
 grub_usb_hid (void)
 {
@@ -80,7 +67,7 @@ grub_usb_hid (void)
   int usb_iterate (grub_usb_device_t dev)
     {
       descdev = &dev->descdev;
-
+      
       grub_dprintf ("usb_keyboard", "%x %x %x\n",
 		   descdev->class, descdev->subclass, descdev->protocol);
 
@@ -103,19 +90,17 @@ grub_usb_hid (void)
   grub_usb_iterate (usb_iterate);
 
   /* Place the device in boot mode.  */
-  grub_usb_control_msg (usbdev, USB_HID_HOST_TO_DEVICE, USB_HID_SET_PROTOCOL,
-			0, 0, 0, 0);
+  grub_usb_control_msg (usbdev, 0x21, 0x0B, 0, 0, 0, 0);
 
-  /* Reports every time an event occurs and not more often than that.  */
-  grub_usb_control_msg (usbdev, USB_HID_HOST_TO_DEVICE, USB_HID_SET_IDLE,
-			0<<8, 0, 0, 0);
+  /* Reports everytime an event occurs and not more often than that.  */
+  grub_usb_control_msg (usbdev, 0x21, 0x0A, 0<<8, 0, 0, 0);
 }
 
 static grub_err_t
-grub_usb_keyboard_getreport (grub_usb_device_t dev, grub_uint8_t *report)
+grub_usb_keyboard_getreport (grub_usb_device_t dev, unsigned char *report)
 {
-  return grub_usb_control_msg (dev, USB_HID_DEVICE_TO_HOST, USB_HID_GET_REPORT,
-			       0, 0, 8, (char *) report);
+  return grub_usb_control_msg (dev, (1 << 7) | (1 << 5) | 1, 0x01, 0, 0,
+			       8, (char *) report);
 }
 
 
@@ -123,24 +108,20 @@ grub_usb_keyboard_getreport (grub_usb_device_t dev, grub_uint8_t *report)
 static int
 grub_usb_keyboard_checkkey (void)
 {
-  grub_uint8_t data[8];
+  unsigned char data[8];
   int key;
+  int i;
   grub_err_t err;
-  grub_uint64_t currtime;
-  int timeout = 50;
 
   data[2] = 0;
-  currtime = grub_get_time_ms ();
-  do
+  for (i = 0; i < 50; i++)
     {
       /* Get_Report.  */
       err = grub_usb_keyboard_getreport (usbdev, data);
 
-      /* Implement a timeout.  */
-      if (grub_get_time_ms () > currtime + timeout)
+      if (! err && data[2])
 	break;
     }
-  while (err || !data[2]);
 
   if (err || !data[2])
     return -1;
@@ -166,8 +147,7 @@ grub_usb_keyboard_checkkey (void)
   /* Wait until the key is released.  */
   while (!err && data[2])
     {
-      err = grub_usb_control_msg (usbdev, USB_HID_DEVICE_TO_HOST,
-				  USB_HID_GET_REPORT, 0, 0,
+      err = grub_usb_control_msg (usbdev, (1 << 7) | (1 << 5) | 1, 0x01, 0, 0,
 				  sizeof (data), (char *) data);
       grub_dprintf ("usb_keyboard",
 		    "report2: 0x%02x 0x%02x 0x%02x 0x%02x"
@@ -193,8 +173,9 @@ static int
 grub_usb_keyboard_getkey (void)
 {
   int key;
+  int key_release;
   grub_err_t err;
-  grub_uint8_t data[8];
+  unsigned char data[8];
   grub_uint64_t currtime;
   int timeout;
   static grub_usb_keyboard_repeat_t repeat = GRUB_HIDBOOT_REPEAT_NONE;
@@ -211,14 +192,14 @@ grub_usb_keyboard_getkey (void)
 
   switch (repeat)
     {
+    case GRUB_HIDBOOT_REPEAT_NONE:
+      timeout = 100;
+      break;
     case GRUB_HIDBOOT_REPEAT_FIRST:
       timeout = 500;
       break;
     case GRUB_HIDBOOT_REPEAT:
       timeout = 50;
-      break;
-    default:
-      timeout = 100;
       break;
     }
 
@@ -254,74 +235,20 @@ grub_usb_keyboard_getkey (void)
   return key;
 }
 
-static int
-grub_usb_keyboard_getkeystatus (void)
-{
-  grub_uint8_t data[8];
-  int mods = 0;
-  grub_err_t err;
-  grub_uint64_t currtime;
-  int timeout = 50;
-
-  /* Set idle time to the minimum offered by the spec (4 milliseconds) so
-     that we can find out the current state.  */
-  grub_usb_control_msg (usbdev, USB_HID_HOST_TO_DEVICE, USB_HID_SET_IDLE,
-			0<<8, 0, 0, 0);
-
-  currtime = grub_get_time_ms ();
-  do
-    {
-      /* Get_Report.  */
-      err = grub_usb_keyboard_getreport (usbdev, data);
-
-      /* Implement a timeout.  */
-      if (grub_get_time_ms () > currtime + timeout)
-	break;
-    }
-  while (err || !data[0]);
-
-  /* Go back to reporting every time an event occurs and not more often than
-     that.  */
-  grub_usb_control_msg (usbdev, USB_HID_HOST_TO_DEVICE, USB_HID_SET_IDLE,
-			0<<8, 0, 0, 0);
-
-  /* We allowed a while for modifiers to show up in the report, but it is
-     not an error if they never did.  */
-  if (err)
-    return -1;
-
-  grub_dprintf ("usb_keyboard",
-		"report: 0x%02x 0x%02x 0x%02x 0x%02x"
-		" 0x%02x 0x%02x 0x%02x 0x%02x\n",
-		data[0], data[1], data[2], data[3],
-		data[4], data[5], data[6], data[7]);
-
-  /* Check Shift, Control, and Alt status.  */
-  if (data[0] & 0x02 || data[0] & 0x20)
-    mods |= GRUB_TERM_STATUS_SHIFT;
-  if (data[0] & 0x01 || data[0] & 0x10)
-    mods |= GRUB_TERM_STATUS_CTRL;
-  if (data[0] & 0x04 || data[0] & 0x40)
-    mods |= GRUB_TERM_STATUS_ALT;
-
-  grub_errno = GRUB_ERR_NONE;
-
-  return mods;
-}
-
 static struct grub_term_input grub_usb_keyboard_term =
   {
     .name = "usb_keyboard",
     .checkkey = grub_usb_keyboard_checkkey,
     .getkey = grub_usb_keyboard_getkey,
-    .getkeystatus = grub_usb_keyboard_getkeystatus,
     .next = 0
   };
 
 GRUB_MOD_INIT(usb_keyboard)
 {
+  (void) mod;			/* To stop warning. */
+
   grub_usb_hid ();
-  grub_term_register_input ("usb_keyboard", &grub_usb_keyboard_term);
+  grub_term_register_input (&grub_usb_keyboard_term);
 }
 
 GRUB_MOD_FINI(usb_keyboard)

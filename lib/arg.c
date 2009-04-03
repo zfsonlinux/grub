@@ -76,8 +76,21 @@ find_short (const struct grub_arg_option *options, char c)
   return found;
 }
 
+static char *
+find_long_option (char *s)
+{
+  char *argpos = grub_strchr (s, '=');
+
+  if (argpos)
+    {
+      *argpos = '\0';
+      return ++argpos;
+    }
+  return 0;
+}
+
 static struct grub_arg_option *
-find_long (const struct grub_arg_option *options, const char *s, int len)
+find_long (const struct grub_arg_option *options, char *s)
 {
   struct grub_arg_option *found = 0;
   auto struct grub_arg_option *fnd_long (const struct grub_arg_option *opt);
@@ -86,8 +99,7 @@ find_long (const struct grub_arg_option *options, const char *s, int len)
     {
       while (opt->doc)
 	{
-	  if (opt->longarg && ! grub_strncmp (opt->longarg, s, len) &&
-	      opt->longarg[len] == '\0')
+	  if (opt->longarg && ! grub_strcmp (opt->longarg, s))
 	    return (struct grub_arg_option *) opt;
 	  opt++;
 	}
@@ -232,7 +244,7 @@ grub_arg_parse (grub_extcmd_t cmd, int argc, char **argv,
 		struct grub_arg_list *usr, char ***args, int *argnum)
 {
   int curarg;
-  int arglen;
+  char *longarg = 0;
   int complete = 0;
   char **argl = 0;
   int num = 0;
@@ -316,14 +328,14 @@ grub_arg_parse (grub_extcmd_t cmd, int argc, char **argv,
 	      break;
 	    }
 
-	  option = grub_strchr (arg, '=');
-	  if (option) {
-	    arglen = option - arg - 2;
-	    option++;
-	  } else
-	    arglen = grub_strlen (arg) - 2;
+	  longarg = (char *) grub_strdup (arg);
+	  if (! longarg)
+	    goto fail;
 
-	  opt = find_long (cmd->options, arg + 2, arglen);
+	  option = find_long_option (longarg);
+	  arg = longarg;
+
+	  opt = find_long (cmd->options, arg + 2);
 	  if (! opt)
 	    {
 	      grub_error (GRUB_ERR_BAD_ARGUMENT, "Unknown argument `%s'\n", arg);
@@ -390,6 +402,8 @@ grub_arg_parse (grub_extcmd_t cmd, int argc, char **argv,
 	  if (parse_option (cmd, opt->shortarg, 0, usr) || grub_errno)
 	    goto fail;
 	}
+      grub_free (longarg);
+      longarg = 0;
     }
 
   complete = 1;
@@ -398,5 +412,7 @@ grub_arg_parse (grub_extcmd_t cmd, int argc, char **argv,
   *argnum = num;
 
  fail:
+  grub_free (longarg);
+
   return complete;
 }

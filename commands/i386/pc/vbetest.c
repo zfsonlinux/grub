@@ -73,7 +73,7 @@ grub_cmd_vbetest (grub_command_t cmd __attribute__ ((unused)),
     grub_printf ("Old video mode = %04x\n", old_mode);
   else
     grub_errno = GRUB_ERR_NONE;
-
+  
   /* Check existence of vbe_mode environment variable.  */
   modevar = grub_env_get ("vbe_mode");
   if (modevar != 0)
@@ -90,7 +90,7 @@ grub_cmd_vbetest (grub_command_t cmd __attribute__ ((unused)),
   err = grub_vbe_get_video_mode_info (use_mode, &mode_info);
   if (err != GRUB_ERR_NONE)
     return err;
-
+  
   /* Dump out details about the mode being tested.  */
   grub_printf ("mode: 0x%03x\n",
                use_mode);
@@ -155,8 +155,6 @@ grub_cmd_vbetest (grub_command_t cmd __attribute__ ((unused)),
 
   grub_getkey ();
 
-  grub_video_restore ();
-
   /* Restore old video mode.  */
   grub_vbe_set_video_mode (old_mode, 0);
 
@@ -167,6 +165,7 @@ static grub_command_t cmd;
 
 GRUB_MOD_INIT(vbetest)
 {
+  (void) mod;			/* To stop warning.  */
   cmd = grub_register_command ("vbetest", grub_cmd_vbetest,
 			       0, "Test VESA BIOS Extension 2.0+ support");
 }

@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2005,2006,2007,2008,2009  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2005,2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,20 +22,19 @@
 #include <grub/types.h>
 #include <grub/symbol.h>
 
-enum
-{
-  OBJ_TYPE_ELF,
-  OBJ_TYPE_MEMDISK,
-  OBJ_TYPE_CONFIG
-};
-
 /* The module header.  */
 struct grub_module_header
 {
   /* The type of object.  */
-  grub_uint8_t type;
+  grub_int8_t type;
+  enum
+  {
+    OBJ_TYPE_ELF,
+    OBJ_TYPE_MEMDISK,
+  }  grub_module_header_types;
+
   /* The size of object (including this header).  */
-  grub_uint32_t size;
+  grub_target_size_t size;
 };
 
 /* "gmim" (GRUB Module Info Magic).  */
@@ -65,7 +64,7 @@ void grub_main (void);
 void grub_machine_init (void);
 
 /* The machine-specific finalization.  */
-void EXPORT_FUNC(grub_machine_fini) (void);
+void grub_machine_fini (void);
 
 /* The machine-specific prefix initialization.  */
 void grub_machine_set_prefix (void);

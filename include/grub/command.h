@@ -67,7 +67,7 @@ struct grub_command
   /* The description of the command.  */
   const char *description;
 
-  /* Arbitrary data.  */
+  /* Arbitary data.  */
   void *data;
 };
 typedef struct grub_command *grub_command_t;
@@ -104,15 +104,6 @@ static inline grub_command_t
 grub_command_find (const char *name)
 {
   return grub_named_list_find (GRUB_AS_NAMED_LIST (grub_command_list), name);
-}
-
-static inline grub_err_t
-grub_command_execute (const char *name, int argc, char **argv)
-{
-  grub_command_t cmd;
-
-  cmd = grub_command_find (name);
-  return (cmd) ? cmd->func (cmd, argc, argv) : GRUB_ERR_FILE_NOT_FOUND;
 }
 
 static inline int
