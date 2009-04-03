@@ -41,16 +41,16 @@ grub_cmd_cat (grub_command_t cmd __attribute__ ((unused)),
   file = grub_gzfile_open (args[0], 1);
   if (! file)
     return 0;
-
+  
   while ((size = grub_file_read (file, buf, sizeof (buf))) > 0
 	 && key != GRUB_TERM_ESC)
     {
       int i;
-
+      
       for (i = 0; i < size; i++)
 	{
 	  unsigned char c = buf[i];
-
+	  
 	  if ((grub_isprint (c) || grub_isspace (c)) && c != '\r')
 	    grub_putchar (c);
 	  else
@@ -69,7 +69,7 @@ grub_cmd_cat (grub_command_t cmd __attribute__ ((unused)),
   grub_putchar ('\n');
   grub_refresh ();
   grub_file_close (file);
-
+  
   return 0;
 }
 
@@ -77,6 +77,7 @@ static grub_command_t cmd;
 
 GRUB_MOD_INIT(cat)
 {
+  (void) mod;			/* To stop warning. */
   cmd = grub_register_command_p1 ("cat", grub_cmd_cat,
 				  "cat FILE", "Show the contents of a file.");
 }

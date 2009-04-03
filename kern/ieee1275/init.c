@@ -150,7 +150,7 @@ static void grub_claim_heap (void)
 
     /* In theory, firmware should already prevent this from happening by not
        listing our own image in /memory/available.  The check below is intended
-       as a safeguard in case that doesn't happen.  However, it doesn't protect
+       as a safegard in case that doesn't happen.  It does, however, not protect
        us from corrupting our module area, which extends up to a
        yet-undetermined region above _end.  */
     if ((addr < (grub_addr_t) _end) && ((addr + len) > (grub_addr_t) _start))
@@ -213,7 +213,7 @@ void
 grub_machine_init (void)
 {
   char args[256];
-  grub_ssize_t actual;
+  int actual;
 
   grub_ieee1275_init ();
 
