@@ -24,8 +24,7 @@
 static grub_script_function_t grub_script_function_list;
 
 grub_script_function_t
-grub_script_function_create (struct grub_script_arg *functionname_arg,
-			     struct grub_script *cmd)
+grub_script_function_create (char *functionname, struct grub_script *cmd)
 {
   grub_script_function_t func;
   grub_script_function_t *p;
@@ -34,7 +33,7 @@ grub_script_function_create (struct grub_script_arg *functionname_arg,
   if (! func)
     return 0;
 
-  func->name = grub_script_execute_argument_to_string (functionname_arg);
+  func->name = grub_strdup (functionname);
   if (! func->name)
     {
       grub_free (func);
@@ -47,14 +46,14 @@ grub_script_function_create (struct grub_script_arg *functionname_arg,
   p = &grub_script_function_list;
   while (*p)
     {
-      if (grub_strcmp ((*p)->name, func->name) >= 0)
+      if (grub_strcmp ((*p)->name, functionname) >= 0)
 	break;
 
       p = &((*p)->next);
     }
 
   /* If the function already exists, overwrite the old function.  */
-  if (*p && grub_strcmp ((*p)->name, func->name) == 0)
+  if (*p && grub_strcmp ((*p)->name, functionname) == 0)
     {
       grub_script_function_t q;
 

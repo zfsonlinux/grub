@@ -56,7 +56,7 @@
  * device.  It also needs to know the initial block number of
  * 'core' (which is 'diskboot' concatenated with 'kernel' and
  * all the modules, this is created by grub-mkimage).  This resulting
- * 'boot' image is 512 bytes in size and is placed in the second block
+ * 'boot' image is 512 bytes in size and is placed in the first block
  * of a partition.
  *
  * The initial 'diskboot' block acts as a loader for the actual GRUB
@@ -100,28 +100,6 @@ grub_refresh (void)
   fflush (stdout);
 }
 
-static char *compute_dest_ofpath (const char *dest)
-{
-  int len = strlen (dest);
-  char *res, *p, c;
-
-  res = xmalloc (len);
-  p = res;
-  while ((c = *dest++) != '\0')
-    {
-      if (c == '\\' && *dest == ',')
-	{
-	  *p++ = ',';
-	  dest++;
-	}
-      else
-	*p++ = c;
-    }
-  *p++ = '\0';
-
-  return res;
-}
-
 static void
 setup (const char *prefix, const char *dir,
        const char *boot_file, const char *core_file,
@@ -132,7 +110,7 @@ setup (const char *prefix, const char *dir,
   size_t boot_size, core_size;
   grub_uint16_t core_sectors;
   grub_device_t root_dev, dest_dev;
-  char *boot_devpath, *dest_ofpath;
+  char *boot_devpath;
   grub_disk_addr_t *kernel_sector;
   struct boot_blocklist *first_block, *block;
   char *tmp_img;
@@ -192,8 +170,6 @@ setup (const char *prefix, const char *dir,
       last_length = length;
     }
 
-  dest_ofpath = compute_dest_ofpath (dest);
-
   /* Read the boot image by the OS service.  */
   boot_path = grub_util_get_path (dir, boot_file);
   boot_size = grub_util_get_image_size (boot_path);
@@ -226,8 +202,7 @@ setup (const char *prefix, const char *dir,
 					   + GRUB_DISK_SECTOR_SIZE
 					   - sizeof (*block));
 
-  grub_util_info ("root is '%s', dest is '%s', and dest_ofpath is '%s'",
-		  root, dest, dest_ofpath);
+  grub_util_info ("root is '%s' and dest is '%s'", root, dest);
 
   /* Open the root device and the destination device.  */
   grub_util_info ("Opening root");
@@ -355,7 +330,7 @@ setup (const char *prefix, const char *dir,
 
   *kernel_sector = grub_cpu_to_be64 (first_sector);
 
-  strcpy(boot_devpath, dest_ofpath);
+  strcpy(boot_devpath, dest);
 
   grub_util_info ("boot device path %s, prefix is %s, dest is %s",
 		  boot_devpath, prefix, dest);

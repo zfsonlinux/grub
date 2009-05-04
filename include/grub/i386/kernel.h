@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2005,2006,2007,2008,2009  Free Software Foundation, Inc.
+ *  Copyright (C) 2005,2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,13 +19,7 @@
 #ifndef GRUB_KERNEL_CPU_HEADER
 #define GRUB_KERNEL_CPU_HEADER	1
 
-#include <grub/machine/machine.h>
-
-#ifdef GRUB_MACHINE_IEEE1275
-#define GRUB_MOD_ALIGN	0x1000
-#else
-#define GRUB_MOD_ALIGN	0x1
-#endif
+#define GRUB_MOD_ALIGN 0x1000
 
 /* Non-zero value is only needed for PowerMacs.  */
 #define GRUB_MOD_GAP 0x0
