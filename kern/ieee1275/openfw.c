@@ -17,6 +17,7 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <alloca.h>
 #include <grub/types.h>
 #include <grub/err.h>
 #include <grub/misc.h>
@@ -77,16 +78,16 @@ grub_children_iterate (char *devpath,
       struct grub_ieee1275_devalias alias;
       grub_ssize_t actual;
 
-      if (grub_ieee1275_get_property (child, "device_type", childtype,
-				      IEEE1275_MAX_PROP_LEN, &actual))
+      if (grub_ieee1275_get_property (child, "device_type", &childtype,
+				      sizeof childtype, &actual))
 	continue;
 
-      if (grub_ieee1275_package_to_path (child, childpath,
-					 IEEE1275_MAX_PATH_LEN, &actual))
+      if (grub_ieee1275_package_to_path (child, childpath, sizeof childpath,
+					 &actual))
 	continue;
 
-      if (grub_ieee1275_get_property (child, "name", childname,
-				      IEEE1275_MAX_PROP_LEN, &actual))
+      if (grub_ieee1275_get_property (child, "name", &childname,
+				      sizeof childname, &actual))
 	continue;
 
       grub_sprintf (fullname, "%s/%s", devpath, childname);
@@ -176,7 +177,7 @@ grub_devalias_iterate (int (*hook) (struct grub_ieee1275_devalias *alias))
 	}
 
       if (grub_ieee1275_get_property (dev, "device_type", devtype,
-				      IEEE1275_MAX_PROP_LEN, &actual))
+				      sizeof devtype, &actual))
 	{
 	  /* NAND device don't have device_type property.  */
           devtype[0] = 0;
@@ -408,7 +409,7 @@ grub_reboot (void)
 void
 grub_halt (void)
 {
-  /* Not standardized.  We try both known commands.  */
+  /* Not standarized.  We try both known commands.  */
 
   grub_ieee1275_interpret ("shut-down", 0);
   grub_ieee1275_interpret ("power-off", 0);

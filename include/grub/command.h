@@ -67,7 +67,7 @@ struct grub_command
   /* The description of the command.  */
   const char *description;
 
-  /* Arbitrary data.  */
+  /* Arbitary data.  */
   void *data;
 };
 typedef struct grub_command *grub_command_t;

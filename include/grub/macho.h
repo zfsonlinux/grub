@@ -39,7 +39,7 @@ struct grub_macho_fat_arch
   grub_uint32_t offset;
   grub_uint32_t size;
   grub_uint32_t align;
-} __attribute__ ((packed));
+} __attribute__ ((packed));;
 
 /* File header for 32-bit. Always in native-endian. */
 struct grub_macho_header32
@@ -73,7 +73,7 @@ union grub_macho_filestart
 {
   struct grub_macho_fat_header fat;
   struct grub_macho_header32 thin32;
-  struct grub_macho_header64 thin64;
+  struct grub_macho_header64 thin64;  
 } __attribute__ ((packed));
 
 /* Common header of Mach-O commands. */

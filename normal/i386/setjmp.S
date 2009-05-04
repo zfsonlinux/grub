@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2009  Free Software Foundation, Inc.
+ *  Copyright (C) 2003,2007  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,13 +16,41 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GRUB_BOOT_MACHINE_HEADER
-#define GRUB_BOOT_MACHINE_HEADER	1
+#include <grub/symbol.h>
 
-/* The size of boot.img.  */
-#define GRUB_BOOT_MACHINE_SIZE			(0x100000 - GRUB_BOOT_MACHINE_LINK_ADDR)
+	.file	"setjmp.S"
+	
+	.text
+	
+/*
+ * int grub_setjmp (grub_jmp_buf env)
+ */
+FUNCTION(grub_setjmp)
+	movl	%ebx, 0(%eax)	/* EBX */
+	movl	%esi, 4(%eax)	/* ESI */
+	movl	%edi, 8(%eax)	/* EDI */
+	movl	%ebp, 12(%eax)	/* EBP */
+	popl	%ecx
+	movl	%esp, 16(%eax)	/* ESP */
+	movl	%ecx, 20(%eax)	/* EIP */
+	xorl	%eax, %eax
+	jmp	*%ecx
 
-/* The offset of GRUB_CORE_ENTRY_ADDR.  */
-#define GRUB_BOOT_MACHINE_CORE_ENTRY_ADDR	0x4
+		
+/*
+ * int grub_longjmp (grub_jmp_buf env, int val)
+ */
+FUNCTION(grub_longjmp)
+	movl	0(%eax), %ebx
+	movl	4(%eax), %esi
+	movl	8(%eax), %edi
+	movl	12(%eax), %ebp
+	movl	16(%eax), %esp
+	movl	20(%eax), %ecx
 
-#endif
+	movl	%edx, %eax
+	testl	%eax, %eax
+	jnz	1f
+	incl	%eax
+1:	jmp	*%ecx
+	

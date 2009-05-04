@@ -35,7 +35,6 @@
 #define GRUB_PC_PARTITION_TYPE_FAT16_LT32M	4
 #define GRUB_PC_PARTITION_TYPE_EXTENDED		5
 #define GRUB_PC_PARTITION_TYPE_FAT16_GT32M	6
-#define GRUB_PC_PARTITION_TYPE_NTFS	        7
 #define GRUB_PC_PARTITION_TYPE_FAT32		0xb
 #define GRUB_PC_PARTITION_TYPE_FAT32_LBA	0xc
 #define GRUB_PC_PARTITION_TYPE_FAT16_LBA	0xe
@@ -49,7 +48,6 @@
 #define GRUB_PC_PARTITION_TYPE_FREEBSD		0xa5
 #define GRUB_PC_PARTITION_TYPE_OPENBSD		0xa6
 #define GRUB_PC_PARTITION_TYPE_NETBSD		0xa9
-#define GRUB_PC_PARTITION_TYPE_HFS		0xaf
 #define GRUB_PC_PARTITION_TYPE_GPT_DISK		0xee
 #define GRUB_PC_PARTITION_TYPE_LINUX_RAID	0xfd
 
@@ -99,7 +97,7 @@
 #define	GRUB_PC_PARTITION_OPENBSD_TYPE_RAID	19
 
 /* The BSD partition entry.  */
-struct grub_msdos_partition_bsd_entry
+struct grub_pc_partition_bsd_entry
 {
   grub_uint32_t size;
   grub_uint32_t offset;
@@ -110,7 +108,7 @@ struct grub_msdos_partition_bsd_entry
 } __attribute__ ((packed));
 
 /* The BSD disk label. Only define members useful for GRUB.  */
-struct grub_msdos_partition_disk_label
+struct grub_pc_partition_disk_label
 {
   grub_uint32_t magic;
   grub_uint8_t padding[128];
@@ -119,11 +117,11 @@ struct grub_msdos_partition_disk_label
   grub_uint16_t num_partitions;
   grub_uint32_t boot_size;
   grub_uint32_t superblock_size;
-  struct grub_msdos_partition_bsd_entry entries[GRUB_PC_PARTITION_BSD_MAX_ENTRIES];
+  struct grub_pc_partition_bsd_entry entries[GRUB_PC_PARTITION_BSD_MAX_ENTRIES];
 } __attribute__ ((packed));
 
 /* The partition entry.  */
-struct grub_msdos_partition_entry
+struct grub_pc_partition_entry
 {
   /* If active, 0x80, otherwise, 0x00.  */
   grub_uint8_t flag;
@@ -155,20 +153,20 @@ struct grub_msdos_partition_entry
 } __attribute__ ((packed));
 
 /* The structure of MBR.  */
-struct grub_msdos_partition_mbr
+struct grub_pc_partition_mbr
 {
   /* The code area (actually, including BPB).  */
   grub_uint8_t code[446];
 
   /* Four partition entries.  */
-  struct grub_msdos_partition_entry entries[4];
+  struct grub_pc_partition_entry entries[4];
 
   /* The signature 0xaa55.  */
   grub_uint16_t signature;
 } __attribute__ ((packed));
 
 
-struct grub_msdos_partition
+struct grub_pc_partition
 {
     /* The DOS partition number.  */
   int dos_part;
@@ -187,13 +185,13 @@ struct grub_msdos_partition
 };
 
 static inline int
-grub_msdos_partition_is_empty (int type)
+grub_pc_partition_is_empty (int type)
 {
   return (type == GRUB_PC_PARTITION_TYPE_NONE);
 }
 
 static inline int
-grub_msdos_partition_is_extended (int type)
+grub_pc_partition_is_extended (int type)
 {
   return (type == GRUB_PC_PARTITION_TYPE_EXTENDED
 	  || type == GRUB_PC_PARTITION_TYPE_WIN95_EXTENDED
@@ -201,7 +199,7 @@ grub_msdos_partition_is_extended (int type)
 }
 
 static inline int
-grub_msdos_partition_is_bsd (int type)
+grub_pc_partition_is_bsd (int type)
 {
   return (type == GRUB_PC_PARTITION_TYPE_FREEBSD
 	  || type == GRUB_PC_PARTITION_TYPE_OPENBSD

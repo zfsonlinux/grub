@@ -289,12 +289,6 @@ get_dac960_disk_name (char *name, int controller, int drive)
 }
 
 static void
-get_acceleraid_disk_name (char *name, int controller, int drive)
-{
-  sprintf (name, "/dev/rs/c%dd%d", controller, drive);
-}
-
-static void
 get_ataraid_disk_name (char *name, int unit)
 {
   sprintf (name, "/dev/ataraid/d%c", unit + '0');
@@ -460,7 +454,7 @@ grub_util_iterate_devices (int NESTED_FUNC_ATTR (*hook) (const char *, int),
 #endif /* __linux__ */
 
   /* IDE disks.  */
-  for (i = 0; i < 26; i++)
+  for (i = 0; i < 20; i++)
     {
       char name[16];
 
@@ -474,7 +468,7 @@ grub_util_iterate_devices (int NESTED_FUNC_ATTR (*hook) (const char *, int),
 
 #ifdef __linux__
   /* Virtio disks.  */
-  for (i = 0; i < 26; i++)
+  for (i = 0; i < 20; i++)
     {
       char name[16];
 
@@ -500,7 +494,7 @@ grub_util_iterate_devices (int NESTED_FUNC_ATTR (*hook) (const char *, int),
     }
 
   /* Xen virtual block devices.  */
-  for (i = 0; i < 26; i++)
+  for (i = 0; i < 16; i++)
     {
       char name[16];
 
@@ -514,7 +508,7 @@ grub_util_iterate_devices (int NESTED_FUNC_ATTR (*hook) (const char *, int),
 #endif /* __linux__ */
 
   /* The rest is SCSI disks.  */
-  for (i = 0; i < 26; i++)
+  for (i = 0; i < 16; i++)
     {
       char name[16];
 
@@ -542,27 +536,6 @@ grub_util_iterate_devices (int NESTED_FUNC_ATTR (*hook) (const char *, int),
 	    char name[24];
 
 	    get_dac960_disk_name (name, controller, drive);
-	    if (check_device (name))
-	      {
-		if (hook (name, 0))
-		  return;
-	      }
-	  }
-      }
-  }
-
-  /* This is for Mylex Acceleraid - we have
-     /dev/rd/c<controller>d<logical drive>p<partition>.  */
-  {
-    int controller, drive;
-
-    for (controller = 0; controller < 8; controller++)
-      {
-	for (drive = 0; drive < 15; drive++)
-	  {
-	    char name[24];
-
-	    get_acceleraid_disk_name (name, controller, drive);
 	    if (check_device (name))
 	      {
 		if (hook (name, 0))
