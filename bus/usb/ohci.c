@@ -112,8 +112,9 @@ grub_ohci_writereg32 (struct grub_ohci *o,
 
 /* Iterate over all PCI devices.  Determine if a device is an OHCI
    controller.  If this is the case, initialize it.  */
-static int grub_ohci_pci_iter (int bus, int device, int func,
-			       grub_pci_id_t pciid __attribute__((unused)))
+static int NESTED_FUNC_ATTR
+grub_ohci_pci_iter (int bus, int device, int func,
+		    grub_pci_id_t pciid __attribute__((unused)))
 {
   grub_uint32_t class;
   grub_uint32_t subclass;
@@ -232,9 +233,9 @@ grub_ohci_transaction (grub_ohci_td_t td,
   grub_uint32_t buffer;
   grub_uint32_t buffer_end;
 
- grub_dprintf ("ohci", "OHCI transaction td=0x%02x type=%d, toggle=%d, size=%d\n",
-	       td, type, toggle, size);
- 
+  grub_dprintf ("ohci", "OHCI transaction td=%p type=%d, toggle=%d, size=%d\n",
+		td, type, toggle, size);
+
   switch (type)
     {
     case GRUB_USB_TRANSFER_TYPE_SETUP:
@@ -294,7 +295,7 @@ grub_ohci_transfer (grub_usb_controller_t dev,
       return GRUB_USB_ERR_INTERNAL;
     }
 
-  grub_dprintf ("ohci", "alloc=0x%08x\n", td_list);
+  grub_dprintf ("ohci", "alloc=%p\n", td_list);
 
   /* Setup all Transfer Descriptors.  */
   for (i = 0; i < transfer->transcnt; i++)

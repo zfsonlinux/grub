@@ -231,9 +231,8 @@ esac
 AC_SUBST(TARGET_OBJ2ELF)
 AC_MSG_RESULT([$TARGET_OBJ2ELF])
 
-# For cross-compiling.
-if test "x$build" != "x$host"; then
-  # XXX this depends on the implementation of autoconf!
+# Find tools for the target.
+if test "x$target_alias" != x && test "x$host_alias" != "x$target_alias"; then
   tmp_ac_tool_prefix="$ac_tool_prefix"
   ac_tool_prefix=$target_alias-
 
@@ -371,6 +370,9 @@ CFLAGS="$TARGET_CFLAGS"
 CPPFLAGS="$TARGET_CPPFLAGS"
 LDFLAGS="$TARGET_LDFLAGS"
 
+# Check for target functions.
+AC_CHECK_FUNCS(__bswapsi2 __bswapdi2)
+
 # Defined in aclocal.m4.
 grub_PROG_TARGET_CC
 grub_PROG_OBJCOPY_ABSOLUTE
@@ -470,6 +472,11 @@ fi
 AC_SUBST([enable_grub_mkfont])
 AC_SUBST([freetype_cflags])
 AC_SUBST([freetype_libs])
+
+AC_ARG_ENABLE([efiemu],
+	      [AS_HELP_STRING([--enable-efiemu],
+                             [build and install the efiemu runtimes])])
+AC_SUBST([enable_efiemu])
 
 # Output files.
 grub_CHECK_LINK_DIR

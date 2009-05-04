@@ -57,7 +57,7 @@ class Image
 MOSTLYCLEANFILES += #{deps_str}
 
 #{@name}: #{exe}
-	$(OBJCOPY) -O binary -R .note -R .comment -R .note.gnu.build-id $< $@
+	$(OBJCOPY) -O $(#{prefix}_FORMAT) --strip-unneeded -R .note -R .comment -R .note.gnu.build-id $< $@
 
 #{exe}: #{objs_str}
 	$(TARGET_CC) -o $@ $^ $(TARGET_LDFLAGS) $(#{prefix}_LDFLAGS)
@@ -143,6 +143,8 @@ endif
       command = 'cmd-' + obj.suffix('lst')
       fs = 'fs-' + obj.suffix('lst')
       partmap = 'partmap-' + obj.suffix('lst')
+      handler = 'handler-' + obj.suffix('lst')
+      parttool = 'parttool-' + obj.suffix('lst')
       dep = deps[i]
       flag = if /\.c$/ =~ src then 'CFLAGS' else 'ASFLAGS' end
       extra_flags = if /\.S$/ =~ src then '-DASM_FILE=1' else '' end
@@ -152,10 +154,12 @@ endif
 	$(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) #{extra_flags} $(TARGET_#{flag}) $(#{prefix}_#{flag}) -MD -c -o $@ $<
 -include #{dep}
 
-CLEANFILES += #{command} #{fs} #{partmap}
+CLEANFILES += #{command} #{fs} #{partmap} #{handler} #{parttool}
 COMMANDFILES += #{command}
 FSFILES += #{fs}
+PARTTOOLFILES += #{parttool}
 PARTMAPFILES += #{partmap}
+HANDLERFILES += #{handler}
 
 #{command}: #{src} $(#{src}_DEPENDENCIES) gencmdlist.sh
 	set -e; \
@@ -167,11 +171,20 @@ PARTMAPFILES += #{partmap}
 	  $(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) #{extra_flags} $(TARGET_#{flag}) $(#{prefix}_#{flag}) -E $< \
 	  | sh $(srcdir)/genfslist.sh #{symbolic_name} > $@ || (rm -f $@; exit 1)
 
+#{parttool}: #{src} $(#{src}_DEPENDENCIES) genparttoollist.sh
+	set -e; \
+	  $(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) #{extra_flags} $(TARGET_#{flag}) $(#{prefix}_#{flag}) -E $< \
+	  | sh $(srcdir)/genparttoollist.sh #{symbolic_name} > $@ || (rm -f $@; exit 1)
+
 #{partmap}: #{src} $(#{src}_DEPENDENCIES) genpartmaplist.sh
 	set -e; \
 	  $(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) #{extra_flags} $(TARGET_#{flag}) $(#{prefix}_#{flag}) -E $< \
 	  | sh $(srcdir)/genpartmaplist.sh #{symbolic_name} > $@ || (rm -f $@; exit 1)
 
+#{handler}: #{src} $(#{src}_DEPENDENCIES) genhandlerlist.sh
+	set -e; \
+	  $(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) #{extra_flags} $(TARGET_#{flag}) $(#{prefix}_#{flag}) -E $< \
+	  | sh $(srcdir)/genhandlerlist.sh #{symbolic_name} > $@ || (rm -f $@; exit 1)
 
 "
     end.join('')

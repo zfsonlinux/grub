@@ -1,6 +1,6 @@
 # -*- makefile -*-
 #
-# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2004,2005,2006,2007,2008,2009,2008 Free Software Foundation, Inc.
+# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2004,2005,2006,2007,2008,2009 Free Software Foundation, Inc.
 #
 # This Makefile.in is free software; the author
 # gives unlimited permission to copy and/or distribute it,
@@ -101,6 +101,7 @@ enable_lzo = @enable_lzo@
 enable_grub_mkfont = @enable_grub_mkfont@
 freetype_cflags = @freetype_cflags@
 freetype_libs = @freetype_libs@
+enable_efiemu = @enable_efiemu@
 
 ### General variables.
 
@@ -139,7 +140,7 @@ include $(srcdir)/conf/$(target_cpu)-$(platform).mk
 ### General targets.
 
 CLEANFILES += $(pkglib_DATA) $(pkgdata_DATA)
-pkglib_DATA += moddep.lst command.lst fs.lst partmap.lst
+pkglib_DATA += moddep.lst command.lst fs.lst partmap.lst parttool.lst handler.lst
 moddep.lst: $(DEFSYMFILES) $(UNDSYMFILES) genmoddep.awk
 	cat $(DEFSYMFILES) /dev/null \
 	  | $(AWK) -f $(srcdir)/genmoddep.awk $(UNDSYMFILES) > $@ \
@@ -153,6 +154,12 @@ fs.lst: $(FSFILES)
 
 partmap.lst: $(PARTMAPFILES)
 	cat $^ /dev/null | sort > $@
+
+handler.lst: $(HANDLERFILES)
+	cat $^ /dev/null | sort > $@
+
+parttool.lst: $(PARTTOOLFILES)
+	cat $^ /dev/null | sort | uniq > $@
 
 ifeq (, $(UNIFONT_BDF))
 else
@@ -226,26 +233,26 @@ install-local: all
 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  $(INSTALL_PROGRAM) $$dir$$file $(DESTDIR)$(bindir)/$$dest; \
-	  $(HELP2MAN) --section=1 $(builddir)/$$file > $(DESTDIR)$(mandir)/man1/$$dest.1; \
+	  $(HELP2MAN) --section=1 -o $(DESTDIR)$(mandir)/man1/$$dest.1 $(builddir)/$$file; \
 	done
 	$(mkinstalldirs) $(DESTDIR)$(sbindir) $(DESTDIR)$(mandir)/man8
 	@list='$(sbin_UTILITIES)'; for file in $$list; do \
 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  $(INSTALL_PROGRAM) $$dir$$file $(DESTDIR)$(sbindir)/$$dest; \
-	  $(HELP2MAN) --section=8 $(builddir)/$$file > $(DESTDIR)$(mandir)/man8/$$dest.8; \
+	  $(HELP2MAN) --section=8 -o $(DESTDIR)$(mandir)/man8/$$dest.8 $(builddir)/$$file; \
 	done
 	@list='$(bin_SCRIPTS)'; for file in $$list; do \
 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  $(INSTALL_SCRIPT) $$dir$$file $(DESTDIR)$(bindir)/$$dest; \
-	  $(HELP2MAN) --section=1 $(builddir)/$$file > $(DESTDIR)$(mandir)/man1/$$dest.1; \
+	  $(HELP2MAN) --section=1 -o $(DESTDIR)$(mandir)/man1/$$dest.1 $(builddir)/$$file; \
 	done
 	@list='$(sbin_SCRIPTS)'; for file in $$list; do \
 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  $(INSTALL_SCRIPT) $$dir$$file $(DESTDIR)$(sbindir)/$$dest; \
-	  $(HELP2MAN) --section=8 $(builddir)/$$file > $(DESTDIR)$(mandir)/man8/$$dest.8; \
+	  $(HELP2MAN) --section=8 -o $(DESTDIR)$(mandir)/man8/$$dest.8 $(builddir)/$$file; \
 	done
 	$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/grub.d
 	@list='$(grub-mkconfig_SCRIPTS)'; for file in $$list; do \

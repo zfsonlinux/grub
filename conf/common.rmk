@@ -19,7 +19,7 @@ grub_probe_SOURCES = util/grub-probe.c	\
 	fs/ntfs.c fs/ntfscomp.c fs/reiserfs.c fs/sfs.c		\
 	fs/ufs.c fs/xfs.c fs/afs.c fs/tar.c			\
 	\
-	partmap/pc.c partmap/apple.c partmap/gpt.c 		\
+	partmap/pc.c partmap/apple.c partmap/sun.c partmap/gpt.c\
 	kern/fs.c kern/env.c fs/fshelp.c			\
 	disk/raid.c disk/mdraid_linux.c disk/lvm.c grub_probe_init.c
 
@@ -32,7 +32,7 @@ util/grub-fstest.c_DEPENDENCIES = grub_fstest_init.h
 grub_fstest_SOURCES = util/grub-fstest.c util/hostfs.c util/misc.c 	\
 	kern/file.c kern/device.c kern/disk.c kern/err.c kern/misc.c	\
 	disk/host.c disk/loopback.c kern/list.c kern/command.c		\
-	lib/arg.c commands/extcmd.c normal/misc.c			\
+	lib/arg.c commands/extcmd.c normal/datetime.c normal/misc.c	\
 	lib/hexdump.c lib/crc.c commands/blocklist.c commands/ls.c 	\
 	\
 	fs/affs.c fs/cpio.c fs/fat.c fs/ext2.c fs/hfs.c			\
@@ -40,7 +40,8 @@ grub_fstest_SOURCES = util/grub-fstest.c util/hostfs.c util/misc.c 	\
 	fs/ntfs.c fs/ntfscomp.c fs/reiserfs.c fs/sfs.c			\
 	fs/ufs.c fs/xfs.c fs/afs.c fs/tar.c				\
 	\
-	kern/partition.c partmap/pc.c partmap/apple.c partmap/gpt.c 	\
+	kern/partition.c partmap/pc.c partmap/apple.c partmap/sun.c	\
+	partmap/gpt.c							\
 	kern/fs.c kern/env.c fs/fshelp.c disk/raid.c			\
 	disk/raid5_recover.c disk/raid6_recover.c 			\
 	disk/mdraid_linux.c disk/dmraid_nvidia.c disk/lvm.c 		\
@@ -55,8 +56,8 @@ grub_mkfont_LDFLAGS = $(freetype_libs)
 endif
 
 # For the parser.
-grub_script.tab.c grub_script.tab.h: normal/parser.y
-	$(YACC) -d -p grub_script_yy -b grub_script $(srcdir)/normal/parser.y
+grub_script.tab.c grub_script.tab.h: script/sh/parser.y
+	$(YACC) -d -p grub_script_yy -b grub_script $(srcdir)/script/sh/parser.y
 DISTCLEANFILES += grub_script.tab.c grub_script.tab.h
 
 # For grub-emu.
@@ -155,6 +156,12 @@ CLEANFILES += $(grub-mkconfig_SCRIPTS)
 
 grub-mkconfig_DATA += util/grub.d/README
 
+# For grub-dumpbios
+grub-dumpbios: util/grub-dumpbios.in config.status
+	./config.status --file=$@:$<
+	chmod +x $@
+sbin_SCRIPTS += grub-dumpbios
+CLEANFILES += grub-dumpbios
 
 # Filing systems.
 pkglib_MODULES += fshelp.mod fat.mod ufs.mod ext2.mod ntfs.mod		\
@@ -335,7 +342,13 @@ pkglib_MODULES += minicmd.mod extcmd.mod hello.mod handler.mod	\
 	 ls.mod	cmp.mod cat.mod help.mod search.mod		\
 	loopback.mod fs_uuid.mod configfile.mod echo.mod	\
 	terminfo.mod test.mod blocklist.mod hexdump.mod		\
-	read.mod sleep.mod loadenv.mod crc.mod
+	read.mod sleep.mod loadenv.mod crc.mod parttool.mod	\
+	pcpart.mod memrw.mod boot.mod normal.mod sh.mod
+
+# For boot.mod.
+boot_mod_SOURCES = commands/boot.c
+boot_mod_CFLAGS = $(COMMON_CFLAGS)
+boot_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For minicmd.mod.
 minicmd_mod_SOURCES = commands/minicmd.c
@@ -351,6 +364,16 @@ extcmd_mod_LDFLAGS = $(COMMON_LDFLAGS)
 hello_mod_SOURCES = hello/hello.c
 hello_mod_CFLAGS = $(COMMON_CFLAGS)
 hello_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For parttool.mod.
+parttool_mod_SOURCES = commands/parttool.c
+parttool_mod_CFLAGS = $(COMMON_CFLAGS)
+parttool_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For pcpart.mod.
+pcpart_mod_SOURCES = parttool/pcpart.c
+pcpart_mod_CFLAGS = $(COMMON_CFLAGS)
+pcpart_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For handler.mod.
 handler_mod_SOURCES = commands/handler.c
@@ -441,6 +464,26 @@ loadenv_mod_LDFLAGS = $(COMMON_LDFLAGS)
 crc_mod_SOURCES = commands/crc.c lib/crc.c
 crc_mod_CFLAGS = $(COMMON_CFLAGS)
 crc_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For memrw.mod.
+memrw_mod_SOURCES = commands/memrw.c
+memrw_mod_CFLAGS = $(COMMON_CFLAGS)
+memrw_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For normal.mod.
+normal_mod_SOURCES = normal/main.c normal/cmdline.c normal/dyncmd.c \
+	normal/autofs.c normal/handler.c \
+	normal/color.c normal/completion.c normal/datetime.c normal/menu.c \
+	normal/menu_entry.c normal/menu_text.c normal/menu_viewer.c \
+	normal/misc.c
+normal_mod_CFLAGS = $(COMMON_CFLAGS)
+normal_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For sh.mod.
+sh_mod_SOURCES = script/sh/main.c script/sh/script.c script/sh/execute.c \
+	script/sh/function.c script/sh/lexer.c grub_script.tab.c
+sh_mod_CFLAGS = $(COMMON_CFLAGS)
+sh_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # Common Video Subsystem specific modules.
 pkglib_MODULES += video.mod videotest.mod bitmap.mod tga.mod jpeg.mod	\
