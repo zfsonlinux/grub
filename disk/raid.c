@@ -598,13 +598,13 @@ grub_raid_scan_device (int head_only)
       struct grub_raid_array array;
       struct grub_raid *p;
 
-      grub_dprintf ("raid", "Scanning for RAID devices\n");
+      grub_dprintf ("raid", "Scanning for RAID devices on disk %s\n", name);
 
       disk = grub_disk_open (name);
       if (!disk)
         return 0;
 
-      if (disk->total_sectors == ULONG_MAX)
+      if (disk->total_sectors == GRUB_ULONG_MAX)
         {
           grub_disk_close (disk);
           return 0;

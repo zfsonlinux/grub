@@ -40,6 +40,7 @@ extern char *progname;
 extern int verbosity;
 extern jmp_buf main_env;
 
+void grub_util_warn (const char *fmt, ...);
 void grub_util_info (const char *fmt, ...);
 void grub_util_error (const char *fmt, ...) __attribute__ ((noreturn));
 
@@ -69,6 +70,7 @@ int asprintf (char **buf, const char *fmt, ...);
 #define ftello ftello64
 
 void sync (void);
+int fsync (int fno);
 void sleep(int s);
 
 grub_int64_t grub_util_get_disk_size (char *name);

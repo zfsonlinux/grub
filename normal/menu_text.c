@@ -24,7 +24,6 @@
 #include <grub/mm.h>
 #include <grub/time.h>
 #include <grub/env.h>
-#include <grub/script.h>
 #include <grub/menu_viewer.h>
 
 /* Time to delay after displaying an error message about a default/fallback
@@ -41,6 +40,7 @@ grub_wait_after_message (void)
 {
   grub_printf ("\nPress any key to continue...");
   (void) grub_getkey ();
+  grub_putchar ('\n');
 }
 
 static void

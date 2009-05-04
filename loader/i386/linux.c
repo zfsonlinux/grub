@@ -20,6 +20,7 @@
 #include <grub/machine/machine.h>
 #include <grub/machine/memory.h>
 #include <grub/machine/loader.h>
+#include <grub/normal.h>
 #include <grub/file.h>
 #include <grub/disk.h>
 #include <grub/err.h>
@@ -37,6 +38,14 @@
 
 #define GRUB_LINUX_CL_OFFSET		0x1000
 #define GRUB_LINUX_CL_END_OFFSET	0x2000
+
+/* This macro is useful for distributors, who can be certain they built FB support
+   into Linux, and therefore can benefit from seamless mode transition between
+   GRUB and Linux (saving boot time and visual glitches).  Official GRUB, OTOH,
+   needs to be conservative.  */
+#ifndef GRUB_ASSUME_LINUX_HAS_FB_SUPPORT
+#define GRUB_ASSUME_LINUX_HAS_FB_SUPPORT 0
+#endif
 
 static grub_dl_t my_mod;
 
@@ -168,7 +177,7 @@ find_mmap_size (void)
       return 0;
     }
   
-  grub_machine_mmap_iterate (hook);
+  grub_mmap_iterate (hook);
   
   mmap_size = count * sizeof (struct grub_e820_mmap);
 
@@ -206,8 +215,7 @@ allocate_pages (grub_size_t prot_size)
   prot_mode_pages = (prot_size >> 12);
   
   /* Initialize the memory pointers with NULL for convenience.  */
-  real_mode_mem = 0;
-  prot_mode_mem = 0;
+  free_pages ();
   
   /* FIXME: Should request low memory from the heap when this feature is
      implemented.  */
@@ -238,7 +246,7 @@ allocate_pages (grub_size_t prot_size)
 
       return 0;
     }
-  grub_machine_mmap_iterate (hook);
+  grub_mmap_iterate (hook);
   if (! real_mode_mem)
     {
       grub_error (GRUB_ERR_OUT_OF_MEMORY, "cannot allocate real mode pages");
@@ -304,14 +312,14 @@ grub_linux_setup_video (struct linux_kernel_params *params)
   params->lfb_base = (void *) render_target->data;
   params->lfb_size = (params->lfb_line_len * params->lfb_height + 65535) >> 16;
 
-  params->red_mask_size = 8;
-  params->red_field_pos = 16;
-  params->green_mask_size = 8;
-  params->green_field_pos = 8;
-  params->blue_mask_size = 8;
-  params->blue_field_pos = 0;
-  params->reserved_mask_size = 8;
-  params->reserved_field_pos = 24;
+  params->red_mask_size = mode_info.red_mask_size;
+  params->red_field_pos = mode_info.red_field_pos;
+  params->green_mask_size = mode_info.green_mask_size;
+  params->green_field_pos = mode_info.green_field_pos;
+  params->blue_mask_size = mode_info.blue_mask_size;
+  params->blue_field_pos = mode_info.blue_field_pos;
+  params->reserved_mask_size = mode_info.reserved_mask_size;
+  params->reserved_field_pos = mode_info.reserved_field_pos;
 
   return 0;
 }
@@ -340,7 +348,7 @@ grub_linux_boot (void)
       int depth, flags;
       
       flags = 0;
-      linux_mode = &linux_vesafb_modes[vid_mode - 0x301];
+      linux_mode = &linux_vesafb_modes[vid_mode - GRUB_LINUX_VID_MODE_VESA_START];
       depth = linux_mode->depth;
       
       /* If we have 8 or less bits, then assume that it is indexed color mode.  */
@@ -365,6 +373,12 @@ grub_linux_boot (void)
 	  return grub_errno;
 	}
     }
+#if ! GRUB_ASSUME_LINUX_HAS_FB_SUPPORT
+  else
+    /* If user didn't request a video mode, and we can't assume Linux supports FB,
+       then we go back to text mode.  */
+    grub_video_restore ();
+#endif
 
   if (! grub_linux_setup_video (params))
     params->have_vga = GRUB_VIDEO_TYPE_VLFB;
@@ -395,6 +409,27 @@ grub_linux_boot (void)
 				addr, size, GRUB_E820_RAM);
 	  break;
 
+#ifdef GRUB_MACHINE_MEMORY_ACPI
+        case GRUB_MACHINE_MEMORY_ACPI:
+	  grub_e820_add_region (params->e820_map, &e820_num,
+				addr, size, GRUB_E820_ACPI);
+	  break;
+#endif
+
+#ifdef GRUB_MACHINE_MEMORY_NVS
+        case GRUB_MACHINE_MEMORY_NVS:
+	  grub_e820_add_region (params->e820_map, &e820_num,
+				addr, size, GRUB_E820_NVS);
+	  break;
+#endif
+
+#ifdef GRUB_MACHINE_MEMORY_CODE
+        case GRUB_MACHINE_MEMORY_CODE:
+	  grub_e820_add_region (params->e820_map, &e820_num,
+				addr, size, GRUB_E820_EXEC_CODE);
+	  break;
+#endif
+
         default:
           grub_e820_add_region (params->e820_map, &e820_num,
                                 addr, size, GRUB_E820_RESERVED);
@@ -403,8 +438,9 @@ grub_linux_boot (void)
     }
 
   e820_num = 0;
-  grub_machine_mmap_iterate (hook);
+  grub_mmap_iterate (hook);
   params->mmap_size = e820_num;
+
 
   /* Hardware interrupts are not safe any longer.  */
   asm volatile ("cli" : : );
@@ -443,7 +479,6 @@ grub_linux_boot (void)
 static grub_err_t
 grub_linux_unload (void)
 {
-  free_pages ();
   grub_dl_unref (my_mod);
   loaded = 0;
   return GRUB_ERR_NONE;
@@ -569,9 +604,11 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   grub_printf ("   [Linux-bzImage, setup=0x%x, size=0x%x]\n",
 	       (unsigned) real_size, (unsigned) prot_size);
 
-  /* Detect explicitly specified memory size, if any.  */
+  /* Look for memory size and video mode specified on the command line.  */
+  vid_mode = 0;
   linux_mem_size = 0;
   for (i = 1; i < argc; i++)
+#ifdef GRUB_MACHINE_PCBIOS
     if (grub_memcmp (argv[i], "vga=", 4) == 0)
       {
 	/* Video mode selection support.  */
@@ -581,13 +618,41 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 	  vid_mode = GRUB_LINUX_VID_MODE_NORMAL;
 	else if (grub_strcmp (val, "ext") == 0)
 	  vid_mode = GRUB_LINUX_VID_MODE_EXTENDED;
+	else if (grub_strcmp (val, "ask") == 0)
+	  {
+	    grub_printf ("Legacy `ask' parameter no longer supported.\n");
+
+	    /* We usually would never do this in a loader, but "vga=ask" means user
+	       requested interaction, so it can't hurt to request keyboard input.  */
+	    grub_wait_after_message ();
+
+	    goto fail;
+	  }
 	else
 	  vid_mode = (grub_uint16_t) grub_strtoul (val, 0, 0);
+
+	switch (vid_mode)
+	  {
+	  case 0:
+	    vid_mode = GRUB_LINUX_VID_MODE_NORMAL;
+	    break;
+	  case 1:
+	    vid_mode = GRUB_LINUX_VID_MODE_EXTENDED;
+	    break;
+	  default:
+	    /* Ignore invalid values.  */
+	    if (vid_mode < GRUB_LINUX_VID_MODE_VESA_START ||
+		vid_mode >= GRUB_LINUX_VID_MODE_VESA_START +
+		ARRAY_SIZE (linux_vesafb_modes))
+	      vid_mode = 0;
+	  }
 
 	if (grub_errno)
 	  goto fail;
       }
-    else if (grub_memcmp (argv[i], "mem=", 4) == 0)
+    else
+#endif /* GRUB_MACHINE_PCBIOS */
+    if (grub_memcmp (argv[i], "mem=", 4) == 0)
       {
 	char *val = argv[i] + 4;
 	  
