@@ -16,9 +16,18 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GRUB_LUA_LIB_HEADER
-#define GRUB_LUA_LIB_HEADER 1
+#include <setjmp.h>
 
-extern luaL_Reg grub_lua_lib[];
+#include <grub/util/misc.h>
 
-#endif
+void
+grub_reboot (void)
+{
+  longjmp (main_env, 1);
+}
+
+void
+grub_halt (void)
+{
+  grub_reboot ();
+}

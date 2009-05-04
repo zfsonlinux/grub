@@ -62,6 +62,7 @@ grub_emu_SOURCES = commands/minicmd.c commands/cat.c commands/cmp.c 	\
 	partmap/acorn.c partmap/gpt.c					\
 	util/console.c util/hostfs.c util/grub-emu.c util/misc.c	\
 	util/hostdisk.c util/getroot.c					\
+	util/i386/pc/misc.c						\
 	\
 	disk/raid.c disk/raid5_recover.c disk/raid6_recover.c		\
 	disk/mdraid_linux.c disk/dmraid_nvidia.c disk/lvm.c		\
@@ -89,7 +90,7 @@ kernel_mod_SOURCES = kern/x86_64/efi/startup.S kern/x86_64/efi/callwrap.S \
 	kern/disk.c kern/dl.c kern/file.c kern/fs.c kern/err.c \
 	kern/misc.c kern/mm.c kern/reader.c kern/term.c \
 	kern/rescue_parser.c kern/rescue_reader.c \
-	kern/$(target_cpu)/dl.c kern/i386/efi/init.c kern/parser.c kern/partition.c \
+	kern/x86_64/dl.c kern/i386/efi/init.c kern/parser.c kern/partition.c \
 	kern/env.c symlist.c kern/efi/efi.c kern/efi/init.c kern/efi/mm.c \
 	kern/time.c kern/list.c kern/handler.c kern/command.c kern/corecmd.c \
 	kern/i386/tsc.c kern/i386/pit.c \
@@ -114,12 +115,6 @@ symlist.c: $(addprefix include/grub/,$(kernel_mod_HEADERS)) config.h gensymlist.
 kernel_syms.lst: $(addprefix include/grub/,$(kernel_mod_HEADERS)) config.h genkernsyms.sh
 	/bin/sh genkernsyms.sh $(filter %.h,$^) > $@ || (rm -f $@; exit 1)
 
-# For boot.mod.
-pkglib_MODULES += boot.mod 
-boot_mod_SOURCES = commands/boot.c lib/i386/pc/biosnum.c
-boot_mod_CFLAGS = $(COMMON_CFLAGS)
-boot_mod_LDFLAGS = $(COMMON_LDFLAGS)
-
 # For acpi.mod.
 acpi_mod_SOURCES = commands/acpi.c commands/efi/acpi.c
 acpi_mod_CFLAGS = $(COMMON_CFLAGS)
@@ -142,9 +137,8 @@ appleldr_mod_CFLAGS = $(COMMON_CFLAGS)
 appleldr_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For linux.mod.
-linux_mod_SOURCES = loader/i386/efi/linux.c loader/i386/linux_trampoline.S
+linux_mod_SOURCES = loader/i386/efi/linux.c
 linux_mod_CFLAGS = $(COMMON_CFLAGS)
-linux_mod_ASFLAGS = $(COMMON_ASFLAGS)
 linux_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For halt.mod.
@@ -195,7 +189,7 @@ fixvideo_mod_LDFLAGS = $(COMMON_LDFLAGS)
 pkglib_MODULES += xnu.mod
 xnu_mod_SOURCES = loader/xnu_resume.c loader/i386/xnu.c loader/i386/efi/xnu.c\
 	 loader/macho.c loader/xnu.c loader/i386/xnu_helper.S
-xnu_mod_CFLAGS = $(COMMON_CFLAGS)
+xnu_mod_CFLAGS = $(COMMON_CFLAGS) -Werror -Wall
 xnu_mod_LDFLAGS = $(COMMON_LDFLAGS)
 xnu_mod_ASFLAGS = $(COMMON_ASFLAGS)
 

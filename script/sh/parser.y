@@ -42,10 +42,13 @@
 %token GRUB_PARSER_TOKEN_ELSE		"else"
 %token GRUB_PARSER_TOKEN_THEN		"then"
 %token GRUB_PARSER_TOKEN_FI		"fi"
-%token GRUB_PARSER_TOKEN_ARG
+%token GRUB_PARSER_TOKEN_NAME
+%token GRUB_PARSER_TOKEN_VAR
 %type <cmd> script_init script grubcmd command commands commandblock menuentry if
 %type <arglist> arguments;
-%type <arg> GRUB_PARSER_TOKEN_ARG;
+%type <arg> argument;
+%type <string> "if" "while" "function" "else" "then" "fi"
+%type <string> text GRUB_PARSER_TOKEN_NAME GRUB_PARSER_TOKEN_VAR
 
 %pure-parser
 %lex-param { struct grub_parser_param *state };
@@ -59,18 +62,9 @@ script_init:	{ state->err = 0; } script
 		  }
 ;
 
-script:		{ $$ = 0; }
-                | '\n' { $$ = 0; }
-                | commands { $$ = $1; }
+script:		commands { $$ = $1; }
 		| function '\n' { $$ = 0; }
 		| menuentry '\n' { $$ = $1; }
-		| error
-		  {
-		    $$ = 0;
-		    yyerror (state, "Incorrect command");
-		    state->err = 1;
-		    yyerrok;
-		  }
 ;
 
 delimiter:	'\n'
@@ -82,21 +76,61 @@ newlines:	/* Empty */
 		| newlines '\n'
 ;
 
+/* Some tokens are both used as token or as plain text.  XXX: Add all
+   tokens without causing conflicts.  */
+text:		GRUB_PARSER_TOKEN_NAME
+		  {
+		    $$ = $1;
+		  }
+		| "if"
+		  {
+		    $$ = $1;
+		  }
+		| "while"
+		  {
+		    $$ = $1;
+		  }
+;
 
+/* An argument can consist of some static text mixed with variables,
+   for example: `foo${bar}baz'.  */
+argument:	GRUB_PARSER_TOKEN_VAR
+		  {
+		    $$ = grub_script_arg_add (state, 0, GRUB_SCRIPT_ARG_TYPE_VAR, $1);
+		  }
+		| text
+		  {
+		    $$ = grub_script_arg_add (state, 0, GRUB_SCRIPT_ARG_TYPE_STR, $1);
+		  }
+/* XXX: Currently disabled to simplify the parser.  This should be
+   parsed by yet another parser for readability.  */
+/* 		| argument GRUB_PARSER_TOKEN_VAR */
+/* 		  { */
+/* 		    $$ = grub_script_arg_add ($1, GRUB_SCRIPT_ARG_TYPE_VAR, $2); */
+/* 		  } */
+/* 		| argument text */
+/* 		  { */
+/* 		    $$ = grub_script_arg_add ($1, GRUB_SCRIPT_ARG_TYPE_STR, $2); */
+/* 		  } */
+;
 
-arguments:	GRUB_PARSER_TOKEN_ARG
+arguments:	argument
 		  {
 		    $$ = grub_script_add_arglist (state, 0, $1);
 		  }
-		| arguments GRUB_PARSER_TOKEN_ARG
+		| arguments argument
 		  {
 		    $$ = grub_script_add_arglist (state, $1, $2);
 		  }
 ;
 
-grubcmd:	arguments
+grubcmd:	GRUB_PARSER_TOKEN_NAME arguments
 		  {
-		    $$ = grub_script_create_cmdline (state, $1);
+		    $$ = grub_script_create_cmdline (state, $1, $2);
+		  }
+		| GRUB_PARSER_TOKEN_NAME
+		  {
+		    $$ = grub_script_create_cmdline (state, $1, 0);
 		  }
 ;
 
@@ -104,6 +138,13 @@ grubcmd:	arguments
 command:	grubcmd delimiter { $$ = $1; }
 		| if delimiter 	{ $$ = $1; }
 		| commandblock delimiter { $$ = $1; }
+		| error delimiter
+		  {
+		    $$ = 0;
+		    yyerror (state, "Incorrect command");
+		    state->err = 1;
+		    yyerrok;
+		  }
 ;
 
 /* A block of commands.  */
@@ -125,7 +166,7 @@ commands:	command
    executed on the right moment.  So the `commands' rule should be
    recognized after executing the `grub_script_mem_record; and before
    `grub_script_mem_record_stop'.  */
-function:	"function" GRUB_PARSER_TOKEN_ARG
+function:	"function" GRUB_PARSER_TOKEN_NAME
 		  {
 		    grub_script_lexer_ref (state->lexerstate);
 		  } newlines '{'
@@ -163,10 +204,10 @@ commandblock:	'{'
 ;
 
 /* A menu entry.  Carefully save the memory that is allocated.  */
-menuentry:	"menuentry"
+menuentry:	"menuentry" arguments
 		  {
 		    grub_script_lexer_ref (state->lexerstate);
-		  } arguments newlines '{'
+		  } newlines '{'
 		  {
 		    grub_script_lexer_record_start (state->lexerstate);
 		  } newlines commands '}'
@@ -174,7 +215,7 @@ menuentry:	"menuentry"
 		    char *menu_entry;
 		    menu_entry = grub_script_lexer_record_stop (state->lexerstate);
 		    grub_script_lexer_deref (state->lexerstate);
-		    $$ = grub_script_create_cmdmenu (state, $3, menu_entry, 0);
+		    $$ = grub_script_create_cmdmenu (state, $2, menu_entry, 0);
 		  }
 ;
 

@@ -37,7 +37,7 @@ grub_script_execute_cmd (struct grub_script_cmd *cmd)
 
 /* Parse ARG and return the textual representation.  Add strings are
    concatenated and all values of the variables are filled in.  */
-char *
+static char *
 grub_script_execute_argument_to_string (struct grub_script_arg *arg)
 {
   int size = 0;
@@ -93,22 +93,20 @@ grub_script_execute_cmdline (struct grub_script_cmd *cmd)
   int argcount = 0;
   grub_script_function_t func = 0;
   char errnobuf[6];
-  char *cmdname;
 
   /* Lookup the command.  */
-  cmdname = grub_script_execute_argument_to_string (cmdline->arglist->arg);
-  grubcmd = grub_command_find (cmdname);
+  grubcmd = grub_command_find (cmdline->cmdname);
   if (! grubcmd)
     {
       /* Ignore errors.  */
       grub_errno = GRUB_ERR_NONE;
 
       /* It's not a GRUB command, try all functions.  */
-      func = grub_script_function_find (cmdname);
+      func = grub_script_function_find (cmdline->cmdname);
       if (! func)
 	{
 	  /* As a last resort, try if it is an assignment.  */
-	  char *assign = grub_strdup (cmdname);
+	  char *assign = grub_strdup (cmdline->cmdname);
 	  char *eq = grub_strchr (assign, '=');
 
 	  if (eq)
@@ -125,15 +123,14 @@ grub_script_execute_cmdline (struct grub_script_cmd *cmd)
 	  return 0;
 	}
     }
-  grub_free (cmdname);
 
-  if (cmdline->arglist->next)
+  if (cmdline->arglist)
     {
-      argcount = cmdline->arglist->argcount - 1;
+      argcount = cmdline->arglist->argcount;
 
       /* Create argv from the arguments.  */
       args = grub_malloc (sizeof (char *) * argcount);
-      for (arglist = cmdline->arglist->next; arglist; arglist = arglist->next)
+      for (arglist = cmdline->arglist; arglist; arglist = arglist->next)
 	{
 	  char *str;
 	  str = grub_script_execute_argument_to_string (arglist->arg);
@@ -225,8 +222,8 @@ grub_script_execute_menuentry (struct grub_script_cmd *cmd)
 	}
     }
 
-  grub_normal_add_menu_entry (argcount, (const char **) args,
-			      cmd_menuentry->sourcecode);
+  grub_menu_addentry (argcount, (const char **) args,
+		      cmd_menuentry->sourcecode);
 
   /* Free arguments.  */
   for (i = 0; i < argcount; i++)

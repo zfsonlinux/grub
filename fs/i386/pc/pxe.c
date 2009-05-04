@@ -189,11 +189,8 @@ grub_pxefs_read (grub_file_t file, char *buf, grub_size_t len)
 
   pn = grub_divmod64 (file->offset, data->block_size, &r);
   if (r)
-    {
-      grub_error (GRUB_ERR_BAD_FS,
-		  "read access must be aligned to packet size");
-      return -1;
-    }
+    return grub_error (GRUB_ERR_BAD_FS,
+                       "read access must be aligned to packet size");
 
   if ((curr_file != file) || (data->packet_number > pn))
     {
@@ -209,10 +206,7 @@ grub_pxefs_read (grub_file_t file, char *buf, grub_size_t len)
       o.packet_size = data->block_size;
       grub_pxe_call (GRUB_PXENV_TFTP_OPEN, &o);
       if (o.status)
-	{
-	  grub_error (GRUB_ERR_BAD_FS, "open fails");
-	  return -1;
-	}
+        return grub_error (GRUB_ERR_BAD_FS, "open fails");
       data->packet_number = 0;
       curr_file = file;
     }

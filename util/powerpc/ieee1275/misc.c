@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2009  Free Software Foundation, Inc.
+ *  Copyright (C) 2005,2007  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,13 +16,18 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GRUB_BOOT_MACHINE_HEADER
-#define GRUB_BOOT_MACHINE_HEADER	1
+#include <setjmp.h>
 
-/* The size of boot.img.  */
-#define GRUB_BOOT_MACHINE_SIZE			(0x100000 - GRUB_BOOT_MACHINE_LINK_ADDR)
+#include <grub/util/misc.h>
 
-/* The offset of GRUB_CORE_ENTRY_ADDR.  */
-#define GRUB_BOOT_MACHINE_CORE_ENTRY_ADDR	0x4
+void
+grub_reboot (void)
+{
+  longjmp (main_env, 1);
+}
 
-#endif
+void
+grub_halt (void)
+{
+  grub_reboot ();
+}

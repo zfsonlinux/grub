@@ -175,7 +175,9 @@ struct grub_afs_data
   struct grub_fshelp_node diropen;
 };
 
+#ifndef GRUB_UTIL
 static grub_dl_t my_mod;
+#endif
 
 static grub_afs_off_t
 grub_afs_run_to_num (struct grub_afs_sblock *sb,
@@ -193,7 +195,7 @@ grub_afs_read_inode (struct grub_afs_data *data,
                          ino *
                          (data->sblock.block_size >> GRUB_DISK_SECTOR_BITS),
                          0, sizeof (struct grub_afs_inode),
-                         inode);
+                         (char *) inode);
 }
 
 static grub_disk_addr_t
@@ -228,7 +230,7 @@ grub_afs_read_block (grub_fshelp_node_t node, grub_disk_addr_t fileblock)
           if (grub_disk_read (node->data->disk,
                               blk * (sb->block_size >> GRUB_DISK_SECTOR_BITS),
                               0, sizeof (indir),
-                              indir))
+                              (char *) indir))
             return 0;
 
           for (j = 0; j < ptrs_per_blk; j++)
@@ -264,14 +266,14 @@ grub_afs_read_block (grub_fshelp_node_t node, grub_disk_addr_t fileblock)
                            + idblk) *
                           (sb->block_size >> GRUB_DISK_SECTOR_BITS),
                           0, sizeof (indir),
-                          indir))
+                          (char *) indir))
         return 0;
 
       if (grub_disk_read (node->data->disk,
                           (grub_afs_run_to_num (sb, &indir[idptr]) + dblk) *
                           (sb->block_size >> GRUB_DISK_SECTOR_BITS),
                           0, sizeof (indir),
-                          indir))
+                          (char *) indir))
         return 0;
 
       return grub_afs_run_to_num (sb, &indir[dptr]) + off;
@@ -466,13 +468,13 @@ grub_afs_mount (grub_disk_t disk)
 
   /* Read the superblock.  */
   if (grub_disk_read (disk, 1 * 2, 0, sizeof (struct grub_afs_sblock),
-                      &data->sblock))
+                      (char *) &data->sblock))
     goto fail;
 
   if (! grub_afs_validate_sblock (&data->sblock))
     {
       if (grub_disk_read (disk, 1 * 2, 0, sizeof (struct grub_afs_sblock),
-                          &data->sblock))
+                          (char *) &data->sblock))
         goto fail;
 
       if (! grub_afs_validate_sblock (&data->sblock))
@@ -503,7 +505,9 @@ grub_afs_open (struct grub_file *file, const char *name)
   struct grub_afs_data *data;
   struct grub_fshelp_node *fdiro = 0;
 
+#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
+#endif
 
   data = grub_afs_mount (file->device->disk);
   if (! data)
@@ -528,7 +532,9 @@ fail:
     grub_free (fdiro);
   grub_free (data);
 
+#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
+#endif
 
   return grub_errno;
 }
@@ -547,14 +553,16 @@ grub_afs_close (grub_file_t file)
 {
   grub_free (file->data);
 
+#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
+#endif
 
   return GRUB_ERR_NONE;
 }
 
 static grub_err_t
 grub_afs_dir (grub_device_t device, const char *path,
-              int (*hook) (const char *filename,
+              int (*hook) (const char *filename, 
 			   const struct grub_dirhook_info *info))
 {
   struct grub_afs_data *data = 0;;
@@ -575,7 +583,9 @@ grub_afs_dir (grub_device_t device, const char *path,
       return hook (filename, &info);
     }
 
+#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
+#endif
 
   data = grub_afs_mount (device->disk);
   if (! data)
@@ -593,7 +603,9 @@ grub_afs_dir (grub_device_t device, const char *path,
     grub_free (fdiro);
   grub_free (data);
 
+#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
+#endif
 
   return grub_errno;
 }
@@ -611,7 +623,9 @@ static struct grub_fs grub_afs_fs = {
 GRUB_MOD_INIT (afs)
 {
   grub_fs_register (&grub_afs_fs);
+#ifndef GRUB_UTIL
   my_mod = mod;
+#endif
 }
 
 GRUB_MOD_FINI (afs)
