@@ -144,7 +144,7 @@ load_modules (grub_addr_t modbase, Elf32_Phdr *phdr, const char *dir,
       mod_size = grub_util_get_image_size (p->name);
 
       header = (struct grub_module_header *) (module_img + offset);
-      header->type = OBJ_TYPE_ELF;
+      header->type = grub_host_to_target32 (OBJ_TYPE_ELF);
       header->size = grub_host_to_target32 (mod_size + sizeof (*header));
 
       grub_util_load_image (p->name, module_img + offset + sizeof (*header));
@@ -157,8 +157,8 @@ load_modules (grub_addr_t modbase, Elf32_Phdr *phdr, const char *dir,
       struct grub_module_header *header;
 
       header = (struct grub_module_header *) (module_img + offset);
-      header->type = OBJ_TYPE_MEMDISK;
-      header->size = grub_host_to_target32 (memdisk_size + sizeof (*header));
+      header->type = grub_cpu_to_le32 (OBJ_TYPE_MEMDISK);
+      header->size = grub_cpu_to_le32 (memdisk_size + sizeof (*header));
       offset += sizeof (*header);
 
       grub_util_load_image (memdisk_path, module_img + offset);
@@ -193,7 +193,7 @@ add_segments (char *dir, char *prefix, FILE *out, int chrp, char *mods[], char *
   int i, phdr_size;
 
   /* Read ELF header.  */
-  kernel_path = grub_util_get_path (dir, "kernel.img");
+  kernel_path = grub_util_get_path (dir, "kernel.elf");
   in = fopen (kernel_path, "rb");
   if (! in)
     grub_util_error ("cannot open %s", kernel_path);
@@ -332,14 +332,14 @@ Usage: grub-mkimage -o FILE [OPTION]... [MODULES]\n\
 \n\
 Make a bootable image of GRUB.\n\
 \n\
-  -d, --directory=DIR     use images and modules under DIR [default=%s]\n\
-  -p, --prefix=DIR        set grub_prefix directory\n\
-  -m, --memdisk=FILE      embed FILE as a memdisk image\n\
-  -o, --output=FILE       output a generated image to FILE\n\
-  -h, --help              display this message and exit\n\
-  -n, --note              add NOTE segment for CHRP Open Firmware\n\
-  -V, --version           print version information and exit\n\
-  -v, --verbose           print verbose messages\n\
+-d, --directory=DIR     use images and modules under DIR [default=%s]\n\
+-p, --prefix=DIR        set grub_prefix directory\n\
+-m, --memdisk=FILE      embed FILE as a memdisk image\n\
+-o, --output=FILE       output a generated image to FILE\n\
+-h, --help              display this message and exit\n\
+-n, --note              add NOTE segment for CHRP Open Firmware\n\
+-V, --version           print version information and exit\n\
+-v, --verbose           print verbose messages\n\
 \n\
 Report bugs to <%s>.\n\
 ", GRUB_LIBDIR, PACKAGE_BUGREPORT);

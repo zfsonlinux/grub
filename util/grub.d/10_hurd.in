@@ -1,6 +1,6 @@
 #! /bin/sh -e
 
-# grub-mkconfig helper script.
+# update-grub helper script.
 # Copyright (C) 2006,2007,2008  Free Software Foundation, Inc.
 #
 # GRUB is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ case "${GRUB_FS}" in
 esac
 
 for i in /hurd/${hurd_fs}.static /hurd/exec ; do
-  if test -e "$i" ; then
+  if test -e "$i" ; then 
     echo "Found Hurd module: $i" >&2
     at_least_one=true
   else
@@ -74,12 +74,12 @@ EOF
 prepare_grub_to_access_device ${GRUB_DEVICE} | sed -e "s/^/\t/"
 cat << EOF
 	multiboot ${kernel} root=device:${GRUB_DEVICE}
-	module /hurd/${hurd_fs}.static ${hurd_fs} --readonly \\
+	module /hurd/${hurd_fs}.static --readonly \\
 			--multiboot-command-line='\${kernel-command-line}' \\
 			--host-priv-port='\${host-port}' \\
 			--device-master-port='\${device-port}' \\
 			--exec-server-task='\${exec-task}' -T typed '\${root}' \\
 			'\$(task-create)' '\$(task-resume)'
-	module /lib/ld.so.1 exec /hurd/exec '\$(exec-task=task-create)'
+	module /lib/ld.so.1 /hurd/exec '\$(exec-task=task-create)'
 }
 EOF

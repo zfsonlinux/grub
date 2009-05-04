@@ -16,13 +16,18 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GRUB_CONSOLE_UTIL_HEADER
-#define GRUB_CONSOLE_UTIL_HEADER	1
+#include <setjmp.h>
 
-/* Initialize the console system.  */
-void grub_console_init (void);
+#include <grub/util/misc.h>
 
-/* Finish the console system.  */
-void grub_console_fini (void);
+void
+grub_reboot (void)
+{
+  longjmp (main_env, 1);
+}
 
-#endif /* ! GRUB_CONSOLE_UTIL_HEADER */
+void
+grub_halt (void)
+{
+  grub_reboot ();
+}

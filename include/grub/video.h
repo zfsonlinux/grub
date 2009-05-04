@@ -34,7 +34,6 @@ struct grub_video_render_target;
 struct grub_video_bitmap;
 
 /* Defines used to describe video mode or rendering target.  */
-#define GRUB_VIDEO_MODE_TYPE_PURE_TEXT		0x00000040
 #define GRUB_VIDEO_MODE_TYPE_ALPHA		0x00000020
 #define GRUB_VIDEO_MODE_TYPE_DOUBLE_BUFFERED	0x00000010
 #define GRUB_VIDEO_MODE_TYPE_1BIT_BITMAP	0x00000004
@@ -48,8 +47,10 @@ struct grub_video_bitmap;
 #define GRUB_VIDEO_MODE_TYPE_DEPTH_MASK		0x0000ff00
 #define GRUB_VIDEO_MODE_TYPE_DEPTH_POS		8
 
-#define GRUB_VIDEO_RENDER_TARGET_DISPLAY \
-  ((struct grub_video_render_target *) 0)
+/* Defined predefined render targets.  */
+#define GRUB_VIDEO_RENDER_TARGET_DISPLAY	((struct grub_video_render_target *) 0)
+#define GRUB_VIDEO_RENDER_TARGET_FRONT_BUFFER	((struct grub_video_render_target *) 0)
+#define GRUB_VIDEO_RENDER_TARGET_BACK_BUFFER	((struct grub_video_render_target *) 1)
 
 /* Defined blitting formats.  */
 enum grub_video_blit_format
@@ -72,7 +73,7 @@ enum grub_video_blit_format
 
     /* When needed, decode color or just use value as is.  */
     GRUB_VIDEO_BLIT_FORMAT_INDEXCOLOR,
-
+    
     /* Two color bitmap; bits packed: rows are not padded to byte boundary.  */
     GRUB_VIDEO_BLIT_FORMAT_1BIT_PACKED
   };
@@ -175,9 +176,6 @@ struct grub_video_adapter
 
   grub_err_t (*get_info) (struct grub_video_mode_info *mode_info);
 
-  grub_err_t (*get_info_and_fini) (struct grub_video_mode_info *mode_info,
-				   void **framebuffer);
-
   grub_err_t (*set_palette) (unsigned int start, unsigned int count,
                              struct grub_video_palette_data *palette_data);
 
@@ -238,17 +236,12 @@ void grub_video_register (grub_video_adapter_t adapter);
 void grub_video_unregister (grub_video_adapter_t adapter);
 void grub_video_iterate (int (*hook) (grub_video_adapter_t adapter));
 
+grub_err_t grub_video_setup (unsigned int width, unsigned int height,
+                             unsigned int mode_type);
+
 grub_err_t grub_video_restore (void);
 
 grub_err_t grub_video_get_info (struct grub_video_mode_info *mode_info);
-
-/* Framebuffer address may change as a part of normal operation
-   (e.g. double buffering). That's why you need to stop video subsystem to be
-   sure that framebuffer address doesn't change. To ensure this abstraction
-   grub_video_get_info_and_fini is the only function supplying framebuffer
-   address. */
-grub_err_t grub_video_get_info_and_fini (struct grub_video_mode_info *mode_info,
-					 void **framebuffer);
 
 enum grub_video_blit_format grub_video_get_blit_format (struct grub_video_mode_info *mode_info);
 
@@ -305,9 +298,5 @@ grub_err_t grub_video_delete_render_target (struct grub_video_render_target *tar
 grub_err_t grub_video_set_active_render_target (struct grub_video_render_target *target);
 
 grub_err_t grub_video_get_active_render_target (struct grub_video_render_target **target);
-
-grub_err_t grub_video_set_mode (const char *modestring,
-				int NESTED_FUNC_ATTR (*hook) (grub_video_adapter_t p,
-							      struct grub_video_mode_info *mode_info));
 
 #endif /* ! GRUB_VIDEO_HEADER */

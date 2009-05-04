@@ -18,5 +18,6 @@
  */
 
 #define SUFFIX(x) x ## 32
+#define TYPE(x) x ## 32_t
 
 #include "prepare.c"

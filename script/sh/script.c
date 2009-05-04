@@ -110,13 +110,10 @@ grub_script_arg_add (struct grub_parser_param *state, struct grub_script_arg *ar
 {
   struct grub_script_arg *argpart;
   struct grub_script_arg *ll;
-  int len;
 
   argpart = (struct grub_script_arg *) grub_script_malloc (state, sizeof (*arg));
   argpart->type = type;
-  len = grub_strlen (str) + 1;
-  argpart->str = grub_script_malloc (state, len);
-  grub_memcpy (argpart->str, str, len);
+  argpart->str = str;
   argpart->next = 0;
 
   if (! arg)
@@ -164,7 +161,7 @@ grub_script_add_arglist (struct grub_parser_param *state,
    holds all arguments for this command.  */
 struct grub_script_cmd *
 grub_script_create_cmdline (struct grub_parser_param *state,
-			    struct grub_script_arglist *arglist)
+			    char *cmdname, struct grub_script_arglist *arglist)
 {
   struct grub_script_cmdline *cmd;
 
@@ -174,6 +171,7 @@ grub_script_create_cmdline (struct grub_parser_param *state,
   cmd->cmd.exec = grub_script_execute_cmdline;
   cmd->cmd.next = 0;
   cmd->arglist = arglist;
+  cmd->cmdname = cmdname;
 
   return (struct grub_script_cmd *) cmd;
 }
@@ -307,9 +305,14 @@ grub_script_parse (char *script, grub_reader_getline_t getline)
   if (! parsed)
     return 0;
 
-  parsestate = grub_zalloc (sizeof (*parsestate));
+  parsestate = grub_malloc (sizeof (*parsestate));
   if (! parsestate)
     return 0;
+
+  parsestate->err = 0;
+  parsestate->func_mem = 0;
+  parsestate->memused = 0;
+  parsestate->parsed = 0;
 
   /* Initialize the lexer.  */
   lexstate = grub_script_lexer_init (script, getline);

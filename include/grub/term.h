@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2003,2005,2007,2008,2009  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2003,2005,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 #define GRUB_TERM_NPAGE		3
 #define GRUB_TERM_ESC		'\e'
 #define GRUB_TERM_TAB		'\t'
-#define GRUB_TERM_BACKSPACE	8
+#define GRUB_TERM_BACKSPACE	'\b'
 
 #ifndef ASM_FILE
 
@@ -70,12 +70,6 @@ grub_term_color_state;
 #define GRUB_TERM_DUMB		(1 << 2)
 /* Set when the terminal needs to be initialized.  */
 #define GRUB_TERM_NEED_INIT	(1 << 16)
-
-
-/* Bitmasks for modifier keys returned by grub_getkeystatus.  */
-#define GRUB_TERM_STATUS_SHIFT	(1 << 0)
-#define GRUB_TERM_STATUS_CTRL	(1 << 1)
-#define GRUB_TERM_STATUS_ALT	(1 << 2)
 
 
 /* Unicode characters for fancy graphics.  */
@@ -157,15 +151,12 @@ struct grub_term_input
 
   /* Clean up the terminal.  */
   grub_err_t (*fini) (void);
-
+  
   /* Check if any input character is available.  */
   int (*checkkey) (void);
-
+  
   /* Get a character.  */
   int (*getkey) (void);
-
-  /* Get keyboard modifier status.  */
-  int (*getkeystatus) (void);
 };
 typedef struct grub_term_input *grub_term_input_t;
 
@@ -182,37 +173,37 @@ struct grub_term_output
 
   /* Clean up the terminal.  */
   grub_err_t (*fini) (void);
-
+  
   /* Put a character. C is encoded in Unicode.  */
   void (*putchar) (grub_uint32_t c);
 
   /* Get the number of columns occupied by a given character C. C is
      encoded in Unicode.  */
   grub_ssize_t (*getcharwidth) (grub_uint32_t c);
-
+  
   /* Get the screen size. The return value is ((Width << 8) | Height).  */
   grub_uint16_t (*getwh) (void);
 
   /* Get the cursor position. The return value is ((X << 8) | Y).  */
   grub_uint16_t (*getxy) (void);
-
+  
   /* Go to the position (X, Y).  */
   void (*gotoxy) (grub_uint8_t x, grub_uint8_t y);
-
+  
   /* Clear the screen.  */
   void (*cls) (void);
-
+  
   /* Set the current color to be used */
   void (*setcolorstate) (grub_term_color_state state);
-
+  
   /* Set the normal color and the highlight color. The format of each
      color is VGA's.  */
   void (*setcolor) (grub_uint8_t normal_color, grub_uint8_t highlight_color);
-
+  
   /* Get the normal color and the highlight color. The format of each
      color is VGA's.  */
   void (*getcolor) (grub_uint8_t *normal_color, grub_uint8_t *highlight_color);
-
+  
   /* Turn on/off the cursor.  */
   void (*setcursor) (int on);
 
@@ -284,7 +275,6 @@ void EXPORT_FUNC(grub_putcode) (grub_uint32_t code);
 grub_ssize_t EXPORT_FUNC(grub_getcharwidth) (grub_uint32_t code);
 int EXPORT_FUNC(grub_getkey) (void);
 int EXPORT_FUNC(grub_checkkey) (void);
-int EXPORT_FUNC(grub_getkeystatus) (void);
 grub_uint16_t EXPORT_FUNC(grub_getwh) (void);
 grub_uint16_t EXPORT_FUNC(grub_getxy) (void);
 void EXPORT_FUNC(grub_gotoxy) (grub_uint8_t x, grub_uint8_t y);

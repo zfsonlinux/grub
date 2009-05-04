@@ -43,18 +43,18 @@ struct grub_fs
 
   /* Call HOOK with each file under DIR.  */
   grub_err_t (*dir) (grub_device_t device, const char *path,
-		     int (*hook) (const char *filename,
+		     int (*hook) (const char *filename, 
 				  const struct grub_dirhook_info *info));
-
+  
   /* Open a file named NAME and initialize FILE.  */
   grub_err_t (*open) (struct grub_file *file, const char *name);
-
+  
   /* Read LEN bytes data from FILE into BUF.  */
   grub_ssize_t (*read) (struct grub_file *file, char *buf, grub_size_t len);
-
+  
   /* Close the file FILE.  */
   grub_err_t (*close) (struct grub_file *file);
-
+  
   /* Return the label of the device DEVICE in LABEL.  The label is
      returned in a grub_malloc'ed buffer and should be freed by the
      caller.  */
@@ -67,11 +67,6 @@ struct grub_fs
 
   /* Get writing time of filesystem. */
   grub_err_t (*mtime) (grub_device_t device, grub_int32_t *timebuf);
-
-#ifdef GRUB_UTIL
-  /* Whether this filesystem reserves first sector for DOS-style boot.  */
-  int reserved_first_sector;
-#endif
 
   /* The next filesystem.  */
   struct grub_fs *next;

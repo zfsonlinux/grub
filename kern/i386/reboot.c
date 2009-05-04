@@ -18,7 +18,6 @@
 
 #include <grub/cpu/io.h>
 #include <grub/cpu/at_keyboard.h>
-#include <grub/cpu/reboot.h>
 #include <grub/misc.h>
 
 void
