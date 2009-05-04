@@ -20,7 +20,7 @@ CONFIGURE = CC="cc" CXX="g++" CPPFLAGS="" LDFLAGS="" \
 	$(CURDIR)/configure --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --includedir="\$${prefix}/include" \
 	--mandir="\$${prefix}/share/man" --infodir="\$${prefix}/share/info" --sysconfdir=/etc --localstatedir=/var \
 	--libexecdir="\$${prefix}/lib/$(package)" --srcdir=$(CURDIR) \
-	--enable-grub-emu --enable-grub-mkfont
+	--enable-grub-emu --enable-grub-mkfont --enable-efiemu
 
 AUTOGEN_FILES = configure config.h.in conf/*.mk
 
@@ -31,7 +31,7 @@ configure/grub-pc configure/grub-ieee1275 configure/grub-efi configure/grub-core
 	mkdir -p $(subst configure/,build/,$@)
 	cd $(subst configure/,build/,$@) && $(CONFIGURE) --with-platform=$(subst configure/grub-,,$@)
 
-configure/grub-common::
+configure/grub-common:: $(AUTOGEN_FILES)
 	mkdir -p build/grub-common
 	cd build/grub-common && $(CONFIGURE)
 
@@ -60,13 +60,13 @@ install/grub-pc install/grub-efi install/grub-ieee1275 install/grub-coreboot::
 
 	# shipped with grub-common
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/etc/grub.d
-	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{grub-probe,grub-emu,grub-mkconfig,grub-mkdevicemap}{,.8}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{grub-dumpbios,grub-probe,grub-emu,grub-mkconfig,grub-mkdevicemap}{,.8}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkelfimage,grub-mkfont,grub-editenv}{,.1}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{grub-mkconfig_lib,update-grub_lib}
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/share/grub/
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/include
 
-	for i in docs ; do \
+	for i in docs manpages ; do \
 		cp debian/$$i.in debian/$(subst install/,,$@).$$i ; \
 	done
 

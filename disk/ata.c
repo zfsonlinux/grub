@@ -375,7 +375,7 @@ grub_ata_device_initialize (int port, int device, int addr, int addr2)
   return 0;
 }
 
-static int
+static int NESTED_FUNC_ATTR
 grub_ata_pciinit (int bus, int device, int func,
 		  grub_pci_id_t pciid __attribute__((unused)))
 {
@@ -835,8 +835,6 @@ static struct grub_scsi_dev grub_atapi_dev =
 
 GRUB_MOD_INIT(ata)
 {
-  (void) mod;			/* To stop warning. */
-
   /* To prevent two drivers operating on the same disks.  */
   grub_disk_firmware_is_tainted = 1;
   if (grub_disk_firmware_fini)
