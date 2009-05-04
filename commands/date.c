@@ -20,7 +20,7 @@
 #include <grub/dl.h>
 #include <grub/err.h>
 #include <grub/misc.h>
-#include <grub/lib/datetime.h>
+#include <grub/datetime.h>
 #include <grub/command.h>
 
 #define GRUB_DATETIME_SET_YEAR		1
@@ -133,7 +133,6 @@ static grub_command_t cmd;
 
 GRUB_MOD_INIT(date)
 {
-  (void) mod;			/* To stop warning. */
   cmd =
     grub_register_command ("date", grub_cmd_date,
 			   "date [[year-]month-day] [hour:minute[:second]]",
