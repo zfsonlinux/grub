@@ -1,7 +1,7 @@
 /* dl.c - loadable module support */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2003,2004,2005,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2003,2004,2005,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -454,7 +454,7 @@ grub_dl_resolve_dependencies (grub_dl_t mod, Elf_Ehdr *e)
 	const char *name = (char *) e + s->sh_offset;
 	const char *max = name + s->sh_size;
 
-	while (name < max)
+	while ((name < max) && (*name))
 	  {
 	    grub_dl_t m;
 	    grub_dl_dep_t dep;
@@ -480,6 +480,7 @@ grub_dl_resolve_dependencies (grub_dl_t mod, Elf_Ehdr *e)
   return GRUB_ERR_NONE;
 }
 
+#ifndef GRUB_UTIL
 int
 grub_dl_ref (grub_dl_t mod)
 {
@@ -501,6 +502,7 @@ grub_dl_unref (grub_dl_t mod)
   
   return --mod->ref_count;
 }
+#endif
 
 static void
 grub_dl_flush_cache (grub_dl_t mod)
@@ -584,7 +586,7 @@ grub_dl_load_core (void *addr, grub_size_t size)
 grub_dl_t
 grub_dl_load_file (const char *filename)
 {
-  grub_file_t file;
+  grub_file_t file = NULL;
   grub_ssize_t size;
   void *core = 0;
   grub_dl_t mod = 0;
@@ -596,21 +598,31 @@ grub_dl_load_file (const char *filename)
   size = grub_file_size (file);
   core = grub_malloc (size);
   if (! core)
-    goto failed;
+    {
+      grub_file_close (file);
+      return 0;
+    }
 
   if (grub_file_read (file, core, size) != (int) size)
-    goto failed;
+    {
+      grub_file_close (file);
+      grub_free (core);
+      return 0;
+    }
+
+  /* We must close this before we try to process dependencies.
+     Some disk backends do not handle gracefully multiple concurrent
+     opens of the same device.  */
+  grub_file_close (file);
 
   mod = grub_dl_load_core (core, size);
   if (! mod)
-    goto failed;
+    {
+      grub_free (core);
+      return 0;
+    }
   
   mod->ref_count = 0;
-
- failed:
-  grub_file_close (file);
-  grub_free (core);
-
   return mod;
 }
 

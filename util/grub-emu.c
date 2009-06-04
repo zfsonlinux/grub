@@ -27,7 +27,7 @@
 #include <grub/mm.h>
 #include <grub/setjmp.h>
 #include <grub/fs.h>
-#include <grub/util/biosdisk.h>
+#include <grub/util/hostdisk.h>
 #include <grub/dl.h>
 #include <grub/machine/console.h>
 #include <grub/util/misc.h>
@@ -85,6 +85,11 @@ void
 grub_machine_fini (void)
 {
   grub_console_fini ();
+}
+
+void
+read_command_list (void)
+{
 }
 
 
@@ -186,6 +191,10 @@ main (int argc, char *argv[])
 
   /* XXX: This is a bit unportable.  */
   grub_util_biosdisk_init (dev_map);
+
+#if HAVE_USB_H
+  grub_libusb_init ();
+#endif
 
   grub_init_all ();
 

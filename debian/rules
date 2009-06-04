@@ -13,29 +13,33 @@ ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 else
 	CFLAGS += -O2
 endif
+
+# optimize loader/i386/linux.c for the linux shipped in debian
+CFLAGS += -DGRUB_ASSUME_LINUX_HAS_FB_SUPPORT=1
+
 export CFLAGS
 export CXXFLAGS := $(CFLAGS)
 
 CONFIGURE = CC="cc" CXX="g++" CPPFLAGS="" LDFLAGS="" \
 	$(CURDIR)/configure --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --includedir="\$${prefix}/include" \
 	--mandir="\$${prefix}/share/man" --infodir="\$${prefix}/share/info" --sysconfdir=/etc --localstatedir=/var \
-	--libexecdir="\$${prefix}/lib/$(package)" --disable-maintainer-mode --disable-dependency-tracking --srcdir=$(CURDIR) \
-	--enable-grub-emu
+	--libexecdir="\$${prefix}/lib/$(package)" --srcdir=$(CURDIR) \
+	--enable-grub-emu --enable-grub-mkfont --enable-efiemu
 
 AUTOGEN_FILES = configure config.h.in conf/*.mk
 
 $(AUTOGEN_FILES): autogen.sh configure.ac conf/*.rmk
 	./autogen.sh
 
-configure/grub-pc configure/grub-ieee1275 configure/grub-efi configure/grub-linuxbios:: $(AUTOGEN_FILES)
+configure/grub-pc configure/grub-ieee1275 configure/grub-efi configure/grub-coreboot:: $(AUTOGEN_FILES)
 	mkdir -p $(subst configure/,build/,$@)
 	cd $(subst configure/,build/,$@) && $(CONFIGURE) --with-platform=$(subst configure/grub-,,$@)
 
-configure/grub-common::
+configure/grub-common:: $(AUTOGEN_FILES)
 	mkdir -p build/grub-common
 	cd build/grub-common && $(CONFIGURE)
 
-build/grub-pc build/grub-efi build/grub-ieee1275 build/grub-linuxbios::
+build/grub-common build/grub-pc build/grub-efi build/grub-ieee1275 build/grub-coreboot::
 	$(MAKE) -C $@
 
 build/grub-rescue-pc:: build/grub-pc
@@ -55,25 +59,18 @@ build/grub-rescue-pc:: build/grub-pc
 		--image-type=cdrom \
 		$(CURDIR)/$@/grub-rescue-cdrom.iso
 
-build/grub-common::
-	# Yes, grub-mkdevicemap shouldn't really be here.  We're assuming 'pc'
-	# for i386 and 'ieee1275' for powerpc.  Not a big deal though.  See
-	# also debian/patches/04_run_grub_mkdevicemap_when_grub_probe_fails.diff
-	$(MAKE) -C $@ grub-probe grub-mkdevicemap
-
-install/grub-pc install/grub-efi install/grub-ieee1275 install/grub-linuxbios::
+install/grub-pc install/grub-efi install/grub-ieee1275 install/grub-coreboot::
 	$(MAKE) -C $(subst install/,build/,$@) install DESTDIR=$(CURDIR)/debian/$(subst install/,,$@)/
 
-	# If liblzo2-dev >= 2.03 is installed, it means we're linking with it;  this makes sure
-	# the binary dependency is versioned (for license compatibility).
-	if dpkg --compare-versions `dpkg -s liblzo2-dev | sed -ne s/^Version:\ //p` ge 2.03 ; then \
-		echo "grub-pc:Depends=liblzo2-2 (>= 2.03)" > debian/grub-pc.substvars ; \
-	fi
-
 	# shipped with grub-common
-	rm -f $(CURDIR)/debian/$(subst install/,,$@)/{usr/sbin/grub-{probe,mkdevicemap},usr/share/man/man8/grub-probe.8}
+	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/etc/grub.d
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{grub-dumpbios,grub-probe,grub-emu,grub-mkconfig,grub-mkdevicemap}{,.8}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkelfimage,grub-mkfont,grub-editenv}{,.1}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{grub-mkconfig_lib,update-grub_lib}
+	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/share/grub/
+	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/include
 
-	for i in docs ; do \
+	for i in docs manpages ; do \
 		cp debian/$$i.in debian/$(subst install/,,$@).$$i ; \
 	done
 
@@ -87,9 +84,15 @@ install/grub-pc install/grub-efi install/grub-ieee1275 install/grub-linuxbios::
 		| sed -e "s%.*%$(subst install/,,$@): statically-linked-binary &%g" \
 	>> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@)
 
+install/grub-common::
+	$(MAKE) -C $(subst install/,build/,$@) install DESTDIR=$(CURDIR)/debian/$(subst install/,,$@)/
+	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{i386,powerpc}-*
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{update-grub,grub-install,grub-setup}{,.8}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/grub-{mkimage,mkrescue}{,.1}
+
 clean:: debian/legacy/update-grub
 	chmod +x debian/{script,grub.d/*,legacy/*}
-	-rm -f debian/grub-{pc,efi,ieee1275,linuxbios}.docs debian/grub-pc.substvars
+	-rm -f debian/grub-{pc,efi,ieee1275,coreboot}.docs
 	-rm -rf build
 
 	# make sure PO files are always up-to-date

@@ -16,12 +16,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+#define _BSD_SOURCE
 #include <grub/fs.h>
 #include <grub/file.h>
 #include <grub/disk.h>
 #include <grub/misc.h>
 #include <grub/dl.h>
+#include <grub/util/misc.h>
 
 #include <dirent.h>
 #include <stdio.h>
@@ -56,7 +57,8 @@ is_dir (const char *path, const char *name)
 
 static grub_err_t
 grub_hostfs_dir (grub_device_t device, const char *path, 
-		 int (*hook) (const char *filename, int dir))
+		 int (*hook) (const char *filename, 
+			      const struct grub_dirhook_info *info))
 {
   DIR *dir;
 
@@ -72,16 +74,20 @@ grub_hostfs_dir (grub_device_t device, const char *path,
   while (1)
     {
       struct dirent *de;
+      struct grub_dirhook_info info;
+      grub_memset (&info, 0, sizeof (info));
 
       de = readdir (dir);
       if (! de)
 	break;
 
 #ifdef DT_DIR
-      hook (de->d_name, de->d_type == DT_DIR);
+      info.dir = (de->d_type == DT_DIR);
 #else
-      hook (de->d_name, is_dir (path, de->d_name));
+      info.dir = !! is_dir (path, de->d_name);
 #endif
+      hook (de->d_name, &info);
+
     }
 
   closedir (dir);
@@ -95,15 +101,19 @@ grub_hostfs_open (struct grub_file *file, const char *name)
 {
   FILE *f;
 
-  f = fopen (name, "r");
+  f = fopen (name, "rb");
   if (! f)
     return grub_error (GRUB_ERR_BAD_FILENAME,
 		       "can't open `%s'", name);
   file->data = f;
 
+#ifdef __MINGW32__
+  file->size = grub_util_get_disk_size (name);
+#else
   fseeko (f, 0, SEEK_END);
   file->size = ftello (f);
   fseeko (f, 0, SEEK_SET);
+#endif
 
   return GRUB_ERR_NONE;
 }

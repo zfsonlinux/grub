@@ -21,6 +21,7 @@
 #include <grub/symbol.h>
 #include <grub/machine/memory.h>
 #include <grub/cpu/linux.h>
+#include <grub/cpu/kernel.h>
 #include <multiboot.h>
 #include <multiboot2.h>
 
@@ -38,6 +39,24 @@
 
 start:
 _start:
+	jmp codestart
+
+	/*
+	 *  This is a special data area at a fixed offset from the beginning.
+	 */
+
+	. = _start + GRUB_KERNEL_CPU_PREFIX
+
+VARIABLE(grub_prefix)
+	/* to be filled by grub-mkimage */
+
+	/*
+	 *  Leave some breathing room for the prefix.
+	 */
+
+	. = _start + GRUB_KERNEL_CPU_DATA_END
+
+codestart:
 	movl %eax, EXT_C(grub_ieee1275_entry_fn)
 	jmp EXT_C(grub_main)
 

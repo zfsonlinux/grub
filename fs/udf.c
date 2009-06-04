@@ -356,9 +356,7 @@ struct grub_fshelp_node
   int part_ref;
 };
 
-#ifndef GRUB_UTIL
 static grub_dl_t my_mod;
-#endif
 
 static grub_uint32_t
 grub_udf_get_block (struct grub_udf_data *data,
@@ -392,7 +390,7 @@ grub_udf_read_icb (struct grub_udf_data *data,
 
   if (grub_disk_read (data->disk, block << GRUB_UDF_LOG2_BLKSZ, 0,
 		      sizeof (struct grub_udf_file_entry),
-		      (char *) &node->fe))
+		      &node->fe))
     return grub_errno;
 
   if ((U16 (node->fe.tag.tag_ident) != GRUB_UDF_TAG_IDENT_FE) &&
@@ -522,7 +520,7 @@ grub_udf_mount (grub_disk_t disk)
       struct grub_udf_vrs vrs;
 
       if (grub_disk_read (disk, block << GRUB_UDF_LOG2_BLKSZ, 0,
-			  sizeof (struct grub_udf_vrs), (char *) &vrs))
+			  sizeof (struct grub_udf_vrs), &vrs))
 	{
 	  grub_error (GRUB_ERR_BAD_FS, "not an udf filesystem");
 	  goto fail;
@@ -549,7 +547,7 @@ grub_udf_mount (grub_disk_t disk)
       struct grub_udf_avdp avdp;
 
       if (grub_disk_read (disk, *sblklist << GRUB_UDF_LOG2_BLKSZ, 0,
-			  sizeof (struct grub_udf_avdp), (char *) &avdp))
+			  sizeof (struct grub_udf_avdp), &avdp))
 	{
 	  grub_error (GRUB_ERR_BAD_FS, "not an udf filesystem");
 	  goto fail;
@@ -570,13 +568,13 @@ grub_udf_mount (grub_disk_t disk)
     }
 
   data->npd = data->npm = 0;
-  /* Locate Partiton Descriptor (PD) and Logical Volume Descriptor (LVD).  */
+  /* Locate Partition Descriptor (PD) and Logical Volume Descriptor (LVD).  */
   while (1)
     {
       struct grub_udf_tag tag;
 
       if (grub_disk_read (disk, block << GRUB_UDF_LOG2_BLKSZ, 0,
-			  sizeof (struct grub_udf_tag), (char *) &tag))
+			  sizeof (struct grub_udf_tag), &tag))
 	{
 	  grub_error (GRUB_ERR_BAD_FS, "not an udf filesystem");
 	  goto fail;
@@ -593,7 +591,7 @@ grub_udf_mount (grub_disk_t disk)
 
 	  if (grub_disk_read (disk, block << GRUB_UDF_LOG2_BLKSZ, 0,
 			      sizeof (struct grub_udf_pd),
-			      (char *) &data->pds[data->npd]))
+			      &data->pds[data->npd]))
 	    {
 	      grub_error (GRUB_ERR_BAD_FS, "not an udf filesystem");
 	      goto fail;
@@ -609,7 +607,7 @@ grub_udf_mount (grub_disk_t disk)
 
 	  if (grub_disk_read (disk, block << GRUB_UDF_LOG2_BLKSZ, 0,
 			      sizeof (struct grub_udf_lvd),
-			      (char *) &data->lvd))
+			      &data->lvd))
 	    {
 	      grub_error (GRUB_ERR_BAD_FS, "not an udf filesystem");
 	      goto fail;
@@ -672,7 +670,7 @@ grub_udf_mount (grub_disk_t disk)
     goto fail;
 
   if (grub_disk_read (disk, block << GRUB_UDF_LOG2_BLKSZ, 0,
-		      sizeof (struct grub_udf_fileset), (char *) &root_fs))
+		      sizeof (struct grub_udf_fileset), &root_fs))
     {
       grub_error (GRUB_ERR_BAD_FS, "not an udf filesystem");
       goto fail;
@@ -768,7 +766,8 @@ grub_udf_iterate_dir (grub_fshelp_node_t dir,
 
 static grub_err_t
 grub_udf_dir (grub_device_t device, const char *path,
-	      int (*hook) (const char *filename, int dir))
+	      int (*hook) (const char *filename, 
+			   const struct grub_dirhook_info *info))
 {
   struct grub_udf_data *data = 0;
   struct grub_fshelp_node rootnode;
@@ -782,19 +781,14 @@ grub_udf_dir (grub_device_t device, const char *path,
 				enum grub_fshelp_filetype filetype,
 				grub_fshelp_node_t node)
   {
-    grub_free (node);
-
-    if (filetype == GRUB_FSHELP_DIR)
-      return hook (filename, 1);
-    else
-      return hook (filename, 0);
-
-    return 0;
+      struct grub_dirhook_info info;
+      grub_memset (&info, 0, sizeof (info));
+      info.dir = ((filetype & GRUB_FSHELP_TYPE_MASK) == GRUB_FSHELP_DIR);
+      grub_free (node);
+      return hook (filename, &info);
   }
 
-#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
-#endif
 
   data = grub_udf_mount (device->disk);
   if (!data)
@@ -816,9 +810,7 @@ grub_udf_dir (grub_device_t device, const char *path,
 fail:
   grub_free (data);
 
-#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-#endif
 
   return grub_errno;
 }
@@ -830,9 +822,7 @@ grub_udf_open (struct grub_file *file, const char *name)
   struct grub_fshelp_node rootnode;
   struct grub_fshelp_node *foundnode;
 
-#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
-#endif
 
   data = grub_udf_mount (file->device->disk);
   if (!data)
@@ -853,9 +843,7 @@ grub_udf_open (struct grub_file *file, const char *name)
   return 0;
 
 fail:
-#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-#endif
 
   grub_free (data);
 
@@ -881,9 +869,7 @@ grub_udf_close (grub_file_t file)
       grub_free (node);
     }
 
-#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-#endif
 
   return GRUB_ERR_NONE;
 }
@@ -918,9 +904,7 @@ static struct grub_fs grub_udf_fs = {
 GRUB_MOD_INIT (udf)
 {
   grub_fs_register (&grub_udf_fs);
-#ifndef GRUB_UTIL
   my_mod = mod;
-#endif
 }
 
 GRUB_MOD_FINI (udf)

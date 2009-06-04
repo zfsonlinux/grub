@@ -1,6 +1,6 @@
 # -*- makefile -*-
 #
-# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2004,2005,2006,2007 Free Software Foundation, Inc.
+# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2004,2005,2006,2007,2008,2009 Free Software Foundation, Inc.
 #
 # This Makefile.in is free software; the author
 # gives unlimited permission to copy and/or distribute it,
@@ -47,6 +47,10 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 
+host_os = @host_os@
+host_kernel = @host_kernel@
+host_cpu = @host_cpu@
+
 target_cpu = @target_cpu@
 platform = @platform@
 
@@ -61,14 +65,17 @@ mkinstalldirs = $(srcdir)/mkinstalldirs
 CC = @CC@
 CFLAGS = @CFLAGS@
 LDFLAGS = @LDFLAGS@
-CPPFLAGS = @CPPFLAGS@ -I. -Iinclude -I$(srcdir)/include -Wall -W \
+CPPFLAGS = @CPPFLAGS@ -I$(builddir) -I$(builddir)/include -I$(srcdir)/include -Wall -W \
 	 -DGRUB_LIBDIR=\"$(pkglibdir)\"
 TARGET_CC = @TARGET_CC@
 TARGET_CFLAGS = @TARGET_CFLAGS@
-TARGET_CPPFLAGS = @TARGET_CPPFLAGS@ -I. -Iinclude -I$(srcdir)/include \
+TARGET_CPPFLAGS = @TARGET_CPPFLAGS@ -I$(builddir) -I$(builddir)/include -I$(srcdir)/include \
 	-Wall -W
 TARGET_LDFLAGS = @TARGET_LDFLAGS@
-MODULE_LDFLAGS = @MODULE_LDFLAGS@
+TARGET_IMG_LDSCRIPT = @TARGET_IMG_LDSCRIPT@
+TARGET_IMG_LDFLAGS = @TARGET_IMG_LDFLAGS@
+TARGET_OBJ2ELF = @TARGET_OBJ2ELF@
+EXEEXT = @EXEEXT@
 OBJCOPY = @OBJCOPY@
 STRIP = @STRIP@
 NM = @NM@
@@ -83,30 +90,38 @@ AWK = @AWK@
 LIBCURSES = @LIBCURSES@
 LIBLZO = @LIBLZO@
 YACC = @YACC@
-UNIFONT_HEX = @UNIFONT_HEX@
+UNIFONT_BDF = @UNIFONT_BDF@
 
 # Options.
 enable_grub_emu = @enable_grub_emu@
+enable_grub_emu_usb = @enable_grub_emu_usb@
 enable_grub_fstest = @enable_grub_fstest@
+enable_grub_pe2elf = @enable_grub_pe2elf@
 enable_lzo = @enable_lzo@
+enable_grub_mkfont = @enable_grub_mkfont@
+freetype_cflags = @freetype_cflags@
+freetype_libs = @freetype_libs@
+enable_efiemu = @enable_efiemu@
 
 ### General variables.
 
-RMKFILES = $(addprefix conf/,common.rmk i386-pc.rmk powerpc-ieee1275.rmk \
-	sparc64-ieee1275.rmk i386-efi.rmk i386-ieee1275.rmk i386-coreboot.rmk)
+RMKFILES = $(addprefix conf/,common.rmk i386-coreboot.rmk i386-efi.rmk \
+	i386-ieee1275.rmk i386-pc.rmk i386.rmk powerpc-ieee1275.rmk \
+	sparc64-ieee1275.rmk x86_64-efi.rmk)
+
 MKFILES = $(patsubst %.rmk,%.mk,$(RMKFILES))
 
 PKGLIB = $(pkglib_IMAGES) $(pkglib_MODULES) $(pkglib_PROGRAMS) \
-	$(pkglib_DATA) $(lib_DATA)
-PKGDATA = $(pkgdata_DATA)
+	$(pkglib_DATA) $(lib_DATA) $(pkglib_BUILDDIR)
+PKGDATA = $(pkgdata_DATA) $(pkgdata_SRCDIR)
 PROGRAMS = $(bin_UTILITIES) $(sbin_UTILITIES)
-SCRIPTS = $(bin_SCRIPTS) $(sbin_SCRIPTS) $(update-grub_SCRIPTS)
+SCRIPTS = $(bin_SCRIPTS) $(sbin_SCRIPTS) $(grub-mkconfig_SCRIPTS)
 
 CLEANFILES =
 MOSTLYCLEANFILES = 
 DISTCLEANFILES = config.status config.cache config.log config.h \
 	Makefile stamp-h include/grub/cpu include/grub/machine \
-	gensymlist.sh genkernsyms.sh
+	gensymlist.sh genkernsyms.sh build_env.mk
 MAINTAINER_CLEANFILES = $(srcdir)/configure $(addprefix $(srcdir)/,$(MKFILES))
 
 # The default target.
@@ -125,7 +140,7 @@ include $(srcdir)/conf/$(target_cpu)-$(platform).mk
 ### General targets.
 
 CLEANFILES += $(pkglib_DATA) $(pkgdata_DATA)
-pkglib_DATA += moddep.lst command.lst fs.lst partmap.lst
+pkglib_DATA += moddep.lst command.lst fs.lst partmap.lst parttool.lst handler.lst
 moddep.lst: $(DEFSYMFILES) $(UNDSYMFILES) genmoddep.awk
 	cat $(DEFSYMFILES) /dev/null \
 	  | $(AWK) -f $(srcdir)/genmoddep.awk $(UNDSYMFILES) > $@ \
@@ -140,20 +155,46 @@ fs.lst: $(FSFILES)
 partmap.lst: $(PARTMAPFILES)
 	cat $^ /dev/null | sort > $@
 
-ifeq (, $(UNIFONT_HEX))
+handler.lst: $(HANDLERFILES)
+	cat $^ /dev/null | sort > $@
+
+parttool.lst: $(PARTTOOLFILES)
+	cat $^ /dev/null | sort | uniq > $@
+
+ifeq (, $(UNIFONT_BDF))
 else
-pkgdata_DATA += unicode.pff ascii.pff
+
+ifeq ($(enable_grub_mkfont),yes)
+
+pkgdata_DATA += unicode.pf2 ascii.pf2
 
 # Arrows and lines are needed to draw the menu, so we always include them
 UNICODE_ARROWS=0x2190-0x2193
 UNICODE_LINES=0x2501-0x251B
 
-unicode.pff: $(UNIFONT_HEX)
-	ruby $(srcdir)/util/unifont2pff.rb $(UNIFONT_HEX) > $@
+unicode.pf2: $(UNIFONT_BDF) grub-mkfont
+	$(builddir)/grub-mkfont -o $@ $(UNIFONT_BDF)
 
-ascii.pff: $(UNIFONT_HEX)
-	ruby $(srcdir)/util/unifont2pff.rb 0x0-0x7f $(UNICODE_ARROWS) $(UNICODE_LINES) $(UNIFONT_HEX) > $@
+ascii.pf2: $(UNIFONT_BDF) grub-mkfont
+	$(builddir)/grub-mkfont -o $@ $(UNIFONT_BDF) -r 0x0-0x7f,$(UNICODE_ARROWS),$(UNICODE_LINES)
 endif
+endif
+
+# Used for building modules externally
+pkglib_BUILDDIR += build_env.mk
+build_env.mk: Makefile
+	(\
+	echo "TARGET_CC=$(TARGET_CC)" ; \
+	echo "TARGET_CFLAGS=$(TARGET_CFLAGS)" ; \
+	echo "TARGET_CPPFLAGS=$(TARGET_CPPFLAGS) -I$(pkglibdir)" ; \
+	echo "STRIP=$(STRIP)" ; \
+	echo "COMMON_ASFLAGS=$(COMMON_ASFLAGS)" ; \
+	echo "COMMON_CFLAGS=$(COMMON_CFLAGS)" ; \
+	echo "COMMON_LDFLAGS=$(COMMON_LDFLAGS)"\
+	) > $@
+pkglib_BUILDDIR += config.h grub_script.tab.h
+pkgdata_SRCDIR += genmodsrc.sh genmk.rb
+include_DATA += $(shell find $(srcdir)/include -name \*.h | sed -e "s,^$(srcdir)/,,g") include/grub/cpu
 
 all-local: $(PROGRAMS) $(PKGLIB) $(PKGDATA) $(SCRIPTS) $(MKFILES)
 
@@ -167,6 +208,19 @@ install-local: all
 	  dest="`echo $$file | sed 's,.*/,,'`"; \
 	  $(INSTALL_DATA) $$dir$$file $(DESTDIR)$(pkglibdir)/$$dest; \
 	done
+	$(mkinstalldirs) $(DESTDIR)$(includedir)
+	@list='$(include_DATA)'; \
+	for file in $$list; do \
+	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
+	  dest="`echo $$file | sed 's,include/,,'`"; \
+	  destdir="`echo $$dest | sed 's,\(^\|/\)[^/]*$$,,g'`"; \
+	  $(mkinstalldirs) $(DESTDIR)$(includedir)/$$destdir; \
+	  if test -f "$$dir$$file"; then \
+	    $(INSTALL_DATA) $$dir$$file $(DESTDIR)$(includedir)/$$dest; \
+	  elif test -L "$$dir$$file"; then \
+	    cp -d $$dir$$file $(DESTDIR)$(includedir)/$$dest; \
+	  fi; \
+	done
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
 	@list='$(PKGDATA)'; \
 	for file in $$list; do \
@@ -179,34 +233,34 @@ install-local: all
 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  $(INSTALL_PROGRAM) $$dir$$file $(DESTDIR)$(bindir)/$$dest; \
-	  $(HELP2MAN) --section=1 $(builddir)/$$file > $(DESTDIR)$(mandir)/man1/$$dest.1; \
+	  $(HELP2MAN) --section=1 -o $(DESTDIR)$(mandir)/man1/$$dest.1 $(builddir)/$$file; \
 	done
 	$(mkinstalldirs) $(DESTDIR)$(sbindir) $(DESTDIR)$(mandir)/man8
 	@list='$(sbin_UTILITIES)'; for file in $$list; do \
 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  $(INSTALL_PROGRAM) $$dir$$file $(DESTDIR)$(sbindir)/$$dest; \
-	  $(HELP2MAN) --section=8 $(builddir)/$$file > $(DESTDIR)$(mandir)/man8/$$dest.8; \
+	  $(HELP2MAN) --section=8 -o $(DESTDIR)$(mandir)/man8/$$dest.8 $(builddir)/$$file; \
 	done
 	@list='$(bin_SCRIPTS)'; for file in $$list; do \
 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  $(INSTALL_SCRIPT) $$dir$$file $(DESTDIR)$(bindir)/$$dest; \
-	  $(HELP2MAN) --section=1 $(builddir)/$$file > $(DESTDIR)$(mandir)/man1/$$dest.1; \
+	  $(HELP2MAN) --section=1 -o $(DESTDIR)$(mandir)/man1/$$dest.1 $(builddir)/$$file; \
 	done
 	@list='$(sbin_SCRIPTS)'; for file in $$list; do \
 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  $(INSTALL_SCRIPT) $$dir$$file $(DESTDIR)$(sbindir)/$$dest; \
-	  $(HELP2MAN) --section=8 $(builddir)/$$file > $(DESTDIR)$(mandir)/man8/$$dest.8; \
+	  $(HELP2MAN) --section=8 -o $(DESTDIR)$(mandir)/man8/$$dest.8 $(builddir)/$$file; \
 	done
 	$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/grub.d
-	@list='$(update-grub_SCRIPTS)'; for file in $$list; do \
+	@list='$(grub-mkconfig_SCRIPTS)'; for file in $$list; do \
 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  $(INSTALL_SCRIPT) $$dir$$file $(DESTDIR)$(sysconfdir)/grub.d/$$dest; \
 	done
-	@list='$(update-grub_DATA)'; for file in $$list; do \
+	@list='$(grub-mkconfig_DATA)'; for file in $$list; do \
 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  $(INSTALL_DATA) $$dir$$file $(DESTDIR)$(sysconfdir)/grub.d/$$dest; \
@@ -241,7 +295,7 @@ uninstall:
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  rm -f $(DESTDIR)$(sbindir)/$$dest; \
 	done
-	@list='$(update-grub_SCRIPTS) $(update-grub_DATA)'; for file in $$list; do \
+	@list='$(grub-mkconfig_SCRIPTS) $(grub-mkconfig_DATA)'; for file in $$list; do \
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  rm -f $(DESTDIR)$(sysconfdir)/grub.d/$$dest; \
 	done

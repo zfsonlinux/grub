@@ -38,6 +38,7 @@
 #include <grub/err.h>
 #include <grub/symbol.h>
 #include <grub/types.h>
+#include <grub/handler.h>
 
 /* These are used to represent the various color states we use.  */
 typedef enum
@@ -137,8 +138,33 @@ grub_term_color_state;
                                  - 1)
 
 
-struct grub_term
+struct grub_term_input
 {
+  /* The next terminal.  */
+  struct grub_term_input *next;
+
+  /* The terminal name.  */
+  const char *name;
+
+  /* Initialize the terminal.  */
+  grub_err_t (*init) (void);
+
+  /* Clean up the terminal.  */
+  grub_err_t (*fini) (void);
+  
+  /* Check if any input character is available.  */
+  int (*checkkey) (void);
+  
+  /* Get a character.  */
+  int (*getkey) (void);
+};
+typedef struct grub_term_input *grub_term_input_t;
+
+struct grub_term_output
+{
+  /* The next terminal.  */
+  struct grub_term_output *next;
+
   /* The terminal name.  */
   const char *name;
 
@@ -154,12 +180,6 @@ struct grub_term
   /* Get the number of columns occupied by a given character C. C is
      encoded in Unicode.  */
   grub_ssize_t (*getcharwidth) (grub_uint32_t c);
-  
-  /* Check if any input character is available.  */
-  int (*checkkey) (void);
-  
-  /* Get a character.  */
-  int (*getkey) (void);
   
   /* Get the screen size. The return value is ((Width << 8) | Height).  */
   grub_uint16_t (*getwh) (void);
@@ -192,18 +212,63 @@ struct grub_term
 
   /* The feature flags defined above.  */
   grub_uint32_t flags;
-  
-  /* The next terminal.  */
-  struct grub_term *next;
 };
-typedef struct grub_term *grub_term_t;
+typedef struct grub_term_output *grub_term_output_t;
 
-void EXPORT_FUNC(grub_term_register) (grub_term_t term);
-void EXPORT_FUNC(grub_term_unregister) (grub_term_t term);
-void EXPORT_FUNC(grub_term_iterate) (int (*hook) (grub_term_t term));
+extern struct grub_handler_class EXPORT_VAR(grub_term_input_class);
+extern struct grub_handler_class EXPORT_VAR(grub_term_output_class);
 
-grub_err_t EXPORT_FUNC(grub_term_set_current) (grub_term_t term);
-grub_term_t EXPORT_FUNC(grub_term_get_current) (void);
+static inline void
+grub_term_register_input (const char *name __attribute__ ((unused)),
+			  grub_term_input_t term)
+{
+  grub_handler_register (&grub_term_input_class, GRUB_AS_HANDLER (term));
+}
+
+static inline void
+grub_term_register_output (const char *name __attribute__ ((unused)),
+			   grub_term_output_t term)
+{
+  grub_handler_register (&grub_term_output_class, GRUB_AS_HANDLER (term));
+}
+
+static inline void
+grub_term_unregister_input (grub_term_input_t term)
+{
+  grub_handler_unregister (&grub_term_input_class, GRUB_AS_HANDLER (term));
+}
+
+static inline void
+grub_term_unregister_output (grub_term_output_t term)
+{
+  grub_handler_unregister (&grub_term_output_class, GRUB_AS_HANDLER (term));
+}
+
+static inline grub_err_t
+grub_term_set_current_input (grub_term_input_t term)
+{
+  return grub_handler_set_current (&grub_term_input_class,
+				   GRUB_AS_HANDLER (term));
+}
+
+static inline grub_err_t
+grub_term_set_current_output (grub_term_output_t term)
+{
+  return grub_handler_set_current (&grub_term_output_class,
+				   GRUB_AS_HANDLER (term));
+}
+
+static inline grub_term_input_t
+grub_term_get_current_input (void)
+{
+  return (grub_term_input_t) grub_term_input_class.cur_handler;
+}
+
+static inline grub_term_output_t
+grub_term_get_current_output (void)
+{
+  return (grub_term_output_t) grub_term_output_class.cur_handler;
+}
 
 void EXPORT_FUNC(grub_putchar) (int c);
 void EXPORT_FUNC(grub_putcode) (grub_uint32_t code);

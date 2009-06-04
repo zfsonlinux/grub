@@ -1,7 +1,7 @@
 /* getroot.c - Get root device */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2006,2007,2008  Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2006,2007,2008,2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
@@ -30,7 +31,7 @@
 #endif
 
 #include <grub/util/misc.h>
-#include <grub/util/biosdisk.h>
+#include <grub/util/hostdisk.h>
 #include <grub/util/getroot.h>
 
 static void
@@ -169,7 +170,16 @@ grub_get_prefix (const char *dir)
   return prefix;
 }
 
-#ifndef __CYGWIN__
+#ifdef __MINGW32__
+
+static char *
+find_root_device (const char *dir __attribute__ ((unused)),
+                  dev_t dev __attribute__ ((unused)))
+{
+  return 0;
+}
+
+#elif ! defined(__CYGWIN__)
 
 static char *
 find_root_device (const char *dir, dev_t dev)
@@ -196,7 +206,10 @@ find_root_device (const char *dir, dev_t dev)
     {
       struct stat st;
       
-      if (strcmp (ent->d_name, ".") == 0 || strcmp (ent->d_name, "..") == 0)
+      /* Avoid:
+	 - dotfiles (like "/dev/.tmp.md0") since they could be duplicates.
+	 - dotdirs (like "/dev/.static") since they could contain duplicates.  */
+      if (ent->d_name[0] == '.')
 	continue;
 
       if (lstat (ent->d_name, &st) < 0)
@@ -207,11 +220,9 @@ find_root_device (const char *dir, dev_t dev)
 	/* Don't follow symbolic links.  */
 	continue;
       
-      if (S_ISDIR (st.st_mode) && ent->d_name[0] != '.')
+      if (S_ISDIR (st.st_mode))
 	{
-	  /* Find it recursively, but avoid dotdirs (like ".static") since they
-	     could contain duplicates, which would later break the
-	     pathname-based check */
+	  /* Find it recursively.  */
 	  char *res;
 
 	  res = find_root_device (ent->d_name, dev);
@@ -227,8 +238,23 @@ find_root_device (const char *dir, dev_t dev)
 	    }
 	}
 
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+      if (S_ISCHR (st.st_mode) && st.st_rdev == dev)
+#else
       if (S_ISBLK (st.st_mode) && st.st_rdev == dev)
+#endif
 	{
+#ifdef __linux__
+	  /* Skip device names like /dev/dm-0, which are short-hand aliases
+	     to more descriptive device names, e.g. those under /dev/mapper */
+	  if (ent->d_name[0] == 'd' &&
+	      ent->d_name[1] == 'm' &&
+	      ent->d_name[2] == '-' &&
+	      ent->d_name[3] >= '0' &&
+	      ent->d_name[3] <= '9')
+	    continue;
+#endif
+
 	  /* Found!  */
 	  char *res;
 	  char *cwd;
@@ -325,7 +351,7 @@ find_cygwin_root_device (const char *path, dev_t dev)
   /* Cygwin returns the partition serial number in stat.st_dev.
      This is never identical to the device number of the emulated
      /dev/sdXN device, so above find_root_device () does not work.
-     Search the partion with the same serial in boot sector instead.  */
+     Search the partition with the same serial in boot sector instead.  */
   char devpath[sizeof ("/dev/sda15") + 13]; /* Size + Paranoia.  */
   int d;
   for (d = 'a'; d <= 'z'; d++)
@@ -357,20 +383,6 @@ grub_guess_root_device (const char *dir)
   
   if (stat (dir, &st) < 0)
     grub_util_error ("Cannot stat `%s'", dir);
-
-#ifdef __linux__
-  /* We first try to find the device in the /dev/mapper directory.  If
-     we don't do this, we get useless device names like /dev/dm-0 for
-     LVM.  */
-  os_dev = find_root_device ("/dev/mapper", st.st_dev);
-  if (os_dev)
-    return os_dev;
-
-  /* The same applies to /dev/evms directory (for EVMS volumes).  */
-  os_dev = find_root_device ("/dev/evms", st.st_dev);
-  if (os_dev)
-    return os_dev;
-#endif
 
 #ifdef __CYGWIN__
   /* Cygwin specific function.  */
@@ -410,62 +422,85 @@ grub_util_get_grub_dev (const char *os_dev)
   switch (grub_util_get_dev_abstraction (os_dev))
     {
     case GRUB_DEV_ABSTRACTION_LVM:
-      grub_dev = xmalloc (strlen (os_dev) - 12 + 1);
 
-      strcpy (grub_dev, os_dev + 12);
+      {
+	unsigned short i, len;
+	grub_size_t offset = sizeof ("/dev/mapper/") - 1;
 
+	len = strlen (os_dev) - offset + 1;
+	grub_dev = xmalloc (len);
+
+	for (i = 0; i < len; i++, offset++)
+	  {
+	    grub_dev[i] = os_dev[offset];
+	    if (os_dev[offset] == '-' && os_dev[offset + 1] == '-')
+	      offset++;
+	  }
+      }
+      
       break;
 
     case GRUB_DEV_ABSTRACTION_RAID:
-      grub_dev = xmalloc (20);
 
       if (os_dev[7] == '_' && os_dev[8] == 'd')
 	{
-	  const char *p;
-
 	  /* This a partitionable RAID device of the form /dev/md_dNNpMM. */
-	  int i;
 
-	  grub_dev[0] = 'm';
-	  grub_dev[1] = 'd';
-	  i = 2;
-	  
-	  p = os_dev + 9;
-	  while (*p >= '0' && *p <= '9')
-	    {
-	      grub_dev[i] = *p;
-	      i++;
-	      p++;
-	    }
+	  char *p, *q;
 
-	  if (*p == '\0')
-	    grub_dev[i] = '\0';
-	  else if (*p == 'p')
-	    {
-	      p++;
-	      grub_dev[i] = ',';
-	      i++;
+	  p = strdup (os_dev + sizeof ("/dev/md_d") - 1);
 
-	      while (*p >= '0' && *p <= '9')
-		{
-		  grub_dev[i] = *p;
-		  i++;
-		  p++;
-		}
+	  q = strchr (p, 'p');
+	  if (q)
+	    *q = ',';
 
-	      grub_dev[i] = '\0';
-	    }
-	  else
-	    grub_util_error ("Unknown kind of RAID device `%s'", os_dev);
+	  asprintf (&grub_dev, "md%s", p);
+	  free (p);
+	}
+      else if (os_dev[7] == '/' && os_dev[8] == 'd')
+	{
+	  /* This a partitionable RAID device of the form /dev/md/dNNpMM. */
+
+	  char *p, *q;
+
+	  p = strdup (os_dev + sizeof ("/dev/md/d") - 1);
+
+	  q = strchr (p, 'p');
+	  if (q)
+	    *q = ',';
+
+	  asprintf (&grub_dev, "md%s", p);
+	  free (p);
 	}
       else if (os_dev[7] >= '0' && os_dev[7] <= '9')
 	{
-	  memcpy (grub_dev, os_dev + 5, 7);
-	  grub_dev[7] = '\0';
+	  char *p , *q;
+
+	  p = strdup (os_dev + sizeof ("/dev/md") - 1);
+
+	  q = strchr (p, 'p');
+	  if (q)
+	    *q = ',';
+
+	  asprintf (&grub_dev, "md%s", p);
+	  free (p);
+	}
+      else if (os_dev[7] == '/' && os_dev[8] >= '0' && os_dev[8] <= '9')
+	{
+	  char *p , *q;
+
+	  p = strdup (os_dev + sizeof ("/dev/md/") - 1);
+
+	  q = strchr (p, 'p');
+	  if (q)
+	    *q = ',';
+
+	  asprintf (&grub_dev, "md%s", p);
+	  free (p);
 	}
       else
 	grub_util_error ("Unknown kind of RAID device `%s'", os_dev);
-
+      
       break;
 
     default:  /* GRUB_DEV_ABSTRACTION_NONE */
@@ -488,3 +523,18 @@ grub_util_check_block_device (const char *blk_dev)
   else
     return 0;
 }
+
+const char *
+grub_util_check_char_device (const char *blk_dev)
+{
+  struct stat st;
+
+  if (stat (blk_dev, &st) < 0)
+    grub_util_error ("Cannot stat `%s'", blk_dev);
+
+  if (S_ISCHR (st.st_mode))
+    return (blk_dev);
+  else
+    return 0;
+}
+
