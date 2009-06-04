@@ -1,7 +1,7 @@
 /* pc.c - Read PC style partition tables.  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2004,2005,2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2004,2005,2006,2007,2008,2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,10 +25,6 @@
 #include <grub/dl.h>
 
 static struct grub_partition_map grub_pc_partition_map;
-
-#ifndef GRUB_UTIL
-static grub_dl_t my_mod;
-#endif
 
 
 /* Parse the partition representation in STR and return a partition.  */
@@ -118,7 +114,7 @@ pc_partition_map_iterate (grub_disk_t disk,
       struct grub_pc_partition_entry *e;
       
       /* Read the MBR.  */
-      if (grub_disk_read (&raw, p.offset, 0, sizeof (mbr), (char *) &mbr))
+      if (grub_disk_read (&raw, p.offset, 0, sizeof (mbr), &mbr))
 	goto finish;
 
       /* Check if it is valid.  */
@@ -160,25 +156,28 @@ pc_partition_map_iterate (grub_disk_t disk,
 		{
 		  /* Check if the BSD label is within the DOS partition.  */
 		  if (p.len <= GRUB_PC_PARTITION_BSD_LABEL_SECTOR)
-		    return grub_error (GRUB_ERR_BAD_PART_TABLE,
-				       "no space for disk label");
-
+		    {
+		      grub_dprintf ("partition", "no space for disk label\n");
+		      continue;
+		    }
 		  /* Read the BSD label.  */
 		  if (grub_disk_read (&raw,
 				      (p.start
 				       + GRUB_PC_PARTITION_BSD_LABEL_SECTOR),
 				      0,
 				      sizeof (label),
-				      (char *) &label))
+				      &label))
 		    goto finish;
 
 		  /* Check if it is valid.  */
 		  if (label.magic
 		      != grub_cpu_to_le32 (GRUB_PC_PARTITION_BSD_LABEL_MAGIC))
-		    return grub_error (GRUB_ERR_BAD_PART_TABLE,
-				       "invalid disk label magic 0x%x",
-				       label.magic);
-
+		    {
+		      grub_dprintf ("partition",
+				    "invalid disk label magic 0x%x on partition %d\n",
+				    label.magic, p.index);
+		      continue;
+		    }
 		  for (pcdata.bsd_part = 0;
 		       pcdata.bsd_part < grub_cpu_to_le16 (label.num_partitions);
 		       pcdata.bsd_part++)
@@ -309,9 +308,6 @@ static struct grub_partition_map grub_pc_partition_map =
 GRUB_MOD_INIT(pc_partition_map)
 {
   grub_partition_map_register (&grub_pc_partition_map);
-#ifndef GRUB_UTIL
-  my_mod = mod;
-#endif
 }
 
 GRUB_MOD_FINI(pc_partition_map)

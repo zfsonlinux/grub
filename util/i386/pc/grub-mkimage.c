@@ -129,11 +129,13 @@ compress_kernel (char *kernel_img, size_t kernel_size,
 #endif
 
 static void
-generate_image (const char *dir, char *prefix, FILE *out, char *mods[], char *memdisk_path)
+generate_image (const char *dir, char *prefix, FILE *out, char *mods[],
+		char *memdisk_path, char *config_path)
 {
   grub_addr_t module_addr = 0;
   char *kernel_img, *boot_img, *core_img;
-  size_t kernel_size, boot_size, total_module_size, core_size, memdisk_size = 0;
+  size_t kernel_size, boot_size, total_module_size, core_size;
+  size_t memdisk_size = 0, config_size = 0;
   char *kernel_path, *boot_path;
   unsigned num;
   size_t offset;
@@ -146,19 +148,28 @@ generate_image (const char *dir, char *prefix, FILE *out, char *mods[], char *me
   kernel_size = grub_util_get_image_size (kernel_path);
 
   total_module_size = sizeof (struct grub_module_info);
+
+  if (memdisk_path)
+    {
+      memdisk_size = ALIGN_UP(grub_util_get_image_size (memdisk_path), 512);
+      grub_util_info ("the size of memory disk is 0x%x", memdisk_size);
+      total_module_size += memdisk_size + sizeof (struct grub_module_header);
+    }
+
+  if (config_path)
+    {
+      config_size = grub_util_get_image_size (config_path) + 1;
+      grub_util_info ("the size of config file is 0x%x", config_size);
+      total_module_size += config_size + sizeof (struct grub_module_header);
+    }
+
   for (p = path_list; p; p = p->next)
     total_module_size += (grub_util_get_image_size (p->name)
 			  + sizeof (struct grub_module_header));
 
   grub_util_info ("the total module size is 0x%x", total_module_size);
 
-  if (memdisk_path)
-    {
-      memdisk_size = ALIGN_UP(grub_util_get_image_size (memdisk_path), 512);
-      grub_util_info ("the size of memory disk is 0x%x", memdisk_size);
-    }
-
-  kernel_img = xmalloc (kernel_size + total_module_size + memdisk_size);
+  kernel_img = xmalloc (kernel_size + total_module_size);
   grub_util_load_image (kernel_path, kernel_img);
 
   if (GRUB_KERNEL_MACHINE_PREFIX + strlen (prefix) + 1 > GRUB_KERNEL_MACHINE_DATA_END)
@@ -180,7 +191,7 @@ generate_image (const char *dir, char *prefix, FILE *out, char *mods[], char *me
       mod_size = grub_util_get_image_size (p->name);
       
       header = (struct grub_module_header *) (kernel_img + offset);
-      header->offset = grub_cpu_to_le32 (sizeof (*header));
+      header->type = grub_cpu_to_le32 (OBJ_TYPE_ELF);
       header->size = grub_cpu_to_le32 (mod_size + sizeof (*header));
       offset += sizeof (*header);
 
@@ -190,11 +201,32 @@ generate_image (const char *dir, char *prefix, FILE *out, char *mods[], char *me
 
   if (memdisk_path)
     {
+      struct grub_module_header *header;
+      
+      header = (struct grub_module_header *) (kernel_img + offset);
+      header->type = grub_cpu_to_le32 (OBJ_TYPE_MEMDISK);
+      header->size = grub_cpu_to_le32 (memdisk_size + sizeof (*header));
+      offset += sizeof (*header);
+
       grub_util_load_image (memdisk_path, kernel_img + offset);
       offset += memdisk_size;
     }
 
-  compress_kernel (kernel_img, kernel_size + total_module_size + memdisk_size,
+  if (config_path)
+    {
+      struct grub_module_header *header;
+
+      header = (struct grub_module_header *) (kernel_img + offset);
+      header->type = grub_cpu_to_le32 (OBJ_TYPE_CONFIG);
+      header->size = grub_cpu_to_le32 (config_size + sizeof (*header));
+      offset += sizeof (*header);
+
+      grub_util_load_image (config_path, kernel_img + offset);
+      offset += config_size;
+      *(kernel_img + offset - 1) = 0;
+    }
+
+  compress_kernel (kernel_img, kernel_size + total_module_size,
 		   &core_img, &core_size);
 
   grub_util_info ("the core size is 0x%x", core_size);
@@ -229,8 +261,6 @@ generate_image (const char *dir, char *prefix, FILE *out, char *mods[], char *me
     = grub_cpu_to_le32 (total_module_size);
   *((grub_uint32_t *) (core_img + GRUB_KERNEL_MACHINE_KERNEL_IMAGE_SIZE))
     = grub_cpu_to_le32 (kernel_size);
-  *((grub_uint32_t *) (core_img + GRUB_KERNEL_MACHINE_MEMDISK_IMAGE_SIZE))
-    = grub_cpu_to_le32 (memdisk_size);
   *((grub_uint32_t *) (core_img + GRUB_KERNEL_MACHINE_COMPRESSED_SIZE))
     = grub_cpu_to_le32 (core_size - GRUB_KERNEL_MACHINE_RAW_SIZE);
 
@@ -269,6 +299,7 @@ static struct option options[] =
     {"directory", required_argument, 0, 'd'},
     {"prefix", required_argument, 0, 'p'},
     {"memdisk", required_argument, 0, 'm'},
+    {"config", required_argument, 0, 'c'},
     {"output", required_argument, 0, 'o'},
     {"help", no_argument, 0, 'h'},
     {"version", no_argument, 0, 'V'},
@@ -290,6 +321,7 @@ Make a bootable image of GRUB.\n\
   -d, --directory=DIR     use images and modules under DIR [default=%s]\n\
   -p, --prefix=DIR        set grub_prefix directory [default=%s]\n\
   -m, --memdisk=FILE      embed FILE as a memdisk image\n\
+  -c, --config=FILE       embed FILE as boot config\n\
   -o, --output=FILE       output a generated image to FILE [default=stdout]\n\
   -h, --help              display this message and exit\n\
   -V, --version           print version information and exit\n\
@@ -308,13 +340,14 @@ main (int argc, char *argv[])
   char *dir = NULL;
   char *prefix = NULL;
   char *memdisk = NULL;
+  char *config = NULL;
   FILE *fp = stdout;
 
   progname = "grub-mkimage";
   
   while (1)
     {
-      int c = getopt_long (argc, argv, "d:p:m:o:hVv", options, 0);
+      int c = getopt_long (argc, argv, "d:p:m:c:o:hVv", options, 0);
 
       if (c == -1)
 	break;
@@ -345,6 +378,13 @@ main (int argc, char *argv[])
 	      free (prefix);
 
 	    prefix = xstrdup ("(memdisk)/boot/grub");
+	    break;
+
+	  case 'c':
+	    if (config)
+	      free (config);
+
+	    config = xstrdup (optarg);
 	    break;
 
 	  case 'h':
@@ -379,7 +419,8 @@ main (int argc, char *argv[])
 	grub_util_error ("cannot open %s", output);
     }
 
-  generate_image (dir ? : GRUB_LIBDIR, prefix ? : DEFAULT_DIRECTORY, fp, argv + optind, memdisk);
+  generate_image (dir ? : GRUB_LIBDIR, prefix ? : DEFAULT_DIRECTORY, fp,
+		  argv + optind, memdisk, config);
 
   fclose (fp);
 

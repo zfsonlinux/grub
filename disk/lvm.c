@@ -263,7 +263,7 @@ grub_lvm_scan_device (const char *name)
   if (dlocn->offset)
     {
       grub_error (GRUB_ERR_NOT_IMPLEMENTED_YET,
-		  "We don't support multiple data areas");
+		  "We don't support multiple LVM data areas");
 		  
       goto fail;
     }
@@ -276,12 +276,13 @@ grub_lvm_scan_device (const char *name)
   if (dlocn->offset)
     {
       grub_error (GRUB_ERR_NOT_IMPLEMENTED_YET,
-		  "We don't support multiple metadata areas");
+		  "We don't support multiple LVM metadata areas");
 		  
       goto fail;
     }
 
-  metadatabuf = grub_malloc (mda_size);
+  /* Allocate buffer space for the circular worst-case scenario. */
+  metadatabuf = grub_malloc (2 * mda_size);
   if (! metadatabuf)
     goto fail;
 
@@ -295,11 +296,21 @@ grub_lvm_scan_device (const char *name)
       || (grub_le_to_cpu32 (mdah->version) != GRUB_LVM_FMTT_VERSION))
     {
       grub_error (GRUB_ERR_NOT_IMPLEMENTED_YET,
-		  "Unknown metadata header");
+		  "Unknown LVM metadata header");
       goto fail2;
     }
 
   rlocn = mdah->raw_locns;
+  if (grub_le_to_cpu64 (rlocn->offset) + grub_le_to_cpu64 (rlocn->size) >
+      grub_le_to_cpu64 (mdah->size))
+    {
+      /* Metadata is circular. Copy the wrap in place. */
+      grub_memcpy (metadatabuf + mda_size,
+                   metadatabuf + GRUB_LVM_MDA_HEADER_SIZE,
+                   grub_le_to_cpu64 (rlocn->offset) +
+                   grub_le_to_cpu64 (rlocn->size) -
+                   grub_le_to_cpu64 (mdah->size));
+    }
   p = q = metadatabuf + grub_le_to_cpu64 (rlocn->offset);
 
   while (*q != ' ' && q < metadatabuf + mda_size)
@@ -345,8 +356,6 @@ grub_lvm_scan_device (const char *name)
 
       vg->lvs = NULL;
       vg->pvs = NULL;
-      vg->next = vg_list;
-      vg_list = vg;
 
       p = grub_strstr (p, "physical_volumes {");
       if (p)
@@ -373,9 +382,10 @@ grub_lvm_scan_device (const char *name)
 	      grub_memcpy (pv->name, p, s);
 	      pv->name[s] = '\0';
 	      
-	      p = grub_strstr (p, "id = \"") + sizeof("id = \"") - 1;
+	      p = grub_strstr (p, "id = \"");
 	      if (p == NULL)
 		goto pvs_fail;
+	      p += sizeof("id = \"") - 1;
 	      
 	      grub_memcpy (pv->id, p, GRUB_LVM_ID_STRLEN);
 	      pv->id[GRUB_LVM_ID_STRLEN] = '\0';
@@ -383,11 +393,15 @@ grub_lvm_scan_device (const char *name)
 	      pv->start = grub_lvm_getvalue (&p, "pe_start = ");
 	      if (p == NULL)
 		goto pvs_fail;
+	      
+	      p = grub_strchr (p, '}');
+	      if (p == NULL)
+		goto pvs_fail;
+	      p++;
+
 	      pv->disk = NULL;
 	      pv->next = vg->pvs;
 	      vg->pvs = pv;
-	      
-	      p = grub_strchr (p, '}') + 1;
 	      
 	      continue;
 	    pvs_fail:
@@ -516,16 +530,17 @@ grub_lvm_scan_device (const char *name)
 		  goto fail4;
 		}
 
-	      lv->number = lv_count++;
-	      lv->vg = vg;
-	      lv->next = vg->lvs;
-	      vg->lvs = lv;
-	      
-	      p = grub_strchr (p, '}');
+	      if (p != NULL)
+		p = grub_strchr (p, '}');
 	      if (p == NULL)
 		goto lvs_fail;
 	      p += 3;
 	      
+	      lv->number = lv_count++;
+	      lv->vg = vg;
+	      lv->next = vg->lvs;
+	      vg->lvs = lv;
+
 	      continue;
 	    lvs_fail:
 	      grub_free (lv->name);
@@ -533,6 +548,9 @@ grub_lvm_scan_device (const char *name)
 	      goto fail4;
 	    }
 	}
+
+	vg->next = vg_list;
+	vg_list = vg;
     }
   else
     {
@@ -586,6 +604,12 @@ static struct grub_disk_dev grub_lvm_dev =
 GRUB_MOD_INIT(lvm)
 {
   grub_device_iterate (&grub_lvm_scan_device);
+  if (grub_errno)
+    {
+      grub_print_error ();
+      grub_errno = GRUB_ERR_NONE;
+    }
+
   grub_disk_dev_register (&grub_lvm_dev);
 }
 

@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2003,2004,2005,2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2003,2004,2005,2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,6 +39,8 @@ enum grub_disk_dev_id
     GRUB_DISK_DEVICE_MEMDISK_ID,
     GRUB_DISK_DEVICE_NAND_ID,
     GRUB_DISK_DEVICE_UUID_ID,
+    GRUB_DISK_DEVICE_PXE_ID,
+    GRUB_DISK_DEVICE_SCSI_ID,
   };
 
 struct grub_disk;
@@ -147,17 +149,28 @@ grub_err_t EXPORT_FUNC(grub_disk_read) (grub_disk_t disk,
 					grub_disk_addr_t sector,
 					grub_off_t offset,
 					grub_size_t size,
-					char *buf);
+					void *buf);
 grub_err_t EXPORT_FUNC(grub_disk_write) (grub_disk_t disk,
 					 grub_disk_addr_t sector,
 					 grub_off_t offset,
 					 grub_size_t size,
-					 const char *buf);
+					 const void *buf);
 
 grub_uint64_t EXPORT_FUNC(grub_disk_get_size) (grub_disk_t disk);
 
 extern void (* EXPORT_VAR(grub_disk_firmware_fini)) (void);
 extern int EXPORT_VAR(grub_disk_firmware_is_tainted);
+
+/* ATA pass through parameters and function.  */
+struct grub_disk_ata_pass_through_parms
+{
+  grub_uint8_t taskfile[8];
+  void * buffer;
+  int size;
+};
+
+extern grub_err_t (* EXPORT_VAR(grub_disk_ata_pass_through)) (grub_disk_t,
+		   struct grub_disk_ata_pass_through_parms *);
 
 #ifdef GRUB_UTIL
 void grub_raid_init (void);

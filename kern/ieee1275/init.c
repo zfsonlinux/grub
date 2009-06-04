@@ -30,6 +30,7 @@
 #include <grub/time.h>
 #include <grub/machine/console.h>
 #include <grub/machine/kernel.h>
+#include <grub/cpu/kernel.h>
 #include <grub/ieee1275/ofdisk.h>
 #include <grub/ieee1275/ieee1275.h>
 
@@ -45,12 +46,6 @@
 
 extern char _start[];
 extern char _end[];
-
-void
-grub_millisleep (grub_uint32_t ms)
-{
-  grub_millisleep_generic (ms);
-}
 
 void
 grub_exit (void)
@@ -83,6 +78,13 @@ grub_machine_set_prefix (void)
   if (grub_env_get ("prefix"))
     /* We already set prefix in grub_machine_init().  */
     return;
+
+  if (grub_prefix[0])
+    {
+      grub_env_set ("prefix", grub_prefix);
+      /* Prefix is hardcoded in the core image.  */
+      return;
+    }
 
   if (grub_ieee1275_get_property (grub_ieee1275_chosen, "bootpath", &bootpath,
 				  sizeof (bootpath), 0))
@@ -128,9 +130,12 @@ static void grub_claim_heap (void)
 {
   unsigned long total = 0;
 
-  auto int NESTED_FUNC_ATTR heap_init (grub_uint64_t addr, grub_uint64_t len);
-  int NESTED_FUNC_ATTR heap_init (grub_uint64_t addr, grub_uint64_t len)
+  auto int NESTED_FUNC_ATTR heap_init (grub_uint64_t addr, grub_uint64_t len, grub_uint32_t type);
+  int NESTED_FUNC_ATTR heap_init (grub_uint64_t addr, grub_uint64_t len, grub_uint32_t type)
   {
+    if (type != 1)
+      return 0;
+
     len -= 1; /* Required for some firmware.  */
 
     /* Never exceed HEAP_MAX_SIZE  */
@@ -145,7 +150,7 @@ static void grub_claim_heap (void)
 
     /* In theory, firmware should already prevent this from happening by not
        listing our own image in /memory/available.  The check below is intended
-       as a safegard in case that doesn't happen.  It does, however, not protect
+       as a safeguard in case that doesn't happen.  However, it doesn't protect
        us from corrupting our module area, which extends up to a
        yet-undetermined region above _end.  */
     if ((addr < (grub_addr_t) _end) && ((addr + len) > (grub_addr_t) _start))
@@ -172,9 +177,9 @@ static void grub_claim_heap (void)
   }
 
   if (grub_ieee1275_test_flag (GRUB_IEEE1275_FLAG_CANNOT_INTERPRET))
-    heap_init (HEAP_MAX_ADDR - HEAP_MIN_SIZE, HEAP_MIN_SIZE);
+    heap_init (HEAP_MAX_ADDR - HEAP_MIN_SIZE, HEAP_MIN_SIZE, 1);
   else
-    grub_available_iterate (heap_init);
+    grub_machine_mmap_iterate (heap_init);
 }
 
 #ifdef __i386__
@@ -185,10 +190,10 @@ grub_uint32_t grub_upper_mem;
 static void
 grub_get_extended_memory (void)
 {
-  auto int NESTED_FUNC_ATTR find_ext_mem (grub_uint64_t addr, grub_uint64_t len);
-  int NESTED_FUNC_ATTR find_ext_mem (grub_uint64_t addr, grub_uint64_t len)
+  auto int NESTED_FUNC_ATTR find_ext_mem (grub_uint64_t addr, grub_uint64_t len, grub_uint32_t type);
+  int NESTED_FUNC_ATTR find_ext_mem (grub_uint64_t addr, grub_uint64_t len, grub_uint32_t type)
     {
-      if (addr == 0x100000)
+      if (type == 1 && addr == 0x100000)
         {
           grub_upper_mem = len;
           return 1;
@@ -197,23 +202,24 @@ grub_get_extended_memory (void)
       return 0;
     }
 
-  grub_available_iterate (find_ext_mem);
+  grub_machine_mmap_iterate (find_ext_mem);
 }
 
 #endif
+
+static grub_uint64_t ieee1275_get_time_ms (void);
 
 void
 grub_machine_init (void)
 {
   char args[256];
-  int actual;
+  grub_ssize_t actual;
 
   grub_ieee1275_init ();
 
   grub_console_init ();
 #ifdef __i386__
   grub_get_extended_memory ();
-  grub_keyboard_controller_init ();
 #endif
   grub_claim_heap ();
   grub_ofdisk_init ();
@@ -251,6 +257,8 @@ grub_machine_init (void)
 	    }
 	}
     }
+
+  grub_install_get_time_ms (ieee1275_get_time_ms);
 }
 
 void
@@ -260,14 +268,20 @@ grub_machine_fini (void)
   grub_console_fini ();
 }
 
-grub_uint32_t
-grub_get_rtc (void)
+static grub_uint64_t
+ieee1275_get_time_ms (void)
 {
   grub_uint32_t msecs = 0;
 
   grub_ieee1275_milliseconds (&msecs);
 
   return msecs;
+}
+
+grub_uint32_t
+grub_get_rtc (void)
+{
+  return ieee1275_get_time_ms ();
 }
 
 grub_addr_t

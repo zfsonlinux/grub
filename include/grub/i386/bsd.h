@@ -80,9 +80,12 @@
 #define FREEBSD_MODINFOMD_SHDR		0x0009	/* section header table */
 #define FREEBSD_MODINFOMD_NOCOPY	0x8000	/* don't copy this metadata to the kernel */
 
+#define FREEBSD_MODINFOMD_SMAP		0x1001
+
 #define FREEBSD_MODINFOMD_DEPLIST	(0x4001 | FREEBSD_MODINFOMD_NOCOPY)  /* depends on */
 
 #define FREEBSD_MODTYPE_KERNEL		"elf kernel"
+#define FREEBSD_MODTYPE_KERNEL64	"elf64 kernel"
 #define FREEBSD_MODTYPE_MODULE		"elf module"
 #define FREEBSD_MODTYPE_RAW		"raw"
 
@@ -148,6 +151,8 @@ struct grub_openbsd_bios_mmap
 {
   grub_uint64_t addr;
   grub_uint64_t len;
+#define	OPENBSD_MMAP_AVAILABLE	1
+#define	OPENBSD_MMAP_RESERVED 2
   grub_uint32_t type;
 };
 
@@ -222,11 +227,11 @@ struct grub_netbsd_btinfo_bootdisk
   int partition;
 };
 
-void grub_rescue_cmd_freebsd (int argc, char *argv[]);
-void grub_rescue_cmd_openbsd (int argc, char *argv[]);
-void grub_rescue_cmd_netbsd (int argc, char *argv[]);
+void grub_unix_real_boot (grub_addr_t entry, ...)
+     __attribute__ ((cdecl,noreturn));
 
-void grub_rescue_cmd_freebsd_loadenv (int argc, char *argv[]);
-void grub_rescue_cmd_freebsd_module (int argc, char *argv[]);
+extern grub_uint8_t grub_bsd64_trampoline_start, grub_bsd64_trampoline_end;
+extern grub_uint32_t grub_bsd64_trampoline_selfjump;
+extern grub_uint32_t grub_bsd64_trampoline_gdt;
 
 #endif /* ! GRUB_BSD_CPU_HEADER */

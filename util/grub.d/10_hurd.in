@@ -16,6 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
 
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+. ${libdir}/grub/grub-mkconfig_lib
+
 if [ "x${GRUB_DISTRIBUTOR}" = "x" ] ; then
   OS=GNU
 else
@@ -63,10 +68,11 @@ if ${all_of_them} && test -e /lib/ld.so.1 ; then : ; else
   exit 1
 fi
 
-prepare_grub_to_access_device ${GRUB_DEVICE}
-
 cat << EOF
 menuentry "${OS}" {
+EOF
+prepare_grub_to_access_device ${GRUB_DEVICE} | sed -e "s/^/\t/"
+cat << EOF
 	multiboot ${kernel} root=device:${GRUB_DEVICE}
 	module /hurd/${hurd_fs}.static --readonly \\
 			--multiboot-command-line='\${kernel-command-line}' \\

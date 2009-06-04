@@ -1,7 +1,7 @@
 /* mm.c - generic EFI memory management */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ static struct allocated_page *allocated_pages = 0;
 
 /* The minimum and maximum heap size for GRUB itself.  */
 #define MIN_HEAP_SIZE	0x100000
-#define MAX_HEAP_SIZE	(16 * 0x100000)
+#define MAX_HEAP_SIZE	(1600 * 0x100000)
 
 
 /* Allocate pages. Return the pointer to the first of allocated pages.  */

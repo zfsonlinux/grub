@@ -1,7 +1,7 @@
 /* misc.h - prototypes for misc functions */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2003,2005,2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2003,2005,2006,2007,2008,2009,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,8 +26,9 @@
 #include <grub/err.h>
 
 #define ALIGN_UP(addr, align) (((grub_uint64_t)addr + align - 1) & ~(align - 1))
+#define ARRAY_SIZE(array) (sizeof (array) / sizeof (array[0]))
 
-#define grub_dprintf(condition, fmt, args...) grub_real_dprintf(__FILE__, __LINE__, condition, fmt, ## args);
+#define grub_dprintf(condition, fmt, args...) grub_real_dprintf(__FILE__, __LINE__, condition, fmt, ## args)
 /* XXX: If grub_memmove is too slow, we must implement grub_memcpy.  */
 #define grub_memcpy(d,s,n)	grub_memmove ((d), (s), (n))
 
@@ -45,7 +46,8 @@ void *EXPORT_FUNC(memcpy) (void *dest, const void *src, grub_size_t n);
 int EXPORT_FUNC(grub_memcmp) (const void *s1, const void *s2, grub_size_t n);
 int EXPORT_FUNC(grub_strcmp) (const char *s1, const char *s2);
 int EXPORT_FUNC(grub_strncmp) (const char *s1, const char *s2, grub_size_t n);
-int EXPORT_FUNC(grub_strncasecmp) (const char *s1, const char *s2, int c);
+int EXPORT_FUNC(grub_strcasecmp) (const char *s1, const char *s2);
+int EXPORT_FUNC(grub_strncasecmp) (const char *s1, const char *s2, grub_size_t n);
 char *EXPORT_FUNC(grub_strchr) (const char *s, int c);
 char *EXPORT_FUNC(grub_strrchr) (const char *s, int c);
 int EXPORT_FUNC(grub_strword) (const char *s, const char *w);
@@ -77,10 +79,16 @@ grub_uint8_t *EXPORT_FUNC(grub_utf16_to_utf8) (grub_uint8_t *dest,
 					       grub_uint16_t *src,
 					       grub_size_t size);
 grub_ssize_t EXPORT_FUNC(grub_utf8_to_ucs4) (grub_uint32_t *dest,
+					     grub_size_t destsize,
 					     const grub_uint8_t *src,
-					     grub_size_t size);
+					     grub_size_t srcsize,
+					     const grub_uint8_t **srcend);
 grub_uint64_t EXPORT_FUNC(grub_divmod64) (grub_uint64_t n,
 					  grub_uint32_t d, grub_uint32_t *r);
+
+#ifdef NEED_ENABLE_EXECUTE_STACK
+void EXPORT_FUNC(__enable_execute_stack) (void *addr);
+#endif
 
 /* Inline functions.  */
 

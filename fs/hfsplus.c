@@ -1,7 +1,7 @@
 /* hfsplus.c - HFS+ Filesystem.  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2005,2006,2007,2008  Free Software Foundation, Inc.
+ *  Copyright (C) 2005,2006,2007,2008,2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -57,9 +57,12 @@ struct grub_hfsplus_volheader
   grub_uint16_t magic;
   grub_uint16_t version;
   grub_uint32_t attributes;
-  grub_uint8_t unused[32];
+  grub_uint8_t unused1[12];
+  grub_uint32_t utime;
+  grub_uint8_t unused2[16];
   grub_uint32_t blksize;
-  grub_uint8_t unused2[68];
+  grub_uint8_t unused3[60];
+  grub_uint64_t num_serial;
   struct grub_hfsplus_forkdata allocations_file;
   struct grub_hfsplus_forkdata extents_file;
   struct grub_hfsplus_forkdata catalog_file;
@@ -133,9 +136,11 @@ struct grub_hfsplus_catfile
   grub_uint16_t flags;
   grub_uint32_t reserved;
   grub_uint32_t fileid;
-  grub_uint8_t unused1[30];
+  grub_uint8_t unused1[4];
+  grub_uint32_t mtime;
+  grub_uint8_t unused2[22];
   grub_uint16_t mode;
-  grub_uint8_t unused2[44];
+  grub_uint8_t unused3[44];
   struct grub_hfsplus_forkdata data;
   struct grub_hfsplus_forkdata resource;
 } __attribute__ ((packed));
@@ -190,6 +195,7 @@ struct grub_fshelp_node
   struct grub_hfsplus_extent extents[8];
   grub_uint64_t size;
   grub_uint32_t fileid;
+  grub_int32_t mtime;
 };
 
 struct grub_hfsplus_btree
@@ -220,9 +226,7 @@ struct grub_hfsplus_data
   int embedded_offset;
 };
 
-#ifndef GRUB_UTIL
 static grub_dl_t my_mod;
-#endif
 
 
 /* Return the offset of the record with the index INDEX, in the node
@@ -385,7 +389,7 @@ grub_hfsplus_mount (grub_disk_t disk)
 
   /* Read the bootblock.  */
   grub_disk_read (disk, GRUB_HFSPLUS_SBLOCK, 0, sizeof (volheader),
-		  (char *) &volheader);
+		  &volheader);
   if (grub_errno)
     goto fail;
 
@@ -412,7 +416,7 @@ grub_hfsplus_mount (grub_disk_t disk)
 			       * (ablk_size >> GRUB_DISK_SECTOR_BITS));
 
       grub_disk_read (disk, data->embedded_offset + GRUB_HFSPLUS_SBLOCK, 0,
-		      sizeof (volheader), (char *) &volheader);
+		      sizeof (volheader), &volheader);
       if (grub_errno)
 	goto fail;
     }
@@ -767,6 +771,9 @@ grub_hfsplus_iterate_dir (grub_fshelp_node_t dir,
       for (i = 0; i < grub_be_to_cpu16 (catkey->namelen); i++)
 	catkey->name[i] = grub_be_to_cpu16 (catkey->name[i]);
 
+      /* hfs+ is case insensitive.  */
+      type |= GRUB_FSHELP_CASE_INSENSITIVE;
+
       /* Only accept valid nodes.  */
       if (grub_strlen (filename) == grub_be_to_cpu16 (catkey->namelen))
 	{
@@ -777,6 +784,7 @@ grub_hfsplus_iterate_dir (grub_fshelp_node_t dir,
 	  
 	  grub_memcpy (node->extents, fileinfo->data.extents,
 		       sizeof (node->extents));
+	  node->mtime = grub_be_to_cpu32 (fileinfo->mtime) - 2082844800;
 	  node->size = grub_be_to_cpu64 (fileinfo->data.size);
 	  node->fileid = grub_be_to_cpu32 (fileinfo->fileid);
 
@@ -817,9 +825,7 @@ grub_hfsplus_open (struct grub_file *file, const char *name)
   struct grub_hfsplus_data *data;
   struct grub_fshelp_node *fdiro = 0;
   
-#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
-#endif
   
   data = grub_hfsplus_mount (file->device->disk);
   if (!data)
@@ -845,9 +851,7 @@ grub_hfsplus_open (struct grub_file *file, const char *name)
     grub_free (fdiro);
   grub_free (data);
   
-#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-#endif
 
   return grub_errno;
 }
@@ -858,9 +862,7 @@ grub_hfsplus_close (grub_file_t file)
 {
   grub_free (file->data);
 
-#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-#endif
 
   return GRUB_ERR_NONE;
 }
@@ -882,7 +884,8 @@ grub_hfsplus_read (grub_file_t file, char *buf, grub_size_t len)
 
 static grub_err_t
 grub_hfsplus_dir (grub_device_t device, const char *path, 
-		  int (*hook) (const char *filename, int dir))
+		  int (*hook) (const char *filename, 
+			       const struct grub_dirhook_info *info))
 {
   struct grub_hfsplus_data *data = 0;
   struct grub_fshelp_node *fdiro = 0;
@@ -895,19 +898,17 @@ grub_hfsplus_dir (grub_device_t device, const char *path,
 				enum grub_fshelp_filetype filetype,
 				grub_fshelp_node_t node)
     {
+      struct grub_dirhook_info info;
+      grub_memset (&info, 0, sizeof (info));
+      info.dir = ((filetype & GRUB_FSHELP_TYPE_MASK) == GRUB_FSHELP_DIR);
+      info.mtimeset = 1;
+      info.mtime = node->mtime;
+      info.case_insensitive = !! (filetype & GRUB_FSHELP_CASE_INSENSITIVE);
       grub_free (node);
-      
-      if (filetype == GRUB_FSHELP_DIR)
-	return hook (filename, 1);
-      else 
-	return hook (filename, 0);
-      
-      return 0;
+      return hook (filename, &info);
     }
 
-#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
-#endif
   
   data = grub_hfsplus_mount (device->disk);
   if (!data)
@@ -928,9 +929,7 @@ grub_hfsplus_dir (grub_device_t device, const char *path,
     grub_free (fdiro);
   grub_free (data);
 
-#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-#endif
 
   return grub_errno;
 }
@@ -946,6 +945,56 @@ grub_hfsplus_label (grub_device_t device __attribute__((unused))
 		     "partition is not implemented");
 }
 
+/* Get mtime.  */
+static grub_err_t 
+grub_hfsplus_mtime (grub_device_t device, grub_int32_t *tm)
+{
+  struct grub_hfsplus_data *data;
+  grub_disk_t disk = device->disk;
+
+  grub_dl_ref (my_mod);
+
+  data = grub_hfsplus_mount (disk);
+  if (!data)
+    *tm = 0;
+  else 
+    *tm = grub_be_to_cpu32 (data->volheader.utime) - 2082844800;
+
+  grub_dl_unref (my_mod);
+
+  grub_free (data);
+
+  return grub_errno;
+
+}
+
+static grub_err_t
+grub_hfsplus_uuid (grub_device_t device, char **uuid)
+{
+  struct grub_hfsplus_data *data;
+  grub_disk_t disk = device->disk;
+
+  grub_dl_ref (my_mod);
+
+  data = grub_hfsplus_mount (disk);
+  if (data)
+    {
+      *uuid = grub_malloc (16 + sizeof ('\0'));
+      grub_sprintf (*uuid, "%016llx", 
+		    (unsigned long long) 
+		    grub_be_to_cpu64 (data->volheader.num_serial));
+    }
+  else
+    *uuid = NULL;
+
+  grub_dl_unref (my_mod);
+
+  grub_free (data);
+
+  return grub_errno;
+}
+
+
 
 static struct grub_fs grub_hfsplus_fs =
   {
@@ -955,15 +1004,15 @@ static struct grub_fs grub_hfsplus_fs =
     .read = grub_hfsplus_read,
     .close = grub_hfsplus_close,
     .label = grub_hfsplus_label,
+    .mtime = grub_hfsplus_mtime,
+    .uuid = grub_hfsplus_uuid,
     .next = 0
   };
 
 GRUB_MOD_INIT(hfsplus)
 {
   grub_fs_register (&grub_hfsplus_fs);
-#ifndef GRUB_UTIL
   my_mod = mod;
-#endif
 }
 
 GRUB_MOD_FINI(hfsplus)
