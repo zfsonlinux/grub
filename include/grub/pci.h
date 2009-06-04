@@ -36,8 +36,8 @@
 #define  GRUB_PCI_ADDR_IO_MASK		~0x03
 
 typedef grub_uint32_t grub_pci_id_t;
-typedef int (*grub_pci_iteratefunc_t) (int bus, int device, int func,
-				       grub_pci_id_t pciid);
+typedef int NESTED_FUNC_ATTR (*grub_pci_iteratefunc_t)
+     (int bus, int device, int func, grub_pci_id_t pciid);
 typedef grub_uint32_t grub_pci_address_t;
 
 grub_pci_address_t EXPORT_FUNC(grub_pci_make_address) (int bus, int device,
@@ -45,6 +45,6 @@ grub_pci_address_t EXPORT_FUNC(grub_pci_make_address) (int bus, int device,
 
 void EXPORT_FUNC(grub_pci_iterate) (grub_pci_iteratefunc_t hook);
 
-#include <grub/machine/pci.h>
+#include <grub/cpu/pci.h>
 
 #endif /* GRUB_PCI_H */

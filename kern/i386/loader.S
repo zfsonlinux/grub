@@ -59,7 +59,7 @@ VARIABLE(grub_linux_real_addr)
 VARIABLE(grub_linux_is_bzimage)
 	.long	0
 
-FUNCTION(grub_linux_boot)
+FUNCTION(grub_linux16_boot)
 	/* Must be done before zImage copy.  */
 	call	EXT_C(grub_dl_unload_all)
 
@@ -118,71 +118,3 @@ linux_setup_seg:
 	.word	0
 	.code32
 
-
-/*
- * This starts the multiboot kernel.
- */
-
-FUNCTION(grub_multiboot_real_boot)
-	/* Push the entry address on the stack.  */
-	pushl	%eax
-	/* Move the address of the multiboot information structure to ebx.  */
-	movl	%edx,%ebx
-
-	/* Unload all modules and stop the floppy driver.  */
-	call	EXT_C(grub_dl_unload_all)
-	call	EXT_C(grub_stop_floppy)
-
-	/* Interrupts should be disabled.  */
-	cli
-
-	/* Move the magic value into eax and jump to the kernel.  */
-	movl	$MULTIBOOT_MAGIC2,%eax
-	popl	%ecx
-	jmp 	*%ecx
-
-/*
- * This starts the multiboot 2 kernel.
- */
-
-FUNCTION(grub_multiboot2_real_boot)
-        /* Push the entry address on the stack.  */
-        pushl   %eax
-        /* Move the address of the multiboot information structure to ebx.  */
-        movl    %edx,%ebx
-
-        /* Unload all modules and stop the floppy driver.  */
-        call    EXT_C(grub_dl_unload_all)
-        call    EXT_C(grub_stop_floppy)
-
-        /* Interrupts should be disabled.  */
-        cli
-
-        /* Move the magic value into eax and jump to the kernel.  */
-        movl    $MULTIBOOT2_BOOTLOADER_MAGIC,%eax
-        popl    %ecx
-        jmp     *%ecx
-
-/*
- * Use cdecl calling convention for *BSD kernels.
- */
-
-FUNCTION(grub_unix_real_boot)
-
-        call    EXT_C(grub_dl_unload_all)
-        call    EXT_C(grub_stop_floppy)
-
-	/* Interrupts should be disabled.  */
-        cli
-
-	/* Discard `grub_unix_real_boot' return address.  */
-        popl    %eax
-
-        /* Fetch `entry' address ...  */
-        popl	%eax
-
-        /*
-         * ... and put our return address in its place. The kernel will
-         * ignore it, but it expects %esp to point to it.
-         */
-        call	*%eax

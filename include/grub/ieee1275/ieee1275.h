@@ -39,6 +39,9 @@ struct grub_ieee1275_mem_region
   unsigned int size;
 };
 
+#define IEEE1275_MAX_PROP_LEN	8192
+#define IEEE1275_MAX_PATH_LEN	256
+
 #ifndef IEEE1275_CALL_ENTRY_FN
 #define IEEE1275_CALL_ENTRY_FN(args) (*grub_ieee1275_entry_fn) (args)
 #endif
@@ -60,8 +63,8 @@ struct grub_ieee1275_common_hdr
   (p)->nr_ins = (grub_ieee1275_cell_t) xins; \
   (p)->nr_outs = (grub_ieee1275_cell_t) xouts
 
-typedef grub_ieee1275_cell_t grub_ieee1275_ihandle_t;
-typedef grub_ieee1275_cell_t grub_ieee1275_phandle_t;
+typedef grub_uint32_t grub_ieee1275_ihandle_t;
+typedef grub_uint32_t grub_ieee1275_phandle_t;
 
 extern grub_ieee1275_phandle_t EXPORT_VAR(grub_ieee1275_chosen);
 extern grub_ieee1275_ihandle_t EXPORT_VAR(grub_ieee1275_mmu);
@@ -163,12 +166,12 @@ int EXPORT_FUNC(grub_ieee1275_set_color) (grub_ieee1275_ihandle_t ihandle,
 int EXPORT_FUNC(grub_ieee1275_milliseconds) (grub_uint32_t *msecs);
 
 
-grub_err_t EXPORT_FUNC(grub_devalias_iterate)
+int EXPORT_FUNC(grub_devalias_iterate)
      (int (*hook) (struct grub_ieee1275_devalias *alias));
-grub_err_t EXPORT_FUNC(grub_children_iterate) (char *devpath,
+int EXPORT_FUNC(grub_children_iterate) (char *devpath,
      int (*hook) (struct grub_ieee1275_devalias *alias));
-grub_err_t EXPORT_FUNC(grub_available_iterate)
-     (int NESTED_FUNC_ATTR (*hook) (grub_uint64_t, grub_uint64_t));
+grub_err_t EXPORT_FUNC(grub_machine_mmap_iterate)
+     (int NESTED_FUNC_ATTR (*hook) (grub_uint64_t, grub_uint64_t, grub_uint32_t));
 int EXPORT_FUNC(grub_claimmap) (grub_addr_t addr, grub_size_t size);
 
 char *EXPORT_FUNC(grub_ieee1275_encode_devname) (const char *path);

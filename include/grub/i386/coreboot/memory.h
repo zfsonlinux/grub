@@ -24,14 +24,14 @@
 #include <grub/i386/pc/memory.h>
 
 #ifndef ASM_FILE
-#include <grub/types.h>
 #include <grub/err.h>
+#include <grub/types.h>
 #endif
 
 #define GRUB_MEMORY_MACHINE_LOWER_USABLE		0x9fc00		/* 640 kiB - 1 kiB */
-#define GRUB_MEMORY_MACHINE_LOWER_SIZE			0xf0000		/* 960 kiB */
 
 #define GRUB_MEMORY_MACHINE_UPPER_START			0x100000	/* 1 MiB */
+#define GRUB_MEMORY_MACHINE_LOWER_SIZE			GRUB_MEMORY_MACHINE_UPPER_START
 
 #ifndef ASM_FILE
 
@@ -55,13 +55,15 @@ struct grub_linuxbios_mem_region
 {
   grub_uint64_t addr;
   grub_uint64_t size;
-#define GRUB_LINUXBIOS_MEMORY_AVAILABLE	1
+#define GRUB_MACHINE_MEMORY_AVAILABLE		1
   grub_uint32_t type;
 };
 typedef struct grub_linuxbios_mem_region *mem_region_t;
 
-grub_err_t EXPORT_FUNC(grub_available_iterate)
-     (int (*hook) (mem_region_t));
+void grub_machine_mmap_init (void);
+
+grub_err_t EXPORT_FUNC(grub_machine_mmap_iterate)
+     (int NESTED_FUNC_ATTR (*hook) (grub_uint64_t, grub_uint64_t, grub_uint32_t));
 
 #endif
 

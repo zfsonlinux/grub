@@ -27,9 +27,12 @@
 #include <grub/types.h>
 #include <grub/machine/init.h>
 #include <grub/machine/memory.h>
-#include <grub/rescue.h>
 #include <grub/dl.h>
 #include <grub/cpu/linux.h>
+#include <grub/command.h>
+
+#define GRUB_LINUX_CL_OFFSET		0x9000
+#define GRUB_LINUX_CL_END_OFFSET	0x90FF
 
 static grub_dl_t my_mod;
 
@@ -44,8 +47,9 @@ grub_linux_unload (void)
   return GRUB_ERR_NONE;
 }
 
-void
-grub_rescue_cmd_linux (int argc, char *argv[])
+static grub_err_t
+grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
+		int argc, char *argv[])
 {
   grub_file_t file = 0;
   struct linux_kernel_header lh;
@@ -104,8 +108,9 @@ grub_rescue_cmd_linux (int argc, char *argv[])
       lh.type_of_loader = GRUB_LINUX_BOOT_LOADER_TYPE;
       
       /* Put the real mode part at as a high location as possible.  */
-      grub_linux_real_addr = (char *) (grub_lower_mem
-				       - GRUB_LINUX_SETUP_MOVE_SIZE);
+      grub_linux_real_addr 
+	= (char *) UINT_TO_PTR (grub_mmap_get_lower ()
+				- GRUB_LINUX_SETUP_MOVE_SIZE);
       /* But it must not exceed the traditional area.  */
       if (grub_linux_real_addr > (char *) GRUB_LINUX_OLD_REAL_MODE_ADDR)
 	grub_linux_real_addr = (char *) GRUB_LINUX_OLD_REAL_MODE_ADDR;
@@ -155,12 +160,12 @@ grub_rescue_cmd_linux (int argc, char *argv[])
     }
   
   if (grub_linux_real_addr + GRUB_LINUX_SETUP_MOVE_SIZE
-      > (char *) grub_lower_mem)
+      > (char *) UINT_TO_PTR (grub_mmap_get_lower ()))
     {
       grub_error (GRUB_ERR_OUT_OF_RANGE,
 		 "too small lower memory (0x%x > 0x%x)",
-		 grub_linux_real_addr + GRUB_LINUX_SETUP_MOVE_SIZE,
-		 (char *) grub_lower_mem);
+		  grub_linux_real_addr + GRUB_LINUX_SETUP_MOVE_SIZE,
+		  (int) grub_mmap_get_lower ());
       goto fail;
     }
 
@@ -265,7 +270,7 @@ grub_rescue_cmd_linux (int argc, char *argv[])
   if (grub_errno == GRUB_ERR_NONE)
     {
       grub_linux_prot_size = prot_size;
-      grub_loader_set (grub_linux_boot, grub_linux_unload, 1);
+      grub_loader_set (grub_linux16_boot, grub_linux_unload, 1);
       loaded = 1;
     }
 
@@ -279,10 +284,13 @@ grub_rescue_cmd_linux (int argc, char *argv[])
       grub_dl_unref (my_mod);
       loaded = 0;
     }
+
+  return grub_errno;
 }
 
-void
-grub_rescue_cmd_initrd (int argc, char *argv[])
+static grub_err_t
+grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
+		 int argc, char *argv[])
 {
   grub_file_t file = 0;
   grub_ssize_t size;
@@ -344,7 +352,7 @@ grub_rescue_cmd_initrd (int argc, char *argv[])
 
   size = grub_file_size (file);
 
-  /* Put the initrd as high as possible, 4Ki aligned.  */
+  /* Put the initrd as high as possible, 4KiB aligned.  */
   addr = (addr_max - size) & ~0xFFF;
 
   if (addr < addr_min)
@@ -365,22 +373,25 @@ grub_rescue_cmd_initrd (int argc, char *argv[])
  fail:
   if (file)
     grub_file_close (file);
+
+  return grub_errno;
 }
 
+static grub_command_t cmd_linux, cmd_initrd;
 
-GRUB_MOD_INIT(linux)
+GRUB_MOD_INIT(linux16)
 {
-  grub_rescue_register_command ("linux",
-				grub_rescue_cmd_linux,
-				"load linux");
-  grub_rescue_register_command ("initrd",
-				grub_rescue_cmd_initrd,
-				"load initrd");
+  cmd_linux =
+    grub_register_command ("linux16", grub_cmd_linux,
+			   0, "load linux");
+  cmd_initrd =
+    grub_register_command ("initrd16", grub_cmd_initrd,
+			   0, "load initrd");
   my_mod = mod;
 }
 
-GRUB_MOD_FINI(linux)
+GRUB_MOD_FINI(linux16)
 {
-  grub_rescue_unregister_command ("linux");
-  grub_rescue_unregister_command ("initrd");
+  grub_unregister_command (cmd_linux);
+  grub_unregister_command (cmd_initrd);
 }
