@@ -1,7 +1,7 @@
 #! /bin/sh -e
 
 # update-grub helper script.
-# Copyright (C) 2006,2007,2008  Free Software Foundation, Inc.
+# Copyright (C) 2006,2007,2008,2009  Free Software Foundation, Inc.
 #
 # GRUB is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
-. ${libdir}/grub/update-grub_lib
+. ${libdir}/grub/grub-mkconfig_lib
 
 if [ "x${GRUB_DISTRIBUTOR}" = "x" ] ; then
   OS=GNU/Linux
@@ -93,13 +93,28 @@ find_latest ()
   echo "$a"
 }
 
+linux_entry ()
+{
+  cat << EOF
+menuentry "$1" {
+EOF
+  prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/"
+  cat << EOF
+	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro $2
+EOF
+  if test -n "${initrd}" ; then
+    cat << EOF
+	initrd	${rel_dirname}/${initrd}
+EOF
+  fi
+  cat << EOF
+}
+EOF
+}
+
 list=`for i in /boot/vmlinu[xz]-* /vmlinu[xz]-* ; do
         if grub_file_is_not_garbage "$i" ; then echo -n "$i " ; fi
       done`
-
-if [ "x$list" != "x" ] ; then
-  prepare_grub_to_access_device ${GRUB_DEVICE_BOOT}
-fi
 
 while [ "x$list" != "x" ] ; do
   linux=`find_latest $list`
@@ -126,31 +141,10 @@ while [ "x$list" != "x" ] ; do
     linux_root_device_thisversion=${GRUB_DEVICE}
   fi
 
-  cat << EOF
-menuentry "${OS}, linux ${version}" {
-	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}
-EOF
-  if test -n "${initrd}" ; then
-    cat << EOF
-	initrd	${rel_dirname}/${initrd}
-EOF
-  fi
-  cat << EOF
-}
-EOF
-
-  cat << EOF
-menuentry "${OS}, linux ${version} (single-user mode)" {
-	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro single ${GRUB_CMDLINE_LINUX}
-EOF
-  if test -n "${initrd}" ; then
-    cat << EOF
-	initrd	${rel_dirname}/${initrd}
-EOF
-  fi
-  cat << EOF
-}
-EOF
+  linux_entry "${OS}, linux ${version}" \
+      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
+  linux_entry "${OS}, linux ${version} (recovery mode)" \
+      "single ${GRUB_CMDLINE_LINUX}"
 
   list=`echo $list | tr ' ' '\n' | grep -vx $linux | tr '\n' ' '`
 done

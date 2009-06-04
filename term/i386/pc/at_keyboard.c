@@ -16,17 +16,14 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <grub/machine/console.h>
-#include <grub/machine/machine.h>
-#include <grub/cpu/io.h>
+#include <grub/dl.h>
+#include <grub/i386/pc/console.h>
+#include <grub/i386/at_keyboard.h>
+#include <grub/i386/io.h>
 #include <grub/misc.h>
 #include <grub/term.h>
 
-#define SHIFT_L		0x2a
-#define SHIFT_R		0x36
-#define CTRL		0x1d
-#define ALT		0x38
-#define CAPS_LOCK	0x3a
+static short at_keyboard_status = 0;
 
 #define KEYBOARD_STATUS_SHIFT_L		(1 << 0)
 #define KEYBOARD_STATUS_SHIFT_R		(1 << 1)
@@ -35,34 +32,6 @@
 #define KEYBOARD_STATUS_CTRL_L		(1 << 4)
 #define KEYBOARD_STATUS_CTRL_R		(1 << 5)
 #define KEYBOARD_STATUS_CAPS_LOCK	(1 << 6)
-
-#define KEYBOARD_REG_DATA	0x60
-#define KEYBOARD_REG_STATUS	0x64
-
-/* Used for sending commands to the controller.  */
-#define KEYBOARD_COMMAND_ISREADY(x)	!((x) & 0x02)
-#define KEYBOARD_COMMAND_READ		0x20
-#define KEYBOARD_COMMAND_WRITE		0x60
-
-#define KEYBOARD_SCANCODE_SET1		0x40
-
-#define KEYBOARD_ISMAKE(x)	!((x) & 0x80)
-#define KEYBOARD_ISREADY(x)	(((x) & 0x01) == 0)
-#define KEYBOARD_SCANCODE(x)	((x) & 0x7f)
-
-static short at_keyboard_status = 0;
-
-#ifdef GRUB_MACHINE_IEEE1275
-#define OLPC_UP		GRUB_TERM_UP
-#define OLPC_DOWN	GRUB_TERM_DOWN
-#define OLPC_LEFT	GRUB_TERM_LEFT
-#define OLPC_RIGHT	GRUB_TERM_RIGHT
-#else
-#define OLPC_UP		'\0'
-#define OLPC_DOWN	'\0'
-#define OLPC_LEFT	'\0'
-#define OLPC_RIGHT	'\0'
-#endif
 
 static char keyboard_map[128] =
 {
@@ -93,6 +62,8 @@ static char keyboard_map_shift[128] =
   'B', 'N', 'M', '<', '>', '?'
 };
 
+static grub_uint8_t grub_keyboard_controller_orig;
+
 static void
 grub_keyboard_controller_write (grub_uint8_t c)
 {
@@ -107,12 +78,6 @@ grub_keyboard_controller_read (void)
   while (! KEYBOARD_COMMAND_ISREADY (grub_inb (KEYBOARD_REG_STATUS)));
   grub_outb (KEYBOARD_COMMAND_READ, KEYBOARD_REG_STATUS);
   return grub_inb (KEYBOARD_REG_DATA);
-}
-
-void
-grub_keyboard_controller_init (void)
-{
-  grub_keyboard_controller_write (grub_keyboard_controller_read () | KEYBOARD_SCANCODE_SET1);
 }
 
 /* FIXME: This should become an interrupt service routine.  For now
@@ -180,8 +145,8 @@ grub_keyboard_getkey (void)
 }
 
 /* If there is a character pending, return it; otherwise return -1.  */
-int
-grub_console_checkkey (void)
+static int
+grub_at_keyboard_checkkey (void)
 {
   int code, key;
   code = grub_keyboard_getkey ();
@@ -224,13 +189,47 @@ grub_console_checkkey (void)
   return (int) key;
 }
 
-int
-grub_console_getkey (void)
+static int
+grub_at_keyboard_getkey (void)
 {
   int key;
   do
     {
-      key = grub_console_checkkey ();
+      key = grub_at_keyboard_checkkey ();
     } while (key == -1);
   return key;
+}
+
+static grub_err_t
+grub_keyboard_controller_init (void)
+{
+  grub_keyboard_controller_orig = grub_keyboard_controller_read ();
+  grub_keyboard_controller_write (grub_keyboard_controller_orig | KEYBOARD_SCANCODE_SET1);
+  return GRUB_ERR_NONE;
+}
+
+static grub_err_t
+grub_keyboard_controller_fini (void)
+{
+  grub_keyboard_controller_write (grub_keyboard_controller_orig);
+  return GRUB_ERR_NONE;
+}
+
+static struct grub_term_input grub_at_keyboard_term =
+  {
+    .name = "at_keyboard",
+    .init = grub_keyboard_controller_init,
+    .fini = grub_keyboard_controller_fini,
+    .checkkey = grub_at_keyboard_checkkey,
+    .getkey = grub_at_keyboard_getkey,
+  };
+
+GRUB_MOD_INIT(at_keyboard)
+{
+  grub_term_register_input ("at_keyboard", &grub_at_keyboard_term);
+}
+
+GRUB_MOD_FINI(at_keyboard)
+{
+  grub_term_unregister_input (&grub_at_keyboard_term);
 }

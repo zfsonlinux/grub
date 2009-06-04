@@ -1,7 +1,7 @@
 /* minix.c - The minix filesystem, version 1 and 2.  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2004,2005,2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2004,2005,2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -112,9 +112,7 @@ struct grub_minix_data
   int filename_size;
 };
 
-#ifndef GRUB_UTIL
 static grub_dl_t my_mod;
-#endif
 
 static grub_err_t grub_minix_find_file (struct grub_minix_data *data,
 					const char *path);
@@ -269,7 +267,7 @@ grub_minix_read_inode (struct grub_minix_data *data, int ino)
 		  * sizeof (struct grub_minix_inode));
       
       grub_disk_read (data->disk, block, offs,
-		      sizeof (struct grub_minix_inode), (char *) &data->inode);
+		      sizeof (struct grub_minix_inode), &data->inode);
     }
   else
     {
@@ -280,7 +278,7 @@ grub_minix_read_inode (struct grub_minix_data *data, int ino)
 		  * sizeof (struct grub_minix2_inode));
       
       grub_disk_read (data->disk, block, offs,
-		      sizeof (struct grub_minix2_inode),(char *) &data->inode2);
+		      sizeof (struct grub_minix2_inode),&data->inode2);
     }
   
   return GRUB_ERR_NONE;
@@ -421,7 +419,7 @@ grub_minix_mount (grub_disk_t disk)
   
   /* Read the superblock.  */
   grub_disk_read (disk, GRUB_MINIX_SBLOCK, 0,
-		  sizeof (struct grub_minix_sblock),(char *) &data->sblock);
+		  sizeof (struct grub_minix_sblock),&data->sblock);
   if (grub_errno)
     goto fail;
 
@@ -461,7 +459,8 @@ grub_minix_mount (grub_disk_t disk)
 
 static grub_err_t
 grub_minix_dir (grub_device_t device, const char *path, 
-		  int (*hook) (const char *filename, int dir))
+		  int (*hook) (const char *filename, 
+			       const struct grub_dirhook_info *info))
 {
   struct grub_minix_data *data = 0;
   struct grub_minix_sblock *sblock;
@@ -492,6 +491,9 @@ grub_minix_dir (grub_device_t device, const char *path,
       grub_uint16_t ino;
       char filename[data->filename_size + 1];
       int dirino = data->ino;
+      struct grub_dirhook_info info;
+      grub_memset (&info, 0, sizeof (info));
+
       
       if (grub_minix_read_file (data, 0, pos, sizeof (ino),
 				(char *) &ino) < 0)
@@ -506,8 +508,9 @@ grub_minix_dir (grub_device_t device, const char *path,
       /* The filetype is not stored in the dirent.  Read the inode to
 	 find out the filetype.  This *REALLY* sucks.  */
       grub_minix_read_inode (data, grub_le_to_cpu16 (ino));
-      if (hook (filename, ((GRUB_MINIX_INODE_MODE (data) 
-			    & GRUB_MINIX_IFDIR) == GRUB_MINIX_IFDIR)) ? 1 : 0)
+      info.dir = ((GRUB_MINIX_INODE_MODE (data) 
+		   & GRUB_MINIX_IFDIR) == GRUB_MINIX_IFDIR);
+      if (hook (filename, &info) ? 1 : 0)
 	break;
       
       /* Load the old inode back in.  */
@@ -602,9 +605,7 @@ static struct grub_fs grub_minix_fs =
 GRUB_MOD_INIT(minix)
 {
   grub_fs_register (&grub_minix_fs);
-#ifndef GRUB_UTIL
   my_mod = mod;
-#endif
 }
 
 GRUB_MOD_FINI(minix)

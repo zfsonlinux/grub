@@ -1,7 +1,7 @@
 /* grub-probe.c - probe device information for a given path */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2005,2006,2007,2008 Free Software Foundation, Inc.
+ *  Copyright (C) 2005,2006,2007,2008,2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 #include <grub/fs.h>
 #include <grub/partition.h>
 #include <grub/pc_partition.h>
-#include <grub/util/biosdisk.h>
+#include <grub/util/hostdisk.h>
 #include <grub/util/getroot.h>
 #include <grub/term.h>
 #include <grub/env.h>
@@ -66,11 +66,8 @@ grub_getkey (void)
   return -1;
 }
 
-grub_term_t
-grub_term_get_current (void)
-{
-  return 0;
-}
+struct grub_handler_class grub_term_input_class;
+struct grub_handler_class grub_term_output_class;
 
 void
 grub_refresh (void)
@@ -115,8 +112,13 @@ probe (const char *path, char *device_name)
   
   if (path == NULL)
     {
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+      if (! grub_util_check_char_device (device_name))
+        grub_util_error ("%s is not a character device.\n", device_name);
+#else
       if (! grub_util_check_block_device (device_name))
         grub_util_error ("%s is not a block device.\n", device_name);
+#endif
     }
   else
     device_name = grub_guess_root_device (path);
@@ -142,7 +144,7 @@ probe (const char *path, char *device_name)
 	  abstraction_name = "lvm";
 	  break;
 	case GRUB_DEV_ABSTRACTION_RAID:
-	  abstraction_name = "raid";
+	  abstraction_name = "raid mdraid";
 	  break;
 	default:
 	  grub_util_info ("did not find LVM/RAID in %s, assuming raw device", device_name);

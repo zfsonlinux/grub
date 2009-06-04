@@ -2,7 +2,7 @@
    SUSP, Rock Ridge.  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2004,2005,2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2004,2005,2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -67,6 +67,18 @@ struct grub_iso9660_dir
   grub_uint8_t namelen;
 } __attribute__ ((packed));
 
+struct grub_iso9660_date
+{
+  grub_uint8_t year[4];
+  grub_uint8_t month[2];
+  grub_uint8_t day[2];
+  grub_uint8_t hour[2];
+  grub_uint8_t minute[2];
+  grub_uint8_t second[2];
+  grub_uint8_t hundredth[2];
+  grub_uint8_t offset;
+} __attribute__ ((packed));
+
 /* The primary volume descriptor.  Only little endian is used.  */
 struct grub_iso9660_primary_voldesc
 {
@@ -81,6 +93,9 @@ struct grub_iso9660_primary_voldesc
   grub_uint32_t path_table;
   grub_uint8_t unused5[12];
   struct grub_iso9660_dir rootdir;
+  grub_uint8_t unused6[624];
+  struct grub_iso9660_date created;
+  struct grub_iso9660_date modified;
 } __attribute__ ((packed));
 
 /* A single entry in the path table.  */
@@ -135,9 +150,7 @@ struct grub_fshelp_node
   unsigned int dir_off;
 };
 
-#ifndef GRUB_UTIL
 static grub_dl_t my_mod;
-#endif
 
 
 /* Iterate over the susp entries, starting with block SUA_BLOCK on the
@@ -508,8 +521,8 @@ grub_iso9660_iterate_dir (grub_fshelp_node_t dir,
       else if (grub_strncmp ((char *) entry->sig, "PX", 2) == 0)
 	{
 	  /* At position 0 of the PX record the st_mode information is
-	     stored.  */
-	  grub_uint32_t mode = ((*(grub_uint32_t *) &entry->data[0])
+	     stored (little-endian).  */
+	  grub_uint32_t mode = ((entry->data[0] + (entry->data[1] << 8))
 				& GRUB_ISO9660_FSTYPE_MASK);
 
 	  switch (mode)
@@ -651,7 +664,8 @@ grub_iso9660_iterate_dir (grub_fshelp_node_t dir,
 
 static grub_err_t
 grub_iso9660_dir (grub_device_t device, const char *path, 
-		  int (*hook) (const char *filename, int dir))
+		  int (*hook) (const char *filename, 
+			       const struct grub_dirhook_info *info))
 {
   struct grub_iso9660_data *data = 0;
   struct grub_fshelp_node rootnode;
@@ -665,19 +679,14 @@ grub_iso9660_dir (grub_device_t device, const char *path,
 				enum grub_fshelp_filetype filetype,
 				grub_fshelp_node_t node)
     {
+      struct grub_dirhook_info info;
+      grub_memset (&info, 0, sizeof (info));
+      info.dir = ((filetype & GRUB_FSHELP_TYPE_MASK) == GRUB_FSHELP_DIR);
       grub_free (node);
-      
-      if (filetype == GRUB_FSHELP_DIR)
-	return hook (filename, 1);
-      else 
-	return hook (filename, 0);
-      
-      return 0;
+      return hook (filename, &info);
     }
 
-#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
-#endif
 
   data = grub_iso9660_mount (device->disk);
   if (! data)
@@ -704,9 +713,7 @@ grub_iso9660_dir (grub_device_t device, const char *path,
  fail:
   grub_free (data);
 
-#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-#endif
 
   return grub_errno;
 }
@@ -720,9 +727,7 @@ grub_iso9660_open (struct grub_file *file, const char *name)
   struct grub_fshelp_node rootnode;
   struct grub_fshelp_node *foundnode;
   
-#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
-#endif
 
   data = grub_iso9660_mount (file->device->disk);
   if (!data)
@@ -750,9 +755,7 @@ grub_iso9660_open (struct grub_file *file, const char *name)
   return 0;
   
  fail:
-#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-#endif
   
   grub_free (data);
   
@@ -783,9 +786,7 @@ grub_iso9660_close (grub_file_t file)
 {
   grub_free (file->data);
   
-#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-#endif
   
   return GRUB_ERR_NONE;
 }
@@ -812,6 +813,54 @@ grub_iso9660_label (grub_device_t device, char **label)
   return grub_errno;
 }
 
+
+static grub_err_t
+grub_iso9660_uuid (grub_device_t device, char **uuid)
+{
+  struct grub_iso9660_data *data;
+  grub_disk_t disk = device->disk;
+
+  grub_dl_ref (my_mod);
+
+  data = grub_iso9660_mount (disk);
+  if (data)
+    {
+      if (! data->voldesc.modified.year[0] && ! data->voldesc.modified.year[1]
+	  && ! data->voldesc.modified.year[2] && ! data->voldesc.modified.year[3]
+	  && ! data->voldesc.modified.month[0] && ! data->voldesc.modified.month[1]
+	  && ! data->voldesc.modified.day[0] && ! data->voldesc.modified.day[1]
+	  && ! data->voldesc.modified.hour[0] && ! data->voldesc.modified.hour[1]
+	  && ! data->voldesc.modified.minute[0] && ! data->voldesc.modified.minute[1]
+	  && ! data->voldesc.modified.second[0] && ! data->voldesc.modified.second[1]
+	  && ! data->voldesc.modified.hundredth[0] && ! data->voldesc.modified.hundredth[1])
+	{
+	  grub_error (GRUB_ERR_BAD_NUMBER, "No creation date in filesystem to generate UUID.");
+	  *uuid = NULL;
+	}
+      else 
+	{
+	  *uuid = grub_malloc (sizeof ("YYYY-MM-DD-HH-mm-ss-hh"));
+	  grub_sprintf (*uuid, "%c%c%c%c-%c%c-%c%c-%c%c-%c%c-%c%c-%c%c",
+			data->voldesc.modified.year[0], data->voldesc.modified.year[1], 
+			data->voldesc.modified.year[2], data->voldesc.modified.year[3],
+			data->voldesc.modified.month[0], data->voldesc.modified.month[1],
+			data->voldesc.modified.day[0], data->voldesc.modified.day[1],
+			data->voldesc.modified.hour[0], data->voldesc.modified.hour[1],
+			data->voldesc.modified.minute[0], data->voldesc.modified.minute[1],
+			data->voldesc.modified.second[0], data->voldesc.modified.second[1],
+			data->voldesc.modified.hundredth[0], data->voldesc.modified.hundredth[1]);
+	}
+    }
+  else
+    *uuid = NULL;
+
+	grub_dl_unref (my_mod);
+
+  grub_free (data);
+
+  return grub_errno;
+}
+
 
 
 static struct grub_fs grub_iso9660_fs =
@@ -822,15 +871,14 @@ static struct grub_fs grub_iso9660_fs =
     .read = grub_iso9660_read,
     .close = grub_iso9660_close,
     .label = grub_iso9660_label,
+    .uuid = grub_iso9660_uuid,
     .next = 0
   };
 
 GRUB_MOD_INIT(iso9660)
 {
   grub_fs_register (&grub_iso9660_fs);
-#ifndef GRUB_UTIL
   my_mod = mod;
-#endif
 }
 
 GRUB_MOD_FINI(iso9660)

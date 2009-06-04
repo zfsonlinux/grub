@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -332,15 +332,18 @@ grub_console_setcursor (int on)
   efi_call_2 (o->enable_cursor, o, on);
 }
 
-static struct grub_term grub_console_term =
+static struct grub_term_input grub_console_term_input =
   {
     .name = "console",
-    .init = 0,
-    .fini = 0,
-    .putchar = grub_console_putchar,
-    .getcharwidth = grub_console_getcharwidth,
     .checkkey = grub_console_checkkey,
     .getkey = grub_console_getkey,
+  };
+
+static struct grub_term_output grub_console_term_output =
+  {
+    .name = "console",
+    .putchar = grub_console_putchar,
+    .getcharwidth = grub_console_getcharwidth,
     .getwh = grub_console_getwh,
     .getxy = grub_console_getxy,
     .gotoxy = grub_console_gotoxy,
@@ -350,7 +353,6 @@ static struct grub_term grub_console_term =
     .getcolor = grub_console_getcolor,
     .setcursor = grub_console_setcursor,
     .flags = 0,
-    .next = 0
   };
 
 void
@@ -364,12 +366,13 @@ grub_console_init (void)
       return;
     }
 
-  grub_term_register (&grub_console_term);
-  grub_term_set_current (&grub_console_term);
+  grub_term_register_input ("console", &grub_console_term_input);
+  grub_term_register_output ("console", &grub_console_term_output);
 }
 
 void
 grub_console_fini (void)
 {
-  grub_term_unregister (&grub_console_term);
+  grub_term_unregister_input (&grub_console_term_input);
+  grub_term_unregister_output (&grub_console_term_output);
 }

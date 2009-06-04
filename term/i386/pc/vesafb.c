@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2005,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2005,2007,2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,6 +16,8 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// TODO: Deprecated and broken. Scheduled for removal as there is VBE driver in Video subsystem.
+
 #include <grub/machine/memory.h>
 #include <grub/machine/vga.h>
 #include <grub/machine/vbe.h>
@@ -26,7 +28,6 @@
 #include <grub/misc.h>
 #include <grub/normal.h>
 #include <grub/font.h>
-#include <grub/arg.h>
 #include <grub/mm.h>
 #include <grub/env.h>
 
@@ -82,13 +83,12 @@ struct grub_virtual_screen
   struct grub_colored_char *text_buffer;
 };
 
-/* Make seure text buffer is not marked as allocated.  */
+/* Make sure text buffer is not marked as allocated.  */
 static struct grub_virtual_screen virtual_screen =
   {
     .text_buffer = 0
   };
 
-static grub_dl_t my_mod;
 static unsigned char *vga_font = 0;
 static grub_uint32_t old_mode = 0;
 
@@ -250,10 +250,11 @@ grub_virtual_screen_get_glyph (grub_uint32_t code,
 	  break;
 
 	default:
-	  return grub_font_get_glyph (code, bitmap, width);
+	  return grub_font_get_glyph_any (code, bitmap, width);
 	}
     }
 
+  /* TODO This is wrong for the new font module.  Should it be fixed?  */
   if (bitmap)
     grub_memcpy (bitmap,
 		 vga_font + code * virtual_screen.char_height,
@@ -578,15 +579,13 @@ grub_vesafb_setcursor (int on)
     }
 }
 
-static struct grub_term grub_vesafb_term =
+static struct grub_term_output grub_vesafb_term =
   {
     .name = "vesafb",
     .init = grub_vesafb_mod_init,
     .fini = grub_vesafb_mod_fini,
     .putchar = grub_vesafb_putchar,
     .getcharwidth = grub_vesafb_getcharwidth,
-    .checkkey = grub_console_checkkey,
-    .getkey = grub_console_getkey,
     .getwh = grub_virtual_screen_getwh,
     .getxy = grub_virtual_screen_getxy,
     .gotoxy = grub_vesafb_gotoxy,
@@ -594,16 +593,14 @@ static struct grub_term grub_vesafb_term =
     .setcolorstate = grub_virtual_screen_setcolorstate,
     .setcursor = grub_vesafb_setcursor,
     .flags = 0,
-    .next = 0
   };
 
 GRUB_MOD_INIT(vesafb)
 {
-  my_mod = mod;
-  grub_term_register (&grub_vesafb_term);
+  grub_term_register_output ("vesafb", &grub_vesafb_term);
 }
 
 GRUB_MOD_FINI(vesafb)
 {
-  grub_term_unregister (&grub_vesafb_term);
+  grub_term_unregister_output (&grub_vesafb_term);
 }

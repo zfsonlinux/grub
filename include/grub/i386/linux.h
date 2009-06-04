@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2004,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2004,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,9 +38,8 @@
 #define GRUB_LINUX_VID_MODE_NORMAL	0xFFFF
 #define GRUB_LINUX_VID_MODE_EXTENDED	0xFFFE
 #define GRUB_LINUX_VID_MODE_ASK		0xFFFD
+#define GRUB_LINUX_VID_MODE_VESA_START	0x0300
 
-#define GRUB_LINUX_CL_OFFSET		0x9000
-#define GRUB_LINUX_CL_END_OFFSET	0x90FF
 #define GRUB_LINUX_SETUP_MOVE_SIZE	0x9100
 #define GRUB_LINUX_CL_MAGIC		0xA33F
 
@@ -104,6 +103,17 @@ struct linux_kernel_header
   grub_uint16_t start_sys;		/* The load-low segment (obsolete) */
   grub_uint16_t kernel_version;		/* Points to kernel version string */
   grub_uint8_t type_of_loader;		/* Boot loader identifier */
+#define LINUX_LOADER_ID_LILO		0x0
+#define LINUX_LOADER_ID_LOADLIN		0x1
+#define LINUX_LOADER_ID_BOOTSECT	0x2
+#define LINUX_LOADER_ID_SYSLINUX	0x3
+#define LINUX_LOADER_ID_ETHERBOOT	0x4
+#define LINUX_LOADER_ID_ELILO		0x5
+#define LINUX_LOADER_ID_GRUB		0x7
+#define LINUX_LOADER_ID_UBOOT		0x8
+#define LINUX_LOADER_ID_XEN		0x9
+#define LINUX_LOADER_ID_GUJIN		0xa
+#define LINUX_LOADER_ID_QEMU		0xb
   grub_uint8_t loadflags;		/* Boot protocol option flags */
   grub_uint16_t setup_move_size;	/* Move to high memory size */
   grub_uint32_t code32_start;		/* Boot loader hook */

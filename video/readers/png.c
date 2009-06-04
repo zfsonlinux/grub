@@ -22,8 +22,7 @@
 #include <grub/dl.h>
 #include <grub/mm.h>
 #include <grub/misc.h>
-#include <grub/arg.h>
-#include <grub/file.h>
+#include <grub/bufio.h>
 
 /* Uncomment following define to enable PNG debug.  */
 //#define PNG_DEBUG
@@ -68,7 +67,7 @@
 #define DEFLATE_HCLEN_BASE	4
 #define DEFLATE_HCLEN_MAX	19
 #define DEFLATE_HLIT_BASE	257
-#define DEFLATE_HLIT_MAX	286
+#define DEFLATE_HLIT_MAX	288
 #define DEFLATE_HDIST_BASE	1
 #define DEFLATE_HDIST_MAX	30
 
@@ -110,7 +109,7 @@ struct grub_png_data
 
   grub_uint8_t *cur_rgb;
 
-  int cur_colume, cur_filter, first_line;
+  int cur_column, cur_filter, first_line;
 };
 
 static grub_uint32_t
@@ -231,7 +230,7 @@ grub_png_decode_image_header (struct grub_png_data *data)
     {
       if (grub_video_bitmap_create (data->bitmap, data->image_width,
 				    data->image_height,
-				    GRUB_VIDEO_BLIT_FORMAT_R8G8B8))
+				    GRUB_VIDEO_BLIT_FORMAT_RGB_888))
 	return grub_errno;
       data->bpp = 3;
     }
@@ -239,7 +238,7 @@ grub_png_decode_image_header (struct grub_png_data *data)
     {
       if (grub_video_bitmap_create (data->bitmap, data->image_width,
 				    data->image_height,
-				    GRUB_VIDEO_BLIT_FORMAT_R8G8B8A8))
+				    GRUB_VIDEO_BLIT_FORMAT_RGBA_8888))
 	return grub_errno;
       data->bpp = 4;
     }
@@ -266,7 +265,7 @@ grub_png_decode_image_header (struct grub_png_data *data)
 
   data->raw_bytes = data->image_height * (data->image_width + 1) * data->bpp;
 
-  data->cur_colume = 0;
+  data->cur_column = 0;
   data->first_line = 1;
 
   if (grub_png_get_byte (data) != PNG_COMPRESSION_BASE)
@@ -391,6 +390,41 @@ grub_png_get_huff_code (struct grub_png_data *data, struct huff_table *ht)
 }
 
 static grub_err_t
+grub_png_init_fixed_block (struct grub_png_data *data)
+{
+  int i;
+
+  grub_png_init_huff_table (&data->code_table, DEFLATE_HUFF_LEN,
+			    data->code_values, data->code_maxval,
+			    data->code_offset);
+
+  for (i = 0; i < 144; i++)
+    grub_png_insert_huff_item (&data->code_table, i, 8);
+
+  for (; i < 256; i++)
+    grub_png_insert_huff_item (&data->code_table, i, 9);
+
+  for (; i < 280; i++)
+    grub_png_insert_huff_item (&data->code_table, i, 7);
+
+  for (; i < DEFLATE_HLIT_MAX; i++)
+    grub_png_insert_huff_item (&data->code_table, i, 8);
+
+  grub_png_build_huff_table (&data->code_table);
+
+  grub_png_init_huff_table (&data->dist_table, DEFLATE_HUFF_LEN,
+			    data->dist_values, data->dist_maxval,
+			    data->dist_offset);
+
+  for (i = 0; i < DEFLATE_HDIST_MAX; i++)
+    grub_png_insert_huff_item (&data->dist_table, i, 5);
+
+  grub_png_build_huff_table (&data->dist_table);
+
+  return grub_errno;
+}
+
+static grub_err_t
 grub_png_init_dynamic_block (struct grub_png_data *data)
 {
   int nl, nd, nb, i, prev;
@@ -488,7 +522,7 @@ grub_png_output_byte (struct grub_png_data *data, grub_uint8_t n)
   if (--data->raw_bytes < 0)
     return grub_error (GRUB_ERR_BAD_FILE_TYPE, "image size overflown");
 
-  if (data->cur_colume == 0)
+  if (data->cur_column == 0)
     {
       if (n >= PNG_FILTER_VALUE_LAST)
 	return grub_error (GRUB_ERR_BAD_FILE_TYPE, "invalid filter value");
@@ -498,9 +532,9 @@ grub_png_output_byte (struct grub_png_data *data, grub_uint8_t n)
   else
     *(data->cur_rgb++) = n;
 
-  data->cur_colume++;
+  data->cur_column++;
   row_bytes = data->image_width * data->bpp;
-  if (data->cur_colume == row_bytes + 1)
+  if (data->cur_column == row_bytes + 1)
     {
       grub_uint8_t *blank_line = NULL;
       grub_uint8_t *cur = data->cur_rgb - row_bytes;
@@ -589,7 +623,7 @@ grub_png_output_byte (struct grub_png_data *data, grub_uint8_t n)
       if (blank_line)
 	grub_free (blank_line);
 
-      data->cur_colume = 0;
+      data->cur_column = 0;
       data->first_line = 0;
     }
 
@@ -699,8 +733,9 @@ grub_png_decode_image_data (struct grub_png_data *data)
 	  }
 
 	case INFLATE_FIXED:
-	  return grub_error (GRUB_ERR_BAD_FILE_TYPE,
-			     "png: block type fixed not supported");
+          grub_png_init_fixed_block (data);
+	  grub_png_read_dynamic_block (data);
+	  break;
 
 	case INFLATE_DYNAMIC:
 	  grub_png_init_dynamic_block (data);
@@ -804,7 +839,7 @@ grub_video_reader_png (struct grub_video_bitmap **bitmap,
   grub_file_t file;
   struct grub_png_data *data;
 
-  file = grub_file_open (filename);
+  file = grub_buffile_open (filename, 0);
   if (!file)
     return grub_errno;
 

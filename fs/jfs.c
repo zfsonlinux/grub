@@ -1,7 +1,7 @@
 /* jfs.c - JFS.  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2004,2005,2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2004,2005,2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -229,9 +229,7 @@ struct grub_jfs_diropen
 } __attribute__ ((packed));
 
 
-#ifndef GRUB_UTIL
 static grub_dl_t my_mod;
-#endif
 
 static grub_err_t grub_jfs_lookup_symlink (struct grub_jfs_data *data, int ino);
 
@@ -311,7 +309,7 @@ grub_jfs_read_inode (struct grub_jfs_data *data, int ino,
   if (grub_disk_read (data->disk,
 		      iagblk << (grub_le_to_cpu16 (data->sblock.log2_blksz)
 				 - GRUB_DISK_SECTOR_BITS), 0,
-		      sizeof (struct grub_jfs_iag), (char *) &iag))
+		      sizeof (struct grub_jfs_iag), &iag))
     return grub_errno;
   
   inoblk = grub_le_to_cpu32 (iag.inodes[inoext].blk2);
@@ -320,7 +318,7 @@ grub_jfs_read_inode (struct grub_jfs_data *data, int ino,
   inoblk += inonum;
   
   if (grub_disk_read (data->disk, inoblk, 0,
-		      sizeof (struct grub_jfs_inode), (char *) inode))
+		      sizeof (struct grub_jfs_inode), inode))
     return grub_errno;
 
   return 0;
@@ -338,7 +336,7 @@ grub_jfs_mount (grub_disk_t disk)
 
   /* Read the superblock.  */
   if (grub_disk_read (disk, GRUB_JFS_SBLOCK, 0,
-		      sizeof (struct grub_jfs_sblock), (char *) &data->sblock))
+		      sizeof (struct grub_jfs_sblock), &data->sblock))
     goto fail;
   
   if (grub_strncmp ((char *) (data->sblock.magic), "JFS1", 4))
@@ -353,7 +351,7 @@ grub_jfs_mount (grub_disk_t disk)
 
   /* Read the inode of the first fileset.  */
   if (grub_disk_read (data->disk, GRUB_JFS_FS1_INODE_BLK, 0,
-		      sizeof (struct grub_jfs_inode), (char *) &data->fileset))
+		      sizeof (struct grub_jfs_inode), &data->fileset))
     goto fail;
   
   return data;
@@ -614,8 +612,8 @@ grub_jfs_find_file (struct grub_jfs_data *data, const char *path)
   if (grub_jfs_read_inode (data, GRUB_JFS_AGGR_INODE, &data->currinode))
     return grub_errno;
 
-  /* Skip the first slash.  */
-  if (name[0] == '/')
+  /* Skip the first slashes.  */
+  while (*name == '/')
     {
       name++;
       if (!*name)
@@ -626,10 +624,12 @@ grub_jfs_find_file (struct grub_jfs_data *data, const char *path)
   next = grub_strchr (name, '/');
   if (next)
     {
-      next[0] = '\0';
-      next++;
+      while (*next == '/')
+	{
+	  next[0] = '\0';
+	  next++;
+	}
     }
-  
   diro = grub_jfs_opendir (data, &data->currinode);
   if (!diro)
     return grub_errno;
@@ -726,14 +726,13 @@ grub_jfs_lookup_symlink (struct grub_jfs_data *data, int ino)
 
 static grub_err_t
 grub_jfs_dir (grub_device_t device, const char *path, 
-	      int (*hook) (const char *filename, int dir))
+	      int (*hook) (const char *filename, 
+			   const struct grub_dirhook_info *info))
 {
   struct grub_jfs_data *data = 0;
   struct grub_jfs_diropen *diro = 0;
 
-#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
-#endif
 
   data = grub_jfs_mount (device->disk);
   if (!data)
@@ -750,14 +749,15 @@ grub_jfs_dir (grub_device_t device, const char *path,
   while (grub_jfs_getent (diro) != GRUB_ERR_OUT_OF_RANGE)
     {
       struct grub_jfs_inode inode;
-      int isdir;
+      struct grub_dirhook_info info;
+      grub_memset (&info, 0, sizeof (info));
       
       if (grub_jfs_read_inode (data, diro->ino, &inode))
 	goto fail;
       
-      isdir = (grub_le_to_cpu32 (inode.mode)
-	       & GRUB_JFS_FILETYPE_MASK) == GRUB_JFS_FILETYPE_DIR;
-      if (hook (diro->name, isdir))
+      info.dir = (grub_le_to_cpu32 (inode.mode)
+		  & GRUB_JFS_FILETYPE_MASK) == GRUB_JFS_FILETYPE_DIR;
+      if (hook (diro->name, &info))
 	goto fail;
     }
   
@@ -769,9 +769,7 @@ grub_jfs_dir (grub_device_t device, const char *path,
   grub_jfs_closedir (diro);
   grub_free (data);
 
-#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-#endif
 
   return grub_errno;
 }
@@ -783,9 +781,7 @@ grub_jfs_open (struct grub_file *file, const char *name)
 {
   struct grub_jfs_data *data;
 
-#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
-#endif
 
   data = grub_jfs_mount (file->device->disk);
   if (!data)
@@ -810,9 +806,7 @@ grub_jfs_open (struct grub_file *file, const char *name)
   
  fail:
 
-#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-#endif
   
   grub_free (data);
   
@@ -835,9 +829,7 @@ grub_jfs_close (grub_file_t file)
 {
   grub_free (file->data);
   
-#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-#endif
   
   return GRUB_ERR_NONE;
 }
@@ -872,9 +864,7 @@ static struct grub_fs grub_jfs_fs =
 GRUB_MOD_INIT(jfs)
 {
   grub_fs_register (&grub_jfs_fs);
-#ifndef GRUB_UTIL
   my_mod = mod;
-#endif
 }
 
 GRUB_MOD_FINI(jfs)

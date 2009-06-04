@@ -24,7 +24,6 @@
 #include <grub/elfload.h>
 #include <grub/file.h>
 #include <grub/err.h>
-#include <grub/rescue.h>
 #include <grub/dl.h>
 #include <grub/mm.h>
 #include <grub/misc.h>
@@ -342,8 +341,8 @@ grub_multiboot2 (int argc, char *argv[])
     }
 
   /* Look for the multiboot header in the buffer.  The header should
-     be at least 12 bytes and aligned on a 4-byte boundary.  */
-  for (p = buffer; p <= buffer + len - 12; p += 4)
+     be at least 8 bytes and aligned on a 8-byte boundary.  */
+  for (p = buffer; p <= buffer + len - 8; p += 8)
     {
       header = (struct multiboot_header *) p;
       if (header->magic == MULTIBOOT2_HEADER_MAGIC)

@@ -1,6 +1,6 @@
 # Process this file with autoconf to produce a configure script.
 
-# Copyright (C) 2002,2003,2004,2005,2006,2007,2008  Free Software Foundation, Inc.
+# Copyright (C) 2002,2003,2004,2005,2006,2007,2008,2009  Free Software Foundation, Inc.
 #
 # This configure.ac is free software; the author
 # gives unlimited permission to copy and/or distribute it,
@@ -31,8 +31,8 @@ dnl (such as TARGET_CC, TARGET_CFLAGS, etc.) are used for the target
 dnl type.
 
 
-AC_INIT(GRUB, 1.96, [bug-grub@gnu.org])
-AC_PREREQ(2.53)
+AC_INIT([GRUB],[1.96],[bug-grub@gnu.org])
+AC_PREREQ(2.59)
 AC_CONFIG_SRCDIR([include/grub/dl.h])
 AC_CONFIG_HEADER([config.h])
 
@@ -99,6 +99,24 @@ case "$target_cpu" in
   x86_64 | sparc64) target_m64=1 ;;
 esac
 
+case "$host_os" in
+  mingw32) host_os=cygwin ;;
+esac
+
+# This normalizes the names, and creates a new variable ("host_kernel")
+# while at it, since the mapping is not always 1:1 (e.g. different OSes
+# using the same kernel type).
+case "$host_os" in
+  gnu*)				host_kernel=hurd ;;
+  linux*)			host_kernel=linux ;;
+  freebsd* | kfreebsd*-gnu)	host_kernel=freebsd ;;
+  cygwin)			host_kernel=windows ;;
+esac
+
+AC_SUBST(host_cpu)
+AC_SUBST(host_os)
+AC_SUBST(host_kernel)
+
 AC_SUBST(target_cpu)
 AC_SUBST(platform)
 
@@ -118,9 +136,9 @@ if test "x$YACC" = x; then
   AC_MSG_ERROR([bison is not found])
 fi
 
-for file in /usr/share/unifont/unifont.hex ; do
+for file in /usr/src/unifont.bdf ; do
   if test -e $file ; then
-    AC_SUBST([UNIFONT_HEX], [$file])
+    AC_SUBST([UNIFONT_BDF], [$file])
     break
   fi
 done
@@ -182,15 +200,39 @@ if test "$target_cpu"-"$platform" = i386-pc; then
 fi
 
 # Check for functions.
-AC_CHECK_FUNCS(posix_memalign memalign)
+AC_CHECK_FUNCS(posix_memalign memalign asprintf)
 
 #
 # Check for target programs.
 #
 
-# For cross-compiling.
-if test "x$target" != "x$host"; then
-  # XXX this depends on the implementation of autoconf!
+
+# Use linker script if present, otherwise use builtin -N script.
+AC_MSG_CHECKING([for option to link raw image])
+if test -f "${srcdir}/conf/${target_cpu}-${platform}-${host_os}-img-ld.sc"; then
+  TARGET_IMG_LDSCRIPT='$(top_srcdir)'"/conf/${target_cpu}-${platform}-${host_os}-img-ld.sc"
+  TARGET_IMG_LDFLAGS="-Wl,-T${TARGET_IMG_LDSCRIPT}"
+  TARGET_IMG_LDFLAGS_AC="-Wl,-T${srcdir}/conf/${target_cpu}-${platform}-${host_os}-img-ld.sc"
+else
+  TARGET_IMG_LDSCRIPT=
+  TARGET_IMG_LDFLAGS='-Wl,-N'
+  TARGET_IMG_LDFLAGS_AC='-Wl,-N'
+fi
+AC_SUBST(TARGET_IMG_LDSCRIPT)
+AC_SUBST(TARGET_IMG_LDFLAGS)
+AC_MSG_RESULT([$TARGET_IMG_LDFLAGS_AC])
+
+# For platforms where ELF is not the default link format.
+AC_MSG_CHECKING([for command to convert module to ELF format])
+case "${host_os}" in
+  cygwin) TARGET_OBJ2ELF='grub-pe2elf' ;;
+  *) ;;
+esac
+AC_SUBST(TARGET_OBJ2ELF)
+AC_MSG_RESULT([$TARGET_OBJ2ELF])
+
+# Find tools for the target.
+if test "x$target_alias" != x && test "x$host_alias" != "x$target_alias"; then
   tmp_ac_tool_prefix="$ac_tool_prefix"
   ac_tool_prefix=$target_alias-
 
@@ -232,7 +274,9 @@ if test "x$TARGET_CFLAGS" = x; then
   # optimization flags.
   AC_CACHE_CHECK([whether optimization for size works], grub_cv_cc_Os, [
     CFLAGS=-Os
-    AC_TRY_COMPILE(, , grub_cv_cc_Os=yes, grub_cv_cc_Os=no)
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],
+		      [grub_cv_cc_Os=yes],
+		      [grub_cv_cc_Os=no])
   ])
   if test "x$grub_cv_cc_Os" = xyes; then
     TARGET_CFLAGS="$TARGET_CFLAGS -Os"
@@ -244,7 +288,9 @@ if test "x$TARGET_CFLAGS" = x; then
   if test "x$target_cpu" = xi386; then
     AC_CACHE_CHECK([whether -falign-loops works], [grub_cv_cc_falign_loop], [
       CFLAGS="-falign-loops=1"
-      AC_TRY_COMPILE(, , [grub_cv_cc_falign_loop=yes], [grub_cv_cc_falign_loop=no])
+      AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],
+		        [grub_cv_cc_falign_loop=yes],
+			[grub_cv_cc_falign_loop=no])
     ])
 
     if test "x$grub_cv_cc_falign_loop" = xyes; then
@@ -267,9 +313,38 @@ if test "x$target_m64" = x1; then
   TARGET_LDFLAGS="$TARGET_LDFLAGS -m64"
 fi
 
+if test "$target_cpu"-"$platform" = x86_64-efi; then
+  # Use large model to support 4G memory
+  AC_CACHE_CHECK([whether option -mcmodel=large works], grub_cv_cc_mcmodel, [
+    CFLAGS="-m64 -mcmodel=large"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],
+		      [grub_cv_cc_mcmodel=yes],
+		      [grub_cv_cc_mcmodel=no])
+  ])
+  if test "x$grub_cv_cc_no_mcmodel" = xno; then
+    AC_MSG_ERROR([-mcmodel=large not supported, upgrade your gcc])
+  fi
+
+  # EFI writes to stack below %rsp, we must not use the red zone
+  AC_CACHE_CHECK([whether option -mno-red-zone works], grub_cv_cc_no_red_zone, [
+    CFLAGS="-m64 -mno-red-zone"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],
+		      [grub_cv_cc_no_red_zone=yes],
+		      [grub_cv_cc_no_red_zone=no])
+  ])
+  if test "x$grub_cv_cc_no_red_zone" = xno; then
+    AC_MSG_ERROR([-mno-red-zone not supported, upgrade your gcc])
+  fi
+
+  TARGET_CFLAGS="$TARGET_CFLAGS -mcmodel=large -mno-red-zone"
+fi
+
 #
 # Compiler features.
 #
+
+# Need __enable_execute_stack() for nested function trampolines?
+grub_CHECK_ENABLE_EXECUTE_STACK
 
 # Smashing stack protector.
 grub_CHECK_STACK_PROTECTOR
@@ -278,11 +353,16 @@ grub_CHECK_STACK_PROTECTOR
 if test "x$ssp_possible" = xyes; then
   TARGET_CFLAGS="$TARGET_CFLAGS -fno-stack-protector"
 fi
+grub_CHECK_STACK_ARG_PROBE
+# Cygwin's GCC uses alloca() to probe the stackframe on static
+# stack allocations above some threshold.
+if test x"$sap_possible" = xyes; then
+  TARGET_CFLAGS="$TARGET_CFLAGS -mno-stack-arg-probe"
+fi
 
 AC_SUBST(TARGET_CFLAGS)
 AC_SUBST(TARGET_CPPFLAGS)
 AC_SUBST(TARGET_LDFLAGS)
-AC_SUBST(MODULE_LDFLAGS)
 
 # Set them to their new values for the tests below.
 CC="$TARGET_CC"
@@ -290,22 +370,36 @@ CFLAGS="$TARGET_CFLAGS"
 CPPFLAGS="$TARGET_CPPFLAGS"
 LDFLAGS="$TARGET_LDFLAGS"
 
+# Check for target functions.
+AC_CHECK_FUNCS(__bswapsi2 __bswapdi2)
+
 # Defined in aclocal.m4.
 grub_PROG_TARGET_CC
 grub_PROG_OBJCOPY_ABSOLUTE
 grub_PROG_LD_BUILD_ID_NONE
 grub_ASM_USCORE
 if test "x$target_cpu" = xi386; then
-  grub_CHECK_START_SYMBOL
-  grub_CHECK_BSS_START_SYMBOL
-  grub_CHECK_END_SYMBOL
+  if test ! -z "$TARGET_IMG_LDSCRIPT"; then
+    # Check symbols provided by linker script.
+    CFLAGS="$TARGET_CFLAGS -nostdlib $TARGET_IMG_LDFLAGS_AC -Wl,-Ttext,8000,--defsym,___main=0x8100"
+  fi
+  if test "x$platform" = xpc; then
+    grub_CHECK_BSS_START_SYMBOL
+    grub_CHECK_END_SYMBOL
+  fi
+  CFLAGS="$TARGET_CFLAGS"
   grub_I386_ASM_PREFIX_REQUIREMENT
   grub_I386_ASM_ADDR32
   grub_I386_ASM_ABSOLUTE_WITHOUT_ASTERISK
-  grub_I386_CHECK_REGPARM_BUG
 else
   AC_DEFINE([NESTED_FUNC_ATTR], [], [Catch gcc bug])
 fi
+
+AH_BOTTOM([#if defined(__i386__) && !defined(GRUB_UTIL)
+#define NESTED_FUNC_ATTR __attribute__ ((__regparm__ (1)))
+#else
+#define NESTED_FUNC_ATTR
+#endif])
 
 # Restore the flags.
 CC="$tmp_CC"
@@ -328,6 +422,9 @@ AC_ARG_ENABLE([mm-debug],
 AC_ARG_ENABLE([grub-emu],
 	      [AS_HELP_STRING([--enable-grub-emu],
                              [build and install the `grub-emu' debugging utility])])
+AC_ARG_ENABLE([grub-emu-usb],
+	      [AS_HELP_STRING([--enable-grub-emu-usb],
+                             [build and install the `grub-emu' debugging utility with USB support])])
 [if [ x"$enable_grub_emu" = xyes ]; then
   # Check for curses libraries.]
   AC_CHECK_LIB([ncurses], [wgetch], [LIBCURSES="-lncurses"],
@@ -340,17 +437,64 @@ AC_ARG_ENABLE([grub-emu],
     [AC_CHECK_HEADERS([ncurses.h], [],
       [AC_CHECK_HEADERS([curses.h], [],
 	[AC_MSG_ERROR([(n)curses header files are required to build `grub-emu'])])])])
+
+  [if [ x"$enable_grub_emu_usb" = xyes ]; then
+    # Check for libusb libraries.]
+    AC_CHECK_LIB([usb], [usb_claim_interface], [LIBUSB="-lusb"],
+      [AC_MSG_ERROR([libusb libraries are required to build `grub-emu' with USB support])])
+    AC_SUBST([LIBUSB])
+
+    [# Check for headers.]
+    AC_CHECK_HEADERS([usb.h], [],
+      [AC_MSG_ERROR([libusb header file is required to build `grub-emu' with USB support])])
+  [fi]
 [fi]
 AC_SUBST([enable_grub_emu])
+AC_SUBST([enable_grub_emu_usb])
 
 AC_ARG_ENABLE([grub-fstest],
 	      [AS_HELP_STRING([--enable-grub-fstest],
                              [build and install the `grub-fstest' debugging utility])])
 AC_SUBST([enable_grub_fstest])
 
+AC_ARG_ENABLE([grub-pe2elf],
+	      [AS_HELP_STRING([--enable-grub-pe2elf],
+                             [build and install the `grub-pe2elf' conversion utility])])
+AC_SUBST([enable_grub_pe2elf])
+
+AC_ARG_ENABLE([grub-mkfont],
+	      [AS_HELP_STRING([--enable-grub-mkfont],
+                             [build and install the `grub-mkfont' utility])])
+if test x"$enable_grub_mkfont" = xyes ; then
+  # Check for freetype libraries.
+  AC_CHECK_PROGS([FREETYPE], [freetype-config])
+  if test "x$FREETYPE" = x ; then
+    AC_MSG_ERROR([freetype2 libraries are required to build `grub-mkfont'])
+  fi
+  freetype_cflags=`freetype-config --cflags`
+  freetype_libs=`freetype-config --libs`
+fi
+AC_SUBST([enable_grub_mkfont])
+AC_SUBST([freetype_cflags])
+AC_SUBST([freetype_libs])
+
+AC_ARG_ENABLE([efiemu],
+	      [AS_HELP_STRING([--enable-efiemu],
+                             [build and install the efiemu runtimes])])
+AC_SUBST([enable_efiemu])
+
 # Output files.
-AC_CONFIG_LINKS([include/grub/cpu:include/grub/$target_cpu
+grub_CHECK_LINK_DIR
+if test x"$link_dir" = xyes ; then
+  AC_CONFIG_LINKS([include/grub/cpu:include/grub/$target_cpu
 	include/grub/machine:include/grub/$target_cpu/$platform])
+else
+  mkdir -p include/grub 2>/dev/null
+  rm -rf include/grub/cpu
+  cp -rp $srcdir/include/grub/$target_cpu include/grub/cpu 2>/dev/null
+  rm -rf include/grub/machine
+  cp -rp $srcdir/include/grub/$target_cpu/$platform include/grub/machine 2>/dev/null
+fi
 AC_CONFIG_FILES([Makefile gensymlist.sh genkernsyms.sh])
 AC_CONFIG_FILES([stamp-h], [echo timestamp > stamp-h])
 AC_OUTPUT
