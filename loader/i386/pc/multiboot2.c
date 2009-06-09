@@ -1,7 +1,7 @@
 /* multiboot2.c - boot a multiboot 2 OS image. */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 #include <grub/err.h>
 #include <grub/machine/loader.h>
 #include <grub/mm.h>
+#include <grub/multiboot.h>
+#include <grub/cpu/multiboot.h>
 
 grub_err_t
 grub_mb2_arch_elf32_hook (Elf32_Phdr *phdr, UNUSED grub_addr_t *addr)
@@ -44,8 +46,8 @@ grub_mb2_arch_elf64_hook (Elf64_Phdr *phdr, UNUSED grub_addr_t *addr)
 
   if ((paddr < grub_os_area_addr)
       || (paddr + phdr->p_memsz > grub_os_area_addr + grub_os_area_size))
-    return (GRUB_ERR_OUT_OF_RANGE,"Address 0x%x is out of range",
-            paddr);
+    return grub_error (GRUB_ERR_OUT_OF_RANGE, "Address 0x%x is out of range",
+		       paddr);
 
   return GRUB_ERR_NONE;
 }
@@ -55,7 +57,7 @@ grub_mb2_arch_module_alloc (grub_size_t size, grub_addr_t *addr)
 {
   grub_addr_t modaddr;
 
-  modaddr = grub_memalign (MULTIBOOT2_MOD_ALIGN, size);
+  modaddr = (grub_addr_t) grub_memalign (MULTIBOOT2_MOD_ALIGN, size);
   if (! modaddr)
     return grub_errno;
 

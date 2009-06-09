@@ -16,15 +16,14 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <grub/machine/console.h>
-#include <grub/cpu/io.h>
+#include <grub/dl.h>
+#include <grub/i386/pc/console.h>
+#include <grub/i386/at_keyboard.h>
+#include <grub/i386/io.h>
 #include <grub/misc.h>
+#include <grub/term.h>
 
-#define SHIFT_L		0x2a
-#define SHIFT_R		0x36
-#define CTRL		0x1d
-#define ALT		0x38
-#define CAPS_LOCK	0x3a
+static short at_keyboard_status = 0;
 
 #define KEYBOARD_STATUS_SHIFT_L		(1 << 0)
 #define KEYBOARD_STATUS_SHIFT_R		(1 << 1)
@@ -34,51 +33,36 @@
 #define KEYBOARD_STATUS_CTRL_R		(1 << 5)
 #define KEYBOARD_STATUS_CAPS_LOCK	(1 << 6)
 
-#define KEYBOARD_REG_DATA	0x60
-#define KEYBOARD_REG_STATUS	0x64
-
-/* Used for sending commands to the controller.  */
-#define KEYBOARD_COMMAND_ISREADY(x)	!((x) & 0x02)
-#define KEYBOARD_COMMAND_READ		0x20
-#define KEYBOARD_COMMAND_WRITE		0x60
-
-#define KEYBOARD_SCANCODE_SET1		0x40
-
-#define KEYBOARD_ISMAKE(x)	!((x) & 0x80)
-#define KEYBOARD_ISREADY(x)	(((x) & 0x01) == 0)
-#define KEYBOARD_SCANCODE(x)	((x) & 0x7f)
-
-static short at_keyboard_status = 0;
-
 static char keyboard_map[128] =
 {
-  '\0', '\0', '1', '2', '3', '4', '5', '6',
-  '7', '8', '9', '0', '-', '=', '\b', '\t',
+  '\0', GRUB_TERM_ESC, '1', '2', '3', '4', '5', '6',
+  '7', '8', '9', '0', '-', '=', GRUB_TERM_BACKSPACE, GRUB_TERM_TAB,
   'q', 'w', 'e', 'r', 't', 'y', 'u', 'i',
   'o', 'p', '[', ']', '\n', '\0', 'a', 's',
   'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',
   '\'', '`', '\0', '\\', 'z', 'x', 'c', 'v',
   'b', 'n', 'm', ',', '.', '/', '\0', '*',
   '\0', ' ', '\0', '\0', '\0', '\0', '\0', '\0',
-  '\0', '\0', '\0', '\0', '\0', '\0', '\0', '7',
-  '8', '9', '-', '4', '5', '6', '+', '1',
-  '2', '3',
+  '\0', '\0', '\0', '\0', '\0', '\0', '\0', GRUB_TERM_HOME,
+  GRUB_TERM_UP, GRUB_TERM_NPAGE, '-', GRUB_TERM_LEFT, '\0', GRUB_TERM_RIGHT, '+', GRUB_TERM_END,
+  GRUB_TERM_DOWN, GRUB_TERM_PPAGE, '\0', GRUB_TERM_DC, '\0', '\0', '\0', '\0',
+  '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0',
+  '\0', '\0', '\0', '\0', '\0', OLPC_UP, OLPC_DOWN, OLPC_LEFT,
+  OLPC_RIGHT
 };
 
 static char keyboard_map_shift[128] =
 {
   '\0', '\0', '!', '@', '#', '$', '%', '^',
-  '&', '*', '(', ')', '_', '+', '\b', '\t',
+  '&', '*', '(', ')', '_', '+', '\0', '\0',
   'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I',
   'O', 'P', '{', '}', '\n', '\0', 'A', 'S',
   'D', 'F', 'G', 'H', 'J', 'K', 'L', ':',
   '\"', '~', '\0', '|', 'Z', 'X', 'C', 'V',
-  'B', 'N', 'M', '<', '>', '?', '\0', '*',
-  '\0', ' ', '\0', '\0', '\0', '\0', '\0', '\0',
-  '\0', '\0', '\0', '\0', '\0', '\0', '\0', '7',
-  '8', '9', '-', '4', '5', '6', '+', '1',
-  '2', '3',
+  'B', 'N', 'M', '<', '>', '?'
 };
+
+static grub_uint8_t grub_keyboard_controller_orig;
 
 static void
 grub_keyboard_controller_write (grub_uint8_t c)
@@ -94,12 +78,6 @@ grub_keyboard_controller_read (void)
   while (! KEYBOARD_COMMAND_ISREADY (grub_inb (KEYBOARD_REG_STATUS)));
   grub_outb (KEYBOARD_COMMAND_READ, KEYBOARD_REG_STATUS);
   return grub_inb (KEYBOARD_REG_DATA);
-}
-
-void
-grub_keyboard_controller_init (void)
-{
-  grub_keyboard_controller_write (grub_keyboard_controller_read () | KEYBOARD_SCANCODE_SET1);
 }
 
 /* FIXME: This should become an interrupt service routine.  For now
@@ -167,33 +145,39 @@ grub_keyboard_getkey (void)
 }
 
 /* If there is a character pending, return it; otherwise return -1.  */
-int
-grub_console_checkkey (void)
+static int
+grub_at_keyboard_checkkey (void)
 {
-  int key;
-  key = grub_keyboard_getkey ();
-  if (key == -1)
+  int code, key;
+  code = grub_keyboard_getkey ();
+  if (code == -1)
     return -1;
 #ifdef DEBUG_AT_KEYBOARD
   grub_dprintf ("atkeyb", "Detected key 0x%x\n", key);
 #endif
-  switch (key)
+  switch (code)
     {
       case CAPS_LOCK:
-	if (at_keyboard_status & KEYBOARD_STATUS_CAPS_LOCK)
-	  at_keyboard_status &= ~KEYBOARD_STATUS_CAPS_LOCK;
-	else
-	  at_keyboard_status |= KEYBOARD_STATUS_CAPS_LOCK;
+	at_keyboard_status ^= KEYBOARD_STATUS_CAPS_LOCK;
+	/* Caps lock sends scan code twice.  Get the second one and discard it.  */
+	while (grub_keyboard_getkey () == -1);
 #ifdef DEBUG_AT_KEYBOARD
 	grub_dprintf ("atkeyb", "caps_lock = %d\n", !!(at_keyboard_status & KEYBOARD_STATUS_CAPS_LOCK));
 #endif
 	key = -1;
 	break;
       default:
-	if (at_keyboard_status & (KEYBOARD_STATUS_SHIFT_L | KEYBOARD_STATUS_SHIFT_R))
-	  key = keyboard_map_shift[key];
+	if (at_keyboard_status & (KEYBOARD_STATUS_CTRL_L | KEYBOARD_STATUS_CTRL_R))
+	  key = keyboard_map[code] - 'a' + 1;
+	else if ((at_keyboard_status & (KEYBOARD_STATUS_SHIFT_L | KEYBOARD_STATUS_SHIFT_R))
+	    && keyboard_map_shift[code])
+	  key = keyboard_map_shift[code];
 	else
-	  key = keyboard_map[key];
+	  key = keyboard_map[code];
+
+	if (key == 0)
+	  grub_dprintf ("atkeyb", "Unknown key 0x%x detected\n", code);
+
 	if (at_keyboard_status & KEYBOARD_STATUS_CAPS_LOCK)
 	  {
 	    if ((key >= 'a') && (key <= 'z'))
@@ -205,13 +189,47 @@ grub_console_checkkey (void)
   return (int) key;
 }
 
-int
-grub_console_getkey (void)
+static int
+grub_at_keyboard_getkey (void)
 {
   int key;
   do
     {
-      key = grub_console_checkkey ();
+      key = grub_at_keyboard_checkkey ();
     } while (key == -1);
   return key;
+}
+
+static grub_err_t
+grub_keyboard_controller_init (void)
+{
+  grub_keyboard_controller_orig = grub_keyboard_controller_read ();
+  grub_keyboard_controller_write (grub_keyboard_controller_orig | KEYBOARD_SCANCODE_SET1);
+  return GRUB_ERR_NONE;
+}
+
+static grub_err_t
+grub_keyboard_controller_fini (void)
+{
+  grub_keyboard_controller_write (grub_keyboard_controller_orig);
+  return GRUB_ERR_NONE;
+}
+
+static struct grub_term_input grub_at_keyboard_term =
+  {
+    .name = "at_keyboard",
+    .init = grub_keyboard_controller_init,
+    .fini = grub_keyboard_controller_fini,
+    .checkkey = grub_at_keyboard_checkkey,
+    .getkey = grub_at_keyboard_getkey,
+  };
+
+GRUB_MOD_INIT(at_keyboard)
+{
+  grub_term_register_input ("at_keyboard", &grub_at_keyboard_term);
+}
+
+GRUB_MOD_FINI(at_keyboard)
+{
+  grub_term_unregister_input (&grub_at_keyboard_term);
 }

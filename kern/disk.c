@@ -22,13 +22,13 @@
 #include <grub/types.h>
 #include <grub/partition.h>
 #include <grub/misc.h>
-#include <grub/machine/time.h>
+#include <grub/time.h>
 #include <grub/file.h>
 
 #define	GRUB_CACHE_TIMEOUT	2
 
 /* The last time the disk was used.  */
-static unsigned long grub_last_time = 0;
+static grub_uint64_t grub_last_time = 0;
 
 
 /* Disk cache.  */
@@ -45,6 +45,10 @@ static struct grub_disk_cache grub_disk_cache_table[GRUB_DISK_CACHE_NUM];
 
 void (*grub_disk_firmware_fini) (void);
 int grub_disk_firmware_is_tainted;
+
+grub_err_t (* grub_disk_ata_pass_through) (grub_disk_t,
+	    struct grub_disk_ata_pass_through_parms *);
+
 
 #if 0
 static unsigned long grub_disk_cache_hits;
@@ -154,10 +158,13 @@ grub_disk_cache_store (unsigned long dev_id, unsigned long disk_id,
   unsigned index;
   struct grub_disk_cache *cache;
   
-  grub_disk_cache_invalidate (dev_id, disk_id, sector);
-  
   index = grub_disk_cache_get_index (dev_id, disk_id, sector);
   cache = grub_disk_cache_table + index;
+ 
+  cache->lock = 1;
+  grub_free (cache->data);
+  cache->data = 0;
+  cache->lock = 0;
   
   cache->data = grub_malloc (GRUB_DISK_SECTOR_SIZE << GRUB_DISK_CACHE_BITS);
   if (! cache->data)
@@ -202,20 +209,38 @@ grub_disk_dev_iterate (int (*hook) (const char *name))
   grub_disk_dev_t p;
 
   for (p = grub_disk_dev_list; p; p = p->next)
-    if ((p->iterate) (hook))
+    if (p->iterate && (p->iterate) (hook))
       return 1;
 
   return 0;
 }
 
+/* Return the location of the first ',', if any, which is not
+   escaped by a '\'.  */
+static const char *
+find_part_sep (const char *name)
+{
+  const char *p = name;
+  char c;
+
+  while ((c = *p++) != '\0')
+    {
+      if (c == '\\' && *p == ',')
+	p++;
+      else if (c == ',')
+	return p - 1;
+    }
+  return NULL;
+}
+
 grub_disk_t
 grub_disk_open (const char *name)
 {
-  char *p;
+  const char *p;
   grub_disk_t disk;
   grub_disk_dev_t dev;
   char *raw = (char *) name;
-  unsigned long current_time;
+  grub_uint64_t current_time;
 
   grub_dprintf ("disk", "Opening `%s'...\n", name);
 
@@ -231,7 +256,7 @@ grub_disk_open (const char *name)
   if (! disk->name)
     goto fail;
   
-  p = grub_strchr (name, ',');
+  p = find_part_sep (name);
   if (p)
     {
       grub_size_t len = p - name;
@@ -280,10 +305,10 @@ grub_disk_open (const char *name)
 
   /* The cache will be invalidated about 2 seconds after a device was
      closed.  */
-  current_time = grub_get_rtc ();
+  current_time = grub_get_time_ms ();
 
   if (current_time > (grub_last_time
-		      + GRUB_CACHE_TIMEOUT * GRUB_TICKS_PER_SECOND))
+		      + GRUB_CACHE_TIMEOUT * 1000))
     grub_disk_cache_invalidate_all ();
   
   grub_last_time = current_time;
@@ -315,15 +340,19 @@ grub_disk_close (grub_disk_t disk)
     (disk->dev->close) (disk);
 
   /* Reset the timer.  */
-  grub_last_time = grub_get_rtc ();
+  grub_last_time = grub_get_time_ms ();
 
   grub_free (disk->partition);
   grub_free ((void *) disk->name);
   grub_free (disk);
 }
 
+/* This function performs three tasks:
+   - Make sectors disk relative from partition relative.
+   - Normalize offset to be less than the sector size.
+   - Verify that the range is inside the partition.  */
 static grub_err_t
-grub_disk_check_range (grub_disk_t disk, grub_disk_addr_t *sector,
+grub_disk_adjust_range (grub_disk_t disk, grub_disk_addr_t *sector,
 		       grub_off_t *offset, grub_size_t size)
 {
   *sector += *offset >> GRUB_DISK_SECTOR_BITS;
@@ -356,7 +385,7 @@ grub_disk_check_range (grub_disk_t disk, grub_disk_addr_t *sector,
 /* Read data from the disk.  */
 grub_err_t
 grub_disk_read (grub_disk_t disk, grub_disk_addr_t sector,
-		grub_off_t offset, grub_size_t size, char *buf)
+		grub_off_t offset, grub_size_t size, void *buf)
 {
   char *tmp_buf;
   unsigned real_offset;
@@ -364,11 +393,11 @@ grub_disk_read (grub_disk_t disk, grub_disk_addr_t sector,
   grub_dprintf ("disk", "Reading `%s'...\n", disk->name);
   
   /* First of all, check if the region is within the disk.  */
-  if (grub_disk_check_range (disk, &sector, &offset, size) != GRUB_ERR_NONE)
+  if (grub_disk_adjust_range (disk, &sector, &offset, size) != GRUB_ERR_NONE)
     {
       grub_error_push ();
-      grub_dprintf ("disk", "Read out of range: sector 0x%llx.\n",
-		    (unsigned long long) sector);
+      grub_dprintf ("disk", "Read out of range: sector 0x%llx (%s).\n",
+		    (unsigned long long) sector, grub_errmsg);
       grub_error_pop ();
       return grub_errno;
     }
@@ -482,7 +511,7 @@ grub_disk_read (grub_disk_t disk, grub_disk_addr_t sector,
 	}
       
       sector = start_sector + GRUB_DISK_CACHE_SIZE;
-      buf += len;
+      buf = (char *) buf + len;
       size -= len;
       real_offset = 0;
     }
@@ -496,13 +525,13 @@ grub_disk_read (grub_disk_t disk, grub_disk_addr_t sector,
 
 grub_err_t
 grub_disk_write (grub_disk_t disk, grub_disk_addr_t sector,
-		 grub_off_t offset, grub_size_t size, const char *buf)
+		 grub_off_t offset, grub_size_t size, const void *buf)
 {
   unsigned real_offset;
   
   grub_dprintf ("disk", "Writing `%s'...\n", disk->name);
 
-  if (grub_disk_check_range (disk, &sector, &offset, size) != GRUB_ERR_NONE)
+  if (grub_disk_adjust_range (disk, &sector, &offset, size) != GRUB_ERR_NONE)
     return -1;
 
   real_offset = offset;
@@ -530,7 +559,7 @@ grub_disk_write (grub_disk_t disk, grub_disk_addr_t sector,
 	    goto finish;
 
 	  sector++;
-	  buf += len;
+	  buf = (char *) buf + len;
 	  size -= len;
 	  real_offset = 0;
 	}
@@ -548,7 +577,7 @@ grub_disk_write (grub_disk_t disk, grub_disk_addr_t sector,
 	  while (n--)
 	    grub_disk_cache_invalidate (disk->dev->id, disk->id, sector++);
 
-	  buf += len;
+	  buf = (char *) buf + len;
 	  size -= len;
 	}
     }
