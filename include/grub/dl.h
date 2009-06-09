@@ -1,7 +1,7 @@
 /* dl.h - types and prototypes for loadable module support */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2004,2005,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2004,2005,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,10 +41,10 @@ static void \
 grub_mod_fini (void)
 
 #define GRUB_MOD_NAME(name)	\
-__asm__ (".section .modname,\"S\"\n.string \"" #name "\"\n.previous")
+__asm__ (".section .modname\n.string \"" #name "\"\n")
 
 #define GRUB_MOD_DEP(name)	\
-__asm__ (".section .moddeps,\"S\"\n.string \"" #name "\"\n.previous")
+__asm__ (".section .moddeps\n.string \"" #name "\"\n")
 
 struct grub_dl_segment
 {
@@ -82,8 +82,23 @@ grub_dl_t grub_dl_load_core (void *addr, grub_size_t size);
 int EXPORT_FUNC(grub_dl_unload) (grub_dl_t mod);
 void grub_dl_unload_unneeded (void);
 void grub_dl_unload_all (void);
+#ifdef GRUB_UTIL
+static inline int
+grub_dl_ref (grub_dl_t mod)
+{
+  (void) mod;
+  return 0;
+}
+static inline int
+grub_dl_unref (grub_dl_t mod)
+{
+  (void) mod;
+  return 0;
+}
+#else
 int EXPORT_FUNC(grub_dl_ref) (grub_dl_t mod);
 int EXPORT_FUNC(grub_dl_unref) (grub_dl_t mod);
+#endif
 void EXPORT_FUNC(grub_dl_iterate) (int (*hook) (grub_dl_t mod));
 grub_dl_t EXPORT_FUNC(grub_dl_get) (const char *name);
 grub_err_t EXPORT_FUNC(grub_dl_register_symbol) (const char *name, void *addr,

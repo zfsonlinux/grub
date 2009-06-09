@@ -76,7 +76,7 @@ typedef char grub_bool_t;
 
 #define UChar(c) ((unsigned char)(c))
 
-//MODULE_ID("$Id: tparm.c,v 1.3 2006/10/14 15:24:53 okuji Exp $")
+//MODULE_ID("$Id: tparm.c 1665 2008-07-02 00:54:18Z proski $")
 
 /*
  *	char *
@@ -361,6 +361,8 @@ analyze(const char *string, char *p_is_s[NUM_PARM], int *popcount)
     const char *cp = string;
     static char dummy[] = "";
 
+    *popcount = 0;
+
     if (cp == 0)
 	return 0;
 
@@ -371,7 +373,6 @@ analyze(const char *string, char *p_is_s[NUM_PARM], int *popcount)
     }
 
     grub_memset(p_is_s, 0, sizeof(p_is_s[0]) * NUM_PARM);
-    *popcount = 0;
 
     while ((cp - string) < (int) len2) {
 	if (*cp == '%') {

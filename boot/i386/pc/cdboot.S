@@ -37,6 +37,7 @@
         .globl  start, _start
 
 start:
+_start:
 	call	next
 
 next:
@@ -45,7 +46,7 @@ next:
 	. = start + 8
 
 bi_pvd:
-	.long 0		/* LBA of primary volume descript.  */
+	.long 0		/* LBA of primary volume descriptor.  */
 bi_file:
 	.long 0		/* LBA of boot file. */
 bi_length:
@@ -78,6 +79,9 @@ bi_reserved:
 
 	call	read_cdrom
 
+        /* Root drive will default to boot drive */
+        movb    $0xFF, %dh
+        
 	ljmp	$(DATA_ADDR >> 4), $0
 
 /*
