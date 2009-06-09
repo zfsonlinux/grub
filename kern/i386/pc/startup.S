@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2005,2006,2007 Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2005,2006,2007,2008 Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,10 +49,11 @@
 #include <grub/machine/console.h>
 #include <grub/cpu/linux.h>
 #include <grub/machine/kernel.h>
+#include <grub/term.h>
 #include <multiboot.h>
 #include <multiboot2.h>
 		
-#define ABS(x)	((x) - EXT_C(start) + GRUB_BOOT_MACHINE_KERNEL_ADDR + 0x200)
+#define ABS(x)	((x) - _start + GRUB_BOOT_MACHINE_KERNEL_ADDR + 0x200)
 	
 	.file	"startup.S"
 
@@ -76,14 +77,14 @@ _start:
 	 *  These MUST be at byte offset 6 and 7 of the executable
 	 *  DO NOT MOVE !!!
 	 */
-	. = EXT_C(start) + 0x6
+	. = _start + 0x6
 	.byte	GRUB_BOOT_VERSION_MAJOR, GRUB_BOOT_VERSION_MINOR
 
 	/*
 	 *  This is a special data area 8 bytes from the beginning.
 	 */
 
-	. = EXT_C(start) + 0x8
+	. = _start + 0x8
 
 VARIABLE(grub_total_module_size)
 	.long	0
@@ -95,8 +96,6 @@ VARIABLE(grub_install_dos_part)
 	.long	0xFFFFFFFF
 VARIABLE(grub_install_bsd_part)
 	.long	0xFFFFFFFF
-VARIABLE(grub_memdisk_image_size)
-	.long	0
 VARIABLE(grub_prefix)
 	/* to be filled by grub-mkimage */
 
@@ -104,13 +103,14 @@ VARIABLE(grub_prefix)
 	 *  Leave some breathing room for the prefix.
 	 */
 
-	. = EXT_C(start) + 0x50
+	. = _start + GRUB_KERNEL_MACHINE_DATA_END
 
 /*
  * Support for booting GRUB from a Multiboot boot loader (e.g. GRUB itself).
  * This uses the a.out kludge to load raw binary to the area starting at 1MB,
  * and relocates itself after loaded.
  */
+	.p2align	2	/* force 4-byte alignment */
 multiboot_header:
 	/* magic */
 	.long	0x1BADB002
@@ -162,6 +162,7 @@ multiboot_trampoline:
 	movl	%ebx, EXT_C(grub_install_bsd_part)
 2:
 	shrl	$24, %edx
+        movb    $0xFF, %dh
 	/* enter the usual booting */
 	call	prot_to_real
 	.code16
@@ -182,8 +183,9 @@ codestart:
 
 	sti		/* we're safe again */
 
-	/* save boot drive reference */
+	/* save boot and root drive references */
 	ADDR32	movb	%dl, EXT_C(grub_boot_drive)
+	ADDR32	movb	%dh, EXT_C(grub_root_drive)
 
 	/* reset disk system (%ah = 0) */
 	int	$0x13
@@ -197,9 +199,10 @@ codestart:
 	incl	%eax
 	call	EXT_C(grub_gate_a20)
 	
+#if defined(ENABLE_LZO)
 	/* decompress the compressed part and put the result at 1MB */
 	movl	$GRUB_MEMORY_MACHINE_DECOMPRESSION_ADDR, %esi
-	movl	$(START_SYMBOL + GRUB_KERNEL_MACHINE_RAW_SIZE), %edi
+	movl	$(_start + GRUB_KERNEL_MACHINE_RAW_SIZE), %edi
 
 	pushl	%esi
 	pushl	EXT_C(grub_compressed_size)
@@ -207,17 +210,36 @@ codestart:
 	call	lzo1x_decompress
 	addl	$12, %esp
 
-	/* copy back the decompressed part */
 	movl	%eax, %ecx
 	cld
+#elif defined(ENABLE_LZMA)
+	movl	$GRUB_MEMORY_MACHINE_DECOMPRESSION_ADDR, %edi
+	movl	$(_start + GRUB_KERNEL_MACHINE_RAW_SIZE), %esi
+	pushl	%edi
+	pushl	%esi
+	movl	EXT_C(grub_kernel_image_size), %ecx
+	addl	EXT_C(grub_total_module_size), %ecx
+	subl	$GRUB_KERNEL_MACHINE_RAW_SIZE, %ecx
+	pushl	%ecx
+	leal	(%edi, %ecx), %ebx
+	call	_LzmaDecodeA
+	/* _LzmaDecodeA clears DF, so no need to run cld */
+	popl	%ecx
+	popl	%edi
+	popl	%esi
+#endif
+
+	/* copy back the decompressed part (except the modules) */
+	subl	EXT_C(grub_total_module_size), %ecx
 	rep
 	movsb
 
+#if 0
 	/* copy modules before cleaning out the bss */
 	movl	EXT_C(grub_total_module_size), %ecx
 	movl	EXT_C(grub_kernel_image_size), %esi
 	addl	%ecx, %esi
-	addl	$START_SYMBOL, %esi
+	addl	$_start, %esi
 	decl	%esi
 	movl	$END_SYMBOL, %edi
 	addl	%ecx, %edi
@@ -225,6 +247,7 @@ codestart:
 	std
 	rep
 	movsb
+#endif
 	
 	/* clean out the bss */
 	movl	$BSS_START_SYMBOL, %edi
@@ -250,27 +273,12 @@ codestart:
  *  This is the area for all of the special variables.
  */
 
-	.p2align	2	/* force 4-byte alignment */
-
 VARIABLE(grub_boot_drive)
-	.long	0
+	.byte	0
 
-VARIABLE(grub_start_addr)
-	.long	START_SYMBOL
+VARIABLE(grub_root_drive)
+	.byte	0
 
-VARIABLE(grub_end_addr)
-	.long	END_SYMBOL
-	
-VARIABLE(grub_apm_bios_info)
-	.word	0	/* version */
-	.word	0	/* cseg */
-	.long	0	/* offset */
-	.word	0	/* cseg_16 */
-	.word	0	/* dseg_16 */
-	.word	0	/* cseg_len */
-	.word	0	/* cseg_16_len */
-	.word	0	/* dseg_16_len */
-	
 	.p2align	2	/* force 4-byte alignment */
 	
 /*
@@ -285,7 +293,7 @@ real_to_prot:
 	cli
 
 	/* load the GDT register */
-	DATA32	ADDR32	lgdt	gdtdesc
+	DATA32	ADDR32	lgdt	%cs:gdtdesc
 
 	/* turn on protected mode */
 	movl	%cr0, %eax
@@ -362,9 +370,32 @@ gate_a20_try_bios:
 	popl	%ebp
 	call	gate_a20_check_state
 	cmpb	%al, %dl
-	jnz	gate_a20_try_keyboard_controller
+	jnz	gate_a20_try_system_control_port_a
 	ret
 	
+gate_a20_try_system_control_port_a:
+	/*
+	 * In macbook, the keyboard test would hang the machine, so we move
+	 * this forward.
+	 */
+	/* fourth, try the system control port A */
+	inb	$0x92
+	andb	$(~0x03), %al
+	testb	%dl, %dl
+	jz	6f
+	orb	$0x02, %al
+6:	outb	$0x92
+
+	/* When turning off Gate A20, do not check the state strictly,
+	   because a failure is not fatal usually, and Gate A20 is always
+	   on some modern machines.  */
+	testb	%dl, %dl
+	jz	7f
+	call	gate_a20_check_state
+	cmpb	%al, %dl
+	jnz	gate_a20_try_keyboard_controller
+7:	ret
+
 gate_a20_flush_keyboard_buffer:
 	inb	$0x64
 	andb	$0x02, %al
@@ -403,28 +434,9 @@ gate_a20_try_keyboard_controller:
 
 	call	gate_a20_check_state
 	cmpb	%al, %dl
-	jnz	gate_a20_try_system_control_port_a
-	ret
-
-gate_a20_try_system_control_port_a:
-	/* fourth, try the system control port A */
-	inb	$0x92
-	andb	$(~0x03), %al
-	testb	%dl, %dl
-	jz	6f
-	orb	$0x02, %al
-6:	outb	$0x92
-
-	/* When turning off Gate A20, do not check the state strictly,
-	   because a failure is not fatal usually, and Gate A20 is always
-	   on some modern machines.  */
-	testb	%dl, %dl
-	jz	7f	
-	call	gate_a20_check_state
-	cmpb	%al, %dl
 	/* everything failed, so restart from the beginning */
 	jnz	gate_a20_try_bios
-7:	ret
+	ret
 	
 gate_a20_check_state:
 	/* iterate the checking for a while */
@@ -470,8 +482,17 @@ gate_a20_check_state:
 	popl	%ebx
 	ret
 
+#if defined(ENABLE_LZO)
 #include "lzo1x.S"
+#elif defined(ENABLE_LZMA)
+#include "lzma_decode.S"
+#endif
 
+/*
+ * The code beyond this point is compressed.  Assert that the uncompressed
+ * code fits GRUB_KERNEL_MACHINE_RAW_SIZE.
+ */
+	. = _start + GRUB_KERNEL_MACHINE_RAW_SIZE
 
 /*
  *  This call is special...  it never returns...  in fact it should simply
@@ -638,9 +659,6 @@ FUNCTION(grub_biosdisk_rw_int13_extensions)
 	movw	%cx, %ds
 	int	$0x13		/* do the operation */
 	movb	%ah, %dl	/* save return value */
-	/* clear the data segment */
-	xorw	%ax, %ax
-	movw	%ax, %ds
 	/* back to protected mode */
 	DATA32	call	real_to_prot
 	.code32
@@ -774,6 +792,17 @@ FUNCTION(grub_biosdisk_check_int13_extensions)
 
 
 /*
+ *   int grub_biosdisk_get_cdinfo_int13_extensions (int drive, void *cdrp)
+ *
+ *   Return the cdrom information of DRIVE in CDRP. If an error occurs,
+ *   then return non-zero, otherwise zero.
+ */
+
+FUNCTION(grub_biosdisk_get_cdinfo_int13_extensions)
+	movw	$0x4B01, %cx
+	jmp	1f
+
+/*
  *   int grub_biosdisk_get_diskinfo_int13_extensions (int drive, void *drp)
  *
  *   Return the geometry of DRIVE in a drive parameters, DRP. If an error
@@ -781,13 +810,15 @@ FUNCTION(grub_biosdisk_check_int13_extensions)
  */
 
 FUNCTION(grub_biosdisk_get_diskinfo_int13_extensions)
+	movb	$0x48, %ch
+1:
 	pushl	%ebp
 	pushl	%ebx
 	pushl	%esi
 
 	/* compute the address of drive parameters */
 	movw	%dx, %si
-	xorw	%dx, %dx
+	andl	$0xf, %esi
 	shrl	$4, %edx
 	movw	%dx, %bx	/* save the segment into %bx */
 	/* drive */
@@ -796,13 +827,10 @@ FUNCTION(grub_biosdisk_get_diskinfo_int13_extensions)
 	call	prot_to_real
 
 	.code16
-	movb	$0x48, %ah
+	movw	%cx, %ax
 	movw	%bx, %ds
 	int	$0x13		/* do the operation */
 	movb	%ah, %bl	/* save return value in %bl */
-	/* clear the data segment */
-	xorw	%ax, %ax
-	movw	%ax, %ds
 	/* back to protected mode */
 	DATA32	call	real_to_prot
 	.code32
@@ -1174,16 +1202,16 @@ FUNCTION(grub_console_real_putchar)
 
 /* this table is used in translate_keycode below */
 translation_table:
-	.word	GRUB_CONSOLE_KEY_LEFT, 2
-	.word	GRUB_CONSOLE_KEY_RIGHT, 6
-	.word	GRUB_CONSOLE_KEY_UP, 16
-	.word	GRUB_CONSOLE_KEY_DOWN, 14
-	.word	GRUB_CONSOLE_KEY_HOME, 1
-	.word	GRUB_CONSOLE_KEY_END, 5
-	.word	GRUB_CONSOLE_KEY_DC, 4
-	.word	GRUB_CONSOLE_KEY_BACKSPACE, 8
-	.word	GRUB_CONSOLE_KEY_PPAGE, 7
-	.word	GRUB_CONSOLE_KEY_NPAGE, 3
+	.word	GRUB_CONSOLE_KEY_LEFT, GRUB_TERM_LEFT
+	.word	GRUB_CONSOLE_KEY_RIGHT, GRUB_TERM_RIGHT
+	.word	GRUB_CONSOLE_KEY_UP, GRUB_TERM_UP
+	.word	GRUB_CONSOLE_KEY_DOWN, GRUB_TERM_DOWN
+	.word	GRUB_CONSOLE_KEY_HOME, GRUB_TERM_HOME
+	.word	GRUB_CONSOLE_KEY_END, GRUB_TERM_END
+	.word	GRUB_CONSOLE_KEY_DC, GRUB_TERM_DC
+	.word	GRUB_CONSOLE_KEY_BACKSPACE, GRUB_TERM_BACKSPACE
+	.word	GRUB_CONSOLE_KEY_PPAGE, GRUB_TERM_PPAGE
+	.word	GRUB_CONSOLE_KEY_NPAGE, GRUB_TERM_NPAGE
 	.word	0
 	
 /*
@@ -1222,6 +1250,23 @@ FUNCTION(grub_console_getkey)
 	call	prot_to_real
 	.code16
 
+	/*
+	 * Due to a bug in apple's bootcamp implementation, INT 16/AH = 0 would
+	 * cause the machine to hang at the second keystroke. However, we can
+	 * work around this problem by ensuring the presence of keystroke with
+	 * INT 16/AH = 1 before calling INT 16/AH = 0.
+	 */
+
+1:
+	movb	$1, %ah
+	int	$0x16
+	jnz	2f
+	hlt
+	jmp	1b
+
+2:
+
+	movb	$0, %ah
 	int	$0x16
 
 	movw	%ax, %dx		/* real_to_prot uses %eax */
@@ -1990,5 +2035,104 @@ FUNCTION(grub_vbe_bios_set_palette_data)
 
 	popl	%edi
 	popl	%ebx
+	popl	%ebp
+	ret
+
+
+pxe_rm_entry:
+	.long	0
+
+/*
+ * struct grub_pxenv *grub_pxe_scan (void);
+ */
+FUNCTION(grub_pxe_scan)
+	pushl	%ebp
+	pushl	%ebx
+
+	xorl	%ebx, %ebx
+	xorl	%ecx, %ecx
+
+	call    prot_to_real
+	.code16
+
+	pushw	%es
+
+	movw	$0x5650, %ax
+	int	$0x1A
+	cmpw	$0x564E, %ax
+	jnz	1f
+	cmpl	$0x4E455850, %es:(%bx)		/* PXEN(V+)  */
+	jnz	1f
+	cmpw	$0x201, %es:6(%bx)		/* API version  */
+	jb	1f
+	lesw	%es:0x28(%bx), %bx		/* !PXE structure  */
+	cmpl	$0x45585021, %es:(%bx)		/* !PXE  */
+	jnz	1f
+	movw	%es, %cx
+	jmp	2f
+1:
+	xorw	%bx, %bx
+	xorw	%cx, %cx
+2:
+
+	popw	%es
+
+	DATA32 call	real_to_prot
+	.code32
+
+	xorl	%eax, %eax
+	leal	(%eax, %ecx, 4), %ecx
+	leal	(%ebx, %ecx, 4), %eax		/* eax = ecx * 16 + ebx  */
+
+	orl	%eax, %eax
+	jz	1f
+
+	movl	0x10(%eax), %ecx
+	movl	%ecx, pxe_rm_entry
+
+1:
+
+	popl	%ebx
+	popl	%ebp
+	ret
+
+/*
+ * int grub_pxe_call (int func, void* data);
+ */
+FUNCTION(grub_pxe_call)
+	pushl	%ebp
+	movl	%esp, %ebp
+	pushl	%esi
+	pushl	%edi
+	pushl	%ebx
+
+	movl	%eax, %ecx
+	movl	%edx, %eax
+	andl	$0xF, %eax
+	shrl	$4, %edx
+	shll	$16, %edx
+	addl	%eax, %edx
+	movl	pxe_rm_entry, %ebx
+
+	call    prot_to_real
+	.code16
+
+	pushl	%ebx
+	pushl	%edx
+	pushw	%cx
+	movw	%sp, %bx
+	lcall	*%ss:6(%bx)
+	cld
+	addw	$10, %sp
+	movw	%ax, %cx
+
+	DATA32  call	real_to_prot
+	.code32
+
+	movzwl	%cx, %eax
+
+	popl	%ebx
+	popl	%edi
+	popl	%esi
 	popl	%ebp
 	ret

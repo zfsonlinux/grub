@@ -1,7 +1,7 @@
 /* env.c - Environment variables */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2003,2005,2006,2007,2008  Free Software Foundation, Inc.
+ *  Copyright (C) 2003,2005,2006,2007,2008,2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ grub_env_find (const char *name)
 }
 
 grub_err_t
-grub_env_context_open (void)
+grub_env_context_open (int export)
 {
   struct grub_env_context *context;
   int i;
@@ -95,7 +95,7 @@ grub_env_context_open (void)
       
       for (var = context->prev->vars[i]; var; var = var->next)
 	{
-	  if (var->type == GRUB_ENV_VAR_GLOBAL)
+	  if (export && var->type == GRUB_ENV_VAR_GLOBAL)
 	    {
 	      if (grub_env_set (var->name, var->value) != GRUB_ERR_NONE)
 		{
@@ -124,9 +124,12 @@ grub_env_context_close (void)
     {
       struct grub_env_var *p, *q;
       
-      for (p = current_context->prev->vars[i]; p; p = q)
+      for (p = current_context->vars[i]; p; p = q)
 	{
 	  q = p->next;
+          grub_free (p->name);
+          if (p->type != GRUB_ENV_VAR_DATA)
+            grub_free (p->value);
 	  grub_free (p);
 	}
     }
@@ -146,10 +149,10 @@ grub_env_insert (struct grub_env_context *context,
   int idx = grub_env_hashval (var->name);
 
   /* Insert the variable into the hashtable.  */
-  var->prevp = &context->vars[idx];;
+  var->prevp = &context->vars[idx];
   var->next = context->vars[idx];
   if (var->next)
-    var->next->prevp = &var;
+    var->next->prevp = &(var->next);
   context->vars[idx] = var;
 }
 
@@ -331,12 +334,7 @@ grub_register_variable_hook (const char *name,
 
   if (! var)
     {
-      char *val = grub_strdup ("");
-
-      if (! val)
-	return grub_errno;
-      
-      if (grub_env_set (name, val) != GRUB_ERR_NONE)
+      if (grub_env_set (name, "") != GRUB_ERR_NONE)
 	return grub_errno;
       
       var = grub_env_find (name);

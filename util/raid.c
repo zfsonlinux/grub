@@ -1,7 +1,7 @@
 /* raid.c - RAID support for GRUB utils.  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2006,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 /* We only support RAID on Linux.  */
 #ifdef __linux__
 #include <grub/util/misc.h>
+#include <grub/util/raid.h>
 
 #include <string.h>
 #include <fcntl.h>
@@ -31,7 +32,7 @@
 #include <linux/raid/md_p.h>
 #include <linux/raid/md_u.h>
 
-char *
+static char *
 grub_util_getdiskname (int major, int minor)
 {
   char *name = xmalloc (15);

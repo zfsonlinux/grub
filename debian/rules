@@ -13,43 +13,64 @@ ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 else
 	CFLAGS += -O2
 endif
+
+# optimize loader/i386/linux.c for the linux shipped in debian
+CFLAGS += -DGRUB_ASSUME_LINUX_HAS_FB_SUPPORT=1
+
 export CFLAGS
 export CXXFLAGS := $(CFLAGS)
 
 CONFIGURE = CC="cc" CXX="g++" CPPFLAGS="" LDFLAGS="" \
 	$(CURDIR)/configure --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --includedir="\$${prefix}/include" \
 	--mandir="\$${prefix}/share/man" --infodir="\$${prefix}/share/info" --sysconfdir=/etc --localstatedir=/var \
-	--libexecdir="\$${prefix}/lib/$(package)" --disable-maintainer-mode --disable-dependency-tracking --srcdir=$(CURDIR) \
-	--enable-grub-emu
+	--libexecdir="\$${prefix}/lib/$(package)" --srcdir=$(CURDIR) \
+	--enable-grub-emu --enable-grub-mkfont --enable-efiemu
 
 AUTOGEN_FILES = configure config.h.in conf/*.mk
 
 $(AUTOGEN_FILES): autogen.sh configure.ac conf/*.rmk
 	./autogen.sh
 
-configure/grub-pc configure/grub-ieee1275 configure/grub-efi configure/grub-linuxbios:: $(AUTOGEN_FILES)
+configure/grub-pc configure/grub-ieee1275 configure/grub-efi configure/grub-coreboot:: $(AUTOGEN_FILES)
 	mkdir -p $(subst configure/,build/,$@)
 	cd $(subst configure/,build/,$@) && $(CONFIGURE) --with-platform=$(subst configure/grub-,,$@)
 
-build/grub-pc build/grub-efi build/grub-ieee1275 build/grub-linuxbios::
+configure/grub-common:: $(AUTOGEN_FILES)
+	mkdir -p build/grub-common
+	cd build/grub-common && $(CONFIGURE)
+
+build/grub-common build/grub-pc build/grub-efi build/grub-ieee1275 build/grub-coreboot::
 	$(MAKE) -C $@
 
 build/grub-rescue-pc:: build/grub-pc
 	mkdir -p $@
+	mkdir -p $@/rescue-disk/boot/grub
+	cp docs/grub.cfg $@/rescue-disk/boot/grub/
 	$(CURDIR)/build/grub-pc/grub-mkrescue \
 		--pkglibdir=$(CURDIR)/build/grub-pc \
 		--grub-mkimage=$(CURDIR)/build/grub-pc/grub-mkimage \
+		--overlay=$@/rescue-disk/ \
 		--image-type=floppy \
 		$(CURDIR)/$@/grub-rescue-floppy.img
 	$(CURDIR)/build/grub-pc/grub-mkrescue \
 		--pkglibdir=$(CURDIR)/build/grub-pc \
 		--grub-mkimage=$(CURDIR)/build/grub-pc/grub-mkimage \
+		--overlay=$@/rescue-disk/ \
 		--image-type=cdrom \
 		$(CURDIR)/$@/grub-rescue-cdrom.iso
 
-install/grub-pc install/grub-efi install/grub-ieee1275 install/grub-linuxbios::
+install/grub-pc install/grub-efi install/grub-ieee1275 install/grub-coreboot::
 	$(MAKE) -C $(subst install/,build/,$@) install DESTDIR=$(CURDIR)/debian/$(subst install/,,$@)/
-	for i in docs ; do \
+
+	# shipped with grub-common
+	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/etc/grub.d
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{grub-dumpbios,grub-probe,grub-emu,grub-mkconfig,grub-mkdevicemap}{,.8}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkelfimage,grub-mkfont,grub-editenv}{,.1}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{grub-mkconfig_lib,update-grub_lib}
+	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/share/grub/
+	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/include
+
+	for i in docs manpages ; do \
 		cp debian/$$i.in debian/$(subst install/,,$@).$$i ; \
 	done
 
@@ -59,29 +80,41 @@ install/grub-pc install/grub-efi install/grub-ieee1275 install/grub-linuxbios::
 	cd $(CURDIR)/debian/$(subst install/,,$@) && find ./usr/lib/grub -name \*.mod \
 		| sed -e "s%.*%$(subst install/,,$@): unstripped-binary-or-object &%g" \
 	> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@)
+	cd $(CURDIR)/debian/$(subst install/,,$@) && find ./usr/lib/grub -name kernel.elf \
+		| sed -e "s%.*%$(subst install/,,$@): statically-linked-binary &%g" \
+	>> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@)
+
+install/grub-common::
+	$(MAKE) -C $(subst install/,build/,$@) install DESTDIR=$(CURDIR)/debian/$(subst install/,,$@)/
+	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{i386,powerpc}-*
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{update-grub,grub-install,grub-setup}{,.8}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/grub-{mkimage,mkrescue}{,.1}
 
 clean:: debian/legacy/update-grub
 	chmod +x debian/{script,grub.d/*,legacy/*}
-	-rm -f debian/grub-{pc,efi,ieee1275,linuxbios}.docs
+	-rm -f debian/grub-{pc,efi,ieee1275,coreboot}.docs
 	-rm -rf build
+
+	# make sure PO files are always up-to-date
+	debconf-updatepo
 
 debian/legacy/update-grub:
 	svn cat svn://svn.debian.org/pkg-grub/grub/trunk/debian/update-grub > $@
 	chmod +x $@
 
-# Grab fixes from CVS using our version as reference.
-cvs-sync:
-	cvs -d:pserver:anonymous@cvs.savannah.gnu.org:/cvsroot/grub checkout -d grub2-cvs grub2; \
+# Grab fixes from SVN using our version as reference.
+svn-sync:
+	svn co svn://svn.sv.gnu.org/grub/trunk/grub2 grub2-svn; \
 	UVERSION=$$(dpkg-parsechangelog | grep Version \
 	                                | sed 's,Version: ,,g;s,-[0-9]*$$,,g;s,\.,_,g'); \
-	cd grub2-cvs && \
-	cvs diff -uN -r release_$$UVERSION -r HEAD > ../debian/patches/00_cvs-sync.patch; \
-	cd .. && rm -rf grub2-cvs
+	cd grub2-svn && \
+	svn diff -uN -r release_$$UVERSION -r HEAD > ../debian/patches/00_svn-sync.patch; \
+	cd .. && rm -rf grub2-svn
 
-cvs-snapshot:
+svn-snapshot:
 	UVERSION=$$(dpkg-parsechangelog | grep Version \
 	                                | sed 's,Version: ,,g;s,-[0-9]*$$,,g'); \
-	cvs -d:pserver:anonymous@cvs.savannah.gnu.org:/cvsroot/grub export -d grub2-$$UVERSION -rHEAD grub2; \
+	svn co svn://svn.sv.gnu.org/grub/trunk/grub2 export -d grub2-$$UVERSION -rHEAD grub2; \
 	tar -czf grub2_$$UVERSION.orig.tar.gz grub2-$$UVERSION; \
 	rm -rf grub2-$$UVERSION; \
 	mv grub2_$$UVERSION.orig.tar.gz ../tarballs/

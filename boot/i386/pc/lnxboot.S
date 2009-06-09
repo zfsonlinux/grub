@@ -17,6 +17,7 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
 #include <grub/boot.h>
 #include <grub/machine/boot.h>
 #include <grub/machine/kernel.h>
@@ -115,7 +116,7 @@ gdt_dst2:
 	.long	0, 0, 0, 0		/* More space for the BIOS.  */
 
 reg_edx:
-	.byte	0x80,0,0xFF,0xFF
+	.byte	0x80, 0, 0xFF, 0xFF
 
 data_leng:
 	.long	0
@@ -185,7 +186,7 @@ real_code_2:
 	call	move_memory
 
 	/* Check for multiboot signature.  */
-	cmpl	$MULTIBOOT_MAGIC, %ss:(DATA_ADDR + 0x50)
+	cmpl	$MULTIBOOT_MAGIC, %ss:(DATA_ADDR + GRUB_KERNEL_MACHINE_DATA_END)
 	jz	1f
 
 	movl	(ramdisk_image - start), %esi
@@ -206,6 +207,8 @@ real_code_2:
 
 	movsbl	(reg_edx + 2 - start), %eax
 	movl	%eax, %ss:(DATA_ADDR + GRUB_KERNEL_MACHINE_INSTALL_BSD_PART)
+
+	movb	$0xFF, %dh
 
 	ljmp	$(DATA_ADDR >> 4), $0
 
