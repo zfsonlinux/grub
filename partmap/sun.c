@@ -67,10 +67,6 @@ struct grub_sun_block
 
 static struct grub_partition_map grub_sun_partition_map;
 
-#ifndef GRUB_UTIL
-static grub_dl_t my_mod;
-#endif
-
 /* Verify checksum (true=ok).  */
 static int
 grub_sun_is_valid (struct grub_sun_block *label)
@@ -107,7 +103,7 @@ sun_partition_map_iterate (grub_disk_t disk,
   p->data = 0;
   p->partmap = &grub_sun_partition_map;
   if (grub_disk_read (&raw, 0, 0, sizeof (struct grub_sun_block),
-		      (char *) &block) == GRUB_ERR_NONE)
+		      &block) == GRUB_ERR_NONE)
     {
       if (GRUB_PARTMAP_SUN_MAGIC != grub_be_to_cpu16 (block.magic))
 	grub_error (GRUB_ERR_BAD_PART_TABLE, "not a sun partition table");
@@ -211,9 +207,6 @@ static struct grub_partition_map grub_sun_partition_map =
 GRUB_MOD_INIT(sun_partition_map)
 {
   grub_partition_map_register (&grub_sun_partition_map);
-#ifndef GRUB_UTIL
-  my_mod = mod;
-#endif
 }
 
 GRUB_MOD_FINI(sun_partition_map)

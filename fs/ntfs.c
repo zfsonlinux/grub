@@ -1,7 +1,7 @@
 /* ntfs.c - NTFS filesystem */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2007 Free Software Foundation, Inc.
+ *  Copyright (C) 2007,2008 Free Software Foundation, Inc.
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,9 +25,7 @@
 #include <grub/fshelp.h>
 #include <grub/ntfs.h>
 
-#ifndef GRUB_UTIL
 static grub_dl_t my_mod;
-#endif
 
 ntfscomp_func_t grub_ntfscomp_func;
 
@@ -176,17 +174,15 @@ find_attr (struct grub_ntfs_attr *at, unsigned char attr)
       pa = at->attr_end;
       if (pa[8])
 	{
-	  if (u32at (pa, 0x28) > 4096)
-	    {
-	      grub_error (GRUB_ERR_BAD_FS,
-			  "Non-resident attribute list too large");
-	      return NULL;
-	    }
+          int n;
+
+          n = ((u32at (pa, 0x30) + GRUB_DISK_SECTOR_SIZE - 1)
+               & (~(GRUB_DISK_SECTOR_SIZE - 1)));
 	  at->attr_cur = at->attr_end;
-	  at->edat_buf = grub_malloc (u32at (pa, 0x28));
+	  at->edat_buf = grub_malloc (n);
 	  if (!at->edat_buf)
 	    return NULL;
-	  if (read_data (at, pa, at->edat_buf, 0, u32at (pa, 0x28), 0, 0))
+	  if (read_data (at, pa, at->edat_buf, 0, n, 0, 0))
 	    {
 	      grub_error (GRUB_ERR_BAD_FS,
 			  "Fail to read non-resident attribute list");
@@ -333,8 +329,8 @@ retry:
   return 0;
 }
 
-static int
-grub_ntfs_read_block (grub_fshelp_node_t node, int block)
+static grub_disk_addr_t
+grub_ntfs_read_block (grub_fshelp_node_t node, grub_disk_addr_t block)
 {
   struct grub_ntfs_rlst *ctx;
 
@@ -577,13 +573,20 @@ list_file (struct grub_ntfs_file *diro, char *pos,
 
   while (1)
     {
-      char *ustr;
+      char *ustr, namespace;
+
       if (pos[0xC] & 2)		/* end signature */
 	break;
 
-      np = pos + 0x52;
-      ns = (unsigned char) *(np - 2);
-      if (ns)
+      np = pos + 0x50;
+      ns = (unsigned char) *(np++);
+      namespace = *(np++);
+
+      /*
+       *  Ignore files in DOS namespace, as they will reappear as Win32
+       *  names.
+       */
+      if ((ns) && (namespace != 2))
 	{
 	  enum grub_fshelp_filetype type;
 	  struct grub_ntfs_file *fdiro;
@@ -611,6 +614,9 @@ list_file (struct grub_ntfs_file *diro, char *pos,
 	    return 0;
 	  *grub_utf16_to_utf8 ((grub_uint8_t *) ustr, (grub_uint16_t *) np,
 			       ns) = '\0';
+
+          if (namespace)
+            type |= GRUB_FSHELP_CASE_INSENSITIVE;
 
 	  if (hook (ustr, type, fdiro))
 	    {
@@ -689,35 +695,32 @@ grub_ntfs_iterate_dir (grub_fshelp_node_t dir,
 	  (u32at (cur_pos, ofs) == 0x490024) &&
 	  (u32at (cur_pos, ofs + 4) == 0x300033))
 	{
-	  if ((at->flags & AF_ALST) && (cur_pos[8] == 0))
-	    {
-	      grub_error (GRUB_ERR_BAD_FS,
-			  "$BITMAP should be non-resident when in attribute list");
-	      goto done;
-	    }
-	  if (cur_pos[8] == 0)
-	    {
-	      bitmap = (unsigned char *) (cur_pos + u16at (cur_pos, 0x14));
-	      bitmap_len = u32at (cur_pos, 0x10);
-	      break;
-	    }
-	  if (u32at (cur_pos, 0x28) > BMP_LEN)
-	    {
-	      grub_error (GRUB_ERR_BAD_FS, "Non-resident $BITMAP too large");
-	      goto done;
-	    }
-	  bmp = grub_malloc (u32at (cur_pos, 0x28));
-	  if (bmp == NULL)
-	    goto done;
+          int is_resident = (cur_pos[8] == 0);
 
-	  bitmap = (unsigned char *) bmp;
-	  bitmap_len = u32at (cur_pos, 0x30);
-	  if (read_data (at, cur_pos, bmp, 0, u32at (cur_pos, 0x28), 0, 0))
+          bitmap_len = ((is_resident) ? u32at (cur_pos, 0x10) :
+                        u32at (cur_pos, 0x28));
+
+          bmp = grub_malloc (bitmap_len);
+          if (bmp == NULL)
+            goto done;
+
+	  if (is_resident)
 	    {
-	      grub_error (GRUB_ERR_BAD_FS,
-			  "Fails to read non-resident $BITMAP");
-	      goto done;
+              grub_memcpy (bmp, (char *) (cur_pos + u16at (cur_pos, 0x14)),
+                           bitmap_len);
 	    }
+          else
+            {
+              if (read_data (at, cur_pos, bmp, 0, bitmap_len, 0, 0))
+                {
+                  grub_error (GRUB_ERR_BAD_FS,
+                              "Fails to read non-resident $BITMAP");
+                  goto done;
+                }
+              bitmap_len = u32at (cur_pos, 0x30);
+            }
+
+          bitmap = (unsigned char *) bmp;
 	  break;
 	}
     }
@@ -797,7 +800,7 @@ grub_ntfs_mount (grub_disk_t disk)
   data->disk = disk;
 
   /* Read the BPB.  */
-  if (grub_disk_read (disk, 0, 0, sizeof (bpb), (char *) &bpb))
+  if (grub_disk_read (disk, 0, 0, sizeof (bpb), &bpb))
     goto fail;
 
   if (grub_memcmp ((char *) &bpb.oem_name, "NTFS", 4))
@@ -818,8 +821,7 @@ grub_ntfs_mount (grub_disk_t disk)
 
   data->mft_start = grub_le_to_cpu64 (bpb.mft_lcn) * data->spc;
 
-  if ((data->mft_size > MAX_MFT) || (data->idx_size > MAX_IDX) ||
-      (data->spc > MAX_SPC) || (data->spc > data->idx_size))
+  if ((data->mft_size > MAX_MFT) || (data->idx_size > MAX_IDX))
     goto fail;
 
   data->mmft.data = data;
@@ -832,6 +834,8 @@ grub_ntfs_mount (grub_disk_t disk)
   if (grub_disk_read
       (disk, data->mft_start, 0, data->mft_size << BLK_SHR, data->mmft.buf))
     goto fail;
+
+  data->uuid = grub_le_to_cpu64 (bpb.num_serial);
 
   if (fixup (data, data->mmft.buf, data->mft_size, "FILE"))
     goto fail;
@@ -851,13 +855,15 @@ fail:
     {
       free_file (&data->mmft);
       free_file (&data->cmft);
+      grub_free (data);
     }
   return 0;
 }
 
 static grub_err_t
 grub_ntfs_dir (grub_device_t device, const char *path,
-	       int (*hook) (const char *filename, int dir))
+	       int (*hook) (const char *filename, 
+			    const struct grub_dirhook_info *info))
 {
   struct grub_ntfs_data *data = 0;
   struct grub_fshelp_node *fdiro = 0;
@@ -870,20 +876,14 @@ grub_ntfs_dir (grub_device_t device, const char *path,
 				enum grub_fshelp_filetype filetype,
 				grub_fshelp_node_t node)
   {
-    grub_free (node);
-
-    if (filetype == GRUB_FSHELP_DIR)
-      return hook (filename, 1);
-    else
-      return hook (filename, 0);
-
-    return 0;
+      struct grub_dirhook_info info;
+      grub_memset (&info, 0, sizeof (info));
+      info.dir = ((filetype & GRUB_FSHELP_TYPE_MASK) == GRUB_FSHELP_DIR);
+      grub_free (node);
+      return hook (filename, &info);
   }
 
-#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
-#endif
-
 
   data = grub_ntfs_mount (device->disk);
   if (!data)
@@ -910,9 +910,7 @@ fail:
       grub_free (data);
     }
 
-#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-#endif
 
   return grub_errno;
 }
@@ -923,9 +921,7 @@ grub_ntfs_open (grub_file_t file, const char *name)
   struct grub_ntfs_data *data = 0;
   struct grub_fshelp_node *mft = 0;
 
-#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
-#endif
 
   data = grub_ntfs_mount (file->device->disk);
   if (!data)
@@ -963,9 +959,7 @@ fail:
       grub_free (data);
     }
 
-#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-#endif
 
   return grub_errno;
 }
@@ -1006,9 +1000,7 @@ grub_ntfs_close (grub_file_t file)
       grub_free (data);
     }
 
-#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-#endif
 
   return grub_errno;
 }
@@ -1020,9 +1012,7 @@ grub_ntfs_label (grub_device_t device, char **label)
   struct grub_fshelp_node *mft = 0;
   char *pa;
 
-#ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
-#endif
 
   *label = 0;
 
@@ -1074,9 +1064,31 @@ fail:
       grub_free (data);
     }
 
-#ifndef GRUB_UTIL
   grub_dl_unref (my_mod);
-#endif
+
+  return grub_errno;
+}
+
+static grub_err_t
+grub_ntfs_uuid (grub_device_t device, char **uuid)
+{
+  struct grub_ntfs_data *data;
+  grub_disk_t disk = device->disk;
+
+  grub_dl_ref (my_mod);
+
+  data = grub_ntfs_mount (disk);
+  if (data)
+    {
+      *uuid = grub_malloc (16 + sizeof ('\0'));
+      grub_sprintf (*uuid, "%016llx", (unsigned long long) data->uuid);
+    }
+  else
+    *uuid = NULL;
+
+  grub_dl_unref (my_mod);
+
+  grub_free (data);
 
   return grub_errno;
 }
@@ -1088,15 +1100,14 @@ static struct grub_fs grub_ntfs_fs = {
   .read = grub_ntfs_read,
   .close = grub_ntfs_close,
   .label = grub_ntfs_label,
+  .uuid = grub_ntfs_uuid,
   .next = 0
 };
 
 GRUB_MOD_INIT (ntfs)
 {
   grub_fs_register (&grub_ntfs_fs);
-#ifndef GRUB_UTIL
   my_mod = mod;
-#endif
 }
 
 GRUB_MOD_FINI (ntfs)
