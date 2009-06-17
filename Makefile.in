@@ -64,16 +64,22 @@ mkinstalldirs = $(srcdir)/mkinstalldirs
 
 CC = @CC@
 CFLAGS = @CFLAGS@
+ASFLAGS = @ASFLAGS@
 LDFLAGS = @LDFLAGS@
 CPPFLAGS = @CPPFLAGS@ -I$(builddir) -I$(builddir)/include -I$(srcdir)/include -Wall -W \
 	 -DGRUB_LIBDIR=\"$(pkglibdir)\"
 TARGET_CC = @TARGET_CC@
 TARGET_CFLAGS = @TARGET_CFLAGS@
+TARGET_ASFLAGS = @TARGET_ASFLAGS@
+TARGET_MODULE_FORMAT = @TARGET_MODULE_FORMAT@
+TARGET_APPLE_CC = @TARGET_APPLE_CC@
+OBJCONV = @OBJCONV@
 TARGET_CPPFLAGS = @TARGET_CPPFLAGS@ -I$(builddir) -I$(builddir)/include -I$(srcdir)/include \
 	-Wall -W
 TARGET_LDFLAGS = @TARGET_LDFLAGS@
 TARGET_IMG_LDSCRIPT = @TARGET_IMG_LDSCRIPT@
 TARGET_IMG_LDFLAGS = @TARGET_IMG_LDFLAGS@
+TARGET_IMG_CFLAGS = @TARGET_IMG_CFLAGS@
 TARGET_OBJ2ELF = @TARGET_OBJ2ELF@
 EXEEXT = @EXEEXT@
 OBJCOPY = @OBJCOPY@
@@ -118,7 +124,7 @@ PROGRAMS = $(bin_UTILITIES) $(sbin_UTILITIES)
 SCRIPTS = $(bin_SCRIPTS) $(sbin_SCRIPTS) $(grub-mkconfig_SCRIPTS)
 
 CLEANFILES =
-MOSTLYCLEANFILES = 
+MOSTLYCLEANFILES =
 DISTCLEANFILES = config.status config.cache config.log config.h \
 	Makefile stamp-h include/grub/cpu include/grub/machine \
 	gensymlist.sh genkernsyms.sh build_env.mk
@@ -186,8 +192,12 @@ build_env.mk: Makefile
 	(\
 	echo "TARGET_CC=$(TARGET_CC)" ; \
 	echo "TARGET_CFLAGS=$(TARGET_CFLAGS)" ; \
-	echo "TARGET_CPPFLAGS=$(TARGET_CPPFLAGS) -I$(pkglibdir)" ; \
+	echo "TARGET_ASFLAGS=$(TARGET_ASFLAGS)" ; \
+	echo "TARGET_CPPFLAGS=$(TARGET_CPPFLAGS) -I$(pkglibdir) -I$(includedir)" ; \
 	echo "STRIP=$(STRIP)" ; \
+	echo "OBJCONV=$(OBJCONV)" ; \
+	echo "TARGET_MODULE_FORMAT=$(TARGET_MODULE_FORMAT)" ; \
+	echo "TARGET_APPLE_CC=$(TARGET_APPLE_CC)" ; \
 	echo "COMMON_ASFLAGS=$(COMMON_ASFLAGS)" ; \
 	echo "COMMON_CFLAGS=$(COMMON_CFLAGS)" ; \
 	echo "COMMON_LDFLAGS=$(COMMON_LDFLAGS)"\
@@ -213,12 +223,13 @@ install-local: all
 	for file in $$list; do \
 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
 	  dest="`echo $$file | sed 's,include/,,'`"; \
-	  destdir="`echo $$dest | sed 's,\(^\|/\)[^/]*$$,,g'`"; \
+	  destdir="`echo $$dest | sed 's,[^/]*$$,,g'`"; \
 	  $(mkinstalldirs) $(DESTDIR)$(includedir)/$$destdir; \
 	  if test -f "$$dir$$file"; then \
 	    $(INSTALL_DATA) $$dir$$file $(DESTDIR)$(includedir)/$$dest; \
 	  elif test -L "$$dir$$file"; then \
-	    cp -d $$dir$$file $(DESTDIR)$(includedir)/$$dest; \
+	    rm -rf $(DESTDIR)$(includedir)/$$dest && \
+	    cp -fP $$dir$$file $(DESTDIR)$(includedir)/$$dest; \
 	  fi; \
 	done
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
@@ -298,6 +309,17 @@ uninstall:
 	@list='$(grub-mkconfig_SCRIPTS) $(grub-mkconfig_DATA)'; for file in $$list; do \
 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
 	  rm -f $(DESTDIR)$(sysconfdir)/grub.d/$$dest; \
+	done
+	@list='$(include_DATA)'; \
+	for file in $$list; do \
+	  dest="`echo $$file | sed 's,include/,,'`"; \
+	  rm -f $(DESTDIR)$(includedir)/$$dest; \
+	done
+	@list='$(lib_DATA)'; \
+	for file in $$list; do \
+	  dest="`echo $$file | sed 's,.*/,,'`"; \
+	  echo rm -f $(DESTDIR)$(libdir)/$$dest; \
+	  rm -f $(DESTDIR)$(libdir)/grub/$$dest; \
 	done
 
 clean:

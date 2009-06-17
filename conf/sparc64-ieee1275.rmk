@@ -66,7 +66,7 @@ endif
 
 # For grub-mkimage.
 grub_mkimage_SOURCES = util/sparc64/ieee1275/grub-mkimage.c util/misc.c \
-        util/resolve.c 
+        util/resolve.c
 
 # For grub-setup.
 util/sparc64/ieee1275/grub-setup.c_DEPENDENCIES = grub_setup_init.h
@@ -148,6 +148,12 @@ pkglib_MODULES = halt.mod \
 	reboot.mod \
 	memdisk.mod \
 	lsmmap.mod
+
+# For boot.mod.
+pkglib_MODULES += boot.mod 
+boot_mod_SOURCES = commands/boot.c lib/i386/pc/biosnum.c
+boot_mod_CFLAGS = $(COMMON_CFLAGS)
+boot_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For linux.mod.
 linux_mod_SOURCES = loader/sparc64/ieee1275/linux.c
