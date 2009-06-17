@@ -112,7 +112,7 @@ grub_file_getline (grub_file_t file)
       grub_free (cmdline);
       cmdline = 0;
     }
-  
+
   return cmdline;
 }
 
@@ -149,9 +149,12 @@ free_menu_entry_classes (struct grub_menu_entry_class *head)
     }
 }
 
+/* Add a menu entry to the current menu context (as given by the environment
+   variable data slot `menu').  As the configuration file is read, the script
+   parser calls this when a menu entry is to be created.  */
 grub_err_t
-grub_menu_addentry (int argc, const char **args,
-		    const char *sourcecode)
+grub_normal_add_menu_entry (int argc, const char **args,
+			    const char *sourcecode)
 {
   const char *menutitle = 0;
   const char *menusourcecode;
@@ -288,7 +291,7 @@ read_config_file (const char *config)
 {
   grub_file_t file;
   grub_parser_t old_parser = 0;
-  
+
   auto grub_err_t getline (char **line, int cont);
   grub_err_t getline (char **line, int cont __attribute__ ((unused)))
     {
@@ -403,7 +406,7 @@ grub_normal_execute (const char *config, int nested, int batch)
   grub_command_execute ("parser.sh", 0, 0);
 
   reader_nested = nested;
-  
+
   if (config)
     {
       menu = read_config_file (config);
@@ -443,7 +446,7 @@ grub_cmd_normal (struct grub_command *cmd,
 	 so that it won't get broken by longjmp.  */
       static char *config;
       const char *prefix;
-      
+
       prefix = grub_env_get ("prefix");
       if (prefix)
 	{

@@ -23,10 +23,10 @@
 #include <grub/misc.h>
 #include <grub/disk.h>
 #include <grub/loader.h>
+#include <grub/env.h>
 #include <grub/machine/memory.h>
+#include <grub/machine/biosnum.h>
 
-
-#define MODNAME "drivemap"
 
 /* Real mode IVT slot (seg:off far pointer) for interrupt 0x13.  */
 static grub_uint32_t *const int13slot = UINT_TO_PTR (4 * 0x13);
@@ -144,62 +144,6 @@ drivemap_remove (grub_uint8_t newdrive)
     }
 }
 
-/* Given a device name, resolves its BIOS disk number and stores it in the
-   passed location, which should only be trusted if ERR_NONE is returned.  */
-static grub_err_t
-parse_biosdisk (const char *name, grub_uint8_t *disknum)
-{
-  grub_disk_t disk;
-  /* Skip the first ( in (hd0) - disk_open wants just the name.  */
-  if (*name == '(')
-    name++;
-
-  disk = grub_disk_open (name);
-  if (! disk)
-    return grub_error (GRUB_ERR_UNKNOWN_DEVICE, "unknown device \"%s\"",
-		       name);
-  const enum grub_disk_dev_id id = disk->dev->id;
-  /* The following assignment is only sound if the device is indeed a
-     biosdisk.  The caller must check the return value.  */
-  if (disknum)
-    *disknum = disk->id;
-  grub_disk_close (disk);
-  if (id != GRUB_DISK_DEVICE_BIOSDISK_ID)
-    return grub_error (GRUB_ERR_BAD_DEVICE, "%s is not a BIOS disk", name);
-  return GRUB_ERR_NONE;
-}
-
-/* Given a BIOS disk number, returns its GRUB device name if it exists.
-   If the call succeeds, the resulting device string must be freed.
-   For nonexisting BIOS disk numbers, this function returns
-   GRUB_ERR_UNKNOWN_DEVICE.  */
-static grub_err_t
-revparse_biosdisk (const grub_uint8_t dnum, const char **output)
-{
-  int found = 0;
-  auto int find (const char *name);
-  int find (const char *name)
-  {
-    const grub_disk_t disk = grub_disk_open (name);
-    if (! disk)
-      return 0;
-    if (disk->id == dnum && disk->dev->id == GRUB_DISK_DEVICE_BIOSDISK_ID)
-      {
-	found = 1;
-	if (output)
-	  *output = grub_strdup (name);
-      }
-    grub_disk_close (disk);
-    return found;
-  }
-
-  grub_disk_dev_iterate (find);
-  if (found)
-    return GRUB_ERR_NONE;
-  return grub_error (GRUB_ERR_UNKNOWN_DEVICE, "BIOS disk %02x not found",
-		     dnum);
-}
-
 /* Given a GRUB-like device name and a convenient location, stores the
    related BIOS disk number.  Accepts devices like \((f|h)dN\), with
    0 <= N < 128.  */
@@ -239,15 +183,13 @@ list_mappings (void)
   drivemap_node_t *curnode = map_head;
   while (curnode)
     {
-      const char *dname = 0;
-      grub_err_t err = revparse_biosdisk (curnode->redirto, &dname);
-      if (err != GRUB_ERR_NONE)
-	return err;
-      grub_printf ("%cD #%-3u (0x%02x)       %s\n",
+      grub_printf ("%cD #%-3u (0x%02x)       %cd%d\n",
 		   (curnode->newdrive & 0x80) ? 'H' : 'F',
-		   curnode->newdrive & 0x7F, curnode->newdrive, dname);
+		   curnode->newdrive & 0x7F, curnode->newdrive,
+		   (curnode->redirto & 0x80) ? 'h' : 'f',
+		   curnode->redirto & 0x7F
+		   );
       curnode = curnode->next;
-      grub_free ((char *) dname);
     }
   return GRUB_ERR_NONE;
 }
@@ -287,30 +229,24 @@ grub_cmd_drivemap (struct grub_extcmd *cmd, int argc, char **args)
   if (argc != 2)
     return grub_error (GRUB_ERR_BAD_ARGUMENT, "two arguments required");
 
-  err = parse_biosdisk (args[0], &mapfrom);
+  err = tryparse_diskstring (args[0], &mapfrom);
   if (err != GRUB_ERR_NONE)
     return err;
 
-  /* When swapping we require both devices to be BIOS disks, but when
-     performing direct mappings we only require the 2nd argument to look
-     like a BIOS disk in order to resolve it into a BIOS disk number.  */
-  if (cmd->state[OPTIDX_SWAP].set)
-    err = parse_biosdisk (args[1], &mapto);
-  else
-    err = tryparse_diskstring (args[1], &mapto);
+  err = tryparse_diskstring (args[1], &mapto);
   if (err != GRUB_ERR_NONE)
     return err;
 
   if (mapto == mapfrom)
     {
       /* Reset to default.  */
-      grub_dprintf (MODNAME, "Removing mapping for %s (%02x)\n",
+      grub_dprintf ("drivemap", "Removing mapping for %s (%02x)\n",
 		    args[0], mapfrom);
       drivemap_remove (mapfrom);
       return GRUB_ERR_NONE;
     }
   /* Set the mapping for the disk (overwrites any existing mapping).  */
-  grub_dprintf (MODNAME, "%s %s (%02x) = %s (%02x)\n",
+  grub_dprintf ("drivemap", "%s %s (%02x) = %s (%02x)\n",
 		cmd->state[OPTIDX_SWAP].set ? "Swapping" : "Mapping",
 		args[1], mapto, args[0], mapfrom);
   err = drivemap_set (mapto, mapfrom);
@@ -349,16 +285,16 @@ install_int13_handler (int noret __attribute__ ((unused)))
   if (entries == 0)
     {
       /* No need to install the int13h handler.  */
-      grub_dprintf (MODNAME, "No drives marked as remapped, not installing "
+      grub_dprintf ("drivemap", "No drives marked as remapped, not installing "
 		    "our int13h handler.\n");
       return GRUB_ERR_NONE;
     }
 
-  grub_dprintf (MODNAME, "Installing our int13h handler\n");
+  grub_dprintf ("drivemap", "Installing our int13h handler\n");
 
   /* Save the pointer to the old handler.  */
   grub_drivemap_oldhandler = *int13slot;
-  grub_dprintf (MODNAME, "Original int13 handler: %04x:%04x\n",
+  grub_dprintf ("drivemap", "Original int13 handler: %04x:%04x\n",
 		(grub_drivemap_oldhandler >> 16) & 0x0ffff,
 		grub_drivemap_oldhandler & 0x0ffff);
 
@@ -366,7 +302,7 @@ install_int13_handler (int noret __attribute__ ((unused)))
      enough to hold the handler and its data.  */
   total_size = INT13H_OFFSET (&grub_drivemap_mapstart)
     + (entries + 1) * sizeof (int13map_node_t);
-  grub_dprintf (MODNAME, "Payload is %u bytes long\n", total_size);
+  grub_dprintf ("drivemap", "Payload is %u bytes long\n", total_size);
   handler_base = grub_mmap_malign_and_register (16, total_size,
 						&drivemap_mmap,
 						GRUB_MACHINE_MEMORY_RESERVED,
@@ -376,7 +312,7 @@ install_int13_handler (int noret __attribute__ ((unused)))
 		       "memory for the int13h handler");
 
   /* Copy int13h handler bundle to reserved area.  */
-  grub_dprintf (MODNAME, "Reserved memory at %p, copying handler\n",
+  grub_dprintf ("drivemap", "Reserved memory at %p, copying handler\n",
 		handler_base);
   grub_memcpy (handler_base, &grub_drivemap_handler,
 	       INT13H_OFFSET (&grub_drivemap_mapstart));
@@ -385,22 +321,22 @@ install_int13_handler (int noret __attribute__ ((unused)))
   curentry = map_head;
   handler_map = (int13map_node_t *) (handler_base +
 				     INT13H_OFFSET (&grub_drivemap_mapstart));
-  grub_dprintf (MODNAME, "Target map at %p, copying mappings\n", handler_map);
+  grub_dprintf ("drivemap", "Target map at %p, copying mappings\n", handler_map);
   for (i = 0; i < entries; ++i, curentry = curentry->next)
     {
       handler_map[i].disknum = curentry->newdrive;
       handler_map[i].mapto = curentry->redirto;
-      grub_dprintf (MODNAME, "\t#%d: 0x%02x <- 0x%02x\n", i,
+      grub_dprintf ("drivemap", "\t#%d: 0x%02x <- 0x%02x\n", i,
 		    handler_map[i].disknum, handler_map[i].mapto);
     }
   /* Signal end-of-map.  */
   handler_map[i].disknum = 0;
   handler_map[i].mapto = 0;
-  grub_dprintf (MODNAME, "\t#%d: 0x00 <- 0x00 (end)\n", i);
+  grub_dprintf ("drivemap", "\t#%d: 0x00 <- 0x00 (end)\n", i);
 
   /* Install our function as the int13h handler in the IVT.  */
   *int13slot = ((grub_uint32_t) handler_base) << 12;	/* Segment address.  */
-  grub_dprintf (MODNAME, "New int13 handler: %04x:%04x\n",
+  grub_dprintf ("drivemap", "New int13 handler: %04x:%04x\n",
 		(*int13slot >> 16) & 0x0ffff, *int13slot & 0x0ffff);
 
   return GRUB_ERR_NONE;
@@ -415,19 +351,58 @@ uninstall_int13_handler (void)
   *int13slot = grub_drivemap_oldhandler;
   grub_mmap_free_and_unregister (drivemap_mmap);
   grub_drivemap_oldhandler = 0;
-  grub_dprintf (MODNAME, "Restored int13 handler: %04x:%04x\n",
+  grub_dprintf ("drivemap", "Restored int13 handler: %04x:%04x\n",
 		(*int13slot >> 16) & 0x0ffff, *int13slot & 0x0ffff);
 
   return GRUB_ERR_NONE;
 }
 
+static int
+grub_get_root_biosnumber_drivemap (void)
+{
+  char *biosnum;
+  int ret = -1;
+  grub_device_t dev;
+
+  biosnum = grub_env_get ("biosnum");
+
+  if (biosnum)
+    return grub_strtoul (biosnum, 0, 0);
+
+  dev = grub_device_open (0);
+  if (dev && dev->disk && dev->disk->dev 
+      && dev->disk->dev->id == GRUB_DISK_DEVICE_BIOSDISK_ID)
+    {
+      drivemap_node_t *curnode = map_head;
+      ret = (int) dev->disk->id;
+      while (curnode)
+	{
+	  if (curnode->redirto == ret)
+	    {
+	      ret = curnode->newdrive;
+	      break;
+	    }
+	  curnode = curnode->next;
+	}
+
+    }
+
+  if (dev)
+    grub_device_close (dev);
+
+  return ret;
+}
+
 static grub_extcmd_t cmd;
+static int (*grub_get_root_biosnumber_saved) (void);
 
 GRUB_MOD_INIT (drivemap)
 {
-  cmd = grub_register_extcmd (MODNAME, grub_cmd_drivemap,
+  grub_get_root_biosnumber_saved = grub_get_root_biosnumber;
+  grub_get_root_biosnumber = grub_get_root_biosnumber_drivemap;
+  cmd = grub_register_extcmd ("drivemap", grub_cmd_drivemap,
 					GRUB_COMMAND_FLAG_BOTH,
-					MODNAME
+					"drivemap"
 					" -l | -r | [-s] grubdev osdisk",
 					"Manage the BIOS drive mappings",
 					options);
@@ -439,6 +414,7 @@ GRUB_MOD_INIT (drivemap)
 
 GRUB_MOD_FINI (drivemap)
 {
+  grub_get_root_biosnumber = grub_get_root_biosnumber_saved;
   grub_loader_unregister_preboot_hook (drivemap_hook);
   drivemap_hook = 0;
   grub_unregister_extcmd (cmd);
