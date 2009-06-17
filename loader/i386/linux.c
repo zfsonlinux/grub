@@ -43,8 +43,10 @@
    into Linux, and therefore can benefit from seamless mode transition between
    GRUB and Linux (saving boot time and visual glitches).  Official GRUB, OTOH,
    needs to be conservative.  */
-#ifndef GRUB_ASSUME_LINUX_HAS_FB_SUPPORT
-#define GRUB_ASSUME_LINUX_HAS_FB_SUPPORT 0
+#ifdef GRUB_ASSUME_LINUX_HAS_FB_SUPPORT
+#define DEFAULT_VIDEO_MODE "keep,1024x768,800x600,640x480"
+#else
+#define DEFAULT_VIDEO_MODE "text"
 #endif
 
 static grub_dl_t my_mod;
@@ -94,8 +96,7 @@ static struct idt_descriptor idt_desc =
     0
   };
 
-static grub_uint16_t vid_mode;
-
+#ifdef GRUB_MACHINE_PCBIOS
 struct linux_vesafb_res
 {
   grub_uint16_t width;
@@ -262,6 +263,7 @@ struct linux_vesafb_mode linux_vesafb_modes[] =
     { VGA_800_500, 24 },	/* 0x372 */
     { VGA_800_500, 32 },	/* 0x373 */
   };
+#endif
 
 static inline grub_size_t
 page_align (grub_size_t size)
@@ -283,15 +285,15 @@ find_mmap_size (void)
       count++;
       return 0;
     }
-  
+
   grub_mmap_iterate (hook);
-  
+
   mmap_size = count * sizeof (struct grub_e820_mmap);
 
   /* Increase the size a bit for safety, because GRUB allocates more on
      later.  */
   mmap_size += (1 << 12);
-  
+
   return page_align (mmap_size);
 }
 
@@ -315,15 +317,15 @@ allocate_pages (grub_size_t prot_size)
 
   grub_dprintf ("linux", "real_size = %x, prot_size = %x, mmap_size = %x\n",
 		(unsigned) real_size, (unsigned) prot_size, (unsigned) mmap_size);
-  
+
   /* Calculate the number of pages; Combine the real mode code with
      the memory map buffer for simplicity.  */
   real_mode_pages = ((real_size + mmap_size) >> 12);
   prot_mode_pages = (prot_size >> 12);
-  
+
   /* Initialize the memory pointers with NULL for convenience.  */
   free_pages ();
-  
+
   /* FIXME: Should request low memory from the heap when this feature is
      implemented.  */
 
@@ -442,48 +444,36 @@ grub_linux_boot (void)
 {
   struct linux_kernel_params *params;
   int e820_num;
-  
+  grub_err_t err;
+  char *modevar, *tmp;
+
   params = real_mode_mem;
 
-  if (vid_mode == GRUB_LINUX_VID_MODE_NORMAL || vid_mode == GRUB_LINUX_VID_MODE_EXTENDED)
-    grub_video_restore ();
-  else if (vid_mode)
+  modevar = grub_env_get ("gfxpayload");
+
+  /* Now all graphical modes are acceptable.
+     May change in future if we have modes without framebuffer.  */
+  if (modevar && *modevar != 0)
     {
-      struct linux_vesafb_mode *linux_mode;
-      int depth, flags;
-      
-      flags = 0;
-      linux_mode = &linux_vesafb_modes[vid_mode - GRUB_LINUX_VID_MODE_VESA_START];
-      depth = linux_mode->depth;
-      
-      /* If we have 8 or less bits, then assume that it is indexed color mode.  */
-      if ((depth <= 8) && (depth != -1))
-	flags |= GRUB_VIDEO_MODE_TYPE_INDEX_COLOR;
-      
-      /* We have more than 8 bits, then assume that it is RGB color mode.  */
-      if (depth > 8)
-	flags |= GRUB_VIDEO_MODE_TYPE_RGB;
-      
-      /* If user requested specific depth, forward that information to driver.  */
-      if (depth != -1)
-	flags |= (depth << GRUB_VIDEO_MODE_TYPE_DEPTH_POS)
-	  & GRUB_VIDEO_MODE_TYPE_DEPTH_MASK;
-      
-      /* Try to initialize requested mode.  */
-      if (grub_video_setup (linux_vesafb_res[linux_mode->res_index].width,
-			    linux_vesafb_res[linux_mode->res_index].height,
-			    flags) != GRUB_ERR_NONE)
-	{
-	  grub_printf ("Unable to initialize requested video mode (vga=0x%x)\n", vid_mode);
-	  return grub_errno;
-	}
+      tmp = grub_malloc (grub_strlen (modevar)
+			 + sizeof (DEFAULT_VIDEO_MODE) + 1);
+      if (! tmp)
+	return grub_errno;
+      grub_sprintf (tmp, "%s;" DEFAULT_VIDEO_MODE, modevar);
+      err = grub_video_set_mode (tmp, 0);
+      grub_free (tmp);
     }
-#if ! GRUB_ASSUME_LINUX_HAS_FB_SUPPORT
+#ifndef GRUB_ASSUME_LINUX_HAS_FB_SUPPORT
   else
-    /* If user didn't request a video mode, and we can't assume Linux supports FB,
-       then we go back to text mode.  */
-    grub_video_restore ();
+    err = grub_video_set_mode (DEFAULT_VIDEO_MODE, 0);
 #endif
+
+  if (err)
+    {
+      grub_print_error ();
+      grub_printf ("Booting however\n");
+      grub_errno = GRUB_ERR_NONE;
+    }
 
   if (! grub_linux_setup_video (params))
     params->have_vga = GRUB_VIDEO_TYPE_VLFB;
@@ -495,7 +485,7 @@ grub_linux_boot (void)
       params->video_width = 80;
       params->video_height = 25;
     }
-  
+
   grub_dprintf ("linux", "code32_start = %x, idt_desc = %lx, gdt_desc = %lx\n",
 		(unsigned) params->code32_start,
                 (unsigned long) &(idt_desc.limit),
@@ -548,18 +538,18 @@ grub_linux_boot (void)
 
 #ifdef __x86_64__
 
-  grub_memcpy ((char *) prot_mode_mem + (prot_mode_pages << 12), 
-	       grub_linux_trampoline_start, 
+  grub_memcpy ((char *) prot_mode_mem + (prot_mode_pages << 12),
+	       grub_linux_trampoline_start,
 	       grub_linux_trampoline_end - grub_linux_trampoline_start);
-  
-  ((void (*) (unsigned long, void *)) ((char *) prot_mode_mem 
+
+  ((void (*) (unsigned long, void *)) ((char *) prot_mode_mem
 				       + (prot_mode_pages << 12)))
     (params->code32_start, real_mode_mem);
 #else
 
   /* Hardware interrupts are not safe any longer.  */
   asm volatile ("cli" : : );
-  
+
   /* Load the IDT and the GDT for the bootstrap.  */
   asm volatile ("lidt %0" : : "m" (idt_desc));
   asm volatile ("lgdt %0" : : "m" (gdt_desc));
@@ -572,7 +562,7 @@ grub_linux_boot (void)
 
   /* Enter Linux.  */
   asm volatile ("jmp *%%ecx" : : );
-  
+
 #endif
 
   /* Never reach here.  */
@@ -601,7 +591,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   char *dest;
 
   grub_dl_ref (my_mod);
-  
+
   if (argc == 0)
     {
       grub_error (GRUB_ERR_BAD_ARGUMENT, "no kernel specified");
@@ -612,7 +602,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   if (! file)
     goto fail;
 
-  if (grub_file_read (file, (char *) &lh, sizeof (lh)) != sizeof (lh))
+  if (grub_file_read (file, &lh, sizeof (lh)) != sizeof (lh))
     {
       grub_error (GRUB_ERR_READ_ERROR, "cannot read the linux header");
       goto fail;
@@ -654,17 +644,17 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
     }
 
   setup_sects = lh.setup_sects;
-  
+
   /* If SETUP_SECTS is not set, set it to the default (4).  */
   if (! setup_sects)
     setup_sects = GRUB_LINUX_DEFAULT_SETUP_SECTS;
 
   real_size = setup_sects << GRUB_DISK_SECTOR_BITS;
   prot_size = grub_file_size (file) - real_size - GRUB_DISK_SECTOR_SIZE;
-  
+
   if (! allocate_pages (prot_size))
     goto fail;
-  
+
   params = (struct linux_kernel_params *) real_mode_mem;
   grub_memset (params, 0, GRUB_LINUX_CL_END_OFFSET);
   grub_memcpy (&params->setup_sects, &lh.setup_sects, sizeof (lh) - 0x1F1);
@@ -694,7 +684,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
      space.  */
   params->ext_mem = ((32 * 0x100000) >> 10);
   params->alt_mem = ((32 * 0x100000) >> 10);
-  
+
   params->video_page = 0; /* ??? */
   params->video_mode = 0;
   params->video_ega_bx = 0;
@@ -708,7 +698,6 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 	       (unsigned) real_size, (unsigned) prot_size);
 
   /* Look for memory size and video mode specified on the command line.  */
-  vid_mode = 0;
   linux_mem_size = 0;
   for (i = 1; i < argc; i++)
 #ifdef GRUB_MACHINE_PCBIOS
@@ -716,6 +705,10 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
       {
 	/* Video mode selection support.  */
 	char *val = argv[i] + 4;
+	unsigned vid_mode = GRUB_LINUX_VID_MODE_NORMAL;
+	struct linux_vesafb_mode *linux_mode;
+	grub_err_t err;
+	char *buf;
 
 	if (grub_strcmp (val, "normal") == 0)
 	  vid_mode = GRUB_LINUX_VID_MODE_NORMAL;
@@ -737,30 +730,68 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 	switch (vid_mode)
 	  {
 	  case 0:
-	    vid_mode = GRUB_LINUX_VID_MODE_NORMAL;
+	  case GRUB_LINUX_VID_MODE_NORMAL:
+	    grub_env_set ("gfxpayload", "text");
+	    grub_printf ("%s is deprecated. "
+			 "Use set gfxpayload=text before "
+			 "linux command instead.\n",
+			 argv[i]);
 	    break;
+
 	  case 1:
-	    vid_mode = GRUB_LINUX_VID_MODE_EXTENDED;
+	  case GRUB_LINUX_VID_MODE_EXTENDED:
+	    /* FIXME: support 80x50 text. */
+	    grub_env_set ("gfxpayload", "text");
+	    grub_printf ("%s is deprecated. "
+			 "Use set gfxpayload=text before "
+			 "linux command instead.\n",
+			 argv[i]);
 	    break;
 	  default:
 	    /* Ignore invalid values.  */
 	    if (vid_mode < GRUB_LINUX_VID_MODE_VESA_START ||
 		vid_mode >= GRUB_LINUX_VID_MODE_VESA_START +
 		ARRAY_SIZE (linux_vesafb_modes))
-	      vid_mode = 0;
-	  }
+	      {
+		grub_env_set ("gfxpayload", "text");
+		grub_printf ("%s is deprecated. Mode %d isn't recognized. "
+			     "Use set gfxpayload=WIDTHxHEIGHT[xDEPTH] before "
+			     "linux command instead.\n",
+			     argv[i], vid_mode);
+		break;
+	      }
 
-	if (grub_errno)
-	  goto fail;
+	    buf = grub_malloc (sizeof ("WWWWxHHHHxDD;WWWWxHHHH"));
+	    if (! buf)
+	      goto fail;
+
+	    linux_mode
+	      = &linux_vesafb_modes[vid_mode - GRUB_LINUX_VID_MODE_VESA_START];
+
+	    grub_sprintf (buf, "%ux%ux%u;%ux%u",
+			  linux_vesafb_res[linux_mode->res_index].width,
+			  linux_vesafb_res[linux_mode->res_index].height,
+			  linux_mode->depth,
+			  linux_vesafb_res[linux_mode->res_index].width,
+			  linux_vesafb_res[linux_mode->res_index].height);
+	    grub_printf ("%s is deprecated. "
+			 "Use set gfxpayload=%s before "
+			 "linux command instead.\n",
+			 argv[i], buf);
+	    err = grub_env_set ("gfxpayload", buf);
+	    grub_free (buf);
+	    if (err)
+	      goto fail;
+	  }
       }
     else
 #endif /* GRUB_MACHINE_PCBIOS */
     if (grub_memcmp (argv[i], "mem=", 4) == 0)
       {
 	char *val = argv[i] + 4;
-	  
+
 	linux_mem_size = grub_strtoul (val, &val, 0);
-	
+
 	if (grub_errno)
 	  {
 	    grub_errno = GRUB_ERR_NONE;
@@ -769,7 +800,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 	else
 	  {
 	    int shift = 0;
-	    
+
 	    switch (grub_tolower (val[0]))
 	      {
 	      case 'g':
@@ -789,12 +820,12 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 	      linux_mem_size <<= shift;
 	  }
       }
-  
+
   /* Specify the boot file.  */
   dest = grub_stpcpy ((char *) real_mode_mem + GRUB_LINUX_CL_OFFSET,
 		      "BOOT_IMAGE=");
   dest = grub_stpcpy (dest, argv[0]);
-  
+
   /* Copy kernel parameters.  */
   for (i = 1;
        i < argc
@@ -807,7 +838,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
     }
 
   len = prot_size;
-  if (grub_file_read (file, (char *) GRUB_LINUX_BZIMAGE_ADDR, len) != len)
+  if (grub_file_read (file, (void *) GRUB_LINUX_BZIMAGE_ADDR, len) != len)
     grub_error (GRUB_ERR_FILE_READ_ERROR, "Couldn't read file");
 
   if (grub_errno == GRUB_ERR_NONE)
@@ -818,7 +849,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
     }
 
  fail:
-  
+
   if (file)
     grub_file_close (file);
 
@@ -840,13 +871,13 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
   grub_addr_t addr_min, addr_max;
   grub_addr_t addr;
   struct linux_kernel_header *lh;
-  
+
   if (argc == 0)
     {
       grub_error (GRUB_ERR_BAD_ARGUMENT, "No module specified");
       goto fail;
     }
-  
+
   if (! loaded)
     {
       grub_error (GRUB_ERR_BAD_ARGUMENT, "You need to load the kernel first.");
@@ -875,10 +906,10 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
     }
   else
     addr_max = GRUB_LINUX_INITRD_MAX_ADDRESS;
-  
+
   if (linux_mem_size != 0 && linux_mem_size < addr_max)
     addr_max = linux_mem_size;
-  
+
   /* Linux 2.3.xx has a bug in the memory range check, so avoid
      the last page.
      Linux 2.2.xx has a bug in the memory range check, which is
@@ -888,7 +919,7 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
   /* Usually, the compression ratio is about 50%.  */
   addr_min = (grub_addr_t) prot_mode_mem + ((prot_mode_pages * 3) << 12)
              + page_align (size);
-  
+
   if (addr_max > grub_os_area_addr + grub_os_area_size)
     addr_max = grub_os_area_addr + grub_os_area_size;
 
@@ -900,9 +931,9 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
       grub_error (GRUB_ERR_OUT_OF_RANGE, "The initrd is too big");
       goto fail;
     }
-  
+
   initrd_mem = (void *) addr;
-  
+
   if (grub_file_read (file, initrd_mem, size) != size)
     {
       grub_error (GRUB_ERR_FILE_READ_ERROR, "Couldn't read file");
@@ -911,11 +942,11 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
 
   grub_printf ("   [Initrd, addr=0x%x, size=0x%x]\n",
 	       (unsigned) addr, (unsigned) size);
-  
+
   lh->ramdisk_image = addr;
   lh->ramdisk_size = size;
   lh->root_dev = 0x0100; /* XXX */
-  
+
  fail:
   if (file)
     grub_file_close (file);
