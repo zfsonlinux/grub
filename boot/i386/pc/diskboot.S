@@ -17,7 +17,7 @@
  */
 
 #include <grub/machine/boot.h>
-	
+
 /*
  *  defines for the code go here
  */
@@ -26,9 +26,13 @@
 	   This makes the assembler generate the address without support
 	   from the linker. (ELF can't relocate 16-bit addresses!) */
 #define ABS(x) (x-_start+GRUB_BOOT_MACHINE_KERNEL_ADDR)
-	
+
 	/* Print message string */
+#ifdef APPLE_CC
+#define MSG(x)	x ## _abs = ABS(x); mov $x ## _abs, %esi; call message
+#else
 #define MSG(x)	movw $ABS(x), %si; call message
+#endif
 
 	.file	"diskboot.S"
 
@@ -40,18 +44,18 @@
 
 	.globl	start, _start
 start:
-_start:	
+_start:
 	/*
 	 * _start is loaded at 0x2000 and is jumped to with
 	 * CS:IP 0:0x2000 in kernel.
 	 */
 
-	/* 
+	/*
 	 * we continue to use the stack for boot.img and assume that
 	 * some registers are set to correct values. See boot.S
 	 * for more information.
 	 */
-	
+
 	/* save drive reference first thing! */
 	pushw	%dx
 
@@ -59,9 +63,14 @@ _start:
 	pushw	%si
 	MSG(notification_string)
 	popw	%si
-	
+
 	/* this sets up for the first run through "bootloop" */
+#ifdef APPLE_CC
+	firstlist_off_abs = ABS (firstlist - GRUB_BOOT_MACHINE_LIST_SIZE)
+	movl	$firstlist_off_abs, %edi
+#else
 	movw	$ABS(firstlist - GRUB_BOOT_MACHINE_LIST_SIZE), %di
+#endif
 
 	/* save the sector number of the second sector in %ebp */
 	movl	(%di), %ebp
@@ -75,14 +84,14 @@ bootloop:
 	/* if zero, go to the start function */
 	je	bootit
 
-setup_sectors:	
+setup_sectors:
 	/* check if we use LBA or CHS */
 	cmpb	$0, -1(%si)
 
 	/* jump to chs_mode if zero */
 	je	chs_mode
 
-lba_mode:	
+lba_mode:
 	/* load logical sector start */
 	movl	(%di), %ebx
 	movl	4(%di), %ecx
@@ -100,7 +109,7 @@ lba_mode:
 	/* if less than, set to total */
 	movw	8(%di), %ax
 
-1:	
+1:
 	/* subtract from total */
 	subw	%ax, 8(%di)
 
@@ -145,8 +154,8 @@ lba_mode:
 
 	movw	$GRUB_BOOT_MACHINE_BUFFER_SEG, %bx
 	jmp	copy_buffer
-			
-chs_mode:	
+
+chs_mode:
 	/* load logical sector start (top half) */
 	movl	4(%di), %eax
 	orl	%eax, %eax
@@ -193,7 +202,7 @@ chs_mode:
 	/* if less than, set to total */
 	movw	8(%di), %ax
 
-2:	
+2:
 	/* subtract from total */
 	subw	%ax, 8(%di)
 
@@ -249,8 +258,8 @@ chs_mode:
 
 	/* save source segment */
 	movw	%es, %bx
-	
-copy_buffer:	
+
+copy_buffer:
 
 	/* load addresses for copy from disk buffer to destination */
 	movw	10(%di), %es	/* load destination segment */
@@ -282,7 +291,7 @@ copy_buffer:
 	rep		/* sets a repeat */
 	movsw		/* this runs the actual copy */
 
-	/* restore addressing regs and print a dot with correct DS 
+	/* restore addressing regs and print a dot with correct DS
 	   (MSG modifies SI, which is saved, and unused AX and BX) */
 	popw	%ds
 	MSG(notification_step)
@@ -326,14 +335,14 @@ general_error:
 /* go here when you need to stop the machine hard after an error condition */
 stop:	jmp	stop
 
-notification_string:	.string "loading"
+notification_string:	.asciz "loading"
 
-notification_step:	.string "."
-notification_done:	.string "\r\n"
-	
-geometry_error_string:	.string "Geom"
-read_error_string:	.string "Read"
-general_error_string:	.string " Error"
+notification_step:	.asciz "."
+notification_done:	.asciz "\r\n"
+
+geometry_error_string:	.asciz "Geom"
+read_error_string:	.asciz "Read"
+general_error_string:	.asciz " Error"
 
 /*
  * message: write the string pointed to by %si
@@ -370,7 +379,7 @@ lastlist:
 	.word 0
 
 	. = _start + 0x200 - GRUB_BOOT_MACHINE_LIST_SIZE
-	
+
         /* fill the first data listing with the default */
 blocklist_default_start:
 	/* this is the sector start parameter, in logical sectors from
@@ -383,5 +392,5 @@ blocklist_default_len:
 blocklist_default_seg:
 	/* this is the segment of the starting address to load the data into */
 	.word (GRUB_BOOT_MACHINE_KERNEL_SEG + 0x20)
-	
+
 firstlist:	/* this label has to be after the list data!!! */

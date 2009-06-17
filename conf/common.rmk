@@ -125,6 +125,16 @@ endif
 grub_pe2elf_SOURCES = util/grub-pe2elf.c util/misc.c
 CLEANFILES += grub-pe2elf
 
+# grub_macho2img assumes a lot about source file.
+# So installing it definitively is useless
+# But adding to bin_UTILITIES is needed for
+# genmk.rb to work
+ifeq (0,1)
+bin_UTILITIES += grub-macho2img
+endif
+grub_macho2img_SOURCES = util/grub-macho2img.c
+CLEANFILES += grub-macho2img
+
 # For grub-mkconfig
 grub-mkconfig: util/grub-mkconfig.in config.status
 	./config.status --file=$@:$<
@@ -250,8 +260,8 @@ cpio_mod_CFLAGS = $(COMMON_CFLAGS)
 cpio_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For tar.mod.
-tar_mod_SOURCES = fs/cpio.c
-tar_mod_CFLAGS = $(COMMON_CFLAGS) -DMODE_USTAR
+tar_mod_SOURCES = fs/tar.c
+tar_mod_CFLAGS = $(COMMON_CFLAGS)
 tar_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For udf.mod.
@@ -343,18 +353,13 @@ pkglib_MODULES += minicmd.mod extcmd.mod hello.mod handler.mod	\
 	loopback.mod fs_uuid.mod configfile.mod echo.mod	\
 	terminfo.mod test.mod blocklist.mod hexdump.mod		\
 	read.mod sleep.mod loadenv.mod crc.mod parttool.mod	\
-	pcpart.mod memrw.mod boot.mod normal.mod sh.mod lua.mod	\
-	gptsync.mod
+	pcpart.mod memrw.mod normal.mod sh.mod lua.mod	\
+	gptsync.mod true.mod
 
 # For gptsync.mod.
 gptsync_mod_SOURCES = commands/gptsync.c
 gptsync_mod_CFLAGS = $(COMMON_CFLAGS)
 gptsync_mod_LDFLAGS = $(COMMON_LDFLAGS)
-
-# For boot.mod.
-boot_mod_SOURCES = commands/boot.c
-boot_mod_CFLAGS = $(COMMON_CFLAGS)
-boot_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For minicmd.mod.
 minicmd_mod_SOURCES = commands/minicmd.c
@@ -475,6 +480,11 @@ crc_mod_LDFLAGS = $(COMMON_LDFLAGS)
 memrw_mod_SOURCES = commands/memrw.c
 memrw_mod_CFLAGS = $(COMMON_CFLAGS)
 memrw_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For true.mod
+true_mod_SOURCES = commands/true.c
+true_mod_CFLAGS = $(COMMON_CFLAGS)
+true_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For normal.mod.
 normal_mod_SOURCES = normal/main.c normal/cmdline.c normal/dyncmd.c \

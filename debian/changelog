@@ -1,3 +1,94 @@
+grub2 (1.96+20090611-1ubuntu1) karmic; urgency=low
+
+  * Resynchronise with Debian. Remaining changes:
+    + debian/control:
+      - Depend on rather than Suggest os-prober; Ubuntu version does not
+        suffer from the mount problem that prevents Debian from marking this
+        Depends.
+    + debian/default/grub:
+      - Adjust for default Ubuntu boot options.
+      - Use new GRUB_CMDLINE_LINUX_DEFAULT option to set "quiet splash" for
+        default items only.  These options won't be set in single user mode.
+    + debian/legacy/update-grub:
+      - Apply Ubuntu branding: title, recovery mode, quiet option, and tweak
+        how memtest86+ is displayed.
+      - Use UUIDs where appropriate.
+    + debian/patches/03_ubuntu_grub_standards:
+      - Remove GNU/Linux from default string.
+  * debian/patches/999_os-prober_drivemap_root.diff:
+    - Backport r2333 from upstream to fix chain-loading of operating systems
+      detected by os-prober.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 17 Jun 2009 12:05:47 +0100
+
+grub2 (1.96+20090611-1) experimental; urgency=low
+
+  * Append .diff to patches/01_uuids_and_lvm_dont_play_along_nicely so
+    it gets really applied.
+  * Drop completely the build dependency on gcc-multilib.
+  * Instead of arborting in the preinst if /etc/kernel-img.conf still
+    contains /sbin/update-grub, change the file with sed. Policy allows
+    this because it's not a conffile.
+  * Change /etc/default/grub to an ucf managed file instead of dpkg
+    conffile.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Thu, 11 Jun 2009 22:47:56 +0200
+
+grub2 (1.96+20090609-1) experimental; urgency=low
+
+  * New SVN snapshot.
+    - Fix variable parsing inside strings. (Closes: #486180)
+    - Add `true' command. (Closes: #530736)
+
+  [ Robert Millan ]
+  * Split grub-efi in grub-efi-ia32 and grub-efi-amd64, both available
+    on i386 and amd64.  (Closes: #524756)
+  * Add kopensolaris-i386 to arch list.
+
+  [ Felix Zielcke ]
+  * Add a NEWS entry about the grub-efi split. 
+  * Drop the build dependency on gcc-multilib for all *i386.
+  * Change upgrade-from-grub-legacy to use `dpkg-reconfigure grub-pc' to
+    install grub2 into MBR.
+
+  [ New translations ]
+  * Catalan (ca.po) by Jordi Mallach.
+
+  [ Updated translations ]
+  * Spanish (es.po) by Francisco Javier Cuadrado. (Closes: #532407)
+
+ -- Jordi Mallach <jordi@debian.org>  Tue, 09 Jun 2009 19:21:15 +0200
+
+grub2 (1.96+20090603-1) unstable; urgency=low
+
+  * New SVN snapshot.
+
+  * Abort the install of grub-pc if /etc/kernel-img.conf still contains
+    /sbin/update-grub (Closes: #500631).
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 03 Jun 2009 20:01:11 +0200
+
+grub2 (1.96+20090602-1) unstable; urgency=low
+
+  * New SVN snapshot.
+
+  [ Felix Zielcke ]
+  * Skip floopies in the grub-install debconf prompt in grub-pc postinst.
+    Patch by Fabian Greffrath. (Closes: #530848)
+
+  [ Robert Millan ]
+  * Change Vcs-Browser field to viewsvn.
+
+  [ Felix Zielcke ]
+  * Change Vcs-Svn field to point to the trunk. (Closes: #531391)
+  * patches/01_uuids_and_lvm_dont_play_along_nicely: New patch.
+    On Debian root=UUID= with lvm still doestn't work so disable it.
+    (Closes: #530357)
+  * Remove Otavio Salvador from Uploaders with his permission.
+  * add grub-pc.preinst
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 03 Jun 2009 14:42:11 +0200
+
 grub2 (1.96+20090523-1ubuntu1) karmic; urgency=low
 
   [ Colin Watson ]

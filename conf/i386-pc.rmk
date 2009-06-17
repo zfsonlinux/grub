@@ -10,37 +10,39 @@ COMMON_LDFLAGS = -m32 -nostdlib
 script/sh/lexer.c_DEPENDENCIES = grub_script.tab.h
 
 # Images.
-pkglib_IMAGES = boot.img diskboot.img kernel.img pxeboot.img lnxboot.img \
-		cdboot.img
+pkglib_IMAGES = boot.img diskboot.img kernel.img pxeboot.img cdboot.img
 
 # For boot.img.
 boot_img_SOURCES = boot/i386/pc/boot.S
 boot_img_ASFLAGS = $(COMMON_ASFLAGS)
-boot_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS) -Wl,-Ttext,7C00
+boot_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS)7C00
 boot_img_FORMAT = binary
 
 # For pxeboot.img
 pxeboot_img_SOURCES = boot/i386/pc/pxeboot.S
 pxeboot_img_ASFLAGS = $(COMMON_ASFLAGS)
-pxeboot_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS) -Wl,-Ttext,7C00
+pxeboot_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS)7C00
 pxeboot_img_FORMAT = binary
 
 # For diskboot.img.
 diskboot_img_SOURCES = boot/i386/pc/diskboot.S
 diskboot_img_ASFLAGS = $(COMMON_ASFLAGS)
-diskboot_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS) -Wl,-Ttext,8000
+diskboot_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS)8000
 diskboot_img_FORMAT = binary
 
 # For lnxboot.img.
+ifeq ($(TARGET_APPLE_CC), 0)
+pkglib_IMAGES += lnxboot.img
+endif
 lnxboot_img_SOURCES = boot/i386/pc/lnxboot.S
 lnxboot_img_ASFLAGS = $(COMMON_ASFLAGS)
-lnxboot_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS) -Wl,-Ttext,6000
+lnxboot_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS)6000
 lnxboot_img_FORMAT = binary
 
 # For cdboot.img.
 cdboot_img_SOURCES = boot/i386/pc/cdboot.S
 cdboot_img_ASFLAGS = $(COMMON_ASFLAGS)
-cdboot_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS) -Wl,-Ttext,7C00
+cdboot_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS)7C00
 cdboot_img_FORMAT = binary
 
 # For kernel.img.
@@ -63,9 +65,9 @@ kernel_img_HEADERS = boot.h cache.h device.h disk.h dl.h elf.h elfload.h \
 	machine/biosdisk.h machine/boot.h machine/console.h machine/init.h \
 	machine/memory.h machine/loader.h machine/vga.h machine/vbe.h \
 	machine/kernel.h machine/pxe.h i386/pit.h list.h handler.h command.h
-kernel_img_CFLAGS = $(COMMON_CFLAGS)
+kernel_img_CFLAGS = $(COMMON_CFLAGS)  $(TARGET_IMG_CFLAGS)
 kernel_img_ASFLAGS = $(COMMON_ASFLAGS)
-kernel_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS) -Wl,-Ttext,$(GRUB_MEMORY_MACHINE_LINK_ADDR) $(COMMON_CFLAGS)
+kernel_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS)$(GRUB_MEMORY_MACHINE_LINK_ADDR) $(COMMON_CFLAGS)
 kernel_img_FORMAT = binary
 
 MOSTLYCLEANFILES += symlist.c kernel_syms.lst
@@ -160,7 +162,7 @@ grub_emu_SOURCES = commands/minicmd.c commands/cat.c commands/cmp.c	\
 	commands/parttool.c parttool/pcpart.c				\
 	grub_emu_init.c
 
-grub_emu_LDFLAGS = $(LIBCURSES) 
+grub_emu_LDFLAGS = $(LIBCURSES)
 
 ifeq ($(enable_grub_emu_usb), yes)
 grub_emu_SOURCES += disk/usbms.c util/usb.c bus/usb/usb.c	\
@@ -187,6 +189,12 @@ pkglib_MODULES = biosdisk.mod chain.mod \
 	usb.mod uhci.mod ohci.mod usbtest.mod usbms.mod usb_keyboard.mod \
 	efiemu.mod mmap.mod acpi.mod drivemap.mod
 
+# For boot.mod.
+pkglib_MODULES += boot.mod 
+boot_mod_SOURCES = commands/boot.c lib/i386/pc/biosnum.c
+boot_mod_CFLAGS = $(COMMON_CFLAGS)
+boot_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
 # For drivemap.mod.
 drivemap_mod_SOURCES = commands/i386/pc/drivemap.c \
                        commands/i386/pc/drivemap_int13h.S
@@ -201,7 +209,7 @@ efiemu_mod_SOURCES = efiemu/main.c efiemu/i386/loadcore32.c \
 		     efiemu/loadcore32.c efiemu/loadcore64.c \
 		     efiemu/prepare32.c efiemu/prepare64.c efiemu/pnvram.c \
 		     efiemu/i386/coredetect.c
-efiemu_mod_CFLAGS = $(COMMON_CFLAGS) -Werror -Wall
+efiemu_mod_CFLAGS = $(COMMON_CFLAGS)
 efiemu_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For acpi.mod.
@@ -397,16 +405,44 @@ hdparm_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 ifeq ($(enable_efiemu), yes)
 
-efiemu32.o: efiemu/runtime/efiemu.c
-	$(CC) -c -m32 -DELF32 -o $@ -Wall -Werror $< -nostdlib -O2 -I$(srcdir)/efiemu/runtime -I$(srcdir)/include -Iinclude
+efiemu32.o: efiemu/runtime/efiemu.c $(TARGET_OBJ2ELF)
+	-rm -f $@
+ifeq ($(TARGET_APPLE_CC), 1)
+	-rm -f $@.bin
+	$(TARGET_CC) -c -m32 -DELF32 -DAPPLE_CC -o $@.bin -Wall -Werror $< -nostdlib -O2 -I$(srcdir)/efiemu/runtime -I$(srcdir)/include -Iinclude
+	$(OBJCONV) -felf32 -nu -nd $@.bin $@
+	-rm -f $@.bin
+else
+	$(TARGET_CC) -c -m32 -DELF32 -o $@ -Wall -Werror $< -nostdlib -O2 -I$(srcdir)/efiemu/runtime -I$(srcdir)/include -Iinclude
+	if test ! -z $(TARGET_OBJ2ELF); then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+endif
+
 efiemu64_c.o: efiemu/runtime/efiemu.c
-	$(CC) -c -m64 -DELF64 -o $@ -Wall -Werror $< -nostdlib  -mcmodel=large -mno-red-zone -O2 -I$(srcdir)/efiemu/runtime -I$(srcdir)/include -Iinclude
+ifeq ($(TARGET_APPLE_CC), 1)
+	$(TARGET_CC) -c -m64 -DAPPLE_CC=1 -DELF64 -o $@ -Wall -Werror $< -nostdlib -mno-red-zone -O2 -I$(srcdir)/efiemu/runtime -I$(srcdir)/include -Iinclude
+else
+	$(TARGET_CC) -c -m64 -DELF64 -o $@ -Wall -Werror $< -nostdlib  -mcmodel=large -mno-red-zone -O2 -I$(srcdir)/efiemu/runtime -I$(srcdir)/include -Iinclude
+endif
 
 efiemu64_s.o: efiemu/runtime/efiemu.S
-	$(CC) -c -m64 -DELF64 -o $@ -Wall -Werror $< -nostdlib  -mcmodel=large -mno-red-zone -O2 -I$(srcdir)/efiemu/runtime -I$(srcdir)/include -Iinclude
+	-rm -f $@
+ifeq ($(TARGET_APPLE_CC), 1)
+	$(TARGET_CC) -c -m64 -DAPPLE_CC=1 -DELF64 -o $@ -Wall -Werror $< -nostdlib -mno-red-zone -O2 -I$(srcdir)/efiemu/runtime -I$(srcdir)/include -Iinclude
+else
+	$(TARGET_CC) -c -m64 -DELF64 -o $@ -Wall -Werror $< -nostdlib  -mcmodel=large -mno-red-zone -O2 -I$(srcdir)/efiemu/runtime -I$(srcdir)/include -Iinclude
+endif
 
-efiemu64.o: efiemu64_c.o efiemu64_s.o
-	ld -melf_x86_64 -o $@ -r $^ -nostdlib
+efiemu64.o: efiemu64_c.o efiemu64_s.o  $(TARGET_OBJ2ELF)
+	-rm -f $@
+ifeq ($(TARGET_APPLE_CC), 1)
+	-rm -f $@.bin
+	$(TARGET_CC) -m64 -o $@.bin -Wl,-r $^ -nostdlib
+	$(OBJCONV) -felf64 -nu -nd $@.bin $@
+	-rm -f $@.bin
+else
+	$(TARGET_CC) -m64 -o $@ -Wl,-r $^ -nostdlib
+	if test ! -z $(TARGET_OBJ2ELF); then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+endif
 
 CLEANFILES += efiemu32.o efiemu64.o efiemu64_c.o efiemu64_s.o
 pkglib_DATA += efiemu32.o efiemu64.o

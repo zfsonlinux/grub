@@ -42,6 +42,12 @@
 #include <grub/misc.h>
 #include <grub/gzio.h>
 #include <grub/env.h>
+#ifdef GRUB_MACHINE_PCBIOS
+#include <grub/machine/biosnum.h>
+#include <grub/disk.h>
+#include <grub/device.h>
+#include <grub/partition.h>
+#endif
 
 extern grub_dl_t my_mod;
 static struct grub_multiboot_info *mbi, *mbi_dest;
@@ -76,7 +82,7 @@ grub_multiboot_unload (void)
       grub_free ((void *) mbi->cmdline);
       grub_free (mbi);
     }
-  
+
   mbi = 0;
   grub_dl_unref (my_mod);
 
@@ -98,9 +104,9 @@ grub_get_multiboot_mmap_len (void)
       count++;
       return 0;
     }
-  
+
   grub_mmap_iterate (hook);
-  
+
   return count * sizeof (struct grub_multiboot_mmap_entry);
 }
 
@@ -148,46 +154,42 @@ grub_multiboot_load_elf (grub_file_t file, void *buffer)
 static int
 grub_multiboot_get_bootdev (grub_uint32_t *bootdev)
 {
+#ifdef GRUB_MACHINE_PCBIOS
   char *p;
+  grub_uint32_t biosdev, slice = ~0, part = ~0;
+  grub_device_t dev;
 
-  p = grub_env_get ("root");
-  if ((p) && ((p[0] == 'h') || (p[0] == 'f')) && (p[1] == 'd') &&
-      (p[2] >= '0') && (p[2] <= '9'))
+  biosdev = grub_get_root_biosnumber ();
+
+  dev = grub_device_open (0);
+  if (dev && dev->disk && dev->disk->partition)
     {
-      grub_uint32_t bd;
 
-      bd = (p[0] == 'h') ? 0x80 : 0;
-      bd += grub_strtoul (p + 2, &p, 0);
-      bd <<= 24;
-
-      if ((p) && (p[0] == ','))
+      p = dev->disk->partition->partmap->get_name (dev->disk->partition);
+      if (p)
 	{
-	  if ((p[1] >= '0') && (p[1] <= '9'))
+	  if ((p[0] >= '0') && (p[0] <= '9'))
 	    {
-
-	      bd += ((grub_strtoul (p + 1, &p, 0) - 1) & 0xFF) << 16;
+	      slice = grub_strtoul (p, &p, 0);
 
 	      if ((p) && (p[0] == ','))
 		p++;
 	    }
-          else
-            bd += 0xFF0000;
 
 	  if ((p[0] >= 'a') && (p[0] <= 'z'))
-            bd += (p[0] - 'a') << 8;
-          else
-            bd += 0xFF00;
+	    part = p[0] - 'a';
 	}
-      else
-        bd += 0xFFFF00;
-
-      bd += 0xFF;
-
-      *bootdev = bd;
-      return 1;
     }
+  if (dev)
+    grub_device_close (dev);
 
+  *bootdev = ((biosdev & 0xff) << 24) | ((slice & 0xff) << 16) 
+    | ((part & 0xff) << 16) | 0xff;
+  return (biosdev != ~0UL);
+#else
+  *bootdev = 0xffffffff;
   return 0;
+#endif
 }
 
 void
@@ -297,11 +299,11 @@ grub_multiboot (int argc, char *argv[])
       grub_file_read (file, (void *) grub_multiboot_payload_orig, load_size);
       if (grub_errno)
 	goto fail;
-      
+
       if (header->bss_end_addr)
 	grub_memset ((void *) (grub_multiboot_payload_orig + load_size), 0,
 		     header->bss_end_addr - header->load_addr - load_size);
-      
+
       grub_multiboot_payload_entry_offset = header->entry_addr - header->load_addr;
 
     }
@@ -315,7 +317,7 @@ grub_multiboot (int argc, char *argv[])
   mbi_dest = mbi_addr (grub_multiboot_payload_dest);
   grub_memset (mbi, 0, sizeof (struct grub_multiboot_info));
   mbi->mmap_length = mmap_length;
-  
+
   grub_fill_multiboot_mmap (mmap_addr (grub_multiboot_payload_orig));
 
   /* FIXME: grub_uint32_t will break for addresses above 4 GiB, but is mandated
@@ -334,7 +336,7 @@ grub_multiboot (int argc, char *argv[])
 		    &grub_multiboot_backward_relocator, RELOCATOR_SIZEOF(backward));
       entry = (grub_addr_t) grub_multiboot_payload_orig + grub_multiboot_payload_size;
     }
-  
+
   grub_dprintf ("multiboot_loader", "dest=%p, size=0x%x, entry_offset=0x%x\n",
 		(void *) grub_multiboot_payload_dest,
 		grub_multiboot_payload_size,
@@ -360,8 +362,8 @@ grub_multiboot (int argc, char *argv[])
 
   mbi->flags |= MULTIBOOT_INFO_CMDLINE;
   mbi->cmdline = (grub_uint32_t) cmdline_addr (grub_multiboot_payload_dest);
-  
-  
+
+
   grub_strcpy (boot_loader_name_addr (grub_multiboot_payload_orig), PACKAGE_STRING);
   mbi->flags |= MULTIBOOT_INFO_BOOT_LOADER_NAME;
   mbi->boot_loader_name = (grub_uint32_t) boot_loader_name_addr (grub_multiboot_payload_dest);

@@ -43,10 +43,6 @@ AC_CANONICAL_TARGET
 # Program name transformations
 AC_ARG_PROGRAM
 
-case "$host_cpu" in
-  powerpc64) host_m32=1 ;;
-esac
-
 case "$target_cpu" in
   i[[3456]]86) target_cpu=i386 ;;
 esac
@@ -167,10 +163,10 @@ AC_C_BIGENDIAN
 AC_CHECK_SIZEOF(void *)
 AC_CHECK_SIZEOF(long)
 
-if test "x$host_m32" = x1; then
-  # Force 32-bit mode.
-  CFLAGS="$CFLAGS -m32"
-  LDFLAGS="$LDFLAGS -m32"
+grub_apple_cc
+if test x$grub_cv_apple_cc == xyes ; then
+  CFLAGS="$CFLAGS -DAPPLE_CC=1 -fnested-functions"
+  ASFLAGS="$ASFLAGS -DAPPLE_CC=1"
 fi
 
 # Check LZO when compiling for the i386-pc.
@@ -205,31 +201,6 @@ AC_CHECK_FUNCS(posix_memalign memalign asprintf)
 #
 # Check for target programs.
 #
-
-
-# Use linker script if present, otherwise use builtin -N script.
-AC_MSG_CHECKING([for option to link raw image])
-if test -f "${srcdir}/conf/${target_cpu}-${platform}-${host_os}-img-ld.sc"; then
-  TARGET_IMG_LDSCRIPT='$(top_srcdir)'"/conf/${target_cpu}-${platform}-${host_os}-img-ld.sc"
-  TARGET_IMG_LDFLAGS="-Wl,-T${TARGET_IMG_LDSCRIPT}"
-  TARGET_IMG_LDFLAGS_AC="-Wl,-T${srcdir}/conf/${target_cpu}-${platform}-${host_os}-img-ld.sc"
-else
-  TARGET_IMG_LDSCRIPT=
-  TARGET_IMG_LDFLAGS='-Wl,-N'
-  TARGET_IMG_LDFLAGS_AC='-Wl,-N'
-fi
-AC_SUBST(TARGET_IMG_LDSCRIPT)
-AC_SUBST(TARGET_IMG_LDFLAGS)
-AC_MSG_RESULT([$TARGET_IMG_LDFLAGS_AC])
-
-# For platforms where ELF is not the default link format.
-AC_MSG_CHECKING([for command to convert module to ELF format])
-case "${host_os}" in
-  cygwin) TARGET_OBJ2ELF='grub-pe2elf' ;;
-  *) ;;
-esac
-AC_SUBST(TARGET_OBJ2ELF)
-AC_MSG_RESULT([$TARGET_OBJ2ELF])
 
 # Find tools for the target.
 if test "x$target_alias" != x && test "x$host_alias" != "x$target_alias"; then
@@ -287,7 +258,7 @@ if test "x$TARGET_CFLAGS" = x; then
   # Force no alignment to save space on i386.
   if test "x$target_cpu" = xi386; then
     AC_CACHE_CHECK([whether -falign-loops works], [grub_cv_cc_falign_loop], [
-      CFLAGS="-falign-loops=1"
+      CFLAGS="$CFLAGS -falign-loops=1"
       AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],
 		        [grub_cv_cc_falign_loop=yes],
 			[grub_cv_cc_falign_loop=no])
@@ -301,33 +272,88 @@ if test "x$TARGET_CFLAGS" = x; then
   fi
 fi
 
+grub_apple_target_cc
+if test x$grub_cv_apple_target_cc == xyes ; then
+  TARGET_CFLAGS="$TARGET_CFLAGS -DAPPLE_CC=1 -fnested-functions"
+  CFLAGS="$CFLAGS -DAPPLE_CC=1 -fnested-functions"
+  TARGET_ASFLAGS="$TARGET_ASFLAGS -DAPPLE_CC=1"
+  TARGET_APPLE_CC=1
+  AC_CHECK_PROG([OBJCONV], [objconv], [objconv], [])
+  if test "x$OBJCONV" = x ; then
+     AC_CHECK_PROG([OBJCONV], [objconv], [./objconv], [], [.])
+  fi
+  if test "x$OBJCONV" = x ; then
+    AC_MSG_ERROR([objconv not found which is required when building with apple compiler])
+  fi
+  TARGET_IMG_LDSCRIPT=
+  TARGET_IMG_CFLAGS="-static"
+  TARGET_IMG_LDFLAGS='-nostdlib -static -Wl,-preload -Wl,-segalign,20 -Wl,-image_base,'
+  TARGET_IMG_LDFLAGS_AC='-nostdlib -static -Wl,-preload -Wl,-segalign,20 -Wl,-image_base,'
+else
+  TARGET_APPLE_CC=0
+# Use linker script if present, otherwise use builtin -N script.
+AC_MSG_CHECKING([for option to link raw image])
+if test -f "${srcdir}/conf/${target_cpu}-${platform}-${host_os}-img-ld.sc"; then
+  TARGET_IMG_LDSCRIPT='$(top_srcdir)'"/conf/${target_cpu}-${platform}-${host_os}-img-ld.sc"
+  TARGET_IMG_LDFLAGS="-Wl,-T${TARGET_IMG_LDSCRIPT}  -Wl,-Ttext,"
+  TARGET_IMG_LDFLAGS_AC="-Wl,-T${srcdir}/conf/${target_cpu}-${platform}-${host_os}-img-ld.sc"
+else
+  TARGET_IMG_LDSCRIPT=
+  TARGET_IMG_LDFLAGS='-Wl,-N  -Wl,-Ttext,'
+  TARGET_IMG_LDFLAGS_AC='-Wl,-N  -Wl,-Ttext,'
+fi
+TARGET_IMG_CFLAGS=
+fi
+
+AC_SUBST(TARGET_IMG_LDSCRIPT)
+AC_SUBST(TARGET_IMG_LDFLAGS)
+AC_SUBST(TARGET_IMG_CFLAGS)
+AC_MSG_RESULT([$TARGET_IMG_LDFLAGS_AC])
+
+# For platforms where ELF is not the default link format.
+AC_MSG_CHECKING([for command to convert module to ELF format])
+case "${host_os}" in
+  cygwin) TARGET_OBJ2ELF='grub-pe2elf' ;;
+  *) ;;
+esac
+AC_SUBST(TARGET_OBJ2ELF)
+AC_MSG_RESULT([$TARGET_OBJ2ELF])
+
+
 if test "x$target_m32" = x1; then
   # Force 32-bit mode.
   TARGET_CFLAGS="$TARGET_CFLAGS -m32"
   TARGET_LDFLAGS="$TARGET_LDFLAGS -m32"
+  TARGET_MODULE_FORMAT="elf32"
 fi
 
 if test "x$target_m64" = x1; then
   # Force 64-bit mode.
   TARGET_CFLAGS="$TARGET_CFLAGS -m64"
   TARGET_LDFLAGS="$TARGET_LDFLAGS -m64"
+  TARGET_MODULE_FORMAT="elf64"
 fi
 
 if test "$target_cpu"-"$platform" = x86_64-efi; then
   # Use large model to support 4G memory
   AC_CACHE_CHECK([whether option -mcmodel=large works], grub_cv_cc_mcmodel, [
-    CFLAGS="-m64 -mcmodel=large"
+    SAVED_CFLAGS=$CFLAGS
+    CFLAGS="$CFLAGS -m64 -mcmodel=large"
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],
 		      [grub_cv_cc_mcmodel=yes],
 		      [grub_cv_cc_mcmodel=no])
   ])
-  if test "x$grub_cv_cc_no_mcmodel" = xno; then
-    AC_MSG_ERROR([-mcmodel=large not supported, upgrade your gcc])
+  if test "x$grub_cv_cc_mcmodel" = xno; then
+    CFLAGS="$SAVED_CFLAGS -m64 -DMCMODEL_SMALL=1"
+    TARGET_CFLAGS="$TARGET_CFLAGS -DMCMODEL_SMALL=1"
+    AC_MSG_WARN([-mcmodel=large not supported. You wan't be able to use the memory over 4GiB. Upgrade your gcc])
+  else
+    TARGET_CFLAGS="$TARGET_CFLAGS -mcmodel=large"
   fi
 
   # EFI writes to stack below %rsp, we must not use the red zone
   AC_CACHE_CHECK([whether option -mno-red-zone works], grub_cv_cc_no_red_zone, [
-    CFLAGS="-m64 -mno-red-zone"
+    CFLAGS="$CFLAGS -m64 -mno-red-zone"
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],
 		      [grub_cv_cc_no_red_zone=yes],
 		      [grub_cv_cc_no_red_zone=no])
@@ -336,7 +362,7 @@ if test "$target_cpu"-"$platform" = x86_64-efi; then
     AC_MSG_ERROR([-mno-red-zone not supported, upgrade your gcc])
   fi
 
-  TARGET_CFLAGS="$TARGET_CFLAGS -mcmodel=large -mno-red-zone"
+  TARGET_CFLAGS="$TARGET_CFLAGS -mno-red-zone"
 fi
 
 #
@@ -361,21 +387,24 @@ if test x"$sap_possible" = xyes; then
 fi
 
 AC_SUBST(TARGET_CFLAGS)
+AC_SUBST(TARGET_MODULE_FORMAT)
+AC_SUBST(OBJCONV)
+AC_SUBST(TARGET_APPLE_CC)
+AC_SUBST(TARGET_ASFLAGS)
 AC_SUBST(TARGET_CPPFLAGS)
 AC_SUBST(TARGET_LDFLAGS)
 
 # Set them to their new values for the tests below.
 CC="$TARGET_CC"
-CFLAGS="$TARGET_CFLAGS"
+CFLAGS="$TARGET_CFLAGS -nostdlib -Wl,--defsym,___main=0x8100"
 CPPFLAGS="$TARGET_CPPFLAGS"
 LDFLAGS="$TARGET_LDFLAGS"
 
-# Check for target functions.
-AC_CHECK_FUNCS(__bswapsi2 __bswapdi2)
-
 # Defined in aclocal.m4.
 grub_PROG_TARGET_CC
+if test "x$TARGET_APPLE_CC" != x1 ; then
 grub_PROG_OBJCOPY_ABSOLUTE
+fi
 grub_PROG_LD_BUILD_ID_NONE
 grub_ASM_USCORE
 if test "x$target_cpu" = xi386; then
@@ -383,7 +412,7 @@ if test "x$target_cpu" = xi386; then
     # Check symbols provided by linker script.
     CFLAGS="$TARGET_CFLAGS -nostdlib $TARGET_IMG_LDFLAGS_AC -Wl,-Ttext,8000,--defsym,___main=0x8100"
   fi
-  if test "x$platform" = xpc; then
+  if test "x$platform" = xpc && test "x$TARGET_APPLE_CC" != x1 ; then
     grub_CHECK_BSS_START_SYMBOL
     grub_CHECK_END_SYMBOL
   fi
@@ -413,7 +442,7 @@ LIBS="$tmp_LIBS"
 #
 
 # Memory manager debugging.
-AC_ARG_ENABLE([mm-debug], 
+AC_ARG_ENABLE([mm-debug],
 	      AS_HELP_STRING([--enable-mm-debug],
                              [include memory manager debugging]),
               [AC_DEFINE([MM_DEBUG], [1],
@@ -482,6 +511,7 @@ AC_ARG_ENABLE([efiemu],
 	      [AS_HELP_STRING([--enable-efiemu],
                              [build and install the efiemu runtimes])])
 AC_SUBST([enable_efiemu])
+AC_SUBST(ASFLAGS)
 
 # Output files.
 grub_CHECK_LINK_DIR

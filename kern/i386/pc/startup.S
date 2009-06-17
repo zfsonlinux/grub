@@ -21,7 +21,7 @@
  * Note: These functions defined in this file may be called from C.
  *       Be careful of that you must not modify some registers. Quote
  *       from gcc-2.95.2/gcc/config/i386/i386.h:
-	
+
    1 for registers not available across function calls.
    These must include the FIXED_REGISTERS and also any
    registers that can be used without being saved.
@@ -52,9 +52,9 @@
 #include <grub/term.h>
 #include <multiboot.h>
 #include <multiboot2.h>
-		
+
 #define ABS(x)	((x) - _start + GRUB_BOOT_MACHINE_KERNEL_ADDR + 0x200)
-	
+
 	.file	"startup.S"
 
 	.text
@@ -69,7 +69,12 @@ _start:
 	/*
 	 *  Guarantee that "main" is loaded at 0x0:0x8200.
 	 */
+#ifdef APPLE_CC
+	codestart_abs = ABS(codestart) - 0x10000
+	ljmp $0, $(codestart_abs)
+#else
 	ljmp $0, $ABS(codestart)
+#endif
 
 	/*
 	 *  Compatibility version number
@@ -105,6 +110,13 @@ VARIABLE(grub_prefix)
 
 	. = _start + GRUB_KERNEL_MACHINE_DATA_END
 
+#ifdef APPLE_CC
+bss_start:
+	.long 0
+bss_end:
+	.long 0
+#endif
+
 /*
  * Support for booting GRUB from a Multiboot boot loader (e.g. GRUB itself).
  * This uses the a.out kludge to load raw binary to the area starting at 1MB,
@@ -128,7 +140,7 @@ multiboot_header:
 	.long	0
 	/* entry addr */
 	.long	multiboot_entry - _start + 0x100000 + 0x200
-	
+
 multiboot_entry:
 	.code32
 	/* obtain the boot device */
@@ -145,7 +157,7 @@ multiboot_entry:
 	/* jump to the real address */
 	movl	$multiboot_trampoline, %eax
 	jmp	*%eax
-	
+
 multiboot_trampoline:
 	/* fill the boot information */
 	movl	%edx, %eax
@@ -166,7 +178,7 @@ multiboot_trampoline:
 	/* enter the usual booting */
 	call	prot_to_real
 	.code16
-	
+
 /* the real mode code continues... */
 codestart:
 	cli		/* we're not safe here! */
@@ -189,7 +201,7 @@ codestart:
 
 	/* reset disk system (%ah = 0) */
 	int	$0x13
-	
+
 	/* transition to protected mode */
 	DATA32	call real_to_prot
 
@@ -198,7 +210,7 @@ codestart:
 
 	incl	%eax
 	call	EXT_C(grub_gate_a20)
-	
+
 #if defined(ENABLE_LZO)
 	/* decompress the compressed part and put the result at 1MB */
 	movl	$GRUB_MEMORY_MACHINE_DECOMPRESSION_ADDR, %esi
@@ -248,20 +260,32 @@ codestart:
 	rep
 	movsb
 #endif
-	
+
+#ifdef APPLE_CC
+	/* clean out the bss */
+	bss_start_abs = ABS (bss_start)
+	bss_end_abs = ABS (bss_end)
+
+	movl    bss_start_abs, %edi
+
+	/* compute the bss length */
+	movl	bss_end_abs, %ecx
+	subl	%edi, %ecx
+#else
 	/* clean out the bss */
 	movl	$BSS_START_SYMBOL, %edi
 
 	/* compute the bss length */
 	movl	$END_SYMBOL, %ecx
 	subl	%edi, %ecx
-			
+#endif
+
 	/* clean out */
 	xorl	%eax, %eax
 	cld
 	rep
 	stosb
-	
+
 	/*
 	 *  Call the start of main body of C code.
 	 */
@@ -280,7 +304,7 @@ VARIABLE(grub_root_drive)
 	.byte	0
 
 	.p2align	2	/* force 4-byte alignment */
-	
+
 /*
  *  These next two routines, "real_to_prot" and "prot_to_real" are structured
  *  in a very specific way.  Be very careful when changing them.
@@ -293,7 +317,13 @@ real_to_prot:
 	cli
 
 	/* load the GDT register */
+#ifdef APPLE_CC
+	mov %cs, %ax
+	mov %ax, %ds
+	DATA32	ADDR32	lgdt	gdtdesc
+#else
 	DATA32	ADDR32	lgdt	%cs:gdtdesc
+#endif
 
 	/* turn on protected mode */
 	movl	%cr0, %eax
@@ -345,7 +375,7 @@ protcseg:
 FUNCTION(grub_gate_a20)
 	movl	%eax, %edx
 
-gate_a20_test_current_state:	
+gate_a20_test_current_state:
 	/* first of all, test if already in a good state */
 	call	gate_a20_check_state
 	cmpb	%al, %dl
@@ -372,7 +402,7 @@ gate_a20_try_bios:
 	cmpb	%al, %dl
 	jnz	gate_a20_try_system_control_port_a
 	ret
-	
+
 gate_a20_try_system_control_port_a:
 	/*
 	 * In macbook, the keyboard test would hang the machine, so we move
@@ -400,7 +430,7 @@ gate_a20_flush_keyboard_buffer:
 	inb	$0x64
 	andb	$0x02, %al
 	jnz	gate_a20_flush_keyboard_buffer
-2:	
+2:
 	inb	$0x64
 	andb	$0x01, %al
 	jz	3f
@@ -408,14 +438,14 @@ gate_a20_flush_keyboard_buffer:
 	jmp	2b
 3:
 	ret
-	
-gate_a20_try_keyboard_controller:	
+
+gate_a20_try_keyboard_controller:
 	/* third, try the keyboard controller */
 	call    gate_a20_flush_keyboard_buffer
 
 	movb	$0xd1, %al
 	outb	$0x64
-4:	
+4:
 	inb	$0x64
 	andb	$0x02, %al
 	jnz	4b
@@ -437,18 +467,18 @@ gate_a20_try_keyboard_controller:
 	/* everything failed, so restart from the beginning */
 	jnz	gate_a20_try_bios
 	ret
-	
+
 gate_a20_check_state:
 	/* iterate the checking for a while */
 	movl	$100, %ecx
-1:	
+1:
 	call	3f
 	cmpb	%al, %dl
 	jz	2f
 	loop	1b
 2:
 	ret
-3:	
+3:
 	pushl	%ebx
 	pushl	%ecx
 	xorl	%eax, %eax
@@ -537,7 +567,7 @@ FUNCTION(grub_exit)
 	int	$0x18
 	jmp	cold_reboot
 	.code32
-	
+
 /*
  * grub_reboot()
  *
@@ -546,13 +576,13 @@ FUNCTION(grub_exit)
 FUNCTION(grub_reboot)
 	call	prot_to_real
 	.code16
-cold_reboot:	
+cold_reboot:
 	/* cold boot */
 	movw	$0x0472, %di
 	movw	%ax, (%di)
 	ljmp	$0xFFFF, $0x0000
 	.code32
-	
+
 /*
  * grub_halt(int no_apm)
  *
@@ -566,7 +596,7 @@ FUNCTION(grub_halt)
 
 	call	prot_to_real
 	.code16
-	
+
 	/* detect APM */
 	movw	$0x5300, %ax
 	xorw	%bx, %bx
@@ -591,7 +621,7 @@ FUNCTION(grub_halt)
 	movw	$0x0101, %cx
 	int	$0x15
 	jc	EXT_C(grub_hard_stop)
-	
+
 	/* set the power state to off */
 	movw	$0x5307, %ax
 	movw	$1, %bx
@@ -601,8 +631,8 @@ FUNCTION(grub_halt)
 	/* shouldn't reach here */
 	jmp	EXT_C(grub_hard_stop)
 	.code32
-	
-	
+
+
 /*
  *  void grub_chainloader_real_boot (int drive, void *part_addr)
  *
@@ -653,7 +683,7 @@ FUNCTION(grub_biosdisk_rw_int13_extensions)
 	movb	%al, %dh
 	/* enter real mode */
 	call	prot_to_real
-	
+
 	.code16
 	movb	%dh, %ah
 	movw	%cx, %ds
@@ -669,7 +699,7 @@ FUNCTION(grub_biosdisk_rw_int13_extensions)
 	popl	%ebp
 
 	ret
-	
+
 /*
  *   int grub_biosdisk_rw_standard (int ah, int drive, int coff, int hoff,
  *                                  int soff, int nsec, int segment)
@@ -705,7 +735,7 @@ FUNCTION(grub_biosdisk_rw_standard)
 	movw	%ax, %di
 	/* save SEGMENT in %bx */
 	movw	0x14(%ebp), %bx
-		
+
 	/* enter real mode */
 	call	prot_to_real
 
@@ -714,7 +744,7 @@ FUNCTION(grub_biosdisk_rw_standard)
 	xorw	%bx, %bx
 	movw	$3, %si		/* attempt at least three times */
 
-1:	
+1:
 	movw	%di, %ax
 	int	$0x13		/* do the operation */
 	jnc	2f		/* check if successful */
@@ -723,19 +753,19 @@ FUNCTION(grub_biosdisk_rw_standard)
 	/* if fail, reset the disk system */
 	xorw	%ax, %ax
 	int	$0x13
-	
+
 	decw	%si
 	cmpw	$0, %si
 	je	2f
 	xorb	%bl, %bl
 	jmp	1b		/* retry */
-2:	
+2:
 	/* back to protected mode */
 	DATA32	call	real_to_prot
 	.code32
 
 	movb	%bl, %al	/* return value in %eax */
-	
+
 	popl	%esi
 	popl	%edi
 	popl	%ebx
@@ -764,7 +794,7 @@ FUNCTION(grub_biosdisk_check_int13_extensions)
 	movb	$0x41, %ah
 	movw	$0x55aa, %bx
 	int	$0x13		/* do the operation */
-	
+
 	/* check the result */
 	jc	1f
 	cmpw	$0xaa55, %bx
@@ -775,7 +805,7 @@ FUNCTION(grub_biosdisk_check_int13_extensions)
 	/* check if AH=0x42 is supported */
 	andw	$1, %cx
 	jnz	2f
-	
+
 1:
 	xorb	%bl, %bl
 2:
@@ -840,13 +870,13 @@ FUNCTION(grub_biosdisk_get_diskinfo_int13_extensions)
 	popl	%esi
 	popl	%ebx
 	popl	%ebp
-	
+
 	ret
 
 
 /*
  *   int grub_biosdisk_get_diskinfo_standard (int drive,
- *                                            unsigned long *cylinders, 
+ *                                            unsigned long *cylinders,
  *                                            unsigned long *heads,
  *                                            unsigned long *sectors)
  *
@@ -864,7 +894,7 @@ FUNCTION(grub_biosdisk_get_diskinfo_standard)
 	/* push HEADS */
 	pushl	%ecx
 	/* SECTORS is on the stack */
-	
+
 	/* drive */
 	movb	%al, %dl
 	/* enter real mode */
@@ -906,7 +936,7 @@ FUNCTION(grub_biosdisk_get_diskinfo_standard)
 	andb	$0x3f, %cl
 	movzbl	%cl, %eax
 	movl	%eax, (%edi)
-	
+
 	xorl	%eax, %eax
 	movb	%bl, %al	/* return value in %eax */
 
@@ -925,20 +955,20 @@ FUNCTION(grub_biosdisk_get_num_floppies)
 
 	xorl	%edx, %edx
 	call	prot_to_real
-	
+
 	.code16
 	/* reset the disk system first */
 	int	$0x13
 1:
 	stc
-	
+
 	/* call GET DISK TYPE */
 	movb	$0x15, %ah
 	int	$0x13
 
 	jc	2f
 
-	/* check if this drive exists */	
+	/* check if this drive exists */
 	testb	$0x3, %ah
 	jz	2f
 
@@ -952,8 +982,8 @@ FUNCTION(grub_biosdisk_get_num_floppies)
 	movl	%edx, %eax
 	popl	%ebp
 	ret
-	
-	
+
+
 /*
  *
  * grub_get_memsize(i) :  return the memory size in KB. i == 0 for conventional
@@ -1050,7 +1080,7 @@ FUNCTION(grub_get_mmap_entry)
 
 	/* push ADDR */
 	pushl	%eax
-	
+
 	/* place address (+4) in ES:DI */
 	addl	$4, %eax
 	movl	%eax, %edi
@@ -1090,6 +1120,17 @@ FUNCTION(grub_get_mmap_entry)
 xnosmap:
 	xorl	%ecx, %ecx
 
+/* 	Apple's cc jumps few bytes before the correct
+	label in this context. Hence nops. */
+#ifdef APPLE_CC
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+#endif
+
 xsmap:
 	DATA32	call	real_to_prot
 	.code32
@@ -1107,7 +1148,7 @@ xsmap:
 	popl	%ebp
 	ret
 
-	
+
 /*
  * void grub_console_real_putchar (int c)
  *
@@ -1126,7 +1167,7 @@ FUNCTION(grub_console_real_putchar)
 	movl	%eax, %edx
 	pusha
 	movb	EXT_C(grub_console_cur_color), %bl
-	
+
 	call	prot_to_real
 	.code16
 	movb	%dl, %al
@@ -1145,7 +1186,7 @@ FUNCTION(grub_console_real_putchar)
 	/* save the character and the attribute on the stack */
 	pushw	%ax
 	pushw	%bx
-	
+
 	/* get the current position */
 	movb	$0x3, %ah
 	int	$0x10
@@ -1153,22 +1194,22 @@ FUNCTION(grub_console_real_putchar)
 	/* check the column with the width */
 	cmpb	$79, %dl
 	jl	2f
-	
-	/* print CR and LF, if next write will exceed the width */	
+
+	/* print CR and LF, if next write will exceed the width */
 	movw	$0x0e0d, %ax
 	int	$0x10
 	movb	$0x0a, %al
 	int	$0x10
-	
+
 	/* get the current position */
 	movb	$0x3, %ah
 	int	$0x10
 
-2:	
+2:
 	/* restore the character and the attribute */
 	popw	%bx
 	popw	%ax
-	
+
 	/* write the character with the attribute */
 	movb	$0x9, %ah
 	movw	$1, %cx
@@ -1184,13 +1225,13 @@ FUNCTION(grub_console_real_putchar)
 1:	movw	$1, %bx
 	movb	$0xe, %ah
 	int	$0x10
-	
+
 3:	DATA32	call	real_to_prot
 	.code32
-	
+
 	popa
 	ret
-	
+
 
 /*
  * int grub_console_getkey (void)
@@ -1213,7 +1254,7 @@ translation_table:
 	.word	GRUB_CONSOLE_KEY_PPAGE, GRUB_TERM_PPAGE
 	.word	GRUB_CONSOLE_KEY_NPAGE, GRUB_TERM_NPAGE
 	.word	0
-	
+
 /*
  * translate_keycode translates the key code %dx to an ascii code.
  */
@@ -1222,9 +1263,14 @@ translation_table:
 translate_keycode:
 	pushw	%bx
 	pushw	%si
-	
+
+#ifdef APPLE_CC
+	translation_table_abs = ABS (translation_table) - 0x10000
+	movw	$(translation_table_abs), %si
+#else
 	movw	$ABS(translation_table), %si
-	
+#endif
+
 1:	lodsw
 	/* check if this is the end */
 	testw	%ax, %ax
@@ -1243,7 +1289,7 @@ translate_keycode:
 	ret
 
 	.code32
-	
+
 FUNCTION(grub_console_getkey)
 	pushl	%ebp
 
@@ -1271,7 +1317,7 @@ FUNCTION(grub_console_getkey)
 
 	movw	%ax, %dx		/* real_to_prot uses %eax */
 	call	translate_keycode
-		
+
 	DATA32	call	real_to_prot
 	.code32
 
@@ -1297,7 +1343,7 @@ FUNCTION(grub_console_getkey)
 FUNCTION(grub_console_checkkey)
 	pushl	%ebp
 	xorl	%edx, %edx
-	
+
 	call	prot_to_real	/* enter real mode */
 	.code16
 
@@ -1305,7 +1351,7 @@ FUNCTION(grub_console_checkkey)
 	int	$0x16
 
 	jz	notpending
-	
+
 	movw	%ax, %dx
 	DATA32	jmp	pending
 
@@ -1321,7 +1367,7 @@ pending:
 	popl	%ebp
 	ret
 
-	
+
 /*
  * grub_uint16_t grub_console_getxy (void)
  * BIOS call "INT 10H Function 03h" to get cursor position
@@ -1387,7 +1433,7 @@ FUNCTION(grub_console_gotoxy)
 	popl	%ebp
 	ret
 
-	
+
 /*
  * void grub_console_cls (void)
  * BIOS call "INT 10H Function 09h" to write character and attribute
@@ -1428,7 +1474,7 @@ FUNCTION(grub_console_cls)
 	popl	%ebp
 	ret
 
-	
+
 /*
  * void grub_console_setcursor (int on)
  * BIOS call "INT 10H Function 01h" to set cursor type
@@ -1441,14 +1487,14 @@ console_cursor_state:
 	.byte	1
 console_cursor_shape:
 	.word	0
-	
+
 FUNCTION(grub_console_setcursor)
 	pushl	%ebp
 	pushl	%ebx
 
 	/* push ON */
 	pushl	%eax
-	
+
 	/* check if the standard cursor shape has already been saved */
 	movw	console_cursor_shape, %ax
 	testw	%ax, %ax
@@ -1472,12 +1518,12 @@ FUNCTION(grub_console_setcursor)
 	testl	%eax, %eax
 	jz	2f
 	movw	console_cursor_shape, %cx
-2:	
+2:
 	call	prot_to_real
 	.code16
 
 	movb    $0x1, %ah
-	int     $0x10 
+	int     $0x10
 
 	DATA32	call	real_to_prot
 	.code32
@@ -1485,7 +1531,7 @@ FUNCTION(grub_console_setcursor)
 	popl	%ebx
 	popl	%ebp
 	ret
-		
+
 /*
  * grub_getrtsecs()
  *	if a seconds value can be read, read it and return it (BCD),
@@ -1526,7 +1572,7 @@ gottime:
 	popl	%ebp
 	ret
 
-	
+
 /*
  * grub_get_rtc()
  *	return the real time in ticks, of which there are about
@@ -1623,7 +1669,7 @@ FUNCTION(grub_vbe_bios_get_controller_info)
 	xorw	%ax, %ax
 	shrl	$4, %eax
 	mov	%eax, %edx	/* prot_to_real destroys %eax.  */
-	
+
 	call	prot_to_real
 	.code16
 
@@ -1642,7 +1688,7 @@ FUNCTION(grub_vbe_bios_get_controller_info)
 
 	movl	%edx, %eax
 	andl	$0x0FFFF, %eax	/* Return value in %eax.  */
-	
+
 	pop	%edx
 	popl	%edi
 	popl	%ebp
@@ -1724,7 +1770,7 @@ FUNCTION(grub_vbe_bios_set_mode)
 
 	DATA32 call	real_to_prot
 	.code32
-	
+
 	movw	%dx, %ax
 	andl	$0xFFFF, %eax	/* Return value in %eax.  */
 
@@ -1795,7 +1841,7 @@ FUNCTION(grub_vbe_bios_set_memory_window)
 
 	DATA32 call	real_to_prot
 	.code32
-	
+
 	movw	%dx, %ax
 	andl	$0xFFFF, %eax	/* Return value in %eax.  */
 
@@ -1868,7 +1914,7 @@ FUNCTION(grub_vbe_bios_set_scanline_length)
 
 	DATA32 call	real_to_prot
 	.code32
-	
+
 	movw	%dx, %ax
 	andl	$0xFFFF, %eax	/* Return value in %eax.  */
 
@@ -1931,7 +1977,7 @@ FUNCTION(grub_vbe_bios_set_display_start)
 	.code16
 
 	movw	$0x4f07, %ax
-	movw	$0x0080, %bx	/* BL = 80h, Set Display Start 
+	movw	$0x0080, %bx	/* BL = 80h, Set Display Start
 				   during Vertical Retrace.  */
 	int	$0x10
 
@@ -1939,7 +1985,7 @@ FUNCTION(grub_vbe_bios_set_display_start)
 
 	DATA32 call	real_to_prot
 	.code32
-	
+
 	movw	%dx, %ax
 	andl	$0xFFFF, %eax	/* Return value in %eax.  */
 
@@ -2029,7 +2075,7 @@ FUNCTION(grub_vbe_bios_set_palette_data)
 
 	DATA32 call	real_to_prot
 	.code32
-	
+
 	movw	%dx, %ax
 	andl	$0xFFFF, %eax	/* Return value in %eax.  */
 
