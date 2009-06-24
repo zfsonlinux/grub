@@ -1,0 +1,24 @@
+diff -Nur -x '*.orig' -x '*~' grub2-1.96+20090611/util/grub.d/10_linux.in grub2-1.96+20090611.new/util/grub.d/10_linux.in
+--- grub2-1.96+20090611/util/grub.d/10_linux.in	2009-06-24 10:17:45.202761012 +0200
++++ grub2-1.96+20090611.new/util/grub.d/10_linux.in	2009-06-24 10:19:11.198757708 +0200
+@@ -43,6 +43,11 @@
+   LINUX_ROOT_DEVICE=UUID=${GRUB_DEVICE_UUID}
+ fi
+ 
++# add crashkernel option if we have the requierd tools
++if [ -x "/usr/bin/makedumpfile" ] && [ -x "/sbin/kexec" ]; then
++    GRUB_CMDLINE_EXTRA="$GRUB_CMDLINE_EXTRA crashkernel=384M-2G:64M,2G-:128M"
++fi
++
+ test_numeric ()
+ {
+   local a=$1
+@@ -143,7 +148,7 @@
+   fi
+ 
+   linux_entry "${OS}, Linux ${version}" \
+-      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
++      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} ${GRUB_CMDLINE_EXTRA}"
+   linux_entry "${OS}, Linux ${version} (recovery mode)" \
+       "single ${GRUB_CMDLINE_LINUX}"
+ 

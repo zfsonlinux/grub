@@ -1,3 +1,11 @@
+grub2 (1.96+20090611-1ubuntu2) karmic; urgency=low
+
+  * 10_crashkernel.patch:
+    - add crashkernel= options if kdump and makedumpfile
+      is available (part of the kernel-crashdump spec)
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Wed, 24 Jun 2009 10:19:57 +0200
+
 grub2 (1.96+20090611-1ubuntu1) karmic; urgency=low
 
   * Resynchronise with Debian. Remaining changes:
