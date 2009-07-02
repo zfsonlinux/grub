@@ -17,14 +17,13 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <multiboot2.h>
 #include <grub/loader.h>
 #include <grub/machine/loader.h>
 #include <grub/multiboot2.h>
+#include <multiboot2.h>
 #include <grub/elfload.h>
 #include <grub/file.h>
 #include <grub/err.h>
-#include <grub/rescue.h>
 #include <grub/dl.h>
 #include <grub/mm.h>
 #include <grub/misc.h>
@@ -342,8 +341,8 @@ grub_multiboot2 (int argc, char *argv[])
     }
 
   /* Look for the multiboot header in the buffer.  The header should
-     be at least 12 bytes and aligned on a 4-byte boundary.  */
-  for (p = buffer; p <= buffer + len - 12; p += 4)
+     be at least 8 bytes and aligned on a 8-byte boundary.  */
+  for (p = buffer; p <= buffer + len - 8; p += 8)
     {
       header = (struct multiboot_header *) p;
       if (header->magic == MULTIBOOT2_HEADER_MAGIC)
@@ -371,6 +370,7 @@ grub_multiboot2 (int argc, char *argv[])
     }
   else
     {
+      grub_errno = 0;
       grub_dprintf ("loader", "Loading non-ELF multiboot 2 file.\n");
 
       if (header)
@@ -434,7 +434,7 @@ grub_module2 (int argc, char *argv[])
 
   grub_dprintf ("loader", "Loading module at 0x%x - 0x%x\n", modaddr,
 		modaddr + modsize);
-  if (grub_file_read (file, (char *) modaddr, modsize) != modsize)
+  if (grub_file_read (file, (void *) modaddr, modsize) != modsize)
     {
       grub_error (GRUB_ERR_FILE_READ_ERROR, "Couldn't read file");
       goto out;

@@ -1,14 +1,14 @@
-# translation of grub2_debconf_ru.po to Russian
+# translation of ru.po to Russian
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Yuri Kozlov <kozlov.y@gmail.com>, 2007.
+# Yuri Kozlov <kozlov.y@gmail.com>, 2007, 2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.95-2\n"
+"Project-Id-Version: grub2 1.96+20081005-1\n"
 "Report-Msgid-Bugs-To: pkg-grub-devel@lists.alioth.debian.org\n"
-"POT-Creation-Date: 2007-03-04 09:52+0100\n"
-"PO-Revision-Date: 2007-03-05 21:22+0300\n"
+"POT-Creation-Date: 2008-10-26 15:44+0100\n"
+"PO-Revision-Date: 2008-10-28 20:32+0300\n"
 "Last-Translator: Yuri Kozlov <kozlov.y@gmail.com>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,49 +17,78 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#. Type: error
+#. Type: boolean
 #. Description
-#: ../templates:1001
-msgid "GRUB 1.95 partition numbering scheme transition"
-msgstr "Переход на новую схему нумерации разделов в GRUB 1.95"
+#: ../grub-pc.templates:1001
+msgid "Chainload from menu.lst?"
+msgstr "Загружать по цепочке из menu.lst?"
 
-#. Type: error
+#. Type: boolean
 #. Description
-#: ../templates:1001
-msgid ""
-"As of version 1.95, GRUB 2 has changed its partition numbering scheme. "
-"Partitions are now counted starting from 1 rather than 0. This is consistent "
-"with the device names of Linux and the other kernels used in the "
-"distribution. For example, when using Linux as the kernel, \"(hd0,1)\" "
-"refers to the same partition as the /dev/sda1 device node."
+#: ../grub-pc.templates:1001
+msgid "GRUB upgrade scripts have detected a GRUB Legacy setup in /boot/grub."
 msgstr ""
-"Начиная с версии 1.95, в GRUB 2 изменилась схема нумерации разделов. "
-"Номера разделов теперь начинают отсчитывать с 1, а не с 0. Это соответствует "
-"именам устройств Linux и другим ядрам, используемым в дистрибутивах. "
-"Например, при использовании ядра Linux, \"(hd0,1)\" указывает на "
-"тот же раздел что и устройство /dev/sda1."
+"Сценарии обновления GRUB обнаружили установку предыдущего поколения GRUB в /"
+"boot/grub."
 
-#. Type: error
+#. Type: boolean
 #. Description
-#: ../templates:1001
+#: ../grub-pc.templates:1001
 msgid ""
-"Because of this, there is a risk that the system becomes unbootable: if "
-"update-grub(8) is run before GRUB is updated, it will generate a grub.cfg "
-"file that the installed GRUB won't yet be able to parse correctly. To ensure "
-"that the system will be able to boot, you should:"
+"In order to replace the Legacy version of GRUB in your system, it is "
+"recommended that /boot/grub/menu.lst is adjusted to chainload GRUB 2 from "
+"your existing GRUB Legacy setup.  This step may be automaticaly performed "
+"now."
 msgstr ""
-"В связи с этим, возникает опасность получить не загружаемую систему: если "
-"запустить update-grub(8) перед обновлением GRUB, то будет создан файл "
-"grub.cfg, который установленный GRUB ещё не может обработать правильно. "
-"Чтобы убедиться, что система сможет загрузиться, выполните:"
+"Чтобы заменить версию предыдущего поколения GRUB в системе, рекомендуется "
+"исправить /boot/grub/menu.lst так, чтобы он загружал по цепочке GRUB 2 из "
+"существующей установки GRUB предыдущего поколения. Это может быть сделано "
+"автоматически прямо сейчас."
 
-#. Type: error
+#. Type: boolean
 #. Description
-#: ../templates:1001
+#: ../grub-pc.templates:1001
 msgid ""
-" - Reinstall GRUB (typically, by running grub-install).\n"
-" - Rerun update-grub to generate a new grub.cfg."
+"It's recommended that you accept chainloading GRUB 2 from menu.lst, and "
+"verify that your new GRUB 2 setup is functional for you, before you install "
+"it directly to your MBR (Master Boot Record)."
 msgstr ""
-" - Переустановите загрузчик GRUB (обычно, запустив grub-install).\n"
-" - Перезапустите update-grub для создания нового grub.cfg."
+"Рекомендуется ответить утвердительно и проверить, что новая настройка GRUB 2 "
+"работает так как нужно, перед тем как устанавливать её непосредственно в MBR "
+"(главную загрузочную запись)."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates:1001
+msgid ""
+"In either case, whenever you want GRUB 2 to be loaded directly from MBR, you "
+"can do so by issuing (as root) the following command:"
+msgstr ""
+"В любом случае, всякий раз, когда вы хотите, чтобы GRUB 2 загружался "
+"непосредственно из MBR, выполните следующую команду (имея права "
+"суперпользователя):"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates:1001
+msgid "upgrade-from-grub-legacy"
+msgstr "upgrade-from-grub-legacy"
+
+#. Type: string
+#. Description
+#: ../grub-pc.templates:2001
+msgid "Linux command line:"
+msgstr "Командная строка Linux:"
+
+#. Type: string
+#. Description
+#: ../grub-pc.templates:2001
+msgid ""
+"The following Linux command line was extracted from the `kopt' parameter in "
+"GRUB Legacy's menu.lst.  Please verify that it is correct, and modify it if "
+"necessary."
+msgstr ""
+"Представленная ниже строка была извлечена из параметра `kopt' "
+"старого файла GRUB menu.lst. Проверьте, что всё правильно, или измените её, "
+"если требуется."
 
