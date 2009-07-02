@@ -1,7 +1,7 @@
 /* pc.c - Read PC style partition tables.  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2004,2005,2006,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2004,2005,2006,2007,2008,2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,10 +25,6 @@
 #include <grub/dl.h>
 
 static struct grub_partition_map grub_pc_partition_map;
-
-#ifndef GRUB_UTIL
-static grub_dl_t my_mod;
-#endif
 
 
 /* Parse the partition representation in STR and return a partition.  */
@@ -37,27 +33,27 @@ grub_partition_parse (const char *str)
 {
   grub_partition_t p;
   struct grub_pc_partition *pcdata;
-  
+
   char *s = (char *) str;
-  
+
   p = (grub_partition_t) grub_malloc (sizeof (*p));
   if (! p)
     return 0;
-  
+
   pcdata = (struct grub_pc_partition *) grub_malloc (sizeof (*pcdata));
   if (! pcdata)
     goto fail;
-  
+
   p->data = pcdata;
   p->partmap = &grub_pc_partition_map;
-  
+
   /* Initialize some of the fields with invalid values.  */
   pcdata->bsd_part = pcdata->dos_type = pcdata->bsd_type = p->index = -1;
 
   /* Get the DOS partition number. The number is counted from one for
      the user interface, and from zero internally.  */
   pcdata->dos_part = grub_strtoul (s, &s, 0) - 1;
-  
+
   if (grub_errno)
     {
       /* Not found. Maybe only a BSD label is specified.  */
@@ -83,7 +79,7 @@ grub_partition_parse (const char *str)
     goto fail;
 
   return p;
-  
+
  fail:
   grub_free (p);
   grub_free (pcdata);
@@ -105,20 +101,20 @@ pc_partition_map_iterate (grub_disk_t disk,
   /* Enforce raw disk access.  */
   raw = *disk;
   raw.partition = 0;
-  
+
   p.offset = 0;
   pcdata.ext_offset = 0;
   pcdata.dos_part = -1;
   p.data = &pcdata;
   p.partmap = &grub_pc_partition_map;
-  
+
   while (1)
     {
       int i;
       struct grub_pc_partition_entry *e;
-      
+
       /* Read the MBR.  */
-      if (grub_disk_read (&raw, p.offset, 0, sizeof (mbr), (char *) &mbr))
+      if (grub_disk_read (&raw, p.offset, 0, sizeof (mbr), &mbr))
 	goto finish;
 
       /* Check if it is valid.  */
@@ -129,7 +125,7 @@ pc_partition_map_iterate (grub_disk_t disk,
       for (p.index = 0; p.index < 4; p.index++)
 	{
 	  e = mbr.entries + p.index;
-	  
+
 	  p.start = p.offset + grub_le_to_cpu32 (e->start);
 	  p.len = grub_le_to_cpu32 (e->length);
 	  pcdata.bsd_part = -1;
@@ -138,7 +134,9 @@ pc_partition_map_iterate (grub_disk_t disk,
 
 	  grub_dprintf ("partition",
 			"partition %d: flag 0x%x, type 0x%x, start 0x%llx, len 0x%llx\n",
-			p.index, e->flag, pcdata.dos_type, p.start, p.len);
+			p.index, e->flag, pcdata.dos_type,
+			(unsigned long long) p.start,
+			(unsigned long long) p.len);
 
 	  /* If this is a GPT partition, this MBR is just a dummy.  */
 	  if (e->type == GRUB_PC_PARTITION_TYPE_GPT_DISK && p.index == 0)
@@ -149,34 +147,37 @@ pc_partition_map_iterate (grub_disk_t disk,
 	      && ! grub_pc_partition_is_extended (e->type))
 	    {
 	      pcdata.dos_part++;
-	      
+
 	      if (hook (disk, &p))
-		goto finish;
+		return 1;
 
 	      /* Check if this is a BSD partition.  */
 	      if (grub_pc_partition_is_bsd (e->type))
 		{
 		  /* Check if the BSD label is within the DOS partition.  */
 		  if (p.len <= GRUB_PC_PARTITION_BSD_LABEL_SECTOR)
-		    return grub_error (GRUB_ERR_BAD_PART_TABLE,
-				       "no space for disk label");
-
+		    {
+		      grub_dprintf ("partition", "no space for disk label\n");
+		      continue;
+		    }
 		  /* Read the BSD label.  */
 		  if (grub_disk_read (&raw,
 				      (p.start
 				       + GRUB_PC_PARTITION_BSD_LABEL_SECTOR),
 				      0,
 				      sizeof (label),
-				      (char *) &label))
+				      &label))
 		    goto finish;
 
 		  /* Check if it is valid.  */
 		  if (label.magic
 		      != grub_cpu_to_le32 (GRUB_PC_PARTITION_BSD_LABEL_MAGIC))
-		    return grub_error (GRUB_ERR_BAD_PART_TABLE,
-				       "invalid disk label magic 0x%x",
-				       label.magic);
-
+		    {
+		      grub_dprintf ("partition",
+				    "invalid disk label magic 0x%x on partition %d\n",
+				    label.magic, p.index);
+		      continue;
+		    }
 		  for (pcdata.bsd_part = 0;
 		       pcdata.bsd_part < grub_cpu_to_le16 (label.num_partitions);
 		       pcdata.bsd_part++)
@@ -187,10 +188,10 @@ pc_partition_map_iterate (grub_disk_t disk,
 		      p.start = grub_le_to_cpu32 (be->offset);
 		      p.len = grub_le_to_cpu32 (be->size);
 		      pcdata.bsd_type = be->fs_type;
-		      
+
 		      if (be->fs_type != GRUB_PC_PARTITION_BSD_TYPE_UNUSED)
 			if (hook (disk, &p))
-			  goto finish;
+			  return 1;
 		    }
 		}
 	    }
@@ -204,7 +205,7 @@ pc_partition_map_iterate (grub_disk_t disk,
       for (i = 0; i < 4; i++)
 	{
 	  e = mbr.entries + i;
-	  
+
 	  if (grub_pc_partition_is_extended (e->type))
 	    {
 	      p.offset = pcdata.ext_offset + grub_le_to_cpu32 (e->start);
@@ -230,7 +231,7 @@ pc_partition_map_probe (grub_disk_t disk, const char *str)
 {
   grub_partition_t p;
   struct grub_pc_partition *pcdata;
-  
+
   auto int find_func (grub_disk_t d, const grub_partition_t partition);
 
   int find_func (grub_disk_t d __attribute__ ((unused)),
@@ -246,16 +247,17 @@ pc_partition_map_probe (grub_disk_t disk, const char *str)
 	  grub_memcpy (pcdata, partdata, sizeof (*pcdata));
 	  return 1;
 	}
-      
+
       return 0;
     }
-  
+
   p = grub_partition_parse (str);
   if (! p)
     return 0;
-  
+
   pcdata = p->data;
-  if (pc_partition_map_iterate (disk, find_func))
+  pc_partition_map_iterate (disk, find_func);
+  if (grub_errno)
     goto fail;
 
   if (p->index < 0)
@@ -278,7 +280,7 @@ pc_partition_map_get_name (const grub_partition_t p)
 {
   char *name;
   struct grub_pc_partition *pcdata = p->data;
-  
+
   name = grub_malloc (13);
   if (! name)
     return 0;
@@ -306,9 +308,6 @@ static struct grub_partition_map grub_pc_partition_map =
 GRUB_MOD_INIT(pc_partition_map)
 {
   grub_partition_map_register (&grub_pc_partition_map);
-#ifndef GRUB_UTIL
-  my_mod = mod;
-#endif
 }
 
 GRUB_MOD_FINI(pc_partition_map)

@@ -1,7 +1,7 @@
 /* multiboot.h - multiboot header file with grub definitions. */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2003,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2003,2007,2008  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ void grub_module (int argc, char *argv[]);
 #include <grub/types.h>
 
 struct grub_multiboot_header
-{ 
+{
   /* Must be MULTIBOOT_MAGIC - see above.  */
   grub_uint32_t magic;
 
@@ -39,7 +39,7 @@ struct grub_multiboot_header
 
   /* The above fields plus this one must equal 0 mod 2^32. */
   grub_uint32_t checksum;
-  
+
   /* These are only valid if MULTIBOOT_AOUT_KLUDGE is set.  */
   grub_uint32_t header_addr;
   grub_uint32_t load_addr;
@@ -58,34 +58,34 @@ struct grub_multiboot_info
 {
   /* Multiboot info version number */
   grub_uint32_t flags;
-  
+
   /* Available memory from BIOS */
   grub_uint32_t mem_lower;
   grub_uint32_t mem_upper;
-  
+
   /* "root" partition */
   grub_uint32_t boot_device;
-  
+
   /* Kernel command line */
   grub_uint32_t cmdline;
-  
+
   /* Boot-Module list */
   grub_uint32_t mods_count;
   grub_uint32_t mods_addr;
-  
+
   grub_uint32_t syms[4];
-  
+
   /* Memory Mapping buffer */
   grub_uint32_t mmap_length;
   grub_uint32_t mmap_addr;
-  
+
   /* Drive Info buffer */
   grub_uint32_t drives_length;
   grub_uint32_t drives_addr;
-  
+
   /* ROM configuration table */
   grub_uint32_t config_table;
-  
+
   /* Boot Loader Name */
   grub_uint32_t boot_loader_name;
 
@@ -101,15 +101,25 @@ struct grub_multiboot_info
   grub_uint16_t vbe_interface_len;
 };
 
+struct grub_multiboot_mmap_entry
+{
+  grub_uint32_t size;
+  grub_uint64_t addr;
+  grub_uint64_t len;
+#define GRUB_MULTIBOOT_MEMORY_AVAILABLE		1
+#define GRUB_MULTIBOOT_MEMORY_RESERVED		2
+  grub_uint32_t type;
+} __attribute__((packed));
+
 struct grub_mod_list
 {
   /* the memory used goes from bytes 'mod_start' to 'mod_end-1' inclusive */
   grub_uint32_t mod_start;
   grub_uint32_t mod_end;
-  
+
   /* Module command line */
   grub_uint32_t cmdline;
-  
+
   /* padding to take it to 16 bytes (must be zero) */
   grub_uint32_t pad;
 };

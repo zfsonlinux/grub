@@ -1,6 +1,18 @@
 #!/bin/bash -e
 
-for i in /proc/mounts /boot/grub/{device.map,grub.cfg} ; do
+if test -e /boot/grub/setup_left_core_image_in_filesystem ; then
+  echo -e "\n*********************** WARNING grub-setup left core.img in filesystem" >&3
+fi
+
+for i in /proc/mounts ; do
+  if test -e $i ; then
+    echo -e "\n*********************** BEGIN $i" >&3
+    grep ^/dev/ $i >&3
+    echo "*********************** END $i" >&3
+  fi
+done
+
+for i in /boot/grub/{device.map,grub.cfg} ; do
   if test -e $i ; then
     echo -e "\n*********************** BEGIN $i" >&3
     cat $i >&3

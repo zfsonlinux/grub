@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
-	
+
 /*
  * This code was stolen from the files enter.sh, leave.sh, lzo1x_d.sh,
  * lzo1x_f.s and lzo_asm.h in LZO version 1.08, and was heavily modified
@@ -37,7 +37,7 @@
 #define MOVSL(r1,r2,x)	movl (r1), x ; addl $4, r1 ; movl x, (r2) ; addl $4, r2
 #define COPYL_C(r1,r2,x,rc)	9: MOVSL(r1,r2,x) ; decl rc ; jnz 9b
 #define COPYL(r1,r2,x)	COPYL_C(r1,r2,x,%ecx)
-	
+
 lzo1x_decompress:
 	pushl	%ebp
 	pushl	%edi
@@ -50,7 +50,7 @@ lzo1x_decompress:
 	movl	OUTP, %edi
 	movl	$3, %ebp
 
-	
+
 	xorl	%eax, %eax
 	xorl	%ebx, %ebx	/* high bits 9-32 stay 0 */
 	lodsb
@@ -73,7 +73,6 @@ lzo1x_decompress:
 	jmp	3f
 
 
-	.align	8
 .L00:
 	LODSB
 .L01:
@@ -119,7 +118,6 @@ lzo1x_decompress:
 // M2
 ************************************************************************/
 
-	.align	8
 .LMATCH:
 	cmpb	$64, %al
 	jb	.LM3MATCH
@@ -156,7 +154,6 @@ lzo1x_decompress:
 	jmp	3f
 
 
-	.align	8
 .LM3MATCH:
 	cmpb	$32, %al
 	jb	.LM4MATCH
@@ -180,7 +177,6 @@ lzo1x_decompress:
 // copy match
 ************************************************************************/
 
-	.align	2
 .LCOPYLONG:			 /* copy match using longwords */
 	leal	-3(%edi,%ecx), %eax
 	shrl	$2, %ecx
@@ -202,7 +198,6 @@ lzo1x_decompress:
 	jmp	.LMATCH
 
 
-	.align	8
 .LCOPYBYTE:			 /* copy match using bytes */
 	xchgl	%edx,%esi
 	subl	N_3,%ecx
@@ -226,7 +221,6 @@ lzo1x_decompress:
 	jmp	3f
 
 
-	.align	8
 .LM4MATCH:
 	cmpb	$16, %al
 	jb	.LM1MATCH
@@ -252,7 +246,6 @@ lzo1x_decompress:
 // M1
 ************************************************************************/
 
-	.align	8
 .LM1MATCH:
 	/* a M1 match */
 	shrl	$2, %eax
@@ -290,7 +283,7 @@ lzo1x_decompress:
 .L_leave:
 	negl	%eax
 	jnz	1f
-	
+
 	subl	OUTP, %edi	 /* write back the uncompressed size */
 	movl	%edi, %eax
 
