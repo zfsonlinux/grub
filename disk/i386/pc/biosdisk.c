@@ -18,6 +18,7 @@
 
 #include <grub/machine/biosdisk.h>
 #include <grub/machine/memory.h>
+#include <grub/machine/kernel.h>
 #include <grub/disk.h>
 #include <grub/dl.h>
 #include <grub/mm.h>
@@ -26,26 +27,23 @@
 #include <grub/err.h>
 #include <grub/term.h>
 
-static int cd_start = GRUB_BIOSDISK_MACHINE_CDROM_START;
-static int cd_count = 0;
+static int cd_drive = 0;
 
 static int
 grub_biosdisk_get_drive (const char *name)
 {
   unsigned long drive;
 
-  if ((name[0] != 'f' && name[0] != 'h' && name[0] != 'c') || name[1] != 'd')
+  if ((name[0] != 'f' && name[0] != 'h') || name[1] != 'd')
     goto fail;
-    
+
   drive = grub_strtoul (name + 2, 0, 10);
   if (grub_errno != GRUB_ERR_NONE)
     goto fail;
 
   if (name[0] == 'h')
     drive += 0x80;
-  else if (name[0] == 'c')
-    drive += cd_start;
-  
+
   return (int) drive ;
 
  fail:
@@ -58,9 +56,6 @@ grub_biosdisk_call_hook (int (*hook) (const char *name), int drive)
 {
   char name[10];
 
-  if (drive >= cd_start)
-    grub_sprintf (name, "cd%d", drive - cd_start);
-  else
     grub_sprintf (name, (drive & 0x80) ? "hd%d" : "fd%d", drive & (~0x80));
   return hook (name);
 }
@@ -71,12 +66,6 @@ grub_biosdisk_iterate (int (*hook) (const char *name))
   int drive;
   int num_floppies;
 
-  /* For floppy disks, we can get the number safely.  */
-  num_floppies = grub_biosdisk_get_num_floppies ();
-  for (drive = 0; drive < num_floppies; drive++)
-    if (grub_biosdisk_call_hook (hook, drive))
-      return 1;
-  
   /* For hard disks, attempt to read the MBR.  */
   for (drive = 0x80; drive < 0x90; drive++)
     {
@@ -86,12 +75,20 @@ grub_biosdisk_iterate (int (*hook) (const char *name))
 	  grub_dprintf ("disk", "Read error when probing drive 0x%2x\n", drive);
 	  break;
 	}
-      
+
       if (grub_biosdisk_call_hook (hook, drive))
 	return 1;
     }
 
-  for (drive = cd_start; drive < cd_start + cd_count; drive++)
+  if (cd_drive)
+    {
+      if (grub_biosdisk_call_hook (hook, cd_drive))
+      return 1;
+    }
+
+  /* For floppy disks, we can get the number safely.  */
+  num_floppies = grub_biosdisk_get_num_floppies ();
+  for (drive = 0; drive < num_floppies; drive++)
     if (grub_biosdisk_call_hook (hook, drive))
       return 1;
 
@@ -109,27 +106,27 @@ grub_biosdisk_open (const char *name, grub_disk_t disk)
   if (drive < 0)
     return grub_errno;
 
-  disk->has_partitions = ((drive & 0x80) && (drive < cd_start));
+  disk->has_partitions = ((drive & 0x80) && (drive != cd_drive));
   disk->id = drive;
-  
+
   data = (struct grub_biosdisk_data *) grub_malloc (sizeof (*data));
   if (! data)
     return grub_errno;
-  
+
   data->drive = drive;
   data->flags = 0;
 
-  if (drive >= cd_start)
+  if ((cd_drive) && (drive == cd_drive))
     {
       data->flags = GRUB_BIOSDISK_FLAG_LBA | GRUB_BIOSDISK_FLAG_CDROM;
       data->sectors = 32;
-      total_sectors = 9000000;  /* TODO: get the correct size.  */
+      total_sectors = GRUB_ULONG_MAX;  /* TODO: get the correct size.  */
     }
   else if (drive & 0x80)
     {
       /* HDD */
       int version;
-      
+
       version = grub_biosdisk_check_int13_extensions (drive);
       if (version)
 	{
@@ -154,15 +151,27 @@ grub_biosdisk_open (const char *name, grub_disk_t disk)
 	}
     }
 
-  if (drive < cd_start)
+  if (! (data->flags & GRUB_BIOSDISK_FLAG_CDROM))
     {
       if (grub_biosdisk_get_diskinfo_standard (drive,
 					       &data->cylinders,
 					       &data->heads,
 					       &data->sectors) != 0)
         {
-          grub_free (data);
-          return grub_error (GRUB_ERR_BAD_DEVICE, "cannot get C/H/S values");
+	  if (total_sectors && (data->flags & GRUB_BIOSDISK_FLAG_LBA))
+	    {
+	      data->sectors = 63;
+	      data->heads = 255;
+	      data->cylinders
+		= grub_divmod64 (total_sectors
+				 + data->heads * data->sectors - 1,
+				 data->heads * data->sectors, 0);
+	    }
+	  else
+	    {
+	      grub_free (data);
+	      return grub_error (GRUB_ERR_BAD_DEVICE, "cannot get C/H/S values");
+	    }
         }
 
       if (! total_sectors)
@@ -171,7 +180,7 @@ grub_biosdisk_open (const char *name, grub_disk_t disk)
 
   disk->total_sectors = total_sectors;
   disk->data = data;
-  
+
   return GRUB_ERR_NONE;
 }
 
@@ -193,11 +202,11 @@ grub_biosdisk_rw (int cmd, grub_disk_t disk,
 		  unsigned segment)
 {
   struct grub_biosdisk_data *data = disk->data;
-  
+
   if (data->flags & GRUB_BIOSDISK_FLAG_LBA)
     {
       struct grub_biosdisk_dap *dap;
-      
+
       dap = (struct grub_biosdisk_dap *) (GRUB_MEMORY_MACHINE_SCRATCH_ADDR
 					  + (data->sectors
 					     << GRUB_DISK_SECTOR_BITS));
@@ -237,15 +246,17 @@ grub_biosdisk_rw (int cmd, grub_disk_t disk,
     {
       unsigned coff, hoff, soff;
       unsigned head;
-      unsigned real_sector = (unsigned) sector;
-      
-      /* It is impossible to reach over 2TB with the traditional
-	 CHS access.  */
-      if (sector > ~0UL)
+
+      /* It is impossible to reach over 8064 MiB (a bit less than LBA24) with
+	 the traditional CHS access.  */
+      if (sector >
+	  1024 /* cylinders */ *
+	  256 /* heads */ *
+	  63 /* spt */)
 	return grub_error (GRUB_ERR_OUT_OF_RANGE, "out of disk");
 
-      soff = real_sector % data->sectors + 1;
-      head = real_sector / data->sectors;
+      soff = ((grub_uint32_t) sector) % data->sectors + 1;
+      head = ((grub_uint32_t) sector) / data->sectors;
       hoff = head % data->heads;
       coff = head / data->heads;
 
@@ -364,7 +375,8 @@ grub_disk_biosdisk_fini (void)
 
 GRUB_MOD_INIT(biosdisk)
 {
-  int drive, found = 0;
+  struct grub_biosdisk_cdrp *cdrp
+        = (struct grub_biosdisk_cdrp *) GRUB_MEMORY_MACHINE_SCRATCH_ADDR;
 
   if (grub_disk_firmware_is_tainted)
     {
@@ -373,25 +385,15 @@ GRUB_MOD_INIT(biosdisk)
     }
   grub_disk_firmware_fini = grub_disk_biosdisk_fini;
 
+  grub_memset (cdrp, 0, sizeof (*cdrp));
+  cdrp->size = sizeof (*cdrp);
+  cdrp->media_type = 0xFF;
+  if ((! grub_biosdisk_get_cdinfo_int13_extensions (grub_boot_drive, cdrp)) &&
+      ((cdrp->media_type & GRUB_BIOSDISK_CDTYPE_MASK)
+       == GRUB_BIOSDISK_CDTYPE_NO_EMUL))
+    cd_drive = cdrp->drive_no;
+
   grub_disk_dev_register (&grub_biosdisk_dev);
-
-  for (drive = GRUB_BIOSDISK_MACHINE_CDROM_START;
-       drive < GRUB_BIOSDISK_MACHINE_CDROM_END; drive++)
-    {
-      if (grub_biosdisk_check_int13_extensions (drive))
-        {
-	  if (! found)
-	    cd_start = drive;
-	  found++;
-	}
-      else
-        {
-	  if (found)
-            break;
-	}
-    }
-
-  cd_count = found;
 }
 
 GRUB_MOD_FINI(biosdisk)

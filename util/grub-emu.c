@@ -27,7 +27,7 @@
 #include <grub/mm.h>
 #include <grub/setjmp.h>
 #include <grub/fs.h>
-#include <grub/util/biosdisk.h>
+#include <grub/util/hostdisk.h>
 #include <grub/dl.h>
 #include <grub/machine/console.h>
 #include <grub/util/misc.h>
@@ -40,7 +40,7 @@
 #include <grub_emu_init.h>
 
 /* Used for going back to the main function.  */
-jmp_buf main_env;
+static jmp_buf main_env;
 
 /* Store the prefix specified by an argument.  */
 static char *prefix = 0;
@@ -69,10 +69,24 @@ grub_arch_dl_relocate_symbols (grub_dl_t mod, void *ehdr)
 }
 
 void
+grub_reboot (void)
+{
+  longjmp (main_env, 1);
+}
+
+void
+grub_halt (
+#ifdef GRUB_MACHINE_PCBIOS
+	   int no_apm __attribute__ ((unused))
+#endif
+	   )
+{
+  grub_reboot ();
+}
+
+void
 grub_machine_init (void)
 {
-  signal (SIGINT, SIG_IGN);
-  grub_console_init ();
 }
 
 void
@@ -88,6 +102,11 @@ grub_machine_fini (void)
 {
   grub_console_fini ();
 }
+
+void
+read_command_list (void)
+{
+}
 
 
 static struct option options[] =
@@ -102,7 +121,7 @@ static struct option options[] =
     { 0, 0, 0, 0 }
   };
 
-static int 
+static int
 usage (int status)
 {
   if (status)
@@ -135,7 +154,7 @@ main (int argc, char *argv[])
   char *dev_map = DEFAULT_DEVICE_MAP;
   volatile int hold = 0;
   int opt;
-  
+
   progname = "grub-emu";
 
   while ((opt = getopt_long (argc, argv, "r:d:m:vH:hV", options, 0)) != -1)
@@ -182,11 +201,16 @@ main (int argc, char *argv[])
 
       sleep (1);
     }
-  
+
+  signal (SIGINT, SIG_IGN);
+  grub_console_init ();
+
   /* XXX: This is a bit unportable.  */
   grub_util_biosdisk_init (dev_map);
 
-  grub_hostfs_init ();
+#if HAVE_USB_H
+  grub_libusb_init ();
+#endif
 
   grub_init_all ();
 
@@ -210,16 +234,14 @@ main (int argc, char *argv[])
   prefix = xmalloc (strlen (root_dev) + 2 + strlen (dir) + 1);
   sprintf (prefix, "(%s)%s", root_dev, dir);
   free (dir);
-  
+
   /* Start GRUB!  */
   if (setjmp (main_env) == 0)
     grub_main ();
 
   grub_fini_all ();
 
-  grub_hostfs_fini ();
-
   grub_machine_fini ();
-  
+
   return 0;
 }

@@ -37,6 +37,7 @@
         .globl  start, _start
 
 start:
+_start:
 	call	next
 
 next:
@@ -45,7 +46,7 @@ next:
 	. = start + 8
 
 bi_pvd:
-	.long 0		/* LBA of primary volume descript.  */
+	.long 0		/* LBA of primary volume descriptor.  */
 bi_file:
 	.long 0		/* LBA of boot file. */
 bi_length:
@@ -66,8 +67,15 @@ bi_reserved:
 	movw	%ax, %ds
 	movw	%ax, %es
 
+#ifdef APPLE_CC
+	err_noboot_msg_abs = 0x7C00 + err_noboot_msg - start
+	movw	$err_noboot_msg_abs, %si
+	bi_length_dif = bi_length - next
+	movl	%cs:bi_length_dif(%bx), %ecx
+#else
 	movw	$(0x7C00 + err_noboot_msg - start), %si
 	movl	%cs: bi_length - next(%bx), %ecx
+#endif
 	orl	%ecx, %ecx
 	jz	fail
 
@@ -148,7 +156,12 @@ read_cdrom:
 	ret
 
 cdrom_fail:
+#ifdef APPLE_CC
+	err_cdfail_msg_abs = 0x7C00 + err_cdfail_msg - start
+	movw	$(err_cdfail_msg_abs), %si
+#else
 	movw	$(0x7C00 + err_cdfail_msg - start), %si
+#endif
 
 fail:
 	movb	$0x0e, %ah
