@@ -22,8 +22,7 @@
 #include <grub/dl.h>
 #include <grub/mm.h>
 #include <grub/misc.h>
-#include <grub/arg.h>
-#include <grub/file.h>
+#include <grub/bufio.h>
 
 /* Uncomment following define to enable JPEG debug.  */
 //#define JPEG_DEBUG
@@ -89,7 +88,7 @@ grub_jpeg_get_byte (struct grub_jpeg_data *data)
   grub_uint8_t r;
 
   r = 0;
-  grub_file_read (data->file, (char *) &r, 1);
+  grub_file_read (data->file, &r, 1);
 
   return r;
 }
@@ -100,7 +99,7 @@ grub_jpeg_get_word (struct grub_jpeg_data *data)
   grub_uint16_t r;
 
   r = 0;
-  grub_file_read (data->file, (char *) &r, sizeof (grub_uint16_t));
+  grub_file_read (data->file, &r, sizeof (grub_uint16_t));
 
   return grub_be_to_cpu16 (r);
 }
@@ -182,7 +181,7 @@ grub_jpeg_decode_huff_table (struct grub_jpeg_data *data)
     return grub_error (GRUB_ERR_BAD_FILE_TYPE,
 		       "jpeg: too many huffman tables");
 
-  if (grub_file_read (data->file, (char *) &count, sizeof (count)) !=
+  if (grub_file_read (data->file, &count, sizeof (count)) !=
       sizeof (count))
     return grub_errno;
 
@@ -195,7 +194,7 @@ grub_jpeg_decode_huff_table (struct grub_jpeg_data *data)
   if (grub_errno)
     return grub_errno;
 
-  if (grub_file_read (data->file, (char *) data->huff_value[id], n) != n)
+  if (grub_file_read (data->file, data->huff_value[id], n) != n)
     return grub_errno;
 
   base = 0;
@@ -235,7 +234,7 @@ grub_jpeg_decode_quan_table (struct grub_jpeg_data *data)
     return grub_error (GRUB_ERR_BAD_FILE_TYPE,
 		       "jpeg: too many quantization tables");
 
-  if (grub_file_read (data->file, (char *) &data->quan_table[id], 64) != 64)
+  if (grub_file_read (data->file, &data->quan_table[id], 64) != 64)
     return grub_errno;
 
   if (data->file->offset != next_marker)
@@ -542,7 +541,7 @@ grub_jpeg_decode_sos (struct grub_jpeg_data *data)
 
   if (grub_video_bitmap_create (data->bitmap, data->image_width,
 				data->image_height,
-				GRUB_VIDEO_BLIT_FORMAT_R8G8B8))
+				GRUB_VIDEO_BLIT_FORMAT_RGB_888))
     return grub_errno;
 
   data->bit_mask = 0x0;
@@ -664,7 +663,7 @@ grub_video_reader_jpeg (struct grub_video_bitmap **bitmap,
   grub_file_t file;
   struct grub_jpeg_data *data;
 
-  file = grub_file_open (filename);
+  file = grub_buffile_open (filename, 0);
   if (!file)
     return grub_errno;
 
