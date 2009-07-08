@@ -1,3 +1,11 @@
+grub2 (1.96+20090611-1ubuntu3) karmic; urgency=low
+
+  * Drop os-prober to a Recommends at Felix Zielcke's suggestion.
+  * Don't build grub-efi-amd64 on lpia for the moment, since we don't seem
+    to have sufficient compiler support.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 08 Jul 2009 16:25:58 +0100
+
 grub2 (1.96+20090611-1ubuntu2) karmic; urgency=low
 
   * 10_crashkernel.patch:
