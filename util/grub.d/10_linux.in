@@ -128,7 +128,8 @@ while [ "x$list" != "x" ] ; do
 
   initrd=
   for i in "initrd.img-${version}" "initrd-${version}.img" \
-	   "initrd.img-${alt_version}" "initrd-${alt_version}.img"; do
+	   "initrd-${version}" "initrd.img-${alt_version}" \
+	   "initrd-${alt_version}.img" "initrd-${alt_version}"; do
     if test -e "${dirname}/${i}" ; then
       initrd="$i"
       break
@@ -141,10 +142,12 @@ while [ "x$list" != "x" ] ; do
     linux_root_device_thisversion=${GRUB_DEVICE}
   fi
 
-  linux_entry "${OS}, linux ${version}" \
+  linux_entry "${OS}, Linux ${version}" \
       "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
-  linux_entry "${OS}, linux ${version} (recovery mode)" \
-      "single ${GRUB_CMDLINE_LINUX}"
+  if [ "x${GRUB_DISABLE_LINUX_RECOVERY}" != "xtrue" ]; then
+    linux_entry "${OS}, Linux ${version} (recovery mode)" \
+	"single ${GRUB_CMDLINE_LINUX}"
+  fi
 
   list=`echo $list | tr ' ' '\n' | grep -vx $linux | tr '\n' ' '`
 done

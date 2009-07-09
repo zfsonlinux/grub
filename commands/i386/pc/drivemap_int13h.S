@@ -27,10 +27,20 @@
 
 /* The replacement int13 handler.   Preserve all registers.  */
 FUNCTION(grub_drivemap_handler)
+	/* Save %dx for future restore. */
+	push	%dx
+	/* Push flags. Used to simulate interrupt with original flags. */
+	pushf
+
 	/* Map the drive number (always in DL).  */
 	push	%ax
 	push	%bx
+#ifdef APPLE_CC
+	grub_drivemap_mapstart_ofs = INT13H_OFFSET(EXT_C(grub_drivemap_mapstart))
+	movw	$grub_drivemap_mapstart_ofs, %bx
+#else
 	movw	$INT13H_OFFSET(EXT_C(grub_drivemap_mapstart)), %bx
+#endif
 
 more_remaining:
 	movw	%cs:(%bx), %ax
@@ -46,10 +56,57 @@ not_found:
 	pop	%bx
 	pop	%ax
 
-	/* Upon arrival to this point the stack must be exactly like at entry.
-	   This long jump will transfer the caller's stack to the old INT13
-	   handler, thus making it return directly to the original caller.  */
-	.byte	0xea
+	/* If the call isn't ah=0x8 or ah=0x15 we must restore %dx.  */
+	cmpb	$0x8, %ah
+	jz	norestore
+	cmpb	$0x15, %ah
+	jz	norestore
+
+	/* Restore flags.  */
+	popf
+	pushf
+
+#ifdef APPLE_CC
+	grub_drivemap_oldhandler_ofs = INT13H_OFFSET (EXT_C (grub_drivemap_oldhandler))
+	lcall *%cs:grub_drivemap_oldhandler_ofs
+#else
+	lcall *%cs:INT13H_OFFSET (EXT_C (grub_drivemap_oldhandler))
+#endif
+
+	push	%bp
+	mov	%sp, %bp
+
+tail:
+	/* Save new flags below %esp so the caller will recieve new flags.  */
+	pushf
+	pop	%dx
+	mov	%dx, 8(%bp)
+
+	pop	%bp
+
+	/* Restore %dx.  */
+	pop	%dx
+	iret
+
+norestore:
+
+	/* Restore flags.  */
+	popf
+	pushf
+
+#ifdef APPLE_CC
+	lcall *%cs:grub_drivemap_oldhandler_ofs
+#else
+	lcall *%cs:INT13H_OFFSET (EXT_C (grub_drivemap_oldhandler))
+#endif
+
+	push	%bp
+	mov	%sp, %bp
+
+	/* Save %dx. So it won't be restored to original value.  */
+	mov	%dx, 2(%bp)
+
+	jmp tail
 
 /* Far pointer to the old handler.  Stored as a CS:IP in the style of real-mode
    IVT entries (thus PI:SC in mem).  */
