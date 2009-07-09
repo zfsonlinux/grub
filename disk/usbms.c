@@ -221,7 +221,7 @@ grub_usbms_transfer (struct grub_scsi *scsi, grub_size_t cmdsize, char *cmd,
   grub_usbms_dev_t dev = (grub_usbms_dev_t) scsi->data;
   struct grub_usbms_csw status;
   static grub_uint32_t tag = 0;
-  grub_usb_err_t err;
+  grub_usb_err_t err = GRUB_USB_ERR_NONE;
   int retrycnt = 3;
 
  retry:
@@ -267,7 +267,7 @@ grub_usbms_transfer (struct grub_scsi *scsi, grub_size_t cmdsize, char *cmd,
 			     "can't read from USB Mass Storage device");
 	}
     }
-  else 
+  else
     {
       err = grub_usb_bulk_write (dev->dev, dev->in->endp_addr & 15, size, buf);
       grub_dprintf ("usb", "write: %d %d\n", err, GRUB_USB_ERR_STALL);
@@ -379,7 +379,7 @@ static struct grub_scsi_dev grub_usbms_dev =
     .close = grub_usbms_close,
     .read = grub_usbms_read,
     .write = grub_usbms_write
-  }; 
+  };
 
 GRUB_MOD_INIT(usbms)
 {

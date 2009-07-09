@@ -40,8 +40,10 @@ char *EXPORT_FUNC(grub_strcat) (char *dest, const char *src);
 char *EXPORT_FUNC(grub_strncat) (char *dest, const char *src, int c);
 
 /* Prototypes for aliases.  */
+#if !defined (GRUB_UTIL) || !defined (APPLE_CC)
 void *EXPORT_FUNC(memmove) (void *dest, const void *src, grub_size_t n);
 void *EXPORT_FUNC(memcpy) (void *dest, const void *src, grub_size_t n);
+#endif
 
 int EXPORT_FUNC(grub_memcmp) (const void *s1, const void *s2, grub_size_t n);
 int EXPORT_FUNC(grub_strcmp) (const char *s1, const char *s2);
@@ -59,6 +61,15 @@ int EXPORT_FUNC(grub_isalpha) (int c);
 int EXPORT_FUNC(grub_isgraph) (int c);
 int EXPORT_FUNC(grub_isdigit) (int c);
 int EXPORT_FUNC(grub_tolower) (int c);
+static inline int
+grub_toupper (int c)
+{
+  if (c >= 'a' && c <= 'z')
+    return c - 'a' + 'A';
+
+  return c;
+}
+
 unsigned long EXPORT_FUNC(grub_strtoul) (const char *str, char **end, int base);
 unsigned long long EXPORT_FUNC(grub_strtoull) (const char *str, char **end, int base);
 char *EXPORT_FUNC(grub_strdup) (const char *s);

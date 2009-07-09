@@ -36,7 +36,7 @@ struct char_index_entry
   grub_uint32_t code;
   grub_uint8_t storage_flags;
   grub_uint32_t offset;
-  
+
   /* Glyph if loaded, or NULL otherwise.  */
   struct grub_font_glyph *glyph;
 };
@@ -72,13 +72,13 @@ struct font_file_section
 {
   /* The file this section is in.  */
   grub_file_t file;
-  
+
   /* FOURCC name of the section.  */
   char name[4];
-  
+
   /* Length of the section contents.  */
   grub_uint32_t length;
-  
+
   /* Set by open_section() on EOF.  */
   int eof;
 };
@@ -170,10 +170,10 @@ font_init (grub_font_t font)
   font->family = 0;
   font->point_size = 0;
   font->weight = 0;
-  
+
   /* Default leading value, not in font file yet.  */
   font->leading = 1;
-  
+
   font->max_char_width = 0;
   font->max_char_height = 0;
   font->ascent = 0;
@@ -215,7 +215,7 @@ open_section (grub_file_t file, struct font_file_section *section)
     }
 
   /* Read the big-endian 32-bit section length.  */
-  retval = grub_file_read (file, (char *) &raw_length, 4);
+  retval = grub_file_read (file, &raw_length, 4);
   if (retval >= 0 && retval < 4)
     {
       /* EOF encountered.  */
@@ -249,6 +249,7 @@ load_font_index (grub_file_t file, grub_uint32_t sect_length, struct
                  grub_font *font)
 {
   unsigned i;
+  grub_uint32_t last_code;
 
 #if FONT_DEBUG >= 2
   grub_printf("load_font_index(sect_length=%d)\n", sect_length);
@@ -277,22 +278,35 @@ load_font_index (grub_file_t file, grub_uint32_t sect_length, struct
   grub_printf("num_chars=%d)\n", font->num_chars);
 #endif
 
+  last_code = 0;
+
   /* Load the character index data from the file.  */
   for (i = 0; i < font->num_chars; i++)
     {
       struct char_index_entry *entry = &font->char_index[i];
 
       /* Read code point value; convert to native byte order.  */
-      if (grub_file_read (file, (char *) &entry->code, 4) != 4)
+      if (grub_file_read (file, &entry->code, 4) != 4)
         return 1;
       entry->code = grub_be_to_cpu32 (entry->code);
 
+      /* Verify that characters are in ascending order.  */
+      if (i != 0 && entry->code <= last_code)
+        {
+          grub_error (GRUB_ERR_BAD_FONT,
+                      "Font characters not in ascending order: %u <= %u",
+                      entry->code, last_code);
+          return 1;
+        }
+
+      last_code = entry->code;
+
       /* Read storage flags byte.  */
-      if (grub_file_read (file, (char *) &entry->storage_flags, 1) != 1)
+      if (grub_file_read (file, &entry->storage_flags, 1) != 1)
         return 1;
 
       /* Read glyph data offset; convert to native byte order.  */
-      if (grub_file_read (file, (char *) &entry->offset, 4) != 4)
+      if (grub_file_read (file, &entry->offset, 4) != 4)
         return 1;
       entry->offset = grub_be_to_cpu32 (entry->offset);
 
@@ -350,7 +364,7 @@ read_section_as_short (struct font_file_section *section, grub_int16_t *value)
                   section->length);
       return 1;
     }
-  if (grub_file_read (section->file, (char *) &raw_value, 2) != 2)
+  if (grub_file_read (section->file, &raw_value, 2) != 2)
     return 1;
 
   *value = grub_be_to_cpu16 (raw_value);
@@ -565,7 +579,7 @@ fail:
 static int
 read_be_uint16 (grub_file_t file, grub_uint16_t * value)
 {
-  if (grub_file_read (file, (char *) value, 2) != 2)
+  if (grub_file_read (file, value, 2) != 2)
     return 1;
   *value = grub_be_to_cpu16 (*value);
   return 0;
@@ -583,15 +597,25 @@ read_be_int16 (grub_file_t file, grub_int16_t * value)
 static struct char_index_entry *
 find_glyph (const grub_font_t font, grub_uint32_t code)
 {
-  grub_uint32_t i;
-  grub_uint32_t len = font->num_chars;
-  struct char_index_entry *table = font->char_index;
+  struct char_index_entry *table;
+  grub_size_t lo;
+  grub_size_t hi;
+  grub_size_t mid;
 
-  /* Do a linear search.  */
-  for (i = 0; i < len; i++)
+  /* Do a binary search in `char_index', which is ordered by code point.  */
+  table = font->char_index;
+  lo = 0;
+  hi = font->num_chars - 1;
+
+  while (lo <= hi)
     {
-      if (table[i].code == code)
-        return &table[i];
+      mid = lo + (hi - lo) / 2;
+      if (code < table[mid].code)
+        hi = mid - 1;
+      else if (code > table[mid].code)
+        lo = mid + 1;
+      else
+        return &table[mid];
     }
 
   return 0;
@@ -622,7 +646,7 @@ grub_font_get_glyph_internal (grub_font_t font, grub_uint32_t code)
 
       if (! font->file)
         /* No open file, can't load any glyphs.  */
-        return 0;     
+        return 0;
 
       /* Make sure we can find glyphs for error messages.  Push active
          error message to error stack and reset error message.  */
@@ -659,7 +683,7 @@ grub_font_get_glyph_internal (grub_font_t font, grub_uint32_t code)
       /* Don't try to read empty bitmaps (e.g., space characters).  */
       if (len != 0)
         {
-          if (grub_file_read (font->file, (char *) glyph->bitmap, len) != len)
+          if (grub_file_read (font->file, glyph->bitmap, len) != len)
             {
               remove_font (font);
               return 0;
@@ -876,7 +900,7 @@ get_font_diversity(grub_font_t a, grub_font_t b)
   else
     /* Penalty for missing attributes.  */
     d += 50;
-  
+
   /* Weight is a minor factor. */
   d += (a->weight != b->weight) ? 5 : 0;
 
@@ -967,13 +991,13 @@ grub_font_draw_glyph (struct grub_font_glyph *glyph,
     | GRUB_VIDEO_MODE_TYPE_1BIT_BITMAP;
   glyph_bitmap.mode_info.blit_format = GRUB_VIDEO_BLIT_FORMAT_1BIT_PACKED;
   glyph_bitmap.mode_info.bpp = 1;
-  
+
   /* Really 1 bit per pixel.  */
   glyph_bitmap.mode_info.bytes_per_pixel = 0;
-  
+
   /* Packed densely as bits.  */
   glyph_bitmap.mode_info.pitch = glyph->width;
-  
+
   glyph_bitmap.mode_info.number_of_colors = 2;
   glyph_bitmap.mode_info.bg_red = 0;
   glyph_bitmap.mode_info.bg_green = 0;
