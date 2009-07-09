@@ -18,6 +18,7 @@
 
 #include <config.h>
 
+#include <setjmp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -36,6 +37,7 @@
 #include <grub/term.h>
 #include <grub/time.h>
 #include <grub/machine/time.h>
+#include <grub/machine/machine.h>
 
 /* Include malloc.h, only if memalign is available. It is known that
    memalign is declared in malloc.h in all systems, if present.  */
@@ -43,8 +45,26 @@
 # include <malloc.h>
 #endif
 
+#ifdef __MINGW32__
+#include <windows.h>
+#include <winioctl.h>
+#endif
+
 char *progname = 0;
 int verbosity = 0;
+
+void
+grub_util_warn (const char *fmt, ...)
+{
+  va_list ap;
+
+  fprintf (stderr, "%s: warn: ", progname);
+  va_start (ap, fmt);
+  vfprintf (stderr, fmt, ap);
+  va_end (ap);
+  fputc ('\n', stderr);
+  fflush (stderr);
+}
 
 void
 grub_util_info (const char *fmt, ...)
@@ -52,7 +72,7 @@ grub_util_info (const char *fmt, ...)
   if (verbosity > 0)
     {
       va_list ap;
-      
+
       fprintf (stderr, "%s: info: ", progname);
       va_start (ap, fmt);
       vfprintf (stderr, fmt, ap);
@@ -66,7 +86,7 @@ void
 grub_util_error (const char *fmt, ...)
 {
   va_list ap;
-  
+
   fprintf (stderr, "%s: error: ", progname);
   va_start (ap, fmt);
   vfprintf (stderr, fmt, ap);
@@ -80,7 +100,7 @@ grub_err_printf (const char *fmt, ...)
 {
   va_list ap;
   int ret;
-  
+
   va_start (ap, fmt);
   ret = vfprintf (stderr, fmt, ap);
   va_end (ap);
@@ -92,7 +112,7 @@ void *
 xmalloc (size_t size)
 {
   void *p;
-  
+
   p = malloc (size);
   if (! p)
     grub_util_error ("out of memory");
@@ -115,7 +135,7 @@ xstrdup (const char *str)
 {
   size_t len;
   char *dup;
-  
+
   len = strlen (str);
   dup = (char *) xmalloc (len + 1);
   memcpy (dup, str, len + 1);
@@ -127,7 +147,7 @@ char *
 grub_util_get_path (const char *dir, const char *file)
 {
   char *path;
-  
+
   path = (char *) xmalloc (strlen (dir) + 1 + strlen (file) + 1);
   sprintf (path, "%s/%s", dir, file);
   return path;
@@ -137,13 +157,13 @@ size_t
 grub_util_get_fp_size (FILE *fp)
 {
   struct stat st;
-  
+
   if (fflush (fp) == EOF)
     grub_util_error ("fflush failed");
 
   if (fstat (fileno (fp), &st) == -1)
     grub_util_error ("fstat failed");
-  
+
   return st.st_size;
 }
 
@@ -151,12 +171,12 @@ size_t
 grub_util_get_image_size (const char *path)
 {
   struct stat st;
-  
+
   grub_util_info ("getting the size of %s", path);
-  
+
   if (stat (path, &st) == -1)
     grub_util_error ("cannot stat %s", path);
-  
+
   return st.st_size;
 }
 
@@ -176,7 +196,7 @@ grub_util_read_image (const char *path)
   char *img;
   FILE *fp;
   size_t size;
-  
+
   grub_util_info ("reading %s", path);
 
   size = grub_util_get_image_size (path);
@@ -189,7 +209,7 @@ grub_util_read_image (const char *path)
   grub_util_read_at (img, size, 0, fp);
 
   fclose (fp);
-  
+
   return img;
 }
 
@@ -198,11 +218,11 @@ grub_util_load_image (const char *path, char *buf)
 {
   FILE *fp;
   size_t size;
-  
+
   grub_util_info ("reading %s", path);
 
   size = grub_util_get_image_size (path);
-  
+
   fp = fopen (path, "rb");
   if (! fp)
     grub_util_error ("cannot open %s", path);
@@ -264,10 +284,10 @@ grub_memalign (grub_size_t align, grub_size_t size)
   (void) size;
   grub_util_error ("grub_memalign is not supported");
 #endif
-  
+
   if (! p)
     grub_util_error ("out of memory");
-  
+
   return p;
 }
 
@@ -295,7 +315,7 @@ grub_get_rtc (void)
   struct timeval tv;
 
   gettimeofday (&tv, 0);
-  
+
   return (tv.tv_sec * GRUB_TICKS_PER_SECOND
 	  + (((tv.tv_sec % GRUB_TICKS_PER_SECOND) * 1000000 + tv.tv_usec)
 	     * GRUB_TICKS_PER_SECOND / 1000000));
@@ -307,9 +327,19 @@ grub_get_time_ms (void)
   struct timeval tv;
 
   gettimeofday (&tv, 0);
-  
+
   return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
+
+#ifdef __MINGW32__
+
+void
+grub_millisleep (grub_uint32_t ms)
+{
+  Sleep (ms);
+}
+
+#else
 
 void
 grub_millisleep (grub_uint32_t ms)
@@ -321,7 +351,9 @@ grub_millisleep (grub_uint32_t ms)
   nanosleep (&ts, NULL);
 }
 
-void 
+#endif
+
+void
 grub_arch_sync_caches (void *address __attribute__ ((unused)),
 		       grub_size_t len __attribute__ ((unused)))
 {
@@ -349,11 +381,13 @@ asprintf (char **buf, const char *fmt, ...)
 
 #ifdef __MINGW32__
 
-#include <windows.h>
-#include <winioctl.h>
-
 void sync (void)
 {
+}
+
+int fsync (int fno __attribute__ ((unused)))
+{
+  return 0;
 }
 
 void sleep (int s)
@@ -404,4 +438,4 @@ fail:
   return size;
 }
 
-#endif
+#endif /* __MINGW32__ */

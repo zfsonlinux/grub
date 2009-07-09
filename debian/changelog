@@ -1,9 +1,238 @@
+grub2 (1.96+20090709-1) unstable; urgency=low
+
+  * New SVN snapshot.
+
+  * control (Build-Depends): Add gcc-multilib [sparc].
+  * copyright: Rewrite using DEP-5 format.
+  * Merge grub-extras into the package, and integrate it with GRUB's
+    build system.
+    - patches/906_grub_extras.diff
+    - rules
+    - copyright
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Thu, 09 Jul 2009 00:26:49 +0200
+
+grub2 (1.96+20090702-1) unstable; urgency=low
+
+  * New SVN snapshot.
+  * rules: Remove duplicated files in sparc64-ieee1275 port.
+  * rules: Comment out -DGRUB_ASSUME_LINUX_HAS_FB_SUPPORT=1 setting.  We'll
+    re-evaluate using it when it's more mature.  (Closes: #535026).
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Thu, 02 Jul 2009 13:23:51 +0200
+
+grub2 (1.96+20090629-1) unstable; urgency=low
+
+  * New SVN snapshot.
+    - Misc fixes in Linux loader.
+
+  * control (grub-firmware-qemu): Make it buildable only on i386/amd64.
+  * control: Add sparc (grub-ieee1275), remove remnants of ppc64.
+  * rules: Include all modules in grub-firmware-qemu build.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 29 Jun 2009 19:22:37 +0200
+
+grub2 (1.96+20090628-1) unstable; urgency=low
+
+  * New SVN snapshot.
+  * Re-enable QEMU port.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Sun, 28 Jun 2009 01:11:10 +0200
+
+grub2 (1.96+20090627-2) unstable; urgency=low
+
+  * Disable QEMU port untill it goes through NEW.
+  * Upload to unstable.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Sat, 27 Jun 2009 18:40:17 +0200
+
+grub2 (1.96+20090627-1) experimental; urgency=low
+
+  * New SVN snapshot.
+    - Fix parsing of --output in grub-mkconfig. (Closes: #532956)
+
+  [ Felix Zielcke ]
+  * Use ucfr --force in grub-ieee1275.postinst in case we're upgrading
+    from previous version. It registered /etc/default/grub wrongly with
+    package iee1275.
+  * Drop the build dependency on libc6-dev-i386.
+  * Remove ppc64 from the Architectures. It's totally dead.
+  * Add a note to /etc/default/grub that update-grub needs to be run to
+    update grub.cfg. (Closes: #533026)
+  * Fix the svn-snapshot rule.
+  * Update Standards version to 3.8.1. No changes needed.
+
+  [ Robert Millan ]
+  * legacy/upgrade-from-grub-legacy: Invoke grub-pc.postinst directly rather
+    than dpkg-reconfigure.  Since we pretend we're upgrading, it will DTRT.
+  * Add grub-firmware-qemu package.
+    - patches/008_qemu.diff: QEMU port (patch from upstream).
+    - control (grub-firmware-qemu): New package.
+    - rules: Add grub-firmware-qemu targets.
+    - debian/grub-firmware-qemu.dirs
+    - debian/grub-firmware-qemu.install
+  * patches/906_revert_to_linux16.diff: Remove, now that gfxpayload is
+    supported.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Sat, 27 Jun 2009 00:46:23 +0200
+
+grub2 (1.96+20090611-1) experimental; urgency=low
+
+  * New SVN snapshot.
+
+  * Append .diff to patches/01_uuids_and_lvm_dont_play_along_nicely so
+    it gets really applied.
+  * Drop completely the build dependency on gcc-multilib.
+  * Instead of arborting in the preinst if /etc/kernel-img.conf still
+    contains /sbin/update-grub, change the file with sed. Policy allows
+    thisi, because it's not a conffile, according to Colin Watson.
+  * Change /etc/default/grub to an ucf managed file instead of dpkg
+    conffile.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Fri, 12 Jun 2009 11:46:24 +0200
+
+grub2 (1.96+20090609-1) experimental; urgency=low
+
+  * New SVN snapshot.
+    - Fix variable parsing inside strings. (Closes: #486180)
+    - Add `true' command. (Closes: #530736)
+
+  [ Robert Millan ]
+  * Split grub-efi in grub-efi-ia32 and grub-efi-amd64, both available
+    on i386 and amd64.  (Closes: #524756)
+  * Add kopensolaris-i386 to arch list.
+
+  [ Felix Zielcke ]
+  * Add a NEWS entry about the grub-efi split. 
+  * Drop the build dependency on gcc-multilib for all *i386.
+  * Change upgrade-from-grub-legacy to use `dpkg-reconfigure grub-pc' to
+    install grub2 into MBR.
+
+  [ New translations ]
+  * Catalan (ca.po) by Jordi Mallach.
+
+  [ Updated translations ]
+  * Spanish (es.po) by Francisco Javier Cuadrado. (Closes: #532407)
+
+ -- Jordi Mallach <jordi@debian.org>  Tue, 09 Jun 2009 19:21:15 +0200
+
+grub2 (1.96+20090603-1) unstable; urgency=low
+
+  * New SVN snapshot.
+
+  * Abort the install of grub-pc if /etc/kernel-img.conf still contains
+    /sbin/update-grub (Closes: #500631).
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 03 Jun 2009 20:01:11 +0200
+
+grub2 (1.96+20090602-1) unstable; urgency=low
+
+  * New SVN snapshot.
+
+  [ Felix Zielcke ]
+  * Skip floopies in the grub-install debconf prompt in grub-pc postinst.
+    Patch by Fabian Greffrath. (Closes: #530848)
+
+  [ Robert Millan ]
+  * Change Vcs-Browser field to viewsvn.
+
+  [ Felix Zielcke ]
+  * Change Vcs-Svn field to point to the trunk. (Closes: #531391)
+  * patches/01_uuids_and_lvm_dont_play_along_nicely: New patch.
+    On Debian root=UUID= with lvm still doestn't work so disable it.
+    (Closes: #530357)
+  * Remove Otavio Salvador from Uploaders with his permission.
+  * add grub-pc.preinst
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 03 Jun 2009 14:42:11 +0200
+
+grub2 (1.96+20090523-1) unstable; urgency=low
+
+  * New SVN snapshot.
+    - Add drivemap command, similar to grub-legacy's map command.
+      (Closes: 503630)
+    - Export GRUB_TERMINAL_INPUT in grub-mkconfig. (Closes: #526741)
+
+  [ Robert Millan ]
+  * rules: Set GRUB_ASSUME_LINUX_HAS_FB_SUPPORT=1 in CFLAGS.
+  * patches/905_setup_force.diff: Relax blocklist warnings.
+  * patches/906_revert_to_linux16.diff: Keep using linux16 for now.
+
+  [ Felix Zielcke ]
+  * patches/07_core_in_fs.diff: Updated.
+  * Remove /etc/grub.d/10_hurd on non-Hurd systems in the grub-common
+    preinst. Likewise for 10_freebsd for non kFreebsd and 10_linux on
+    kFreebsd and Hurd. (Closes: #523777)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sat, 23 May 2009 20:05:10 +0200
+
+grub2 (1.96+20090504-1) experimental; urgency=low
+
+  * New SVN snapshot.
+    - Add support for parttool command, which can be used to hide partitions.
+      (Closes: #505905)
+    - Fix a segfault with LVM on RAID. (Closes: #520637)
+    - Add support for char devices on (k)FreeBSD. (Closes: #521292)
+    - patches/08_powerpc-ieee1275_build_fix.patch: Remove (merged).
+
+  [ Updated translations ]
+  * Basque (eu.po) by Piarres Beobide. (Closes: #522457)
+  * German (de.po) by Helge Kreutzmann. (Closes: #522815)
+
+  [ Robert Millan ]
+  * Update my email address.
+  * Remove 04_uuids_and_abstraction_dont_play_along_nicely.diff now that
+    bugs #435983 and #455746 in mdadm and dmsetup have been fixed.
+
+  [ Felix Zielcke ]
+  * Place new grub-dumpbios in grub-common.
+  * Add lpia to the archictectures to reduce the ubuntu delta.
+  * Add a manpage for the update-grub and update-grub2 stubs, written by
+    me. (Closes: #523876)
+  * Suggest genisoimage on grub-pc and grub-ieee1275, because grub-mkrescue
+    needs it to create a cd image. (Closes: #525845)
+  * Add a dependency on $(AUTOGEN_FILES) for the configure/grub-common target,
+    this is needed now that upstream removed the autogenerated files from SVN.
+  * Add `--enable-efiemu to' `./configure' flags.
+  * Add a build dependency on gcc-multilib for i386.
+  * Drop alternate build dependency on gcc-4.1 (<< 4.1.2).
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Mon, 04 May 2009 21:01:22 +0200
+
+grub2 (1.96+20090402-1) experimental; urgency=low
+
+  * New SVN snapshot.
+    - Fix regression in disk/raid.c.  (Closes: #521897, #514338)
+    - Fix handling of filename string lengths in HFS.
+      (Really closes: #516458).
+  * Add myself to Uploaders.
+  * Add patch 08_powerpc-ieee1275_build_fix.patch to fix powerpc-ieee1275
+    builds which were lacking header files for kernel_elf_HEADERS. Thanks
+    Vladimir Serbinenko.
+
+ -- Jordi Mallach <jordi@debian.org>  Fri, 03 Apr 2009 20:58:37 +0200
+
+grub2 (1.96+20090401-1) experimental; urgency=low
+
+  [ Felix Zielcke ]
+  * New SVN snapshot.
+    - Pass grub's gfxterm mode to Linux kernel. (Closes: #519506)
+    - Fix ext4 extents on powerpc. (Closes: #520286)
+
+  [ Robert Millan ]
+  * Remove grub-of transitional package (Lenny had grub-ieee1275 already).
+  * Fix kopt parsing in grub-pc.config. Thanks Marcus Obst. (Closes: #514837)
+  * Add debconf template to automatically run grub-install during upgrades
+    (prior user confirmation).  (Closes: #514705)
+
+ -- Robert Millan <rmh@aybabtu.com>  Wed, 01 Apr 2009 01:19:45 +0200
+
 grub2 (1.96+20090317-1) unstable; urgency=low
 
   * New SVN snapshot.
     - Fix loading of files with underscore in HFS. (Closes: #516458)
 
-  * Update Standards version to 3.8.1. No changes need.
+  * Update Standards version to 3.8.1. No changes needed.
 
   [ Updated translations ]
   * Brazilian Portuguese (pt_BR.po) by Flamarion Jorge. (Closes: #519417)

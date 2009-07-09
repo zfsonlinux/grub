@@ -40,15 +40,15 @@
 #define GRUB_EFI_TPL_NOTIFY		16
 #define GRUB_EFI_TPL_HIGH_LEVEL		31
 
-#define GRUB_EFI_MEMORY_UC	0x0000000000000001
-#define GRUB_EFI_MEMORY_WC	0x0000000000000002
-#define GRUB_EFI_MEMORY_WT	0x0000000000000004
-#define GRUB_EFI_MEMORY_WB	0x0000000000000008
-#define GRUB_EFI_MEMORY_UCE	0x0000000000000010
-#define GRUB_EFI_MEMORY_WP	0x0000000000001000
-#define GRUB_EFI_MEMORY_RP	0x0000000000002000
-#define GRUB_EFI_MEMORY_XP	0x0000000000004000
-#define GRUB_EFI_MEMORY_RUNTIME	0x8000000000000000
+#define GRUB_EFI_MEMORY_UC	0x0000000000000001LL
+#define GRUB_EFI_MEMORY_WC	0x0000000000000002LL
+#define GRUB_EFI_MEMORY_WT	0x0000000000000004LL
+#define GRUB_EFI_MEMORY_WB	0x0000000000000008LL
+#define GRUB_EFI_MEMORY_UCE	0x0000000000000010LL
+#define GRUB_EFI_MEMORY_WP	0x0000000000001000LL
+#define GRUB_EFI_MEMORY_RP	0x0000000000002000LL
+#define GRUB_EFI_MEMORY_XP	0x0000000000004000LL
+#define GRUB_EFI_MEMORY_RUNTIME	0x8000000000000000LL
 
 #define GRUB_EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL	0x00000001
 #define GRUB_EFI_OPEN_PROTOCOL_GET_PROTOCOL		0x00000002
@@ -619,7 +619,7 @@ struct grub_efi_time
   grub_efi_int16_t time_zone;
   grub_efi_uint8_t daylight;
   grub_efi_uint8_t pad2;
-};
+} __attribute__ ((packed));
 typedef struct grub_efi_time grub_efi_time_t;
 
 struct grub_efi_time_capabilities
@@ -662,38 +662,38 @@ typedef struct grub_efi_table_header grub_efi_table_header_t;
 struct grub_efi_boot_services
 {
   grub_efi_table_header_t hdr;
-  
+
   grub_efi_tpl_t
   (*raise_tpl) (grub_efi_tpl_t new_tpl);
-  
+
   void
   (*restore_tpl) (grub_efi_tpl_t old_tpl);
-  
+
   grub_efi_status_t
   (*allocate_pages) (grub_efi_allocate_type_t type,
 		     grub_efi_memory_type_t memory_type,
 		     grub_efi_uintn_t pages,
 		     grub_efi_physical_address_t *memory);
-  
+
   grub_efi_status_t
   (*free_pages) (grub_efi_physical_address_t memory,
 		 grub_efi_uintn_t pages);
-  
+
   grub_efi_status_t
   (*get_memory_map) (grub_efi_uintn_t *memory_map_size,
 		     grub_efi_memory_descriptor_t *memory_map,
 		     grub_efi_uintn_t *map_key,
 		     grub_efi_uintn_t *descriptor_size,
 		     grub_efi_uint32_t *descriptor_version);
-  
+
   grub_efi_status_t
   (*allocate_pool) (grub_efi_memory_type_t pool_type,
 		    grub_efi_uintn_t size,
 		    void **buffer);
-  
+
   grub_efi_status_t
   (*free_pool) (void *buffer);
-  
+
   grub_efi_status_t
   (*create_event) (grub_efi_uint32_t type,
 		   grub_efi_tpl_t notify_tpl,
@@ -706,7 +706,7 @@ struct grub_efi_boot_services
   (*set_timer) (grub_efi_event_t event,
 		grub_efi_timer_delay_t type,
 		grub_efi_uint64_t trigger_time);
-  
+
    grub_efi_status_t
    (*wait_for_event) (grub_efi_uintn_t num_events,
 		      grub_efi_event_t *event,
@@ -714,10 +714,10 @@ struct grub_efi_boot_services
 
   grub_efi_status_t
   (*signal_event) (grub_efi_event_t event);
-  
+
   grub_efi_status_t
   (*close_event) (grub_efi_event_t event);
-  
+
   grub_efi_status_t
   (*check_event) (grub_efi_event_t event);
 
@@ -726,13 +726,13 @@ struct grub_efi_boot_services
 				  grub_efi_guid_t *protocol,
 				  grub_efi_interface_type_t interface_type,
 				  void *interface);
-  
+
   grub_efi_status_t
   (*reinstall_protocol_interface) (grub_efi_handle_t handle,
 				   grub_efi_guid_t *protocol,
 				   void *old_interface,
 				   void *new_interface);
-  
+
   grub_efi_status_t
   (*uninstall_protocol_interface) (grub_efi_handle_t handle,
 				   grub_efi_guid_t *protocol,
@@ -742,9 +742,9 @@ struct grub_efi_boot_services
   (*handle_protocol) (grub_efi_handle_t handle,
 		      grub_efi_guid_t *protocol,
 		      void **interface);
-  
+
   void *reserved;
-  
+
   grub_efi_status_t
   (*register_protocol_notify) (grub_efi_guid_t *protocol,
 			       grub_efi_event_t event,
@@ -874,7 +874,7 @@ struct grub_efi_runtime_services
 {
   grub_efi_table_header_t hdr;
 
-  grub_efi_status_t 
+  grub_efi_status_t
   (*get_time) (grub_efi_time_t *time,
 	       grub_efi_time_capabilities_t *capabilities);
 
@@ -933,19 +933,22 @@ struct grub_efi_configuration_table
 {
   grub_efi_guid_t vendor_guid;
   void *vendor_table;
-};
+} __attribute__ ((packed));
 typedef struct grub_efi_configuration_table grub_efi_configuration_table_t;
+
+#define GRUB_EFIEMU_SYSTEM_TABLE_SIGNATURE 0x5453595320494249LL
+#define GRUB_EFIEMU_RUNTIME_SERVICES_SIGNATURE 0x56524553544e5552LL
 
 struct grub_efi_simple_input_interface
 {
   grub_efi_status_t
   (*reset) (struct grub_efi_simple_input_interface *this,
 	    grub_efi_boolean_t extended_verification);
-  
+
   grub_efi_status_t
   (*read_key_stroke) (struct grub_efi_simple_input_interface *this,
 		      grub_efi_input_key_t *key);
-  
+
   grub_efi_event_t wait_for_key;
 };
 typedef struct grub_efi_simple_input_interface grub_efi_simple_input_interface_t;
@@ -970,7 +973,7 @@ struct grub_efi_simple_text_output_interface
 		 grub_efi_uintn_t *columns,
 		 grub_efi_uintn_t *rows);
 
-  grub_efi_status_t 
+  grub_efi_status_t
   (*set_mode) (struct grub_efi_simple_text_output_interface *this,
 	       grub_efi_uintn_t mode_number);
 
@@ -989,7 +992,7 @@ struct grub_efi_simple_text_output_interface
   grub_efi_status_t
   (*enable_cursor) (struct grub_efi_simple_text_output_interface *this,
 		    grub_efi_boolean_t visible);
-  
+
   grub_efi_simple_text_output_mode_t *mode;
 };
 typedef struct grub_efi_simple_text_output_interface grub_efi_simple_text_output_interface_t;

@@ -34,10 +34,6 @@ static const grub_gpt_part_type_t grub_gpt_partition_type_empty = GRUB_GPT_PARTI
 
 static struct grub_partition_map grub_gpt_partition_map;
 
-#ifndef GRUB_UTIL
-static grub_dl_t my_mod;
-#endif
-
 
 
 static grub_err_t
@@ -59,7 +55,7 @@ gpt_partition_map_iterate (grub_disk_t disk,
   raw.partition = 0;
 
   /* Read the protective MBR.  */
-  if (grub_disk_read (&raw, 0, 0, sizeof (mbr), (char *) &mbr))
+  if (grub_disk_read (&raw, 0, 0, sizeof (mbr), &mbr))
     return grub_errno;
 
   /* Check if it is valid.  */
@@ -71,7 +67,7 @@ gpt_partition_map_iterate (grub_disk_t disk,
     return grub_error (GRUB_ERR_BAD_PART_TABLE, "no GPT partition map found");
 
   /* Read the GPT header.  */
-  if (grub_disk_read (&raw, 1, 0, sizeof (gpt), (char *) &gpt))
+  if (grub_disk_read (&raw, 1, 0, sizeof (gpt), &gpt))
     return grub_errno;
 
   if (grub_memcmp (gpt.magic, grub_gpt_magic, sizeof (grub_gpt_magic)))
@@ -83,7 +79,7 @@ gpt_partition_map_iterate (grub_disk_t disk,
   for (i = 0; i < grub_le_to_cpu32 (gpt.maxpart); i++)
     {
       if (grub_disk_read (&raw, entries, last_offset,
-			  sizeof (entry), (char *) &entry))
+			  sizeof (entry), &entry))
 	return grub_errno;
 
       if (grub_memcmp (&grub_gpt_partition_type_empty, &entry.type,
@@ -126,7 +122,7 @@ gpt_partition_map_probe (grub_disk_t disk, const char *str)
   char *s = (char *) str;
 
   auto int find_func (grub_disk_t d, const grub_partition_t partition);
-    
+
   int find_func (grub_disk_t d __attribute__ ((unused)),
 		 const grub_partition_t partition)
     {
@@ -135,14 +131,14 @@ gpt_partition_map_probe (grub_disk_t disk, const char *str)
 	  p = (grub_partition_t) grub_malloc (sizeof (*p));
 	  if (! p)
 	    return 1;
-	  
+
 	  grub_memcpy (p, partition, sizeof (*p));
 	  return 1;
 	}
-      
+
       return 0;
     }
-  
+
   /* Get the partition number.  */
   partnum = grub_strtoul (s, 0, 10) - 1;
   if (grub_errno)
@@ -189,9 +185,6 @@ static struct grub_partition_map grub_gpt_partition_map =
 GRUB_MOD_INIT(gpt_partition_map)
 {
   grub_partition_map_register (&grub_gpt_partition_map);
-#ifndef GRUB_UTIL
-  my_mod = mod;
-#endif
 }
 
 GRUB_MOD_FINI(gpt_partition_map)
