@@ -131,9 +131,16 @@ grub_linux_load32 (grub_elf_t elf)
     return grub_error (GRUB_ERR_OUT_OF_MEMORY, "Could not claim memory.");
 
   /* Now load the segments into the area we claimed.  */
-  auto grub_err_t offset_phdr (Elf32_Phdr *phdr, grub_addr_t *addr);
-  grub_err_t offset_phdr (Elf32_Phdr *phdr, grub_addr_t *addr)
+  auto grub_err_t offset_phdr (Elf32_Phdr *phdr, grub_addr_t *addr, int *do_load);
+  grub_err_t offset_phdr (Elf32_Phdr *phdr, grub_addr_t *addr, int *do_load)
     {
+      if (phdr->p_type != PT_LOAD)
+	{
+	  *do_load = 0;
+	  return 0;
+	}
+      *do_load = 1;
+
       /* Linux's program headers incorrectly contain virtual addresses.
        * Translate those to physical, and offset to the area we claimed.  */
       *addr = (phdr->p_paddr & ~ELF32_LOADMASK) + linux_addr;
@@ -174,9 +181,15 @@ grub_linux_load64 (grub_elf_t elf)
     return grub_error (GRUB_ERR_OUT_OF_MEMORY, "Could not claim memory.");
 
   /* Now load the segments into the area we claimed.  */
-  auto grub_err_t offset_phdr (Elf64_Phdr *phdr, grub_addr_t *addr);
-  grub_err_t offset_phdr (Elf64_Phdr *phdr, grub_addr_t *addr)
+  auto grub_err_t offset_phdr (Elf64_Phdr *phdr, grub_addr_t *addr, int *do_load);
+  grub_err_t offset_phdr (Elf64_Phdr *phdr, grub_addr_t *addr, int *do_load)
     {
+      if (phdr->p_type != PT_LOAD)
+	{
+	  *do_load = 0;
+	  return 0;
+	}
+      *do_load = 1;
       /* Linux's program headers incorrectly contain virtual addresses.
        * Translate those to physical, and offset to the area we claimed.  */
       *addr = (phdr->p_paddr & ~ELF64_LOADMASK) + linux_addr;
@@ -238,7 +251,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   /* Specify the boot file.  */
   dest = grub_stpcpy (linux_args, "BOOT_IMAGE=");
   dest = grub_stpcpy (dest, argv[0]);
-  
+
   for (i = 1; i < argc; i++)
     {
       *dest++ = ' ';
@@ -297,9 +310,9 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
 
   /* Attempt to claim at a series of addresses until successful in
      the same way that grub_rescue_cmd_linux does.  */
-  for (addr = first_addr; addr < first_addr + 200 * 0x100000; addr += 0x100000) 
+  for (addr = first_addr; addr < first_addr + 200 * 0x100000; addr += 0x100000)
     {
-      grub_dprintf ("loader", "Attempting to claim at 0x%x, size 0x%x.\n", 
+      grub_dprintf ("loader", "Attempting to claim at 0x%x, size 0x%x.\n",
 		    addr, size);
       found_addr = grub_claimmap (addr, size);
       if (found_addr != -1)

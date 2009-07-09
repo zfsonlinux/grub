@@ -2,7 +2,10 @@ dnl Check whether target compiler is working
 AC_DEFUN(grub_PROG_TARGET_CC,
 [AC_MSG_CHECKING([whether target compiler is working])
 AC_CACHE_VAL(grub_cv_prog_target_cc,
-[AC_LINK_IFELSE([AC_LANG_PROGRAM([[]], [[]])],
+[AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+asm (".globl start; start: nop");
+int main (void);
+]], [[]])],
   		[grub_cv_prog_target_cc=yes],
 		[grub_cv_prog_target_cc=no])
 ])
@@ -156,6 +159,36 @@ rm -f conftest*])
 
 AC_MSG_RESULT([$grub_cv_i386_asm_addr32])])
 
+dnl check if our compiler is apple cc
+dnl because it requires numerous workarounds
+AC_DEFUN(grub_apple_cc,
+[AC_REQUIRE([AC_PROG_CC])
+AC_MSG_CHECKING([whether our compiler is apple cc])
+AC_CACHE_VAL(grub_cv_apple_cc,
+[if $CC -v 2>&1 | grep "Apple Inc." > /dev/null; then
+  grub_cv_apple_cc=yes
+else
+  grub_cv_apple_cc=no
+fi
+])
+
+AC_MSG_RESULT([$grub_cv_apple_cc])])
+
+dnl check if our target compiler is apple cc
+dnl because it requires numerous workarounds
+AC_DEFUN(grub_apple_target_cc,
+[AC_REQUIRE([AC_PROG_CC])
+AC_MSG_CHECKING([whether our target compiler is apple cc])
+AC_CACHE_VAL(grub_cv_apple_target_cc,
+[if $CC -v 2>&1 | grep "Apple Inc." > /dev/null; then
+  grub_cv_apple_target_cc=yes
+else
+  grub_cv_apple_target_cc=no
+fi
+])
+
+AC_MSG_RESULT([$grub_cv_apple_target_cc])])
+
 
 dnl Later versions of GAS requires that addr32 and data32 prefixes
 dnl appear in the same lines as the instructions they modify, while
@@ -202,7 +235,7 @@ AC_MSG_CHECKING(dnl
 [whether an absolute indirect call/jump must not be prefixed with an asterisk])
 AC_CACHE_VAL(grub_cv_i386_asm_absolute_without_asterisk,
 [cat > conftest.s <<\EOF
-	lcall	*(offset)	
+	lcall	*(offset)
 offset:
 	.long	0
 	.word	0
