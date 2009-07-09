@@ -41,6 +41,7 @@ enum grub_disk_dev_id
     GRUB_DISK_DEVICE_UUID_ID,
     GRUB_DISK_DEVICE_PXE_ID,
     GRUB_DISK_DEVICE_SCSI_ID,
+    GRUB_DISK_DEVICE_FILE_ID,
   };
 
 struct grub_disk;
@@ -56,7 +57,7 @@ struct grub_disk_dev
 
   /* The device id used by the cache manager.  */
   unsigned long id;
-  
+
   /* Call HOOK with each device name, until HOOK returns non-zero.  */
   int (*iterate) (int (*hook) (const char *name));
 
@@ -102,7 +103,7 @@ struct grub_disk
 
   /* The id used by the disk cache manager.  */
   unsigned long id;
-  
+
   /* The partition information. This is machine-specific.  */
   struct grub_partition *partition;
 

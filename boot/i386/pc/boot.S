@@ -19,7 +19,7 @@
 
 #include <grub/boot.h>
 #include <grub/machine/boot.h>
-	
+
 /*
  *  defines for the code go here
  */
@@ -30,7 +30,11 @@
 #define ABS(x) (x-_start+0x7c00)
 
 	/* Print message string */
+#ifdef APPLE_CC
+#define MSG(x)	x ## _abs = ABS(x); movw $x ## _abs, %si; call message
+#else
 #define MSG(x)	movw $ABS(x), %si; call message
+#endif
 
 	.file	"boot.S"
 
@@ -40,7 +44,9 @@
 	   in real mode. */
 	.code16
 
-.globl _start; _start:
+.globl _start, start;
+_start:
+start:
 	/*
 	 * _start is loaded at 0x7c00 and is jumped to with CS:IP 0:0x7c00
 	 */
@@ -64,7 +70,7 @@
 	/* scratch space */
 mode:
 	.byte	0
-disk_address_packet:	
+disk_address_packet:
 sectors:
 	.long	0
 heads:
@@ -85,7 +91,7 @@ cylinder_start:
 	 * End of BIOS parameter block.
 	 */
 
-boot_version:	
+boot_version:
 	.byte	GRUB_BOOT_VERSION_MAJOR, GRUB_BOOT_VERSION_MINOR
 kernel_address:
 	.word	GRUB_BOOT_MACHINE_KERNEL_ADDR
@@ -93,11 +99,9 @@ kernel_segment:
 	.word	GRUB_BOOT_MACHINE_KERNEL_SEG
 kernel_sector:
 	.long	1, 0
-boot_drive:	
+boot_drive:
 	.byte 0xff	/* the disk to load kernel from */
 			/* 0xff means use the boot drive */
-root_drive:
-        .byte 0xff
 
 after_BPB:
 
@@ -112,20 +116,26 @@ after_BPB:
          * possible boot drive. If GRUB is installed into a floppy,
          * this does nothing (only jump).
          */
+	. = _start + GRUB_BOOT_MACHINE_DRIVE_CHECK
 boot_drive_check:
         jmp     1f	/* grub-setup may overwrite this jump */
         testb   $0x80, %dl
         jnz     1f
         movb    $0x80, %dl
 1:
-	
+
 	/*
 	 * ljmp to the next instruction because some bogus BIOSes
 	 * jump to 07C0:0000 instead of 0000:7C00.
 	 */
+#ifdef APPLE_CC
+	real_start_abs = ABS(real_start)
+	ljmp	$0, $(real_start_abs)
+#else
 	ljmp	$0, $ABS(real_start)
+#endif
 
-real_start:	
+real_start:
 
 	/* set up %ds and %ss as offset from 0 */
 	xorw	%ax, %ax
@@ -140,9 +150,12 @@ real_start:
 	/*
 	 *  Check if we have a forced disk reference here
 	 */
-        /* assign root_drive at the same time */
-        movw    ABS(boot_drive), %ax
-        movb    %ah, %dh
+#ifdef APPLE_CC
+	boot_drive_abs = ABS (boot_drive)
+	movb    boot_drive_abs, %al
+#else
+	movb   ABS(boot_drive), %al
+#endif
 	cmpb	$0xff, %al
 	je	1f
 	movb	%al, %dl
@@ -154,18 +167,23 @@ real_start:
 	MSG(notification_string)
 
 	/* set %si to the disk address packet */
+#ifdef APPLE_CC
+	disk_address_packet_abs = ABS (disk_address_packet)
+	movw	$disk_address_packet_abs, %si
+#else
 	movw	$ABS(disk_address_packet), %si
-	
+#endif
+
 	/* do not probe LBA if the drive is a floppy */
 	testb	$GRUB_BOOT_MACHINE_BIOS_HD_FLAG, %dl
 	jz	chs_mode
-			
+
 	/* check if LBA is supported */
 	movb	$0x41, %ah
 	movw	$0x55aa, %bx
 	int	$0x13
 
-	/* 
+	/*
 	 *  %dl may have been clobbered by INT 13, AH=41H.
 	 *  This happens, for example, with AST BIOS 1.04.
 	 */
@@ -179,15 +197,15 @@ real_start:
 
 	andw	$1, %cx
 	jz	chs_mode
-	
+
 lba_mode:
 	xorw	%ax, %ax
 	movw	%ax, 4(%si)
 
-	incw	%ax	
+	incw	%ax
 	/* set the mode to non-zero */
 	movb	%al, -1(%si)
-	
+
 	/* the blocks */
 	movw	%ax, 2(%si)
 
@@ -195,10 +213,18 @@ lba_mode:
 	movw	$0x0010, (%si)
 
 	/* the absolute address */
+#ifdef APPLE_CC
+	kernel_sector_abs = ABS (kernel_sector)
+	movl	(kernel_sector_abs), %ebx
+	movl	%ebx, 8(%si)
+	movl	(kernel_sector_abs + 4), %ebx
+	movl	%ebx, 12(%si)
+#else
 	movl	ABS(kernel_sector), %ebx
 	movl	%ebx, 8(%si)
 	movl	ABS(kernel_sector + 4), %ebx
 	movl	%ebx, 12(%si)
+#endif
 
 	/* the segment of buffer address */
 	movw	$GRUB_BOOT_MACHINE_BUFFER_SEG, 6(%si)
@@ -220,8 +246,8 @@ lba_mode:
 
 	movw	$GRUB_BOOT_MACHINE_BUFFER_SEG, %bx
 	jmp	copy_buffer
-		
-chs_mode:	
+
+chs_mode:
 	/*
 	 *  Determine the hard disk geometry from the BIOS!
 	 *  We do this first, so that LS-120 IDE floppies work correctly.
@@ -243,7 +269,7 @@ final_init:
 	/* set the mode to zero */
 	movzbl	%dh, %eax
 	movb	%ah, -1(%si)
-	
+
 	/* save number of heads */
 	incw	%ax
 	movl	%eax, 4(%si)
@@ -265,12 +291,22 @@ final_init:
 
 setup_sectors:
 	/* load logical sector start (top half) */
+#ifdef APPLE_CC
+	kernel_sector_abs = ABS (kernel_sector)
+	movl	(kernel_sector_abs + 4), %eax
+#else
 	movl	ABS(kernel_sector + 4), %eax
+#endif
+
 	orl	%eax, %eax
 	jnz	geometry_error
-	
+
 	/* load logical sector start (bottom half) */
+#ifdef APPLE_CC
+	movl	(kernel_sector_abs), %eax
+#else
 	movl	ABS(kernel_sector), %eax
+#endif
 
 	/* zero %edx */
 	xorl	%edx, %edx
@@ -304,7 +340,6 @@ setup_sectors:
 
 	/* restore %dl */
 	popw	%dx
-        pushw   %dx
 
 	/* head start */
 	movb	%al, %dh
@@ -332,9 +367,14 @@ setup_sectors:
 	jc	read_error
 
 	movw	%es, %bx
-	
+
 copy_buffer:
+#ifdef APPLE_CC
+	kernel_segment_abs = ABS (kernel_segment)
+	movw	(kernel_segment_abs), %es
+#else
 	movw	ABS(kernel_segment), %es
+#endif
 
 	/*
 	 * We need to save %cx and %si because the startup code in
@@ -342,23 +382,27 @@ copy_buffer:
 	 */
 	pusha
 	pushw	%ds
-	
+
 	movw	$0x100, %cx
 	movw	%bx, %ds
 	xorw	%si, %si
 	xorw	%di, %di
-	
+
 	cld
-	
+
 	rep
 	movsw
 
 	popw	%ds
 	popa
-        popw    %dx
 
 	/* boot kernel */
+#ifdef APPLE_CC
+	kernel_address_abs = ABS (kernel_address)
+	jmp	*(kernel_address_abs)
+#else
 	jmp	*(kernel_address)
+#endif
 
 /* END OF MAIN LOOP */
 
@@ -390,11 +434,11 @@ general_error:
         int	$0x18
 stop:	jmp	stop
 
-notification_string:	.string "GRUB "
-geometry_error_string:	.string "Geom"
-hd_probe_error_string:	.string "Hard Disk"
-read_error_string:	.string "Read"
-general_error_string:	.string " Error"
+notification_string:	.asciz "GRUB "
+geometry_error_string:	.asciz "Geom"
+hd_probe_error_string:	.asciz "Hard Disk"
+read_error_string:	.asciz "Read"
+general_error_string:	.asciz " Error"
 
 /*
  * message: write the string pointed to by %si
@@ -423,7 +467,7 @@ message:
 	 */
 
 	. = _start + GRUB_BOOT_MACHINE_WINDOWS_NT_MAGIC
-nt_magic:	
+nt_magic:
 	.long 0
 	.word 0
 
@@ -433,7 +477,7 @@ nt_magic:
 	 *  sneaky, huh?
 	 */
 
-part_start:	
+part_start:
 	. = _start + GRUB_BOOT_MACHINE_PART_START
 
 probe_values:
@@ -444,7 +488,12 @@ floppy_probe:
  *  Perform floppy probe.
  */
 
+#ifdef APPLE_CC
+	probe_values_abs = ABS (probe_values)
+	movw	$(probe_values_abs-1), %si
+#else
 	movw	$ABS(probe_values-1), %si
+#endif
 
 probe_loop:
 	/* reset floppy controller INT 13h AH=0 */
@@ -464,7 +513,8 @@ probe_loop:
 	MSG(fd_probe_error_string)
 	jmp	general_error
 
-fd_probe_error_string:	.string "Floppy"
+/* "Floppy" */
+fd_probe_error_string:	.asciz "Floppy"
 
 1:
 	/* perform read */

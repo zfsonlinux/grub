@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2005,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,18 +16,13 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <setjmp.h>
+#ifndef GRUB_CONSOLE_UTIL_HEADER
+#define GRUB_CONSOLE_UTIL_HEADER	1
 
-#include <grub/util/misc.h>
+/* Initialize the console system.  */
+void grub_console_init (void);
 
-void
-grub_reboot (void)
-{
-  longjmp (main_env, 1);
-}
+/* Finish the console system.  */
+void grub_console_fini (void);
 
-void
-grub_halt (int no_apm __attribute__ ((unused)))
-{
-  grub_reboot ();
-}
+#endif /* ! GRUB_CONSOLE_UTIL_HEADER */

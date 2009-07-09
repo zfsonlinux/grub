@@ -141,8 +141,10 @@ static int NESTED_FUNC_ATTR
 grub_uhci_pci_iter (int bus, int device, int func,
 		    grub_pci_id_t pciid __attribute__((unused)))
 {
+  grub_uint32_t class_code;
   grub_uint32_t class;
   grub_uint32_t subclass;
+  grub_uint32_t interf;
   grub_uint32_t base;
   grub_uint32_t fp;
   grub_pci_address_t addr;
@@ -150,15 +152,14 @@ grub_uhci_pci_iter (int bus, int device, int func,
   int i;
 
   addr = grub_pci_make_address (bus, device, func, 2);
-  class = grub_pci_read (addr);
-  addr = grub_pci_make_address (bus, device, func, 2);
-  class = grub_pci_read (addr);
+  class_code = grub_pci_read (addr) >> 8;
 
-  subclass = (class >> 16) & 0xFF;
-  class >>= 24;
+  interf = class_code & 0xFF;
+  subclass = (class_code >> 8) & 0xFF;
+  class = class_code >> 16;
 
   /* If this is not an UHCI controller, just return.  */
-  if (class != 0x0c || subclass != 0x03)
+  if (class != 0x0c || subclass != 0x03 || interf != 0x00)
     return 0;
 
   /* Determine IO base address.  */
@@ -173,14 +174,12 @@ grub_uhci_pci_iter (int bus, int device, int func,
   if (! u)
     return 1;
 
-  u->next = uhci;
-  uhci = u;
   u->iobase = base & GRUB_UHCI_IOMASK;
   u->framelist = 0;
   u->qh = 0;
   u->td = 0;
-  grub_dprintf ("uhci", "class=0x%02x 0x%02x base=0x%x\n",
-		class, subclass, u->iobase);
+  grub_dprintf ("uhci", "class=0x%02x 0x%02x interface 0x%02x base=0x%x\n",
+		class, subclass, interf, u->iobase);
 
   /* Reserve a page for the frame list.  */
   u->framelist = grub_memalign (4096, 4096);
@@ -286,6 +285,10 @@ grub_uhci_pci_iter (int bus, int device, int func,
       }
   }
 #endif
+
+  /* Link to uhci now that initialisation is successful.  */
+  u->next = uhci;
+  uhci = u;
 
   return 0;
 
@@ -447,7 +450,7 @@ grub_uhci_transfer (grub_usb_controller_t dev,
 
       td = grub_uhci_transaction (u, transfer->endpoint, tr->pid,
 				  transfer->devaddr, tr->toggle,
-				  tr->size, tr->data); 
+				  tr->size, tr->data);
       if (! td)
 	{
 	  /* Terminate and free.  */
@@ -514,7 +517,7 @@ grub_uhci_transfer (grub_usb_controller_t dev,
 	  /* Check if a babble error occurred.  */
 	  if (errtd->ctrl_status & (1 << 20))
 	    err = GRUB_USB_ERR_BABBLE;
- 
+
 	  /* Check if a NAK occurred.  */
 	  if (errtd->ctrl_status & (1 << 19))
 	    err = GRUB_USB_ERR_NAK;

@@ -116,9 +116,10 @@ static int NESTED_FUNC_ATTR
 grub_ohci_pci_iter (int bus, int device, int func,
 		    grub_pci_id_t pciid __attribute__((unused)))
 {
+  grub_uint32_t class_code;
   grub_uint32_t class;
   grub_uint32_t subclass;
-  int interf;
+  grub_uint32_t interf;
   grub_uint32_t base;
   grub_pci_address_t addr;
   struct grub_ohci *o;
@@ -126,16 +127,14 @@ grub_ohci_pci_iter (int bus, int device, int func,
   grub_uint32_t frame_interval;
 
   addr = grub_pci_make_address (bus, device, func, 2);
-  class = grub_pci_read (addr);
-  addr = grub_pci_make_address (bus, device, func, 2);
-  class = grub_pci_read (addr);
+  class_code = grub_pci_read (addr) >> 8;
 
-  interf = class & 0xFF;
-  subclass = (class >> 16) & 0xFF;
-  class >>= 24;
+  interf = class_code & 0xFF;
+  subclass = (class_code >> 8) & 0xFF;
+  class = class_code >> 16;
 
   /* If this is not an OHCI controller, just return.  */
-  if (class != 0x0c || subclass != 0x03)
+  if (class != 0x0c || subclass != 0x03 || interf != 0x10)
     return 0;
 
   /* Determine IO base address.  */
@@ -153,13 +152,13 @@ grub_ohci_pci_iter (int bus, int device, int func,
   if (! o)
     return 1;
 
-  /* Link in the OHCI.  */
-  o->next = ohci;
-  ohci = o;
   o->iobase = (grub_uint32_t *) base;
 
   /* Reserve memory for the HCCA.  */
   o->hcca = (struct grub_ohci_hcca *) grub_memalign (256, 256);
+
+  grub_dprintf ("ohci", "class=0x%02x 0x%02x interface 0x%02x base=%p\n",
+ 		class, subclass, interf, o->iobase);
 
   /* Check if the OHCI revision is actually 1.0 as supported.  */
   revision = grub_ohci_readreg32 (o, GRUB_OHCI_REG_REVISION);
@@ -171,8 +170,7 @@ grub_ohci_pci_iter (int bus, int device, int func,
   frame_interval = grub_ohci_readreg32 (o, GRUB_OHCI_REG_FRAME_INTERVAL);
 
   /* Suspend the OHCI by issuing a reset.  */
-  grub_ohci_writereg32 (o, GRUB_OHCI_REG_CMDSTATUS, 1); /* XXX: Magic.
-							  */
+  grub_ohci_writereg32 (o, GRUB_OHCI_REG_CMDSTATUS, 1); /* XXX: Magic.  */
   grub_millisleep (1);
   grub_dprintf ("ohci", "OHCI reset\n");
 
@@ -182,13 +180,17 @@ grub_ohci_pci_iter (int bus, int device, int func,
   /* Setup the HCCA.  */
   grub_ohci_writereg32 (o, GRUB_OHCI_REG_HCCA, (grub_uint32_t) o->hcca);
   grub_dprintf ("ohci", "OHCI HCCA\n");
- 
+
   /* Enable the OHCI.  */
   grub_ohci_writereg32 (o, GRUB_OHCI_REG_CONTROL,
 			(2 << 6));
   grub_dprintf ("ohci", "OHCI enable: 0x%02x\n",
 		(grub_ohci_readreg32 (o, GRUB_OHCI_REG_CONTROL) >> 6) & 3);
- 
+
+  /* Link to ohci now that initialisation is successful.  */
+  o->next = ohci;
+  ohci = o;
+
   return 0;
 
  fail:
@@ -225,7 +227,7 @@ grub_ohci_iterate (int (*hook) (grub_usb_controller_t dev))
 }
 
 static void
-grub_ohci_transaction (grub_ohci_td_t td, 
+grub_ohci_transaction (grub_ohci_td_t td,
 		       grub_transfer_type_t type, unsigned int toggle,
 		       grub_size_t size, char *data)
 {
@@ -303,7 +305,7 @@ grub_ohci_transfer (grub_usb_controller_t dev,
       grub_usb_transaction_t tr = &transfer->transactions[i];
 
       grub_ohci_transaction (&td_list[i], tr->pid, tr->toggle,
-			     tr->size, tr->data); 
+			     tr->size, tr->data);
 
       td_list[i].next_td = grub_cpu_to_le32 (&td_list[i + 1]);
     }
@@ -605,5 +607,5 @@ GRUB_MOD_INIT(ohci)
 
 GRUB_MOD_FINI(ohci)
 {
-  grub_usb_controller_dev_unregister (&usb_controller);  
+  grub_usb_controller_dev_unregister (&usb_controller);
 }
