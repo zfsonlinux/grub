@@ -1,7 +1,7 @@
 /* biosdisk.c - emulate biosdisk */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2004,2006,2007,2008  Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2004,2006,2007,2008,2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -86,6 +86,12 @@ struct hd_geometry
 # define FLOPPY_MAJOR	2
 #endif
 
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+# include <sys/disk.h> /* DIOCGMEDIASIZE */
+# include <sys/param.h>
+# include <sys/sysctl.h>
+#endif
+
 struct
 {
   char *drive;
@@ -154,12 +160,12 @@ grub_util_biosdisk_open (const char *name, grub_disk_t disk)
 {
   int drive;
   struct stat st;
-  
+
   drive = find_grub_drive (name);
   if (drive < 0)
     return grub_error (GRUB_ERR_BAD_DEVICE,
 		       "no mapping exists for `%s'", name);
-  
+
   disk->has_partitions = 1;
   disk->id = drive;
 
@@ -179,7 +185,7 @@ grub_util_biosdisk_open (const char *name, grub_disk_t disk)
 
     return GRUB_ERR_NONE;
   }
-#elif defined(__linux__) || defined(__CYGWIN__)
+#elif defined(__linux__) || defined(__CYGWIN__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
   {
     unsigned long long nr;
     int fd;
@@ -188,13 +194,21 @@ grub_util_biosdisk_open (const char *name, grub_disk_t disk)
     if (fd == -1)
       return grub_error (GRUB_ERR_BAD_DEVICE, "cannot open `%s' while attempting to get disk size", map[drive].device);
 
+# if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+    if (fstat (fd, &st) < 0 || ! S_ISCHR (st.st_mode))
+# else
     if (fstat (fd, &st) < 0 || ! S_ISBLK (st.st_mode))
+# endif
       {
 	close (fd);
 	goto fail;
       }
-    
+
+# if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+    if (ioctl (fd, DIOCGMEDIASIZE, &nr))
+# else
     if (ioctl (fd, BLKGETSIZE64, &nr))
+# endif
       {
 	close (fd);
 	goto fail;
@@ -205,9 +219,9 @@ grub_util_biosdisk_open (const char *name, grub_disk_t disk)
 
     if (nr % 512)
       grub_util_error ("unaligned device size");
-    
+
     grub_util_info ("the size of %s is %llu", name, disk->total_sectors);
-    
+
     return GRUB_ERR_NONE;
   }
 
@@ -220,9 +234,9 @@ grub_util_biosdisk_open (const char *name, grub_disk_t disk)
     return grub_error (GRUB_ERR_BAD_DEVICE, "cannot stat `%s'", map[drive].device);
 
   disk->total_sectors = st.st_size >> GRUB_DISK_SECTOR_BITS;
-  
+
   grub_util_info ("the size of %s is %lu", name, disk->total_sectors);
-  
+
   return GRUB_ERR_NONE;
 }
 
@@ -300,18 +314,18 @@ open_device (const grub_disk_t disk, grub_disk_addr_t sector, int flags)
 #ifdef O_BINARY
   flags |= O_BINARY;
 #endif
-  
+
 #ifdef __linux__
   /* Linux has a bug that the disk cache for a whole disk is not consistent
      with the one for a partition of the disk.  */
   {
     int is_partition = 0;
     char dev[PATH_MAX];
-    
+
     strcpy (dev, map[disk->id].device);
     if (disk->partition && strncmp (map[disk->id].device, "/dev/", 5) == 0)
       is_partition = linux_find_partition (dev, disk->partition->start);
-    
+
     /* Open the partition.  */
     grub_dprintf ("hostdisk", "opening the device `%s' in open_device()", dev);
     fd = open (dev, flags);
@@ -328,7 +342,35 @@ open_device (const grub_disk_t disk, grub_disk_addr_t sector, int flags)
       sector -= disk->partition->start;
   }
 #else /* ! __linux__ */
+#if defined (__FreeBSD__) || defined(__FreeBSD_kernel__)
+  int sysctl_flags, sysctl_oldflags;
+  size_t sysctl_size = sizeof (sysctl_flags);
+
+  if (sysctlbyname ("kern.geom.debugflags", &sysctl_oldflags, &sysctl_size, NULL, 0))
+    {
+      grub_error (GRUB_ERR_BAD_DEVICE, "cannot get current flags of sysctl kern.geom.debugflags");
+      return -1;
+    }
+  sysctl_flags = sysctl_oldflags | 0x10;
+  if (! (sysctl_oldflags & 0x10)
+      && sysctlbyname ("kern.geom.debugflags", NULL , 0, &sysctl_flags, sysctl_size))
+    {
+      grub_error (GRUB_ERR_BAD_DEVICE, "cannot set flags of sysctl kern.geom.debugflags");
+      return -1;
+    }
+#endif
+
   fd = open (map[disk->id].device, flags);
+
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+  if (! (sysctl_oldflags & 0x10)
+      && sysctlbyname ("kern.geom.debugflags", NULL , 0, &sysctl_oldflags, sysctl_size))
+    {
+      grub_error (GRUB_ERR_BAD_DEVICE, "cannot set flags back to the old value for sysctl kern.geom.debugflags");
+      return -1;
+    }
+#endif
+
   if (fd < 0)
     {
       grub_error (GRUB_ERR_BAD_DEVICE, "cannot open `%s' in open_device()", map[disk->id].device);
@@ -369,18 +411,18 @@ open_device (const grub_disk_t disk, grub_disk_addr_t sector, int flags)
 
   return fd;
 }
-  
+
 /* Read LEN bytes from FD in BUF. Return less than or equal to zero if an
    error occurs, otherwise return LEN.  */
 static ssize_t
 nread (int fd, char *buf, size_t len)
 {
   ssize_t size = len;
-  
+
   while (len)
     {
       ssize_t ret = read (fd, buf, len);
-      
+
       if (ret <= 0)
         {
           if (errno == EINTR)
@@ -388,11 +430,11 @@ nread (int fd, char *buf, size_t len)
           else
             return ret;
         }
-      
+
       len -= ret;
       buf += ret;
     }
-  
+
   return size;
 }
 
@@ -402,11 +444,11 @@ static ssize_t
 nwrite (int fd, const char *buf, size_t len)
 {
   ssize_t size = len;
-  
+
   while (len)
     {
       ssize_t ret = write (fd, buf, len);
-      
+
       if (ret <= 0)
         {
           if (errno == EINTR)
@@ -414,11 +456,11 @@ nwrite (int fd, const char *buf, size_t len)
           else
             return ret;
         }
-      
+
       len -= ret;
       buf += ret;
     }
-  
+
   return size;
 }
 
@@ -431,13 +473,13 @@ grub_util_biosdisk_read (grub_disk_t disk, grub_disk_addr_t sector,
   fd = open_device (disk, sector, O_RDONLY);
   if (fd < 0)
     return grub_errno;
-  
+
 #ifdef __linux__
   if (sector == 0 && size > 1)
     {
       /* Work around a bug in Linux ez remapping.  Linux remaps all
 	 sectors that are read together with the MBR in one read.  It
-	 should only remap the MBR, so we split the read in two 
+	 should only remap the MBR, so we split the read in two
 	 parts. -jochen  */
       if (nread (fd, buf, GRUB_DISK_SECTOR_SIZE) != GRUB_DISK_SECTOR_SIZE)
 	{
@@ -445,12 +487,12 @@ grub_util_biosdisk_read (grub_disk_t disk, grub_disk_addr_t sector,
 	  close (fd);
 	  return grub_errno;
 	}
-      
+
       buf += GRUB_DISK_SECTOR_SIZE;
       size--;
     }
 #endif /* __linux__ */
-  
+
   if (nread (fd, buf, size << GRUB_DISK_SECTOR_BITS)
       != (ssize_t) (size << GRUB_DISK_SECTOR_BITS))
     grub_error (GRUB_ERR_READ_ERROR, "cannot read from `%s'", map[disk->id].device);
@@ -468,7 +510,7 @@ grub_util_biosdisk_write (grub_disk_t disk, grub_disk_addr_t sector,
   fd = open_device (disk, sector, O_WRONLY);
   if (fd < 0)
     return grub_errno;
-  
+
   if (nwrite (fd, buf, size << GRUB_DISK_SECTOR_BITS)
       != (ssize_t) (size << GRUB_DISK_SECTOR_BITS))
     grub_error (GRUB_ERR_WRITE_ERROR, "cannot write to `%s'", map[disk->id].device);
@@ -502,7 +544,7 @@ read_device_map (const char *dev_map)
     {
       grub_util_error ("%s:%d: %s", dev_map, lineno, msg);
     }
-  
+
   fp = fopen (dev_map, "r");
   if (! fp)
     grub_util_error ("Cannot open `%s'", dev_map);
@@ -512,9 +554,9 @@ read_device_map (const char *dev_map)
       char *p = buf;
       char *e;
       int drive;
-      
+
       lineno++;
-      
+
       /* Skip leading spaces.  */
       while (*p && isspace (*p))
 	p++;
@@ -555,7 +597,12 @@ read_device_map (const char *dev_map)
 	e++;
       *e = '\0';
 
+#ifdef __MINGW32__
+      (void) st;
+      if (grub_util_get_disk_size (p) == -1LL)
+#else
       if (stat (p, &st) == -1)
+#endif
 	{
 	  free (map[drive].drive);
 	  map[drive].drive = NULL;
@@ -589,7 +636,7 @@ void
 grub_util_biosdisk_fini (void)
 {
   unsigned i;
-  
+
   for (i = 0; i < sizeof (map) / sizeof (map[0]); i++)
     {
       if (map[i].drive)
@@ -598,24 +645,40 @@ grub_util_biosdisk_fini (void)
 	free (map[i].device);
       map[i].drive = map[i].device = NULL;
     }
-  
+
   grub_disk_dev_unregister (&grub_util_biosdisk_dev);
 }
 
 static char *
 make_device_name (int drive, int dos_part, int bsd_part)
 {
+  int len = strlen(map[drive].drive);
   char *p;
 
-  p = xmalloc (30);
+  if (dos_part >= 0)
+    {
+      /* Add in char length of dos_part+1 */
+      int tmp = dos_part + 1;
+      len++;
+      while ((tmp /= 10) != 0)
+	len++;
+    }
+  if (bsd_part >= 0)
+    len += 2;
+
+  /* Length to alloc is: char length of map[drive].drive, plus
+   *                     char length of (dos_part+1) or of bsd_part, plus
+   *                     2 for the comma and a null/end of string (\0)
+   */
+  p = xmalloc (len + 2);
   sprintf (p, "%s", map[drive].drive);
-  
+
   if (dos_part >= 0)
     sprintf (p + strlen (p), ",%d", dos_part + 1);
-  
+
   if (bsd_part >= 0)
     sprintf (p + strlen (p), ",%c", bsd_part + 'a');
-  
+
   return p;
 }
 
@@ -626,7 +689,7 @@ convert_system_partition_to_system_disk (const char *os_dev)
   char *path = xmalloc (PATH_MAX);
   if (! realpath (os_dev, path))
     return 0;
-  
+
   if (strncmp ("/dev/", path, 5) == 0)
     {
       char *p = path + 5;
@@ -637,20 +700,20 @@ convert_system_partition_to_system_disk (const char *os_dev)
 	  p = strstr (p, "part");
 	  if (p)
 	    strcpy (p, "disc");
-	  
+
 	  return path;
 	}
-      
+
       /* If this is a SCSI disk.  */
       if (strncmp ("scsi/", p, 5) == 0)
 	{
 	  p = strstr (p, "part");
 	  if (p)
 	    strcpy (p, "disc");
-	  
+
 	  return path;
 	}
-      
+
       /* If this is a DAC960 disk.  */
       if (strncmp ("rd/c", p, 4) == 0)
 	{
@@ -661,7 +724,7 @@ convert_system_partition_to_system_disk (const char *os_dev)
 
 	  return path;
 	}
-      
+
       /* If this is a CCISS disk.  */
       if (strncmp ("cciss/c", p, sizeof ("cciss/c") - 1) == 0)
 	{
@@ -672,7 +735,7 @@ convert_system_partition_to_system_disk (const char *os_dev)
 
 	  return path;
 	}
-      
+
       /* If this is a Compaq Intelligent Drive Array.  */
       if (strncmp ("ida/c", p, sizeof ("ida/c") - 1) == 0)
 	{
@@ -683,7 +746,7 @@ convert_system_partition_to_system_disk (const char *os_dev)
 
 	  return path;
 	}
-      
+
       /* If this is an I2O disk.  */
       if (strncmp ("i2o/hd", p, sizeof ("i2o/hd") - 1) == 0)
       	{
@@ -691,7 +754,7 @@ convert_system_partition_to_system_disk (const char *os_dev)
 	  p[sizeof ("i2o/hda") - 1] = '\0';
 	  return path;
 	}
-      
+
       /* If this is a MultiMediaCard (MMC).  */
       if (strncmp ("mmcblk", p, sizeof ("mmcblk") - 1) == 0)
 	{
@@ -702,8 +765,15 @@ convert_system_partition_to_system_disk (const char *os_dev)
 
 	  return path;
 	}
-      
+
       /* If this is an IDE, SCSI or Virtio disk.  */
+      if (strncmp ("vdisk", p, 5) == 0
+	  && p[5] >= 'a' && p[5] <= 'z')
+	{
+	  /* /dev/vdisk[a-z][0-9]* */
+	  p[6] = '\0';
+	  return path;
+	}
       if ((strncmp ("hd", p, 2) == 0
 	   || strncmp ("vd", p, 2) == 0
 	   || strncmp ("sd", p, 2) == 0)
@@ -724,7 +794,7 @@ convert_system_partition_to_system_disk (const char *os_dev)
     }
 
   return path;
-  
+
 #elif defined(__GNU__)
   char *path = xstrdup (os_dev);
   if (strncmp ("/dev/sd", path, 7) == 0 || strncmp ("/dev/hd", path, 7) == 0)
@@ -741,11 +811,39 @@ convert_system_partition_to_system_disk (const char *os_dev)
     path[8] = 0;
   return path;
 
+#elif defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+  char *path = xstrdup (os_dev);
+  if (strncmp ("/dev/", path, 5) == 0)
+    {
+      char *p;
+      for (p = path + 5; *p; ++p)
+        if (grub_isdigit(*p))
+          {
+            p = strchr (p, 's');
+            if (p)
+              *p = '\0';
+            break;
+          }
+    }
+  return path;
+
 #else
 # warning "The function `convert_system_partition_to_system_disk' might not work on your OS correctly."
   return xstrdup (os_dev);
 #endif
 }
+
+#if defined(__linux__) || defined(__CYGWIN__)
+static int
+device_is_wholedisk (const char *os_dev)
+{
+  int len = strlen (os_dev);
+
+  if (os_dev[len - 1] < '0' || os_dev[len - 1] > '9')
+    return 1;
+  return 0;
+}
+#endif
 
 static int
 find_system_device (const char *os_dev)
@@ -756,7 +854,7 @@ find_system_device (const char *os_dev)
   os_disk = convert_system_partition_to_system_disk (os_dev);
   if (! os_disk)
     return -1;
-  
+
   for (i = 0; i < (int) (sizeof (map) / sizeof (map[0])); i++)
     if (map[i].device && strcmp (map[i].device, os_disk) == 0)
       {
@@ -787,10 +885,18 @@ grub_util_biosdisk_get_grub_dev (const char *os_dev)
 		  "no mapping exists for `%s'", os_dev);
       return 0;
     }
-  
-  if (! S_ISBLK (st.st_mode))
+
+  if (grub_strcmp (os_dev, convert_system_partition_to_system_disk (os_dev))
+      == 0)
     return make_device_name (drive, -1, -1);
-  
+
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+  if (! S_ISCHR (st.st_mode))
+#else
+  if (! S_ISBLK (st.st_mode))
+#endif
+    return make_device_name (drive, -1, -1);
+
 #if defined(__linux__) || defined(__CYGWIN__)
   /* Linux counts partitions uniformly, whether a BSD partition or a DOS
      partition, so mapping them to GRUB devices is not trivial.
@@ -809,7 +915,7 @@ grub_util_biosdisk_get_grub_dev (const char *os_dev)
     int bsd_part = -1;
     auto int find_partition (grub_disk_t disk,
 			     const grub_partition_t partition);
-    
+
     int find_partition (grub_disk_t disk __attribute__ ((unused)),
 			const grub_partition_t partition)
       {
@@ -817,7 +923,7 @@ grub_util_biosdisk_get_grub_dev (const char *os_dev)
 
 	if (strcmp (partition->partmap->name, "pc_partition_map") == 0)
 	  pcdata = partition->data;
-	  
+
 	if (pcdata)
 	  {
 	    if (pcdata->bsd_part < 0)
@@ -833,7 +939,7 @@ grub_util_biosdisk_get_grub_dev (const char *os_dev)
 	      grub_util_info ("Partition %d starts from %lu",
 			      partition->index, partition->start);
 	  }
-	
+
 	if (hdg.start == partition->start)
 	  {
 	    if (pcdata)
@@ -848,15 +954,15 @@ grub_util_biosdisk_get_grub_dev (const char *os_dev)
 	      }
 	    return 1;
 	  }
-	
+
 	return 0;
       }
-    
+
     name = make_device_name (drive, -1, -1);
-    
+
     if (MAJOR (st.st_rdev) == FLOPPY_MAJOR)
       return name;
-    
+
     fd = open (os_dev, O_RDONLY);
     if (fd == -1)
       {
@@ -864,7 +970,7 @@ grub_util_biosdisk_get_grub_dev (const char *os_dev)
 	free (name);
 	return 0;
       }
-    
+
     if (ioctl (fd, HDIO_GETGEO, &hdg))
       {
 	grub_error (GRUB_ERR_BAD_DEVICE,
@@ -873,28 +979,28 @@ grub_util_biosdisk_get_grub_dev (const char *os_dev)
 	free (name);
 	return 0;
       }
-    
+
     close (fd);
 
     grub_util_info ("%s starts from %lu", os_dev, hdg.start);
-    
-    if (hdg.start == 0)
+
+    if (hdg.start == 0 && device_is_wholedisk (os_dev))
       return name;
 
     grub_util_info ("opening the device %s", name);
     disk = grub_disk_open (name);
     free (name);
-    
+
     if (! disk)
       return 0;
-    
+
     grub_partition_iterate (disk, find_partition);
     if (grub_errno != GRUB_ERR_NONE)
       {
 	grub_disk_close (disk);
 	return 0;
       }
-    
+
     if (dos_part < 0)
       {
 	grub_disk_close (disk);
@@ -902,37 +1008,72 @@ grub_util_biosdisk_get_grub_dev (const char *os_dev)
 		    "cannot find the partition of `%s'", os_dev);
 	return 0;
       }
-    
+
     return make_device_name (drive, dos_part, bsd_part);
   }
-  
+
 #elif defined(__GNU__)
   /* GNU uses "/dev/[hs]d[0-9]+(s[0-9]+[a-z]?)?".  */
   {
     char *p;
     int dos_part = -1;
     int bsd_part = -1;
-    
+
     p = strrchr (os_dev, 's');
     if (p)
       {
 	long int n;
 	char *q;
-	
+
 	p++;
 	n = strtol (p, &q, 10);
-	if (p != q && n != LONG_MIN && n != LONG_MAX)
+	if (p != q && n != GRUB_LONG_MIN && n != GRUB_LONG_MAX)
 	  {
 	    dos_part = (int) n;
-	    
+
 	    if (*q >= 'a' && *q <= 'g')
 	      bsd_part = *q - 'a';
 	  }
       }
-    
+
     return make_device_name (drive, dos_part, bsd_part);
   }
-  
+
+#elif defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+  /* FreeBSD uses "/dev/[a-z]+[0-9]+(s[0-9]+[a-z]?)?".  */
+  {
+    int dos_part = -1;
+    int bsd_part = -1;
+
+    if (strncmp ("/dev/", os_dev, 5) == 0)
+      {
+        const char *p;
+        char *q;
+        long int n;
+
+        for (p = os_dev + 5; *p; ++p)
+          if (grub_isdigit(*p))
+            {
+              p = strchr (p, 's');
+              if (p)
+                {
+                  p++;
+                  n = strtol (p, &q, 10);
+                  if (p != q && n != GRUB_LONG_MIN && n != GRUB_LONG_MAX)
+                    {
+                      dos_part = (int) n - 1;
+
+                      if (*q >= 'a' && *q <= 'g')
+                        bsd_part = *q - 'a';
+                    }
+                }
+              break;
+            }
+      }
+
+    return make_device_name (drive, dos_part, bsd_part);
+  }
+
 #else
 # warning "The function `grub_util_biosdisk_get_grub_dev' might not work on your OS correctly."
   return make_device_name (drive, -1, -1);
