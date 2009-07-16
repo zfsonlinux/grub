@@ -18,7 +18,7 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.96+20090611/util/grub.d/10_linux.in grub2-
  
    linux_entry "${OS}, Linux ${version}" \
 -      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
-+      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT} ${GRUB_CMDLINE_EXTRA}"
++      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}"
    linux_entry "${OS}, Linux ${version} (recovery mode)" \
        "single ${GRUB_CMDLINE_LINUX}"
  

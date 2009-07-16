@@ -1,3 +1,12 @@
+grub2 (1.96+20090611-1ubuntu4) karmic; urgency=low
+
+  * debian/patches/10_crashkernel.diff:
+    - make crashkernel= commandline appear before the other options
+      to workaround a bug in the crashkernel parser 
+      (http://lists.infradead.org/pipermail/kexec/2009-July/003444.html)
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Thu, 16 Jul 2009 11:37:05 +0200
+
 grub2 (1.96+20090611-1ubuntu3) karmic; urgency=low
 
   * Drop os-prober to a Recommends at Felix Zielcke's suggestion.
