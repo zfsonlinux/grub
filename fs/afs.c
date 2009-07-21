@@ -1,7 +1,7 @@
 /* afs.c - The native AtheOS file-system.  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2008  Free Software Foundation, Inc.
+ *  Copyright (C) 2008,2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,16 +26,33 @@
 #include <grub/types.h>
 #include <grub/fshelp.h>
 
+#ifdef MODE_BFS
+#define GRUB_AFS_FSNAME "befs"
+#else
+#define GRUB_AFS_FSNAME "afs"
+#endif
+
 #define	GRUB_AFS_DIRECT_BLOCK_COUNT	12
 #define	GRUB_AFS_BLOCKS_PER_DI_RUN	4
 
-#define	GRUB_AFS_SBLOCK_MAGIC1	0x41465331	/* AFS1 */
+#ifdef MODE_BFS
+#define GRUB_AFS_SBLOCK_SECTOR 1
+#define	GRUB_AFS_SBLOCK_MAGIC1	0x42465331 /* BFS1.  */
+#else
+#define GRUB_AFS_SBLOCK_SECTOR 2
+#define	GRUB_AFS_SBLOCK_MAGIC1	0x41465331 /* AFS1.  */
+#endif
+
 #define	GRUB_AFS_SBLOCK_MAGIC2	0xdd121031
 #define	GRUB_AFS_SBLOCK_MAGIC3	0x15b6830e
 
 #define	GRUB_AFS_INODE_MAGIC	0x64358428
 
+#ifdef MODE_BFS
+#define GRUB_AFS_BTREE_MAGIC	0x69f6c2e8
+#else
 #define GRUB_AFS_BTREE_MAGIC	0x65768995
+#endif
 
 #define GRUB_AFS_BNODE_SIZE	1024
 
@@ -57,10 +74,17 @@
 #define U64(sb, u) (((sb)->byte_order == GRUB_AFS_BO_LITTLE_ENDIAN) ? \
                     grub_le_to_cpu64 (u) : grub_be_to_cpu64 (u))
 
+#ifdef MODE_BFS
+#define B_KEY_INDEX_ALIGN 8
+#else
+#define B_KEY_INDEX_ALIGN 4
+#endif
+
 #define B_KEY_INDEX_OFFSET(node) ((grub_uint16_t *) \
-                                   ((char *) (node) + \
-                                    sizeof (struct grub_afs_bnode) + \
-                                    ((node->key_size + 3) & ~3)))
+				  ((char *) (node) \
+				   + ALIGN_UP (sizeof (struct grub_afs_bnode) \
+					       + node->key_size, \
+					       B_KEY_INDEX_ALIGN)))
 
 #define B_KEY_VALUE_OFFSET(node) ((grub_afs_bvalue_t *) \
                                    ((char *) B_KEY_INDEX_OFFSET (node) + \
@@ -81,7 +105,7 @@ struct grub_afs_blockrun
   grub_uint32_t group;
   grub_uint16_t start;
   grub_uint16_t len;
-};
+} __attribute__ ((packed));
 
 struct grub_afs_datastream
 {
@@ -92,18 +116,34 @@ struct grub_afs_datastream
   struct grub_afs_blockrun double_indirect;
   grub_afs_off_t max_double_indirect_range;
   grub_afs_off_t size;
-};
+} __attribute__ ((packed));
 
 struct grub_afs_bnode
 {
   grub_afs_bvalue_t left;
   grub_afs_bvalue_t right;
   grub_afs_bvalue_t overflow;
+#ifdef MODE_BFS
+  grub_uint16_t key_count;
+  grub_uint16_t key_size;
+#else
   grub_uint32_t key_count;
   grub_uint32_t key_size;
+#endif
   char key_data[0];
-};
+} __attribute__ ((packed));
 
+#ifdef MODE_BFS
+struct grub_afs_btree
+{
+  grub_uint32_t magic;
+  grub_uint32_t unused1;
+  grub_uint32_t tree_depth;
+  grub_uint32_t unused2;
+  grub_afs_bvalue_t root;
+  grub_uint32_t unused3[4];
+} __attribute__ ((packed));
+#else
 struct grub_afs_btree
 {
   grub_uint32_t magic;
@@ -111,11 +151,12 @@ struct grub_afs_btree
   grub_uint32_t tree_depth;
   grub_afs_bvalue_t last_node;
   grub_afs_bvalue_t first_free;
-} ;
+} __attribute__ ((packed));
+#endif
 
 struct grub_afs_sblock
 {
-  grub_uint8_t name[32];
+  char name[32];
   grub_uint32_t magic1;
   grub_uint32_t byte_order;
   grub_uint32_t	block_size;
@@ -124,8 +165,10 @@ struct grub_afs_sblock
   grub_afs_off_t used_blocks;
   grub_uint32_t	inode_size;
   grub_uint32_t	magic2;
-  grub_uint32_t	block_per_group;	// Number of blocks per allocation group (Max 65536)
-  grub_uint32_t	alloc_group_shift;	// Number of bits to shift a group number to get a byte address.
+  grub_uint32_t	block_per_group; /* Number of blocks per allocation
+				    group. (Max 65536)  */
+  grub_uint32_t	alloc_group_shift; /* Number of bits to shift a group
+				      number to get a byte address.  */
   grub_uint32_t	alloc_group_count;
   grub_uint32_t	flags;
   struct grub_afs_blockrun log_block;
@@ -133,12 +176,13 @@ struct grub_afs_sblock
   grub_uint32_t valid_log_blocks;
   grub_uint32_t log_size;
   grub_uint32_t	magic3;
-  struct grub_afs_blockrun root_dir;	// Root dir inode.
-  struct grub_afs_blockrun deleted_files; // Directory containing files scheduled for deletion.
-  struct grub_afs_blockrun index_dir;	// Directory of index files.
+  struct grub_afs_blockrun root_dir; /* Root dir inode.  */
+  struct grub_afs_blockrun deleted_files; /* Directory containing files
+					     scheduled for deletion.  */
+  struct grub_afs_blockrun index_dir; /* Directory of index files.  */
   grub_uint32_t boot_loader_size;
   grub_uint32_t	pad[7];
-};
+}  __attribute__ ((packed));
 
 struct grub_afs_inode
 {
@@ -148,18 +192,20 @@ struct grub_afs_inode
   grub_uint32_t gid;
   grub_uint32_t mode;
   grub_uint32_t flags;
+#ifndef MODE_BFS
   grub_uint32_t link_count;
+#endif
   grub_afs_bigtime create_time;
   grub_afs_bigtime modified_time;
   struct grub_afs_blockrun parent;
   struct grub_afs_blockrun attrib_dir;
-  grub_uint32_t index_type;		/* Key data-key only used for index files */
+  grub_uint32_t index_type; /* Key data-key only used for index files. */
   grub_uint32_t inode_size;
-  void* vnode;
+  grub_uint32_t unused;
   struct grub_afs_datastream stream;
   grub_uint32_t	pad[4];
   grub_uint32_t small_data[1];
-};
+} __attribute__ ((packed));
 
 struct grub_fshelp_node
 {
@@ -294,6 +340,30 @@ grub_afs_read_file (grub_fshelp_node_t node,
                                 - GRUB_DISK_SECTOR_BITS);
 }
 
+static char *
+grub_afs_read_symlink (grub_fshelp_node_t node)
+{
+  char *ret;
+  struct grub_afs_sblock *sb = &node->data->sblock;
+  grub_afs_off_t size = U64 (sb, node->inode.stream.size);
+
+  if (size == 0)
+    {
+      size = sizeof (node->inode.stream);
+      ret = grub_zalloc (size + 1);
+      if (! ret)
+	return 0;
+      grub_memcpy (ret, (char *) &(node->inode.stream),
+		   sizeof (node->inode.stream));
+      return ret;
+    }
+  ret = grub_zalloc (size + 1);
+  if (! ret)
+    return 0;
+  grub_afs_read_file (node, 0, 0, size, ret);
+  return ret;
+}
+
 static int
 grub_afs_iterate_dir (grub_fshelp_node_t dir,
                       int NESTED_FUNC_ATTR
@@ -307,8 +377,8 @@ grub_afs_iterate_dir (grub_fshelp_node_t dir,
   struct grub_afs_sblock *sb = &dir->data->sblock;
   int i;
 
-  if ((! dir->inode.stream.size) ||
-      ((U32 (sb, dir->inode.mode) & GRUB_AFS_S_IFMT) != GRUB_AFS_S_IFDIR))
+  if ((dir->inode.stream.size == 0)
+      || ((U32 (sb, dir->inode.mode) & GRUB_AFS_S_IFMT) != GRUB_AFS_S_IFDIR))
     return 0;
 
   grub_afs_read_file (dir, 0, 0, sizeof (head), (char *) &head);
@@ -343,7 +413,7 @@ grub_afs_iterate_dir (grub_fshelp_node_t dir,
 
           key_start = U16 (sb, (cur_key > 0) ? index[cur_key - 1] : 0);
           key_size = U16 (sb, index[cur_key]) - key_start;
-          if (key_size)
+          if (key_size > 0)
             {
               char filename [key_size + 1];
               struct grub_fshelp_node *fdiro;
@@ -367,6 +437,8 @@ grub_afs_iterate_dir (grub_fshelp_node_t dir,
                 type = GRUB_FSHELP_DIR;
               else if (mode == GRUB_AFS_S_IFREG)
                 type = GRUB_FSHELP_REG;
+	      else if (mode == GRUB_AFS_S_IFLNK)
+		type = GRUB_FSHELP_SYMLINK;
               else
                 type = GRUB_FSHELP_UNKNOWN;
 
@@ -398,8 +470,10 @@ grub_afs_validate_sblock (struct grub_afs_sblock *sb)
 {
   if (grub_le_to_cpu32 (sb->magic1) == GRUB_AFS_SBLOCK_MAGIC1)
     {
+#ifndef MODE_BFS
       if (grub_le_to_cpu32 (sb->byte_order) != GRUB_AFS_BO_LITTLE_ENDIAN)
         return 0;
+#endif
 
       sb->byte_order = GRUB_AFS_BO_LITTLE_ENDIAN;
       sb->magic2 = grub_le_to_cpu32 (sb->magic2);
@@ -417,8 +491,10 @@ grub_afs_validate_sblock (struct grub_afs_sblock *sb)
     }
   else if (grub_be_to_cpu32 (sb->magic1) == GRUB_AFS_SBLOCK_MAGIC1)
     {
+#ifndef MODE_BFS
       if (grub_be_to_cpu32 (sb->byte_order) != GRUB_AFS_BO_BIG_ENDIAN)
         return 0;
+#endif
 
       sb->byte_order = GRUB_AFS_BO_BIG_ENDIAN;
       sb->magic2 = grub_be_to_cpu32 (sb->magic2);
@@ -441,15 +517,22 @@ grub_afs_validate_sblock (struct grub_afs_sblock *sb)
       (sb->magic3 != GRUB_AFS_SBLOCK_MAGIC3))
     return 0;
 
-  if (((grub_uint32_t) (1 << sb->block_shift) != sb->block_size) ||
-      (sb->used_blocks > sb->num_blocks ) ||
-      (sb->inode_size != sb->block_size) ||
-      (0 == sb->block_size) ||
-      ((grub_uint32_t) (1 << sb->alloc_group_shift) !=
-       sb->block_per_group * sb->block_size) ||
-      (sb->alloc_group_count * sb->block_per_group < sb->num_blocks) ||
-      (U16 (sb, sb->log_block.len) != sb->log_size) ||
-      (U32 (sb, sb->valid_log_blocks) > sb->log_size))
+#ifdef MODE_BFS
+  sb->block_per_group = 1 << (sb->alloc_group_shift);
+#endif
+
+  if (((grub_uint32_t) (1 << sb->block_shift) != sb->block_size)
+      || (sb->used_blocks > sb->num_blocks )
+      || (sb->inode_size != sb->block_size)
+      || (0 == sb->block_size)
+#ifndef MODE_BFS
+      || ((grub_uint32_t) (1 << sb->alloc_group_shift) !=
+	  sb->block_per_group * sb->block_size)
+      || (sb->alloc_group_count * sb->block_per_group < sb->num_blocks)
+      || (U16 (sb, sb->log_block.len) != sb->log_size)
+      || (U32 (sb, sb->valid_log_blocks) > sb->log_size)
+#endif
+      )
     return 0;
 
   return 1;
@@ -465,19 +548,12 @@ grub_afs_mount (grub_disk_t disk)
     return 0;
 
   /* Read the superblock.  */
-  if (grub_disk_read (disk, 1 * 2, 0, sizeof (struct grub_afs_sblock),
-                      &data->sblock))
+  if (grub_disk_read (disk, GRUB_AFS_SBLOCK_SECTOR, 0,
+		      sizeof (struct grub_afs_sblock), &data->sblock))
     goto fail;
 
   if (! grub_afs_validate_sblock (&data->sblock))
-    {
-      if (grub_disk_read (disk, 1 * 2, 0, sizeof (struct grub_afs_sblock),
-                          &data->sblock))
-        goto fail;
-
-      if (! grub_afs_validate_sblock (&data->sblock))
-        goto fail;
-    }
+    goto fail;
 
   data->diropen.data = data;
   data->inode = &data->diropen.inode;
@@ -492,7 +568,8 @@ grub_afs_mount (grub_disk_t disk)
   return data;
 
 fail:
-  grub_error (GRUB_ERR_BAD_FS, "not an afs filesystem");
+  grub_error (GRUB_ERR_BAD_FS, "not an " GRUB_AFS_FSNAME " filesystem");
+
   grub_free (data);
   return 0;
 }
@@ -510,7 +587,7 @@ grub_afs_open (struct grub_file *file, const char *name)
     goto fail;
 
   grub_fshelp_find_file (name, &data->diropen, &fdiro, grub_afs_iterate_dir,
-			 0, GRUB_FSHELP_REG);
+			 grub_afs_read_symlink, GRUB_FSHELP_REG);
   if (grub_errno)
     goto fail;
 
@@ -524,8 +601,6 @@ grub_afs_open (struct grub_file *file, const char *name)
   return 0;
 
 fail:
-  if (fdiro != &data->diropen)
-    grub_free (fdiro);
   grub_free (data);
 
   grub_dl_unref (my_mod);
@@ -557,7 +632,7 @@ grub_afs_dir (grub_device_t device, const char *path,
               int (*hook) (const char *filename,
 			   const struct grub_dirhook_info *info))
 {
-  struct grub_afs_data *data = 0;;
+  struct grub_afs_data *data = 0;
   struct grub_fshelp_node *fdiro = 0;
 
   auto int NESTED_FUNC_ATTR iterate (const char *filename,
@@ -571,6 +646,13 @@ grub_afs_dir (grub_device_t device, const char *path,
       struct grub_dirhook_info info;
       grub_memset (&info, 0, sizeof (info));
       info.dir = ((filetype & GRUB_FSHELP_TYPE_MASK) == GRUB_FSHELP_DIR);
+      info.mtimeset = 1;
+#ifdef MODE_BFS
+      info.mtime = U64 (&data->sblock, node->inode.modified_time) >> 16;
+#else
+      info.mtime = grub_divmod64 (U64 (&data->sblock,
+				       node->inode.modified_time), 1000000, 0);
+#endif
       grub_free (node);
       return hook (filename, &info);
     }
@@ -582,15 +664,16 @@ grub_afs_dir (grub_device_t device, const char *path,
     goto fail;
 
   grub_fshelp_find_file (path, &data->diropen, &fdiro, grub_afs_iterate_dir,
-			 0, GRUB_FSHELP_DIR);
+			 grub_afs_read_symlink, GRUB_FSHELP_DIR);
   if (grub_errno)
     goto fail;
 
   grub_afs_iterate_dir (fdiro, iterate);
 
- fail:
   if (fdiro != &data->diropen)
     grub_free (fdiro);
+
+ fail:
   grub_free (data);
 
   grub_dl_unref (my_mod);
@@ -598,23 +681,53 @@ grub_afs_dir (grub_device_t device, const char *path,
   return grub_errno;
 }
 
+static grub_err_t
+grub_afs_label (grub_device_t device, char **label)
+{
+  struct grub_afs_data *data;
+  grub_disk_t disk = device->disk;
+
+  grub_dl_ref (my_mod);
+
+  data = grub_afs_mount (disk);
+  if (data)
+    *label = grub_strndup (data->sblock.name, sizeof (data->sblock.name));
+  else
+    *label = NULL;
+
+  grub_dl_unref (my_mod);
+
+  grub_free (data);
+
+  return grub_errno;
+}
+
+
 static struct grub_fs grub_afs_fs = {
-  .name = "afs",
+  .name = GRUB_AFS_FSNAME,
   .dir = grub_afs_dir,
   .open = grub_afs_open,
   .read = grub_afs_read,
   .close = grub_afs_close,
-  .label = 0,
+  .label = grub_afs_label,
   .next = 0
 };
 
+#ifdef MODE_BFS
+GRUB_MOD_INIT (befs)
+#else
 GRUB_MOD_INIT (afs)
+#endif
 {
   grub_fs_register (&grub_afs_fs);
   my_mod = mod;
 }
 
+#ifdef MODE_BFS
+GRUB_MOD_FINI (befs)
+#else
 GRUB_MOD_FINI (afs)
+#endif
 {
   grub_fs_unregister (&grub_afs_fs);
 }

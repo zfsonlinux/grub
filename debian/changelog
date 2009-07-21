@@ -1,3 +1,27 @@
+grub2 (1.96+20090721-2) unstable; urgency=low
+
+  * Add back Conflicts/Replaces grub.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 21 Jul 2009 11:24:45 +0200
+
+grub2 (1.96+20090721-1) unstable; urgency=low
+
+  * New SVN snapshot.
+
+  * Change License of my update-grub(8) and update-grub2(8) manpages to
+    GPL3+ to match new copyright file.
+  * Merge from Ubuntu: Don't build grub-efi-amd64 on lpia.
+  * Don't pass `--enable-efiemu' to configure. On kfreebsd-i386 it won't
+    compile and it should be now auto detected if it's compilable.
+    (Closes: #536783)
+  * Don't build grub-efi-amd64 on kfreebsd-i386. It lacks 64bit compiler
+    support.
+  * Rename the lintian override for kernel.elf to kernel.img.
+  * Strip kernel.img not kernel.elf, but not in the case of grub-pc.
+  * Rename the Conflicts/Replaces grub to grub-legacy. (Closes: #537824)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 21 Jul 2009 10:50:20 +0200
+
 grub2 (1.96+20090709-1) unstable; urgency=low
 
   * New SVN snapshot.
@@ -60,7 +84,7 @@ grub2 (1.96+20090627-1) experimental; urgency=low
   * Add a note to /etc/default/grub that update-grub needs to be run to
     update grub.cfg. (Closes: #533026)
   * Fix the svn-snapshot rule.
-  * Update Standards version to 3.8.1. No changes needed.
+  * Update Standards version to 3.8.2. No changes needed.
 
   [ Robert Millan ]
   * legacy/upgrade-from-grub-legacy: Invoke grub-pc.postinst directly rather
