@@ -17,6 +17,9 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* Force native word size */
+#define GRUB_TARGET_WORDSIZE (8 * GRUB_CPU_SIZEOF_VOID_P)
+
 #include <config.h>
 #include <grub/elf.h>
 #include <grub/dl.h>
@@ -532,16 +535,11 @@ grub_dl_load_core (void *addr, grub_size_t size)
       return 0;
     }
 
-  mod = (grub_dl_t) grub_malloc (sizeof (*mod));
+  mod = (grub_dl_t) grub_zalloc (sizeof (*mod));
   if (! mod)
     return 0;
 
-  mod->name = 0;
   mod->ref_count = 1;
-  mod->dep = 0;
-  mod->segment = 0;
-  mod->init = 0;
-  mod->fini = 0;
 
   grub_dprintf ("modules", "relocating to %p\n", mod);
   if (grub_dl_resolve_name (mod, e)
