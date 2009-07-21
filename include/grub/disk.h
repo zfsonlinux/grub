@@ -56,7 +56,7 @@ struct grub_disk_dev
   const char *name;
 
   /* The device id used by the cache manager.  */
-  unsigned long id;
+  enum grub_disk_dev_id id;
 
   /* Call HOOK with each device name, until HOOK returns non-zero.  */
   int (*iterate) (int (*hook) (const char *name));
@@ -172,12 +172,5 @@ struct grub_disk_ata_pass_through_parms
 
 extern grub_err_t (* EXPORT_VAR(grub_disk_ata_pass_through)) (grub_disk_t,
 		   struct grub_disk_ata_pass_through_parms *);
-
-#ifdef GRUB_UTIL
-void grub_raid_init (void);
-void grub_raid_fini (void);
-void grub_lvm_init (void);
-void grub_lvm_fini (void);
-#endif
 
 #endif /* ! GRUB_DISK_HEADER */
