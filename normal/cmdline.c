@@ -181,7 +181,7 @@ print_completion (const char *item, grub_completion_type_t type, int count)
 /* FIXME: The dumb interface is not supported yet.  */
 int
 grub_cmdline_get (const char *prompt, char cmdline[], unsigned max_len,
-		  int echo_char, int readline, int history)
+		  int echo_char, int readline)
 {
   unsigned xpos, ypos, ystart;
   grub_size_t lpos, llen;
@@ -273,14 +273,14 @@ grub_cmdline_get (const char *prompt, char cmdline[], unsigned max_len,
   if ((grub_getxy () >> 8) != 0)
     grub_putchar ('\n');
 
-  grub_printf ("%s", prompt);
+  grub_printf (prompt);
 
   xpos = plen;
   ystart = ypos = (grub_getxy () & 0xFF);
 
   cl_insert (cmdline);
 
-  if (history && hist_used == 0)
+  if (hist_used == 0)
     grub_history_add (buf);
 
   while ((key = GRUB_TERM_ASCII_CHAR (grub_getkey ())) != '\n' && key != '\r')
@@ -468,14 +468,11 @@ grub_cmdline_get (const char *prompt, char cmdline[], unsigned max_len,
     while (buf[lpos] == ' ')
       lpos++;
 
-  if (history)
+  histpos = 0;
+  if (grub_strlen (buf) > 0)
     {
-      histpos = 0;
-      if (grub_strlen (buf) > 0)
-	{
-	  grub_history_replace (histpos, buf);
-	  grub_history_add ("");
-	}
+      grub_history_replace (histpos, buf);
+      grub_history_add ("");
     }
 
   grub_memcpy (cmdline, buf + lpos, llen - lpos + 1);

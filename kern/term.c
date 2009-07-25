@@ -32,12 +32,12 @@ static int grub_more;
 static int cursor_state = 1;
 
 struct grub_handler_class grub_term_input_class =
-  {
+      {
     .name = "terminal_input"
   };
 
 struct grub_handler_class grub_term_output_class =
-  {
+      {
     .name = "terminal_output"
   };
 
@@ -138,15 +138,6 @@ int
 grub_checkkey (void)
 {
   return (grub_cur_term_input->checkkey) ();
-}
-
-int
-grub_getkeystatus (void)
-{
-  if (grub_cur_term_input->getkeystatus)
-    return (grub_cur_term_input->getkeystatus) ();
-  else
-    return 0;
 }
 
 grub_uint16_t

@@ -28,6 +28,7 @@
 #include <stdio.h>
 
 
+#ifndef DT_DIR
 /* dirent.d_type is a BSD extension, not part of POSIX */
 #include <sys/stat.h>
 #include <string.h>
@@ -52,6 +53,7 @@ is_dir (const char *path, const char *name)
     return 0;
   return S_ISDIR (st.st_mode);
 }
+#endif
 
 static grub_err_t
 grub_hostfs_dir (grub_device_t device, const char *path,
@@ -79,7 +81,11 @@ grub_hostfs_dir (grub_device_t device, const char *path,
       if (! de)
 	break;
 
+#ifdef DT_DIR
+      info.dir = (de->d_type == DT_DIR);
+#else
       info.dir = !! is_dir (path, de->d_name);
+#endif
       hook (de->d_name, &info);
 
     }

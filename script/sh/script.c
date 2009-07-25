@@ -110,13 +110,10 @@ grub_script_arg_add (struct grub_parser_param *state, struct grub_script_arg *ar
 {
   struct grub_script_arg *argpart;
   struct grub_script_arg *ll;
-  int len;
 
   argpart = (struct grub_script_arg *) grub_script_malloc (state, sizeof (*arg));
   argpart->type = type;
-  len = grub_strlen (str) + 1;
-  argpart->str = grub_script_malloc (state, len);
-  grub_memcpy (argpart->str, str, len);
+  argpart->str = str;
   argpart->next = 0;
 
   if (! arg)

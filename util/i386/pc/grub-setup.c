@@ -25,7 +25,7 @@
 #include <grub/file.h>
 #include <grub/fs.h>
 #include <grub/partition.h>
-#include <grub/msdos_partition.h>
+#include <grub/pc_partition.h>
 #include <grub/gpt_partition.h>
 #include <grub/env.h>
 #include <grub/util/hostdisk.h>
@@ -86,7 +86,7 @@ grub_refresh (void)
 static void
 setup (const char *dir,
        const char *boot_file, const char *core_file,
-       const char *root, const char *dest, int must_embed, int force, int fs_probe)
+       const char *root, const char *dest, int must_embed, int force)
 {
   char *boot_path, *core_path, *core_path_dev;
   char *boot_img, *core_img;
@@ -121,18 +121,18 @@ setup (const char *dir,
   int NESTED_FUNC_ATTR find_usable_region_msdos (grub_disk_t disk __attribute__ ((unused)),
 						 const grub_partition_t p)
     {
-      struct grub_msdos_partition *pcdata = p->data;
+      struct grub_pc_partition *pcdata = p->data;
 
       /* There's always an embed region, and it starts right after the MBR.  */
       embed_region.start = 1;
 
       /* For its end offset, include as many dummy partitions as we can.  */
-      if (! grub_msdos_partition_is_empty (pcdata->dos_type)
-	  && ! grub_msdos_partition_is_bsd (pcdata->dos_type)
+      if (! grub_pc_partition_is_empty (pcdata->dos_type)
+	  && ! grub_pc_partition_is_bsd (pcdata->dos_type)
 	  && embed_region.end > p->start)
 	embed_region.end = p->start;
 
-      return 0;
+      return 1;
     }
 
   auto int NESTED_FUNC_ATTR find_usable_region_gpt (grub_disk_t disk,
@@ -251,22 +251,6 @@ setup (const char *dir,
   if (grub_disk_read (dest_dev->disk, 0, 0, GRUB_DISK_SECTOR_SIZE, tmp_img))
     grub_util_error ("%s", grub_errmsg);
 
-  if (dest_dev->disk->partition && fs_probe)
-    {
-      grub_fs_t fs;
-      fs = grub_fs_probe (dest_dev);
-      if (! fs)
-	grub_util_error ("Unable to identify a filesystem in %s; safety check can't be performed.",
-			 dest_dev->disk->name);
-
-      if (! fs->reserved_first_sector)
-	grub_util_error ("%s appears to contain a %s filesystem which isn't known to "
-			 "reserve space for DOS-style boot.  Installing GRUB there could "
-			 "result in FILESYSTEM DESTRUCTION if valuable data is overwritten "
-			 "by grub-setup (--skip-fs-probe disables this "
-			 "check, use at your own risk).", dest_dev->disk->name, fs->name);
-    }
-
   /* Copy the possible DOS BPB.  */
   memcpy (boot_img + GRUB_BOOT_MACHINE_BPB_START,
 	  tmp_img + GRUB_BOOT_MACHINE_BPB_START,
@@ -295,15 +279,15 @@ setup (const char *dir,
       if (root_dev->disk->partition)
 	{
 	  if (strcmp (root_dev->disk->partition->partmap->name,
-		      "part_msdos") == 0)
+		      "pc_partition_map") == 0)
 	    {
-	      struct grub_msdos_partition *pcdata =
+	      struct grub_pc_partition *pcdata =
 		root_dev->disk->partition->data;
 	      dos_part = pcdata->dos_part;
 	      bsd_part = pcdata->bsd_part;
 	    }
 	  else if (strcmp (root_dev->disk->partition->partmap->name,
-			   "part_gpt") == 0)
+			   "gpt_partition_map") == 0)
 	    {
 	      dos_part = root_dev->disk->partition->index;
 	      bsd_part = -1;
@@ -354,12 +338,12 @@ setup (const char *dir,
       goto unable_to_embed;
     }
 
-  grub_partition_iterate (dest_dev->disk, (strcmp (dest_partmap, "part_msdos") ?
+  grub_partition_iterate (dest_dev->disk, (strcmp (dest_partmap, "pc_partition_map") ?
 					   find_usable_region_gpt : find_usable_region_msdos));
 
   if (embed_region.end == embed_region.start)
     {
-      if (! strcmp (dest_partmap, "part_msdos"))
+      if (! strcmp (dest_partmap, "pc_partition_map"))
 	grub_util_warn ("This msdos-style partition label has no post-MBR gap; embedding won't be possible!");
       else
 	grub_util_warn ("This GPT partition label has no BIOS Boot Partition; embedding won't be possible!");
@@ -368,9 +352,9 @@ setup (const char *dir,
 
   if ((unsigned long) core_sectors > embed_region.end - embed_region.start)
     {
-      if (core_sectors > 62)
+      if (core_sectors > 62 * 512)
 	grub_util_warn ("Your core.img is unusually large.  It won't fit in the embedding area.");
-      else if (embed_region.end - embed_region.start < 62)
+      else if (embed_region.end - embed_region.start < 62 * 512)
 	grub_util_warn ("Your embedding area is unusually small.  core.img won't fit in it.");
       else
 	grub_util_warn ("Embedding area is too small for core.img.");
@@ -572,7 +556,6 @@ static struct option options[] =
     {"device-map", required_argument, 0, 'm'},
     {"root-device", required_argument, 0, 'r'},
     {"force", no_argument, 0, 'f'},
-    {"skip-fs-probe", no_argument, 0, 's'},
     {"help", no_argument, 0, 'h'},
     {"version", no_argument, 0, 'V'},
     {"verbose", no_argument, 0, 'v'},
@@ -597,7 +580,6 @@ DEVICE must be a GRUB device (e.g. ``(hd0,1)'').\n\
   -m, --device-map=FILE   use FILE as the device map [default=%s]\n\
   -r, --root-device=DEV   use DEV as the root device [default=guessed]\n\
   -f, --force             install even if problems are detected\n\
-  -s, --skip-fs-probe     do not probe for filesystems in DEVICE\n\
   -h, --help              display this message and exit\n\
   -V, --version           print version information and exit\n\
   -v, --verbose           print verbose messages\n\
@@ -631,7 +613,7 @@ main (int argc, char *argv[])
   char *dev_map = 0;
   char *root_dev = 0;
   char *dest_dev;
-  int must_embed = 0, force = 0, fs_probe = 1;
+  int must_embed = 0, force = 0;
 
   progname = "grub-setup";
 
@@ -682,10 +664,6 @@ main (int argc, char *argv[])
 
 	  case 'f':
 	    force = 1;
-	    break;
-
-	  case 's':
-	    fs_probe = 0;
 	    break;
 
 	  case 'h':
@@ -789,7 +767,7 @@ main (int argc, char *argv[])
 	  setup (dir ? : DEFAULT_DIRECTORY,
 		 boot_file ? : DEFAULT_BOOT_FILE,
 		 core_file ? : DEFAULT_CORE_FILE,
-		 root_dev, grub_util_get_grub_dev (devicelist[i]), 1, force, fs_probe);
+		 root_dev, grub_util_get_grub_dev (devicelist[i]), 1, force);
 	}
     }
   else
@@ -798,7 +776,7 @@ main (int argc, char *argv[])
     setup (dir ? : DEFAULT_DIRECTORY,
 	   boot_file ? : DEFAULT_BOOT_FILE,
 	   core_file ? : DEFAULT_CORE_FILE,
-	   root_dev, dest_dev, must_embed, force, fs_probe);
+	   root_dev, dest_dev, must_embed, force);
 
   /* Free resources.  */
   grub_fini_all ();

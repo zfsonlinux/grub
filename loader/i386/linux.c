@@ -31,12 +31,23 @@
 #include <grub/term.h>
 #include <grub/cpu/linux.h>
 #include <grub/video.h>
-#include <grub/video_fb.h>
-#include <grub/command.h>
+/* FIXME: the definition of `struct grub_video_render_target' is
+   VBE-specific.  */
 #include <grub/i386/pc/vbe.h>
+#include <grub/command.h>
 
 #define GRUB_LINUX_CL_OFFSET		0x1000
 #define GRUB_LINUX_CL_END_OFFSET	0x2000
+
+/* This macro is useful for distributors, who can be certain they built FB support
+   into Linux, and therefore can benefit from seamless mode transition between
+   GRUB and Linux (saving boot time and visual glitches).  Official GRUB, OTOH,
+   needs to be conservative.  */
+#ifdef GRUB_ASSUME_LINUX_HAS_FB_SUPPORT
+#define DEFAULT_VIDEO_MODE "keep,1024x768,800x600,640x480"
+#else
+#define DEFAULT_VIDEO_MODE "text"
+#endif
 
 static grub_dl_t my_mod;
 
@@ -392,11 +403,14 @@ static int
 grub_linux_setup_video (struct linux_kernel_params *params)
 {
   struct grub_video_mode_info mode_info;
-  void *framebuffer;
+  struct grub_video_render_target *render_target;
   int ret;
 
-  ret = grub_video_get_info_and_fini (&mode_info, &framebuffer);
+  ret = grub_video_get_info (&mode_info);
+  if (ret)
+    return 1;
 
+  ret = grub_video_get_active_render_target (&render_target);
   if (ret)
     return 1;
 
@@ -405,7 +419,7 @@ grub_linux_setup_video (struct linux_kernel_params *params)
   params->lfb_depth = mode_info.bpp;
   params->lfb_line_len = mode_info.pitch;
 
-  params->lfb_base = (grub_size_t) framebuffer;
+  params->lfb_base = (grub_size_t) render_target->data;
   params->lfb_size = (params->lfb_line_len * params->lfb_height + 65535) >> 16;
 
   params->red_mask_size = mode_info.red_mask_size;
@@ -416,33 +430,6 @@ grub_linux_setup_video (struct linux_kernel_params *params)
   params->blue_field_pos = mode_info.blue_field_pos;
   params->reserved_mask_size = mode_info.reserved_mask_size;
   params->reserved_field_pos = mode_info.reserved_field_pos;
-
-
-#ifdef GRUB_MACHINE_PCBIOS
-  /* VESA packed modes may come with zeroed mask sizes, which need
-     to be set here according to DAC Palette width.  If we don't,
-     this results in Linux displaying a black screen.  */
-  if (mode_info.bpp <= 8)
-    {
-      struct grub_vbe_info_block controller_info;
-      int status;
-      int width = 8;
-
-      status = grub_vbe_bios_get_controller_info (&controller_info);
-
-      if (status == GRUB_VBE_STATUS_OK &&
-	  (controller_info.capabilities & GRUB_VBE_CAPABILITY_DACWIDTH))
-	status = grub_vbe_bios_set_dac_palette_width (&width);
-
-      if (status != GRUB_VBE_STATUS_OK)
-	/* 6 is default after mode reset.  */
-	width = 6;
-
-      params->red_mask_size = params->green_mask_size
-	= params->blue_mask_size = width;
-      params->reserved_mask_size = 0;
-    }
-#endif
 
   return 0;
 }
@@ -461,6 +448,41 @@ grub_linux_boot (void)
   char *modevar, *tmp;
 
   params = real_mode_mem;
+
+  modevar = grub_env_get ("gfxpayload");
+
+  /* Now all graphical modes are acceptable.
+     May change in future if we have modes without framebuffer.  */
+  if (modevar && *modevar != 0)
+    {
+      tmp = grub_malloc (grub_strlen (modevar)
+			 + sizeof (DEFAULT_VIDEO_MODE) + 1);
+      if (! tmp)
+	return grub_errno;
+      grub_sprintf (tmp, "%s;" DEFAULT_VIDEO_MODE, modevar);
+      err = grub_video_set_mode (tmp, 0);
+      grub_free (tmp);
+    }
+#ifndef GRUB_ASSUME_LINUX_HAS_FB_SUPPORT
+  else
+    err = grub_video_set_mode (DEFAULT_VIDEO_MODE, 0);
+#endif
+
+  if (err)
+    {
+      grub_print_error ();
+      grub_printf ("Booting however\n");
+      grub_errno = GRUB_ERR_NONE;
+    }
+
+  if (! grub_linux_setup_video (params))
+    params->have_vga = GRUB_VIDEO_TYPE_VLFB;
+  else
+    {
+      params->have_vga = GRUB_VIDEO_TYPE_TEXT;
+      params->video_width = 80;
+      params->video_height = 25;
+    }
 
   grub_dprintf ("linux", "code32_start = %x, idt_desc = %lx, gdt_desc = %lx\n",
 		(unsigned) params->code32_start,
@@ -511,39 +533,6 @@ grub_linux_boot (void)
   e820_num = 0;
   grub_mmap_iterate (hook);
   params->mmap_size = e820_num;
-
-  modevar = grub_env_get ("gfxpayload");
-
-  /* Now all graphical modes are acceptable.
-     May change in future if we have modes without framebuffer.  */
-  if (modevar && *modevar != 0)
-    {
-      tmp = grub_malloc (grub_strlen (modevar)
-			 + sizeof (";text"));
-      if (! tmp)
-	return grub_errno;
-      grub_sprintf (tmp, "%s;text", modevar);
-      err = grub_video_set_mode (tmp, 0);
-      grub_free (tmp);
-    }
-  else
-    err = grub_video_set_mode ("text", 0);
-
-  if (err)
-    {
-      grub_print_error ();
-      grub_printf ("Booting however\n");
-      grub_errno = GRUB_ERR_NONE;
-    }
-
-  if (! grub_linux_setup_video (params))
-    params->have_vga = GRUB_VIDEO_TYPE_VLFB;
-  else
-    {
-      params->have_vga = GRUB_VIDEO_TYPE_TEXT;
-      params->video_width = 80;
-      params->video_height = 25;
-    }
 
   /* Initialize these last, because terminal position could be affected by printfs above.  */
   if (params->have_vga == GRUB_VIDEO_TYPE_TEXT)
@@ -787,7 +776,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 	    linux_mode
 	      = &linux_vesafb_modes[vid_mode - GRUB_LINUX_VID_MODE_VESA_START];
 
-	    grub_sprintf (buf, "%ux%ux%u,%ux%u",
+	    grub_sprintf (buf, "%ux%ux%u;%ux%u",
 			  linux_vesafb_res[linux_mode->res_index].width,
 			  linux_vesafb_res[linux_mode->res_index].height,
 			  linux_mode->depth,

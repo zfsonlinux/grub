@@ -31,9 +31,6 @@ target_cpu=@target_cpu@
 platform=@platform@
 pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
 
-# for make_system_path_relative_to_its_root()
-. ${libdir}/grub/grub-mkconfig_lib
-
 grub_setup=${sbindir}/`echo grub-setup | sed ${transform}`
 if [ "${target_cpu}-${platform}" = "i386-pc" ] ; then
     grub_mkimage=${bindir}/`echo grub-mkimage | sed ${transform}`
@@ -122,7 +119,7 @@ for option in "$@"; do
 	recheck=yes ;;
     --disk-module=*)
 	if [ "${target_cpu}-${platform}" = "i386-pc" ] ; then
-           disk_module=`echo "$option" | sed 's/--disk-module=//'`
+           disk_module=`echo "$option" | sed 's/--disk-module//'`
         fi ;;
     # This is an undocumented feature...
     --debug)
@@ -143,6 +140,9 @@ for option in "$@"; do
 	install_device="${option}" ;;
     esac
 done
+
+# for make_system_path_relative_to_its_root()
+. ${libdir}/grub/grub-mkconfig_lib
 
 if test "x$install_device" = x; then
     echo "install_device not specified." 1>&2

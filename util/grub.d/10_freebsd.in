@@ -50,27 +50,26 @@ if [ "x$kfreebsd" != "x" ] ; then
     devices_rel_dirname=`make_system_path_relative_to_its_root $devices_dirname`
   fi
 
-  case ${GRUB_FS} in
-    ufs1 | ufs2)	kfreebsd_fs=ufs ;;
-    *)			kfreebsd_fs=${GRUB_FS} ;;
-  esac
+  root_device=`basename ${GRUB_DEVICE}`
+
+  # For "ufs" it's the same.  Do we care about the others?
+  kfreebsd_fs=${GRUB_FS}
 
   cat << EOF
 menuentry "${OS}" {
 EOF
   prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/"
   cat << EOF
-	kfreebsd			${kfreebsd_rel_dirname}/${kfreebsd_basename}
+	freebsd			${kfreebsd_rel_dirname}/${kfreebsd_basename}
 EOF
 
   if [ x"$devices" != "x" ] ; then
     cat << EOF
-	kfreebsd_loadenv		${devices_rel_dirname}/${devices_basename}
+	freebsd_loadenv		${devices_rel_dirname}/${devices_basename}
 EOF
   fi
   cat << EOF
-	set kFreeBSD.vfs.root.mountfrom=${kfreebsd_fs}:${GRUB_DEVICE}
-	set kFreeBSD.vfs.root.mountfrom.options=rw
+	set FreeBSD.vfs.root.mountfrom=${kfreebsd_fs}:${root_device}
 }
 EOF
 fi
