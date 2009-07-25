@@ -37,7 +37,7 @@
  * Note: GRUB is compiled with the options -mrtd and -mregparm=3.
  *       So the first three arguments are passed in %eax, %edx, and %ecx,
  *       respectively, and if a function has a fixed number of arguments
- *       and the number is greater than three, the function must return
+ *       and the number if greater than three, the function must return
  *       with "ret $N" where N is ((the number of arguments) - 3) * 4.
  */
 
@@ -1730,52 +1730,6 @@ FUNCTION(grub_vbe_bios_get_mode)
 	popl	%edi
 	popl    %ebx
 	popl    %ebp
-	ret
-
-/*
- * grub_vbe_status_t grub_vbe_bios_getset_dac_palette_width (int set, int *dac_mask_size)
- *
- * Register allocations for parameters:
- * %eax		set
- * %edx		*dac_mask_size
- */
-FUNCTION(grub_vbe_bios_getset_dac_palette_width)
-	pushl	%ebp
-	pushl	%ebx
-
-	xorl	%ebx, %ebx
-
-	/* If we only want to fetch the value, set %bl to 1.  */
-	testl	%eax, %eax
-	jne	1f
-	incb	%bl
-1:
-
-	/* Put desired width in %bh.  */
-	movl	(%edx), %eax
-	movb	%al, %bh
-
-	call    prot_to_real
-	.code16
-
-	movw	$0x4f08, %ax
-	int	$0x10
-
-	movw	%ax, %cx	/* real_to_prot destroys %eax.  */
-
-	DATA32 call	real_to_prot
-	.code32
-
-	/* Move result back to *dac_mask_size.  */
-	xorl	%eax, %eax
-	movb	%bh, %al
-	movl	%eax, (%edx)
-
-	/* Return value in %eax.  */
-	movw	%cx, %ax
-
-	popl	%ebx
-	popl	%ebp
 	ret
 
 /*

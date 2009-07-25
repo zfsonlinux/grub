@@ -95,31 +95,25 @@ create_envblk_file (const char *name)
 {
   FILE *fp;
   char *buf;
-  char *namenew;
 
   buf = malloc (DEFAULT_ENVBLK_SIZE);
   if (! buf)
     grub_util_error ("out of memory");
 
-  asprintf (&namenew, "%s.new", name);
-  fp = fopen (namenew, "wb");
+  fp = fopen (name, "wb");
   if (! fp)
-    grub_util_error ("cannot open the file %s", namenew);
+    grub_util_error ("cannot open the file %s", name);
 
   memcpy (buf, GRUB_ENVBLK_SIGNATURE, sizeof (GRUB_ENVBLK_SIGNATURE) - 1);
   memset (buf + sizeof (GRUB_ENVBLK_SIGNATURE) - 1, '#',
           DEFAULT_ENVBLK_SIZE - sizeof (GRUB_ENVBLK_SIGNATURE) + 1);
 
   if (fwrite (buf, 1, DEFAULT_ENVBLK_SIZE, fp) != DEFAULT_ENVBLK_SIZE)
-    grub_util_error ("cannot write to the file %s", namenew);
+    grub_util_error ("cannot write to the file %s", name);
 
   fsync (fileno (fp));
   free (buf);
   fclose (fp);
-
-  if (rename (namenew, name) < 0)
-    grub_util_error ("cannot rename the file %s to %s", namenew, name);
-  free (namenew);
 }
 
 static grub_envblk_t

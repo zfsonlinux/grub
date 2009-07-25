@@ -17,7 +17,6 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <grub/symbol.h>
 #include <grub/boot.h>
 #include <grub/machine/boot.h>
 
@@ -25,8 +24,17 @@
  *  defines for the code go here
  */
 
+	/* Absolute addresses
+	   This makes the assembler generate the address without support
+	   from the linker. (ELF can't relocate 16-bit addresses!) */
+#define ABS(x) (x-_start+0x7c00)
+
 	/* Print message string */
-#define MSG(x)	movw $x, %si; call LOCAL(message)
+#ifdef APPLE_CC
+#define MSG(x)	x ## _abs = ABS(x); movw $x ## _abs, %si; call message
+#else
+#define MSG(x)	movw $ABS(x), %si; call message
+#endif
 
 	.file	"boot.S"
 
@@ -48,7 +56,7 @@ start:
 	 * parameter block.
 	 */
 
-	jmp	LOCAL(after_BPB)
+	jmp	after_BPB
 	nop	/* do I care about this ??? */
 
 	/*
@@ -96,7 +104,7 @@ boot_drive:
 	.byte 0xff	/* the disk to load kernel from */
 			/* 0xff means use the boot drive */
 
-LOCAL(after_BPB):
+after_BPB:
 
 /* general setup */
 	cli		/* we're not safe here! */
@@ -121,7 +129,12 @@ boot_drive_check:
 	 * ljmp to the next instruction because some bogus BIOSes
 	 * jump to 07C0:0000 instead of 0000:7C00.
 	 */
-	ljmp	$0, $real_start
+#ifdef APPLE_CC
+	real_start_abs = ABS(real_start)
+	ljmp	$0, $(real_start_abs)
+#else
+	ljmp	$0, $ABS(real_start)
+#endif
 
 real_start:
 
@@ -138,7 +151,12 @@ real_start:
 	/*
 	 *  Check if we have a forced disk reference here
 	 */
-	movb   boot_drive, %al
+#ifdef APPLE_CC
+	boot_drive_abs = ABS (boot_drive)
+	movb    boot_drive_abs, %al
+#else
+	movb   ABS(boot_drive), %al
+#endif
 	cmpb	$0xff, %al
 	je	1f
 	movb	%al, %dl
@@ -150,11 +168,16 @@ real_start:
 	MSG(notification_string)
 
 	/* set %si to the disk address packet */
-	movw	$disk_address_packet, %si
+#ifdef APPLE_CC
+	disk_address_packet_abs = ABS (disk_address_packet)
+	movw	$disk_address_packet_abs, %si
+#else
+	movw	$ABS(disk_address_packet), %si
+#endif
 
 	/* do not probe LBA if the drive is a floppy */
 	testb	$GRUB_BOOT_MACHINE_BIOS_HD_FLAG, %dl
-	jz	LOCAL(chs_mode)
+	jz	chs_mode
 
 	/* check if LBA is supported */
 	movb	$0x41, %ah
@@ -169,12 +192,12 @@ real_start:
 	pushw	%dx
 
 	/* use CHS if fails */
-	jc	LOCAL(chs_mode)
+	jc	chs_mode
 	cmpw	$0xaa55, %bx
-	jne	LOCAL(chs_mode)
+	jne	chs_mode
 
 	andw	$1, %cx
-	jz	LOCAL(chs_mode)
+	jz	chs_mode
 
 lba_mode:
 	xorw	%ax, %ax
@@ -191,10 +214,18 @@ lba_mode:
 	movw	$0x0010, (%si)
 
 	/* the absolute address */
-	movl	kernel_sector, %ebx
+#ifdef APPLE_CC
+	kernel_sector_abs = ABS (kernel_sector)
+	movl	(kernel_sector_abs), %ebx
 	movl	%ebx, 8(%si)
-	movl	kernel_sector + 4, %ebx
+	movl	(kernel_sector_abs + 4), %ebx
 	movl	%ebx, 12(%si)
+#else
+	movl	ABS(kernel_sector), %ebx
+	movl	%ebx, 8(%si)
+	movl	ABS(kernel_sector + 4), %ebx
+	movl	%ebx, 12(%si)
+#endif
 
 	/* the segment of buffer address */
 	movw	$GRUB_BOOT_MACHINE_BUFFER_SEG, 6(%si)
@@ -212,30 +243,30 @@ lba_mode:
 	int	$0x13
 
 	/* LBA read is not supported, so fallback to CHS.  */
-	jc	LOCAL(chs_mode)
+	jc	chs_mode
 
 	movw	$GRUB_BOOT_MACHINE_BUFFER_SEG, %bx
-	jmp	LOCAL(copy_buffer)
+	jmp	copy_buffer
 
-LOCAL(chs_mode):
+chs_mode:
 	/*
 	 *  Determine the hard disk geometry from the BIOS!
 	 *  We do this first, so that LS-120 IDE floppies work correctly.
 	 */
 	movb	$8, %ah
 	int	$0x13
-	jnc	LOCAL(final_init)
+	jnc	final_init
 
 	/*
 	 *  The call failed, so maybe use the floppy probe instead.
 	 */
 	testb	$GRUB_BOOT_MACHINE_BIOS_HD_FLAG, %dl
-	jz	LOCAL(floppy_probe)
+	jz	floppy_probe
 
 	/* Nope, we definitely have a hard disk, and we're screwed. */
-	jmp	LOCAL(hd_probe_error)
+	jmp	hd_probe_error
 
-LOCAL(final_init):
+final_init:
 	/* set the mode to zero */
 	movzbl	%dh, %eax
 	movb	%ah, -1(%si)
@@ -261,13 +292,22 @@ LOCAL(final_init):
 
 setup_sectors:
 	/* load logical sector start (top half) */
-	movl	kernel_sector + 4, %eax
+#ifdef APPLE_CC
+	kernel_sector_abs = ABS (kernel_sector)
+	movl	(kernel_sector_abs + 4), %eax
+#else
+	movl	ABS(kernel_sector + 4), %eax
+#endif
 
 	orl	%eax, %eax
-	jnz	LOCAL(geometry_error)
+	jnz	geometry_error
 
 	/* load logical sector start (bottom half) */
-	movl	kernel_sector, %eax
+#ifdef APPLE_CC
+	movl	(kernel_sector_abs), %eax
+#else
+	movl	ABS(kernel_sector), %eax
+#endif
 
 	/* zero %edx */
 	xorl	%edx, %edx
@@ -283,7 +323,7 @@ setup_sectors:
 
 	/* do we need too many cylinders? */
 	cmpw	8(%si), %ax
-	jge	LOCAL(geometry_error)
+	jge	geometry_error
 
 	/* normalize sector start (1-based) */
 	incb	%cl
@@ -325,11 +365,11 @@ setup_sectors:
 	movw	$0x0201, %ax	/* function 2 */
 	int	$0x13
 
-	jc	LOCAL(read_error)
+	jc	read_error
 
 	movw	%es, %bx
 
-LOCAL(copy_buffer):
+copy_buffer:
 	/*
 	 * We need to save %cx and %si because the startup code in
 	 * kernel uses them without initializing them.
@@ -352,38 +392,42 @@ LOCAL(copy_buffer):
 	popa
 
 	/* boot kernel */
+#ifdef APPLE_CC
+	kernel_address_abs = ABS (kernel_address)
+	jmp	*(kernel_address_abs)
+#else
 	jmp	*(kernel_address)
+#endif
 
 /* END OF MAIN LOOP */
 
 /*
  * BIOS Geometry translation error (past the end of the disk geometry!).
  */
-LOCAL(geometry_error):
+geometry_error:
 	MSG(geometry_error_string)
-	jmp	LOCAL(general_error)
+	jmp	general_error
 
 /*
  * Disk probe failure.
  */
-LOCAL(hd_probe_error):
+hd_probe_error:
 	MSG(hd_probe_error_string)
-	jmp	LOCAL(general_error)
+	jmp	general_error
 
 /*
  * Read error on the disk.
  */
-LOCAL(read_error):
+read_error:
 	MSG(read_error_string)
 
-LOCAL(general_error):
+general_error:
 	MSG(general_error_string)
 
 /* go here when you need to stop the machine hard after an error condition */
         /* tell the BIOS a boot failure, which may result in no effect */
         int	$0x18
-LOCAL(stop):
-	jmp	LOCAL(stop)
+stop:	jmp	stop
 
 notification_string:	.asciz "GRUB "
 geometry_error_string:	.asciz "Geom"
@@ -406,7 +450,7 @@ general_error_string:	.asciz " Error\r\n"
 	movw	$0x0001, %bx
 	movb	$0xe, %ah
 	int	$0x10		/* display a byte */
-LOCAL(message):
+message:
 	lodsb
 	cmpb	$0, %al
 	jne	1b	/* if not end of string, jmp to display */
@@ -434,14 +478,19 @@ part_start:
 probe_values:
 	.byte	36, 18, 15, 9, 0
 
-LOCAL(floppy_probe):
+floppy_probe:
 /*
  *  Perform floppy probe.
  */
 
-	movw	$probe_values - 1, %si
+#ifdef APPLE_CC
+	probe_values_abs = ABS (probe_values)
+	movw	$(probe_values_abs-1), %si
+#else
+	movw	$ABS(probe_values-1), %si
+#endif
 
-LOCAL(probe_loop):
+probe_loop:
 	/* reset floppy controller INT 13h AH=0 */
 	xorw	%ax, %ax
 	int	$0x13
@@ -457,7 +506,7 @@ LOCAL(probe_loop):
  * Floppy disk probe failure.
  */
 	MSG(fd_probe_error_string)
-	jmp	LOCAL(general_error)
+	jmp	general_error
 
 /* "Floppy" */
 fd_probe_error_string:	.asciz "Floppy"
@@ -470,14 +519,14 @@ fd_probe_error_string:	.asciz "Floppy"
 	movb	$0, %dh
 	int	$0x13
 
-	/* if error, jump to "LOCAL(probe_loop)" */
-	jc	LOCAL(probe_loop)
+	/* if error, jump to "probe_loop" */
+	jc	probe_loop
 
 	/* %cl is already the correct value! */
 	movb	$1, %dh
 	movb	$79, %ch
 
-	jmp	LOCAL(final_init)
+	jmp	final_init
 
 	. = _start + GRUB_BOOT_MACHINE_PART_END
 

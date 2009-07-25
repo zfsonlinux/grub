@@ -17,7 +17,6 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <grub/symbol.h>
 #include <grub/boot.h>
 #include <grub/machine/boot.h>
 #include <grub/machine/kernel.h>
@@ -39,9 +38,9 @@
 
 start:
 _start:
-	call	LOCAL(next)
+	call	next
 
-LOCAL(next):
+next:
 	jmp	1f
 
 	. = start + 8
@@ -68,17 +67,24 @@ bi_reserved:
 	movw	%ax, %ds
 	movw	%ax, %es
 
+#ifdef APPLE_CC
+	err_noboot_msg_abs = 0x7C00 + err_noboot_msg - start
+	movw	$err_noboot_msg_abs, %si
+	bi_length_dif = bi_length - next
+	movl	%cs:bi_length_dif(%bx), %ecx
+#else
 	movw	$(0x7C00 + err_noboot_msg - start), %si
-	movl	%cs: bi_length - LOCAL(next)(%bx), %ecx
+	movl	%cs: bi_length - next(%bx), %ecx
+#endif
 	orl	%ecx, %ecx
-	jz	LOCAL(fail)
+	jz	fail
 
 	addl	$((1 << CDSEC_SHIFT) - 1), %ecx
 	shrl	$CDSEC_SHIFT, %ecx
 
-	movl	%cs: bi_file - LOCAL(next)(%bx), %esi
+	movl	%cs: bi_file - next(%bx), %esi
 
-	call	LOCAL(read_cdrom)
+	call	read_cdrom
 
 	ljmp	$(DATA_ADDR >> 4), $0
 
@@ -87,7 +93,7 @@ bi_reserved:
  *   esi: start sector
  *   ecx: number of sectors
  */
-LOCAL(read_cdrom):
+read_cdrom:
 	xorl	%eax, %eax
 
 	/* Number of blocks to read.  */
@@ -128,7 +134,7 @@ LOCAL(read_cdrom):
 
 2:
 	shrw	$1, %di			/* Reduce transfer size.  */
-	jz	LOCAL(cdrom_fail)
+	jz	cdrom_fail
 	movw	%di, 0x10(%si)
 	movw	%di, 2(%si)
 	movb	$0x42, %ah
@@ -149,10 +155,15 @@ LOCAL(read_cdrom):
 	addw	$0x12, %sp
 	ret
 
-LOCAL(cdrom_fail):
+cdrom_fail:
+#ifdef APPLE_CC
+	err_cdfail_msg_abs = 0x7C00 + err_cdfail_msg - start
+	movw	$(err_cdfail_msg_abs), %si
+#else
 	movw	$(0x7C00 + err_cdfail_msg - start), %si
+#endif
 
-LOCAL(fail):
+fail:
 	movb	$0x0e, %ah
 	xorw	%bx, %bx
 1:

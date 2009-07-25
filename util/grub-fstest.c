@@ -28,6 +28,7 @@
 #include <grub/env.h>
 #include <grub/term.h>
 #include <grub/mm.h>
+#include <grub/raid.h>
 #include <grub/lib/hexdump.h>
 #include <grub/lib/crc.h>
 #include <grub/command.h>
@@ -292,13 +293,7 @@ fstest (char **images, int num_disks, int cmd, int n, char **args)
         grub_util_error ("loopback command fails.");
     }
 
-  grub_lvm_fini ();
-  grub_mdraid_fini ();
-  grub_raid_fini ();
-  grub_raid_init ();
-  grub_mdraid_init ();
-  grub_lvm_init ();
-
+  grub_raid_rescan ();
   switch (cmd)
     {
     case CMD_LS:

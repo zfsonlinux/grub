@@ -422,8 +422,10 @@ grub_fat_read_data (grub_disk_t disk, struct grub_fat_data *data,
 	      break;
 	    }
 
-	  grub_dprintf ("fat", "fat_size=%d, next_cluster=%u\n",
-			data->fat_size, next_cluster);
+#if 0
+	  grub_printf ("%s:%d: fat_size=%d, next_cluster=%u\n",
+		       __FILE__, __LINE__, data->fat_size, next_cluster);
+#endif
 
 	  /* Check the end.  */
 	  if (next_cluster >= data->cluster_eof_mark)
@@ -855,9 +857,6 @@ static struct grub_fs grub_fat_fs =
     .close = grub_fat_close,
     .label = grub_fat_label,
     .uuid = grub_fat_uuid,
-#ifdef GRUB_UTIL
-    .reserved_first_sector = 1,
-#endif
     .next = 0
   };
 
