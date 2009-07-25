@@ -65,6 +65,7 @@ start:
 	 * this area.
 	 */
 
+	. = _start + GRUB_BOOT_MACHINE_BPB_START
 	. = _start + 4
 
 	/* scratch space */
@@ -91,14 +92,14 @@ cylinder_start:
 	 * End of BIOS parameter block.
 	 */
 
-boot_version:
-	.byte	GRUB_BOOT_VERSION_MAJOR, GRUB_BOOT_VERSION_MINOR
 kernel_address:
 	.word	GRUB_BOOT_MACHINE_KERNEL_ADDR
-kernel_segment:
-	.word	GRUB_BOOT_MACHINE_KERNEL_SEG
+
+	. = _start + GRUB_BOOT_MACHINE_KERNEL_SECTOR
 kernel_sector:
 	.long	1, 0
+
+	. = _start + GRUB_BOOT_MACHINE_BOOT_DRIVE
 boot_drive:
 	.byte 0xff	/* the disk to load kernel from */
 			/* 0xff means use the boot drive */
@@ -369,13 +370,6 @@ setup_sectors:
 	movw	%es, %bx
 
 copy_buffer:
-#ifdef APPLE_CC
-	kernel_segment_abs = ABS (kernel_segment)
-	movw	(kernel_segment_abs), %es
-#else
-	movw	ABS(kernel_segment), %es
-#endif
-
 	/*
 	 * We need to save %cx and %si because the startup code in
 	 * kernel uses them without initializing them.
@@ -386,7 +380,8 @@ copy_buffer:
 	movw	$0x100, %cx
 	movw	%bx, %ds
 	xorw	%si, %si
-	xorw	%di, %di
+	movw	$GRUB_BOOT_MACHINE_KERNEL_ADDR, %di
+	movw	%si, %es
 
 	cld
 
@@ -438,7 +433,7 @@ notification_string:	.asciz "GRUB "
 geometry_error_string:	.asciz "Geom"
 hd_probe_error_string:	.asciz "Hard Disk"
 read_error_string:	.asciz "Read"
-general_error_string:	.asciz " Error"
+general_error_string:	.asciz " Error\r\n"
 
 /*
  * message: write the string pointed to by %si
@@ -477,8 +472,8 @@ nt_magic:
 	 *  sneaky, huh?
 	 */
 
-part_start:
 	. = _start + GRUB_BOOT_MACHINE_PART_START
+part_start:
 
 probe_values:
 	.byte	36, 18, 15, 9, 0
