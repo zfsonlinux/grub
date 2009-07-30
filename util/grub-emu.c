@@ -29,7 +29,7 @@
 #include <grub/fs.h>
 #include <grub/util/hostdisk.h>
 #include <grub/dl.h>
-#include <grub/machine/console.h>
+#include <grub/util/console.h>
 #include <grub/util/misc.h>
 #include <grub/kernel.h>
 #include <grub/normal.h>
@@ -40,7 +40,7 @@
 #include <grub_emu_init.h>
 
 /* Used for going back to the main function.  */
-jmp_buf main_env;
+static jmp_buf main_env;
 
 /* Store the prefix specified by an argument.  */
 static char *prefix = 0;
@@ -66,6 +66,22 @@ grub_arch_dl_relocate_symbols (grub_dl_t mod, void *ehdr)
   (void) ehdr;
 
   return GRUB_ERR_BAD_MODULE;
+}
+
+void
+grub_reboot (void)
+{
+  longjmp (main_env, 1);
+}
+
+void
+grub_halt (
+#ifdef GRUB_MACHINE_PCBIOS
+	   int no_apm __attribute__ ((unused))
+#endif
+	   )
+{
+  grub_reboot ();
 }
 
 void
@@ -191,10 +207,6 @@ main (int argc, char *argv[])
 
   /* XXX: This is a bit unportable.  */
   grub_util_biosdisk_init (dev_map);
-
-#if HAVE_USB_H
-  grub_libusb_init ();
-#endif
 
   grub_init_all ();
 

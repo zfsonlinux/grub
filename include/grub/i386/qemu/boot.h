@@ -16,18 +16,13 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <setjmp.h>
+#ifndef GRUB_BOOT_MACHINE_HEADER
+#define GRUB_BOOT_MACHINE_HEADER	1
 
-#include <grub/util/misc.h>
+/* The size of boot.img.  */
+#define GRUB_BOOT_MACHINE_SIZE			(0x100000 - GRUB_BOOT_MACHINE_LINK_ADDR)
 
-void
-grub_reboot (void)
-{
-  longjmp (main_env, 1);
-}
+/* The offset of GRUB_CORE_ENTRY_ADDR.  */
+#define GRUB_BOOT_MACHINE_CORE_ENTRY_ADDR	0x4
 
-void
-grub_halt (void)
-{
-  grub_reboot ();
-}
+#endif

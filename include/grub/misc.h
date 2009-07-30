@@ -25,7 +25,8 @@
 #include <grub/symbol.h>
 #include <grub/err.h>
 
-#define ALIGN_UP(addr, align) (((grub_uint64_t)addr + align - 1) & ~(align - 1))
+#define ALIGN_UP(addr, align) \
+	((addr + (typeof (addr)) align - 1) & ~((typeof (addr)) align - 1))
 #define ARRAY_SIZE(array) (sizeof (array) / sizeof (array[0]))
 
 #define grub_dprintf(condition, fmt, args...) grub_real_dprintf(__FILE__, __LINE__, condition, fmt, ## args)
@@ -61,6 +62,15 @@ int EXPORT_FUNC(grub_isalpha) (int c);
 int EXPORT_FUNC(grub_isgraph) (int c);
 int EXPORT_FUNC(grub_isdigit) (int c);
 int EXPORT_FUNC(grub_tolower) (int c);
+static inline int
+grub_toupper (int c)
+{
+  if (c >= 'a' && c <= 'z')
+    return c - 'a' + 'A';
+
+  return c;
+}
+
 unsigned long EXPORT_FUNC(grub_strtoul) (const char *str, char **end, int base);
 unsigned long long EXPORT_FUNC(grub_strtoull) (const char *str, char **end, int base);
 char *EXPORT_FUNC(grub_strdup) (const char *s);

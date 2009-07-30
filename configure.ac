@@ -44,7 +44,8 @@ AC_CANONICAL_TARGET
 AC_ARG_PROGRAM
 
 case "$target_cpu" in
-  i[[3456]]86) target_cpu=i386 ;;
+  i[[3456]]86)	target_cpu=i386 ;;
+  sparc)	target_cpu=sparc64 ;;
 esac
 
 # Specify the platform (such as firmware).
@@ -85,6 +86,7 @@ case "$target_cpu"-"$platform" in
   i386-coreboot) ;;
   i386-linuxbios) platform=coreboot ;;
   i386-ieee1275) ;;
+  i386-qemu) ;;
   powerpc-ieee1275) ;;
   sparc64-ieee1275) ;;
   *) AC_MSG_ERROR([platform "$platform" is not supported for target CPU "$target_cpu"]) ;;
@@ -164,35 +166,9 @@ AC_CHECK_SIZEOF(void *)
 AC_CHECK_SIZEOF(long)
 
 grub_apple_cc
-if test x$grub_cv_apple_cc == xyes ; then
+if test x$grub_cv_apple_cc = xyes ; then
   CFLAGS="$CFLAGS -DAPPLE_CC=1 -fnested-functions"
   ASFLAGS="$ASFLAGS -DAPPLE_CC=1"
-fi
-
-# Check LZO when compiling for the i386-pc.
-if test "$target_cpu"-"$platform" = i386-pc; then
-  AC_ARG_ENABLE([lzo],
-	      [AS_HELP_STRING([--enable-lzo],
-                             [use lzo to compress kernel (default is lzma)])])
-  [if [ x"$enable_lzo" = xyes ]; then
-    # There are three possibilities. LZO version 2 installed with the name
-    # liblzo2, with the name liblzo, and LZO version 1.]
-    AC_DEFINE([ENABLE_LZO], [1], [Use lzo compression])
-    AC_CHECK_LIB([lzo2], [__lzo_init_v2], [LIBLZO="-llzo2"],
-      [AC_CHECK_LIB([lzo], [__lzo_init_v2], [LIBLZO="-llzo"],
-        [AC_CHECK_LIB([lzo], [__lzo_init2], [LIBLZO="-llzo"],
-	       [AC_MSG_ERROR([LZO library version 1.02 or later is required])])])])
-    AC_SUBST([LIBLZO])
-    [LIBS="$LIBS $LIBLZO"]
-    AC_CHECK_FUNC([lzo1x_999_compress], ,
-	        [AC_MSG_ERROR([LZO1X-999 must be enabled])])
-
-    [# LZO version 2 uses lzo/lzo1x.h, while LZO version 1 uses lzo1x.h.]
-    AC_CHECK_HEADERS([lzo/lzo1x.h lzo1x.h])
-  [else]
-    AC_DEFINE([ENABLE_LZMA], [1], [Use lzma compression])
-  [fi]
-  AC_SUBST([enable_lzo])
 fi
 
 # Check for functions.
@@ -273,7 +249,7 @@ if test "x$TARGET_CFLAGS" = x; then
 fi
 
 grub_apple_target_cc
-if test x$grub_cv_apple_target_cc == xyes ; then
+if test x$grub_cv_apple_target_cc = xyes ; then
   TARGET_CFLAGS="$TARGET_CFLAGS -DAPPLE_CC=1 -fnested-functions"
   CFLAGS="$CFLAGS -DAPPLE_CC=1 -fnested-functions"
   TARGET_ASFLAGS="$TARGET_ASFLAGS -DAPPLE_CC=1"
@@ -292,7 +268,6 @@ if test x$grub_cv_apple_target_cc == xyes ; then
 else
   TARGET_APPLE_CC=0
 # Use linker script if present, otherwise use builtin -N script.
-AC_MSG_CHECKING([for option to link raw image])
 if test -f "${srcdir}/conf/${target_cpu}-${platform}-${host_os}-img-ld.sc"; then
   TARGET_IMG_LDSCRIPT='$(top_srcdir)'"/conf/${target_cpu}-${platform}-${host_os}-img-ld.sc"
   TARGET_IMG_LDFLAGS="-Wl,-T${TARGET_IMG_LDSCRIPT}  -Wl,-Ttext,"
@@ -308,7 +283,6 @@ fi
 AC_SUBST(TARGET_IMG_LDSCRIPT)
 AC_SUBST(TARGET_IMG_LDFLAGS)
 AC_SUBST(TARGET_IMG_CFLAGS)
-AC_MSG_RESULT([$TARGET_IMG_LDFLAGS_AC])
 
 # For platforms where ELF is not the default link format.
 AC_MSG_CHECKING([for command to convert module to ELF format])
@@ -346,7 +320,7 @@ if test "$target_cpu"-"$platform" = x86_64-efi; then
   if test "x$grub_cv_cc_mcmodel" = xno; then
     CFLAGS="$SAVED_CFLAGS -m64 -DMCMODEL_SMALL=1"
     TARGET_CFLAGS="$TARGET_CFLAGS -DMCMODEL_SMALL=1"
-    AC_MSG_WARN([-mcmodel=large not supported. You wan't be able to use the memory over 4GiB. Upgrade your gcc])
+    AC_MSG_WARN([-mcmodel=large not supported. You won't be able to use the memory over 4GiB. Upgrade your gcc])
   else
     TARGET_CFLAGS="$TARGET_CFLAGS -mcmodel=large"
   fi
@@ -396,7 +370,11 @@ AC_SUBST(TARGET_LDFLAGS)
 
 # Set them to their new values for the tests below.
 CC="$TARGET_CC"
+if test "x$TARGET_APPLE_CC" = x1 ; then
+CFLAGS="$TARGET_CFLAGS -nostdlib"
+else
 CFLAGS="$TARGET_CFLAGS -nostdlib -Wl,--defsym,___main=0x8100"
+fi
 CPPFLAGS="$TARGET_CPPFLAGS"
 LDFLAGS="$TARGET_LDFLAGS"
 
@@ -412,7 +390,7 @@ if test "x$target_cpu" = xi386; then
     # Check symbols provided by linker script.
     CFLAGS="$TARGET_CFLAGS -nostdlib $TARGET_IMG_LDFLAGS_AC -Wl,-Ttext,8000,--defsym,___main=0x8100"
   fi
-  if test "x$platform" = xpc && test "x$TARGET_APPLE_CC" != x1 ; then
+  if test "x$TARGET_APPLE_CC" != x1 ; then
     grub_CHECK_BSS_START_SYMBOL
     grub_CHECK_END_SYMBOL
   fi
@@ -429,6 +407,34 @@ AH_BOTTOM([#if defined(__i386__) && !defined(GRUB_UTIL)
 #else
 #define NESTED_FUNC_ATTR
 #endif])
+
+AC_ARG_ENABLE([efiemu],
+	      [AS_HELP_STRING([--enable-efiemu],
+                             [build and install the efiemu runtimes (default=guessed)])])
+if test x"$enable_efiemu" = xno ; then
+  efiemu_excuse="explicitly disabled"
+fi
+if test x"$efiemu_excuse" = x ; then
+  AC_CACHE_CHECK([whether options required for efiemu work], grub_cv_cc_efiemu, [
+    CFLAGS="$CFLAGS -m64 -mcmodel=large -mno-red-zone -nostdlib"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],
+		      [grub_cv_cc_efiemu=yes],
+		      [grub_cv_cc_efiemu=no])
+  ])
+  if test x$grub_cv_cc_efiemu = xno; then
+     efiemu_excuse="cannot compile with -m64 -mcmodel=large -mno-red-zone -nostdlib"
+  fi
+fi
+if test x"$enable_efiemu" = xyes && test x"$efiemu_excuse" != x ; then
+  AC_MSG_ERROR([efiemu runtime was explicitly requested but can't be compiled])
+fi
+if test x"$efiemu_excuse" = x ; then
+enable_efiemu=yes
+else
+enable_efiemu=no
+fi
+AC_SUBST([enable_efiemu])
+
 
 # Restore the flags.
 CC="$tmp_CC"
@@ -450,40 +456,75 @@ AC_ARG_ENABLE([mm-debug],
 
 AC_ARG_ENABLE([grub-emu],
 	      [AS_HELP_STRING([--enable-grub-emu],
-                             [build and install the `grub-emu' debugging utility])])
+                             [build and install the `grub-emu' debugging utility (default=guessed)])])
 AC_ARG_ENABLE([grub-emu-usb],
 	      [AS_HELP_STRING([--enable-grub-emu-usb],
-                             [build and install the `grub-emu' debugging utility with USB support])])
-[if [ x"$enable_grub_emu" = xyes ]; then
-  # Check for curses libraries.]
+                             [build and install the `grub-emu' debugging utility with USB support (default=guessed)])])
+if test x"$enable_grub_emu" = xno ; then
+  grub_emu_excuse="explicitly disabled"
+fi
+
+  [# Check for curses libraries.]
+[if [ x"$grub_emu_excuse" = x ]; then ]
   AC_CHECK_LIB([ncurses], [wgetch], [LIBCURSES="-lncurses"],
     [AC_CHECK_LIB([curses], [wgetch], [LIBCURSES="-lcurses"],
-      [AC_MSG_ERROR([(n)curses libraries are required to build `grub-emu'])])])
+      [grub_emu_excuse=["need (n)curses libraries"]])])
   AC_SUBST([LIBCURSES])
-
+[fi]
+[if [ x"$grub_emu_excuse" = x ]; then ]
   [# Check for headers.]
   AC_CHECK_HEADERS([ncurses/curses.h], [],
     [AC_CHECK_HEADERS([ncurses.h], [],
       [AC_CHECK_HEADERS([curses.h], [],
-	[AC_MSG_ERROR([(n)curses header files are required to build `grub-emu'])])])])
-
-  [if [ x"$enable_grub_emu_usb" = xyes ]; then
-    # Check for libusb libraries.]
-    AC_CHECK_LIB([usb], [usb_claim_interface], [LIBUSB="-lusb"],
-      [AC_MSG_ERROR([libusb libraries are required to build `grub-emu' with USB support])])
-    AC_SUBST([LIBUSB])
-
-    [# Check for headers.]
-    AC_CHECK_HEADERS([usb.h], [],
-      [AC_MSG_ERROR([libusb header file is required to build `grub-emu' with USB support])])
-  [fi]
+	[grub_emu_excuse=["need (n)curses headers"]])])])
 [fi]
+
+if test x"$enable_grub_emu" = xyes && test x"$grub_emu_excuse" != x ; then
+  AC_MSG_ERROR([grub-emu was explicitly requested but can't be compiled])
+fi
+if test x"$grub_emu_excuse" = x ; then
+enable_grub_emu=yes
+else
+enable_grub_emu=no
+grub_emu_usb_excuse="grub-emu isn't built"
+fi
+if test x"$enable_grub_emu_usb" = xno ; then
+  grub_emu_usb_excuse="explicitly disabled"
+fi
+[if [ x"$grub_emu_usb_excuse" = x ]; then
+    # Check for libusb libraries.]
+AC_CHECK_LIB([usb], [usb_claim_interface], [LIBUSB="-lusb"],
+    [grub_emu_usb_excuse=["need libusb library"]])
+    AC_SUBST([LIBUSB])
+[fi]
+[if [ x"$grub_emu_usb_excuse" = x ]; then
+    # Check for headers.]
+    AC_CHECK_HEADERS([usb.h], [],
+      [grub_emu_usb_excuse=["need libusb headers"]])
+[fi]
+if test x"enable_grub_emu_usb" = xyes && test x"$grub_emu_usb_excuse" != x ; then
+  AC_MSG_ERROR([USB support for grub-emu was explicitly requested but can't be compiled])
+fi
+if test x"$grub_emu_usb_excuse" = x ; then
+enable_grub_emu_usb=yes
+else
+enable_grub_emu_usb=no
+fi
+
 AC_SUBST([enable_grub_emu])
 AC_SUBST([enable_grub_emu_usb])
 
 AC_ARG_ENABLE([grub-fstest],
 	      [AS_HELP_STRING([--enable-grub-fstest],
-                             [build and install the `grub-fstest' debugging utility])])
+                             [build and install the `grub-fstest' debugging utility (default=guessed)])])
+if test x"$enable_grub_fstest" = xno ; then
+  grub_fstest_excuse="explicitly disabled"
+fi
+if test x"$grub_fstest_excuse" = x ; then
+enable_grub_fstest=yes
+else
+enable_grub_fstest=no
+fi
 AC_SUBST([enable_grub_fstest])
 
 AC_ARG_ENABLE([grub-pe2elf],
@@ -493,24 +534,32 @@ AC_SUBST([enable_grub_pe2elf])
 
 AC_ARG_ENABLE([grub-mkfont],
 	      [AS_HELP_STRING([--enable-grub-mkfont],
-                             [build and install the `grub-mkfont' utility])])
-if test x"$enable_grub_mkfont" = xyes ; then
+                             [build and install the `grub-mkfont' utility (default=guessed)])])
+if test x"$enable_grub_mkfont" = xno ; then
+  grub_mkfont_excuse="explicitly disabled"
+fi
+
+if test x"$grub_mkfont_excuse" = x ; then
   # Check for freetype libraries.
   AC_CHECK_PROGS([FREETYPE], [freetype-config])
   if test "x$FREETYPE" = x ; then
-    AC_MSG_ERROR([freetype2 libraries are required to build `grub-mkfont'])
+    grub_mkfont_excuse=["need freetype2 library"]
   fi
   freetype_cflags=`freetype-config --cflags`
   freetype_libs=`freetype-config --libs`
+fi
+if test x"$enable_grub_mkfont" = xyes && test x"$grub_mkfont_excuse" != x ; then
+  AC_MSG_ERROR([grub-mkfont was explicitly requested but can't be compiled])
+fi
+if test x"$grub_mkfont_excuse" = x ; then
+enable_grub_mkfont=yes
+else
+enable_grub_mkfont=no
 fi
 AC_SUBST([enable_grub_mkfont])
 AC_SUBST([freetype_cflags])
 AC_SUBST([freetype_libs])
 
-AC_ARG_ENABLE([efiemu],
-	      [AS_HELP_STRING([--enable-efiemu],
-                             [build and install the efiemu runtimes])])
-AC_SUBST([enable_efiemu])
 AC_SUBST(ASFLAGS)
 
 # Output files.
@@ -528,3 +577,46 @@ fi
 AC_CONFIG_FILES([Makefile gensymlist.sh genkernsyms.sh])
 AC_CONFIG_FILES([stamp-h], [echo timestamp > stamp-h])
 AC_OUTPUT
+[
+echo "*******************************************************"
+echo GRUB2 will be compiled with following components:
+echo Platform: "$target_cpu"-"$platform"
+if [ x"$grub_emu_excuse" = x ]; then
+echo grub-emu: Yes
+else
+echo grub-emu: No "($grub_emu_excuse)"
+fi
+if [ x"$grub_emu_usb_excuse" = x ]; then
+echo USB support for grub-emu: Yes
+else
+echo USB support for grub-emu: No "($grub_emu_usb_excuse)"
+fi
+if [ x"$enable_mm_debug" = xyes ]; then
+echo With memory debugging: Yes
+else
+echo With memory debugging: No
+fi
+if [ x"$enable_grub_pe2elf" = xyes ]; then
+echo grub-pe2elf will be built and installed
+elif [ x$TARGET_OBJ2ELF = xgrub-pe2elf ]; then
+echo grub-pe2elf will be built but not installed
+else
+echo grub-pe2elf will not be built
+fi
+if [ x"$efiemu_excuse" = x ]; then
+echo efiemu runtime: Yes
+else
+echo efiemu runtime: No "($efiemu_excuse)"
+fi
+if [ x"$grub_fstest_excuse" = x ]; then
+echo grub-fstest: Yes
+else
+echo grub-fstest: No "($grub_fstest_excuse)"
+fi
+if [ x"$grub_mkfont_excuse" = x ]; then
+echo grub-mkfont: Yes
+else
+echo grub-mkfont: No "($grub_mkfont_excuse)"
+fi
+echo "*******************************************************"
+]

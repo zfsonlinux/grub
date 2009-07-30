@@ -8,10 +8,14 @@ COMMON_LDFLAGS	= -m32 -nostdlib
 script/sh/lexer.c_DEPENDENCIES = grub_script.tab.h
 
 # Images.
-pkglib_PROGRAMS = kernel.elf
 
-# For kernel.elf.
-kernel_elf_SOURCES = kern/i386/coreboot/startup.S \
+GRUB_KERNEL_MACHINE_LINK_ADDR	= 0x8200
+
+ifeq ($(platform), coreboot)
+
+pkglib_PROGRAMS += kernel.img
+kernel_img_SOURCES = kern/i386/coreboot/startup.S \
+	kern/i386/misc.S \
 	kern/i386/coreboot/init.c \
 	kern/i386/multiboot_mmap.c \
 	kern/main.c kern/device.c \
@@ -19,30 +23,74 @@ kernel_elf_SOURCES = kern/i386/coreboot/startup.S \
 	kern/misc.c kern/mm.c kern/reader.c kern/term.c \
 	kern/rescue_parser.c kern/rescue_reader.c \
 	kern/time.c kern/list.c kern/handler.c kern/command.c kern/corecmd.c \
-	kern/i386/dl.c kern/parser.c kern/partition.c \
+	kern/$(target_cpu)/dl.c kern/parser.c kern/partition.c \
 	kern/i386/tsc.c kern/i386/pit.c \
 	kern/generic/rtc_get_time_ms.c \
 	kern/generic/millisleep.c \
 	kern/env.c \
 	term/i386/pc/vga_text.c term/i386/vga_common.c \
-	term/i386/pc/at_keyboard.c \
 	symlist.c
-kernel_elf_HEADERS = boot.h cache.h device.h disk.h dl.h elf.h elfload.h \
+kernel_img_HEADERS = boot.h cache.h device.h disk.h dl.h elf.h elfload.h \
 	env.h err.h file.h fs.h kernel.h loader.h misc.h mm.h net.h parser.h \
 	partition.h pc_partition.h reader.h symbol.h term.h time.h types.h \
 	machine/boot.h machine/console.h machine/init.h \
 	machine/memory.h machine/loader.h list.h handler.h command.h
-kernel_elf_CFLAGS = $(COMMON_CFLAGS)
-kernel_elf_ASFLAGS = $(COMMON_ASFLAGS)
-kernel_elf_LDFLAGS = $(COMMON_LDFLAGS) -Wl,-N,-S,-Ttext,0x8200,-Bstatic
+kernel_img_CFLAGS = $(COMMON_CFLAGS)
+kernel_img_ASFLAGS = $(COMMON_ASFLAGS)
+kernel_img_LDFLAGS = $(COMMON_LDFLAGS) -Wl,-N,-S,-Ttext,$(GRUB_KERNEL_MACHINE_LINK_ADDR),-Bstatic
+
+endif
+
+ifeq ($(platform), qemu)
+
+GRUB_BOOT_MACHINE_LINK_ADDR	= 0xffe00
+
+pkglib_IMAGES += boot.img
+boot_img_SOURCES = boot/i386/qemu/boot.S
+boot_img_ASFLAGS = $(COMMON_ASFLAGS) -DGRUB_BOOT_MACHINE_LINK_ADDR=$(GRUB_BOOT_MACHINE_LINK_ADDR)
+boot_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS)$(GRUB_BOOT_MACHINE_LINK_ADDR)
+boot_img_FORMAT = binary
+
+bin_UTILITIES += grub-mkimage
+grub_mkimage_SOURCES = util/i386/pc/grub-mkimage.c util/misc.c \
+	util/resolve.c
+grub_mkimage_CFLAGS = -DGRUB_KERNEL_MACHINE_LINK_ADDR=$(GRUB_KERNEL_MACHINE_LINK_ADDR)
+
+pkglib_IMAGES += kernel.img
+kernel_img_SOURCES = kern/i386/qemu/startup.S \
+	kern/i386/misc.S \
+	kern/i386/coreboot/init.c \
+	kern/i386/qemu/mmap.c \
+	kern/main.c kern/device.c \
+	kern/disk.c kern/dl.c kern/file.c kern/fs.c kern/err.c \
+	kern/misc.c kern/mm.c kern/reader.c kern/term.c \
+	kern/rescue_parser.c kern/rescue_reader.c \
+	kern/time.c kern/list.c kern/handler.c kern/command.c kern/corecmd.c \
+	kern/$(target_cpu)/dl.c kern/parser.c kern/partition.c \
+	kern/i386/tsc.c kern/i386/pit.c \
+	kern/generic/rtc_get_time_ms.c \
+	kern/generic/millisleep.c \
+	kern/env.c \
+	term/i386/pc/vga_text.c term/i386/vga_common.c \
+	symlist.c
+kernel_img_HEADERS = boot.h cache.h device.h disk.h dl.h elf.h elfload.h \
+	env.h err.h file.h fs.h kernel.h loader.h misc.h mm.h net.h parser.h \
+	partition.h pc_partition.h reader.h symbol.h term.h time.h types.h \
+	machine/boot.h machine/console.h machine/init.h \
+	machine/memory.h machine/loader.h list.h handler.h command.h
+kernel_img_CFLAGS = $(COMMON_CFLAGS) -DGRUB_BOOT_MACHINE_LINK_ADDR=$(GRUB_BOOT_MACHINE_LINK_ADDR)
+kernel_img_ASFLAGS = $(COMMON_ASFLAGS) -DGRUB_KERNEL_MACHINE_LINK_ADDR=$(GRUB_KERNEL_MACHINE_LINK_ADDR)
+kernel_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS)$(GRUB_KERNEL_MACHINE_LINK_ADDR)
+kernel_img_FORMAT = binary
+endif
 
 MOSTLYCLEANFILES += symlist.c kernel_syms.lst
 DEFSYMFILES += kernel_syms.lst
 
-symlist.c: $(addprefix include/grub/,$(kernel_elf_HEADERS)) config.h gensymlist.sh
+symlist.c: $(addprefix include/grub/,$(kernel_img_HEADERS)) config.h gensymlist.sh
 	/bin/sh gensymlist.sh $(filter %.h,$^) > $@ || (rm -f $@; exit 1)
 
-kernel_syms.lst: $(addprefix include/grub/,$(kernel_elf_HEADERS)) config.h genkernsyms.sh
+kernel_syms.lst: $(addprefix include/grub/,$(kernel_img_HEADERS)) config.h genkernsyms.sh
 	/bin/sh genkernsyms.sh $(filter %.h,$^) > $@ || (rm -f $@; exit 1)
 
 # Utilities.
@@ -61,14 +109,14 @@ grub_emu_SOURCES = commands/minicmd.c commands/cat.c commands/cmp.c	\
 	commands/configfile.c commands/echo.c commands/help.c		\
 	commands/handler.c commands/ls.c commands/test.c 		\
 	commands/search.c commands/blocklist.c commands/hexdump.c	\
-	commands/gptsync.c						\
+	commands/gptsync.c commands/probe.c commands/xnu_uuid.c		\
 	lib/hexdump.c commands/i386/cpuid.c				\
 	disk/host.c disk/loopback.c					\
 	\
 	fs/affs.c fs/cpio.c fs/fat.c fs/ext2.c  fs/hfs.c		\
 	fs/hfsplus.c fs/iso9660.c fs/udf.c fs/jfs.c fs/minix.c		\
 	fs/ntfs.c fs/ntfscomp.c fs/reiserfs.c fs/sfs.c			\
-	fs/ufs.c fs/xfs.c fs/afs.c fs/tar.c				\
+	fs/ufs.c fs/xfs.c fs/afs.c fs/befs.c fs/tar.c				\
 	\
 	fs/fshelp.c							\
 	io/gzio.c							\
@@ -90,7 +138,6 @@ grub_emu_SOURCES = commands/minicmd.c commands/cat.c commands/cmp.c	\
 	partmap/acorn.c partmap/gpt.c					\
 	util/console.c util/hostfs.c util/grub-emu.c util/misc.c	\
 	util/hostdisk.c util/getroot.c					\
-	util/i386/pc/misc.c 						\
 	\
 	disk/raid.c disk/raid5_recover.c disk/raid6_recover.c		\
 	disk/mdraid_linux.c disk/dmraid_nvidia.c disk/lvm.c		\

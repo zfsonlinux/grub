@@ -34,7 +34,7 @@ static grub_uint64_t grub_last_time = 0;
 /* Disk cache.  */
 struct grub_disk_cache
 {
-  unsigned long dev_id;
+  enum grub_disk_dev_id dev_id;
   unsigned long disk_id;
   grub_disk_addr_t sector;
   char *data;
@@ -244,14 +244,10 @@ grub_disk_open (const char *name)
 
   grub_dprintf ("disk", "Opening `%s'...\n", name);
 
-  disk = (grub_disk_t) grub_malloc (sizeof (*disk));
+  disk = (grub_disk_t) grub_zalloc (sizeof (*disk));
   if (! disk)
     return 0;
 
-  disk->dev = 0;
-  disk->read_hook = 0;
-  disk->partition = 0;
-  disk->data = 0;
   disk->name = grub_strdup (name);
   if (! disk->name)
     goto fail;
@@ -542,10 +538,17 @@ grub_disk_write (grub_disk_t disk, grub_disk_addr_t sector,
 	{
 	  char tmp_buf[GRUB_DISK_SECTOR_SIZE];
 	  grub_size_t len;
+	  grub_partition_t part;
 
+	  part = disk->partition;
+	  disk->partition = 0;
 	  if (grub_disk_read (disk, sector, 0, GRUB_DISK_SECTOR_SIZE, tmp_buf)
 	      != GRUB_ERR_NONE)
-	    goto finish;
+	    {
+	      disk->partition = part;
+	      goto finish;
+	    }
+	  disk->partition = part;
 
 	  len = GRUB_DISK_SECTOR_SIZE - real_offset;
 	  if (len > size)

@@ -1,6 +1,6 @@
 # -*- makefile -*-
 
-GRUB_MEMORY_MACHINE_LINK_ADDR = 0x8200
+GRUB_KERNEL_MACHINE_LINK_ADDR = 0x8200
 
 COMMON_ASFLAGS = -nostdinc -fno-builtin -m32
 COMMON_CFLAGS = -fno-builtin -mrtd -mregparm=3 -m32
@@ -46,12 +46,14 @@ cdboot_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS)7C00
 cdboot_img_FORMAT = binary
 
 # For kernel.img.
-kernel_img_SOURCES = kern/i386/pc/startup.S kern/main.c kern/device.c \
+kernel_img_SOURCES = kern/i386/pc/startup.S \
+	kern/i386/misc.S \
+	kern/main.c kern/device.c \
 	kern/disk.c kern/dl.c kern/file.c kern/fs.c kern/err.c \
 	kern/misc.c kern/mm.c kern/reader.c kern/term.c \
 	kern/rescue_parser.c kern/rescue_reader.c \
 	kern/time.c kern/list.c kern/handler.c kern/command.c kern/corecmd.c \
-	kern/i386/dl.c kern/i386/pc/init.c kern/i386/pc/mmap.c \
+	kern/$(target_cpu)/dl.c kern/i386/pc/init.c kern/i386/pc/mmap.c \
 	kern/parser.c kern/partition.c \
 	kern/i386/tsc.c kern/i386/pit.c \
 	kern/generic/rtc_get_time_ms.c \
@@ -67,7 +69,7 @@ kernel_img_HEADERS = boot.h cache.h device.h disk.h dl.h elf.h elfload.h \
 	machine/kernel.h machine/pxe.h i386/pit.h list.h handler.h command.h
 kernel_img_CFLAGS = $(COMMON_CFLAGS)  $(TARGET_IMG_CFLAGS)
 kernel_img_ASFLAGS = $(COMMON_ASFLAGS)
-kernel_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS)$(GRUB_MEMORY_MACHINE_LINK_ADDR) $(COMMON_CFLAGS)
+kernel_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS)$(GRUB_KERNEL_MACHINE_LINK_ADDR) $(COMMON_CFLAGS)
 kernel_img_FORMAT = binary
 
 MOSTLYCLEANFILES += symlist.c kernel_syms.lst
@@ -87,15 +89,9 @@ sbin_UTILITIES += grub-emu
 endif
 
 # For grub-mkimage.
-ifeq ($(enable_lzo), yes)
-grub_mkimage_SOURCES = util/i386/pc/grub-mkimage.c util/misc.c \
-	util/resolve.c
-grub_mkimage_LDFLAGS = $(LIBLZO)
-else
 grub_mkimage_SOURCES = util/i386/pc/grub-mkimage.c util/misc.c \
 	util/resolve.c lib/LzmaEnc.c lib/LzFind.c
-endif
-grub_mkimage_CFLAGS = -DGRUB_MEMORY_MACHINE_LINK_ADDR=$(GRUB_MEMORY_MACHINE_LINK_ADDR)
+grub_mkimage_CFLAGS = -DGRUB_KERNEL_MACHINE_LINK_ADDR=$(GRUB_KERNEL_MACHINE_LINK_ADDR)
 util/i386/pc/grub-mkimage.c_DEPENDENCIES = Makefile
 
 # For grub-setup.
@@ -108,7 +104,7 @@ grub_setup_SOURCES = util/i386/pc/grub-setup.c util/hostdisk.c	\
 	fs/affs.c fs/cpio.c fs/ext2.c fs/fat.c fs/hfs.c		\
 	fs/hfsplus.c fs/iso9660.c fs/udf.c fs/jfs.c fs/minix.c	\
 	fs/ntfs.c fs/ntfscomp.c fs/reiserfs.c fs/sfs.c		\
-	fs/ufs.c fs/xfs.c fs/afs.c fs/tar.c			\
+	fs/ufs.c fs/xfs.c fs/afs.c fs/befs.c fs/tar.c			\
 	\
 	partmap/pc.c partmap/gpt.c				\
 	\
@@ -127,7 +123,8 @@ grub_emu_SOURCES = commands/minicmd.c commands/cat.c commands/cmp.c	\
 	commands/handler.c commands/ls.c commands/test.c 		\
 	commands/search.c commands/blocklist.c commands/hexdump.c	\
 	lib/hexdump.c commands/i386/pc/halt.c commands/reboot.c		\
-	commands/gptsync.c commands/i386/cpuid.c			\
+	commands/gptsync.c commands/probe.c commands/xnu_uuid.c		\
+	commands/i386/cpuid.c	\
 	disk/host.c disk/loopback.c disk/scsi.c				\
 	fs/fshelp.c 	\
 	\
@@ -151,11 +148,10 @@ grub_emu_SOURCES = commands/minicmd.c commands/cat.c commands/cmp.c	\
 	fs/affs.c fs/cpio.c  fs/fat.c fs/ext2.c fs/hfs.c		\
 	fs/hfsplus.c fs/iso9660.c fs/udf.c fs/jfs.c fs/minix.c		\
 	fs/ntfs.c fs/ntfscomp.c fs/reiserfs.c fs/sfs.c			\
-	fs/ufs.c fs/xfs.c fs/afs.c fs/tar.c				\
+	fs/ufs.c fs/xfs.c fs/afs.c fs/befs.c fs/tar.c				\
 	\
 	util/console.c util/hostfs.c util/grub-emu.c util/misc.c	\
 	util/hostdisk.c util/getroot.c					\
-	util/i386/pc/misc.c						\
 	\
 	disk/raid.c disk/raid5_recover.c disk/raid6_recover.c		\
 	disk/mdraid_linux.c disk/dmraid_nvidia.c disk/lvm.c		\
@@ -328,7 +324,7 @@ aout_mod_CFLAGS = $(COMMON_CFLAGS)
 aout_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For bsd.mod
-bsd_mod_SOURCES = loader/i386/bsd.c loader/i386/bsd_helper.S loader/i386/bsd_trampoline.S
+bsd_mod_SOURCES = loader/i386/bsd.c loader/i386/bsd32.c loader/i386/bsd64.c loader/i386/bsd_helper.S loader/i386/bsd_trampoline.S
 bsd_mod_CFLAGS = $(COMMON_CFLAGS)
 bsd_mod_LDFLAGS = $(COMMON_LDFLAGS)
 bsd_mod_ASFLAGS = $(COMMON_ASFLAGS)

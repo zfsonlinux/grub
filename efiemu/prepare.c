@@ -35,8 +35,8 @@ SUFFIX (grub_efiemu_prepare) (struct grub_efiemu_prepare_hook *prepare_hooks,
   struct grub_efiemu_prepare_hook *curhook;
 
   int cntconftables = 0;
-  TYPE (grub_efiemu_configuration_table) *conftables = 0;
-  TYPE (grub_efiemu_runtime_services) *runtime_services;
+  struct SUFFIX (grub_efiemu_configuration_table) *conftables = 0;
+  struct SUFFIX (grub_efiemu_runtime_services) *runtime_services;
   int i;
   int handle;
   grub_off_t off;
@@ -63,29 +63,30 @@ SUFFIX (grub_efiemu_prepare) (struct grub_efiemu_prepare_hook *prepare_hooks,
     curhook->hook (curhook->data);
 
   /* Move runtime to its due place */
-  if ((err = grub_efiemu_loadcore_load ()))
+  err = grub_efiemu_loadcore_load ();
+  if (err)
     {
       grub_efiemu_unload ();
       return err;
     }
 
-  if ((err = grub_efiemu_resolve_symbol ("efiemu_system_table",
-					 &handle, &off)))
+  err = grub_efiemu_resolve_symbol ("efiemu_system_table", &handle, &off);
+  if (err)
     {
       grub_efiemu_unload ();
       return err;
     }
 
   SUFFIX (grub_efiemu_system_table)
-    = (TYPE (grub_efi_system_table) *)
-    ((grub_uint8_t *)grub_efiemu_mm_obtain_request (handle) + off);
+    = (struct SUFFIX (grub_efi_system_table) *)
+    ((grub_uint8_t *) grub_efiemu_mm_obtain_request (handle) + off);
 
   /* compute CRC32 of runtime_services */
   if ((err = grub_efiemu_resolve_symbol ("efiemu_runtime_services",
 					 &handle, &off)))
     return err;
-  runtime_services = (TYPE (grub_efiemu_runtime_services) *)
-	((grub_uint8_t *)grub_efiemu_mm_obtain_request (handle) + off);
+  runtime_services = (struct SUFFIX (grub_efiemu_runtime_services) *)
+	((grub_uint8_t *) grub_efiemu_mm_obtain_request (handle) + off);
   runtime_services->hdr.crc32 = 0;
   runtime_services->hdr.crc32 = grub_getcrc32
     (0, runtime_services, runtime_services->hdr.header_size);
@@ -98,7 +99,7 @@ SUFFIX (grub_efiemu_prepare) (struct grub_efiemu_prepare_hook *prepare_hooks,
   SUFFIX(grub_efiemu_system_table)->num_table_entries = cntconftables;
 
   /* Fill the list of configuration tables */
-  conftables = (TYPE (grub_efiemu_configuration_table) *)
+  conftables = (struct SUFFIX (grub_efiemu_configuration_table) *)
     grub_efiemu_mm_obtain_request (conftable_handle);
   i = 0;
   for (cur = config_tables; cur; cur = cur->next, i++)
