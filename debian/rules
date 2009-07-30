@@ -3,6 +3,8 @@
 SHELL		:= bash
 package		:= grub2
 
+DEB_HOST_ARCH := $(shell dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
@@ -15,16 +17,15 @@ else
 endif
 
 # optimize loader/i386/linux.c for the linux shipped in debian
-CFLAGS += -DGRUB_ASSUME_LINUX_HAS_FB_SUPPORT=1
+#TARGET_CFLAGS += -DGRUB_ASSUME_LINUX_HAS_FB_SUPPORT=1
 
-export CFLAGS
-export CXXFLAGS := $(CFLAGS)
+export TARGET_CFLAGS
 
 CONFIGURE = CC="cc" CXX="g++" CPPFLAGS="" LDFLAGS="" \
 	$(CURDIR)/configure --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --includedir="\$${prefix}/include" \
 	--mandir="\$${prefix}/share/man" --infodir="\$${prefix}/share/info" --sysconfdir=/etc --localstatedir=/var \
 	--libexecdir="\$${prefix}/lib/$(package)" --srcdir=$(CURDIR) \
-	--enable-grub-emu --enable-grub-mkfont --enable-efiemu
+	--enable-grub-emu --enable-grub-mkfont --disable-grub-fstest 
 
 AUTOGEN_FILES = configure config.h.in conf/*.mk
 
@@ -42,6 +43,10 @@ configure/grub-efi-ia32:: $(AUTOGEN_FILES)
 configure/grub-efi-amd64:: $(AUTOGEN_FILES)
 	mkdir -p $(subst configure/,build/,$@)
 	cd $(subst configure/,build/,$@) && $(CONFIGURE) --with-platform=efi --target=amd64-pe --program-prefix=""
+
+configure/grub-firmware-qemu:: $(AUTOGEN_FILES)
+	mkdir -p $(subst configure/,build/,$@)
+	cd $(subst configure/,build/,$@) && $(CONFIGURE) --with-platform=qemu
 
 configure/grub-common:: $(AUTOGEN_FILES)
 	mkdir -p $(subst configure/,build/,$@)
@@ -67,12 +72,25 @@ build/grub-rescue-pc:: build/grub-pc
 		--image-type=cdrom \
 		$(CURDIR)/$@/grub-rescue-cdrom.iso
 
+build/grub-firmware-qemu::
+	$(MAKE) -C $@
+	grub_dir=`mktemp -d` ; \
+	grub_memdisk=`mktemp` ; \
+	mkdir -p $${grub_dir}/boot/grub ; \
+	cp debian/grub-firmware-qemu_grub.cfg $${grub_dir}/boot/grub/grub.cfg ; \
+	tar -cf - -C $${grub_dir} boot > $${grub_memdisk} ; \
+	$(CURDIR)/$@/grub-mkimage \
+		-d $(CURDIR)/$@ \
+		$(CURDIR)/$@/*.mod \
+		-m $${grub_memdisk} \
+		-o $(CURDIR)/$@/grub.bin
+
 install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee1275 install/grub-coreboot::
 	$(MAKE) -C $(subst install/,build/,$@) install DESTDIR=$(CURDIR)/debian/$(subst install/,,$@)/
 
 	# shipped with grub-common
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/etc/grub.d
-	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{grub-dumpbios,grub-probe,grub-emu,grub-mkconfig,grub-mkdevicemap}{,.8}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{grub-dumpbios,grub-probe,grub-emu,grub-mkconfig,grub-mkdevicemap,grub-ofpathname}{,.8}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkelfimage,grub-mkfont,grub-editenv}{,.1}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{grub-mkconfig_lib,update-grub_lib}
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/share/grub/
@@ -82,33 +100,47 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee12
 		cp debian/$$i.in debian/$(subst install/,,$@).$$i ; \
 	done
 
-	i=$(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/*/kernel.elf ; if test -e $$i ; then strip -s $$i ; fi
+	if [ "$@" != "install/grub-pc" ] && [ "$(DEB_HOST_ARCH)" != "sparc" ] ; then \
+		i=$(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/*/kernel.img ; if test -e $$i ; then strip -s $$i ; fi \
+	fi
 
 	mkdir -p $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides
-	cd $(CURDIR)/debian/$(subst install/,,$@) && find ./usr/lib/grub -name \*.mod \
-		| sed -e "s%.*%$(subst install/,,$@): unstripped-binary-or-object &%g" \
-	> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@)
-	cd $(CURDIR)/debian/$(subst install/,,$@) && find ./usr/lib/grub -name kernel.elf \
-		| sed -e "s%.*%$(subst install/,,$@): statically-linked-binary &%g" \
-	>> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@)
+	echo "$(subst install/,,$@): unstripped-binary-or-object *.mod" \
+		>> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@)
+	if [ "$@" != "install/grub-pc" ] && [ "$(DEB_HOST_ARCH)" != "sparc" ] ; then \
+		cd $(CURDIR)/debian/$(subst install/,,$@) && find ./usr/lib/grub -name kernel.img \
+			| sed -e "s%.*%$(subst install/,,$@): statically-linked-binary &%g" \
+		>> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@) ; \
+	fi
+	if [ "$@" = "install/grub-efi-amd64" ] && [ "$(DEB_HOST_ARCH)" = "i386" ] ; then \
+		echo "$(subst install/,,$@): binary-from-other-architecture *.mod" \
+			>> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@) ; \
+	fi
+	if [ "$@" = "install/grub-pc" ] && [ "$(DEB_HOST_ARCH)" = "i386" ] ; then \
+		echo "$(subst install/,,$@): binary-from-other-architecture *efiemu64.o" ; \
+	fi
 
 install/grub-common::
 	$(MAKE) -C $(subst install/,build/,$@) install DESTDIR=$(CURDIR)/debian/$(subst install/,,$@)/
-	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{i386,powerpc}-*
+	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{i386,powerpc,sparc64}-*
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{update-grub,grub-install,grub-setup}{,.8}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/grub-{mkimage,mkrescue}{,.1}
 
-clean:: debian/legacy/update-grub
+clean:: debian/legacy/update-grub debian/grub-extras
 	chmod +x debian/{script,grub.d/*,legacy/*}
-	-rm -f debian/grub-{pc,efi,ieee1275,coreboot}.docs
+	-rm -f debian/grub-{pc,efi-*,ieee1275,coreboot}.{docs,manpages}
 	-rm -rf build
 
 	# make sure PO files are always up-to-date
 	debconf-updatepo
 
 debian/legacy/update-grub:
-	svn cat svn://svn.debian.org/pkg-grub/grub/trunk/debian/update-grub > $@
-	chmod +x $@
+	@echo "Missing $@.  Try: \"svn cat svn://svn.debian.org/pkg-grub/grub/trunk/debian/update-grub > $@\""
+	exit 1
+
+debian/grub-extras:
+	@echo "Missing $@.  Try: \"svn export svn://svn.sv.nongnu.org/grub-extras/trunk $@\""
+	exit 1
 
 # Grab fixes from SVN using our version as reference.
 svn-sync:
@@ -122,7 +154,7 @@ svn-sync:
 svn-snapshot:
 	UVERSION=$$(dpkg-parsechangelog | grep Version \
 	                                | sed 's,Version: ,,g;s,-[0-9]*$$,,g'); \
-	svn co svn://svn.sv.gnu.org/grub/trunk/grub2 export -d grub2-$$UVERSION -rHEAD grub2; \
+	svn co svn://svn.sv.gnu.org/grub/trunk/grub2 grub2-$$UVERSION; \
 	tar -czf grub2_$$UVERSION.orig.tar.gz grub2-$$UVERSION; \
 	rm -rf grub2-$$UVERSION; \
 	mv grub2_$$UVERSION.orig.tar.gz ../tarballs/

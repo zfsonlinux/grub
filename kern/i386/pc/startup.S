@@ -195,9 +195,8 @@ codestart:
 
 	sti		/* we're safe again */
 
-	/* save boot and root drive references */
+	/* save the boot drive */
 	ADDR32	movb	%dl, EXT_C(grub_boot_drive)
-	ADDR32	movb	%dh, EXT_C(grub_root_drive)
 
 	/* reset disk system (%ah = 0) */
 	int	$0x13
@@ -211,20 +210,7 @@ codestart:
 	incl	%eax
 	call	EXT_C(grub_gate_a20)
 
-#if defined(ENABLE_LZO)
-	/* decompress the compressed part and put the result at 1MB */
-	movl	$GRUB_MEMORY_MACHINE_DECOMPRESSION_ADDR, %esi
-	movl	$(_start + GRUB_KERNEL_MACHINE_RAW_SIZE), %edi
-
-	pushl	%esi
-	pushl	EXT_C(grub_compressed_size)
-	pushl	%edi
-	call	lzo1x_decompress
-	addl	$12, %esp
-
-	movl	%eax, %ecx
-	cld
-#elif defined(ENABLE_LZMA)
+#ifdef ENABLE_LZMA
 	movl	$GRUB_MEMORY_MACHINE_DECOMPRESSION_ADDR, %edi
 	movl	$(_start + GRUB_KERNEL_MACHINE_RAW_SIZE), %esi
 	pushl	%edi
@@ -291,8 +277,6 @@ codestart:
 	 */
 	call EXT_C(grub_main)
 
-#include "../realmode.S"
-
 /*
  *  This is the area for all of the special variables.
  */
@@ -300,67 +284,9 @@ codestart:
 VARIABLE(grub_boot_drive)
 	.byte	0
 
-VARIABLE(grub_root_drive)
-	.byte	0
-
 	.p2align	2	/* force 4-byte alignment */
 
-/*
- *  These next two routines, "real_to_prot" and "prot_to_real" are structured
- *  in a very specific way.  Be very careful when changing them.
- *
- *  NOTE:  Use of either one messes up %eax and %ebp.
- */
-
-real_to_prot:
-	.code16
-	cli
-
-	/* load the GDT register */
-#ifdef APPLE_CC
-	mov %cs, %ax
-	mov %ax, %ds
-	DATA32	ADDR32	lgdt	gdtdesc
-#else
-	DATA32	ADDR32	lgdt	%cs:gdtdesc
-#endif
-
-	/* turn on protected mode */
-	movl	%cr0, %eax
-	orl	$GRUB_MEMORY_MACHINE_CR0_PE_ON, %eax
-	movl	%eax, %cr0
-
-	/* jump to relocation, flush prefetch queue, and reload %cs */
-	DATA32	ljmp	$GRUB_MEMORY_MACHINE_PROT_MODE_CSEG, $protcseg
-
-	.code32
-protcseg:
-	/* reload other segment registers */
-	movw	$GRUB_MEMORY_MACHINE_PROT_MODE_DSEG, %ax
-	movw	%ax, %ds
-	movw	%ax, %es
-	movw	%ax, %fs
-	movw	%ax, %gs
-	movw	%ax, %ss
-
-	/* put the return address in a known safe location */
-	movl	(%esp), %eax
-	movl	%eax, GRUB_MEMORY_MACHINE_REAL_STACK
-
-	/* get protected mode stack */
-	movl	protstack, %eax
-	movl	%eax, %esp
-	movl	%eax, %ebp
-
-	/* get return address onto the right stack */
-	movl	GRUB_MEMORY_MACHINE_REAL_STACK, %eax
-	movl	%eax, (%esp)
-
-	/* zero %eax */
-	xorl	%eax, %eax
-
-	/* return on the old (or initialized) stack! */
-	ret
+#include "../realmode.S"
 
 /*
  * grub_gate_a20(int on)
@@ -512,9 +438,7 @@ gate_a20_check_state:
 	popl	%ebx
 	ret
 
-#if defined(ENABLE_LZO)
-#include "lzo1x.S"
-#elif defined(ENABLE_LZMA)
+#ifdef ENABLE_LZMA
 #include "lzma_decode.S"
 #endif
 
@@ -523,14 +447,6 @@ gate_a20_check_state:
  * code fits GRUB_KERNEL_MACHINE_RAW_SIZE.
  */
 	. = _start + GRUB_KERNEL_MACHINE_RAW_SIZE
-
-/*
- *  This call is special...  it never returns...  in fact it should simply
- *  hang at this point!
- */
-
-FUNCTION(grub_stop)
-	call	prot_to_real
 
 	/*
 	 * This next part is sort of evil.  It takes advantage of the

@@ -1,3 +1,175 @@
+grub2 (1.96+20090725-1ubuntu1) karmic; urgency=low
+
+  * New upstream version.
+    + Fixes offering Windows (LP: #402795)
+    + Fixes Vista/Win7 fails to boot (LP: #402154)
+    + Fixes installation onto VFAT (LP: #401971)
+  * Merge from debian unstable, remaining changes:
+    + debian/control:
+      - Depend on rather than Suggest os-prober; Ubuntu version does not
+        suffer from the mount problem that prevents Debian from marking this
+        Depends.
+    + debian/default/grub:
+      - Adjust for default Ubuntu boot options.
+      - Use new GRUB_CMDLINE_LINUX_DEFAULT option to set "quiet splash" for
+        default items only.  These options won't be set in single user mode.
+    + debian/legacy/update-grub:
+      - Apply Ubuntu branding: title, recovery mode, quiet option, and tweak
+        how memtest86+ is displayed.
+      - Use UUIDs where appropriate.
+    + debian/patches/03_ubuntu_grub_standards:
+      - Remove GNU/Linux from default string.
+    + debian/patches/10_crashkernel.patch:
+      - add crashkernel= options if kdump and makedumpfile
+        is available (part of the kernel-crashdump spec)
+  * Update 10_crashkernel.patch for changes upstream.
+  * Drop 999_os-prober_drivemap_root.diff, upstream.
+
+ -- Mario Limonciello <mario_limonciello@dell.com>  Thu, 30 Jul 2009 12:41:19 -0500
+
+grub2 (1.96+20090725-1) unstable; urgency=high
+
+  * New SVN snapshot.
+    - Don't add drivemap call with Windows Vista/7. It breaks Win 7.
+      (LP: #402154)
+
+  [ Felix Zielcke ]
+  * Don't build grub-efi-amd64 on hurd-i386.
+  * Change DEB_BUILD_ARCH to DEB_HOST_ARCH in the check for sparc.
+  * Don't add the lintian override for kernel.img for sparc and grub-pc.
+  * Add a lintian override for binary-from-other-architecture for
+    grub-efi-amd64 and grub-pc on i386.
+  * Use wildcards in the lintian overrides.
+  * Add a Conflicts/Replaces for all packages except grub-common.
+    (Closes: #538177)
+
+  [ Robert Millan ]
+  * 008_dac_palette_width.diff: New patch.  Fix blank screen when booting
+    Linux with vga= parameter set to a packed color mode (<= 8-bit).
+    (Closes: #535026)
+  * Set urgency=high because #535026 affects 1.96+20090709-1 which is in
+    testing now.
+  * patches/907_terminal_output_workaround.diff: Work around recent regression
+    with terminal_output command (not critical, just breaks gfxterm).
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Sat, 25 Jul 2009 19:00:53 +0200
+
+grub2 (1.96+20090721-4) unstable; urgency=low
+
+  * Place grub-ofpathname only in grub-common. (Closes: #537999)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 22 Jul 2009 13:38:24 +0200
+
+grub2 (1.96+20090721-3) unstable; urgency=low
+
+  * Don't strip kernel.img on sparc.
+  * Suggest efibootmgr on grub-efi-{amd64,ia32}.
+  * Pass --disable-grub-fstest to configure. (Closes: #537897)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 21 Jul 2009 21:46:01 +0200
+
+grub2 (1.96+20090721-2) unstable; urgency=low
+
+  * Add back Conflicts/Replaces grub.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 21 Jul 2009 11:24:45 +0200
+
+grub2 (1.96+20090721-1) unstable; urgency=low
+
+  * New SVN snapshot.
+
+  * Change License of my update-grub(8) and update-grub2(8) manpages to
+    GPL3+ to match new copyright file.
+  * Merge from Ubuntu: Don't build grub-efi-amd64 on lpia.
+  * Don't pass `--enable-efiemu' to configure. On kfreebsd-i386 it won't
+    compile and it should be now auto detected if it's compilable.
+    (Closes: #536783)
+  * Don't build grub-efi-amd64 on kfreebsd-i386. It lacks 64bit compiler
+    support.
+  * Rename the lintian override for kernel.elf to kernel.img.
+  * Strip kernel.img not kernel.elf, but not in the case of grub-pc.
+  * Rename the Conflicts/Replaces grub to grub-legacy. (Closes: #537824)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 21 Jul 2009 10:50:20 +0200
+
+grub2 (1.96+20090709-1) unstable; urgency=low
+
+  * New SVN snapshot.
+
+  * control (Build-Depends): Add gcc-multilib [sparc].
+  * copyright: Rewrite using DEP-5 format.
+  * Merge grub-extras into the package, and integrate it with GRUB's
+    build system.
+    - patches/906_grub_extras.diff
+    - rules
+    - copyright
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Thu, 09 Jul 2009 00:26:49 +0200
+
+grub2 (1.96+20090702-1) unstable; urgency=low
+
+  * New SVN snapshot.
+  * rules: Remove duplicated files in sparc64-ieee1275 port.
+  * rules: Comment out -DGRUB_ASSUME_LINUX_HAS_FB_SUPPORT=1 setting.  We'll
+    re-evaluate using it when it's more mature.  (Closes: #535026).
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Thu, 02 Jul 2009 13:23:51 +0200
+
+grub2 (1.96+20090629-1) unstable; urgency=low
+
+  * New SVN snapshot.
+    - Misc fixes in Linux loader.
+
+  * control (grub-firmware-qemu): Make it buildable only on i386/amd64.
+  * control: Add sparc (grub-ieee1275), remove remnants of ppc64.
+  * rules: Include all modules in grub-firmware-qemu build.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 29 Jun 2009 19:22:37 +0200
+
+grub2 (1.96+20090628-1) unstable; urgency=low
+
+  * New SVN snapshot.
+  * Re-enable QEMU port.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Sun, 28 Jun 2009 01:11:10 +0200
+
+grub2 (1.96+20090627-2) unstable; urgency=low
+
+  * Disable QEMU port untill it goes through NEW.
+  * Upload to unstable.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Sat, 27 Jun 2009 18:40:17 +0200
+
+grub2 (1.96+20090627-1) experimental; urgency=low
+
+  * New SVN snapshot.
+    - Fix parsing of --output in grub-mkconfig. (Closes: #532956)
+
+  [ Felix Zielcke ]
+  * Use ucfr --force in grub-ieee1275.postinst in case we're upgrading
+    from previous version. It registered /etc/default/grub wrongly with
+    package iee1275.
+  * Drop the build dependency on libc6-dev-i386.
+  * Remove ppc64 from the Architectures. It's totally dead.
+  * Add a note to /etc/default/grub that update-grub needs to be run to
+    update grub.cfg. (Closes: #533026)
+  * Fix the svn-snapshot rule.
+  * Update Standards version to 3.8.2. No changes needed.
+
+  [ Robert Millan ]
+  * legacy/upgrade-from-grub-legacy: Invoke grub-pc.postinst directly rather
+    than dpkg-reconfigure.  Since we pretend we're upgrading, it will DTRT.
+  * Add grub-firmware-qemu package.
+    - patches/008_qemu.diff: QEMU port (patch from upstream).
+    - control (grub-firmware-qemu): New package.
+    - rules: Add grub-firmware-qemu targets.
+    - debian/grub-firmware-qemu.dirs
+    - debian/grub-firmware-qemu.install
+  * patches/906_revert_to_linux16.diff: Remove, now that gfxpayload is
+    supported.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Sat, 27 Jun 2009 00:46:23 +0200
+
 grub2 (1.96+20090611-1ubuntu4) karmic; urgency=low
 
   * debian/patches/10_crashkernel.diff:
@@ -48,16 +220,18 @@ grub2 (1.96+20090611-1ubuntu1) karmic; urgency=low
 
 grub2 (1.96+20090611-1) experimental; urgency=low
 
+  * New SVN snapshot.
+
   * Append .diff to patches/01_uuids_and_lvm_dont_play_along_nicely so
     it gets really applied.
   * Drop completely the build dependency on gcc-multilib.
   * Instead of arborting in the preinst if /etc/kernel-img.conf still
     contains /sbin/update-grub, change the file with sed. Policy allows
-    this because it's not a conffile.
+    thisi, because it's not a conffile, according to Colin Watson.
   * Change /etc/default/grub to an ucf managed file instead of dpkg
     conffile.
 
- -- Felix Zielcke <fzielcke@z-51.de>  Thu, 11 Jun 2009 22:47:56 +0200
+ -- Felix Zielcke <fzielcke@z-51.de>  Fri, 12 Jun 2009 11:46:24 +0200
 
 grub2 (1.96+20090609-1) experimental; urgency=low
 
@@ -1504,3 +1678,4 @@ pupa (0.6+20030915-1) unstable; urgency=low
   * Initial Release. (Closes: #211030)
 
  -- Robert Millan <rmh@debian.org>  Mon, 15 Sep 2003 14:58:42 +0000
+

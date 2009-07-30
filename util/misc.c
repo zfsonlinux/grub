@@ -18,6 +18,7 @@
 
 #include <config.h>
 
+#include <setjmp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -36,6 +37,7 @@
 #include <grub/term.h>
 #include <grub/time.h>
 #include <grub/machine/time.h>
+#include <grub/machine/machine.h>
 
 /* Include malloc.h, only if memalign is available. It is known that
    memalign is declared in malloc.h in all systems, if present.  */
@@ -255,6 +257,16 @@ grub_malloc (grub_size_t size)
   return xmalloc (size);
 }
 
+void *
+grub_zalloc (grub_size_t size)
+{
+  void *ret;
+
+  ret = xmalloc (size);
+  memset (ret, 0, size);
+  return ret;
+}
+
 void
 grub_free (void *ptr)
 {
@@ -436,4 +448,4 @@ fail:
   return size;
 }
 
-#endif
+#endif /* __MINGW32__ */
