@@ -27,7 +27,7 @@
 #ifndef GRUB_UTIL
 typedef grub_uint32_t uint32_t;
 typedef grub_uint64_t uint64_t;
-#define __WORDSIZE (8 * GRUB_TARGET_SIZEOF_VOID_P)
+#define __WORDSIZE GRUB_TARGET_WORDSIZE
 #endif
 
 struct multiboot_tag_header;
@@ -45,10 +45,10 @@ void
 grub_mb2_arch_unload (struct multiboot_tag_header *tags);
 
 grub_err_t
-grub_mb2_arch_elf32_hook (Elf32_Phdr *phdr, grub_addr_t *addr);
+grub_mb2_arch_elf32_hook (Elf32_Phdr *phdr, grub_addr_t *addr, int *do_load);
 
 grub_err_t
-grub_mb2_arch_elf64_hook (Elf64_Phdr *phdr, grub_addr_t *addr);
+grub_mb2_arch_elf64_hook (Elf64_Phdr *phdr, grub_addr_t *addr, int *do_load);
 
 grub_err_t
 grub_mb2_arch_module_alloc (grub_size_t size, grub_addr_t *addr);

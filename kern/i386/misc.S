@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2005,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2005,2006,2007,2008 Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,18 +16,14 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <setjmp.h>
+#include <grub/symbol.h>
 
-#include <grub/util/misc.h>
-
-void
-grub_reboot (void)
-{
-  longjmp (main_env, 1);
-}
-
-void
-grub_halt (void)
-{
-  grub_reboot ();
-}
+	.text
+/*
+ *  This call is special...  it never returns...  in fact it should simply
+ *  hang at this point!
+ */
+FUNCTION(grub_stop)
+	cli
+1:	hlt
+	jmp	1b

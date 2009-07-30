@@ -444,7 +444,7 @@ grub_linux_boot (void)
 {
   struct linux_kernel_params *params;
   int e820_num;
-  grub_err_t err;
+  grub_err_t err = 0;
   char *modevar, *tmp;
 
   params = real_mode_mem;
@@ -479,9 +479,7 @@ grub_linux_boot (void)
     params->have_vga = GRUB_VIDEO_TYPE_VLFB;
   else
     {
-      params->have_vga = 0;
-      params->video_cursor_x = grub_getxy () >> 8;
-      params->video_cursor_y = grub_getxy () & 0xff;
+      params->have_vga = GRUB_VIDEO_TYPE_TEXT;
       params->video_width = 80;
       params->video_height = 25;
     }
@@ -536,6 +534,13 @@ grub_linux_boot (void)
   grub_mmap_iterate (hook);
   params->mmap_size = e820_num;
 
+  /* Initialize these last, because terminal position could be affected by printfs above.  */
+  if (params->have_vga == GRUB_VIDEO_TYPE_TEXT)
+    {
+      params->video_cursor_x = grub_getxy () >> 8;
+      params->video_cursor_y = grub_getxy () & 0xff;
+    }
+
 #ifdef __x86_64__
 
   grub_memcpy ((char *) prot_mode_mem + (prot_mode_pages << 12),
@@ -554,14 +559,8 @@ grub_linux_boot (void)
   asm volatile ("lidt %0" : : "m" (idt_desc));
   asm volatile ("lgdt %0" : : "m" (gdt_desc));
 
-  /* Pass parameters.  */
-  asm volatile ("movl %0, %%ecx" : : "m" (params->code32_start));
-  asm volatile ("movl %0, %%esi" : : "m" (real_mode_mem));
-
-  asm volatile ("xorl %%ebx, %%ebx" : : );
-
   /* Enter Linux.  */
-  asm volatile ("jmp *%%ecx" : : );
+  asm volatile ("jmp *%2" : : "b" (0), "S" (real_mode_mem), "g" (params->code32_start));
 
 #endif
 
@@ -670,8 +669,11 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 
   params->type_of_loader = (LINUX_LOADER_ID_GRUB << 4);
 
+  /* These two are used (instead of cmd_line_ptr) by older versions of Linux,
+     and otherwise ignored.  */
   params->cl_magic = GRUB_LINUX_CL_MAGIC;
   params->cl_offset = 0x1000;
+
   params->cmd_line_ptr = (unsigned long) real_mode_mem + 0x1000;
   params->ramdisk_image = 0;
   params->ramdisk_size = 0;
@@ -685,9 +687,15 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   params->ext_mem = ((32 * 0x100000) >> 10);
   params->alt_mem = ((32 * 0x100000) >> 10);
 
-  params->video_page = 0; /* ??? */
-  params->video_mode = 0;
+  /* Ignored by Linux.  */
+  params->video_page = 0;
+
+  /* Must be non-zero even in text mode, or Linux will think there's no VGA.  */
+  params->video_mode = 0x3;
+
+  /* Only used when `video_mode == 0x7', otherwise ignored.  */
   params->video_ega_bx = 0;
+
   params->font_size = 16; /* XXX */
 
   /* The other parameters are filled when booting.  */
@@ -820,6 +828,11 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 	      linux_mem_size <<= shift;
 	  }
       }
+    else if (grub_memcmp (argv[i], "quiet", sizeof ("quiet") - 1) == 0)
+      {
+	params->loadflags |= GRUB_LINUX_FLAG_QUIET;
+      }
+
 
   /* Specify the boot file.  */
   dest = grub_stpcpy ((char *) real_mode_mem + GRUB_LINUX_CL_OFFSET,

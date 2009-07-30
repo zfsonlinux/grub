@@ -220,6 +220,13 @@ class Utility
     @dir = dir
     @name = name
   end
+  def print_tail()
+    prefix = @name.to_var
+    print "#{@name}: $(#{prefix}_DEPENDENCIES) $(#{prefix}_OBJECTS)
+	$(CC) -o $@ $(#{prefix}_OBJECTS) $(LDFLAGS) $(#{prefix}_LDFLAGS)
+
+"
+  end
   attr_reader :dir, :name
 
   def rule(sources)
@@ -234,9 +241,7 @@ class Utility
 
     "CLEANFILES += #{@name}$(EXEEXT) #{objs_str}
 MOSTLYCLEANFILES += #{deps_str}
-
-#{@name}: $(#{prefix}_DEPENDENCIES) #{objs_str}
-	$(CC) -o $@ #{objs_str} $(LDFLAGS) $(#{prefix}_LDFLAGS)
+#{prefix}_OBJECTS += #{objs_str}
 
 " + objs.collect_with_index do |obj, i|
       src = sources[i]
@@ -280,10 +285,12 @@ MOSTLYCLEANFILES += #{deps_str}
       src = sources[i]
       fake_obj = File.basename(src).suffix('o')
       dep = deps[i]
+      flag = if /\.c$/ =~ src then 'CFLAGS' else 'ASFLAGS' end
+      extra_flags = if /\.S$/ =~ src then '-DASM_FILE=1' else '' end
       dir = File.dirname(src)
 
       "#{obj}: #{src} $(#{src}_DEPENDENCIES)
-	$(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(#{prefix}_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) #{extra_flags} $(TARGET_#{flag}) $(#{prefix}_#{flag}) -MD -c -o $@ $<
 -include #{dep}
 
 "
@@ -393,4 +400,5 @@ while l = gets
   end
 
 end
+utils.each {|util| util.print_tail()}
 

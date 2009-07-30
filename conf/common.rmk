@@ -17,7 +17,7 @@ grub_probe_SOURCES = util/grub-probe.c	\
 	fs/affs.c fs/cpio.c fs/fat.c fs/ext2.c fs/hfs.c		\
 	fs/hfsplus.c fs/iso9660.c fs/udf.c fs/jfs.c fs/minix.c	\
 	fs/ntfs.c fs/ntfscomp.c fs/reiserfs.c fs/sfs.c		\
-	fs/ufs.c fs/xfs.c fs/afs.c fs/tar.c			\
+	fs/ufs.c fs/xfs.c fs/afs.c fs/befs.c fs/tar.c		\
 	\
 	partmap/pc.c partmap/apple.c partmap/sun.c partmap/gpt.c\
 	kern/fs.c kern/env.c fs/fshelp.c			\
@@ -38,7 +38,7 @@ grub_fstest_SOURCES = util/grub-fstest.c util/hostfs.c util/misc.c 	\
 	fs/affs.c fs/cpio.c fs/fat.c fs/ext2.c fs/hfs.c			\
 	fs/hfsplus.c fs/iso9660.c fs/udf.c fs/jfs.c fs/minix.c		\
 	fs/ntfs.c fs/ntfscomp.c fs/reiserfs.c fs/sfs.c			\
-	fs/ufs.c fs/xfs.c fs/afs.c fs/tar.c				\
+	fs/ufs.c fs/xfs.c fs/afs.c fs/befs.c fs/tar.c			\
 	\
 	kern/partition.c partmap/pc.c partmap/apple.c partmap/sun.c	\
 	partmap/gpt.c							\
@@ -145,13 +145,13 @@ CLEANFILES += grub-mkconfig
 grub-mkconfig_lib: util/grub-mkconfig_lib.in config.status
 	./config.status --file=$@:$<
 	chmod +x $@
-lib_DATA += grub-mkconfig_lib
+lib_SCRIPTS += grub-mkconfig_lib
 CLEANFILES += grub-mkconfig_lib
 
 update-grub_lib: util/update-grub_lib.in config.status
 	./config.status --file=$@:$<
 	chmod +x $@
-lib_DATA += update-grub_lib
+lib_SCRIPTS += update-grub_lib
 CLEANFILES += update-grub_lib
 
 %: util/grub.d/%.in config.status
@@ -177,7 +177,7 @@ CLEANFILES += grub-dumpbios
 pkglib_MODULES += fshelp.mod fat.mod ufs.mod ext2.mod ntfs.mod		\
 	ntfscomp.mod minix.mod hfs.mod jfs.mod iso9660.mod xfs.mod	\
 	affs.mod sfs.mod hfsplus.mod reiserfs.mod cpio.mod tar.mod	\
-	udf.mod	afs.mod
+	udf.mod	afs.mod befs.mod
 
 # For fshelp.mod.
 fshelp_mod_SOURCES = fs/fshelp.c
@@ -274,6 +274,11 @@ afs_mod_SOURCES = fs/afs.c
 afs_mod_CFLAGS = $(COMMON_CFLAGS)
 afs_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
+# For befs.mod.
+befs_mod_SOURCES = fs/befs.c
+befs_mod_CFLAGS = $(COMMON_CFLAGS)
+befs_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
 # Partition maps.
 pkglib_MODULES += amiga.mod apple.mod pc.mod sun.mod acorn.mod gpt.mod
 
@@ -349,12 +354,12 @@ scsi_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # Commands.
 pkglib_MODULES += minicmd.mod extcmd.mod hello.mod handler.mod	\
-	 ls.mod	cmp.mod cat.mod help.mod search.mod		\
-	loopback.mod fs_uuid.mod configfile.mod echo.mod	\
+	ls.mod cmp.mod cat.mod help.mod search.mod loopback.mod	\
+	fs_file.mod fs_uuid.mod configfile.mod echo.mod		\
 	terminfo.mod test.mod blocklist.mod hexdump.mod		\
 	read.mod sleep.mod loadenv.mod crc.mod parttool.mod	\
 	pcpart.mod memrw.mod normal.mod sh.mod lua.mod	\
-	gptsync.mod true.mod
+	gptsync.mod true.mod probe.mod
 
 # For gptsync.mod.
 gptsync_mod_SOURCES = commands/gptsync.c
@@ -431,6 +436,11 @@ loopback_mod_SOURCES = disk/loopback.c
 loopback_mod_CFLAGS = $(COMMON_CFLAGS)
 loopback_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
+# For fs_file.mod
+fs_file_mod_SOURCES = disk/fs_file.c
+fs_file_mod_CFLAGS = $(COMMON_CFLAGS)
+fs_file_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
 # For fs_uuid.mod
 fs_uuid_mod_SOURCES = disk/fs_uuid.c
 fs_uuid_mod_CFLAGS = $(COMMON_CFLAGS)
@@ -486,6 +496,11 @@ true_mod_SOURCES = commands/true.c
 true_mod_CFLAGS = $(COMMON_CFLAGS)
 true_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
+# For probe.mod.
+probe_mod_SOURCES = commands/probe.c
+probe_mod_CFLAGS = $(COMMON_CFLAGS)
+probe_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
 # For normal.mod.
 normal_mod_SOURCES = normal/main.c normal/cmdline.c normal/dyncmd.c \
 	normal/autofs.c normal/handler.c \
@@ -509,15 +524,14 @@ lua_mod_SOURCES = script/lua/lapi.c script/lua/lcode.c script/lua/ldebug.c \
 	script/lua/lstate.c script/lua/lstring.c script/lua/ltable.c \
 	script/lua/ltm.c script/lua/lundump.c script/lua/lvm.c \
 	script/lua/lzio.c script/lua/lauxlib.c script/lua/lbaselib.c \
-	script/lua/linit.c script/lua/ltablib.c \
+	script/lua/linit.c script/lua/ltablib.c script/lua/lstrlib.c \
 	script/lua/grub_main.c script/lua/grub_lib.c
 lua_mod_CFLAGS = $(COMMON_CFLAGS)
 lua_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # Extra libraries for lua
 # script/lua/lmathlib.c script/lua/loslib.c script/lua/liolib.c
-# script/lua/lstrlib.c script/lua/ldblib.c script/lua/ltablib.c
-# script/lua/loadlib.c
+# script/lua/ldblib.c script/lua/loadlib.c
 
 # Common Video Subsystem specific modules.
 pkglib_MODULES += video.mod videotest.mod bitmap.mod tga.mod jpeg.mod	\
@@ -580,3 +594,16 @@ gzio_mod_LDFLAGS = $(COMMON_LDFLAGS)
 bufio_mod_SOURCES = io/bufio.c
 bufio_mod_CFLAGS = $(COMMON_CFLAGS)
 bufio_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# Misc.
+pkglib_MODULES += xnu_uuid.mod
+
+# For elf.mod.
+xnu_uuid_mod_SOURCES = commands/xnu_uuid.c
+xnu_uuid_mod_CFLAGS = $(COMMON_CFLAGS)
+xnu_uuid_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+pkglib_MODULES += setjmp.mod
+setjmp_mod_SOURCES = lib/$(target_cpu)/setjmp.S
+setjmp_mod_ASFLAGS = $(COMMON_ASFLAGS)
+setjmp_mod_LDFLAGS = $(COMMON_LDFLAGS)
