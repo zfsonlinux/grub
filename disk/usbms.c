@@ -107,14 +107,12 @@ grub_usbms_finddevs (void)
 	    }
 
 	  devcnt++;
-	  usbms = grub_malloc (sizeof (struct grub_usbms_dev));
+	  usbms = grub_zalloc (sizeof (struct grub_usbms_dev));
 	  if (! usbms)
 	    return 1;
 
 	  usbms->dev = usbdev;
 	  usbms->interface = i;
-	  usbms->in = NULL;
-	  usbms->out = NULL;
 
 	  /* Iterate over all endpoints of this interface, at least a
 	     IN and OUT bulk endpoint are required.  */
@@ -221,12 +219,13 @@ grub_usbms_transfer (struct grub_scsi *scsi, grub_size_t cmdsize, char *cmd,
   grub_usbms_dev_t dev = (grub_usbms_dev_t) scsi->data;
   struct grub_usbms_csw status;
   static grub_uint32_t tag = 0;
-  grub_usb_err_t err;
-  int retrycnt = 3;
+  grub_usb_err_t err = GRUB_USB_ERR_NONE;
+  int retrycnt = 3 + 1;
 
  retry:
+  retrycnt--;
   if (retrycnt == 0)
-    return err;
+    return grub_error (GRUB_ERR_IO, "USB Mass Storage stalled");
 
   /* Setup the request.  */
   grub_memset (&cbw, 0, sizeof (cbw));
@@ -248,7 +247,7 @@ grub_usbms_transfer (struct grub_scsi *scsi, grub_size_t cmdsize, char *cmd,
 	  grub_usb_clear_halt (dev->dev, dev->out->endp_addr);
 	  goto retry;
 	}
-      return grub_error (GRUB_ERR_IO, "USB Mass Storage request failed");;
+      return grub_error (GRUB_ERR_IO, "USB Mass Storage request failed");
     }
 
   /* Read/write the data.  */
@@ -305,9 +304,7 @@ grub_usbms_transfer (struct grub_scsi *scsi, grub_size_t cmdsize, char *cmd,
       grub_usb_clear_halt (dev->dev, dev->in->endp_addr);
       grub_usb_clear_halt (dev->dev, dev->out->endp_addr);
 
-      retrycnt--;
-      if (retrycnt)
-	goto retry;
+      goto retry;
     }
 
   if (status.status)

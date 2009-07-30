@@ -1,7 +1,7 @@
 /* dl.h - types and prototypes for loadable module support */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2004,2005,2007,2008  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2004,2005,2007,2008,2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 #include <grub/symbol.h>
 #include <grub/err.h>
 #include <grub/types.h>
+#include <grub/elf.h>
 
 #define GRUB_MOD_INIT(name)	\
 static void grub_mod_init (grub_dl_t mod __attribute__ ((unused))) __attribute__ ((used)); \
@@ -78,12 +79,12 @@ struct grub_dl
   int ref_count;
   grub_dl_dep_t dep;
   grub_dl_segment_t segment;
+  Elf_Sym *symtab;
   void (*init) (struct grub_dl *mod);
   void (*fini) (void);
 };
 typedef struct grub_dl *grub_dl_t;
 
-grub_err_t EXPORT_FUNC(grub_dl_check_header) (void *ehdr, grub_size_t size);
 grub_dl_t EXPORT_FUNC(grub_dl_load_file) (const char *filename);
 grub_dl_t EXPORT_FUNC(grub_dl_load) (const char *name);
 grub_dl_t grub_dl_load_core (void *addr, grub_size_t size);
@@ -111,7 +112,6 @@ void EXPORT_FUNC(grub_dl_iterate) (int (*hook) (grub_dl_t mod));
 grub_dl_t EXPORT_FUNC(grub_dl_get) (const char *name);
 grub_err_t EXPORT_FUNC(grub_dl_register_symbol) (const char *name, void *addr,
 					    grub_dl_t mod);
-void *EXPORT_FUNC(grub_dl_resolve_symbol) (const char *name);
 
 grub_err_t grub_arch_dl_check_header (void *ehdr);
 grub_err_t grub_arch_dl_relocate_symbols (grub_dl_t mod, void *ehdr);

@@ -1,5 +1,6 @@
-# This file is sourced by update-grub, and its variables are propagated
-# to its children in /etc/grub.d/
+# If you change this file, run 'update-grub' afterwards to update
+# /boot/grub/grub.cfg.
+
 GRUB_DEFAULT=0
 GRUB_TIMEOUT=5
 GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`

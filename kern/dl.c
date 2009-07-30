@@ -1,7 +1,7 @@
 /* dl.c - loadable module support */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2003,2004,2005,2007,2008  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2003,2004,2005,2007,2008,2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,6 +17,9 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* Force native word size */
+#define GRUB_TARGET_WORDSIZE (8 * GRUB_CPU_SIZEOF_VOID_P)
+
 #include <config.h>
 #include <grub/elf.h>
 #include <grub/dl.h>
@@ -28,29 +31,11 @@
 #include <grub/file.h>
 #include <grub/env.h>
 #include <grub/cache.h>
+#include <grub/machine/machine.h>
 
-#if GRUB_CPU_SIZEOF_VOID_P == 4
-
-typedef Elf32_Word Elf_Word;
-typedef Elf32_Addr Elf_Addr;
-typedef Elf32_Ehdr Elf_Ehdr;
-typedef Elf32_Shdr Elf_Shdr;
-typedef Elf32_Sym Elf_Sym;
-
-# define ELF_ST_BIND(val)	ELF32_ST_BIND (val)
-# define ELF_ST_TYPE(val)	ELF32_ST_TYPE (val)
-
-#elif GRUB_CPU_SIZEOF_VOID_P == 8
-
-typedef Elf64_Word Elf_Word;
-typedef Elf64_Addr Elf_Addr;
-typedef Elf64_Ehdr Elf_Ehdr;
-typedef Elf64_Shdr Elf_Shdr;
-typedef Elf64_Sym Elf_Sym;
-
-# define ELF_ST_BIND(val)	ELF64_ST_BIND (val)
-# define ELF_ST_TYPE(val)	ELF64_ST_TYPE (val)
-
+/* Platforms where modules are in a readonly area of memory.  */
+#if defined(GRUB_MACHINE_QEMU)
+#define GRUB_MODULES_MACHINE_READONLY
 #endif
 
 
@@ -151,7 +136,7 @@ grub_symbol_hash (const char *s)
 
 /* Resolve the symbol name NAME and return the address.
    Return NULL, if not found.  */
-void *
+static void *
 grub_dl_resolve_symbol (const char *name)
 {
   grub_symbol_t sym;
@@ -238,7 +223,7 @@ grub_dl_get_section_addr (grub_dl_t mod, unsigned n)
 }
 
 /* Check if EHDR is a valid ELF header.  */
-grub_err_t
+static grub_err_t
 grub_dl_check_header (void *ehdr, grub_size_t size)
 {
   Elf_Ehdr *e = ehdr;
@@ -333,7 +318,13 @@ grub_dl_resolve_symbols (grub_dl_t mod, Elf_Ehdr *e)
   if (i == e->e_shnum)
     return grub_error (GRUB_ERR_BAD_MODULE, "no symbol table");
 
-  sym = (Elf_Sym *) ((char *) e + s->sh_offset);
+#ifdef GRUB_MODULES_MACHINE_READONLY
+  mod->symtab = grub_malloc (s->sh_size);
+  memcpy (mod->symtab, (char *) e + s->sh_offset, s->sh_size);
+#else
+  mod->symtab = (Elf_Sym *) ((char *) e + s->sh_offset);
+#endif
+  sym = mod->symtab;
   size = s->sh_size;
   entsize = s->sh_entsize;
 
@@ -544,16 +535,11 @@ grub_dl_load_core (void *addr, grub_size_t size)
       return 0;
     }
 
-  mod = (grub_dl_t) grub_malloc (sizeof (*mod));
+  mod = (grub_dl_t) grub_zalloc (sizeof (*mod));
   if (! mod)
     return 0;
 
-  mod->name = 0;
   mod->ref_count = 1;
-  mod->dep = 0;
-  mod->segment = 0;
-  mod->init = 0;
-  mod->fini = 0;
 
   grub_dprintf ("modules", "relocating to %p\n", mod);
   if (grub_dl_resolve_name (mod, e)
@@ -695,6 +681,9 @@ grub_dl_unload (grub_dl_t mod)
     }
 
   grub_free (mod->name);
+#ifdef GRUB_MODULES_MACHINE_READONLY
+  grub_free (mod->symtab);
+#endif
   grub_free (mod);
   return 1;
 }

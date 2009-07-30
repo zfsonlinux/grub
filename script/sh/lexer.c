@@ -39,6 +39,7 @@ static int
 check_textstate (grub_parser_state_t state)
 {
   return (state == GRUB_PARSER_STATE_TEXT
+	  || state == GRUB_PARSER_STATE_ESC
 	  || state == GRUB_PARSER_STATE_QUOTE
 	  || state == GRUB_PARSER_STATE_DQUOTE);
 }
@@ -48,21 +49,13 @@ grub_script_lexer_init (char *script, grub_reader_getline_t getline)
 {
   struct grub_lexer_param *param;
 
-  param = grub_malloc (sizeof (*param));
+  param = grub_zalloc (sizeof (*param));
   if (! param)
     return 0;
 
   param->state = GRUB_PARSER_STATE_TEXT;
   param->getline = getline;
-  param->refs = 0;
-  param->done = 0;
-  param->newscript = 0;
   param->script = script;
-  param->record = 0;
-  param->recording = 0;
-  param->recordpos = 0;
-  param->recordlen = 0;
-  param->tokenonhold = 0;
 
   return param;
 }
@@ -155,18 +148,28 @@ grub_script_yylex (union YYSTYPE *yylval, struct grub_parser_param *parsestate)
       return token;
     }
 
-  for (;! state->done && (*state->script || firstrun); firstrun = 0)
+  for (;! state->done; firstrun = 0)
     {
-
-      if (! *state->script)
+      if (! state->script || ! *state->script)
 	{
 	  /* Check if more tokens are requested by the parser.  */
 	  if (((state->refs && ! parsestate->err)
-	       || state->state == GRUB_PARSER_STATE_ESC)
+	       || state->state == GRUB_PARSER_STATE_ESC
+	       || state->state == GRUB_PARSER_STATE_QUOTE
+	       || state->state == GRUB_PARSER_STATE_DQUOTE)
 	      && state->getline)
 	    {
 	      int doexit = 0;
-	      while (!state->script || ! grub_strlen (state->script))
+	      if (state->state != GRUB_PARSER_STATE_ESC
+		  && state->state != GRUB_PARSER_STATE_QUOTE
+		  && state->state != GRUB_PARSER_STATE_DQUOTE
+		  && ! state->was_newline)
+		{
+		  state->was_newline = 1;
+		  state->tokenonhold = '\n';
+		  break;
+		}
+	      while (! state->script || ! *state->script)
 		{
 		  grub_free (state->newscript);
 		  state->newscript = 0;
@@ -182,11 +185,15 @@ grub_script_yylex (union YYSTYPE *yylval, struct grub_parser_param *parsestate)
 		break;
 	      grub_dprintf ("scripting", "token=`\\n'\n");
 	      recordchar (state, '\n');
-	      if (state->state != GRUB_PARSER_STATE_ESC)
-		{
-		  state->tokenonhold = '\n';
-		  break;
-		}
+	      if (state->state == GRUB_PARSER_STATE_VARNAME)
+		state->state = GRUB_PARSER_STATE_TEXT;
+	      if (state->state == GRUB_PARSER_STATE_QVARNAME)
+		state->state = GRUB_PARSER_STATE_DQUOTE;
+	      if (state->state == GRUB_PARSER_STATE_DQUOTE
+		  || state->state == GRUB_PARSER_STATE_QUOTE)
+		yylval->arg = grub_script_arg_add (parsestate, yylval->arg,
+						   GRUB_SCRIPT_ARG_TYPE_STR,
+						   "\n");
 	    }
 	  else
 	    {
@@ -198,6 +205,7 @@ grub_script_yylex (union YYSTYPE *yylval, struct grub_parser_param *parsestate)
 	      break;
 	    }
 	}
+      state->was_newline = 0;
 
       newstate = grub_parser_cmdline_state (state->state, *state->script, &use);
 
@@ -238,7 +246,7 @@ grub_script_yylex (union YYSTYPE *yylval, struct grub_parser_param *parsestate)
 		  {
 		    char c;
 		    grub_dprintf ("scripting", "token=`%c'\n", *state->script);
-		    c = *state->script;;
+		    c = *state->script;
 		    nextchar (state);
 		    state->tokenonhold = c;
 		    doexit = 1;
@@ -270,7 +278,9 @@ grub_script_yylex (union YYSTYPE *yylval, struct grub_parser_param *parsestate)
 		 when a special token was found.  It will be recognized
 		 next time when this function is called.  */
 	      if (newstate == GRUB_PARSER_STATE_TEXT
-		  && state->state != GRUB_PARSER_STATE_ESC)
+		  && state->state != GRUB_PARSER_STATE_ESC
+		  && state->state != GRUB_PARSER_STATE_QUOTE
+		  && state->state != GRUB_PARSER_STATE_DQUOTE)
 		{
 		  int breakout = 0;
 
