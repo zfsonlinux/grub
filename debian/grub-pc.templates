@@ -40,3 +40,16 @@ Description: GRUB install devices:
  .
  If you're unsure which drive is designated as boot drive by your BIOS, it is
  often a good idea to install GRUB to all of them.
+ .
+ Note: It is possible to install GRUB to partition boot records as well.
+ However, this forces GRUB to use the blocklist mechanism, which makes it
+ less reliable, and therefore is not recommended.
+
+Template: grub-pc/postrm_purge_boot_grub
+Type: boolean
+Default: false
+# This should get reviewed before it can be translated
+Description: Remove GRUB 2 from /boot/grub?
+ Do you want to have all GRUB 2 files removed from /boot/grub?
+ .
+ Your system would be then unbootable if you don't install another bootloader.

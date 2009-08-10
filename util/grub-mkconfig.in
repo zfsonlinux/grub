@@ -23,6 +23,10 @@ exec_prefix=@exec_prefix@
 sbindir=@sbindir@
 libdir=@libdir@
 sysconfdir=@sysconfdir@
+package_version=@PACKAGE_VERSION@
+datarootdir=@datarootdir@
+datadir=@datadir@
+pkgdatadir=${datadir}/`echo @PACKAGE_TARNAME@ | sed "${transform}"`
 grub_prefix=`echo /boot/grub | sed ${transform}`
 grub_cfg=""
 grub_mkconfig_dir=${sysconfdir}/grub.d
@@ -52,7 +56,7 @@ for option in "$@"; do
 	usage
 	exit 0 ;;
     -v | --version)
-	echo "$0 (GNU GRUB ${PACKAGE_VERSION})"
+	echo "$0 (GNU GRUB ${package_version})"
 	exit 0 ;;
     -o)
 	shift
@@ -150,22 +154,38 @@ esac
 # check for terminals that require fonts
 case ${GRUB_TERMINAL_OUTPUT} in
   gfxterm)
-    if path=`font_path` ; then
-      GRUB_FONT_PATH="${path}"
+    if [ -n "$GRUB_FONT" ] ; then
+      if is_path_readable_by_grub ${GRUB_FONT} > /dev/null ; then
+        GRUB_FONT_PATH=${GRUB_FONT}
+	else
+	  echo "No such font or not readable by grub: ${GRUB_FONT}" >&2
+	  exit 1
+	fi
     else
+      for dir in ${pkgdatadir} /boot/grub /usr/share/grub ; do
+        for basename in unicode unifont ascii; do
+	  path="${dir}/${basename}.pf2"
+          if is_path_readable_by_grub ${path} > /dev/null ; then
+	    GRUB_FONT_PATH=${path}
+	  else
+	    continue
+	  fi
+	  if [ "${basename}" = "ascii" ] ; then
+	    # make sure all our children behave in conformance with ascii..
+	    export LANG=C
+	  fi
+	  break 2
+        done
+      done
+    fi
+    if [ -z "${GRUB_FONT_PATH}" ] ; then
       # fallback to the native terminal for this platform
       unset GRUB_TERMINAL_OUTPUT
     fi
   ;;
-esac
-
-# does our terminal support utf-8 ?
-case ${GRUB_TERMINAL_OUTPUT} in
-  gfxterm) ;;
   *)
     # make sure all our children behave in conformance with ascii..
     export LANG=C
-  ;;
 esac
 
 # These are defined in this script, export them here so that user can
