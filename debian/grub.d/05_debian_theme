@@ -2,11 +2,11 @@
 
 source /usr/lib/grub/grub-mkconfig_lib
 
-set_blue_theme()
+set_mono_theme()
 {
   cat << EOF
-set menu_color_normal=cyan/blue
-set menu_color_highlight=white/blue
+set menu_color_normal=white/black
+set menu_color_highlight=black/white
 EOF
 }
 
@@ -42,10 +42,10 @@ else
 EOF
 fi
 
-# otherwise, set the traditional Debian blue theme
+# otherwise, set a monochromatic theme for Ubuntu
 if ${use_bg} ; then
-  set_blue_theme | sed -e "s/^/  /g"
+  set_mono_theme | sed -e "s/^/  /g"
   echo "fi"
 else
-  set_blue_theme
+  set_mono_theme
 fi
