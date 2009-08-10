@@ -1,0 +1,39 @@
+diff -Nur -x '*.orig' -x '*~' grub2-1.96+20090725/util/grub-mkconfig.in grub2-1.96+20090725.new/util/grub-mkconfig.in
+--- grub2-1.96+20090725/util/grub-mkconfig.in	2009-08-08 19:31:00.000000000 +0100
++++ grub2-1.96+20090725.new/util/grub-mkconfig.in	2009-08-08 21:05:05.000000000 +0100
+@@ -173,7 +173,7 @@
+ export GRUB_DEVICE GRUB_DEVICE_UUID GRUB_DEVICE_BOOT GRUB_DEVICE_BOOT_UUID GRUB_FS GRUB_FONT_PATH GRUB_PRELOAD_MODULES
+ 
+ # These are optional, user-defined variables.
+-export GRUB_DEFAULT GRUB_TIMEOUT GRUB_DISTRIBUTOR GRUB_CMDLINE_LINUX GRUB_CMDLINE_LINUX_DEFAULT GRUB_TERMINAL_INPUT GRUB_TERMINAL_OUTPUT GRUB_SERIAL_COMMAND GRUB_DISABLE_LINUX_UUID GRUB_DISABLE_LINUX_RECOVERY GRUB_GFXMODE
++export GRUB_DEFAULT GRUB_HIDDEN_TIMEOUT GRUB_TIMEOUT GRUB_DISTRIBUTOR GRUB_CMDLINE_LINUX GRUB_CMDLINE_LINUX_DEFAULT GRUB_TERMINAL_INPUT GRUB_TERMINAL_OUTPUT GRUB_SERIAL_COMMAND GRUB_DISABLE_LINUX_UUID GRUB_DISABLE_LINUX_RECOVERY GRUB_GFXMODE
+ 
+ if test "x${grub_cfg}" != "x"; then
+   rm -f ${grub_cfg}.new
+diff -Nur -x '*.orig' -x '*~' grub2-1.96+20090725/util/grub.d/00_header.in grub2-1.96+20090725.new/util/grub.d/00_header.in
+--- grub2-1.96+20090725/util/grub.d/00_header.in	2009-08-08 21:05:02.000000000 +0100
++++ grub2-1.96+20090725.new/util/grub.d/00_header.in	2009-08-08 21:06:12.000000000 +0100
+@@ -37,7 +37,6 @@
+ 
+ cat << EOF
+ set default=${GRUB_DEFAULT}
+-set timeout=${GRUB_TIMEOUT}
+ EOF
+ 
+ case ${GRUB_TERMINAL_INPUT}:${GRUB_TERMINAL_OUTPUT} in
+@@ -112,3 +111,15 @@
+ EOF
+   ;;
+ esac
++
++if [ "x${GRUB_HIDDEN_TIMEOUT}" != "x" ] ; then
++  cat << EOF
++if sleep --interruptible ${GRUB_HIDDEN_TIMEOUT} ; then
++  set timeout=${GRUB_TIMEOUT}
++fi
++EOF
++else
++  cat << EOF
++set timeout=${GRUB_TIMEOUT}
++EOF
++fi
