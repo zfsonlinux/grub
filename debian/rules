@@ -3,7 +3,7 @@
 SHELL		:= bash
 package		:= grub2
 
-DEB_HOST_ARCH := $(shell dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
+DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
@@ -96,7 +96,7 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee12
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/share/grub/
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/include
 
-	for i in docs manpages ; do \
+	for i in docs examples manpages ; do \
 		cp debian/$$i.in debian/$(subst install/,,$@).$$i ; \
 	done
 
@@ -117,7 +117,8 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee12
 			>> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@) ; \
 	fi
 	if [ "$@" = "install/grub-pc" ] && [ "$(DEB_HOST_ARCH)" = "i386" ] ; then \
-		echo "$(subst install/,,$@): binary-from-other-architecture *efiemu64.o" ; \
+		echo "$(subst install/,,$@): binary-from-other-architecture *efiemu64.o" \
+			>> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@) ; \
 	fi
 
 install/grub-common::
