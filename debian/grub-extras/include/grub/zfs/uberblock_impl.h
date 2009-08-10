@@ -49,11 +49,6 @@ typedef struct uberblock {
 #define	UBERBLOCK_SIZE		(1ULL << UBERBLOCK_SHIFT)
 #define	VDEV_UBERBLOCK_SHIFT	UBERBLOCK_SHIFT
 
-#undef	offsetof
-#define	offsetof(t, m)   ((long)&(((t *)0)->m))
-#define	VDEV_UBERBLOCK_OFFSET(n) \
-offsetof(vdev_label_t, vl_uberblock[(n) << VDEV_UBERBLOCK_SHIFT])
-
 /* XXX Uberblock_phys_t is no longer in the kernel zfs */
 typedef struct uberblock_phys {
 	uberblock_t	ubp_uberblock;
