@@ -6,3 +6,10 @@ pkglib_MODULES += zfs.mod
 zfs_mod_SOURCES = $(GRUB_EXTRAS)/fs/zfs.c $(GRUB_EXTRAS)/fs/zfs_lzjb.c $(GRUB_EXTRAS)/fs/zfs_sha256.c $(GRUB_EXTRAS)/fs/zfs_fletcher.c
 zfs_mod_CFLAGS = $(COMMON_CFLAGS)
 zfs_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For zfsinfo.mod.
+pkglib_MODULES += zfsinfo.mod
+zfsinfo_mod_SOURCES = $(GRUB_EXTRAS)/commands/zfsinfo.c
+zfsinfo_mod_CFLAGS = $(COMMON_CFLAGS)
+zfsinfo_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
