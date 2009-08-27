@@ -1,3 +1,12 @@
+grub2 (1.96+20090826-3ubuntu2) karmic; urgency=low
+
+  * 952_sleep_shift.patch: New patch. Allow Shift to interrupt 'sleep
+    --interruptible', for consistency with the quick-boot scheme.
+  * debian/*.templates: Change default value of grub2/linux_cmdline_default
+    to 'quiet splash', to match debian/default/grub.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 27 Aug 2009 11:29:24 +0100
+
 grub2 (1.96+20090826-3ubuntu1) karmic; urgency=low
 
   * Resynchronise with Debian (LP: #413151). Remaining changes:
