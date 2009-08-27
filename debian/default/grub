@@ -2,8 +2,9 @@
 # /boot/grub/grub.cfg.
 
 GRUB_DEFAULT=0
-GRUB_HIDDEN_TIMEOUT=3
-GRUB_TIMEOUT=0
+GRUB_HIDDEN_TIMEOUT=0
+GRUB_HIDDEN_TIMEOUT_QUIET=true
+GRUB_TIMEOUT=10
 GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
 GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
 
@@ -17,3 +18,6 @@ GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
 
 # Uncomment if you don't want GRUB to pass "root=UUID=xxx" parameter to Linux
 #GRUB_DISABLE_LINUX_UUID=true
+
+# Uncomment to disable generation of recovery mode menu entrys
+#GRUB_DISABLE_LINUX_RECOVERY="true"

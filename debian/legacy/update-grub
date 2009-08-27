@@ -860,17 +860,6 @@ else
 		notChangeDefault="yes"
 fi
 
-case "$host_os" in
-  freebsd|*/kfreebsd)
-    if test -e /boot/loader.gz ; then
-      kernel=/boot/loader.gz
-    else
-      kernel=/boot/loader
-    fi
-    write_kernel_entry "" "" "" "$grub_root_device" "$kernel" "" "" "" "$savedefault" ""
-  ;;
-esac
-
 ## heres where we start writing out the kernel entries
 counter=0
 
