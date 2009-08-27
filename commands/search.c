@@ -29,7 +29,7 @@
 
 static const struct grub_arg_option options[] =
   {
-    {"file",		'f', 0, "search devices by a file (default)", 0, 0},
+    {"file",		'f', 0, "search devices by a file", 0, 0},
     {"label",		'l', 0, "search devices by a filesystem label", 0, 0},
     {"fs-uuid",		'u', 0, "search devices by a filesystem UUID", 0, 0},
     {"set",		's', GRUB_ARG_OPTION_OPTIONAL, "set a variable to the first device found", "VAR", ARG_TYPE_STRING},
@@ -51,6 +51,7 @@ search_fs (const char *key, const char *var, int no_floppy, enum options type)
 {
   int count = 0;
   char *buf = NULL;
+  grub_fs_autoload_hook_t saved_autoload;
 
   auto int iterate_device (const char *name);
   int iterate_device (const char *name)
@@ -131,7 +132,22 @@ search_fs (const char *key, const char *var, int no_floppy, enum options type)
     return (found && var);
   }
 
-  grub_device_iterate (iterate_device);
+  /* First try without autoloading if we're setting variable. */
+  if (var)
+    {
+      saved_autoload = grub_fs_autoload_hook;
+      grub_fs_autoload_hook = 0;
+      grub_device_iterate (iterate_device);
+
+      /* Restore autoload hook.  */
+      grub_fs_autoload_hook = saved_autoload;
+
+      /* Retry with autoload if nothing found.  */
+      if (grub_errno == GRUB_ERR_NONE && count == 0)
+	grub_device_iterate (iterate_device);
+    }
+  else
+    grub_device_iterate (iterate_device);
 
   grub_free (buf);
 

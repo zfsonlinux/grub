@@ -1,3 +1,132 @@
+grub2 (1.96+20090826-3ubuntu1) karmic; urgency=low
+
+  * Resynchronise with Debian (LP: #413151). Remaining changes:
+    + debian/control:
+      - Recommend rather than Suggest os-prober.
+    + debian/default/grub:
+      - Adjust for default Ubuntu boot options.
+      - Use GRUB_CMDLINE_LINUX_DEFAULT option to set "quiet splash" for
+        default items only.  These options won't be set in single user mode.
+      - Default to hiding the menu with a three-second timeout. Pressing
+        Escape during this time will show the menu.
+    + debian/grub.d/05_debian_theme:
+      - Set a monochromatic theme for Ubuntu.
+    + debian/legacy/update-grub:
+      - Apply Ubuntu branding: title, recovery mode, quiet option, and tweak
+        how memtest86+ is displayed.
+      - Use UUIDs where appropriate.
+    + debian/patches/03_ubuntu_grub_standards:
+      - Remove GNU/Linux from default string.
+    + debian/patches/10_crashkernel.patch:
+      - add crashkernel= options if kdump and makedumpfile
+        is available (part of the kernel-crashdump spec)
+  * Drop 950_hidden_timeout.diff, merged upstream.
+  * Drop 951_gfxpayload_keep.diff. It doesn't make as much sense as I
+    thought, and it needs better kernel support anyway.
+  * 950_getkeystatus.diff: New patch. Add getkeystatus terminal method, and
+    add a new keystatus command to query it.
+  * 951_quick_boot.diff: New patch:
+    - If other operating systems are installed, then automatically unhide
+      the menu (LP: #411584).
+    - Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus if
+      available to check whether Shift is pressed. If it is, show the menu,
+      otherwise boot immediately. If keystatus is not available, then fall
+      back to a short delay interruptible with Escape.
+  * debian/default/grub: Adjust defaults to match new quick-boot code.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 27 Aug 2009 00:35:22 +0100
+
+grub2 (1.96+20090826-3) unstable; urgency=low
+
+  * Add missing quotes in grub-pc.config and *.postinst.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 26 Aug 2009 19:14:23 +0200
+
+grub2 (1.96+20090826-2) unstable; urgency=low
+
+  * Really use the correct templates in grub-pc.config. ARGS.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 26 Aug 2009 14:10:41 +0200
+
+grub2 (1.96+20090826-1) unstable; urgency=low
+
+  * New SVN snapshot.
+
+  * Use the right templates in grub-pc.config. (Closes: #543615)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 26 Aug 2009 11:00:36 +0200
+
+grub2 (1.96+20090825-1) unstable; urgency=low
+
+  * New SVN snapshot.
+    - Enable gfxterm only if there's a suitable video backend and don't
+      print an error if not. (Closes: #520846)
+
+  [ Felix Zielcke ]
+  * Copy unicode.pf2 instead of ascii.pf2 to /boot/grub in grub-pc
+    postinst (Closes: #542314).
+  * Update Standards version to 3.8.3.
+  * Use DEB_HOST_ARCH_CPU for the generation of the lintian overrides.
+  * Fix calling the grub-pc/postrm_purge_boot_grub template in
+    grub-pc.postinst.
+  * Handle GRUB_CMDLINE_LINUX and GRUB_CMDLINE_LINUX_DEFAULT via
+    debconf. Thanks to Martin F. Krafft and Colin Watson for idea and
+    hints.
+  * Use ucfr --force when /etc/default/grub is registered to a grub-* package.
+  * Use #!/bin/sh in *.config and fix a small bashism in grub-pc.config.
+
+  [ Robert Millan ]
+  * patches/907_terminal_output_workaround.diff: Remove.  It seems that
+    it wasn't really necessary.
+  * grub-pc.postinst: Avoid printing an error if /etc/kernel-img.conf
+    doesn't exist, because it is misleading.  We simply refrain from
+    fixing it and move along.
+  * grub-pc.postinst: Don't schedule generation of grub.cfg via "grub-install"
+    code path unless we actually run grub-install.
+  * grub-pc.postinst: Only copy unicode.pf2 and moreblue-orbit-grub.png when
+    /boot/grub/grub.cfg is scheduled to be generated.
+  * legacy/upgrade-from-grub-legacy: Reset grub-pc/install_devices.
+    Thanks Colin Watson.  (Closes: #541230)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 25 Aug 2009 21:45:24 +0200
+
+grub2 (1.96+20090808-1) unstable; urgency=low
+
+  * New SVN snapshot.
+    - Fix XFS with inode size different then 256. (Closes: #528761)
+    - Add support for multiple LVM metadata areas. (LP: #408580)
+    - patches/008_dac_palette_width.diff: Remove. (merged)
+    - Prefer unicode over ascii font. (LP: #352034)
+
+  [ Felix Zielcke ]
+  * Fix the generation of the lintian override for efiemu64.o.
+  * Remove the Conflicts dmsetup.
+  * Use ?= for setting DEB_HOST_ARCH.
+  * Document GRUB_DISABLE_LINUX_RECOVERY in /etc/default/grub.
+    (Closes: #476536 LP: #190207)
+  * Add docs/grub.cfg to examples.
+  * patches/01_uuids_and_lvm_dont_play_along_nicely.diff: Updated to
+    also disable UUIDs on LVM over RAID.
+  * Add a debconf prompt to remove all grub2 files from /boot/grub on
+    purge. (Closes: #527068, #470400)
+  * Move the Suggests: os-prober from grub-pc to grub-common. 
+  * patches/901_dpkg_version_comparison.diff: Updated.
+  * Update the Replaces on grub-common for the other packages to (<<
+    1.96+20080831-1). (Closes: #540492)
+
+  [ Robert Millan ]
+  * Reorganize grub-pc.{config,postinst} logic.  The idea being that if there's
+    no trace of GRUB Legacy, the grub-pc/install_devices template will be
+    shown even if this is the first install.
+  * When setting grub-pc/install_devices, obtain input dynamically from
+    grub-mkdevicemap (rather than devices.map). (Closes: #535525)
+  * Add a note to grub-pc/install_devices template that it's also possible
+    to install GRUB to a partition boot record.
+  * patches/002_grub.d_freebsd.in.diff: New patch.  Reimplement
+    10_freebsd.in to handle multiple kernel versions & acpi.ko.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 10 Aug 2009 18:49:52 +0200
+
 grub2 (1.96+20090725-1ubuntu2) karmic; urgency=low
 
   * 950_hidden_timeout.diff: New patch. Add GRUB_HIDDEN_TIMEOUT support.
@@ -1693,4 +1822,3 @@ pupa (0.6+20030915-1) unstable; urgency=low
   * Initial Release. (Closes: #211030)
 
  -- Robert Millan <rmh@debian.org>  Mon, 15 Sep 2003 14:58:42 +0000
-

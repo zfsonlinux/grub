@@ -1,0 +1,98 @@
+diff -Nur -x '*.orig' -x '*~' grub2-1.96+20090826/util/grub.d/00_header.in grub2-1.96+20090826.new/util/grub.d/00_header.in
+--- grub2-1.96+20090826/util/grub.d/00_header.in	2009-08-26 10:01:15.000000000 +0100
++++ grub2-1.96+20090826.new/util/grub.d/00_header.in	2009-08-27 00:24:09.000000000 +0100
+@@ -100,18 +100,7 @@
+   ;;
+ esac
+ 
+-if [ "x${GRUB_HIDDEN_TIMEOUT}" != "x" ] ; then
+-  if [ "x${GRUB_HIDDEN_TIMEOUT_QUIET}" = "xtrue" ] ; then 
+-    verbose=
+-  else
+-    verbose=" --verbose"
+-  fi
+-  cat << EOF
+-if sleep$verbose --interruptible ${GRUB_HIDDEN_TIMEOUT} ; then
+-  set timeout=${GRUB_TIMEOUT}
+-fi
+-EOF
+-else
++if [ "x${GRUB_HIDDEN_TIMEOUT}" = "x" ] ; then
+   cat << EOF
+ set timeout=${GRUB_TIMEOUT}
+ EOF
+diff -Nur -x '*.orig' -x '*~' grub2-1.96+20090826/util/grub.d/30_os-prober.in grub2-1.96+20090826.new/util/grub.d/30_os-prober.in
+--- grub2-1.96+20090826/util/grub.d/30_os-prober.in	2009-08-26 10:01:15.000000000 +0100
++++ grub2-1.96+20090826.new/util/grub.d/30_os-prober.in	2009-08-27 00:26:03.000000000 +0100
+@@ -22,18 +22,57 @@
+ 
+ . ${libdir}/grub/grub-mkconfig_lib
+ 
++found_other_os=
++
++adjust_timeout () {
++  if [ "x${found_other_os}" = "x" ] ; then
++    if [ "x${GRUB_HIDDEN_TIMEOUT}" != "x" ] ; then
++      if [ "x${GRUB_HIDDEN_TIMEOUT_QUIET}" = "xtrue" ] ; then
++	verbose=
++      else
++	verbose=" --verbose"
++      fi
++
++      if [ "x${GRUB_HIDDEN_TIMEOUT}" = "x0" ] ; then
++	cat <<EOF
++if keystatus; then
++  if keystatus --shift; then
++    set timeout=-1
++  else
++    set timeout=0
++  fi
++else
++  if sleep$verbose --interruptible 3 ; then
++    set timeout=0
++  fi
++fi
++EOF
++      else
++	cat << EOF
++if sleep$verbose --interruptible ${GRUB_HIDDEN_TIMEOUT} ; then
++  set timeout=0
++fi
++EOF
++      fi
++    fi
++  fi
++}
++
+ if [ "x${GRUB_DISABLE_OS_PROBER}" = "xtrue" ]; then
++  adjust_timeout
+   exit 0
+ fi
+ 
+ if [ -z "`which os-prober 2> /dev/null`" -o -z "`which linux-boot-prober 2> /dev/null`" ] ; then
+   # missing os-prober and/or linux-boot-prober
++  adjust_timeout
+   exit 0
+ fi
+ 
+ OSPROBED="`os-prober 2> /dev/null | tr ' ' '^' | paste -s -d ' '`"
+ if [ -z "${OSPROBED}" ] ; then
+   # empty os-prober output, nothing doing
++  adjust_timeout
+   exit 0
+ fi
+ 
+@@ -48,6 +87,7 @@
+   fi
+ 
+   echo "Found ${LONGNAME} on ${DEVICE}" >&2
++  found_other_os=1
+ 
+   case ${BOOT} in
+     chain)
+@@ -154,3 +194,5 @@
+     ;;
+   esac
+ done
++
++adjust_timeout

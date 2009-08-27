@@ -25,6 +25,9 @@
 #ifndef	GRUB_ZFS_HEADER
 #define	GRUB_ZFS_HEADER 1
 
+#include <grub/err.h>
+#include <grub/disk.h>
+
 /*
  * On-disk version number.
  */
@@ -101,9 +104,16 @@ typedef enum pool_state {
 
 struct grub_zfs_data;
 
-grub_err_t grub_zfs_fetch_nvlist (struct grub_zfs_data * data, char **nvlist);
-struct grub_zfs_data *grub_zfs_mount (grub_disk_t disk);
-void grub_zfs_unmount (struct grub_zfs_data *data);
+grub_err_t grub_zfs_fetch_nvlist (grub_device_t dev, char **nvlist);
+grub_err_t grub_zfs_getmdnobj (grub_device_t dev, const char *fsfilename,
+			       grub_uint64_t *mdnobj);
 
+char *grub_zfs_nvlist_lookup_string (char *nvlist, char *name);
+char *grub_zfs_nvlist_lookup_nvlist (char *nvlist, char *name);
+int grub_zfs_nvlist_lookup_uint64 (char *nvlist, char *name,
+				   grub_uint64_t *out);
+char *grub_zfs_nvlist_lookup_nvlist_array (char *nvlist, char *name,
+					   grub_size_t index);
+int grub_zfs_nvlist_lookup_nvlist_array_get_nelm (char *nvlist, char *name);
 
 #endif	/* ! GRUB_ZFS_HEADER */
