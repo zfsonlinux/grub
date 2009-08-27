@@ -1,3 +1,11 @@
+grub2 (1.96+20090826-3ubuntu3) karmic; urgency=low
+
+  * 951_quick_boot.diff: Always initialise timeout from GRUB_TIMEOUT,
+    otherwise there'll be no timeout when other operating systems are
+    installed.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 27 Aug 2009 14:13:03 +0100
+
 grub2 (1.96+20090826-3ubuntu2) karmic; urgency=low
 
   * 952_sleep_shift.patch: New patch. Allow Shift to interrupt 'sleep
