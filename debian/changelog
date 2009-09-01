@@ -1,3 +1,85 @@
+grub2 (1.97~beta1-1ubuntu1) karmic; urgency=low
+
+  * Resynchronise with Debian. Remaining changes:
+    + debian/control:
+      - Recommend rather than Suggest os-prober.
+    + debian/default/grub:
+      - Adjust for default Ubuntu boot options.
+      - Use GRUB_CMDLINE_LINUX_DEFAULT option to set "quiet splash" for
+        default items only.  These options won't be set in single user mode.
+      - Default to hiding the menu; holding down Shift at boot will show it.
+    + debian/templates.in:
+      - Change default value of grub2/linux_cmdline_default to "quiet
+        splash".
+    + debian/grub.d/05_debian_theme:
+      - Set a monochromatic theme for Ubuntu.
+    + debian/legacy/update-grub:
+      - Apply Ubuntu branding: title, recovery mode, quiet option, and tweak
+        how memtest86+ is displayed.
+      - Use UUIDs where appropriate.
+    + debian/patches/03_ubuntu_grub_standards:
+      - Remove GNU/Linux from default string.
+    + debian/patches/10_crashkernel.patch:
+      - Add crashkernel= options if kdump and makedumpfile are available.
+    + debian/patches/951_quick_boot.diff:
+      - If other operating systems are installed, then automatically unhide
+        the menu.
+      - Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus if
+        available to check whether Shift is pressed. If it is, show the
+        menu, otherwise boot immediately. If keystatus is not available,
+        then fall back to a short delay interruptible with Escape.
+    + debian/patches/952_sleep_shift.diff:
+      - Allow Shift to interrupt 'sleep --interruptible'.
+  * Drop 950_getkeystatus.diff, merged upstream.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 01 Sep 2009 17:37:19 +0100
+
+grub2 (1.97~beta1-1) unstable; urgency=low
+
+  * New upstream beta release.
+
+  [ Updated translations ]
+  * German (de.po) by Helge Kreutzmann. (Closes: #544261)
+  * Asturian (ast.po) by Marcos.
+  * Georgian (ka.po) by Aiet Kolkhi.
+
+  [ Robert Millan ]
+  * Merge config, templates, postinst, postrm, dirs and install files
+    into a single source.
+  * Disable Linux-specific strings on GNU/kFreeBSD.  Enable translations
+    in grub2/linux_cmdline_default.  Add grub2/kfreebsd_* strings (still
+    unused).
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sun, 30 Aug 2009 18:01:40 +0200
+
+grub2 (1.96+20090829-1) unstable; urgency=low
+
+  * New SVN snapshot.
+    - Fix filesystem mapping on GNU/kFreeBSD.  (Closes: #543950)
+
+  * New grub-extras SVN snapshot.
+    - Add 915resolution support to the GMA500 (poulsbo) graphics chipset.
+      Thanks to Pedro Bulach Gapski. (Closes: #543917)
+
+  * Use `cp -p' to copy /usr/share/grub/default/grub to the temporary
+    file to preverse permissions.
+  * Remove also efiemu files from /boot/grun on purge if requested.
+  * Check that GRUB_CMDLINE_LINUX and GRUB_CMDLINUX_LINUX_DEFAULT is at
+    the start of line in *.postinst.
+  * Don't check that $GRUB_CMDLINE_LINUX{,DEFAULT} are non empty strings
+    in *.config.
+  * Add empty GRUB_CMDLINE_LINUX to /usr/share/grub/default/grub.
+  * Factorise the editing of the temporary file. Thanks to Martin F
+    Krafft.
+  * Read in /etc/default/grub in *.config files.
+
+  [ Updated translations ]
+  * French (fr.po) by Christian Perrier. (Closes: #544023)
+  * Russian (ru.po) by Yuri Kozlov. (Closes: #544077)
+  * Italian (it.po) by Luca Monducci. (Closes: #544200)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sat, 29 Aug 2009 17:01:17 +0200
+
 grub2 (1.96+20090826-3ubuntu3) karmic; urgency=low
 
   * 951_quick_boot.diff: Always initialise timeout from GRUB_TIMEOUT,
