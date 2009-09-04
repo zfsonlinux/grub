@@ -1,3 +1,10 @@
+grub2 (1.97~beta1-1ubuntu3) karmic; urgency=low
+
+  * Restore legacy version of grub-set-default, now moved to
+    /usr/lib/grub-legacy.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 04 Sep 2009 15:35:19 +0100
+
 grub2 (1.97~beta1-1ubuntu2) karmic; urgency=low
 
   * debian/patches/953_no_eh_frame.diff: Build with -fno-dwarf2-cfi-asm to
