@@ -1,3 +1,9 @@
+Description: Add crashkernel= options if kdump and makedumpfile are
+ available. See
+ https://blueprints.launchpad.net/ubuntu/+spec/foundations-karmic-linux-kernel-crash-dump.
+UbuntuSpecific: Ubuntu kernel crash handling; requires several other fairly
+ distribution-specific pieces to work properly.
+
 diff -Nur -x '*.orig' -x '*~' grub2-1.96+20090725-1ubuntu1/util/grub.d/10_linux.in grub2-1.96+20090725-1ubuntu1.new/util/grub.d/10_linux.in
 --- grub2-1.96+20090725-1ubuntu1/util/grub.d/10_linux.in	2009-07-30 12:29:50.000000000 -0500
 +++ grub2-1.96+20090725-1ubuntu1.new/util/grub.d/10_linux.in	2009-07-30 12:30:44.000000000 -0500

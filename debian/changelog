@@ -1,3 +1,28 @@
+grub2 (1.97~beta1-1ubuntu2) karmic; urgency=low
+
+  * debian/patches/953_no_eh_frame.diff: Build with -fno-dwarf2-cfi-asm to
+    stop gcc-4.4 generating .eh_frame sections that cause core.img to be too
+    big to embed in some common cases (LP: #423412).
+  * debian/patches/954_normal_quiet.diff: Don't display introductory message
+    about line editing unless we're actually offering a shell prompt.
+  * debian/patches/955_really_quiet.diff: Remove some verbose messages
+    printed before reading the configuration file. In some ways this is
+    awkward because it makes debugging harder, but it's a requirement for a
+    smooth-looking boot process; we may be able to do better in future (LP:
+    #386922).
+  * debian/patches/956_linux_quiet.diff: If the environment variable "quiet"
+    is set to something other than 1, suppress progress messages as the
+    kernel and initrd load. Set this for non-recovery kernel menu entries
+    (LP: #386922).
+  * debian/patches/957_savedefault.diff: Add GRUB_DEFAULT=saved, as well as
+    grub-set-default and grub-reboot utilities. Provides functionality
+    essentially equivalent to GRUB Legacy's savedefault (LP: #216178).
+  * debian/rules, debian/grub-pc.install.in: Install grub-reboot and
+    grub-set-default only in grub-common.
+  * Add tag information to old Ubuntu patches.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 04 Sep 2009 15:02:36 +0100
+
 grub2 (1.97~beta1-1ubuntu1) karmic; urgency=low
 
   * Resynchronise with Debian. Remaining changes:

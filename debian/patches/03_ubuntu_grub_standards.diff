@@ -1,3 +1,6 @@
+Description: Remove GNU/Linux from default distributor string.
+UbuntuSpecific: We call it "Ubuntu", not "Ubuntu GNU/Linux".
+
 diff -Nur -x '*.orig' -x '*~' grub2-1.96+20080724/util/grub.d/10_linux.in grub2-1.96+20080724.new/util/grub.d/10_linux.in
 --- grub2-1.96+20080724/util/grub.d/10_linux.in	2008-06-26 17:03:26.000000000 +1000
 +++ grub2-1.96+20080724.new/util/grub.d/10_linux.in	2008-11-17 11:25:53.000000000 +1100
