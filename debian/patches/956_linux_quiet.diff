@@ -1,0 +1,90 @@
+Ubuntu: https://bugs.launchpad.net/ubuntu/+source/grub2/+bug/386922
+Upstream: not yet, but probably can and should be
+Description: If the environment variable "quiet" is set to something other
+ than 1, suppress progress messages as the kernel and initrd load. Set this
+ for non-recovery kernel menu entries.
+
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/loader/i386/linux.c grub2-1.97~beta1.new/loader/i386/linux.c
+--- grub2-1.97~beta1/loader/i386/linux.c	2009-08-30 17:02:11.000000000 +0100
++++ grub2-1.97~beta1.new/loader/i386/linux.c	2009-09-03 21:23:22.000000000 +0100
+@@ -571,6 +571,7 @@
+   grub_ssize_t len;
+   int i;
+   char *dest;
++  char *quiet;
+ 
+   grub_dl_ref (my_mod);
+ 
+@@ -685,8 +686,10 @@
+ 
+   grub_file_seek (file, real_size + GRUB_DISK_SECTOR_SIZE);
+ 
+-  grub_printf ("   [Linux-bzImage, setup=0x%x, size=0x%x]\n",
+-	       (unsigned) real_size, (unsigned) prot_size);
++  quiet = grub_env_get ("quiet");
++  if (!quiet || *quiet == '0')
++    grub_printf ("   [Linux-bzImage, setup=0x%x, size=0x%x]\n",
++		 (unsigned) real_size, (unsigned) prot_size);
+ 
+   /* Look for memory size and video mode specified on the command line.  */
+   linux_mem_size = 0;
+@@ -867,6 +870,7 @@
+   grub_addr_t addr_min, addr_max;
+   grub_addr_t addr;
+   struct linux_kernel_header *lh;
++  char *quiet;
+ 
+   if (argc == 0)
+     {
+@@ -936,8 +940,10 @@
+       goto fail;
+     }
+ 
+-  grub_printf ("   [Initrd, addr=0x%x, size=0x%x]\n",
+-	       (unsigned) addr, (unsigned) size);
++  quiet = grub_env_get ("quiet");
++  if (!quiet || *quiet == '0')
++    grub_printf ("   [Initrd, addr=0x%x, size=0x%x]\n",
++		 (unsigned) addr, (unsigned) size);
+ 
+   lh->ramdisk_image = addr;
+   lh->ramdisk_size = size;
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/normal/menu_text.c grub2-1.97~beta1.new/normal/menu_text.c
+--- grub2-1.97~beta1/normal/menu_text.c	2009-08-30 17:02:11.000000000 +0100
++++ grub2-1.97~beta1.new/normal/menu_text.c	2009-09-03 21:27:22.000000000 +0100
+@@ -516,7 +516,9 @@
+ notify_booting (grub_menu_entry_t entry,
+ 		void *userdata __attribute__((unused)))
+ {
+-  grub_printf ("  Booting \'%s\'\n\n", entry->title);
++  char *quiet = grub_env_get ("quiet");
++  if (!quiet || *quiet == '0')
++    grub_printf ("  Booting \'%s\'\n\n", entry->title);
+ }
+ 
+ /* Callback invoked when a default menu entry executed because of a timeout
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/10_linux.in grub2-1.97~beta1.new/util/grub.d/10_linux.in
+--- grub2-1.97~beta1/util/grub.d/10_linux.in	2009-09-03 21:23:13.000000000 +0100
++++ grub2-1.97~beta1.new/util/grub.d/10_linux.in	2009-09-03 21:23:22.000000000 +0100
+@@ -53,6 +53,11 @@
+   cat << EOF
+ menuentry "$1" {
+ EOF
++  if [ "x$3" = "xquiet" ]; then
++    cat << EOF
++	set quiet=1
++EOF
++  fi
+   prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/"
+   cat << EOF
+ 	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro $2
+@@ -98,7 +103,8 @@
+   fi
+ 
+   linux_entry "${OS}, Linux ${version}" \
+-      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}"
++      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}" \
++      quiet
+   if [ "x${GRUB_DISABLE_LINUX_RECOVERY}" != "xtrue" ]; then
+     linux_entry "${OS}, Linux ${version} (recovery mode)" \
+ 	"single ${GRUB_CMDLINE_LINUX}"

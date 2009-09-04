@@ -1,0 +1,34 @@
+Ubuntu: https://bugs.launchpad.net/ubuntu/+source/grub2/+bug/386922
+Description: Remove some verbose messages printed before reading the
+ configuration file. In some ways this is awkward because it makes debugging
+ harder, but it's a requirement for a smooth-looking boot process; we may be
+ able to do better in future.
+UbuntuSpecific: Removes status messages that are arguably useful for
+ debugging; we think it looks tidier, but upstream isn't interested.
+
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/kern/main.c grub2-1.97~beta1.new/kern/main.c
+--- grub2-1.97~beta1/kern/main.c	2009-08-30 17:02:11.000000000 +0100
++++ grub2-1.97~beta1.new/kern/main.c	2009-09-03 16:50:35.000000000 +0100
+@@ -152,11 +152,6 @@
+   /* First of all, initialize the machine.  */
+   grub_machine_init ();
+ 
+-  /* Hello.  */
+-  grub_setcolorstate (GRUB_TERM_COLOR_HIGHLIGHT);
+-  grub_printf ("Welcome to GRUB!\n\n");
+-  grub_setcolorstate (GRUB_TERM_COLOR_STANDARD);
+-
+   /* Load pre-loaded modules and free the space.  */
+   grub_register_exported_symbols ();
+   grub_load_modules ();
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/kern/rescue_reader.c grub2-1.97~beta1.new/kern/rescue_reader.c
+--- grub2-1.97~beta1/kern/rescue_reader.c	2009-08-30 17:02:11.000000000 +0100
++++ grub2-1.97~beta1.new/kern/rescue_reader.c	2009-09-03 16:50:35.000000000 +0100
+@@ -29,7 +29,6 @@
+ static grub_err_t
+ grub_rescue_init (void)
+ {
+-  grub_printf ("Entering rescue mode...\n");
+   return 0;
+ }
+ 
