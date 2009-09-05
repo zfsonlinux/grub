@@ -1,7 +1,7 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
  *  Copyright (C) 1999,2000,2001,2002,2003,2004  Free Software Foundation, Inc.
- *  Copyright 2008 Sun Microsystems, Inc.
+ *  Copyright 2008  Sun Microsystems, Inc.
  *  Copyright (C) 2009  Vladimir Serbinenko <phcoder@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -590,7 +590,7 @@ dmu_read (dnode_end_t * dn, grub_uint64_t blkid, void **buf,
   int epbs = dn->dn.dn_indblkshift - SPA_BLKPTRSHIFT;
   blkptr_t *bp, *tmpbuf = 0;
   grub_zfs_endian_t endian;
-  grub_err_t err;
+  grub_err_t err = GRUB_ERR_NONE;
 
   bp = grub_malloc (sizeof (blkptr_t));
   if (!bp)
@@ -1466,13 +1466,11 @@ dnode_get_fullpath (const char *fullpath, dnode_end_t * mdn,
 		    struct grub_zfs_data *data)
 {
   char *fsname, *snapname;
-  const char *ptr_at, *ptr_slash, *filename;
+  const char *ptr_at, *filename;
   grub_uint64_t headobj;
   grub_err_t err;
 
   ptr_at = grub_strchr (fullpath, '@');
-  if (ptr_at)
-    ptr_slash = grub_strchr (ptr_at, '/');
   if (! ptr_at)
     {
       *isfs = 1;
@@ -1482,6 +1480,8 @@ dnode_get_fullpath (const char *fullpath, dnode_end_t * mdn,
     }
   else
     {
+      const char *ptr_slash = grub_strchr (ptr_at, '/');
+
       *isfs = 0;
       fsname = grub_malloc (ptr_at - fullpath + 1);
       if (!fsname)
@@ -1935,6 +1935,7 @@ zfs_mount (grub_device_t dev)
   objset_phys_t *osp = 0;
   grub_size_t ospsize;
   grub_err_t err;
+  int vdevnum;
 
   if (! dev->disk)
     {
@@ -1969,7 +1970,15 @@ zfs_mount (grub_device_t dev)
       return 0;
     }
 
-  for (label = 0; ubbest == NULL && label < VDEV_LABELS; label++)
+  vdevnum = VDEV_LABELS;
+
+  /* Don't check back labels on CDROM.  */
+  if (! data->disk->partition
+      && data->disk->dev->id == GRUB_DISK_DEVICE_BIOSDISK_ID
+      && data->disk->id >= 0xc0)
+    vdevnum = VDEV_LABELS / 2;
+
+  for (label = 0; ubbest == NULL && label < vdevnum; label++)
     {
       grub_zfs_endian_t ub_endian = UNKNOWN_ENDIAN;
       grub_dprintf ("zfs", "label %d\n", label);

@@ -1,3 +1,6 @@
+
+# This file is concatenated.  Do not delete the newline above.
+
 Template: grub-pc/chainload_from_menu.lst
 Type: boolean
 Default: true
@@ -17,14 +20,6 @@ _Description: Chainload from menu.lst?
  you can do so by issuing (as root) the following command:
  .
  upgrade-from-grub-legacy
-
-Template: grub-pc/linux_cmdline
-Type: string
-Default: fillme
-_Description: Linux command line:
- The following Linux command line was extracted from the `kopt' parameter
- in GRUB Legacy's menu.lst.  Please verify that it is correct, and modify
- it if necessary.
 
 Template: grub-pc/install_devices
 Type: multiselect
