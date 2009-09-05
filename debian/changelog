@@ -1,3 +1,141 @@
+grub2 (1.97~beta2-2) unstable; urgency=low
+
+  [ Updated translations ]
+  * Dutch (nl.po) by Paul Gevers. (Closes: #545050)
+
+  [ Felix Zielcke ]
+  * Move GRUB Legacy's grub-set-default to /usr/lib/grub-legacy in
+    preparation for GRUB 2's grub-set-default.
+  * Remove password lines in bug script.
+
+  [ Robert Millan ]
+  * Do not conflict with `grub' dummy package (this prevented upgrades).
+  * patches/003_grub_probe_segfault.diff: Disable file test codepath, which
+    wasn't normally used before.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sat, 05 Sep 2009 00:27:22 +0200
+
+grub2 (1.97~beta2-1) unstable; urgency=low
+
+  * New upstream beta release.
+    - Fix loading of FreeBSD modules. (Closes: #544305)
+
+  [ Updated translations ]
+  * French (fr.po) by Christian Perrier. (Closes: #544320)
+  * Czech (cs.po) by Miroslav Kure. (Closes: #544327)
+  * Belarusian (be.po) by Hleb Rubanau.
+  * Arabic (ar.po) by Ossama M. Khayat.
+  * Catalan (ca.po) by Juan Andrés Gimeno Crespo.
+  * Russian (ru.po) by Yuri Kozlov. (Closes: #544730)
+  * Swedish (sv.po) by Martin Ågren. (Closes: #544759)
+  * Brazilian Portuguese (pt_BR.po) by Flamarion Jorge. (Closes: #544810)
+  * German (de.po) by Helge Kreutzmann. (Closes: #544912)
+
+  [ Robert Millan ]
+  * Build with GCC 4.4.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Fri, 04 Sep 2009 14:40:20 +0200
+
+grub2 (1.97~beta1-1) unstable; urgency=low
+
+  * New upstream beta release.
+
+  [ Updated translations ]
+  * German (de.po) by Helge Kreutzmann. (Closes: #544261)
+  * Asturian (ast.po) by Marcos.
+  * Georgian (ka.po) by Aiet Kolkhi.
+
+  [ Robert Millan ]
+  * Merge config, templates, postinst, postrm, dirs and install files
+    into a single source.
+  * Disable Linux-specific strings on GNU/kFreeBSD.  Enable translations
+    in grub2/linux_cmdline_default.  Add grub2/kfreebsd_* strings (still
+    unused).
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sun, 30 Aug 2009 18:01:40 +0200
+
+grub2 (1.96+20090829-1) unstable; urgency=low
+
+  * New SVN snapshot.
+    - Fix filesystem mapping on GNU/kFreeBSD.  (Closes: #543950)
+
+  * New grub-extras SVN snapshot.
+    - Add 915resolution support to the GMA500 (poulsbo) graphics chipset.
+      Thanks to Pedro Bulach Gapski. (Closes: #543917)
+
+  * Use `cp -p' to copy /usr/share/grub/default/grub to the temporary
+    file to preverse permissions.
+  * Remove also efiemu files from /boot/grub on purge if requested.
+  * Check that GRUB_CMDLINE_LINUX and GRUB_CMDLINUX_LINUX_DEFAULT is at
+    the start of line in *.postinst.
+  * Don't check that $GRUB_CMDLINE_LINUX{,DEFAULT} are non empty strings
+    in *.config.
+  * Add empty GRUB_CMDLINE_LINUX to /usr/share/grub/default/grub.
+  * Factorise the editing of the temporary file. Thanks to Martin F
+    Krafft.
+  * Read in /etc/default/grub in *.config files.
+
+  [ Updated translations ]
+  * French (fr.po) by Christian Perrier. (Closes: #544023)
+  * Russian (ru.po) by Yuri Kozlov. (Closes: #544077)
+  * Italian (it.po) by Luca Monducci. (Closes: #544200)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sat, 29 Aug 2009 17:01:17 +0200
+
+grub2 (1.96+20090826-3) unstable; urgency=low
+
+  * Add missing quotes in grub-pc.config and *.postinst.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 26 Aug 2009 19:14:23 +0200
+
+grub2 (1.96+20090826-2) unstable; urgency=low
+
+  * Really use the correct templates in grub-pc.config. ARGS.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 26 Aug 2009 14:10:41 +0200
+
+grub2 (1.96+20090826-1) unstable; urgency=low
+
+  * New SVN snapshot.
+
+  * Use the right templates in grub-pc.config. (Closes: #543615)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 26 Aug 2009 11:00:36 +0200
+
+grub2 (1.96+20090825-1) unstable; urgency=low
+
+  * New SVN snapshot.
+    - Enable gfxterm only if there's a suitable video backend and don't
+      print an error if not. (Closes: #520846)
+
+  [ Felix Zielcke ]
+  * Copy unicode.pf2 instead of ascii.pf2 to /boot/grub in grub-pc
+    postinst (Closes: #542314).
+  * Update Standards version to 3.8.3.
+  * Use DEB_HOST_ARCH_CPU for the generation of the lintian overrides.
+  * Fix calling the grub-pc/postrm_purge_boot_grub template in
+    grub-pc.postinst.
+  * Handle GRUB_CMDLINE_LINUX and GRUB_CMDLINE_LINUX_DEFAULT via
+    debconf. Thanks to Martin F. Krafft and Colin Watson for idea and
+    hints.
+  * Use ucfr --force when /etc/default/grub is registered to a grub-* package.
+  * Use #!/bin/sh in *.config and fix a small bashism in grub-pc.config.
+
+  [ Robert Millan ]
+  * patches/907_terminal_output_workaround.diff: Remove.  It seems that
+    it wasn't really necessary.
+  * grub-pc.postinst: Avoid printing an error if /etc/kernel-img.conf
+    doesn't exist, because it is misleading.  We simply refrain from
+    fixing it and move along.
+  * grub-pc.postinst: Don't schedule generation of grub.cfg via "grub-install"
+    code path unless we actually run grub-install.
+  * grub-pc.postinst: Only copy unicode.pf2 and moreblue-orbit-grub.png when
+    /boot/grub/grub.cfg is scheduled to be generated.
+  * legacy/upgrade-from-grub-legacy: Reset grub-pc/install_devices.
+    Thanks Colin Watson.  (Closes: #541230)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 25 Aug 2009 21:45:24 +0200
+
 grub2 (1.96+20090808-1) unstable; urgency=low
 
   * New SVN snapshot.
