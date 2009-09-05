@@ -205,6 +205,10 @@ get_bootpath (char *nvlist, char **bootpath, char **devid)
 	{
 	  char *child;
 
+	  child = grub_zfs_nvlist_lookup_nvlist_array (nvlist,
+						       ZPOOL_CONFIG_CHILDREN,
+						       i);
+
 	  get_bootpath (child, bootpath, devid);
 
 	  grub_free (child);
@@ -322,7 +326,7 @@ grub_cmd_zfs_bootfs (grub_command_t cmd __attribute__ ((unused)), int argc,
     return grub_error (GRUB_ERR_BAD_ARGUMENT, "filesystem name required");
 
   devname = grub_file_get_device_name (args[0]);
-  if (!devname)
+  if (grub_errno)
     return grub_errno;
 
   dev = grub_device_open (devname);
@@ -405,7 +409,7 @@ GRUB_MOD_INIT (zfsinfo)
 				    "zfsinfo DEVICE",
 				    "Print ZFS info about DEVICE.");
   cmd_bootfs = grub_register_command ("zfs-bootfs", grub_cmd_zfs_bootfs,
-				      "zfsinfo FILESYSTEM [VARIABLE]",
+				      "zfs-bootfs FILESYSTEM [VARIABLE]",
 				      "Print ZFS-BOOTFSOBJ or set it to VARIABLE");
 }
 
