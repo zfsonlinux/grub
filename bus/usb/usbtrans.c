@@ -74,7 +74,7 @@ grub_usb_control_msg (grub_usb_device_t dev,
       return grub_errno;
     }
 
-  /* Build a Setup packet.  XXX: Endianness.  */
+  /* Build a Setup packet.  XXX: Endianess.  */
   setupdata.reqtype = reqtype;
   setupdata.request = request;
   setupdata.value = value;
