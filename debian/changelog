@@ -1,3 +1,91 @@
+grub2 (1.97~beta2-2ubuntu1) karmic; urgency=low
+
+  * Resynchronise with Debian. Remaining changes:
+    + debian/control:
+      - Recommend rather than Suggest os-prober.
+    + debian/default/grub:
+      - Adjust for default Ubuntu boot options.
+      - Use GRUB_CMDLINE_LINUX_DEFAULT option to set "quiet splash" for
+        default items only.  These options won't be set in single user mode.
+      - Default to hiding the menu; holding down Shift at boot will show it.
+    + debian/templates.in:
+      - Change default value of grub2/linux_cmdline_default to "quiet
+        splash".
+    + debian/grub.d/05_debian_theme:
+      - Set a monochromatic theme for Ubuntu.
+    + debian/legacy/update-grub:
+      - Apply Ubuntu branding: title, recovery mode, quiet option, and tweak
+        how memtest86+ is displayed.
+      - Use UUIDs where appropriate.
+    + debian/patches/03_ubuntu_grub_standards:
+      - Remove GNU/Linux from default string.
+    + debian/patches/10_crashkernel.patch:
+      - Add crashkernel= options if kdump and makedumpfile are available.
+    + debian/patches/951_quick_boot.diff:
+      - If other operating systems are installed, then automatically unhide
+        the menu.
+      - Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus if
+        available to check whether Shift is pressed. If it is, show the
+        menu, otherwise boot immediately. If keystatus is not available,
+        then fall back to a short delay interruptible with Escape.
+    + debian/patches/952_sleep_shift.diff:
+      - Allow Shift to interrupt 'sleep --interruptible'.
+    + debian/patches/954_normal_quiet.diff:
+      - Don't display introductory message about line editing unless we're
+        actually offering a shell prompt.
+    + debian/patches/955_really_quiet.diff:
+      - Remove some verbose messages printed before reading the
+        configuration file.
+    + debian/patches/956_linux_quiet.diff:
+      - If the environment variable "quiet" is set to something other than
+        1, suppress progress messages as the kernel and initrd load. Set
+        this for non-recovery kernel menu entries.
+    + debian/patches/957_savedefault.diff, debian/rules:
+      - Add GRUB_DEFAULT=saved, as well as grub-set-default and grub-reboot
+        utilities. Provides functionality essentially equivalent to GRUB
+        Legacy's savedefault.
+  * Drop 953_no_eh_frame.diff, merged upstream.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 07 Sep 2009 13:33:12 +0100
+
+grub2 (1.97~beta2-2) unstable; urgency=low
+
+  [ Updated translations ]
+  * Dutch (nl.po) by Paul Gevers. (Closes: #545050)
+
+  [ Felix Zielcke ]
+  * Move GRUB Legacy's grub-set-default to /usr/lib/grub-legacy in
+    preparation for GRUB 2's grub-set-default.
+  * Remove password lines in bug script.
+
+  [ Robert Millan ]
+  * Do not conflict with `grub' dummy package (this prevented upgrades).
+  * patches/003_grub_probe_segfault.diff: Disable file test codepath, which
+    wasn't normally used before.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sat, 05 Sep 2009 00:27:22 +0200
+
+grub2 (1.97~beta2-1) unstable; urgency=low
+
+  * New upstream beta release.
+    - Fix loading of FreeBSD modules. (Closes: #544305)
+
+  [ Updated translations ]
+  * French (fr.po) by Christian Perrier. (Closes: #544320)
+  * Czech (cs.po) by Miroslav Kure. (Closes: #544327)
+  * Belarusian (be.po) by Hleb Rubanau.
+  * Arabic (ar.po) by Ossama M. Khayat.
+  * Catalan (ca.po) by Juan Andrés Gimeno Crespo.
+  * Russian (ru.po) by Yuri Kozlov. (Closes: #544730)
+  * Swedish (sv.po) by Martin Ågren. (Closes: #544759)
+  * Brazilian Portuguese (pt_BR.po) by Flamarion Jorge. (Closes: #544810)
+  * German (de.po) by Helge Kreutzmann. (Closes: #544912)
+
+  [ Robert Millan ]
+  * Build with GCC 4.4.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Fri, 04 Sep 2009 14:40:20 +0200
+
 grub2 (1.97~beta1-1ubuntu4) karmic; urgency=low
 
   * Move grub-reboot and grub-set-default to grub-$platform, since
@@ -102,7 +190,7 @@ grub2 (1.96+20090829-1) unstable; urgency=low
 
   * Use `cp -p' to copy /usr/share/grub/default/grub to the temporary
     file to preverse permissions.
-  * Remove also efiemu files from /boot/grun on purge if requested.
+  * Remove also efiemu files from /boot/grub on purge if requested.
   * Check that GRUB_CMDLINE_LINUX and GRUB_CMDLINUX_LINUX_DEFAULT is at
     the start of line in *.postinst.
   * Don't check that $GRUB_CMDLINE_LINUX{,DEFAULT} are non empty strings

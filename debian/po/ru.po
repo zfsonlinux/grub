@@ -1,4 +1,4 @@
-# translation of grub2_1.96+20090826-3_ru.po to Russian
+# translation of ru.po to Russian
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
@@ -6,10 +6,10 @@
 # Yuri Kozlov <yuray@komyakino.ru>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: grub2 1.96+20090826-3\n"
+"Project-Id-Version: grub2 1.96+1.96+20090829-2\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
 "POT-Creation-Date: 2009-08-30 17:54+0200\n"
-"PO-Revision-Date: 2009-08-28 20:07+0400\n"
+"PO-Revision-Date: 2009-08-30 19:10+0400\n"
 "Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -79,7 +79,7 @@ msgstr "upgrade-from-grub-legacy"
 #. Description
 #: ../templates.in:1001
 msgid "Linux command line:"
-msgstr "Командная строка Linux:"
+msgstr "Строка команд Linux:"
 
 #. Type: string
 #. Description
@@ -89,17 +89,15 @@ msgid ""
 "`kopt' parameter in GRUB Legacy's menu.lst.  Please verify that it is "
 "correct, and modify it if necessary."
 msgstr ""
-"Представленная ниже строка была извлечена из /etc/default/grub или параметра "
-"`kopt' старого файла GRUB menu.lst. Проверьте, что всё правильно, или "
-"измените её, если требуется."
+"Представленная ниже строка команд Linux была извлечена из /etc/default/grub "
+"или параметра `kopt' старого файла GRUB menu.lst. Проверьте, что всё "
+"правильно, или измените её, если требуется."
 
 #. Type: string
 #. Description
 #: ../templates.in:2001
-#, fuzzy
-#| msgid "Linux command line:"
 msgid "Linux default command line:"
-msgstr "Командная строка Linux:"
+msgstr "Строка команд Linux по умолчанию:"
 
 #. Type: string
 #. Description
@@ -108,39 +106,32 @@ msgid ""
 "The following string will be used as Linux parameters for the default menu "
 "entry but not for the recovery mode."
 msgstr ""
+"Данная строка будет использоваться в качестве параметров Linux в меню в "
+"записи по умолчанию, кроме режима восстановления."
 
 #. Type: string
 #. Description
 #: ../templates.in:3001
-#, fuzzy
-#| msgid "Linux command line:"
 msgid "kFreeBSD command line:"
-msgstr "Командная строка Linux:"
+msgstr "Строка команд kFreeBSD:"
 
 #. Type: string
 #. Description
 #: ../templates.in:3001
-#, fuzzy
-#| msgid ""
-#| "The following Linux command line was extracted from /etc/default/grub or "
-#| "the `kopt' parameter in GRUB Legacy's menu.lst.  Please verify that it is "
-#| "correct, and modify it if necessary."
 msgid ""
 "The following kFreeBSD command line was extracted from /etc/default/grub or "
 "the `kopt' parameter in GRUB Legacy's menu.lst.  Please verify that it is "
 "correct, and modify it if necessary."
 msgstr ""
-"Представленная ниже строка была извлечена из /etc/default/grub или параметра "
-"`kopt' старого файла GRUB menu.lst. Проверьте, что всё правильно, или "
-"измените её, если требуется."
+"Представленная ниже строка команд kFreeBSD была извлечена из /etc/default/"
+"grub или параметра `kopt' старого файла GRUB menu.lst. Проверьте, что всё "
+"правильно, или измените её, если требуется."
 
 #. Type: string
 #. Description
 #: ../templates.in:4001
-#, fuzzy
-#| msgid "Linux command line:"
 msgid "kFreeBSD default command line:"
-msgstr "Командная строка Linux:"
+msgstr "Строка команд kFreeBSD по умолчанию:"
 
 #. Type: string
 #. Description
@@ -149,3 +140,5 @@ msgid ""
 "The following string will be used as kFreeBSD parameters for the default "
 "menu entry but not for the recovery mode."
 msgstr ""
+"Данная строка будет использоваться в качестве параметров kFreeBSD в меню в "
+"записи по умолчанию, кроме режима восстановления."
