@@ -1,3 +1,24 @@
+grub2 (1.97~beta2-2ubuntu2) karmic; urgency=low
+
+  * debian/patches/951_quick_boot.diff: Only do the hidden-timeout checks if
+    timeout is not already set to -1 (i.e. show menu, no timeout).
+  * debian/patches/954_normal_quiet.diff: Don't clear the screen just before
+    booting if we never drew the menu in the first place.
+  * debian/patches/955_really_quiet.diff: Remove "Booting" message; it turns
+    out to be hard to suppress any other way.
+  * debian/patches/956_linux_quiet.diff: Don't try to suppress "Booting"
+    based on the value of "quiet", as the menu entry commands aren't run
+    until after this message.
+  * debian/patches/958_ntfs_64bit.diff: Handle 64-bit file sizes in NTFS.
+  * debian/patches/959_loopback_root.diff: Keep the loopback file open so
+    that subsequent changes to the "root" environment variable don't affect
+    it.
+  * debian/config.in, debian/postinst.in, debian/grub-pc.templates.in:
+    Migrate timeout settings from menu.lst (LP: #386789).
+  * debian/grub-pc.templates.in: Add grub-pc/kopt_extracted template.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 11 Sep 2009 15:40:38 +0100
+
 grub2 (1.97~beta2-2ubuntu1) karmic; urgency=low
 
   * Resynchronise with Debian. Remaining changes:

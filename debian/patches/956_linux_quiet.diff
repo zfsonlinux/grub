@@ -49,20 +49,6 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/loader/i386/linux.c grub2-1.97~be
  
    lh->ramdisk_image = addr;
    lh->ramdisk_size = size;
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/normal/menu_text.c grub2-1.97~beta1.new/normal/menu_text.c
---- grub2-1.97~beta1/normal/menu_text.c	2009-08-30 17:02:11.000000000 +0100
-+++ grub2-1.97~beta1.new/normal/menu_text.c	2009-09-03 21:27:22.000000000 +0100
-@@ -516,7 +516,9 @@
- notify_booting (grub_menu_entry_t entry,
- 		void *userdata __attribute__((unused)))
- {
--  grub_printf ("  Booting \'%s\'\n\n", entry->title);
-+  char *quiet = grub_env_get ("quiet");
-+  if (!quiet || *quiet == '0')
-+    grub_printf ("  Booting \'%s\'\n\n", entry->title);
- }
- 
- /* Callback invoked when a default menu entry executed because of a timeout
 diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/10_linux.in grub2-1.97~beta1.new/util/grub.d/10_linux.in
 --- grub2-1.97~beta1/util/grub.d/10_linux.in	2009-09-03 21:23:13.000000000 +0100
 +++ grub2-1.97~beta1.new/util/grub.d/10_linux.in	2009-09-03 21:23:22.000000000 +0100

@@ -7,9 +7,9 @@ UbuntuSpecific: May or may not remain Ubuntu-specific, although this is not
  obviously wanted upstream. It implements a requirement of
  https://wiki.ubuntu.com/DesktopExperienceTeam/KarmicBootExperienceDesignSpec#Bootloader.
 
-diff -Nur -x '*.orig' -x '*~' grub2-1.96+20090826/util/grub.d/00_header.in grub2-1.96+20090826.new/util/grub.d/00_header.in
---- grub2-1.96+20090826/util/grub.d/00_header.in	2009-08-26 10:01:15.000000000 +0100
-+++ grub2-1.96+20090826.new/util/grub.d/00_header.in	2009-08-27 14:11:33.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/util/grub.d/00_header.in grub2-1.97~beta2.new/util/grub.d/00_header.in
+--- grub2-1.97~beta2/util/grub.d/00_header.in	2009-09-09 17:25:46.000000000 +0100
++++ grub2-1.97~beta2.new/util/grub.d/00_header.in	2009-09-10 23:37:04.000000000 +0100
 @@ -100,19 +100,6 @@
    ;;
  esac
@@ -31,10 +31,10 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.96+20090826/util/grub.d/00_header.in grub2
  set timeout=${GRUB_TIMEOUT}
  EOF
 -fi
-diff -Nur -x '*.orig' -x '*~' grub2-1.96+20090826/util/grub.d/30_os-prober.in grub2-1.96+20090826.new/util/grub.d/30_os-prober.in
---- grub2-1.96+20090826/util/grub.d/30_os-prober.in	2009-08-26 10:01:15.000000000 +0100
-+++ grub2-1.96+20090826.new/util/grub.d/30_os-prober.in	2009-08-27 14:09:45.000000000 +0100
-@@ -22,18 +22,57 @@
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/util/grub.d/30_os-prober.in grub2-1.97~beta2.new/util/grub.d/30_os-prober.in
+--- grub2-1.97~beta2/util/grub.d/30_os-prober.in	2009-09-09 17:25:46.000000000 +0100
++++ grub2-1.97~beta2.new/util/grub.d/30_os-prober.in	2009-09-10 23:38:15.000000000 +0100
+@@ -22,18 +22,61 @@
  
  . ${libdir}/grub/grub-mkconfig_lib
  
@@ -51,22 +51,26 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.96+20090826/util/grub.d/30_os-prober.in gr
 +
 +      if [ "x${GRUB_HIDDEN_TIMEOUT}" = "x0" ] ; then
 +	cat <<EOF
-+if keystatus; then
-+  if keystatus --shift; then
-+    set timeout=-1
++if [ \${timeout} != -1 ]; then
++  if keystatus; then
++    if keystatus --shift; then
++      set timeout=-1
++    else
++      set timeout=0
++    fi
 +  else
-+    set timeout=0
-+  fi
-+else
-+  if sleep$verbose --interruptible 3 ; then
-+    set timeout=0
++    if sleep$verbose --interruptible 3 ; then
++      set timeout=0
++    fi
 +  fi
 +fi
 +EOF
 +      else
 +	cat << EOF
-+if sleep$verbose --interruptible ${GRUB_HIDDEN_TIMEOUT} ; then
-+  set timeout=0
++if [ \${timeout} != -1 ]; then
++  if sleep$verbose --interruptible ${GRUB_HIDDEN_TIMEOUT} ; then
++    set timeout=0
++  fi
 +fi
 +EOF
 +      fi
@@ -92,7 +96,7 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.96+20090826/util/grub.d/30_os-prober.in gr
    exit 0
  fi
  
-@@ -48,6 +87,7 @@
+@@ -48,6 +91,7 @@
    fi
  
    echo "Found ${LONGNAME} on ${DEVICE}" >&2
@@ -100,7 +104,7 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.96+20090826/util/grub.d/30_os-prober.in gr
  
    case ${BOOT} in
      chain)
-@@ -154,3 +194,5 @@
+@@ -154,3 +198,5 @@
      ;;
    esac
  done
