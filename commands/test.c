@@ -88,13 +88,6 @@ test_parse (char **args, int *argn, int argc)
       }
 
     fs = grub_fs_probe (dev);
-    if (! fs)
-      {
-	grub_free (device_name);
-	grub_device_close (dev);
-	return;
-      }
-
     pathname = grub_strchr (path, ')');
     if (! pathname)
       pathname = path;
