@@ -106,12 +106,12 @@ typedef unsigned int cardinal;
 
 typedef enum {
     CT_UNKWN, CT_830, CT_845G, CT_855GM, CT_865G, CT_915G, CT_915GM, CT_945G, CT_945GM, CT_945GME,
-    CT_946GZ, CT_G965, CT_Q965, CT_965GM, CT_G33, CT_Q33, CT_Q35
+    CT_946GZ, CT_G965, CT_Q965, CT_965GM, CT_G33, CT_Q33, CT_Q35, CT_500GMA
 } chipset_type;
 
 char * chipset_type_names[] = {
     "UNKNOWN", "830",  "845G", "855GM", "865G", "915G", "915GM", "945G", "945GM", "945GME",
-    "946GZ",   "G965", "Q965", "965GM", "G33", "Q33", "Q35"
+    "946GZ",   "G965", "Q965", "965GM", "G33", "Q33", "Q35", "500GMA"
 };
 
 typedef enum {
@@ -284,6 +284,10 @@ chipset_type get_chipset(cardinal id) {
     case 0x29d08086:
         type = CT_Q33;
         break;
+
+    case 0x81008086:
+      type = CT_500GMA;
+      break;
 
     default:
         type = CT_UNKWN;
@@ -521,6 +525,7 @@ void unlock_vbios(vbios_map * map) {
     case CT_G33:
     case CT_Q35:
     case CT_Q33:
+    case CT_500GMA:
         outl(0x80000090, 0xcf8);
         map->b1 = inb(0xcfd);
         map->b2 = inb(0xcfe);
@@ -566,6 +571,7 @@ void relock_vbios(vbios_map * map) {
     case CT_G33:
     case CT_Q35:
     case CT_Q33:
+    case CT_500GMA:
         outl(0x80000090, 0xcf8);
         outb(map->b1, 0xcfd);
         outb(map->b2, 0xcfe);
@@ -825,6 +831,9 @@ int parse_args(int argc, char *argv[], chipset_type *forced_chipset, cardinal *l
         else if (!strcmp(argv[index], "Q33")) {
             *forced_chipset = CT_Q33;
         }
+	else if (!strcmp(argv[index], "500GMA")) {
+	    *forced_chipset = CT_500GMA;
+	}
         else {
             *forced_chipset = CT_UNKWN;
         }
