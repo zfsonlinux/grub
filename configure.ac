@@ -31,7 +31,7 @@ dnl (such as TARGET_CC, TARGET_CFLAGS, etc.) are used for the target
 dnl type.
 
 
-AC_INIT([GRUB],[1.97~beta2],[bug-grub@gnu.org])
+AC_INIT([GRUB],[1.97~beta3],[bug-grub@gnu.org])
 AC_PREREQ(2.59)
 AC_CONFIG_SRCDIR([include/grub/dl.h])
 AC_CONFIG_HEADER([config.h])
@@ -147,7 +147,6 @@ AC_PROG_MAKE_SET
 
 # These are not a "must".
 AC_PATH_PROG(RUBY, ruby)
-AC_PATH_PROG(HELP2MAN, help2man)
 
 #
 # Checks for host programs.
@@ -169,6 +168,12 @@ grub_apple_cc
 if test x$grub_cv_apple_cc = xyes ; then
   CFLAGS="$CFLAGS -DAPPLE_CC=1 -fnested-functions"
   ASFLAGS="$ASFLAGS -DAPPLE_CC=1"
+fi
+
+if test "x$cross_compiling" = xyes; then
+  AC_MSG_WARN([cannot generate manual pages while cross compiling])
+else
+  AC_PATH_PROG(HELP2MAN, help2man)
 fi
 
 # Check for functions.
