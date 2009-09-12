@@ -1,3 +1,113 @@
+2009-09-12  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* configure.ac: Bump version to 1.97~beta3.
+	* docs/version.texi: Likewise.
+
+2009-09-12  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* video/i386/pc/vbe.c (grub_vbe_get_video_mode_info): Move packed
+	mode special handling (grub_vbe_bios_set_dac_palette_width() call)
+	from here ...
+	* loader/i386/linux.c [GRUB_MACHINE_PCBIOS]
+	(grub_linux_setup_video): ... to here (with some adjustments).
+
+2009-09-12  Robert Millan  <rmh.grub@aybabtu.com>
+
+	Fix memory corruption issue (spotted by Colin Watson).
+
+	* kern/i386/pc/startup.S (grub_vbe_bios_getset_dac_palette): Fix bug
+	causing returned size to be stored in an incorrect memory location.
+	Fix use of uninitialized value when storing the returned size.
+
+2009-09-12  Yves Blusseau  <blusseau@zetam.org>
+
+	Change clean rules to properly remove files
+
+	* genmk.rb: add new clean rules
+	* Makefile.in (clean): add the new targets
+	(mostlyclean): likewise
+
+2009-09-11  Colin Watson  <cjwatson@ubuntu.com>
+
+	* include/grub/ntfs.h (struct grub_fshelp_node): Change `size'
+	to grub_uint64_t.
+	* fs/ntfs.c (init_file): Understand 64-bit sizes for
+	non-resident files.
+
+2009-09-11  Colin Watson  <cjwatson@ubuntu.com>
+
+	* configure.ac: Don't look for help2man when cross-compiling.  Fixes
+	part of bug #27349.
+
+2009-09-10  Felix Zielcke  <fzielcke@z-51.de>
+
+	* util/grub-mkconfig.in: Make the created config mode 400 and
+	print a warning if it fails.
+
+2009-09-10  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* util/grub.d/40_custom.in: Ask user to type custom entries below
+	comment, rather than below 'exec tail' line.
+
+2009-09-10  Colin Watson  <cjwatson@ubuntu.com>
+
+	* util/grub.d/40_custom.in: Make sure that the explanatory text is
+	visible in grub.cfg.
+
+2009-09-10  Colin Watson  <cjwatson@ubuntu.com>
+
+	* util/grub.d/40_custom.in: Make it a little clearer how to use this
+	file.
+
+2009-09-10  Felix Zielcke  <fzielcke@z-51.de>
+
+	* docs/grub.cfg: Add an example menu entry for memtest86+.
+
+2009-09-09  Felix Zielcke  <fzielcke@z-51.de>
+
+	* config.guess: Update to latest version from config git.
+	* config.sub: Likewise.
+
+2009-09-08  Colin Watson  <cjwatson@ubuntu.com>
+
+	* script/sh/execute.c (grub_script_execute_cmdline): Set "?" in
+	unknown-command case.  Fixes bug #27320.
+
+2009-09-08  Felix Zielcke  <fzielcke@z-51.de>
+
+	* kern/rescue_parser.c (grub_rescue_parse_line): Only suggest to try
+	`help' if the command exists.
+
+2009-09-06  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* INSTALL: Require GCC 4.1.3 or later.
+
+2009-09-06  Yves Blusseau  <blusseau@zetam.org>
+
+	* Makefile.in (RMKFILES): add i386-qemu.rmk
+	(MAINTAINER_CLEANFILES): add $(srcdir)/DISTLIST $(srcdir)/config.h.in
+	$(srcdir)/stamp-h.in
+
+2009-09-05  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* util/grub-probe.c (probe): Comment out buggy codepath, which
+	was unexpectedly enabled by Colin Watson's 2009-09-02 fix.  This
+	should be re-enabled after 1.97.
+
+2009-09-05  Felix Zielcke  <fzielcke@z-51.de>
+
+	* gendistlist.sh: Add `grub-dumpdevtree' and `*.lua' to the list
+	find searches for.
+
+2009-09-04  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	* loader/i386/xnu.c (grub_cpu_xnu_fill_devicetree): Remove
+	unnecessary calls to grub_error.
+
+2009-09-04  Colin Watson  <cjwatson@ubuntu.com>
+
+	* NEWS: Mention `keystatus' and Unicode fonts.
+
 2009-09-04  Robert Millan  <rmh.grub@aybabtu.com>
 
 	* configure.ac: Bump version to 1.97~beta2.
@@ -235,7 +345,7 @@
 	(grub_afs_to_cpu64): ...this. All users updated.
 	(GRUB_AFS_BO_LITTLE_ENDIAN): Remove.
 	(GRUB_AFS_BO_BIG_ENDIAN): Likewise.
-	(grub_afs_validate_sblock): Check only one endiannness.
+	(grub_afs_validate_sblock): Check only one endianness.
 	(GRUB_MOD_INIT (befs)) [MODE_BIGENDIAN && MODE_BFS]: Rename to ..
 	(GRUB_MOD_INIT (befs_be)) [MODE_BIGENDIAN && MODE_BFS]: ... this.
 	(GRUB_MOD_INIT (afs)) [MODE_BIGENDIAN && !MODE_BFS]: Rename to ..
@@ -404,7 +514,7 @@
 	and OPENBSD_MMAP_NVS.
 	Add memory map terminator
 	Explicit cast when calling grub_unix_real_boot.
-	(grub_nebsd_boot): Explicit cast when calling grub_unix_real_boot.
+	(grub_netbsd_boot): Explicit cast when calling grub_unix_real_boot.
 
 2009-08-24  Vladimir Serbinenko  <phcoder@gmail.com>
 
@@ -965,7 +1075,7 @@
 2009-07-30  Vladimir Serbinenko  <phcoder@gmail.com>
 
 	* util/i386/pc/grub-setup.c (setup): Check that no partition is in
-	embeding zone, not only the first one.
+	embedding zone, not only the first one.
 
 2009-07-29  Joe Auricchio  <jauricchio@gmail.com>
 
@@ -1038,7 +1148,7 @@
 	instead of WORDS_BIGENDIAN.  Use grub_le_to_cpu32(), so that the
 	case of little endian words becomes just an optimization.
 	Respect const modifier.
-	(md5_final): Use code that doesn't depend on endianess.
+	(md5_final): Use code that doesn't depend on endianness.
 
 	* include/grub/misc.h (ALIGN_UP): Cast align to the type of addr
 	to avoid loss of upper bits if align is unsigned and shorter
