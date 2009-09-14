@@ -1,3 +1,85 @@
+grub2 (1.97~beta3-1ubuntu1) karmic; urgency=low
+
+  * Resynchronise with Debian. Remaining changes:
+    + debian/default/grub:
+      - Adjust for default Ubuntu boot options.
+      - Use GRUB_CMDLINE_LINUX_DEFAULT option to set "quiet splash" for
+        default items only.  These options won't be set in single user mode.
+      - Default to hiding the menu; holding down Shift at boot will show it.
+    + debian/templates.in:
+      - Change default value of grub2/linux_cmdline_default to "quiet
+        splash".
+    + debian/config.in, debian/postinst.in, debian/grub-pc.templates.in:
+      - Migrate timeout settings from menu.lst.
+    + debian/grub.d/05_debian_theme:
+      - Set a monochromatic theme for Ubuntu.
+    + debian/legacy/update-grub:
+      - Apply Ubuntu branding: title, recovery mode, quiet option, and tweak
+        how memtest86+ is displayed.
+      - Use UUIDs where appropriate.
+    + debian/patches/03_ubuntu_grub_standards:
+      - Remove GNU/Linux from default string.
+    + debian/patches/10_crashkernel.patch:
+      - Add crashkernel= options if kdump and makedumpfile are available.
+    + debian/patches/951_quick_boot.diff:
+      - If other operating systems are installed, then automatically unhide
+        the menu.
+      - Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus if
+        available to check whether Shift is pressed. If it is, show the
+        menu, otherwise boot immediately. If keystatus is not available,
+        then fall back to a short delay interruptible with Escape.
+    + debian/patches/952_sleep_shift.diff:
+      - Allow Shift to interrupt 'sleep --interruptible'.
+    + debian/patches/954_normal_quiet.diff:
+      - Don't display introductory message about line editing unless we're
+        actually offering a shell prompt. Don't clear the screen just before
+        booting if we never drew the menu in the first place.
+    + debian/patches/955_really_quiet.diff:
+      - Remove some verbose messages printed before reading the
+        configuration file.
+    + debian/patches/956_linux_quiet.diff:
+      - If the environment variable "quiet" is set to something other than
+        1, suppress progress messages as the kernel and initrd load. Set
+        this for non-recovery kernel menu entries.
+    + debian/patches/957_savedefault.diff, debian/rules:
+      - Add GRUB_DEFAULT=saved, as well as grub-set-default and grub-reboot
+        utilities. Provides functionality essentially equivalent to GRUB
+        Legacy's savedefault.
+    + debian/patches/959_loopback_root.diff:
+      - Keep the loopback file open so that subsequent changes to the "root"
+        environment variable don't affect it.
+  * debian/patches/960_test_invalid_fs.diff: Fix test crash if loopback
+    device does not contain a filesystem.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 14 Sep 2009 10:52:59 +0100
+
+grub2 (1.97~beta3-1) unstable; urgency=high
+
+  * New upstream beta release.
+    - Make it more clear how to use /etc/grub.d/40_custom. (Closes: #545153)
+    - fix a serious memory corruption in the graphical subsystem.
+      (Closes: #545364, #544155, #544639, #544822, LP: #424503)
+    - patches/003_grub_probe_segfault.diff: Remove (merged).
+
+  * Change the watch file so upstream beta releases are recognized.
+  * Include /etc/default/grub in bug reports.
+  * Recommend os-prober (>= 1.32). (Closes: #491872)
+  * Change the gcc-multilib [sparc] build dependency to gcc-4.4-multilib
+    [sparc].
+  * patches/907_grub.cfg_400.diff: New patch to make grub.cfg again mode
+    444 if it does not contain a password line.
+  * Use `su' in the bug reporting script to read grub.cfg in case the user
+    is not allowed to read it.
+  * Readd grub-pc/kopt-extracted template.
+
+  [ Updated translations ]
+  * Brazilian Portuguese (pt_BR.po) by Flamarion Jorge.
+  * Japanese (ja.po) by Hideki Yamane. (Closes: #545331)
+  * Spanish (es.po) by Francisco Javier Cuadrado. (Closes: #545566)
+  * Italian (it.po) by Luca Monducci. (Closes: #546035)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sat, 12 Sep 2009 15:28:20 +0200
+
 grub2 (1.97~beta2-2ubuntu2) karmic; urgency=low
 
   * debian/patches/951_quick_boot.diff: Only do the hidden-timeout checks if
