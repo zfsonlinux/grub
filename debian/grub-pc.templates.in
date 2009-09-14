@@ -52,7 +52,7 @@ Description: Remove GRUB 2 from /boot/grub?
 Template: grub-pc/kopt_extracted
 Type: boolean
 Default: false
-Description: Has kopt been extracted from menu.lst yet?
+Description: for internal use
 
 Template: grub-pc/timeout
 Type: string
