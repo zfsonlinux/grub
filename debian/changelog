@@ -1,3 +1,10 @@
+grub2 (1.97~beta3-1ubuntu3) karmic; urgency=low
+
+  * debian/patches/962_os-prober_windows_7.diff: Cope with Windows 7 in
+    os-prober output.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 15 Sep 2009 06:48:13 +0100
+
 grub2 (1.97~beta3-1ubuntu2) karmic; urgency=low
 
   * debian/config.in: Fix logic if GRUB_HIDDEN_TIMEOUT is entirely missing
