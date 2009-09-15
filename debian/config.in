@@ -57,7 +57,7 @@ if test -e /etc/default/grub ; then
       fi
       if [ "${GRUB_HIDDEN_TIMEOUT}" != "" ]; then
         db_set grub-pc/hidden_timeout true
-      else
+      elif egrep -q '^#?[[:space:]]*GRUB_HIDDEN_TIMEOUT=' /etc/default/grub; then
         db_set grub-pc/hidden_timeout false
       fi
     ;;

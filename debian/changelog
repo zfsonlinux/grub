@@ -1,3 +1,13 @@
+grub2 (1.97~beta3-1ubuntu2) karmic; urgency=low
+
+  * debian/config.in: Fix logic if GRUB_HIDDEN_TIMEOUT is entirely missing
+    from /etc/default/grub.
+  * debian/patches/961_handle_loopback.diff: Change
+    prepare_grub_to_access_device to handle filesystems loop-mounted on file
+    images.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 15 Sep 2009 00:34:11 +0100
+
 grub2 (1.97~beta3-1ubuntu1) karmic; urgency=low
 
   * Resynchronise with Debian. Remaining changes:
