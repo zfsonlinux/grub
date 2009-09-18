@@ -5,9 +5,9 @@ Description: Add GRUB_DEFAULT=saved, as well as grub-set-default and
  grub-reboot utilities. Provides functionality essentially equivalent to
  GRUB Legacy's savedefault.
 
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/conf/common.rmk grub2-1.97~beta1.new/conf/common.rmk
---- grub2-1.97~beta1/conf/common.rmk	2009-08-30 17:02:11.000000000 +0100
-+++ grub2-1.97~beta1.new/conf/common.rmk	2009-09-04 00:02:05.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/conf/common.rmk grub2-1.97~beta3.new/conf/common.rmk
+--- grub2-1.97~beta3/conf/common.rmk	2009-09-12 14:29:38.000000000 +0100
++++ grub2-1.97~beta3.new/conf/common.rmk	2009-09-17 13:40:31.000000000 +0100
 @@ -175,6 +175,20 @@
  sbin_SCRIPTS += grub-dumpbios
  CLEANFILES += grub-dumpbios
@@ -29,9 +29,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/conf/common.rmk grub2-1.97~beta1.
  # Filing systems.
  pkglib_MODULES += fshelp.mod fat.mod ufs1.mod ufs2.mod ext2.mod ntfs.mod \
  	ntfscomp.mod minix.mod hfs.mod jfs.mod iso9660.mod xfs.mod	\
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/normal/menu.c grub2-1.97~beta1.new/normal/menu.c
---- grub2-1.97~beta1/normal/menu.c	2009-08-30 17:02:11.000000000 +0100
-+++ grub2-1.97~beta1.new/normal/menu.c	2009-09-04 00:02:05.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/normal/menu.c grub2-1.97~beta3.new/normal/menu.c
+--- grub2-1.97~beta3/normal/menu.c	2009-09-12 14:29:38.000000000 +0100
++++ grub2-1.97~beta3.new/normal/menu.c	2009-09-17 13:40:31.000000000 +0100
 @@ -137,6 +137,8 @@
        return;
      }
@@ -41,9 +41,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/normal/menu.c grub2-1.97~beta1.ne
    grub_parser_execute ((char *) entry->sourcecode);
  
    if (grub_errno == GRUB_ERR_NONE && grub_loader_is_loaded ())
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/normal/menu_text.c grub2-1.97~beta1.new/normal/menu_text.c
---- grub2-1.97~beta1/normal/menu_text.c	2009-09-03 23:49:41.000000000 +0100
-+++ grub2-1.97~beta1.new/normal/menu_text.c	2009-09-04 00:02:05.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/normal/menu_text.c grub2-1.97~beta3.new/normal/menu_text.c
+--- grub2-1.97~beta3/normal/menu_text.c	2009-09-17 13:40:24.000000000 +0100
++++ grub2-1.97~beta3.new/normal/menu_text.c	2009-09-17 13:40:31.000000000 +0100
 @@ -237,7 +237,7 @@
  
  /* Get the entry number from the variable NAME.  */
@@ -91,9 +91,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/normal/menu_text.c grub2-1.97~bet
  
    /* If DEFAULT_ENTRY is not within the menu entries, fall back to
       the first entry.  */
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub-mkconfig_lib.in grub2-1.97~beta1.new/util/grub-mkconfig_lib.in
---- grub2-1.97~beta1/util/grub-mkconfig_lib.in	2009-09-03 23:49:41.000000000 +0100
-+++ grub2-1.97~beta1.new/util/grub-mkconfig_lib.in	2009-09-04 00:02:05.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/util/grub-mkconfig_lib.in grub2-1.97~beta3.new/util/grub-mkconfig_lib.in
+--- grub2-1.97~beta3/util/grub-mkconfig_lib.in	2009-09-17 13:40:23.000000000 +0100
++++ grub2-1.97~beta3.new/util/grub-mkconfig_lib.in	2009-09-17 13:40:31.000000000 +0100
 @@ -130,6 +130,14 @@
    echo ${drive}${relative_path}
  }
@@ -109,9 +109,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub-mkconfig_lib.in grub2-1
  prepare_grub_to_access_device ()
  {
    device=$1
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub-reboot.in grub2-1.97~beta1.new/util/grub-reboot.in
---- grub2-1.97~beta1/util/grub-reboot.in	1970-01-01 01:00:00.000000000 +0100
-+++ grub2-1.97~beta1.new/util/grub-reboot.in	2009-09-04 00:02:05.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/util/grub-reboot.in grub2-1.97~beta3.new/util/grub-reboot.in
+--- grub2-1.97~beta3/util/grub-reboot.in	1970-01-01 01:00:00.000000000 +0100
++++ grub2-1.97~beta3.new/util/grub-reboot.in	2009-09-17 13:40:31.000000000 +0100
 @@ -0,0 +1,104 @@
 +#! /bin/sh
 +#
@@ -217,9 +217,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub-reboot.in grub2-1.97~be
 +
 +# Bye.
 +exit 0
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub-set-default.in grub2-1.97~beta1.new/util/grub-set-default.in
---- grub2-1.97~beta1/util/grub-set-default.in	1970-01-01 01:00:00.000000000 +0100
-+++ grub2-1.97~beta1.new/util/grub-set-default.in	2009-09-04 00:02:05.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/util/grub-set-default.in grub2-1.97~beta3.new/util/grub-set-default.in
+--- grub2-1.97~beta3/util/grub-set-default.in	1970-01-01 01:00:00.000000000 +0100
++++ grub2-1.97~beta3.new/util/grub-set-default.in	2009-09-17 13:40:31.000000000 +0100
 @@ -0,0 +1,99 @@
 +#! /bin/sh
 +#
@@ -320,9 +320,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub-set-default.in grub2-1.
 +
 +# Bye.
 +exit 0
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/00_header.in grub2-1.97~beta1.new/util/grub.d/00_header.in
---- grub2-1.97~beta1/util/grub.d/00_header.in	2009-09-03 23:49:41.000000000 +0100
-+++ grub2-1.97~beta1.new/util/grub.d/00_header.in	2009-09-04 00:02:05.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/util/grub.d/00_header.in grub2-1.97~beta3.new/util/grub.d/00_header.in
+--- grub2-1.97~beta3/util/grub.d/00_header.in	2009-09-17 13:40:24.000000000 +0100
++++ grub2-1.97~beta3.new/util/grub.d/00_header.in	2009-09-17 13:43:50.000000000 +0100
 @@ -32,11 +32,19 @@
  done
  
@@ -332,8 +332,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/00_header.in grub2-1.
  if [ "x${GRUB_GFXMODE}" = "x" ] ; then GRUB_GFXMODE=640x480 ; fi
  
  cat << EOF
+-set default=${GRUB_DEFAULT}
 +load_env
- set default=${GRUB_DEFAULT}
++set default="${GRUB_DEFAULT}"
 +if [ \${prev_saved_entry} ]; then
 +  saved_entry=\${prev_saved_entry}
 +  save_env saved_entry
@@ -343,9 +344,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/00_header.in grub2-1.
  EOF
  
  case ${GRUB_TERMINAL_INPUT}:${GRUB_TERMINAL_OUTPUT} in
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/10_freebsd.in grub2-1.97~beta1.new/util/grub.d/10_freebsd.in
---- grub2-1.97~beta1/util/grub.d/10_freebsd.in	2009-09-03 23:49:40.000000000 +0100
-+++ grub2-1.97~beta1.new/util/grub.d/10_freebsd.in	2009-09-04 00:02:05.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/util/grub.d/10_freebsd.in grub2-1.97~beta3.new/util/grub.d/10_freebsd.in
+--- grub2-1.97~beta3/util/grub.d/10_freebsd.in	2009-09-17 13:40:22.000000000 +0100
++++ grub2-1.97~beta3.new/util/grub.d/10_freebsd.in	2009-09-17 13:40:31.000000000 +0100
 @@ -31,6 +31,7 @@
    cat << EOF
  menuentry "$1" {
@@ -354,9 +355,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/10_freebsd.in grub2-1
    prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/"
    cat << EOF
  	freebsd			${rel_dirname}/${basename}
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/10_hurd.in grub2-1.97~beta1.new/util/grub.d/10_hurd.in
---- grub2-1.97~beta1/util/grub.d/10_hurd.in	2009-08-30 17:02:11.000000000 +0100
-+++ grub2-1.97~beta1.new/util/grub.d/10_hurd.in	2009-09-04 00:02:05.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/util/grub.d/10_hurd.in grub2-1.97~beta3.new/util/grub.d/10_hurd.in
+--- grub2-1.97~beta3/util/grub.d/10_hurd.in	2009-09-12 14:29:38.000000000 +0100
++++ grub2-1.97~beta3.new/util/grub.d/10_hurd.in	2009-09-17 13:40:31.000000000 +0100
 @@ -71,6 +71,7 @@
  cat << EOF
  menuentry "${OS}" {
@@ -365,9 +366,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/10_hurd.in grub2-1.97
  prepare_grub_to_access_device ${GRUB_DEVICE} | sed -e "s/^/\t/"
  cat << EOF
  	multiboot ${kernel} root=device:${GRUB_DEVICE}
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/10_linux.in grub2-1.97~beta1.new/util/grub.d/10_linux.in
---- grub2-1.97~beta1/util/grub.d/10_linux.in	2009-09-03 23:49:41.000000000 +0100
-+++ grub2-1.97~beta1.new/util/grub.d/10_linux.in	2009-09-04 00:02:41.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/util/grub.d/10_linux.in grub2-1.97~beta3.new/util/grub.d/10_linux.in
+--- grub2-1.97~beta3/util/grub.d/10_linux.in	2009-09-17 13:40:24.000000000 +0100
++++ grub2-1.97~beta3.new/util/grub.d/10_linux.in	2009-09-17 13:40:31.000000000 +0100
 @@ -58,6 +58,7 @@
  	set quiet=1
  EOF
@@ -376,9 +377,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/10_linux.in grub2-1.9
    prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/"
    cat << EOF
  	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro $2
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/10_windows.in grub2-1.97~beta1.new/util/grub.d/10_windows.in
---- grub2-1.97~beta1/util/grub.d/10_windows.in	2009-08-30 17:02:11.000000000 +0100
-+++ grub2-1.97~beta1.new/util/grub.d/10_windows.in	2009-09-04 00:02:05.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/util/grub.d/10_windows.in grub2-1.97~beta3.new/util/grub.d/10_windows.in
+--- grub2-1.97~beta3/util/grub.d/10_windows.in	2009-09-12 14:29:38.000000000 +0100
++++ grub2-1.97~beta3.new/util/grub.d/10_windows.in	2009-09-17 13:40:31.000000000 +0100
 @@ -73,6 +73,7 @@
  menuentry "$OS" {
  EOF
@@ -387,10 +388,10 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/10_windows.in grub2-1
    prepare_grub_to_access_device "$dev" | sed 's,^,\t,'
  
    cat << EOF
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/30_os-prober.in grub2-1.97~beta1.new/util/grub.d/30_os-prober.in
---- grub2-1.97~beta1/util/grub.d/30_os-prober.in	2009-09-03 23:49:41.000000000 +0100
-+++ grub2-1.97~beta1.new/util/grub.d/30_os-prober.in	2009-09-04 00:02:05.000000000 +0100
-@@ -95,6 +95,7 @@
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/util/grub.d/30_os-prober.in grub2-1.97~beta3.new/util/grub.d/30_os-prober.in
+--- grub2-1.97~beta3/util/grub.d/30_os-prober.in	2009-09-17 13:40:24.000000000 +0100
++++ grub2-1.97~beta3.new/util/grub.d/30_os-prober.in	2009-09-17 13:40:31.000000000 +0100
+@@ -99,6 +99,7 @@
        cat << EOF
  menuentry "${LONGNAME} (on ${DEVICE})" {
  EOF
@@ -398,7 +399,7 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/30_os-prober.in grub2
        prepare_grub_to_access_device ${DEVICE} | sed -e "s/^/\t/"
  
        if [ "${LONGNAME}" != "Windows Vista (loader)" ] ; then
-@@ -125,6 +126,7 @@
+@@ -129,6 +130,7 @@
          cat << EOF
  menuentry "${LLABEL} (on ${DEVICE})" {
  EOF
@@ -406,7 +407,7 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/30_os-prober.in grub2
  	prepare_grub_to_access_device ${DEVICE} | sed -e "s/^/\t/"
  	cat <<  EOF
  	linux ${LKERNEL} ${LPARAMS}
-@@ -144,6 +146,7 @@
+@@ -148,6 +150,7 @@
          cat << EOF
  menuentry "${LONGNAME} (on ${DEVICE})" {
  EOF
@@ -414,9 +415,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/30_os-prober.in grub2
  	prepare_grub_to_access_device ${DEVICE} | sed -e "s/^/\t/"
  	cat << EOF
          insmod vbe
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/i386/efi/grub-install.in grub2-1.97~beta1.new/util/i386/efi/grub-install.in
---- grub2-1.97~beta1/util/i386/efi/grub-install.in	2009-08-30 17:02:11.000000000 +0100
-+++ grub2-1.97~beta1.new/util/i386/efi/grub-install.in	2009-09-04 00:02:05.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/util/i386/efi/grub-install.in grub2-1.97~beta3.new/util/i386/efi/grub-install.in
+--- grub2-1.97~beta3/util/i386/efi/grub-install.in	2009-09-12 14:29:38.000000000 +0100
++++ grub2-1.97~beta3.new/util/i386/efi/grub-install.in	2009-09-17 13:40:31.000000000 +0100
 @@ -34,6 +34,7 @@
  grub_mkimage=${bindir}/`echo grub-mkimage | sed ${transform}`
  grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
@@ -436,9 +437,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/i386/efi/grub-install.in gru
  # Create the core image. First, auto-detect the filesystem module.
  fs_module=`$grub_probe --target=fs --device-map=${device_map} ${grubdir}`
  if test "x$fs_module" = xfat; then :; else
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/i386/pc/grub-install.in grub2-1.97~beta1.new/util/i386/pc/grub-install.in
---- grub2-1.97~beta1/util/i386/pc/grub-install.in	2009-09-03 23:49:41.000000000 +0100
-+++ grub2-1.97~beta1.new/util/i386/pc/grub-install.in	2009-09-04 00:02:05.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/util/i386/pc/grub-install.in grub2-1.97~beta3.new/util/i386/pc/grub-install.in
+--- grub2-1.97~beta3/util/i386/pc/grub-install.in	2009-09-17 13:40:24.000000000 +0100
++++ grub2-1.97~beta3.new/util/i386/pc/grub-install.in	2009-09-17 13:40:31.000000000 +0100
 @@ -39,6 +39,7 @@
  fi
  grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
@@ -458,9 +459,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/i386/pc/grub-install.in grub
  # Write device to a variable so we don't have to traverse /dev every time.
  grub_device=`$grub_probe --target=device ${grubdir}`
  
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/ieee1275/grub-install.in grub2-1.97~beta1.new/util/ieee1275/grub-install.in
---- grub2-1.97~beta1/util/ieee1275/grub-install.in	2009-08-30 17:02:11.000000000 +0100
-+++ grub2-1.97~beta1.new/util/ieee1275/grub-install.in	2009-09-04 00:02:05.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/util/ieee1275/grub-install.in grub2-1.97~beta3.new/util/ieee1275/grub-install.in
+--- grub2-1.97~beta3/util/ieee1275/grub-install.in	2009-09-12 14:29:38.000000000 +0100
++++ grub2-1.97~beta3.new/util/ieee1275/grub-install.in	2009-09-17 13:40:31.000000000 +0100
 @@ -37,6 +37,7 @@
  grub_mkimage=${bindir}/`echo grub-mkelfimage | sed ${transform}`
  grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
@@ -480,9 +481,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/ieee1275/grub-install.in gru
  # Create the core image. First, auto-detect the filesystem module.
  fs_module=`$grub_probe --target=fs --device-map=${device_map} ${grubdir}`
  if test "x$fs_module" = x -a "x$modules" = x; then
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/sparc64/ieee1275/grub-install.in grub2-1.97~beta1.new/util/sparc64/ieee1275/grub-install.in
---- grub2-1.97~beta1/util/sparc64/ieee1275/grub-install.in	2009-08-30 17:02:11.000000000 +0100
-+++ grub2-1.97~beta1.new/util/sparc64/ieee1275/grub-install.in	2009-09-04 00:02:05.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/util/sparc64/ieee1275/grub-install.in grub2-1.97~beta3.new/util/sparc64/ieee1275/grub-install.in
+--- grub2-1.97~beta3/util/sparc64/ieee1275/grub-install.in	2009-09-12 14:29:38.000000000 +0100
++++ grub2-1.97~beta3.new/util/sparc64/ieee1275/grub-install.in	2009-09-17 13:40:31.000000000 +0100
 @@ -35,6 +35,7 @@
  grub_mkimage=${bindir}/`echo grub-mkimage | sed ${transform}`
  grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`

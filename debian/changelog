@@ -1,3 +1,12 @@
+grub2 (1.97~beta3-1ubuntu5) karmic; urgency=low
+
+  * debian/patches/957_savedefault.diff: Quote the value assigned to
+    'default', in case it contains spaces (LP: #431179).
+  * debian/patches/964_os-prober_errors.diff: Don't throw away errors from
+    os-prober; it makes things hard to debug.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 18 Sep 2009 18:47:06 +0100
+
 grub2 (1.97~beta3-1ubuntu4) karmic; urgency=low
 
   * debian/patches/963_linux_no_loopmount.diff: Ignore devices loop-mounted
