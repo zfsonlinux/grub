@@ -1,0 +1,26 @@
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/util/grub.d/00_header.in grub2-1.97~beta2.new/util/grub.d/00_header.in
+--- grub2-1.97~beta2/util/grub.d/00_header.in	2009-09-10 23:28:33.000000000 +0100
++++ grub2-1.97~beta2.new/util/grub.d/00_header.in	2009-09-10 23:36:26.000000000 +0100
+@@ -109,5 +109,9 @@
+ esac
+ 
+ cat << EOF
+-set timeout=${GRUB_TIMEOUT}
++if [ \${recordfail} = 1 ]; then
++  set timeout=-1
++else
++  set timeout=${GRUB_TIMEOUT}
++fi
+ EOF
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/util/grub.d/10_linux.in grub2-1.97~beta2.new/util/grub.d/10_linux.in
+--- grub2-1.97~beta2/util/grub.d/10_linux.in	2009-09-10 23:28:33.000000000 +0100
++++ grub2-1.97~beta2.new/util/grub.d/10_linux.in	2009-09-10 23:32:23.000000000 +0100
+@@ -52,6 +52,8 @@
+ {
+   cat << EOF
+ menuentry "$1" {
++        recordfail=1
++        save_env recordfail
+ EOF
+   save_default_entry | sed -e "s/^/\t/"
+   prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/"

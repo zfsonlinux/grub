@@ -1,4 +1,4 @@
-Upstream: Not yet, but can be.
+Upstream: Committed as r2602.
 Description: Don't throw away errors from os-prober; it makes things hard to
  debug.
 
