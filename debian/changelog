@@ -1,3 +1,11 @@
+grub2 (1.97~beta3-1ubuntu6) karmic; urgency=low
+
+  * debian/patches/965_failed_boot_menu.diff, debian/grub-common.init,
+    debian/rules: Show the boot menu if the previous boot failed, that is if
+    it failed to get to the end of one of the normal runlevels.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 28 Sep 2009 09:29:34 +0100
+
 grub2 (1.97~beta3-1ubuntu5) karmic; urgency=low
 
   * debian/patches/957_savedefault.diff: Quote the value assigned to
@@ -72,7 +80,7 @@ grub2 (1.97~beta3-1ubuntu1) karmic; urgency=low
         configuration file.
     + debian/patches/956_linux_quiet.diff:
       - If the environment variable "quiet" is set to something other than
-        1, suppress progress messages as the kernel and initrd load. Set
+        0, suppress progress messages as the kernel and initrd load. Set
         this for non-recovery kernel menu entries.
     + debian/patches/957_savedefault.diff, debian/rules:
       - Add GRUB_DEFAULT=saved, as well as grub-set-default and grub-reboot
@@ -174,7 +182,7 @@ grub2 (1.97~beta2-2ubuntu1) karmic; urgency=low
         configuration file.
     + debian/patches/956_linux_quiet.diff:
       - If the environment variable "quiet" is set to something other than
-        1, suppress progress messages as the kernel and initrd load. Set
+        0, suppress progress messages as the kernel and initrd load. Set
         this for non-recovery kernel menu entries.
     + debian/patches/957_savedefault.diff, debian/rules:
       - Add GRUB_DEFAULT=saved, as well as grub-set-default and grub-reboot
@@ -249,7 +257,7 @@ grub2 (1.97~beta1-1ubuntu2) karmic; urgency=low
     smooth-looking boot process; we may be able to do better in future (LP:
     #386922).
   * debian/patches/956_linux_quiet.diff: If the environment variable "quiet"
-    is set to something other than 1, suppress progress messages as the
+    is set to something other than 0, suppress progress messages as the
     kernel and initrd load. Set this for non-recovery kernel menu entries
     (LP: #386922).
   * debian/patches/957_savedefault.diff: Add GRUB_DEFAULT=saved, as well as

@@ -24,6 +24,8 @@ CONFIGURE = CC=$(CC) \
 	--libexecdir="\$${prefix}/lib/$(package)" --srcdir=$(CURDIR) \
 	--enable-grub-emu --enable-grub-mkfont --disable-grub-fstest 
 
+DEB_UPDATE_RCD_PARAMS_grub-common += start 99 2 3 4 5 .
+
 AUTOGEN_FILES = configure config.h.in conf/*.mk
 AUTOGEN_DEB_FILES = docs examples manpages config templates postinst postrm dirs install
 

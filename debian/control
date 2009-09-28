@@ -49,7 +49,7 @@ Description: GRand Unified Bootloader, version 2 (dummy package)
 
 Package: grub-common
 Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64 lpia powerpc sparc
-Depends: ${shlibs:Depends}, base-files (>= 4.0.1~), ${misc:Depends}
+Depends: ${shlibs:Depends}, base-files (>= 4.0.1~), lsb-base (>= 3.0-6), ${misc:Depends}
 Replaces: grub-pc (<< 1.96+20080831-1), grub-ieee1275 (<< 1.96+20080831-1), grub-efi (<< 1.96+20080831-1), grub-coreboot (<< 1.96+20080831-1), grub-linuxbios (<< 1.96+20080831-1)
 Recommends: os-prober (>= 1.32)
 Suggests: multiboot-doc [i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64 lpia]

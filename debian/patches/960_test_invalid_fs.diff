@@ -1,5 +1,5 @@
 Ubuntu: reported by Agostino Russo
-Upstream: http://lists.gnu.org/archive/html/grub-devel/2009-09/msg00252.html
+Upstream: Committed as r2596.
 Description: Fix test crash if loopback device does not contain a filesystem.
 
 diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta3/commands/test.c grub2-1.97~beta3.new/commands/test.c
