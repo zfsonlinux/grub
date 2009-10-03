@@ -28,6 +28,7 @@
 #include <grub/parser.h>
 #include <grub/reader.h>
 #include <grub/menu_viewer.h>
+#include <grub/auth.h>
 
 #define GRUB_DEFAULT_HISTORY_SIZE	50
 
@@ -112,7 +113,7 @@ grub_file_getline (grub_file_t file)
       grub_free (cmdline);
       cmdline = 0;
     }
-  
+
   return cmdline;
 }
 
@@ -149,9 +150,12 @@ free_menu_entry_classes (struct grub_menu_entry_class *head)
     }
 }
 
+/* Add a menu entry to the current menu context (as given by the environment
+   variable data slot `menu').  As the configuration file is read, the script
+   parser calls this when a menu entry is to be created.  */
 grub_err_t
-grub_menu_addentry (int argc, const char **args,
-		    const char *sourcecode)
+grub_normal_add_menu_entry (int argc, const char **args,
+			    const char *sourcecode)
 {
   const char *menutitle = 0;
   const char *menusourcecode;
@@ -161,13 +165,12 @@ grub_menu_addentry (int argc, const char **args,
   int i;
   struct grub_menu_entry_class *classes_head;  /* Dummy head node for list.  */
   struct grub_menu_entry_class *classes_tail;
+  char *users = NULL;
 
   /* Allocate dummy head node for class list.  */
-  classes_head = grub_malloc (sizeof (struct grub_menu_entry_class));
+  classes_head = grub_zalloc (sizeof (struct grub_menu_entry_class));
   if (! classes_head)
     return grub_errno;
-  classes_head->name = 0;
-  classes_head->next = 0;
   classes_tail = classes_head;
 
   menu = grub_env_get_data_slot ("menu");
@@ -203,7 +206,7 @@ grub_menu_addentry (int argc, const char **args,
 		}
 
 	      /* Create a new class and add it at the tail of the list.  */
-	      new_class = grub_malloc (sizeof (struct grub_menu_entry_class));
+	      new_class = grub_zalloc (sizeof (struct grub_menu_entry_class));
 	      if (! new_class)
 		{
 		  grub_free (class_name);
@@ -212,10 +215,21 @@ grub_menu_addentry (int argc, const char **args,
 		}
 	      /* Fill in the new class node.  */
 	      new_class->name = class_name;
-	      new_class->next = 0;
 	      /* Link the tail to it, and make it the new tail.  */
 	      classes_tail->next = new_class;
 	      classes_tail = new_class;
+	      continue;
+	    }
+	  else if (grub_strcmp(arg, "users") == 0)
+	    {
+	      i++;
+	      users = grub_strdup (args[i]);
+	      if (! users)
+		{
+		  failed = 1;
+		  break;
+		}
+
 	      continue;
 	    }
 	  else
@@ -264,7 +278,7 @@ grub_menu_addentry (int argc, const char **args,
   while (*last)
     last = &(*last)->next;
 
-  *last = grub_malloc (sizeof (**last));
+  *last = grub_zalloc (sizeof (**last));
   if (! *last)
     {
       free_menu_entry_classes (classes_head);
@@ -275,7 +289,9 @@ grub_menu_addentry (int argc, const char **args,
 
   (*last)->title = menutitle;
   (*last)->classes = classes_head;
-  (*last)->next = 0;
+  if (users)
+    (*last)->restricted = 1;
+  (*last)->users = users;
   (*last)->sourcecode = menusourcecode;
 
   menu->size++;
@@ -288,7 +304,7 @@ read_config_file (const char *config)
 {
   grub_file_t file;
   grub_parser_t old_parser = 0;
-  
+
   auto grub_err_t getline (char **line, int cont);
   grub_err_t getline (char **line, int cont __attribute__ ((unused)))
     {
@@ -343,11 +359,9 @@ read_config_file (const char *config)
   newmenu = grub_env_get_data_slot ("menu");
   if (! newmenu)
     {
-      newmenu = grub_malloc (sizeof (*newmenu));
+      newmenu = grub_zalloc (sizeof (*newmenu));
       if (! newmenu)
 	return 0;
-      newmenu->size = 0;
-      newmenu->entry_list = 0;
 
       grub_env_set_data_slot ("menu", newmenu);
     }
@@ -390,8 +404,8 @@ grub_normal_init_page (void)
 
 static int reader_nested;
 
-/* Read the config file COFIG, and execute the menu interface or
-   the command-line interface if BATCH is false.  */
+/* Read the config file CONFIG and execute the menu interface or
+   the command line interface if BATCH is false.  */
 void
 grub_normal_execute (const char *config, int nested, int batch)
 {
@@ -403,7 +417,7 @@ grub_normal_execute (const char *config, int nested, int batch)
   grub_command_execute ("parser.sh", 0, 0);
 
   reader_nested = nested;
-  
+
   if (config)
     {
       menu = read_config_file (config);
@@ -443,7 +457,7 @@ grub_cmd_normal (struct grub_command *cmd,
 	 so that it won't get broken by longjmp.  */
       static char *config;
       const char *prefix;
-      
+
       prefix = grub_env_get ("prefix");
       if (prefix)
 	{
@@ -468,7 +482,19 @@ quit:
 void
 grub_cmdline_run (int nested)
 {
-  grub_reader_t reader = grub_reader_get_current ();
+  grub_reader_t reader;
+  grub_err_t err = GRUB_ERR_NONE;
+
+  err = grub_auth_check_authentication (NULL);
+
+  if (err)
+    {
+      grub_print_error ();
+      grub_errno = GRUB_ERR_NONE;
+      return;
+    }
+
+  reader = grub_reader_get_current ();
 
   reader_nested = nested;
   if (reader->init)
@@ -504,7 +530,7 @@ grub_normal_read_line (char **line, int cont)
   while (1)
     {
       cmdline[0] = 0;
-      if (grub_cmdline_get (prompt, cmdline, sizeof (cmdline), 0, 1))
+      if (grub_cmdline_get (prompt, cmdline, sizeof (cmdline), 0, 1, 1))
 	break;
 
       if ((reader_nested) || (cont))

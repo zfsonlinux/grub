@@ -97,7 +97,7 @@ grub_linux_boot (void)
 
   hp = (struct linux_hdrs *) linux_addr;
 
-  /* Any pointer we derefence in the kernel image must be relocated
+  /* Any pointer we dereference in the kernel image must be relocated
      to where we actually loaded the kernel.  */
   addr = (grub_addr_t) hp->bootstr_info;
   addr += (linux_addr - linux_entry);
@@ -271,9 +271,16 @@ grub_linux_load64 (grub_elf_t elf)
   base = linux_entry - off;
 
   /* Now load the segments into the area we claimed.  */
-  auto grub_err_t offset_phdr (Elf64_Phdr *phdr, grub_addr_t *addr);
-  grub_err_t offset_phdr (Elf64_Phdr *phdr, grub_addr_t *addr)
+  auto grub_err_t offset_phdr (Elf64_Phdr *phdr, grub_addr_t *addr, int *do_load);
+  grub_err_t offset_phdr (Elf64_Phdr *phdr, grub_addr_t *addr, int *do_load)
     {
+      if (phdr->p_type != PT_LOAD)
+	{
+	  *do_load = 0;
+	  return 0;
+	}
+      *do_load = 1;
+
       /* Adjust the program load address to linux_addr.  */
       *addr = (phdr->p_paddr - base) + (linux_addr - off);
       return 0;
@@ -474,7 +481,7 @@ fetch_translations (void)
 
   if (grub_ieee1275_get_property (node, "translations", of_trans, actual, &actual))
     {
-      grub_printf ("Cannot fetch /vritual-memory/translations property.\n");
+      grub_printf ("Cannot fetch /virtual-memory/translations property.\n");
       return;
     }
 

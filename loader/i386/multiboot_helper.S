@@ -19,7 +19,7 @@
 #include <grub/symbol.h>
 #include <multiboot.h>
 #include <multiboot2.h>
-	
+
 	.p2align	2	/* force 4-byte alignment */
 
 /*
@@ -71,6 +71,7 @@ VARIABLE(grub_multiboot_backward_relocator)
 	rep
 	movsb
 
+	cld
 	jmp	*%edx
 VARIABLE(grub_multiboot_backward_relocator_end)
 
@@ -91,7 +92,7 @@ FUNCTION(grub_multiboot_real_boot)
 
 	/* Move the magic value into eax.  */
 	movl	$MULTIBOOT_MAGIC2, %eax
-				
+
 	/* Jump to the relocator.  */
 	popl	%ebp
 	jmp 	*%ebp
@@ -112,4 +113,6 @@ FUNCTION(grub_multiboot2_real_boot)
         /* Move the magic value into eax and jump to the kernel.  */
         movl    $MULTIBOOT2_BOOTLOADER_MAGIC,%eax
         popl    %ecx
+
+        cld
         jmp     *%ecx

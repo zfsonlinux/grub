@@ -26,8 +26,8 @@ case "${GRUB_DISTRIBUTOR}" in
   *)		OS="FreeBSD" ;;
 esac
 
-if test -e /boot/devices.hints ; then
-  devices=/boot/devices.hints
+if test -e /boot/device.hints ; then
+  devices=/boot/device.hints
 fi
 
 if test -e /boot/kernel/kernel ; then
@@ -50,10 +50,10 @@ if [ "x$kfreebsd" != "x" ] ; then
     devices_rel_dirname=`make_system_path_relative_to_its_root $devices_dirname`
   fi
 
-  root_device=`basename ${GRUB_DEVICE}`
-
-  # For "ufs" it's the same.  Do we care about the others?
-  kfreebsd_fs=${GRUB_FS}
+  case ${GRUB_FS} in
+    ufs1 | ufs2)	kfreebsd_fs=ufs ;;
+    *)			kfreebsd_fs=${GRUB_FS} ;;
+  esac
 
   cat << EOF
 menuentry "${OS}" {
@@ -69,7 +69,8 @@ EOF
 EOF
   fi
   cat << EOF
-	set FreeBSD.vfs.root.mountfrom=${kfreebsd_fs}:${root_device}
+	set FreeBSD.vfs.root.mountfrom=${kfreebsd_fs}:${GRUB_DEVICE}
+	set FreeBSD.vfs.root.mountfrom.options=rw
 }
 EOF
 fi

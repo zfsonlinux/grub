@@ -90,7 +90,7 @@ grub_cmd_echo (grub_extcmd_t cmd, int argc, char **args)
 	      arg++;
 	      continue;
 	    }
-	  
+
 	  /* This was not an escaped character, or escaping is not
 	     enabled.  */
 	  grub_printf ("%c", *arg);
@@ -113,7 +113,7 @@ static grub_extcmd_t cmd;
 GRUB_MOD_INIT(echo)
 {
   cmd = grub_register_extcmd ("echo", grub_cmd_echo, GRUB_COMMAND_FLAG_BOTH,
-			      "echo [-e|-n] FILE", "Display a line of text.",
+			      "echo [-e|-n] STRING", "Display a line of text.",
 			      options);
 }
 

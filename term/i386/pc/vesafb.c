@@ -83,13 +83,12 @@ struct grub_virtual_screen
   struct grub_colored_char *text_buffer;
 };
 
-/* Make seure text buffer is not marked as allocated.  */
+/* Make sure text buffer is not marked as allocated.  */
 static struct grub_virtual_screen virtual_screen =
   {
     .text_buffer = 0
   };
 
-static grub_dl_t my_mod;
 static unsigned char *vga_font = 0;
 static grub_uint32_t old_mode = 0;
 
@@ -268,7 +267,7 @@ static void
 grub_virtual_screen_invalidate_char (struct grub_colored_char *p)
 {
   p->code = 0xFFFF;
-  
+
   if (p->width)
     {
       struct grub_colored_char *q;
@@ -412,14 +411,14 @@ grub_vesafb_putchar (grub_uint32_t c)
 	  if (virtual_screen.cursor_x > 0)
 	    virtual_screen.cursor_x--;
 	  break;
-	  
+
 	case '\n':
 	  if (virtual_screen.cursor_y >= virtual_screen.rows - 1)
 	    scroll_up ();
 	  else
 	    virtual_screen.cursor_y++;
 	  break;
-	  
+
 	case '\r':
 	  virtual_screen.cursor_x = 0;
 	  break;
@@ -432,7 +431,7 @@ grub_vesafb_putchar (grub_uint32_t c)
     {
       unsigned width;
       struct grub_colored_char *p;
-      
+
       grub_virtual_screen_get_glyph (c, 0, &width);
 
       if (virtual_screen.cursor_x + width > virtual_screen.columns)
@@ -458,14 +457,14 @@ grub_vesafb_putchar (grub_uint32_t c)
 	      p[i].index = i;
 	    }
 	}
-	  
+
       write_char ();
-  
+
       virtual_screen.cursor_x += width;
       if (virtual_screen.cursor_x >= virtual_screen.columns)
 	{
 	  virtual_screen.cursor_x = 0;
-	  
+
 	  if (virtual_screen.cursor_y >= virtual_screen.rows - 1)
 	    scroll_up ();
 	  else
@@ -481,7 +480,7 @@ static grub_ssize_t
 grub_vesafb_getcharwidth (grub_uint32_t c)
 {
   unsigned width;
-  
+
   if (! grub_virtual_screen_get_glyph (c, 0, &width))
     return 0;
 
@@ -543,7 +542,7 @@ grub_vesafb_cls (void)
   grub_virtual_screen_cls ();
 
   grub_memset (framebuffer,
-               0, 
+               0,
 	       mode_info.y_resolution * bytes_per_scan_line);
 }
 
@@ -598,7 +597,6 @@ static struct grub_term_output grub_vesafb_term =
 
 GRUB_MOD_INIT(vesafb)
 {
-  my_mod = mod;
   grub_term_register_output ("vesafb", &grub_vesafb_term);
 }
 

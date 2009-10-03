@@ -52,7 +52,7 @@ strip_extra_slashes (char *dir)
 	    p[0] = '\0';
 	  break;
 	}
-      
+
       p++;
     }
 }
@@ -104,7 +104,7 @@ grub_get_prefix (const char *dir)
   char *abs_dir, *prev_dir;
   char *prefix;
   struct stat st, prev_st;
-  
+
   /* Save the current directory.  */
   saved_cwd = xgetcwd ();
 
@@ -114,7 +114,7 @@ grub_get_prefix (const char *dir)
   abs_dir = xgetcwd ();
   strip_extra_slashes (abs_dir);
   prev_dir = xstrdup (abs_dir);
-  
+
   if (stat (".", &prev_st) < 0)
     grub_util_error ("Cannot stat `%s'", dir);
 
@@ -187,7 +187,7 @@ find_root_device (const char *dir, dev_t dev)
   DIR *dp;
   char *saved_cwd;
   struct dirent *ent;
-  
+
   dp = opendir (dir);
   if (! dp)
     return 0;
@@ -201,11 +201,11 @@ find_root_device (const char *dir, dev_t dev)
       closedir (dp);
       return 0;
     }
-  
+
   while ((ent = readdir (dp)) != 0)
     {
       struct stat st;
-      
+
       /* Avoid:
 	 - dotfiles (like "/dev/.tmp.md0") since they could be duplicates.
 	 - dotdirs (like "/dev/.static") since they could contain duplicates.  */
@@ -219,7 +219,7 @@ find_root_device (const char *dir, dev_t dev)
       if (S_ISLNK (st.st_mode))
 	/* Don't follow symbolic links.  */
 	continue;
-      
+
       if (S_ISDIR (st.st_mode))
 	{
 	  /* Find it recursively.  */
@@ -231,14 +231,14 @@ find_root_device (const char *dir, dev_t dev)
 	    {
 	      if (chdir (saved_cwd) < 0)
 		grub_util_error ("Cannot restore the original directory");
-	      
+
 	      free (saved_cwd);
 	      closedir (dp);
 	      return res;
 	    }
 	}
 
-#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__APPLE__)
       if (S_ISCHR (st.st_mode) && st.st_rdev == dev)
 #else
       if (S_ISBLK (st.st_mode) && st.st_rdev == dev)
@@ -351,7 +351,7 @@ find_cygwin_root_device (const char *path, dev_t dev)
   /* Cygwin returns the partition serial number in stat.st_dev.
      This is never identical to the device number of the emulated
      /dev/sdXN device, so above find_root_device () does not work.
-     Search the partion with the same serial in boot sector instead.  */
+     Search the partition with the same serial in boot sector instead.  */
   char devpath[sizeof ("/dev/sda15") + 13]; /* Size + Paranoia.  */
   int d;
   for (d = 'a'; d <= 'z'; d++)
@@ -380,7 +380,7 @@ grub_guess_root_device (const char *dir)
 {
   struct stat st;
   char *os_dev;
-  
+
   if (stat (dir, &st) < 0)
     grub_util_error ("Cannot stat `%s'", dir);
 
@@ -398,7 +398,7 @@ grub_guess_root_device (const char *dir)
 }
 
 int
-grub_util_get_dev_abstraction (const char *os_dev)
+grub_util_get_dev_abstraction (const char *os_dev UNUSED)
 {
 #ifdef __linux__
   /* Check for LVM.  */
@@ -437,7 +437,7 @@ grub_util_get_grub_dev (const char *os_dev)
 	      offset++;
 	  }
       }
-      
+
       break;
 
     case GRUB_DEV_ABSTRACTION_RAID:
@@ -500,7 +500,7 @@ grub_util_get_grub_dev (const char *os_dev)
 	}
       else
 	grub_util_error ("Unknown kind of RAID device `%s'", os_dev);
-      
+
       break;
 
     default:  /* GRUB_DEV_ABSTRACTION_NONE */
