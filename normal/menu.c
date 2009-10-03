@@ -26,6 +26,7 @@
 #include <grub/menu_viewer.h>
 #include <grub/command.h>
 #include <grub/parser.h>
+#include <grub/auth.h>
 
 /* Get a menu entry by its index in the entry list.  */
 grub_menu_entry_t
@@ -83,7 +84,7 @@ grub_menu_set_timeout (int timeout)
 }
 
 /* Get the first entry number from the value of the environment variable NAME,
-   which is a space-separated list of nonnegative integers.  The entry number
+   which is a space-separated list of non-negative integers.  The entry number
    which is returned is stripped from the value of NAME.  If no entry number
    can be found, -1 is returned.  */
 static int
@@ -124,6 +125,18 @@ get_and_remove_first_entry_number (const char *name)
 void
 grub_menu_execute_entry(grub_menu_entry_t entry)
 {
+  grub_err_t err = GRUB_ERR_NONE;
+
+  if (entry->restricted)
+    err = grub_auth_check_authentication (entry->users);
+
+  if (err)
+    {
+      grub_print_error ();
+      grub_errno = GRUB_ERR_NONE;
+      return;
+    }
+
   grub_parser_execute ((char *) entry->sourcecode);
 
   if (grub_errno == GRUB_ERR_NONE && grub_loader_is_loaded ())

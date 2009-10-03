@@ -21,6 +21,9 @@
 
 #include <config.h>
 
+/* Apple assembler requires local labels to start with a capital L */
+#define LOCAL(sym)	L_ ## sym
+
 /* Add an underscore to a C symbol in assembler code if needed. */
 #ifdef HAVE_ASM_USCORE
 # define EXT_C(sym)	_ ## sym
@@ -28,7 +31,10 @@
 # define EXT_C(sym)	sym
 #endif
 
-#if ! defined (__CYGWIN__) && ! defined (__MINGW32__)
+#if defined (APPLE_CC)
+#define FUNCTION(x)	.globl EXT_C(x) ; EXT_C(x):
+#define VARIABLE(x)	.globl EXT_C(x) ; EXT_C(x):
+#elif ! defined (__CYGWIN__) && ! defined (__MINGW32__)
 #define FUNCTION(x)	.globl EXT_C(x) ; .type EXT_C(x), "function" ; EXT_C(x):
 #define VARIABLE(x)	.globl EXT_C(x) ; .type EXT_C(x), "object" ; EXT_C(x):
 #else

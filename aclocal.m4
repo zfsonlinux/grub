@@ -1,8 +1,26 @@
+dnl Redefine AC_LANG_PROGRAM with a "-Wstrict-prototypes -Werror"-friendly
+dnl version.  Patch submitted to bug-autoconf in 2009-09-16.
+m4_define([AC_LANG_PROGRAM(C)],
+[$1
+int
+main (void)
+{
+dnl Do *not* indent the following line: there may be CPP directives.
+dnl Don't move the `;' right after for the same reason.
+$2
+  ;
+  return 0;
+}])
+
+
 dnl Check whether target compiler is working
 AC_DEFUN(grub_PROG_TARGET_CC,
 [AC_MSG_CHECKING([whether target compiler is working])
 AC_CACHE_VAL(grub_cv_prog_target_cc,
-[AC_LINK_IFELSE([AC_LANG_PROGRAM([[]], [[]])],
+[AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+asm (".globl start; start: nop");
+int main (void);
+]], [[]])],
   		[grub_cv_prog_target_cc=yes],
 		[grub_cv_prog_target_cc=no])
 ])
@@ -23,6 +41,7 @@ AC_DEFUN(grub_ASM_USCORE,
 AC_MSG_CHECKING([if C symbols get an underscore after compilation])
 AC_CACHE_VAL(grub_cv_asm_uscore,
 [cat > conftest.c <<\EOF
+int func (int *);
 int
 func (int *list)
 {
@@ -60,6 +79,7 @@ AC_DEFUN(grub_PROG_OBJCOPY_ABSOLUTE,
 [AC_MSG_CHECKING([whether ${OBJCOPY} works for absolute addresses])
 AC_CACHE_VAL(grub_cv_prog_objcopy_absolute,
 [cat > conftest.c <<\EOF
+void cmain (void);
 void
 cmain (void)
 {
@@ -156,6 +176,36 @@ rm -f conftest*])
 
 AC_MSG_RESULT([$grub_cv_i386_asm_addr32])])
 
+dnl check if our compiler is apple cc
+dnl because it requires numerous workarounds
+AC_DEFUN(grub_apple_cc,
+[AC_REQUIRE([AC_PROG_CC])
+AC_MSG_CHECKING([whether our compiler is apple cc])
+AC_CACHE_VAL(grub_cv_apple_cc,
+[if $CC -v 2>&1 | grep "Apple Inc." > /dev/null; then
+  grub_cv_apple_cc=yes
+else
+  grub_cv_apple_cc=no
+fi
+])
+
+AC_MSG_RESULT([$grub_cv_apple_cc])])
+
+dnl check if our target compiler is apple cc
+dnl because it requires numerous workarounds
+AC_DEFUN(grub_apple_target_cc,
+[AC_REQUIRE([AC_PROG_CC])
+AC_MSG_CHECKING([whether our target compiler is apple cc])
+AC_CACHE_VAL(grub_cv_apple_target_cc,
+[if $CC -v 2>&1 | grep "Apple Inc." > /dev/null; then
+  grub_cv_apple_target_cc=yes
+else
+  grub_cv_apple_target_cc=no
+fi
+])
+
+AC_MSG_RESULT([$grub_cv_apple_target_cc])])
+
 
 dnl Later versions of GAS requires that addr32 and data32 prefixes
 dnl appear in the same lines as the instructions they modify, while
@@ -202,7 +252,7 @@ AC_MSG_CHECKING(dnl
 [whether an absolute indirect call/jump must not be prefixed with an asterisk])
 AC_CACHE_VAL(grub_cv_i386_asm_absolute_without_asterisk,
 [cat > conftest.s <<\EOF
-	lcall	*(offset)	
+	lcall	*(offset)
 offset:
 	.long	0
 	.word	0
@@ -301,60 +351,6 @@ else
 fi
 ])
 
-dnl Check if the C compiler has a bug while using nested functions when
-dnl mregparm is used on the i386.  Some gcc versions do not pass the third
-dnl parameter correctly to the nested function.
-dnl Written by Marco Gerards.
-AC_DEFUN(grub_I386_CHECK_REGPARM_BUG,
-[AC_REQUIRE([AC_PROG_CC])
-AC_MSG_CHECKING([if GCC has the regparm=3 bug])
-AC_CACHE_VAL(grub_cv_i386_check_nested_functions,
-[AC_RUN_IFELSE([AC_LANG_SOURCE(
-[[
-static int
-test (int *n)
-{
-  return *n == -1;
-}
-
-static int
-testfunc (int __attribute__ ((__regparm__ (3))) (*hook) (int a, int b, int *c))
-{
-  int a = 0;
-  int b = 0;
-  int c = -1;
-  return hook (a, b, &c);
-}
-
-int
-main (void)
-{
-  int __attribute__ ((__regparm__ (3))) nestedfunc (int a, int b, int *c)
-    {
-      return a == b && test (c);
-    }
-  return testfunc (nestedfunc) ? 0 : 1;
-}
-]])],
-	[grub_cv_i386_check_nested_functions=no],
-	[grub_cv_i386_check_nested_functions=yes],
-	[grub_cv_i386_check_nested_functions=yes])])
-
-AC_MSG_RESULT([$grub_cv_i386_check_nested_functions])
-
-if test "x$grub_cv_i386_check_nested_functions" = xyes; then
-  AC_DEFINE([NESTED_FUNC_ATTR], 
-	[__attribute__ ((__regparm__ (1)))],
-	[Catch gcc bug])
-else
-dnl Unfortunately, the above test does not detect a bug in gcc-4.0.
-dnl So use regparm 2 until a better test is found.
-  AC_DEFINE([NESTED_FUNC_ATTR], 
-	[__attribute__ ((__regparm__ (1)))],
-	[Catch gcc bug])
-fi
-])
-
 dnl Check if the C compiler generates calls to `__enable_execute_stack()'.
 AC_DEFUN(grub_CHECK_ENABLE_EXECUTE_STACK,[
 AC_MSG_CHECKING([whether `$CC' generates calls to `__enable_execute_stack()'])
@@ -433,4 +429,32 @@ else
   AC_MSG_RESULT([no])
 [fi
 rm -rf testdir]
+])
+
+dnl Check if the C compiler supports `-fPIE'.
+AC_DEFUN(grub_CHECK_PIE,[
+[# Position independent executable.
+pie_possible=yes]
+AC_MSG_CHECKING([whether `$CC' has `-fPIE' as default])
+# Is this a reliable test case?
+AC_LANG_CONFTEST([[
+#ifdef __PIE__
+int main() {
+	return 0;
+}
+#else
+#error NO __PIE__ DEFINED
+#endif
+]])
+
+[# `$CC -c -o ...' might not be portable.  But, oh, well...  Is calling
+# `ac_compile' like this correct, after all?
+if eval "$ac_compile -S -o conftest.s" 2> /dev/null; then]
+  AC_MSG_RESULT([yes])
+  [# Should we clear up other files as well, having called `AC_LANG_CONFTEST'?
+  rm -f conftest.s
+else
+  pie_possible=no]
+  AC_MSG_RESULT([no])
+[fi]
 ])

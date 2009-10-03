@@ -33,6 +33,14 @@
 #include <grub/gzio.h>
 #include <grub/aout.h>
 #include <grub/command.h>
+#include <grub/extcmd.h>
+
+#ifdef GRUB_MACHINE_PCBIOS
+#include <grub/machine/biosnum.h>
+#endif
+#include <grub/disk.h>
+#include <grub/device.h>
+#include <grub/partition.h>
 
 #define ALIGN_DWORD(a)	ALIGN_UP (a, 4)
 #define ALIGN_QWORD(a)	ALIGN_UP (a, 8)
@@ -41,39 +49,86 @@
 
 #define MOD_BUF_ALLOC_UNIT	4096
 
-static int kernel_type;
+static int kernel_type = KERNEL_TYPE_NONE;
 static grub_dl_t my_mod;
 static grub_addr_t entry, entry_hi, kern_start, kern_end;
 static grub_uint32_t bootflags;
 static char *mod_buf;
 static grub_uint32_t mod_buf_len, mod_buf_max, kern_end_mdofs;
 static int is_elf_kernel, is_64bit;
+static char *netbsd_root = NULL;
 
-static const char freebsd_opts[] = "DhaCcdgmnpqrsv";
+static const struct grub_arg_option freebsd_opts[] =
+  {
+    {"dual", 'D', 0, "Display output on all consoles.", 0, 0},
+    {"serial", 'h', 0, "Use serial console.", 0, 0},
+    {"askname", 'a', 0, "Ask for file name to reboot from.", 0, 0},
+    {"cdrom", 'C', 0, "Use cdrom as root.", 0, 0},
+    {"config", 'c', 0, "Invoke user configuration routing.", 0, 0},
+    {"kdb", 'd', 0, "Enter in KDB on boot.", 0, 0},
+    {"gdb", 'g', 0, "Use GDB remote debugger instead of DDB.", 0, 0},
+    {"mute", 'm', 0, "Disable all boot output.", 0, 0},
+    {"nointr", 'n', 0, "", 0, 0},
+    {"pause", 'p', 0, "Wait for keypress after every line of output.", 0, 0},
+    {"quiet", 'q', 0, "", 0, 0},
+    {"dfltroot", 'r', 0, "Use compiled-in rootdev.", 0, 0},
+    {"single", 's', 0, "Boot into single mode.", 0, 0},
+    {"verbose", 'v', 0, "Boot with verbose messages.", 0, 0},
+    {0, 0, 0, 0, 0, 0}
+  };
+
 static const grub_uint32_t freebsd_flags[] =
 {
   FREEBSD_RB_DUAL, FREEBSD_RB_SERIAL, FREEBSD_RB_ASKNAME,
   FREEBSD_RB_CDROM, FREEBSD_RB_CONFIG, FREEBSD_RB_KDB,
   FREEBSD_RB_GDB, FREEBSD_RB_MUTE, FREEBSD_RB_NOINTR,
   FREEBSD_RB_PAUSE, FREEBSD_RB_QUIET, FREEBSD_RB_DFLTROOT,
-  FREEBSD_RB_SINGLE, FREEBSD_RB_VERBOSE
+  FREEBSD_RB_SINGLE, FREEBSD_RB_VERBOSE, 0
 };
 
-static const char openbsd_opts[] = "abcsd";
+static const struct grub_arg_option openbsd_opts[] =
+  {
+    {"askname", 'a', 0, "Ask for file name to reboot from.", 0, 0},
+    {"halt", 'b', 0, "Don't reboot, just halt.", 0, 0},
+    {"config", 'c', 0, "Change configured devices.", 0, 0},
+    {"single", 's', 0, "Boot into single mode.", 0, 0},
+    {"kdb", 'd', 0, "Enter in KDB on boot.", 0, 0},
+    {0, 0, 0, 0, 0, 0}
+  };
+
 static const grub_uint32_t openbsd_flags[] =
 {
   OPENBSD_RB_ASKNAME, OPENBSD_RB_HALT, OPENBSD_RB_CONFIG,
-  OPENBSD_RB_SINGLE, OPENBSD_RB_KDB
+  OPENBSD_RB_SINGLE, OPENBSD_RB_KDB, 0
 };
 
-static const char netbsd_opts[] = "abcdmqsvxz";
+static const struct grub_arg_option netbsd_opts[] =
+  {
+    {"no-smp", '1', 0, "Disable SMP.", 0, 0},
+    {"no-acpi", '2', 0, "Disable ACPI.", 0, 0},
+    {"askname", 'a', 0, "Ask for file name to reboot from.", 0, 0},
+    {"halt", 'b', 0, "Don't reboot, just halt.", 0, 0},
+    {"config", 'c', 0, "Change configured devices.", 0, 0},
+    {"kdb", 'd', 0, "Enter in KDB on boot.", 0, 0},
+    {"miniroot", 'm', 0, "", 0, 0},
+    {"quiet", 'q', 0, "Don't display boot diagnostic messages.", 0, 0},
+    {"single", 's', 0, "Boot into single mode.", 0, 0},
+    {"verbose", 'v', 0, "Boot with verbose messages.", 0, 0},
+    {"debug", 'x', 0, "Boot with debug messages.", 0, 0},
+    {"silent", 'z', 0, "Supress normal output (warnings remain).", 0, 0},
+    {"root", 'r', 0, "Set root device.", "DEVICE", ARG_TYPE_STRING},
+    {0, 0, 0, 0, 0, 0}
+  };
+
 static const grub_uint32_t netbsd_flags[] =
 {
-  NETBSD_RB_ASKNAME, NETBSD_RB_HALT, NETBSD_RB_USERCONFIG,
-  NETBSD_RB_KDB, NETBSD_RB_MINIROOT, NETBSD_AB_QUIET,
-  NETBSD_RB_SINGLE, NETBSD_AB_VERBOSE, NETBSD_AB_DEBUG,
-  NETBSD_AB_SILENT
+  NETBSD_AB_NOSMP, NETBSD_AB_NOACPI, NETBSD_RB_ASKNAME,
+  NETBSD_RB_HALT, NETBSD_RB_USERCONFIG, NETBSD_RB_KDB,
+  NETBSD_RB_MINIROOT, NETBSD_AB_QUIET, NETBSD_RB_SINGLE,
+  NETBSD_AB_VERBOSE, NETBSD_AB_DEBUG, NETBSD_AB_SILENT, 0
 };
+
+#define NETBSD_ROOT_ARG (ARRAY_SIZE (netbsd_flags) - 1)
 
 static void
 grub_bsd_get_device (grub_uint32_t * biosdev,
@@ -81,23 +136,26 @@ grub_bsd_get_device (grub_uint32_t * biosdev,
 		     grub_uint32_t * slice, grub_uint32_t * part)
 {
   char *p;
+  grub_device_t dev; 
 
-  *biosdev = *unit = *slice = *part = 0;
-  p = grub_env_get ("root");
-  if ((p) && ((p[0] == 'h') || (p[0] == 'f')) && (p[1] == 'd') &&
-      (p[2] >= '0') && (p[2] <= '9'))
+#ifdef GRUB_MACHINE_PCBIOS
+  *biosdev = grub_get_root_biosnumber () & 0xff;
+#else
+  *biosdev = 0xff;
+#endif
+  *unit = (*biosdev & 0x7f);
+  *slice = 0xff;
+  *part = 0xff;
+  dev = grub_device_open (0);
+  if (dev && dev->disk && dev->disk->partition)
     {
-      if (p[0] == 'h')
-	*biosdev = 0x80;
 
-      *unit = grub_strtoul (p + 2, &p, 0);
-      *biosdev += *unit;
-
-      if ((p) && (p[0] == ','))
+      p = dev->disk->partition->partmap->get_name (dev->disk->partition);
+      if (p)
 	{
-	  if ((p[1] >= '0') && (p[1] <= '9'))
+	  if ((p[0] >= '0') && (p[0] <= '9'))
 	    {
-	      *slice = grub_strtoul (p + 1, &p, 0);
+	      *slice = grub_strtoul (p, &p, 0);
 
 	      if ((p) && (p[0] == ','))
 		p++;
@@ -107,9 +165,11 @@ grub_bsd_get_device (grub_uint32_t * biosdev,
 	    *part = p[0] - 'a';
 	}
     }
+  if (dev)
+    grub_device_close (dev);
 }
 
-static grub_err_t
+grub_err_t
 grub_freebsd_add_meta (grub_uint32_t type, void *data, grub_uint32_t len)
 {
   if (mod_buf_max < mod_buf_len + len + 8)
@@ -168,7 +228,7 @@ grub_freebsd_add_mmap (void)
   int NESTED_FUNC_ATTR hook (grub_uint64_t addr, grub_uint64_t size,
 			     grub_uint32_t type)
     {
-      /* FreeBSD assumes that first 64KiB are available. 
+      /* FreeBSD assumes that first 64KiB are available.
 	 Not always true but try to prevent panic somehow. */
       if (isfirstrun && addr != 0)
 	{
@@ -180,7 +240,7 @@ grub_freebsd_add_mmap (void)
 	      mmap++;
 	    }
 	  else
-	    len += sizeof (struct grub_e820_mmap);	  
+	    len += sizeof (struct grub_e820_mmap);
 	}
       isfirstrun = 0;
       if (mmap)
@@ -242,9 +302,9 @@ grub_freebsd_add_mmap (void)
   for (i = 0; i < mmap - mmap_buf; i++)
     grub_dprintf ("bsd", "smap %d, %d:%llx - %llx\n", i,
 		  mmap_buf[i].type,
-		  (unsigned long long) mmap_buf[i].addr, 
+		  (unsigned long long) mmap_buf[i].addr,
 		  (unsigned long long) mmap_buf[i].size);
-       
+
   grub_dprintf ("bsd", "%d entries in smap\n", mmap - mmap_buf);
   grub_freebsd_add_meta (FREEBSD_MODINFO_METADATA |
 			 FREEBSD_MODINFOMD_SMAP, mmap_buf, len);
@@ -254,44 +314,31 @@ grub_freebsd_add_mmap (void)
   return grub_errno;
 }
 
-static grub_err_t
-grub_freebsd_add_meta_module (int is_kern, int argc, char **argv,
+grub_err_t
+grub_freebsd_add_meta_module (char *filename, char *type, int argc, char **argv,
 			      grub_addr_t addr, grub_uint32_t size)
 {
-  char *name, *type;
-
-  name = grub_strrchr (argv[0], '/');
+  char *name;
+  name = grub_strrchr (filename, '/');
   if (name)
     name++;
   else
-    name = argv[0];
+    name = filename;
+  if (grub_strcmp (type, "/boot/zfs/zpool.cache") == 0)
+    name = "/boot/zfs/zpool.cache";
 
   if (grub_freebsd_add_meta (FREEBSD_MODINFO_NAME, name,
 			     grub_strlen (name) + 1))
     return grub_errno;
 
-  argc--;
-  argv++;
-
-  if ((argc) && (!grub_memcmp (argv[0], "type=", 5)))
-    {
-      type = &argv[0][5];
-      argc--;
-      argv++;
-    }
-  else
-    type = ((is_kern) ?
-	    ((is_64bit) ? FREEBSD_MODTYPE_KERNEL64 : FREEBSD_MODTYPE_KERNEL)
-	    : FREEBSD_MODTYPE_RAW);
-
   if (is_64bit)
     {
-      grub_uint64_t addr64 = addr, size64 = size; 
+      grub_uint64_t addr64 = addr, size64 = size;
       if ((grub_freebsd_add_meta (FREEBSD_MODINFO_TYPE, type,
 			      grub_strlen (type) + 1)) ||
-	  (grub_freebsd_add_meta (FREEBSD_MODINFO_ADDR, &addr64, 
+	  (grub_freebsd_add_meta (FREEBSD_MODINFO_ADDR, &addr64,
 				  sizeof (addr64))) ||
-	  (grub_freebsd_add_meta (FREEBSD_MODINFO_SIZE, &size64, 
+	  (grub_freebsd_add_meta (FREEBSD_MODINFO_SIZE, &size64,
 				  sizeof (size64))))
 	return grub_errno;
     }
@@ -299,9 +346,9 @@ grub_freebsd_add_meta_module (int is_kern, int argc, char **argv,
     {
       if ((grub_freebsd_add_meta (FREEBSD_MODINFO_TYPE, type,
 				  grub_strlen (type) + 1)) ||
-	  (grub_freebsd_add_meta (FREEBSD_MODINFO_ADDR, &addr, 
+	  (grub_freebsd_add_meta (FREEBSD_MODINFO_ADDR, &addr,
 				  sizeof (addr))) ||
-	  (grub_freebsd_add_meta (FREEBSD_MODINFO_SIZE, &size, 
+	  (grub_freebsd_add_meta (FREEBSD_MODINFO_SIZE, &size,
 				  sizeof (size))))
 	return grub_errno;
     }
@@ -332,23 +379,6 @@ grub_freebsd_add_meta_module (int is_kern, int argc, char **argv,
 	  if (grub_freebsd_add_meta (FREEBSD_MODINFO_ARGS, cmdline, n))
 	    return grub_errno;
 	}
-    }
-
-  if (is_kern)
-    {
-      int len = (is_64bit) ? 8 : 4;
-      grub_uint64_t data = 0;
-
-      if ((grub_freebsd_add_meta (FREEBSD_MODINFO_METADATA |
-				  FREEBSD_MODINFOMD_HOWTO, &data, 4)) ||
-	  (grub_freebsd_add_meta (FREEBSD_MODINFO_METADATA |
-				  FREEBSD_MODINFOMD_ENVP, &data, len)) ||
-	  (grub_freebsd_add_meta (FREEBSD_MODINFO_METADATA |
-				  FREEBSD_MODINFOMD_KERNEND, &data, len)))
-	return grub_errno;
-      kern_end_mdofs = mod_buf_len - len;
-
-      return grub_freebsd_add_mmap ();
     }
 
   return GRUB_ERR_NONE;
@@ -394,7 +424,7 @@ grub_freebsd_list_modules (void)
     }
 }
 
-/* This function would be here but it's under different licence. */
+/* This function would be here but it's under different license. */
 #include "bsd_pagetable.c"
 
 struct gdt_descriptor
@@ -478,7 +508,7 @@ grub_freebsd_boot (void)
     {
       grub_uint32_t *gdt;
       grub_uint8_t *trampoline;
-      void (*launch_trampoline) (grub_addr_t entry, ...)
+      void (*launch_trampoline) (grub_addr_t entry_lo, ...)
 	__attribute__ ((cdecl, regparm (0)));
       grub_uint8_t *pagetable;
 
@@ -502,22 +532,22 @@ grub_freebsd_boot (void)
       gdtdesc->base = gdt;
 
       /* Prepare trampoline. */
-      trampoline = (grub_uint8_t *) (kern_end - 4096 + 24 
+      trampoline = (grub_uint8_t *) (kern_end - 4096 + 24
 				     + sizeof (struct gdt_descriptor));
-      launch_trampoline = (void  __attribute__ ((cdecl, regparm (0))) 
-			   (*) (grub_addr_t entry, ...)) trampoline;
+      launch_trampoline = (void  __attribute__ ((cdecl, regparm (0)))
+			   (*) (grub_addr_t entry_lo, ...)) trampoline;
       grub_bsd64_trampoline_gdt = (grub_uint32_t) gdtdesc;
-      grub_bsd64_trampoline_selfjump 
+      grub_bsd64_trampoline_selfjump
 	= (grub_uint32_t) (trampoline + 6
-			   + ((grub_uint8_t *) &grub_bsd64_trampoline_selfjump 
+			   + ((grub_uint8_t *) &grub_bsd64_trampoline_selfjump
 			      - &grub_bsd64_trampoline_start));
 
       /* Copy trampoline. */
-      grub_memcpy (trampoline, &grub_bsd64_trampoline_start, 
+      grub_memcpy (trampoline, &grub_bsd64_trampoline_start,
 		   &grub_bsd64_trampoline_end - &grub_bsd64_trampoline_start);
 
       /* Launch trampoline. */
-      launch_trampoline (entry, entry_hi, pagetable, bi.bi_modulep, 
+      launch_trampoline (entry, entry_hi, pagetable, bi.bi_modulep,
 			 kern_end);
     }
   else
@@ -547,7 +577,15 @@ grub_openbsd_boot (void)
         case GRUB_MACHINE_MEMORY_AVAILABLE:
 	  pm->type = OPENBSD_MMAP_AVAILABLE;
 	  break;
-	  
+
+        case GRUB_MACHINE_MEMORY_ACPI:
+	  pm->type = OPENBSD_MMAP_ACPI;
+	  break;
+
+        case GRUB_MACHINE_MEMORY_NVS:
+	  pm->type = OPENBSD_MMAP_NVS;
+	  break;
+
 	default:
 	  pm->type = OPENBSD_MMAP_RESERVED;
 	  break;
@@ -563,6 +601,12 @@ grub_openbsd_boot (void)
   pm = (struct grub_openbsd_bios_mmap *) (pa + 1);
   grub_mmap_iterate (hook);
 
+  /* Memory map terminator.  */
+  pm->addr = 0;
+  pm->len = 0;
+  pm->type = 0;
+  pm++;
+
   pa->ba_size = (char *) pm - (char *) pa;
   pa->ba_next = (struct grub_openbsd_bootargs *) pm;
   pa = pa->ba_next;
@@ -574,8 +618,8 @@ grub_openbsd_boot (void)
 	     (part << OPENBSD_B_PARTSHIFT));
 
   grub_unix_real_boot (entry, bootflags, bootdev, OPENBSD_BOOTARG_APIVER,
-		       0, grub_mmap_get_upper () >> 10, 
-		       grub_mmap_get_lower () >> 10,
+		       0, (grub_uint32_t) (grub_mmap_get_upper () >> 10),
+		       (grub_uint32_t) (grub_mmap_get_lower () >> 10),
 		       (char *) pa - buf, buf);
 
   /* Not reached.  */
@@ -585,26 +629,93 @@ grub_openbsd_boot (void)
 static grub_err_t
 grub_netbsd_boot (void)
 {
-  struct grub_netbsd_btinfo_rootdevice *rootdev;
   struct grub_netbsd_bootinfo *bootinfo;
-  grub_uint32_t biosdev, unit, slice, part;
+  int count = 0;
+  struct grub_netbsd_btinfo_mmap_header *mmap;
+  struct grub_netbsd_btinfo_mmap_entry *pm;
+  void *curarg;
 
-  grub_bsd_get_device (&biosdev, &unit, &slice, &part);
+  auto int NESTED_FUNC_ATTR count_hook (grub_uint64_t, grub_uint64_t, grub_uint32_t);
+  int NESTED_FUNC_ATTR count_hook (grub_uint64_t addr __attribute__ ((unused)),
+				   grub_uint64_t size __attribute__ ((unused)),
+				   grub_uint32_t type __attribute__ ((unused)))
+  {
+    count++;
+    return 0;
+  }
 
-  rootdev = (struct grub_netbsd_btinfo_rootdevice *) GRUB_BSD_TEMP_BUFFER;
+  auto int NESTED_FUNC_ATTR fill_hook (grub_uint64_t, grub_uint64_t, grub_uint32_t);
+  int NESTED_FUNC_ATTR fill_hook (grub_uint64_t addr, grub_uint64_t size, grub_uint32_t type)
+  {
+    pm->addr = addr;
+    pm->len = size;
 
-  rootdev->common.len = sizeof (struct grub_netbsd_btinfo_rootdevice);
-  rootdev->common.type = NETBSD_BTINFO_ROOTDEVICE;
-  grub_sprintf (rootdev->devname, "%cd%d%c", (biosdev & 0x80) ? 'w' : 'f',
-		unit, 'a' + part);
+    switch (type)
+      {
+      case GRUB_MACHINE_MEMORY_AVAILABLE:
+	pm->type = NETBSD_MMAP_AVAILABLE;
+	break;
 
-  bootinfo = (struct grub_netbsd_bootinfo *) (rootdev + 1);
-  bootinfo->bi_count = 1;
-  bootinfo->bi_data[0] = rootdev;
+      case GRUB_MACHINE_MEMORY_ACPI:
+	pm->type = NETBSD_MMAP_ACPI;
+	break;
+
+      case GRUB_MACHINE_MEMORY_NVS:
+	pm->type = NETBSD_MMAP_NVS;
+	break;
+
+      default:
+	pm->type = NETBSD_MMAP_RESERVED;
+	break;
+      }
+    pm++;
+
+    return 0;
+  }
+
+  grub_mmap_iterate (count_hook);
+
+  if (kern_end + sizeof (struct grub_netbsd_btinfo_rootdevice)
+      + sizeof (struct grub_netbsd_bootinfo)
+      + sizeof (struct grub_netbsd_btinfo_mmap_header)
+      + count * sizeof (struct grub_netbsd_btinfo_mmap_entry)
+      > grub_os_area_addr + grub_os_area_size)
+    return grub_error (GRUB_ERR_OUT_OF_MEMORY, "No memory for boot info.");
+
+  curarg = mmap = (struct grub_netbsd_btinfo_mmap_header *) kern_end;
+  pm = (struct grub_netbsd_btinfo_mmap_entry *) (mmap + 1);
+
+  grub_mmap_iterate (fill_hook);
+  mmap->common.type = NETBSD_BTINFO_MEMMAP;
+  mmap->common.len = (char *) pm - (char *) mmap;
+  mmap->count = count;
+  curarg = pm;
+
+  if (netbsd_root)
+    {
+      struct grub_netbsd_btinfo_rootdevice *rootdev;
+
+      rootdev = (struct grub_netbsd_btinfo_rootdevice *) curarg;
+
+      rootdev->common.len = sizeof (struct grub_netbsd_btinfo_rootdevice);
+      rootdev->common.type = NETBSD_BTINFO_ROOTDEVICE;
+      grub_strncpy (rootdev->devname, netbsd_root, sizeof (rootdev->devname));
+
+      bootinfo = (struct grub_netbsd_bootinfo *) (rootdev + 1);
+      bootinfo->bi_count = 2;
+      bootinfo->bi_data[0] = mmap;
+      bootinfo->bi_data[1] = rootdev;
+    }
+  else
+    {
+      bootinfo = (struct grub_netbsd_bootinfo *) curarg;
+      bootinfo->bi_count = 1;
+      bootinfo->bi_data[0] = mmap;
+    }
 
   grub_unix_real_boot (entry, bootflags, 0, bootinfo,
-		       0, grub_mmap_get_upper () >> 10, 
-		       grub_mmap_get_lower () >> 10);
+		       0, (grub_uint32_t) (grub_mmap_get_upper () >> 10),
+		       (grub_uint32_t) (grub_mmap_get_lower () >> 10));
 
   /* Not reached.  */
   return GRUB_ERR_NONE;
@@ -623,6 +734,9 @@ grub_bsd_unload (void)
   kernel_type = KERNEL_TYPE_NONE;
   grub_dl_unref (my_mod);
 
+  grub_free (netbsd_root);
+  netbsd_root = NULL;
+
   return GRUB_ERR_NONE;
 }
 
@@ -636,11 +750,11 @@ grub_bsd_load_aout (grub_file_t file)
   if ((grub_file_seek (file, 0)) == (grub_off_t) - 1)
     return grub_errno;
 
-  if (grub_file_read (file, (char *) &ah, sizeof (ah)) != sizeof (ah))
-    return grub_error (GRUB_ERR_READ_ERROR, "cannot read the a.out header");
+  if (grub_file_read (file, &ah, sizeof (ah)) != sizeof (ah))
+    return grub_error (GRUB_ERR_READ_ERROR, "Cannot read the a.out header");
 
   if (grub_aout_get_type (&ah) != AOUT_TYPE_AOUT32)
-    return grub_error (GRUB_ERR_BAD_OS, "invalid a.out header");
+    return grub_error (GRUB_ERR_BAD_OS, "Invalid a.out header");
 
   entry = ah.aout32.a_entry & 0xFFFFFF;
 
@@ -658,7 +772,7 @@ grub_bsd_load_aout (grub_file_t file)
     }
 
   if (load_addr < 0x100000)
-    return grub_error (GRUB_ERR_BAD_OS, "load address below 1M");
+    return grub_error (GRUB_ERR_BAD_OS, "Load address below 1M");
 
   kern_start = load_addr;
   kern_end = load_addr + ah.aout32.a_text + ah.aout32.a_data;
@@ -681,10 +795,18 @@ grub_bsd_load_aout (grub_file_t file)
 }
 
 static grub_err_t
-grub_bsd_elf32_hook (Elf32_Phdr * phdr, grub_addr_t * addr)
+grub_bsd_elf32_hook (Elf32_Phdr * phdr, grub_addr_t * addr, int *do_load)
 {
   Elf32_Addr paddr;
 
+  if (phdr->p_type != PT_LOAD
+      && phdr->p_type != PT_DYNAMIC)
+    {
+      *do_load = 0;
+      return 0;
+    }
+
+  *do_load = 1;
   phdr->p_paddr &= 0xFFFFFF;
   paddr = phdr->p_paddr;
 
@@ -705,10 +827,18 @@ grub_bsd_elf32_hook (Elf32_Phdr * phdr, grub_addr_t * addr)
 }
 
 static grub_err_t
-grub_bsd_elf64_hook (Elf64_Phdr * phdr, grub_addr_t * addr)
+grub_bsd_elf64_hook (Elf64_Phdr * phdr, grub_addr_t * addr, int *do_load)
 {
   Elf64_Addr paddr;
 
+  if (phdr->p_type != PT_LOAD
+      && phdr->p_type != PT_DYNAMIC)
+    {
+      *do_load = 0;
+      return 0;
+    }
+
+  *do_load = 1;
   paddr = phdr->p_paddr & 0xffffff;
 
   if ((paddr < grub_os_area_addr)
@@ -740,12 +870,22 @@ grub_bsd_load_elf (grub_elf_t elf)
   else if (grub_elf_is_elf64 (elf))
     {
       is_64bit = 1;
-      entry = elf->ehdr.ehdr64.e_entry & 0xffffffff;
-      entry_hi = (elf->ehdr.ehdr64.e_entry >> 32) & 0xffffffff;
+
+      /* FreeBSD has 64-bit entry point.  */
+      if (kernel_type == KERNEL_TYPE_FREEBSD)
+	{
+	  entry = elf->ehdr.ehdr64.e_entry & 0xffffffff;
+	  entry_hi = (elf->ehdr.ehdr64.e_entry >> 32) & 0xffffffff;
+	}
+      else
+	{
+	  entry = elf->ehdr.ehdr64.e_entry & 0x0fffffff;
+	  entry_hi = 0;
+	}
       return grub_elf64_load (elf, grub_bsd_elf64_hook, 0, 0);
     }
   else
-    return grub_error (GRUB_ERR_BAD_OS, "invalid elf");
+    return grub_error (GRUB_ERR_BAD_OS, "Invalid elf");
 }
 
 static grub_err_t
@@ -760,7 +900,7 @@ grub_bsd_load (int argc, char *argv[])
 
   if (argc == 0)
     {
-      grub_error (GRUB_ERR_BAD_ARGUMENT, "no kernel specified");
+      grub_error (GRUB_ERR_BAD_ARGUMENT, "No kernel specified");
       goto fail;
     }
 
@@ -792,49 +932,76 @@ fail:
 }
 
 static grub_uint32_t
-grub_bsd_parse_flags (char *str, const char *opts,
+grub_bsd_parse_flags (const struct grub_arg_list *state,
 		      const grub_uint32_t * flags)
 {
   grub_uint32_t result = 0;
+  unsigned i;
 
-  while (*str)
-    {
-      const char *po;
-      const grub_uint32_t *pf;
-
-      po = opts;
-      pf = flags;
-      while (*po)
-	{
-	  if (*str == *po)
-	    {
-	      result |= *pf;
-	      break;
-	    }
-	  po++;
-	  pf++;
-	}
-      str++;
-    }
+  for (i = 0; flags[i]; i++)
+    if (state[i].set)
+      result |= flags[i];
 
   return result;
 }
 
 static grub_err_t
-grub_cmd_freebsd (grub_command_t cmd __attribute__ ((unused)),
-		  int argc, char *argv[])
+grub_cmd_freebsd (grub_extcmd_t cmd, int argc, char *argv[])
 {
   kernel_type = KERNEL_TYPE_FREEBSD;
-  bootflags = ((argc <= 1) ? 0 :
-	       grub_bsd_parse_flags (argv[1], freebsd_opts, freebsd_flags));
+  bootflags = grub_bsd_parse_flags (cmd->state, freebsd_flags);
 
   if (grub_bsd_load (argc, argv) == GRUB_ERR_NONE)
     {
       kern_end = ALIGN_PAGE (kern_end);
-      if ((is_elf_kernel) &&
-	  (grub_freebsd_add_meta_module (1, argc, argv, kern_start,
-					 kern_end - kern_start)))
-	return grub_errno;
+      if (is_elf_kernel)
+	{
+	  grub_err_t err;
+	  grub_uint64_t data = 0;
+	  grub_file_t file;
+	  int len = is_64bit ? 8 : 4;
+
+	  err = grub_freebsd_add_meta_module (argv[0], is_64bit
+					      ? FREEBSD_MODTYPE_KERNEL64
+					      : FREEBSD_MODTYPE_KERNEL,
+					      argc - 1, argv + 1,
+					      kern_start,
+					      kern_end - kern_start);
+	  if (err)
+	    return err;
+
+	  file = grub_gzfile_open (argv[0], 1);
+	  if (! file)
+	    return grub_errno;
+
+	  if (is_64bit)
+	    err = grub_freebsd_load_elf_meta64 (file, &kern_end);
+	  else
+	    err = grub_freebsd_load_elf_meta32 (file, &kern_end);
+	  if (err)
+	    return err;
+
+	  err = grub_freebsd_add_meta (FREEBSD_MODINFO_METADATA |
+				       FREEBSD_MODINFOMD_HOWTO, &data, 4);
+	  if (err)
+	    return err;
+
+	  err = grub_freebsd_add_meta (FREEBSD_MODINFO_METADATA |
+				       FREEBSD_MODINFOMD_ENVP, &data, len);
+	  if (err)
+	    return err;
+
+	  err = grub_freebsd_add_meta (FREEBSD_MODINFO_METADATA |
+				       FREEBSD_MODINFOMD_KERNEND, &data, len);
+	  if (err)
+	    return err;
+
+	  kern_end_mdofs = mod_buf_len - len;
+
+	  err = grub_freebsd_add_mmap ();
+	  if (err)
+	    return err;
+	}
       grub_loader_set (grub_freebsd_boot, grub_bsd_unload, 1);
     }
 
@@ -842,12 +1009,10 @@ grub_cmd_freebsd (grub_command_t cmd __attribute__ ((unused)),
 }
 
 static grub_err_t
-grub_cmd_openbsd (grub_command_t cmd __attribute__ ((unused)),
-		  int argc, char *argv[])
+grub_cmd_openbsd (grub_extcmd_t cmd, int argc, char *argv[])
 {
   kernel_type = KERNEL_TYPE_OPENBSD;
-  bootflags = ((argc <= 1) ? 0 :
-	       grub_bsd_parse_flags (argv[1], openbsd_opts, openbsd_flags));
+  bootflags = grub_bsd_parse_flags (cmd->state, openbsd_flags);
 
   if (grub_bsd_load (argc, argv) == GRUB_ERR_NONE)
     grub_loader_set (grub_openbsd_boot, grub_bsd_unload, 1);
@@ -856,15 +1021,17 @@ grub_cmd_openbsd (grub_command_t cmd __attribute__ ((unused)),
 }
 
 static grub_err_t
-grub_cmd_netbsd (grub_command_t cmd __attribute__ ((unused)),
-		 int argc, char *argv[])
+grub_cmd_netbsd (grub_extcmd_t cmd, int argc, char *argv[])
 {
   kernel_type = KERNEL_TYPE_NETBSD;
-  bootflags = ((argc <= 1) ? 0 :
-	       grub_bsd_parse_flags (argv[1], netbsd_opts, netbsd_flags));
+  bootflags = grub_bsd_parse_flags (cmd->state, netbsd_flags);
 
   if (grub_bsd_load (argc, argv) == GRUB_ERR_NONE)
-    grub_loader_set (grub_netbsd_boot, grub_bsd_unload, 1);
+    {
+      grub_loader_set (grub_netbsd_boot, grub_bsd_unload, 1);
+      if (cmd->state[NETBSD_ROOT_ARG].set)
+	netbsd_root = grub_strdup (cmd->state[NETBSD_ROOT_ARG].arg);
+    }
 
   return grub_errno;
 }
@@ -877,13 +1044,17 @@ grub_cmd_freebsd_loadenv (grub_command_t cmd __attribute__ ((unused)),
   char *buf = 0, *curr, *next;
   int len;
 
+  if (kernel_type == KERNEL_TYPE_NONE)
+    return grub_error (GRUB_ERR_BAD_ARGUMENT,
+		       "You need to load the kernel first.");
+
   if (kernel_type != KERNEL_TYPE_FREEBSD)
     return grub_error (GRUB_ERR_BAD_ARGUMENT,
-		       "only freebsd support environment");
+		       "Only FreeBSD support environment");
 
   if (argc == 0)
     {
-      grub_error (GRUB_ERR_BAD_ARGUMENT, "no filename");
+      grub_error (GRUB_ERR_BAD_ARGUMENT, "No filename");
       goto fail;
     }
 
@@ -962,14 +1133,22 @@ grub_cmd_freebsd_module (grub_command_t cmd __attribute__ ((unused)),
 			 int argc, char *argv[])
 {
   grub_file_t file = 0;
+  grub_err_t err;
+  int modargc;
+  char **modargv;
+  char *type;
+
+  if (kernel_type == KERNEL_TYPE_NONE)
+    return grub_error (GRUB_ERR_BAD_ARGUMENT,
+		       "You need to load the kernel first.");
 
   if (kernel_type != KERNEL_TYPE_FREEBSD)
     return grub_error (GRUB_ERR_BAD_ARGUMENT,
-		       "only freebsd support module");
+		       "Only FreeBSD support module");
 
   if (!is_elf_kernel)
     return grub_error (GRUB_ERR_BAD_ARGUMENT,
-		       "only elf kernel support module");
+		       "Only ELF kernel support module");
 
   /* List the current modules if no parameter.  */
   if (!argc)
@@ -988,10 +1167,28 @@ grub_cmd_freebsd_module (grub_command_t cmd __attribute__ ((unused)),
       goto fail;
     }
 
-  grub_file_read (file, (char *) kern_end, file->size);
-  if ((!grub_errno) &&
-      (!grub_freebsd_add_meta_module (0, argc, argv, kern_end, file->size)))
-    kern_end = ALIGN_PAGE (kern_end + file->size);
+  grub_file_read (file, (void *) kern_end, file->size);
+  if (grub_errno)
+    goto fail;
+
+  modargc = argc - 1;
+  modargv = argv + 1;
+
+  if (modargc && (! grub_memcmp (modargv[0], "type=", 5)))
+    {
+      type = &modargv[0][5];
+      modargc--;
+      modargv++;
+    }
+  else
+    type = FREEBSD_MODTYPE_RAW;
+
+  err = grub_freebsd_add_meta_module (argv[0], type, modargc, modargv,
+				      kern_end, file->size);
+  if (err)
+    goto fail;
+
+  kern_end = ALIGN_PAGE (kern_end + file->size);
 
 fail:
   if (file)
@@ -1000,38 +1197,91 @@ fail:
   return grub_errno;
 }
 
-static grub_command_t cmd_freebsd, cmd_openbsd, cmd_netbsd;
+static grub_err_t
+grub_cmd_freebsd_module_elf (grub_command_t cmd __attribute__ ((unused)),
+			     int argc, char *argv[])
+{
+  grub_file_t file = 0;
+  grub_err_t err;
+
+  if (kernel_type == KERNEL_TYPE_NONE)
+    return grub_error (GRUB_ERR_BAD_ARGUMENT,
+		       "You need to load the kernel first.");
+
+  if (kernel_type != KERNEL_TYPE_FREEBSD)
+    return grub_error (GRUB_ERR_BAD_ARGUMENT,
+		       "Only FreeBSD support module");
+
+  if (! is_elf_kernel)
+    return grub_error (GRUB_ERR_BAD_ARGUMENT,
+		       "Only ELF kernel support module");
+
+  /* List the current modules if no parameter.  */
+  if (! argc)
+    {
+      grub_freebsd_list_modules ();
+      return 0;
+    }
+
+  file = grub_gzfile_open (argv[0], 1);
+  if (!file)
+    return grub_errno;
+  if (!file->size)
+    {
+      grub_file_close (file);
+      return grub_errno;
+    }
+
+  if (is_64bit)
+    err = grub_freebsd_load_elfmodule_obj64 (file, argc, argv, &kern_end);
+  else
+    err = grub_freebsd_load_elfmodule32 (file, argc, argv, &kern_end);
+  grub_file_close (file);
+
+  return err;
+}
+
+
+static grub_extcmd_t cmd_freebsd, cmd_openbsd, cmd_netbsd;
 static grub_command_t cmd_freebsd_loadenv, cmd_freebsd_module;
+static grub_command_t cmd_freebsd_module_elf;
 
 GRUB_MOD_INIT (bsd)
 {
-  cmd_freebsd =
-    grub_register_command ("freebsd", grub_cmd_freebsd,
-			   0, "load freebsd kernel");
-  cmd_openbsd =
-    grub_register_command ("openbsd", grub_cmd_openbsd,
-			   0, "load openbsd kernel");
-  cmd_netbsd =
-    grub_register_command ("netbsd", grub_cmd_netbsd,
-			   0, "load netbsd kernel");
+  cmd_freebsd = grub_register_extcmd ("freebsd", grub_cmd_freebsd,
+				      GRUB_COMMAND_FLAG_BOTH,
+				      "freebsd FILE", "Load kernel of FreeBSD.",
+				      freebsd_opts);
+  cmd_openbsd = grub_register_extcmd ("openbsd", grub_cmd_openbsd,
+				      GRUB_COMMAND_FLAG_BOTH,
+				      "openbsd FILE", "Load kernel of OpenBSD.",
+				      openbsd_opts);
+  cmd_netbsd = grub_register_extcmd ("netbsd", grub_cmd_netbsd,
+				     GRUB_COMMAND_FLAG_BOTH,
+				     "netbsd FILE", "Load kernel of NetBSD.",
+				     netbsd_opts);
   cmd_freebsd_loadenv =
     grub_register_command ("freebsd_loadenv", grub_cmd_freebsd_loadenv,
-			   0, "load freebsd env");
+			   0, "load FreeBSD env");
   cmd_freebsd_module =
     grub_register_command ("freebsd_module", grub_cmd_freebsd_module,
-			   0, "load freebsd module");
+			   0, "load FreeBSD kernel module");
+  cmd_freebsd_module_elf =
+    grub_register_command ("freebsd_module_elf", grub_cmd_freebsd_module_elf,
+			   0, "load FreeBSD kernel module (ELF)");
 
   my_mod = mod;
 }
 
 GRUB_MOD_FINI (bsd)
 {
-  grub_unregister_command (cmd_freebsd);
-  grub_unregister_command (cmd_openbsd);
-  grub_unregister_command (cmd_netbsd);
+  grub_unregister_extcmd (cmd_freebsd);
+  grub_unregister_extcmd (cmd_openbsd);
+  grub_unregister_extcmd (cmd_netbsd);
 
   grub_unregister_command (cmd_freebsd_loadenv);
   grub_unregister_command (cmd_freebsd_module);
+  grub_unregister_command (cmd_freebsd_module_elf);
 
   if (mod_buf)
     {
