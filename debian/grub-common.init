@@ -23,6 +23,7 @@ which grub-editenv >/dev/null 2>&1 || exit 0
 case $1 in
     start|restart|force-reload)
 	[ "$VERBOSE" != no ] && log_action_msg "Recording successful boot for GRUB"
+	[ -s /boot/grub/grubenv ] || rm -f /boot/grub/grubenv
 	grub-editenv /boot/grub/grubenv unset recordfail
 	log_end_msg $?
 	;;
