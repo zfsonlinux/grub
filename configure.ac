@@ -31,7 +31,7 @@ dnl (such as TARGET_CC, TARGET_CFLAGS, etc.) are used for the target
 dnl type.
 
 
-AC_INIT([GRUB],[1.97~beta3],[bug-grub@gnu.org])
+AC_INIT([GRUB],[1.97~beta4],[bug-grub@gnu.org])
 AC_PREREQ(2.59)
 AC_CONFIG_SRCDIR([include/grub/dl.h])
 AC_CONFIG_HEADER([config.h])
@@ -144,9 +144,11 @@ done
 AC_PROG_INSTALL
 AC_PROG_AWK
 AC_PROG_MAKE_SET
+AC_PROG_MKDIR_P
 
 # These are not a "must".
 AC_PATH_PROG(RUBY, ruby)
+AC_PATH_PROG(MAKEINFO, makeinfo)
 
 #
 # Checks for host programs.
@@ -390,6 +392,13 @@ if test x"$sap_possible" = xyes; then
   TARGET_CFLAGS="$TARGET_CFLAGS -mno-stack-arg-probe"
 fi
 
+AC_ARG_ENABLE([werror],
+	      [AS_HELP_STRING([--disable-werror],
+                             [do not use -Werror when building GRUB])])
+if test x"$enable_werror" != xno ; then
+  TARGET_CFLAGS="$TARGET_CFLAGS -Werror"
+fi
+
 AC_SUBST(TARGET_CFLAGS)
 AC_SUBST(TARGET_MODULE_FORMAT)
 AC_SUBST(OBJCONV)
@@ -557,11 +566,6 @@ enable_grub_fstest=no
 fi
 AC_SUBST([enable_grub_fstest])
 
-AC_ARG_ENABLE([grub-pe2elf],
-	      [AS_HELP_STRING([--enable-grub-pe2elf],
-                             [build and install the `grub-pe2elf' conversion utility])])
-AC_SUBST([enable_grub_pe2elf])
-
 AC_ARG_ENABLE([grub-mkfont],
 	      [AS_HELP_STRING([--enable-grub-mkfont],
                              [build and install the `grub-mkfont' utility (default=guessed)])])
@@ -625,13 +629,6 @@ if [ x"$enable_mm_debug" = xyes ]; then
 echo With memory debugging: Yes
 else
 echo With memory debugging: No
-fi
-if [ x"$enable_grub_pe2elf" = xyes ]; then
-echo grub-pe2elf will be built and installed
-elif [ x$TARGET_OBJ2ELF = xgrub-pe2elf ]; then
-echo grub-pe2elf will be built but not installed
-else
-echo grub-pe2elf will not be built
 fi
 if [ x"$efiemu_excuse" = x ]; then
 echo efiemu runtime: Yes
