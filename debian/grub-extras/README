@@ -13,4 +13,7 @@ Build instructions:
     Also export GRUB_EXTRAS variable, it should point to the top
     level of your grub-extras directory.
 
+  - Export enable_* variables for the components you want
+    (e.g. enable_zfs=yes).
+
   - Build GRUB as usual.

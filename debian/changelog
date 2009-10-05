@@ -1,3 +1,30 @@
+grub2 (1.97~beta4-1) unstable; urgency=low
+
+  * New upstream beta release.
+
+  [ Felix Zielcke ]
+  * Change the Recommends: os-prober to (>= 1.33).
+  * patches/907_grub.cfg_400.diff: Really add it. Somehow it was a 0 byte file.
+    (Closes: #547409)
+  * Convert newlines back to spaces when parsing kopt from
+    GRUB Legacy's menu.lst, before giving the value to Debconf.
+    Thanks to Colin Watson. (Closes: #547649)
+  * Ship the info docs in grub-common. (Closes: #484074)
+  * Remove generated /usr/share/info/dir* files.
+  * Update the presubj bug file and also install it for grub-common.
+
+  [ Robert Millan ]
+  * Enable ZFS and 915resolution in grub-extras (now requires explicit
+    switch).
+  * grub-common conflicts with grub-doc (<< 0.97-32) and grub-legacy-doc
+    (<< 0.97-59).
+  * Move grub-emu to a separate package.
+
+  [ Updated translations ]
+  * Japanese (ja.po) by Hideki Yamane. (Closes: #549599)
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 05 Oct 2009 20:03:04 +0200
+
 grub2 (1.97~beta3-1) unstable; urgency=high
 
   * New upstream beta release.
