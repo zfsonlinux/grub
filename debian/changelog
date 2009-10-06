@@ -1,3 +1,17 @@
+grub2 (1.97~beta3-1ubuntu8) karmic; urgency=low
+
+  [ Colin Watson ]
+  * debian/control: Conflict with grub (<< 0.97-54) as well as grub-legacy
+    (see LP #410886).
+  * debian/grub-common.init: Create /boot/grub if it doesn't exist, to avoid
+    noise on fresh installations.
+
+  [ Tormod Volden ]
+  * debian/grub-common.init: do not call log_end_msg if not VERBOSE
+    (LP: #440879)
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 06 Oct 2009 23:32:54 +0100
+
 grub2 (1.97~beta3-1ubuntu7) karmic; urgency=low
 
   * debian/grub-common.init: /boot/grub/grubenv sometimes seems to end up
