@@ -1,3 +1,231 @@
+2009-10-05  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* configure.ac: Bump version to 1.97~beta4.
+
+2009-10-03  Robert Millan  <rmh.grub@aybabtu.com>
+
+	Resync grub-mkdevicemap in x86_64-efi.
+
+	* conf/x86_64-efi.rmk (sbin_UTILITIES): Enable `grub-mkdevicemap'.
+	(grub_mkdevicemap_SOURCES): Add missing `util/deviceiter.c' and
+	`util/devicemap.c'.
+
+2009-10-01  Colin Watson  <cjwatson@ubuntu.com>
+
+	* util/grub-editenv.c (create_envblk_file): Write new block with a
+	.new suffix and then rename it into place, to ensure atomic
+	creation.
+
+2009-09-28  Robert Millan  <rmh.grub@aybabtu.com>
+
+	Do not automatically install headers.
+
+	* Makefile.in (include_DATA): Remove.  Update all users.
+
+2009-09-26  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* conf/common.rmk (pkglib_MODULES): Remove `lua.mod'.
+	(lua_mod_SOURCES, lua_mod_CFLAGS, lua_mod_LDFLAGS): Remove.
+
+	* util/osdetect.lua: Remove.
+	* script/lua/lauxlib.c: Likewise.
+	* script/lua/ldebug.c: Likewise.
+	* script/lua/grub_main.c: Likewise.
+	* script/lua/lauxlib.h: Likewise.
+	* script/lua/ldebug.h: Likewise.
+	* script/lua/ltablib.c: Likewise.
+	* script/lua/liolib.c: Likewise.
+	* script/lua/lstrlib.c: Likewise.
+	* script/lua/lualib.h: Likewise.
+	* script/lua/ldo.c: Likewise.
+	* script/lua/ldump.c: Likewise.
+	* script/lua/ldo.h: Likewise.
+	* script/lua/loslib.c: Likewise.
+	* script/lua/lundump.c: Likewise.
+	* script/lua/grub_lib.c: Likewise.
+	* script/lua/ldblib.c: Likewise.
+	* script/lua/lundump.h: Likewise.
+	* script/lua/lmem.c: Likewise.
+	* script/lua/grub_lib.h: Likewise.
+	* script/lua/lmathlib.c: Likewise.
+	* script/lua/lstate.c: Likewise.
+	* script/lua/ltm.c: Likewise.
+	* script/lua/lvm.c: Likewise.
+	* script/lua/lmem.h: Likewise.
+	* script/lua/lstate.h: Likewise.
+	* script/lua/ltm.h: Likewise.
+	* script/lua/ltable.c: Likewise.
+	* script/lua/lvm.h: Likewise.
+	* script/lua/llex.c: Likewise.
+	* script/lua/lgc.c: Likewise.
+	* script/lua/grub_lua.h: Likewise.
+	* script/lua/loadlib.c: Likewise.
+	* script/lua/lfunc.c: Likewise.
+	* script/lua/lopcodes.c: Likewise.
+	* script/lua/lparser.c: Likewise.
+	* script/lua/ltable.h: Likewise.
+	* script/lua/llex.h: Likewise.
+	* script/lua/lgc.h: Likewise.
+	* script/lua/lfunc.h: Likewise.
+	* script/lua/lbaselib.c: Likewise.
+	* script/lua/lopcodes.h: Likewise.
+	* script/lua/lparser.h: Likewise.
+	* script/lua/lzio.c: Likewise.
+	* script/lua/linit.c: Likewise.
+	* script/lua/lobject.c: Likewise.
+	* script/lua/llimits.h: Likewise.
+	* script/lua/lstring.c: Likewise.
+	* script/lua/lzio.h: Likewise.
+	* script/lua/lapi.c: Likewise.
+	* script/lua/lcode.c: Likewise.
+	* script/lua/lua.h: Likewise.
+	* script/lua/lobject.h: Likewise.
+	* script/lua/lstring.h: Likewise.
+	* script/lua/lapi.h: Likewise.
+	* script/lua/lcode.h: Likewise.
+	* script/lua/luaconf.h: Likewise.
+
+2009-09-26  Colin Watson  <cjwatson@ubuntu.com>
+
+	* docs/grub.texi (Command-line and menu entry commands): Document
+	date and echo commands.
+
+2009-09-24  Pavel Roskin  <proski@gnu.org>
+
+	* include/grub/kernel.h (struct grub_module_header): Remove
+	`grub_module_header_types'.  Make `type' unsigned.  Make `size'
+	32-bit on all platforms.
+	* util/elf/grub-mkimage.c (load_modules): Treat `type' as an
+	8-bit field.  Use grub_host_to_target32() for `size'.
+	* util/i386/efi/grub-mkimage.c (make_mods_section): Likewise.
+	* util/i386/pc/grub-mkimage.c (generate_image): Likewise.
+	* util/sparc64/ieee1275/grub-mkimage.c (generate_image): Likewise.
+
+2009-09-24  Robert Millan  <rmh.grub@aybabtu.com>
+
+	Fix "lost keypress" bug in at_keyboard.
+
+	* term/i386/pc/at_keyboard.c (grub_at_keyboard_checkkey): New function.
+	Checks for readyness of input buffer (without flushing it).
+	(grub_at_keyboard_term): Use grub_at_keyboard_checkkey() rather
+	than grub_at_keyboard_getkey_noblock() for `checkkey' struct member.
+
+2009-09-24  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* util/i386/pc/grub-mkimage.c (generate_image): Enclose BIOS-specific
+	size check within GRUB_MACHINE_PCBIOS section.
+
+2009-09-24  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* include/grub/i386/at_keyboard.h (KEYBOARD_ISREADY): Negate
+	return value.
+	* term/i386/pc/at_keyboard.c (grub_keyboard_getkey): Negate
+	KEYBOARD_ISREADY check.
+	(grub_at_keyboard_checkkey): Rename to ...
+	(grub_at_keyboard_getkey_noblock): ... this.  Update all users.
+	Remove gratuitous cast.
+
+2009-09-23  Colin Watson  <cjwatson@ubuntu.com>
+
+	* configure.ac: Call AC_PROG_MKDIR_P.
+	* Makefile.in (docs/stamp-vti): Create docs directory.  Create
+	version.texi in $(builddir) rather than $(srcdir).
+	(docs/grub.info): Create docs directory.  Prepend $(builddir)/docs
+	to makeinfo's @include search path.
+
+2009-09-23  Felix Zielcke  <fzielcke@z-51.de>
+
+	* util/grub-mkconfig_lib.in (grub_file_is_not_garbage): Cope with `*.dpkg-*'
+
+2009-09-23  Felix Zielcke  <fzielcke@z-51.de>
+
+	* util/grub-mkconfig_lib.in (grub_file_is_not_garbage): Add support
+	for `*.dpkg-new'.
+
+2009-09-21  Colin Watson  <cjwatson@ubuntu.com>
+
+	Build info documentation.  Some code borrowed from Automake.
+
+	* configure.ac: Check for makeinfo.
+	* Makefile.in (MAKEINFO, INFOS, info_INFOS): New variables.
+	(MAINTAINER_CLEANFILES): Add $(INFOS), docs/stamp-vti, and
+	docs/version.texi.
+	(MOSTLYCLEANFILES): Add vti.tmp.
+	(docs/version.texi, docs/stamp-vti): Update automatically.
+	(docs/grub.info): Build info documentation.  Use --force and ignore
+	errors for now.
+	(all-local): Add $(INFOS).
+	(install-local): Install info files.
+	(uninstall): Uninstall info files.
+	* docs/version.texi: Remove from revision control.  This file is
+	automatically generated on build now.
+	* gendistlist.sh: Add `*.info'.
+
+2009-09-21  Felix Zielcke  <fzielcke@z-51.de>
+
+	* kern/term.c: Fix indentation.
+
+2009-09-21  Felix Zielcke  <fzielcke@z-51.de>
+
+	* util/hostdisk.c: Fix a comment.
+
+2009-09-20  Robert Millan  <rmh.grub@aybabtu.com>
+
+	Fix regression introduced in r2539.
+
+	* term/usb_keyboard.c (USB_HID_DEVICE_TO_HOST): Change from 0x61
+	to 0xA1.
+
+2009-09-19  Colin Watson  <cjwatson@ubuntu.com>
+
+	* util/grub.d/30_os-prober.in: Don't throw away stderr from
+	os-prober. Under normal operation, it does not print anything to
+	stderr; if it does, we need to debug it, and throwing away stderr
+	makes that excessively difficult.
+
+2009-09-16  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	* mmap/mmap.c (grub_cmd_badram): Fix off-by-one error.
+
+2009-09-16  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* aclocal.m4 (AC_LANG_PROGRAM): New macro.  Overrides stock
+	AC_LANG_PROGRAM from autoconf.
+	(grub_ASM_USCORE, grub_PROG_OBJCOPY_ABSOLUTE): Add missing
+	prototypes (fixes warning).
+
+	* configure.ac: Add `-Werror' to TARGET_CFLAGS unless
+	`--disable-werror' was used.
+
+2009-09-16  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* partmap/msdos.c (pc_partition_map_iterate): Fix possible use of
+	uninitialized `lastaddr'.
+
+2009-09-15  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	* partmap/msdos.c (pc_partition_map_iterate): Detect and break loops.
+
+2009-09-14  Colin Watson  <cjwatson@ubuntu.com>
+
+	* commands/test.c (get_fileinfo): Return immediately if
+	grub_fs_probe fails.
+
+2009-09-14  José Martínez  <xosemp@gmail.com>
+
+	* commands/acpi.c (grub_cmd_acpi): Fix loading ACPI tables from file.
+
+2009-09-14  Colin Watson  <cjwatson@ubuntu.com>
+
+	* util/grub.d/30_os-prober.in: Cope with Windows 7 in os-prober
+	output.
+
+2009-09-13  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* configure.ac: Remove --enable-grub-pe2elf.  Only build
+	grub-pe2elf when needed by the build system itself.
+	* conf/common.rmk: Remove $(enable_grub_pe2elf) check.
+
 2009-09-12  Robert Millan  <rmh.grub@aybabtu.com>
 
 	* configure.ac: Bump version to 1.97~beta3.

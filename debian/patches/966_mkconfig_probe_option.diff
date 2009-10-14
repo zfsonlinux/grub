@@ -1,0 +1,50 @@
+Upstream: Backport of r2624.
+Description: grub-install: Source ${libdir}/grub/grub-mkconfig_lib before
+ option processing, in order that the --grub-probe option will work.
+
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/util/i386/pc/grub-install.in grub2-1.97~beta4.new/util/i386/pc/grub-install.in
+--- grub2-1.97~beta4/util/i386/pc/grub-install.in	2009-10-14 11:56:16.000000000 +0100
++++ grub2-1.97~beta4.new/util/i386/pc/grub-install.in	2009-10-14 12:05:27.000000000 +0100
+@@ -31,6 +31,9 @@
+ platform=@platform@
+ pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
+ 
++# for make_system_path_relative_to_its_root()
++. ${libdir}/grub/grub-mkconfig_lib
++
+ grub_setup=${sbindir}/`echo grub-setup | sed ${transform}`
+ if [ "${target_cpu}-${platform}" = "i386-pc" ] ; then
+     grub_mkimage=${bindir}/`echo grub-mkimage | sed ${transform}`
+@@ -145,9 +148,6 @@
+ # added by debian patch
+ setup_force="--force"
+ 
+-# for make_system_path_relative_to_its_root()
+-. ${libdir}/grub/grub-mkconfig_lib
+-
+ if test "x$install_device" = x; then
+     echo "install_device not specified." 1>&2
+     usage
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/util/sparc64/ieee1275/grub-install.in grub2-1.97~beta4.new/util/sparc64/ieee1275/grub-install.in
+--- grub2-1.97~beta4/util/sparc64/ieee1275/grub-install.in	2009-10-14 11:56:16.000000000 +0100
++++ grub2-1.97~beta4.new/util/sparc64/ieee1275/grub-install.in	2009-10-14 12:05:27.000000000 +0100
+@@ -31,6 +31,9 @@
+ platform=@platform@
+ pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
+ 
++# for make_system_path_relative_to_its_root()
++. ${libdir}/grub/grub-mkconfig_lib
++
+ grub_setup=${sbindir}/`echo grub-setup | sed ${transform}`
+ grub_mkimage=${bindir}/`echo grub-mkimage | sed ${transform}`
+ grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
+@@ -118,9 +121,6 @@
+     esac
+ done
+ 
+-# for make_system_path_relative_to_its_root()
+-. ${libdir}/grub/grub-mkconfig_lib
+-
+ if test "x$install_device" = x; then
+     echo "install_device not specified." 1>&2
+     usage

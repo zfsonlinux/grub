@@ -7,9 +7,9 @@ UbuntuSpecific: May or may not remain Ubuntu-specific, although this is not
  obviously wanted upstream. It implements a requirement of
  https://wiki.ubuntu.com/DesktopExperienceTeam/KarmicBootExperienceDesignSpec#Bootloader.
 
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/util/grub.d/00_header.in grub2-1.97~beta2.new/util/grub.d/00_header.in
---- grub2-1.97~beta2/util/grub.d/00_header.in	2009-09-09 17:25:46.000000000 +0100
-+++ grub2-1.97~beta2.new/util/grub.d/00_header.in	2009-09-10 23:37:04.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/util/grub.d/00_header.in grub2-1.97~beta4.new/util/grub.d/00_header.in
+--- grub2-1.97~beta4/util/grub.d/00_header.in	2009-08-25 20:42:56.000000000 +0100
++++ grub2-1.97~beta4.new/util/grub.d/00_header.in	2009-10-12 11:58:44.000000000 +0100
 @@ -100,19 +100,6 @@
    ;;
  esac
@@ -31,9 +31,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/util/grub.d/00_header.in grub2-1.
  set timeout=${GRUB_TIMEOUT}
  EOF
 -fi
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/util/grub.d/30_os-prober.in grub2-1.97~beta2.new/util/grub.d/30_os-prober.in
---- grub2-1.97~beta2/util/grub.d/30_os-prober.in	2009-09-09 17:25:46.000000000 +0100
-+++ grub2-1.97~beta2.new/util/grub.d/30_os-prober.in	2009-09-10 23:38:15.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/util/grub.d/30_os-prober.in grub2-1.97~beta4.new/util/grub.d/30_os-prober.in
+--- grub2-1.97~beta4/util/grub.d/30_os-prober.in	2009-09-19 15:15:00.000000000 +0100
++++ grub2-1.97~beta4.new/util/grub.d/30_os-prober.in	2009-10-12 11:59:28.000000000 +0100
 @@ -22,18 +22,61 @@
  
  . ${libdir}/grub/grub-mkconfig_lib
@@ -89,7 +89,7 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/util/grub.d/30_os-prober.in grub2
    exit 0
  fi
  
- OSPROBED="`os-prober 2> /dev/null | tr ' ' '^' | paste -s -d ' '`"
+ OSPROBED="`os-prober | tr ' ' '^' | paste -s -d ' '`"
  if [ -z "${OSPROBED}" ] ; then
    # empty os-prober output, nothing doing
 +  adjust_timeout
@@ -104,7 +104,7 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/util/grub.d/30_os-prober.in grub2
  
    case ${BOOT} in
      chain)
-@@ -154,3 +198,5 @@
+@@ -159,3 +203,5 @@
      ;;
    esac
  done

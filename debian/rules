@@ -18,6 +18,10 @@ endif
 
 CC := gcc-4.4
 
+# grub-extras components
+export enable_zfs := yes
+export enable_915resolution := yes
+
 CONFIGURE = CC=$(CC) \
 	$(CURDIR)/configure --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --includedir="\$${prefix}/include" \
 	--mandir="\$${prefix}/share/man" --infodir="\$${prefix}/share/info" --sysconfdir=/etc --localstatedir=/var \
@@ -48,12 +52,15 @@ configure/grub-firmware-qemu:: $(AUTOGEN_FILES)
 	mkdir -p $(subst configure/,build/,$@)
 	cd $(subst configure/,build/,$@) && $(CONFIGURE) --with-platform=qemu
 
-configure/grub-common:: $(AUTOGEN_FILES)
+configure/grub-common configure/grub-emu:: $(AUTOGEN_FILES)
 	mkdir -p $(subst configure/,build/,$@)
-	cd build/grub-common && $(CONFIGURE)
+	cd $(subst configure/,build/,$@) && $(CONFIGURE)
 
 build/grub-common build/grub-pc build/grub-efi-ia32 build/grub-efi-amd64 build/grub-ieee1275 build/grub-coreboot::
 	$(MAKE) -C $@
+
+build/grub-emu::
+	$(MAKE) -C $@ grub-emu
 
 build/grub-rescue-pc:: build/grub-pc
 	mkdir -p $@
@@ -85,6 +92,10 @@ build/grub-firmware-qemu::
 		-m $${grub_memdisk} \
 		-o $(CURDIR)/$@/grub.bin
 
+install/grub-emu::
+	mkdir -p $(CURDIR)/debian/$(subst install/,,$@)/usr/sbin
+	install -m755 build/grub-emu/grub-emu $(CURDIR)/debian/$(subst install/,,$@)/usr/sbin/grub-emu
+
 install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee1275 install/grub-coreboot::
 	$(MAKE) -C $(subst install/,build/,$@) install DESTDIR=$(CURDIR)/debian/$(subst install/,,$@)/
 
@@ -93,7 +104,7 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee12
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{grub-dumpbios,grub-probe,grub-emu,grub-mkconfig,grub-mkdevicemap,grub-ofpathname}{,.8}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkelfimage,grub-mkfont,grub-editenv}{,.1}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{grub-mkconfig_lib,update-grub_lib}
-	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/share/grub/
+	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/share/{grub,info}/
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/include
 
 	for i in $(AUTOGEN_DEB_FILES) ; do \
@@ -133,8 +144,10 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee12
 install/grub-common::
 	$(MAKE) -C $(subst install/,build/,$@) install DESTDIR=$(CURDIR)/debian/$(subst install/,,$@)/
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{i386,powerpc,sparc64}-*
-	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{update-grub,grub-install,grub-setup,grub-reboot,grub-set-default}{,.8}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{update-grub,grub-install,grub-setup,grub-emu,grub-reboot,grub-set-default}{,.8}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/grub-{mkimage,mkrescue}{,.1}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/share/info/dir*
+	install -m 0755 debian/grub-common.pm-sleep $(CURDIR)/debian/$(subst install/,,$@)/etc/pm/sleep.d/10_grub-common
 
 clean:: debian/legacy/update-grub debian/grub-extras
 	chmod +x debian/{script,grub.d/*,legacy/*}
