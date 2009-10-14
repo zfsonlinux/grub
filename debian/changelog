@@ -1,3 +1,105 @@
+grub2 (1.97~beta4-1ubuntu1) karmic; urgency=low
+
+  * Resynchronise with Debian. Remaining changes:
+    + debian/default/grub:
+      - Adjust for default Ubuntu boot options.
+      - Use GRUB_CMDLINE_LINUX_DEFAULT option to set "quiet splash" for
+        default items only.  These options won't be set in single user mode.
+      - Default to hiding the menu; holding down Shift at boot will show it.
+    + debian/templates.in:
+      - Change default value of grub2/linux_cmdline_default to "quiet
+        splash".
+    + debian/config.in, debian/postinst.in, debian/grub-pc.templates.in:
+      - Migrate timeout settings from menu.lst.
+    + debian/grub.d/05_debian_theme:
+      - Set a monochromatic theme for Ubuntu.
+    + debian/legacy/update-grub:
+      - Apply Ubuntu branding: title, recovery mode, quiet option, and tweak
+        how memtest86+ is displayed.
+      - Use UUIDs where appropriate.
+    + debian/control:
+      - Conflict with grub (<< 0.97-54) as well as grub-legacy.
+    + debian/patches/03_ubuntu_grub_standards:
+      - Remove GNU/Linux from default string.
+    + debian/patches/10_crashkernel.patch:
+      - Add crashkernel= options if kdump and makedumpfile are available.
+    + debian/patches/951_quick_boot.diff:
+      - If other operating systems are installed, then automatically unhide
+        the menu.
+      - Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus if
+        available to check whether Shift is pressed. If it is, show the
+        menu, otherwise boot immediately. If keystatus is not available,
+        then fall back to a short delay interruptible with Escape.
+    + debian/patches/952_sleep_shift.diff:
+      - Allow Shift to interrupt 'sleep --interruptible'.
+    + debian/patches/954_normal_quiet.diff:
+      - Don't display introductory message about line editing unless we're
+        actually offering a shell prompt. Don't clear the screen just before
+        booting if we never drew the menu in the first place.
+    + debian/patches/955_really_quiet.diff:
+      - Remove some verbose messages printed before reading the
+        configuration file.
+    + debian/patches/956_linux_quiet.diff:
+      - If the environment variable "quiet" is set to something other than
+        0, suppress progress messages as the kernel and initrd load. Set
+        this for non-recovery kernel menu entries.
+    + debian/patches/957_savedefault.diff, debian/rules:
+      - Add GRUB_DEFAULT=saved, as well as grub-set-default and grub-reboot
+        utilities. Provides functionality essentially equivalent to GRUB
+        Legacy's savedefault.
+    + debian/patches/959_loopback_root.diff:
+      - Keep the loopback file open so that subsequent changes to the "root"
+        environment variable don't affect it.
+    + debian/patches/961_handle_loopback.diff:
+      - Change prepare_grub_to_access_device to handle filesystems
+        loop-mounted on file images.
+    + debian/patches/963_linux_no_loopmount.diff:
+      - Ignore devices loop-mounted from files in 10_linux.
+    + debian/patches/965_failed_boot_menu.diff, debian/grub-common.init,
+      debian/rules:
+      - Show the boot menu if the previous boot failed, that is if it failed
+        to get to the end of one of the normal runlevels.
+  * debian/patches/957_savedefault.diff,
+    debian/patches/965_failed_boot_menu.diff: Silently ignore zero-sized
+    environment blocks (thanks, Felix Zielcke; LP: #439784).
+  * debian/grub-common.pm-sleep, debian/grub-common.dirs, debian/rules:
+    Record a successful boot on resume from hibernate (thanks, Maxim
+    Levitsky; LP: #447725).
+  * debian/postinst.in: Fix backslash-escaping in merge_debconf_into_conf
+    (LP: #448413).
+  * debian/patches/966_mkconfig_probe_option.diff: Backport upstream patch
+    to make the grub-install --grub-probe option work, which is useful for
+    vm-builder.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 14 Oct 2009 12:07:42 +0100
+
+grub2 (1.97~beta4-1) unstable; urgency=low
+
+  * New upstream beta release.
+
+  [ Felix Zielcke ]
+  * Change the Recommends: os-prober to (>= 1.33).
+  * patches/907_grub.cfg_400.diff: Really add it. Somehow it was a 0 byte file.
+    (Closes: #547409)
+  * Convert newlines back to spaces when parsing kopt from
+    GRUB Legacy's menu.lst, before giving the value to Debconf.
+    Thanks to Colin Watson. (Closes: #547649)
+  * Ship the info docs in grub-common. (Closes: #484074)
+  * Remove generated /usr/share/info/dir* files.
+  * Update the presubj bug file and also install it for grub-common.
+
+  [ Robert Millan ]
+  * Enable ZFS and 915resolution in grub-extras (now requires explicit
+    switch).
+  * grub-common conflicts with grub-doc (<< 0.97-32) and grub-legacy-doc
+    (<< 0.97-59).
+  * Move grub-emu to a separate package.
+
+  [ Updated translations ]
+  * Japanese (ja.po) by Hideki Yamane. (Closes: #549599)
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 05 Oct 2009 20:03:04 +0200
+
 grub2 (1.97~beta3-1ubuntu8) karmic; urgency=low
 
   [ Colin Watson ]
