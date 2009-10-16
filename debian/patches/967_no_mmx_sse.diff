@@ -1,0 +1,24 @@
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/configure grub2-1.97~beta4.new/configure
+--- grub2-1.97~beta4/configure	2009-10-05 18:59:12.000000000 +0100
++++ grub2-1.97~beta4.new/configure	2009-10-16 15:29:39.000000000 +0100
+@@ -6388,6 +6388,8 @@
+     else
+       TARGET_CFLAGS="$TARGET_CFLAGS -malign-jumps=1 -malign-loops=1 -malign-functions=1"
+     fi
++
++    TARGET_CFLAGS="$TARGET_CFLAGS -mno-mmx -mno-sse -mno-sse2"
+   fi
+ 
+   # By default, GCC 4.4 generates .eh_frame sections containing unwind
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/configure.ac grub2-1.97~beta4.new/configure.ac
+--- grub2-1.97~beta4/configure.ac	2009-10-05 18:56:33.000000000 +0100
++++ grub2-1.97~beta4.new/configure.ac	2009-10-16 15:29:39.000000000 +0100
+@@ -252,6 +252,8 @@
+     else
+       TARGET_CFLAGS="$TARGET_CFLAGS -malign-jumps=1 -malign-loops=1 -malign-functions=1"
+     fi
++
++    TARGET_CFLAGS="$TARGET_CFLAGS -mno-mmx -mno-sse -mno-sse2"
+   fi
+ 
+   # By default, GCC 4.4 generates .eh_frame sections containing unwind

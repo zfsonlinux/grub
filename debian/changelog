@@ -1,3 +1,11 @@
+grub2 (1.97~beta4-1ubuntu2) karmic; urgency=low
+
+  * debian/patches/967_no_mmx_sse.diff: Build with -mno-mmx -mno-sse
+    -mno-sse2 on i386/lpia, since otherwise lpia is unbootable (LP:
+    #444562).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 16 Oct 2009 16:31:12 +0100
+
 grub2 (1.97~beta4-1ubuntu1) karmic; urgency=low
 
   * Resynchronise with Debian. Remaining changes:
