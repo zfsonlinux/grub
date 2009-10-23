@@ -1,3 +1,12 @@
+grub2 (1.97~beta4-1ubuntu3) karmic; urgency=low
+
+  * Backport from Debian (Felix Zielcke):
+    - Add a build dependency on texinfo (LP: #453442).
+  * debian/patches/968_raid_virtio.diff: Handle RAID devices containing
+    virtio components (LP: #457687).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 23 Oct 2009 21:58:13 +0100
+
 grub2 (1.97~beta4-1ubuntu2) karmic; urgency=low
 
   * debian/patches/967_no_mmx_sse.diff: Build with -mno-mmx -mno-sse

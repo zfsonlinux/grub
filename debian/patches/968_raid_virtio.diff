@@ -1,0 +1,158 @@
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/include/grub/util/getroot.h grub2-1.97~beta4.new/include/grub/util/getroot.h
+--- grub2-1.97~beta4/include/grub/util/getroot.h	2009-04-11 10:40:39.000000000 +0100
++++ grub2-1.97~beta4.new/include/grub/util/getroot.h	2009-10-23 20:55:25.000000000 +0100
+@@ -19,12 +19,15 @@
+ #ifndef GRUB_UTIL_GETROOT_HEADER
+ #define GRUB_UTIL_GETROOT_HEADER	1
+ 
++#include <sys/types.h>
++
+ enum grub_dev_abstraction_types {
+   GRUB_DEV_ABSTRACTION_NONE,
+   GRUB_DEV_ABSTRACTION_LVM,
+   GRUB_DEV_ABSTRACTION_RAID,
+ };
+ 
++char *grub_find_device (const char *dir, dev_t dev);
+ char *grub_guess_root_device (const char *dir);
+ char *grub_get_prefix (const char *dir);
+ int grub_util_get_dev_abstraction (const char *os_dev);
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/util/getroot.c grub2-1.97~beta4.new/util/getroot.c
+--- grub2-1.97~beta4/util/getroot.c	2009-07-20 21:03:18.000000000 +0100
++++ grub2-1.97~beta4.new/util/getroot.c	2009-10-23 20:55:25.000000000 +0100
+@@ -172,8 +172,8 @@
+ 
+ #ifdef __MINGW32__
+ 
+-static char *
+-find_root_device (const char *dir __attribute__ ((unused)),
++char *
++grub_find_device (const char *dir __attribute__ ((unused)),
+                   dev_t dev __attribute__ ((unused)))
+ {
+   return 0;
+@@ -181,13 +181,22 @@
+ 
+ #elif ! defined(__CYGWIN__)
+ 
+-static char *
+-find_root_device (const char *dir, dev_t dev)
++char *
++grub_find_device (const char *dir, dev_t dev)
+ {
+   DIR *dp;
+   char *saved_cwd;
+   struct dirent *ent;
+ 
++  if (! dir)
++    {
++#ifdef __CYGWIN__
++      return NULL;
++#else
++      dir = "/dev";
++#endif
++    }
++
+   dp = opendir (dir);
+   if (! dp)
+     return 0;
+@@ -225,7 +234,7 @@
+ 	  /* Find it recursively.  */
+ 	  char *res;
+ 
+-	  res = find_root_device (ent->d_name, dev);
++	  res = grub_find_device (ent->d_name, dev);
+ 
+ 	  if (res)
+ 	    {
+@@ -328,8 +337,8 @@
+   return serial;
+ }
+ 
+-static char *
+-find_cygwin_root_device (const char *path, dev_t dev)
++char *
++grub_find_device (const char *path, dev_t dev)
+ {
+   /* No root device for /cygdrive.  */
+   if (dev == (DEV_CYGDRIVE_MAJOR << 16))
+@@ -350,7 +359,7 @@
+ 
+   /* Cygwin returns the partition serial number in stat.st_dev.
+      This is never identical to the device number of the emulated
+-     /dev/sdXN device, so above find_root_device () does not work.
++     /dev/sdXN device, so above grub_find_device () does not work.
+      Search the partition with the same serial in boot sector instead.  */
+   char devpath[sizeof ("/dev/sda15") + 13]; /* Size + Paranoia.  */
+   int d;
+@@ -386,12 +395,12 @@
+ 
+ #ifdef __CYGWIN__
+   /* Cygwin specific function.  */
+-  os_dev = find_cygwin_root_device (dir, st.st_dev);
++  os_dev = grub_find_device (dir, st.st_dev);
+ 
+ #else
+ 
+   /* This might be truly slow, but is there any better way?  */
+-  os_dev = find_root_device ("/dev", st.st_dev);
++  os_dev = grub_find_device ("/dev", st.st_dev);
+ #endif
+ 
+   return os_dev;
+diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/util/raid.c grub2-1.97~beta4.new/util/raid.c
+--- grub2-1.97~beta4/util/raid.c	2009-06-10 22:04:23.000000000 +0100
++++ grub2-1.97~beta4.new/util/raid.c	2009-10-23 20:56:17.000000000 +0100
+@@ -21,40 +21,19 @@
+ #ifdef __linux__
+ #include <grub/util/misc.h>
+ #include <grub/util/raid.h>
++#include <grub/util/getroot.h>
+ 
+ #include <string.h>
+ #include <fcntl.h>
+ #include <sys/ioctl.h>
+ #include <errno.h>
++#include <sys/types.h>
+ 
+ #include <linux/types.h>
+ #include <linux/major.h>
+ #include <linux/raid/md_p.h>
+ #include <linux/raid/md_u.h>
+ 
+-static char *
+-grub_util_getdiskname (int major, int minor)
+-{
+-  char *name = xmalloc (15);
+-
+-  if (major == LOOP_MAJOR)
+-    sprintf (name, "/dev/loop%d", minor);
+-  else if (major == IDE0_MAJOR)
+-    sprintf (name, "/dev/hd%c", 'a' + minor / 64);
+-  else if (major == IDE1_MAJOR)
+-    sprintf (name, "/dev/hd%c", 'c' + minor / 64);
+-  else if (major == IDE2_MAJOR)
+-    sprintf (name, "/dev/hd%c", 'e' + minor / 64);
+-  else if (major == IDE3_MAJOR)
+-    sprintf (name, "/dev/hd%c", 'g' + minor / 64);
+-  else if (major == SCSI_DISK0_MAJOR)
+-    sprintf (name, "/dev/sd%c", 'a' + minor / 16);
+-  else
+-    grub_util_error ("Unknown device number: %d, %d", major, minor);
+-
+-  return name;
+-}
+-
+ char **
+ grub_util_raid_getmembers (char *name)
+ {
+@@ -99,7 +78,8 @@
+ 
+       if (disk.state & (1 << MD_DISK_ACTIVE))
+ 	{
+-	  devicelist[j] = grub_util_getdiskname (disk.major, disk.minor);
++	  devicelist[j] = grub_find_device (NULL,
++					    makedev (disk.major, disk.minor));
+ 	  j++;
+ 	}
+     }
