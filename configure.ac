@@ -31,7 +31,7 @@ dnl (such as TARGET_CC, TARGET_CFLAGS, etc.) are used for the target
 dnl type.
 
 
-AC_INIT([GRUB],[1.97~beta4],[bug-grub@gnu.org])
+AC_INIT([GRUB],[1.97],[bug-grub@gnu.org])
 AC_PREREQ(2.59)
 AC_CONFIG_SRCDIR([include/grub/dl.h])
 AC_CONFIG_HEADER([config.h])
@@ -252,6 +252,10 @@ if test "x$TARGET_CFLAGS" = x; then
     else
       TARGET_CFLAGS="$TARGET_CFLAGS -malign-jumps=1 -malign-loops=1 -malign-functions=1"
     fi
+
+    # Some toolchains enable these features by default, but they need
+    # registers that aren't set up properly in GRUB.
+    TARGET_CFLAGS="$TARGET_CFLAGS -mno-mmx -mno-sse -mno-sse2 -mno-3dnow"
   fi
 
   # By default, GCC 4.4 generates .eh_frame sections containing unwind
@@ -407,6 +411,9 @@ AC_SUBST(TARGET_ASFLAGS)
 AC_SUBST(TARGET_CPPFLAGS)
 AC_SUBST(TARGET_LDFLAGS)
 
+# Check for libgcc symbols (must be performed before we add -nostdlib to LDFLAGS)
+AC_CHECK_FUNCS(__bswapsi2 __bswapdi2 __ashldi3 __ashrdi3 __lshrdi3 __trampoline_setup __ucmpdi2)
+
 # Set them to their new values for the tests below.
 CC="$TARGET_CC"
 if test "x$TARGET_APPLE_CC" = x1 ; then
@@ -541,7 +548,7 @@ AC_CHECK_LIB([usb], [usb_claim_interface], [LIBUSB="-lusb"],
     AC_CHECK_HEADERS([usb.h], [],
       [grub_emu_usb_excuse=["need libusb headers"]])
 [fi]
-if test x"enable_grub_emu_usb" = xyes && test x"$grub_emu_usb_excuse" != x ; then
+if test x"$enable_grub_emu_usb" = xyes && test x"$grub_emu_usb_excuse" != x ; then
   AC_MSG_ERROR([USB support for grub-emu was explicitly requested but can't be compiled])
 fi
 if test x"$grub_emu_usb_excuse" = x ; then
