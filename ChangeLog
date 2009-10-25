@@ -1,3 +1,195 @@
+2009-10-25  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* util/i386/pc/grub-setup.c (setup): Add missing parameter to
+	grub_util_error() call.
+
+2009-10-25  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* include/grub/fs.h [GRUB_UTIL] (struct grub_fs): Add
+	`reserved_first_sector' member.
+	* fs/ext2.c [GRUB_UTIL] (grub_ext2_fs): Initialize
+	`reserved_first_sector' to 1.
+	* fs/fat.c [GRUB_UTIL] (grub_fat_fs): Likewise.
+	* fs/ntfs.c [GRUB_UTIL] (grub_ntfs_fs): Likewise.
+	* fs/hfsplus.c [GRUB_UTIL] (grub_hfsplus_fs): Likewise.
+	* util/i386/pc/grub-setup.c (setup): Add safety check that probes for
+	filesystems which begin at first sector.
+	(options): New option --skip-fs-probe.
+	(main): Handle --skip-fs-probe and pass it to setup().
+
+2009-10-25  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* include/grub/misc.h: Fix wrong evaluation of APPLE_CC.
+	(memset): Fix function prototype.
+
+2009-10-25  Robert Millan  <rmh.grub@aybabtu.com>
+2009-10-25  Vasily Averin  <vvs@parallels.com>
+
+	* fs/ext2.c (grub_ext2_iterate_dir): Avoid infinite loop when
+	`dirent.direntlen == 0'.
+
+2009-10-25  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* fs/cpio.c [MODE_USTAR]: Initialize `tar' module instead of
+	`cpio'.
+	[! MODE_USTAR]: Initialize `cpio' module instead of `tar'.
+
+2009-10-25  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* configure.ac: Check for `__ashldi3', `__ashrdi3', `__lshrdi3',
+	`__trampoline_setup' and `__ucmpdi2'.
+	* include/grub/powerpc/libgcc.h: Only export symbols for functions
+	that libgcc provides.
+
+2009-10-25  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* include/grub/powerpc/libgcc.h (memset): Remove function prototype.
+	* include/grub/sparc64/libgcc.h (memset): Likewise.
+	* include/grub/misc.h (memset, memcmp): New function prototypes.
+
+2009-10-25  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* fs/cpio.c [MODE_USTAR]: Finish `tar' module instead of
+	`cpio'.
+	[! MODE_USTAR]: Finish `cpio' module instead of `tar'.
+
+2009-10-25  Robert Millan  <rmh.grub@aybabtu.com>
+
+	Patch from Samuel Thibault <samuel.thibault@ens-lyon.org>
+	* docs/grub.cfg: Compensate for recent change in multiboot
+	loader (since 2009-08-14 it won't pass filename to payload).
+	* util/grub.d/10_hurd.in: Likewise.
+
+2009-10-21  Felix Zielcke  <fzielcke@z-51.de>
+
+	* config.guess: Update to latest version from config git
+	repository.
+	* config.sub: Likewise.
+
+2009-10-20  Robert Millan  <rmh.grub@aybabtu.com>
+
+	Fix build on sparc64.
+
+	* configure.ac: Perform checks for libgcc symbols before
+	adding `-nostdlib' to LDFLAGS.
+
+2009-10-16  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	Let user specify OpenBSD root device.
+
+	* loader/i386/bsd.c (openbsd_root): New variable.
+	(openbsd_opts): New option 'root'.
+	(OPENBSD_ROOT_ARG): New macro.
+	(grub_openbsd_boot): Use 'openbsd_root'.
+	(grub_cmd_openbsd): Fill 'openbsd_root'.
+
+2009-10-16  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* NEWS: Misc adjustments.
+
+2009-10-16  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	* NEWS: Mentioned XNU, ACPI, gptsync, password and parttool.
+
+2009-10-16  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* configure.ac: Bump version to 1.97.
+
+2009-10-16  Colin Watson  <cjwatson@ubuntu.com>
+
+	* configure.ac (TARGET_CFLAGS): Add -mno-mmx -mno-sse -mno-sse2
+	-mno-3dnow on x86 architectures.  Some toolchains enable these
+	features by default, but they rely on registers that aren't enabled
+	in GRUB.  Thanks to Vladimir Serbinenko for the suggestion.
+
+2009-10-15  Robert Millan  <rmh.grub@aybabtu.com>
+
+	Make entry text a bit more readable.
+
+	* util/grub.d/10_linux.in: Add `with' before `Linux'.
+
+2009-10-15  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	* loader/i386/pc/xnu.c (grub_xnu_set_video): Fix loading splash image.
+
+2009-10-15  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	* commands/xnu_uuid.c (grub_cmd_xnu_uuid): Remove duplicated bitwise
+	operations.
+
+2009-10-15  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	* configure.ac: Add missing dollar.
+
+2009-10-15  Vladimir Serbinenko  <phcoder@gmail.com>
+
+        Revert 2009-06-10  Pavel Roskin  <proski@gnu.org>
+
+	* configure.ac: Put checks for __bswapsi2 and __bswapdi2.
+	* include/grub/powerpc/libgcc.h: Don't use weak attribute for all
+	exports.
+	* include/grub/sparc64/libgcc.h: Likewise.  Use
+	preprocessor conditionals.
+
+2009-10-14  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* conf/common.rmk (grub-dumpbios): Remove rule.
+	(sbin_SCRIPTS, CLEANFILES): Remove `grub-dumpbios'.
+	* util/grub-dumpbios.in: Remove file.
+
+2009-10-14  Robert Millan  <rmh.grub@aybabtu.com>
+
+	Refer to kernel of FreeBSD "kFreeBSD" to avoid confusion between
+	the Operating System (FreeBSD) and its kernel (kernel of FreeBSD).
+
+	* loader/i386/bsd.c (grub_freebsd_boot): Read kernel environment
+	from "kFreeBSD" namespace (rather than "FreeBSD").  Update all
+	users.
+
+	(GRUB_MOD_INIT (bsd)): Rename "freebsd" command to "kfreebsd",
+	"openbsd" to "kopenbsd", "netbsd" to "knetbsd", "freebsd_loadenv"
+	to "kfreebsd_loadenv", "freebsd_module" to "kfreebsd_module",
+	and "freebsd_module_elf" to "kfreebsd_module_elf".  Update all
+	users.
+
+2009-10-12  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* term/tparm.c: Switch to GPLv3.
+
+2009-10-09  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* include/grub/i386/cpuid.h: Add header protection.
+
+2009-10-09  Robert Millan  <rmh.grub@aybabtu.com>
+
+	Fail gracefuly when attempting to load 64-bit kFreeBSD on IA32 CPU.
+
+	* include/grub/i386/cpuid.h: New file.
+	* commands/i386/cpuid.c: Include `<grub/i386/cpuid.h>'.
+	(has_longmode): Rename to ...
+	(grub_cpuid_has_longmode): ... this.  Update all users.  Remove
+	`static' attribute.
+	* loader/i386/bsd.c: Include `<grub/i386/cpuid.h>'.
+	(grub_bsd_load_elf): Fail if load of 64-bit kernel was requested
+	on a CPU that doesn't implement AMD64 instruction set.
+
+2009-10-06  Colin Watson  <cjwatson@ubuntu.com>
+
+	* Makefile.in (docs/stamp-vti): Depend on configure.ac as well, so
+	that version.texi is rebuilt on version number changes.
+
+2009-10-06  Colin Watson  <cjwatson@ubuntu.com>
+
+	* Makefile.in: Don't set info_INFOS unless makeinfo was found.
+	Fixes bug #27602.
+
+2009-10-06  Colin Watson  <cjwatson@ubuntu.com>
+
+	* util/i386/pc/grub-install.in: Source
+	${libdir}/grub/grub-mkconfig_lib before option processing, in order
+	that the --grub-probe option will work.
+	* util/sparc64/ieee1275/grub-install.in: Likewise.
+
 2009-10-05  Robert Millan  <rmh.grub@aybabtu.com>
 
 	* configure.ac: Bump version to 1.97~beta4.
