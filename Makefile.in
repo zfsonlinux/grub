@@ -174,12 +174,14 @@ handler.lst: $(HANDLERFILES)
 parttool.lst: $(PARTTOOLFILES)
 	cat $^ /dev/null | sort | uniq > $@
 
+ifneq (true, $(MAKEINFO))
 info_INFOS += docs/grub.info
+endif
 
 MOSTLYCLEANFILES += vti.tmp
 MAINTAINER_CLEANFILES += docs/stamp-vti docs/version.texi
 docs/version.texi: docs/stamp-vti
-docs/stamp-vti: docs/grub.texi
+docs/stamp-vti: docs/grub.texi configure.ac
 	$(MKDIR_P) docs
 	(set `$(SHELL) $(srcdir)/docs/mdate-sh $<`; \
 	echo "@set UPDATED $$1 $$2 $$3"; \

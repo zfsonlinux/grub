@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2004,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,14 +16,9 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#ifndef GRUB_CPU_CPUID_HEADER
+#define GRUB_CPU_CPUID_HEADER 1
 
-#ifdef HAVE___BSWAPSI2
-typedef int SItype __attribute__ ((mode (SI)));
-SItype EXPORT_FUNC (__bswapsi2) (SItype);
-#endif
+extern unsigned char grub_cpuid_has_longmode;
 
-#ifdef HAVE___BSWAPDI2
-typedef int DItype __attribute__ ((mode (DI)));
-DItype EXPORT_FUNC (__bswapdi2) (DItype);
 #endif
