@@ -42,6 +42,7 @@ else
 fi
 grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
 grub_probe=${sbindir}/`echo grub-probe | sed ${transform}`
+grub_editenv=${bindir}/`echo grub-editenv | sed ${transform}`
 rootdir=
 grub_prefix=`echo /boot/grub | sed ${transform}`
 modules=
@@ -245,6 +246,10 @@ if [ "${target_cpu}-${platform}" = "i386-pc" ] ; then
 	    cp -f $file ${grubdir} || exit 1
 	fi
     done
+fi
+
+if ! test -f ${grubdir}/grubenv; then
+    $grub_editenv ${grubdir}/grubenv create
 fi
 
 # Write device to a variable so we don't have to traverse /dev every time.
