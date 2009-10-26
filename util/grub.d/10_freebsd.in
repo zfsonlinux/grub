@@ -58,6 +58,7 @@ if [ "x$kfreebsd" != "x" ] ; then
   cat << EOF
 menuentry "${OS}" {
 EOF
+  save_default_entry | sed -e "s/^/\t/"
   prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/"
   cat << EOF
 	kfreebsd			${kfreebsd_rel_dirname}/${kfreebsd_basename}

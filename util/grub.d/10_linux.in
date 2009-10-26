@@ -47,6 +47,7 @@ linux_entry ()
   cat << EOF
 menuentry "$1" {
 EOF
+  save_default_entry | sed -e "s/^/\t/"
   prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/"
   cat << EOF
 	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro $2
