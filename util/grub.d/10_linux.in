@@ -47,6 +47,7 @@ linux_entry ()
   cat << EOF
 menuentry "$1" {
 EOF
+  save_default_entry | sed -e "s/^/\t/"
   prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/"
   cat << EOF
 	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro $2
@@ -91,10 +92,10 @@ while [ "x$list" != "x" ] ; do
     linux_root_device_thisversion=${GRUB_DEVICE}
   fi
 
-  linux_entry "${OS}, Linux ${version}" \
+  linux_entry "${OS}, with Linux ${version}" \
       "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
   if [ "x${GRUB_DISABLE_LINUX_RECOVERY}" != "xtrue" ]; then
-    linux_entry "${OS}, Linux ${version} (recovery mode)" \
+    linux_entry "${OS}, with Linux ${version} (recovery mode)" \
 	"single ${GRUB_CMDLINE_LINUX}"
   fi
 

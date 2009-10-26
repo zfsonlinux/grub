@@ -31,6 +31,9 @@ target_cpu=@target_cpu@
 platform=@platform@
 pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
 
+# for make_system_path_relative_to_its_root()
+. ${libdir}/grub/grub-mkconfig_lib
+
 grub_setup=${sbindir}/`echo grub-setup | sed ${transform}`
 if [ "${target_cpu}-${platform}" = "i386-pc" ] ; then
     grub_mkimage=${bindir}/`echo grub-mkimage | sed ${transform}`
@@ -39,6 +42,7 @@ else
 fi
 grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
 grub_probe=${sbindir}/`echo grub-probe | sed ${transform}`
+grub_editenv=${bindir}/`echo grub-editenv | sed ${transform}`
 rootdir=
 grub_prefix=`echo /boot/grub | sed ${transform}`
 modules=
@@ -141,9 +145,6 @@ for option in "$@"; do
     esac
 done
 
-# for make_system_path_relative_to_its_root()
-. ${libdir}/grub/grub-mkconfig_lib
-
 if test "x$install_device" = x; then
     echo "install_device not specified." 1>&2
     usage
@@ -245,6 +246,10 @@ if [ "${target_cpu}-${platform}" = "i386-pc" ] ; then
 	    cp -f $file ${grubdir} || exit 1
 	fi
     done
+fi
+
+if ! test -f ${grubdir}/grubenv; then
+    $grub_editenv ${grubdir}/grubenv create
 fi
 
 # Write device to a variable so we don't have to traverse /dev every time.

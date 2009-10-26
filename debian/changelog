@@ -1,11 +1,36 @@
-grub2 (1.97~beta3+20091003-1) experimental; urgency=low
+grub2 (1.97+experimental.20091026-1) experimental; urgency=low
 
-  * New SVN snapshot.
-  * Split grub-emu to a separate package.
+  * New Bazaar snapshot.
 
- -- Robert Millan <rmh.debian@aybabtu.com>  Sat, 03 Oct 2009 01:11:26 +0200
+ -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 26 Oct 2009 02:06:20 +0100
 
-grub2 (1.97~beta3-2) unstable; urgency=low
+grub2 (1.97-2) unstable; urgency=low
+
+  * patches/002_grub.d_freebsd.in.diff: Delete (merged upstream).
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 26 Oct 2009 01:42:21 +0100
+
+grub2 (1.97-1) unstable; urgency=low
+
+  [ Robert Millan ]
+  * patches/905_setup_force.diff: Remove, no longer needed as of
+    grub-installer >= 1.47.
+  * grub.d/05_debian_theme: Attempt to source grub_background.sh from
+    desktop-base (Needed for #495282, #495616, #500134, see also
+    #550984).
+
+  [ Felix Zielcke ]
+  * Add a build dependency on texinfo.
+  * Fix little typo in /etc/default/grub. (LP: #457703)
+
+  [ Updated translations ]
+  * Finnish (fi.po) by Esko Arajärvi. (Closes: #551912)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sun, 25 Oct 2009 19:50:21 +0100
+
+grub2 (1.97~beta4-1) unstable; urgency=low
+
+  * New upstream beta release.
 
   [ Felix Zielcke ]
   * Change the Recommends: os-prober to (>= 1.33).
@@ -23,8 +48,12 @@ grub2 (1.97~beta3-2) unstable; urgency=low
     switch).
   * grub-common conflicts with grub-doc (<< 0.97-32) and grub-legacy-doc
     (<< 0.97-59).
+  * Move grub-emu to a separate package.
 
- -- Robert Millan <rmh.debian@aybabtu.com>  Fri, 02 Oct 2009 22:39:42 +0200
+  [ Updated translations ]
+  * Japanese (ja.po) by Hideki Yamane. (Closes: #549599)
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 05 Oct 2009 20:03:04 +0200
 
 grub2 (1.97~beta3-1) unstable; urgency=high
 
