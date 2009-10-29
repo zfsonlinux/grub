@@ -1,3 +1,12 @@
+grub2 (1.97~beta4-1ubuntu4) karmic-proposed; urgency=low
+
+  * New patch, 969_os_prober_separate_boot, fixes wrong kernel/initrd
+    pathnames and wrong partition UUID/GRUB path when generating menuentries
+    from os-prober output of a detected system with a separate /boot; thanks
+    Colin Watson; LP: #462961.
+
+ -- Loïc Minier <loic.minier@ubuntu.com>  Thu, 29 Oct 2009 02:30:35 +0000
+
 grub2 (1.97~beta4-1ubuntu3) karmic; urgency=low
 
   * Backport from Debian (Felix Zielcke):
