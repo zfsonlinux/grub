@@ -42,7 +42,6 @@ else
 fi
 grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
 grub_probe=${sbindir}/`echo grub-probe | sed ${transform}`
-grub_editenv=${bindir}/`echo grub-editenv | sed ${transform}`
 rootdir=
 grub_prefix=`echo /boot/grub | sed ${transform}`
 modules=
@@ -248,10 +247,6 @@ if [ "${target_cpu}-${platform}" = "i386-pc" ] ; then
     done
 fi
 
-if ! test -f ${grubdir}/grubenv; then
-    $grub_editenv ${grubdir}/grubenv create
-fi
-
 # Write device to a variable so we don't have to traverse /dev every time.
 grub_device=`$grub_probe --target=device ${grubdir}`
 
@@ -324,14 +319,7 @@ else
     $grub_mkimage -d ${pkglibdir} --output=/boot/multiboot.img --prefix=${prefix_drive}${relative_grubdir} $modules || exit 1
 fi
 
-# Prompt the user to check if the device map is correct.
 echo "Installation finished. No error reported."
-echo "This is the contents of the device map $device_map."
-echo "Check if this is correct or not. If any of the lines is incorrect,"
-echo "fix it and re-run the script \`grub-install'."
-echo
-
-cat $device_map
 
 # Bye.
 exit 0
