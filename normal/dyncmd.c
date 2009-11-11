@@ -62,12 +62,6 @@ void
 read_command_list (void)
 {
   const char *prefix;
-  static int first_time = 1;
-
-  /* Make sure that this function does not get executed twice.  */
-  if (! first_time)
-    return;
-  first_time = 0;
 
   prefix = grub_env_get ("prefix");
   if (prefix)
@@ -83,8 +77,18 @@ read_command_list (void)
 	  file = grub_file_open (filename);
 	  if (file)
 	    {
-	      char *buf = 0;
-	      for (;; grub_free(buf))
+	      char *buf = NULL;
+
+	      /* Override previous commands.lst.  */
+	      while (grub_command_list)
+		{
+		  grub_command_t tmp;
+		  tmp = grub_command_list->next;
+		  grub_free (grub_command_list);
+		  grub_command_list = tmp;
+		}
+
+	      for (;; grub_free (buf))
 		{
 		  char *p, *name, *modname;
 		  grub_command_t cmd;

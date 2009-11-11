@@ -22,8 +22,8 @@ Build-Depends: cdbs,
 Build-Conflicts: autoconf2.13 
 Standards-Version: 3.8.3
 Homepage: http://www.gnu.org/software/grub/grub-2.en.html
-Vcs-Svn: svn://svn.debian.org/svn/pkg-grub/grub2/trunk/
-Vcs-Browser: http://svn.debian.org/viewsvn/pkg-grub/grub2/
+Vcs-Bzr: https://alioth.debian.org/anonscm/bzr/pkg-grub/trunk/grub/
+Vcs-Browser: http://bzr.debian.org/loggerhead/pkg-grub/
 
 
 Package: grub2
@@ -49,7 +49,7 @@ Description: GRand Unified Bootloader, version 2 (dummy package)
 
 Package: grub-common
 Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64 lpia powerpc sparc
-Depends: ${shlibs:Depends}, base-files (>= 4.0.1~), ${misc:Depends}
+Depends: ${shlibs:Depends}, base-files (>= 4.0.1~), ${misc:Depends}, dpkg (>= 1.15.4) | install-info
 Replaces: grub-pc (<< 1.96+20080831-1), grub-ieee1275 (<< 1.96+20080831-1), grub-efi (<< 1.96+20080831-1), grub-coreboot (<< 1.96+20080831-1), grub-linuxbios (<< 1.96+20080831-1)
 Recommends: os-prober (>= 1.33)
 Suggests: multiboot-doc [i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64 lpia], grub-emu

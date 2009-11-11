@@ -28,6 +28,19 @@ ifeq ($(enable_grub_fstest), yes)
 bin_UTILITIES += grub-fstest
 endif
 
+bin_UTILITIES += grub-mkisofs
+grub_mkisofs_SOURCES = util/mkisofs/eltorito.c 				\
+	util/mkisofs/hash.c util/mkisofs/joliet.c			\
+	util/mkisofs/match.c util/mkisofs/mkisofs.c			\
+	util/mkisofs/multi.c util/mkisofs/name.c			\
+	util/mkisofs/rock.c util/mkisofs/tree.c				\
+	util/mkisofs/write.c						\
+	\
+	gnulib/fnmatch.c gnulib/getopt1.c gnulib/getopt.c
+grub_mkisofs_CFLAGS = -D_FILE_OFFSET_BITS=64 				\
+	-I$(srcdir)/util/mkisofs/include -I$(srcdir)/gnulib		\
+	-Wno-all -Werror
+
 # For grub-fstest.
 util/grub-fstest.c_DEPENDENCIES = grub_fstest_init.h
 grub_fstest_SOURCES = util/grub-fstest.c util/hostfs.c util/misc.c 	\
@@ -57,23 +70,14 @@ grub_mkfont_CFLAGS = $(freetype_cflags)
 grub_mkfont_LDFLAGS = $(freetype_libs)
 endif
 
+# For grub-mkrelpath.
+bin_UTILITIES += grub-mkrelpath
+grub_mkrelpath_SOURCES = util/grub-mkrelpath.c util/misc.c
+
 # For the parser.
 grub_script.tab.c grub_script.tab.h: script/sh/parser.y
 	$(YACC) -d -p grub_script_yy -b grub_script $(srcdir)/script/sh/parser.y
 DISTCLEANFILES += grub_script.tab.c grub_script.tab.h
-
-# For grub-emu.
-grub_emu_init.lst: geninit.sh $(filter-out grub_emu_init.c,$(grub_emu_SOURCES))
-	rm -f $@; grep GRUB_MOD_INIT $(filter %.c,$^) /dev/null > $@
-DISTCLEANFILES += grub_emu_init.lst
-
-grub_emu_init.h: grub_emu_init.lst $(filter-out grub_emu_init.c,$(grub_emu_SOURCES)) geninitheader.sh
-	rm -f $@; sh $(srcdir)/geninitheader.sh $< > $@
-DISTCLEANFILES += grub_emu_init.h
-
-grub_emu_init.c: grub_emu_init.lst $(filter-out grub_emu_init.c,$(grub_emu_SOURCES)) geninit.sh grub_emu_init.h
-	rm -f $@; sh $(srcdir)/geninit.sh $< $(filter %.c,$^) > $@
-DISTCLEANFILES += grub_emu_init.c
 
 # For grub-probe.
 grub_probe_init.lst: geninit.sh $(filter-out grub_probe_init.c,$(grub_probe_SOURCES))
@@ -160,20 +164,6 @@ endif
 CLEANFILES += $(grub-mkconfig_SCRIPTS)
 
 grub-mkconfig_DATA += util/grub.d/README
-
-# For grub-set-default.
-grub-set-default: util/grub-set-default.in config.status
-	./config.status --file=$@:$<
-	chmod +x $@
-sbin_SCRIPTS += grub-set-default
-CLEANFILES += grub-set-default
-
-# For grub-reboot.
-grub-reboot: util/grub-reboot.in config.status
-	./config.status --file=$@:$<
-	chmod +x $@
-sbin_SCRIPTS += grub-reboot
-CLEANFILES += grub-reboot
 
 # Filing systems.
 pkglib_MODULES += fshelp.mod fat.mod ufs1.mod ufs2.mod ext2.mod ntfs.mod \
@@ -622,3 +612,8 @@ pkglib_MODULES += setjmp.mod
 setjmp_mod_SOURCES = lib/$(target_cpu)/setjmp.S
 setjmp_mod_ASFLAGS = $(COMMON_ASFLAGS)
 setjmp_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+pkglib_MODULES += charset.mod
+charset_mod_SOURCES = lib/charset.c
+charset_mod_CFLAGS = $(COMMON_CFLAGS)
+charset_mod_LDFLAGS = $(COMMON_LDFLAGS)
