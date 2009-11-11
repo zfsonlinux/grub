@@ -5,7 +5,7 @@ COMMON_CFLAGS	= -ffreestanding -mrtd -mregparm=3
 COMMON_LDFLAGS	= -nostdlib
 
 # Used by various components.  These rules need to precede them.
-script/lexer.c_DEPENDENCIES = grub_script.tab.h
+script/sh/lexer.c_DEPENDENCIES = grub_script.tab.h
 
 # Images.
 pkglib_PROGRAMS = kernel.img
@@ -33,7 +33,7 @@ kernel_img_HEADERS = cache.h device.h disk.h dl.h elf.h elfload.h \
 	env.h err.h file.h fs.h kernel.h loader.h misc.h mm.h net.h parser.h \
 	partition.h msdos_partition.h reader.h symbol.h term.h time.h types.h \
 	ieee1275/ieee1275.h machine/kernel.h machine/loader.h machine/memory.h \
-	list.h handler.h command.h i18n.h
+	list.h handler.h command.h
 kernel_img_CFLAGS = $(COMMON_CFLAGS)
 kernel_img_ASFLAGS = $(COMMON_ASFLAGS)
 kernel_img_LDFLAGS = $(COMMON_LDFLAGS) -Wl,-N,-S,-Ttext,0x10000,-Bstatic
@@ -47,6 +47,13 @@ symlist.c: $(addprefix include/grub/,$(kernel_img_HEADERS)) config.h gensymlist.
 kernel_syms.lst: $(addprefix include/grub/,$(kernel_img_HEADERS)) config.h genkernsyms.sh
 	/bin/sh genkernsyms.sh $(filter %.h,$^) > $@ || (rm -f $@; exit 1)
 
+# Utilities.
+sbin_UTILITIES = grub-mkdevicemap
+
+# For grub-mkdevicemap.
+grub_mkdevicemap_SOURCES = util/grub-mkdevicemap.c util/deviceiter.c \
+	util/devicemap.c util/misc.c
+
 # Scripts.
 sbin_SCRIPTS = grub-install
 
@@ -55,7 +62,7 @@ grub_install_SOURCES = util/ieee1275/grub-install.in
 
 # Modules.
 pkglib_MODULES = halt.mod reboot.mod suspend.mod		\
-	aout.mod serial.mod linux.mod		\
+	multiboot.mod aout.mod serial.mod linux.mod		\
 	nand.mod memdisk.mod pci.mod lspci.mod datetime.mod	\
 	date.mod datehook.mod lsmmap.mod mmap.mod
 
@@ -70,6 +77,15 @@ mmap_mod_SOURCES = mmap/mmap.c mmap/i386/uppermem.c mmap/i386/mmap.c
 mmap_mod_CFLAGS = $(COMMON_CFLAGS)
 mmap_mod_LDFLAGS = $(COMMON_LDFLAGS)
 mmap_mod_ASFLAGS = $(COMMON_ASFLAGS)
+
+# For multiboot.mod.
+multiboot_mod_SOURCES = loader/ieee1275/multiboot2.c \
+			loader/i386/multiboot_helper.S \
+			 loader/multiboot2.c \
+			 loader/multiboot_loader.c
+multiboot_mod_CFLAGS = $(COMMON_CFLAGS)
+multiboot_mod_LDFLAGS = $(COMMON_LDFLAGS)
+multiboot_mod_ASFLAGS = $(COMMON_ASFLAGS)
 
 # For aout.mod.
 aout_mod_SOURCES = loader/aout.c

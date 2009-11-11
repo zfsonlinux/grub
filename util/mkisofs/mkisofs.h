@@ -19,7 +19,7 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
- */
+   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 /*
  * 	$Id: mkisofs.h,v 1.20 1999/03/02 04:16:41 eric Exp $
@@ -29,11 +29,6 @@
 #include <stdint.h>
 #include <prototyp.h>
 #include <sys/stat.h>
-
-#include <locale.h>
-#include <libintl.h>
-#define _(str) gettext(str)
-#define N_(str) str
 
 /* This symbol is used to indicate that we do not have things like
    symlinks, devices, and so forth available.  Just files and dirs */
@@ -296,8 +291,6 @@ extern struct iso_directory_record root_record;
 extern struct iso_directory_record jroot_record;
 
 extern int use_eltorito;
-extern int use_eltorito_emul_floppy;
-extern int use_boot_info_table;
 extern int use_RockRidge;
 extern int use_Joliet;
 extern int rationalize;
@@ -342,7 +335,6 @@ extern void DECL(init_boot_catalog, (const char * path ));
 extern void DECL(get_torito_desc, (struct eltorito_boot_descriptor * path ));
 
 /* write.c */
-extern int DECL(get_731,(char *));
 extern int DECL(get_733,(char *));
 extern int DECL(isonum_733,(unsigned char *));
 extern void DECL(set_723,(char *, unsigned int));
