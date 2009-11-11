@@ -32,8 +32,7 @@ dnl type.
 
 
 AC_INIT([GRUB],[1.97],[bug-grub@gnu.org])
-AM_INIT_AUTOMAKE()
-AC_PREREQ(2.60)
+AC_PREREQ(2.59d)
 AC_CONFIG_SRCDIR([include/grub/dl.h])
 AC_CONFIG_HEADER([config.h])
 
@@ -122,7 +121,6 @@ case "$platform" in
   emu)		machine_CFLAGS="-DGRUB_MACHINE_EMU=1" ;;
 esac
 CFLAGS="$CFLAGS $machine_CFLAGS"
-TARGET_ASFLAGS="$TARGET_ASFLAGS $machine_CFLAGS"
 TARGET_CFLAGS="$TARGET_CFLAGS $machine_CFLAGS"
 
 AC_SUBST(host_cpu)
@@ -148,9 +146,9 @@ if test "x$YACC" = x; then
   AC_MSG_ERROR([bison is not found])
 fi
 
-for file in /usr/src/unifont.bdf /usr/share/fonts/X11/misc/unifont.pcf.gz ; do
+for file in /usr/src/unifont.bdf ; do
   if test -e $file ; then
-    AC_SUBST([FONT_SOURCE], [$file])
+    AC_SUBST([UNIFONT_BDF], [$file])
     break
   fi
 done
@@ -173,7 +171,6 @@ AC_PROG_CC
 test "x$GCC" = xyes || AC_MSG_ERROR([GCC is required])
 
 AC_GNU_SOURCE
-AM_GNU_GETTEXT
 AC_SYS_LARGEFILE
 
 # Identify characteristics of the host architecture.
@@ -194,7 +191,7 @@ else
 fi
 
 # Check for functions.
-AC_CHECK_FUNCS(posix_memalign memalign asprintf vasprintf)
+AC_CHECK_FUNCS(posix_memalign memalign asprintf)
 
 # For grub-mkisofs
 AC_HEADER_MAJOR

@@ -19,7 +19,18 @@
 
 #include <grub/dl.h>
 #include <grub/command.h>
-#include <grub/misc.h>
+
+#if defined(GRUB_MACHINE_IEEE1275)
+#include <grub/machine/kernel.h>
+#elif defined(GRUB_MACHINE_EFI)
+#include <grub/efi/efi.h>
+#elif defined(GRUB_MACHINE_PCBIOS)
+#include <grub/machine/init.h>
+#else
+/* Platforms shipping standalone reboot, such as coreboot.  */
+#include <grub/cpu/reboot.h>
+#endif
+
 
 static grub_err_t
 grub_cmd_reboot (grub_command_t cmd __attribute__ ((unused)),

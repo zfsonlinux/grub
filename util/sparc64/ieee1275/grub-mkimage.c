@@ -21,7 +21,6 @@
 #include <grub/machine/boot.h>
 #include <grub/machine/kernel.h>
 #include <grub/kernel.h>
-#include <grub/i18n.h>
 #include <grub/disk.h>
 #include <grub/util/misc.h>
 #include <grub/util/resolve.h>
@@ -34,8 +33,6 @@
 
 #define _GNU_SOURCE	1
 #include <getopt.h>
-
-#include "progname.h"
 
 static void
 compress_kernel (char *kernel_img, size_t kernel_size,
@@ -191,10 +188,10 @@ static void
 usage (int status)
 {
   if (status)
-    fprintf (stderr, "Try ``%s --help'' for more information.\n", program_name);
+    fprintf (stderr, "Try ``grub-mkimage --help'' for more information.\n");
   else
     printf ("\
-Usage: %s [OPTION]... [MODULES]\n\
+Usage: grub-mkimage [OPTION]... [MODULES]\n\
 \n\
 Make a bootable image of GRUB.\n\
 \n\
@@ -207,7 +204,7 @@ Make a bootable image of GRUB.\n\
   -v, --verbose           print verbose messages\n\
 \n\
 Report bugs to <%s>.\n\
-", program_name, GRUB_LIBDIR, DEFAULT_DIRECTORY, PACKAGE_BUGREPORT);
+", GRUB_LIBDIR, DEFAULT_DIRECTORY, PACKAGE_BUGREPORT);
 
   exit (status);
 }
@@ -221,11 +218,7 @@ main (int argc, char *argv[])
   char *memdisk = NULL;
   FILE *fp = stdout;
 
-  set_program_name (argv[0]);
-  setlocale (LC_ALL, "");
-  bindtextdomain (PACKAGE, LOCALEDIR);
-  textdomain (PACKAGE);
-
+  progname = "grub-mkimage";
   while (1)
     {
       int c = getopt_long (argc, argv, "d:p:m:o:hVv", options, 0);
