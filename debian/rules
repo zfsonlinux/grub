@@ -5,6 +5,8 @@ package		:= grub2
 
 DEB_HOST_ARCH_CPU ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_CPU 2>/dev/null)
 
+DEB_STRIP_EXCLUDE := /usr/sbin/grub-emu
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
@@ -92,7 +94,7 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee12
 	# shipped with grub-common
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/etc/grub.d
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{grub-dumpbios,grub-probe,grub-mkconfig,grub-mkdevicemap,grub-ofpathname}{,.8}
-	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkelfimage,grub-mkfont,grub-editenv,grub-mkisofs}{,.1}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkelfimage,grub-mkfont,grub-editenv,grub-mkisofs,grub-mkrelpath}{,.1}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{grub-mkconfig_lib,update-grub_lib}
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/share/{grub,info}/
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/include

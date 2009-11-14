@@ -1,3 +1,14 @@
+grub2 (1.97+experimental.20091114-1) experimental; urgency=low
+
+  * New Bazaar snapshot.
+    - Revert faulty patch which breaks normal mode. (Closes: #555842)
+
+  * Ship grub-mkrelpath only in grub-common. (Closes: #554454)
+  * Don't strip debug symbols from grub-emu. It's meant for debugging
+    and with them it's much more useful.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sat, 14 Nov 2009 10:49:58 +0100
+
 grub2 (1.97+experimental.20091111-1) experimental; urgency=low
 
   * New Bazaar snapshot.

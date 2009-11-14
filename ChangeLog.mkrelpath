@@ -1,3 +1,18 @@
+2009-11-13  Felix Zielcke  <fzielcke@z-51.de>
+
+	* util/misc.c (make_system_path_relative_to_its_root): Fix access
+	to a wrong variable.
+
+2009-11-11  Felix Zielcke  <fzielcke@z-51.de>
+
+	* util/grub-probe.c (probe): Abort with an error if file can't be
+	opened via GRUB facilities.
+
+2009-11-11  Felix Zielcke  <fzielcke@z-51.de>
+
+	* util/i386/pc/grub-setup.c (setup): Make core.img path relative
+	to its root.
+
 2009-11-04  Felix Zielcke  <fzielcke@z-51.de>
 
 	* util/grub-mkconfig_lib.in (bindir): New variable.
