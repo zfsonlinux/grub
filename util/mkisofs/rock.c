@@ -19,7 +19,9 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, see <http://www.gnu.org/licenses/>.
- */
+   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  */
+
+static char rcsid[] ="$Id: rock.c,v 1.8 1999/03/02 03:41:26 eric Exp $";
 
 #include <stdlib.h>
 
@@ -306,7 +308,7 @@ int deep_opt;
 	     * the symbolic link won't fit into one SL System Use Field
 	     * print an error message and continue with splited one 
 	     */
-	    fprintf(stderr, _("symbolic link ``%s'' to long for one SL System Use Field, splitting"), cpnt);
+	    fprintf(stderr,"symbolic link ``%s'' to long for one SL System Use Field, splitting", cpnt);
 	  }
        if(MAYBE_ADD_CE_ENTRY(SL_SIZE + sl_bytes)) add_CE_entry();
      }
@@ -514,7 +516,7 @@ int deep_opt;
     zipfile = fopen(checkname, "rb");
     if(zipfile) {
       OK_flag = 0;
-      fprintf (stderr, _("Unable to insert transparent compressed file - name conflict\n"));
+      fprintf(stderr,"Unable to insert transparent compressed file - name conflict\n");
       fclose(zipfile);
     }
 
@@ -587,8 +589,10 @@ char * FDECL4(generate_rr_extension_record, char *, id,  char  *, descriptor,
   memcpy(Rock  + lipnt, source, len_src);
   lipnt += len_src;
 
-  if(lipnt  > SECTOR_SIZE)
-    error (1, 0, _("Extension record too long\n"));
+  if(lipnt  > SECTOR_SIZE) {
+	  fprintf(stderr,"Extension record too  long\n");
+	  exit(1);
+  };
   pnt = (char *) e_malloc(SECTOR_SIZE);
   memset(pnt, 0,  SECTOR_SIZE);
   memcpy(pnt, Rock, lipnt);
