@@ -32,7 +32,7 @@ dnl type.
 
 
 AC_INIT([GRUB],[1.97],[bug-grub@gnu.org])
-AC_PREREQ(2.59)
+AC_PREREQ(2.59d)
 AC_CONFIG_SRCDIR([include/grub/dl.h])
 AC_CONFIG_HEADER([config.h])
 
@@ -98,7 +98,7 @@ case "$target_cpu" in
 esac
 
 case "$host_os" in
-  mingw32) host_os=cygwin ;;
+  mingw32*) host_os=cygwin ;;
 esac
 
 # This normalizes the names, and creates a new variable ("host_kernel")
@@ -107,7 +107,7 @@ esac
 case "$host_os" in
   gnu*)				host_kernel=hurd ;;
   linux*)			host_kernel=linux ;;
-  freebsd* | kfreebsd*-gnu)	host_kernel=freebsd ;;
+  freebsd* | kfreebsd*-gnu)	host_kernel=kfreebsd ;;
   cygwin)			host_kernel=windows ;;
 esac
 
@@ -180,6 +180,13 @@ fi
 
 # Check for functions.
 AC_CHECK_FUNCS(posix_memalign memalign asprintf)
+
+# For grub-mkisofs
+AC_HEADER_MAJOR
+AC_HEADER_DIRENT
+AC_CHECK_FUNCS(memmove sbrk strdup lstat getuid getgid)
+AC_CHECK_HEADERS(sys/mkdev.h sys/sysmacros.h malloc.h termios.h sys/types.h)
+AC_CHECK_HEADERS(unistd.h string.h strings.h sys/stat.h sys/fcntl.h)
 
 #
 # Check for target programs.

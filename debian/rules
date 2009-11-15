@@ -5,6 +5,8 @@ package		:= grub2
 
 DEB_HOST_ARCH_CPU ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_CPU 2>/dev/null)
 
+DEB_STRIP_EXCLUDE := /usr/sbin/grub-emu
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
@@ -18,9 +20,8 @@ endif
 
 CC := gcc-4.4
 
-# grub-extras components
-export enable_zfs := yes
-export enable_915resolution := yes
+# Enable external modules from grub-extras.
+export GRUB_CONTRIB := $(CURDIR)/debian/grub-extras
 
 CONFIGURE = CC=$(CC) \
 	$(CURDIR)/configure --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --includedir="\$${prefix}/include" \
@@ -60,23 +61,6 @@ build/grub-common build/grub-pc build/grub-efi-ia32 build/grub-efi-amd64 build/g
 build/grub-emu::
 	$(MAKE) -C $@ grub-emu
 
-build/grub-rescue-pc:: build/grub-pc
-	mkdir -p $@
-	mkdir -p $@/rescue-disk/boot/grub
-	cp docs/grub.cfg $@/rescue-disk/boot/grub/
-	$(CURDIR)/build/grub-pc/grub-mkrescue \
-		--pkglibdir=$(CURDIR)/build/grub-pc \
-		--grub-mkimage=$(CURDIR)/build/grub-pc/grub-mkimage \
-		--overlay=$@/rescue-disk/ \
-		--image-type=floppy \
-		$(CURDIR)/$@/grub-rescue-floppy.img
-	$(CURDIR)/build/grub-pc/grub-mkrescue \
-		--pkglibdir=$(CURDIR)/build/grub-pc \
-		--grub-mkimage=$(CURDIR)/build/grub-pc/grub-mkimage \
-		--overlay=$@/rescue-disk/ \
-		--image-type=cdrom \
-		$(CURDIR)/$@/grub-rescue-cdrom.iso
-
 build/grub-firmware-qemu::
 	$(MAKE) -C $@
 	grub_dir=`mktemp -d` ; \
@@ -100,7 +84,7 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee12
 	# shipped with grub-common
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/etc/grub.d
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{grub-dumpbios,grub-probe,grub-emu,grub-mkconfig,grub-mkdevicemap,grub-ofpathname}{,.8}
-	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkelfimage,grub-mkfont,grub-editenv}{,.1}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkelfimage,grub-mkfont,grub-editenv,grub-mkisofs,grub-mkrescue}{,.1}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{grub-mkconfig_lib,update-grub_lib}
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/share/{grub,info}/
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/include
@@ -143,7 +127,7 @@ install/grub-common::
 	$(MAKE) -C $(subst install/,build/,$@) install DESTDIR=$(CURDIR)/debian/$(subst install/,,$@)/
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{i386,powerpc,sparc64}-*
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{update-grub,grub-install,grub-setup,grub-emu}{,.8}
-	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/grub-{mkimage,mkrescue}{,.1}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkimage,grub-mkfloppy}{,.1}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/share/info/dir*
 
 clean:: debian/legacy/update-grub debian/grub-extras
@@ -157,26 +141,9 @@ clean:: debian/legacy/update-grub debian/grub-extras
 	debconf-updatepo
 
 debian/legacy/update-grub:
-	@echo "Missing $@.  Try: \"svn cat svn://svn.debian.org/pkg-grub/grub/trunk/debian/update-grub > $@\""
+	@echo "Missing $@.  Try: \"bzr cat http://bzr.debian.org/bzr/pkg-grub/trunk/grub-legacy/debian/update-grub > $@\""
 	exit 1
 
 debian/grub-extras:
 	@echo "Missing $@.  Try: \"svn export svn://svn.sv.nongnu.org/grub-extras/trunk $@\""
 	exit 1
-
-# Grab fixes from SVN using our version as reference.
-svn-sync:
-	svn co svn://svn.sv.gnu.org/grub/trunk/grub2 grub2-svn; \
-	UVERSION=$$(dpkg-parsechangelog | grep Version \
-	                                | sed 's,Version: ,,g;s,-[0-9]*$$,,g;s,\.,_,g'); \
-	cd grub2-svn && \
-	svn diff -uN -r release_$$UVERSION -r HEAD > ../debian/patches/00_svn-sync.patch; \
-	cd .. && rm -rf grub2-svn
-
-svn-snapshot:
-	UVERSION=$$(dpkg-parsechangelog | grep Version \
-	                                | sed 's,Version: ,,g;s,-[0-9]*$$,,g'); \
-	svn co svn://svn.sv.gnu.org/grub/trunk/grub2 grub2-$$UVERSION; \
-	tar -czf grub2_$$UVERSION.orig.tar.gz grub2-$$UVERSION; \
-	rm -rf grub2-$$UVERSION; \
-	mv grub2_$$UVERSION.orig.tar.gz ../tarballs/
