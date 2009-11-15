@@ -19,6 +19,7 @@
 #ifndef GRUB_CPU_AT_KEYBOARD_HEADER
 #define GRUB_CPU_AT_KEYBOARD_HEADER	1
 
+#include <grub/machine/machine.h>
 
 #define SHIFT_L		0x2a
 #define SHIFT_R		0x36

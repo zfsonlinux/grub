@@ -31,6 +31,7 @@
 #include <grub/file.h>
 #include <grub/env.h>
 #include <grub/cache.h>
+#include <grub/machine/machine.h>
 
 /* Platforms where modules are in a readonly area of memory.  */
 #if defined(GRUB_MACHINE_QEMU)
