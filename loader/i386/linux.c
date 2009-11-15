@@ -17,6 +17,7 @@
  */
 
 #include <grub/loader.h>
+#include <grub/machine/machine.h>
 #include <grub/machine/memory.h>
 #include <grub/machine/loader.h>
 #include <grub/normal.h>

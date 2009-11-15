@@ -21,13 +21,8 @@
 
 #include <grub/types.h>
 #include <grub/symbol.h>
-#include <grub/cpu/time.h>
-
-#ifdef GRUB_MACHINE_EMU
-#define GRUB_TICKS_PER_SECOND 100000
-#else
 #include <grub/machine/time.h>
-#endif
+#include <grub/cpu/time.h>
 
 void EXPORT_FUNC(grub_millisleep) (grub_uint32_t ms);
 grub_uint64_t EXPORT_FUNC(grub_get_time_ms) (void);

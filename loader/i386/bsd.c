@@ -23,6 +23,7 @@
 #include <grub/machine/init.h>
 #include <grub/machine/memory.h>
 #include <grub/memory.h>
+#include <grub/machine/machine.h>
 #include <grub/file.h>
 #include <grub/err.h>
 #include <grub/dl.h>
