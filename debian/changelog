@@ -1,3 +1,44 @@
+grub2 (1.97+20091125-1) unstable; urgency=low
+
+  [ Robert Millan ]
+  * New upstream snapshot.
+    - Fixes script parser load error.
+
+  * Add gettext to Build-Depends and gettext-base to grub-common's
+    Depends.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 25 Nov 2009 19:22:51 +0100
+
+grub2 (1.97+20091124-1) unstable; urgency=low
+
+  * New upstream snapshot.
+    - Fix grub-mkisofs related FTBFS on powerpc. (Closes: #557704)
+    - Create fake GRUB devices for devices not listed in device.map.
+      This also makes dmraid and multipath work as long as
+      search --fs-uuid works. (Closes: #442382, #540549, LP: #392136)
+    - rules: grub-emu is now built as a port.
+
+  [ Felix Zielcke ]
+  * Change the bt-utf-source build dependency to xfonts-unifont. It's
+    more complete, better maintained and grub-mkfont supports actually
+    more then BDF fonts as input, thanks to libfreetype.
+  * Use grub-probe to get the GRUB device of /boot/grub instead of
+    passing (hd0) to grub-install when creating the core.img with
+    chainloading. This avoids the (UUID=) hack slowness in case
+    /boot/grub is on a different disk then (hd0) in device.map.
+  * patches/903_grub_legacy_0_based_partitions.diff: Update.
+  * Add a build dependency on automake and python.
+  * Set TARGET_CC=$(CC) to really use gcc-4.4 everywhere. Also pass it
+    and CC as arguments to ./configure instead of env vars so they get
+    preserved.
+  * Ship grub-mkrelpath in grub-common.
+  * Ship the locale files in grub-common.
+  * Add a dependency on 'dpkg (>= 1.15.4) | install-info' for grub-common
+    as recommended by Policy and lintian.
+
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 24 Nov 2009 21:20:00 +0100
+
 grub2 (1.97+20091115-1) unstable; urgency=low
 
   * New upstream snapshot.
