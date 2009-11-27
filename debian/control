@@ -18,6 +18,7 @@ Build-Depends: cdbs,
  gcc-4.4-multilib [sparc],
  gcc-4.4,
  libncurses5-dev,
+ genisoimage [i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64 lpia],
  xfonts-unifont,
  libfreetype6-dev,
  gettext,
@@ -51,7 +52,7 @@ Description: GRand Unified Bootloader, version 2 (dummy package)
 
 Package: grub-common
 Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64 lpia powerpc sparc
-Depends: base-files (>= 4.0.1~), dpkg (>= 1.15.4) | install-info | dpkg (<= 1.14.25), ${shlibs:Depends}, ${misc:Depends}, gettext-base
+Depends: base-files (>= 4.0.1~), dpkg (>= 1.15.4) | install-info, gettext-base, ${shlibs:Depends}, ${misc:Depends}
 Replaces: grub-pc (<< 1.97+20091114-1), grub-ieee1275 (<< 1.96+20080831-1), grub-efi (<< 1.96+20080831-1), grub-coreboot (<< 1.97+20091114-1), grub-linuxbios (<< 1.96+20080831-1)
 Recommends: os-prober (>= 1.33)
 Suggests: multiboot-doc [i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64 lpia], grub-emu
@@ -73,7 +74,7 @@ Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd6
 Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version}), ucf
 Replaces: grub, grub-legacy, grub2 (<< ${source:Version}), grub-common (<= 1.96+20080413-1), grub-efi-amd64, grub-efi-ia32, grub-coreboot, grub-ieee1275
 Conflicts: grub-legacy, desktop-base (= 4.0.5), grub-efi-amd64, grub-efi-ia32, grub-coreboot, grub-ieee1275
-Suggests: desktop-base (>= 4.0.6)
+Suggests: desktop-base (>= 4.0.6), genisoimage
 Description: GRand Unified Bootloader, version 2 (PC/BIOS version)
  GRUB is a portable, powerful bootloader.  This version of GRUB is based on a
  cleaner design than its predecessors, and provides the following new features:
@@ -166,7 +167,7 @@ Depends: ${shlibs:Depends}, grub-common (= ${binary:Version}),
  powerpc-ibm-utils [powerpc], powerpc-utils [powerpc], bc [powerpc], ${misc:Depends}, ucf
 Replaces: grub-legacy, grub2 (<< ${source:Version}), grub-common (<= 1.96+20080413-1), grub-efi-amd64, grub-efi-ia32, grub-coreboot, grub-pc
 Conflicts: grub-legacy, grub-efi-amd64, grub-efi-ia32, grub-coreboot, grub-pc
-Suggests: os-prober, genisoimage [powerpc]
+Suggests: os-prober, genisoimage
 Description: GRand Unified Bootloader, version 2 (Open Firmware version)
  GRUB is a portable, powerful bootloader.  This version of GRUB is based on a
  cleaner design than its predecessors, and provides the following new features:

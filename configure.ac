@@ -31,7 +31,7 @@ dnl (such as TARGET_CC, TARGET_CFLAGS, etc.) are used for the target
 dnl type.
 
 
-AC_INIT([GRUB],[1.97],[bug-grub@gnu.org])
+AC_INIT([GRUB],[1.97+experimental],[bug-grub@gnu.org])
 AM_INIT_AUTOMAKE()
 AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR([include/grub/dl.h])
@@ -122,7 +122,6 @@ case "$platform" in
   emu)		machine_CFLAGS="-DGRUB_MACHINE_EMU=1" ;;
 esac
 CFLAGS="$CFLAGS $machine_CFLAGS"
-TARGET_ASFLAGS="$TARGET_ASFLAGS $machine_CFLAGS"
 TARGET_CFLAGS="$TARGET_CFLAGS $machine_CFLAGS"
 
 AC_SUBST(host_cpu)
@@ -194,7 +193,7 @@ else
 fi
 
 # Check for functions.
-AC_CHECK_FUNCS(posix_memalign memalign asprintf vasprintf)
+AC_CHECK_FUNCS(posix_memalign memalign asprintf)
 
 # For grub-mkisofs
 AC_HEADER_MAJOR
@@ -526,6 +525,10 @@ AC_ARG_ENABLE([grub-emu-usb],
 	      [AS_HELP_STRING([--enable-grub-emu-usb],
                              [build and install the `grub-emu' debugging utility with USB support (default=guessed)])])
 
+AC_ARG_ENABLE([grub-emu-sdl],
+	      [AS_HELP_STRING([--enable-grub-emu-sdl],
+                             [build and install the `grub-emu' debugging utility with SDL support (default=guessed)])])
+
 if test "$platform" = emu; then
   missing_ncurses=
 [# Check for curses libraries.]
@@ -566,6 +569,31 @@ enable_grub_emu_usb=yes
 else
 enable_grub_emu_usb=no
 fi
+
+if test x"$enable_grub_emu_sdl" = xno ; then
+  grub_emu_sdl_excuse="explicitely disabled"
+fi
+[if [ x"$grub_emu_sdl_excuse" = x ]; then
+    # Check for libSDL libraries.]
+AC_CHECK_LIB([SDL], [SDL_Init], [LIBSDL="-lSDL"],
+    [grub_emu_sdl_excuse=["libSDL libraries are required to build \`grub-emu' with SDL support"]])
+    AC_SUBST([LIBSDL])
+[fi]
+[if [ x"$grub_emu_sdl_excuse" = x ]; then
+    # Check for headers.]
+    AC_CHECK_HEADERS([SDL/SDL.h], [],
+      [grub_emu_sdl_excuse=["libSDL header file is required to build \`grub-emu' with SDL support"]])
+[fi]
+if test x"enable_grub_emu_sdl" = xyes && test x"$grub_emu_sdl_excuse" != x ; then
+  AC_MSG_ERROR([SDL support for grub-emu was explicitely requested but can't be compiled])
+fi
+if test x"$grub_emu_sdl_excuse" = x ; then
+enable_grub_emu_sdl=yes
+else
+enable_grub_emu_sdl=no
+fi
+
+AC_SUBST([enable_grub_emu_sdl])
 AC_SUBST([enable_grub_emu_usb])
 fi
 
@@ -640,6 +668,11 @@ if [ x"$grub_emu_usb_excuse" = x ]; then
 echo USB support for grub-emu: Yes
 else
 echo USB support for grub-emu: No "($grub_emu_usb_excuse)"
+fi
+if [ x"$grub_emu_sdl_excuse" = x ]; then
+echo SDL support for grub-emu: Yes
+else
+echo SDL support for grub-emu: No "($grub_emu_sdl_excuse)"
 fi
 fi
 if [ x"$enable_mm_debug" = xyes ]; then
