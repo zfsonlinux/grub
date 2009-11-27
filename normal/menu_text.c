@@ -25,6 +25,7 @@
 #include <grub/time.h>
 #include <grub/env.h>
 #include <grub/menu_viewer.h>
+#include <grub/i18n.h>
 
 /* Time to delay after displaying an error message about a default/fallback
    entry failing to boot.  */
@@ -93,8 +94,8 @@ print_message (int nested, int edit)
     }
   else
     {
-      grub_printf ("\n\
-      Use the %C and %C keys to select which entry is highlighted.\n",
+      grub_printf (_("\n\
+      Use the %C and %C keys to select which entry is highlighted.\n"),
 		   (grub_uint32_t) GRUB_TERM_DISP_UP, (grub_uint32_t) GRUB_TERM_DISP_DOWN);
       grub_printf ("\
       Press enter to boot the selected OS, \'e\' to edit the\n\
@@ -235,32 +236,6 @@ grub_menu_init_page (int nested, int edit)
   print_message (nested, edit);
 }
 
-/* Get the entry number from the variable NAME.  */
-static int
-get_entry_number (const char *name)
-{
-  char *val;
-  int entry;
-
-  val = grub_env_get (name);
-  if (! val)
-    return -1;
-
-  grub_error_push ();
-
-  entry = (int) grub_strtoul (val, 0, 0);
-
-  if (grub_errno != GRUB_ERR_NONE)
-    {
-      grub_errno = GRUB_ERR_NONE;
-      entry = -1;
-    }
-
-  grub_error_pop ();
-
-  return entry;
-}
-
 static void
 print_timeout (int timeout, int offset, int second_stage)
 {
@@ -291,7 +266,7 @@ run_menu (grub_menu_t menu, int nested, int *auto_boot)
 
   first = 0;
 
-  default_entry = get_entry_number ("default");
+  default_entry = grub_menu_get_default_entry_index (menu);
 
   /* If DEFAULT_ENTRY is not within the menu entries, fall back to
      the first entry.  */
@@ -326,7 +301,7 @@ run_menu (grub_menu_t menu, int nested, int *auto_boot)
   if (timeout > 0)
     print_timeout (timeout, offset, 0);
 
-  while (1)
+  while (! grub_menu_viewer_should_return ())
     {
       int c;
       timeout = grub_menu_get_timeout ();
@@ -499,6 +474,10 @@ run_menu (grub_menu_t menu, int nested, int *auto_boot)
 		}
 	      goto refresh;
 
+	    case 't':
+	      grub_env_set ("menuviewer", "gfxmenu");
+	      goto refresh;
+
 	    default:
 	      break;
 	    }
@@ -507,7 +486,8 @@ run_menu (grub_menu_t menu, int nested, int *auto_boot)
 	}
     }
 
-  /* Never reach here.  */
+  /* Exit menu without activating an item.  This occurs if the user presses
+   * 't', switching to the graphical menu viewer.  */
   return -1;
 }
 

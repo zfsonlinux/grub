@@ -1,15 +1,21 @@
 # -*- makefile -*-
 
+sbin_UTILITIES += grub-mkdevicemap
+grub_mkdevicemap_SOURCES = gnulib/progname.c util/grub-mkdevicemap.c \
+	util/deviceiter.c \
+	util/devicemap.c util/misc.c
+
 # For grub-mkelfimage.
 bin_UTILITIES += grub-mkelfimage
-grub_mkelfimage_SOURCES = util/elf/grub-mkimage.c util/misc.c \
+grub_mkelfimage_SOURCES = gnulib/progname.c \
+	util/elf/grub-mkimage.c util/misc.c \
 	util/resolve.c
 util/elf/grub-mkimage.c_DEPENDENCIES = Makefile
 
 # For grub-probe.
 sbin_UTILITIES += grub-probe
 util/grub-probe.c_DEPENDENCIES = grub_probe_init.h
-grub_probe_SOURCES = util/grub-probe.c	\
+grub_probe_SOURCES = gnulib/progname.c util/grub-probe.c	\
 	util/hostdisk.c	util/misc.c util/getroot.c		\
 	kern/device.c kern/disk.c kern/err.c kern/misc.c	\
 	kern/parser.c kern/partition.c kern/file.c		\
@@ -36,14 +42,16 @@ grub_mkisofs_SOURCES = util/mkisofs/eltorito.c 				\
 	util/mkisofs/rock.c util/mkisofs/tree.c				\
 	util/mkisofs/write.c						\
 	\
-	gnulib/fnmatch.c gnulib/getopt1.c gnulib/getopt.c
+	gnulib/fnmatch.c gnulib/getopt1.c gnulib/getopt.c		\
+	gnulib/error.c gnulib/progname.c
 grub_mkisofs_CFLAGS = -D_FILE_OFFSET_BITS=64 				\
-	-I$(srcdir)/util/mkisofs/include -I$(srcdir)/gnulib		\
+	-I$(srcdir)/util/mkisofs/include				\
 	-Wno-all -Werror
 
 # For grub-fstest.
 util/grub-fstest.c_DEPENDENCIES = grub_fstest_init.h
-grub_fstest_SOURCES = util/grub-fstest.c util/hostfs.c util/misc.c 	\
+grub_fstest_SOURCES = gnulib/progname.c util/grub-fstest.c util/hostfs.c \
+	util/misc.c 	\
 	kern/file.c kern/device.c kern/disk.c kern/err.c kern/misc.c	\
 	disk/host.c disk/loopback.c kern/list.c kern/command.c		\
 	lib/arg.c commands/extcmd.c normal/datetime.c normal/misc.c	\
@@ -65,18 +73,18 @@ grub_fstest_SOURCES = util/grub-fstest.c util/hostfs.c util/misc.c 	\
 # For grub-mkfont.
 ifeq ($(enable_grub_mkfont), yes)
 bin_UTILITIES += grub-mkfont
-grub_mkfont_SOURCES = util/grub-mkfont.c util/misc.c
+grub_mkfont_SOURCES = gnulib/progname.c util/grub-mkfont.c util/misc.c
 grub_mkfont_CFLAGS = $(freetype_cflags)
 grub_mkfont_LDFLAGS = $(freetype_libs)
 endif
 
 # For grub-mkrelpath.
 bin_UTILITIES += grub-mkrelpath
-grub_mkrelpath_SOURCES = util/grub-mkrelpath.c util/misc.c
+grub_mkrelpath_SOURCES = gnulib/progname.c util/grub-mkrelpath.c util/misc.c
 
 # For the parser.
-grub_script.tab.c grub_script.tab.h: script/sh/parser.y
-	$(YACC) -d -p grub_script_yy -b grub_script $(srcdir)/script/sh/parser.y
+grub_script.tab.c grub_script.tab.h: script/parser.y
+	$(YACC) -d -p grub_script_yy -b grub_script $(srcdir)/script/parser.y
 DISTCLEANFILES += grub_script.tab.c grub_script.tab.h
 
 # For grub-probe.
@@ -120,7 +128,7 @@ DISTCLEANFILES += grub_fstest_init.c
 
 # for grub-editenv
 bin_UTILITIES += grub-editenv
-grub_editenv_SOURCES = util/grub-editenv.c lib/envblk.c util/misc.c kern/misc.c kern/err.c
+grub_editenv_SOURCES = gnulib/progname.c util/grub-editenv.c lib/envblk.c util/misc.c kern/misc.c kern/err.c
 CLEANFILES += grub-editenv
 
 # Needed for genmk.rb to work
@@ -128,7 +136,7 @@ ifeq (0,1)
 bin_UTILITIES += grub-macho2img grub-pe2elf
 endif
 
-grub_pe2elf_SOURCES = util/grub-pe2elf.c util/misc.c
+grub_pe2elf_SOURCES = gnulib/progname.c util/grub-pe2elf.c util/misc.c
 CLEANFILES += grub-pe2elf
 
 grub_macho2img_SOURCES = util/grub-macho2img.c
@@ -153,6 +161,12 @@ update-grub_lib: util/update-grub_lib.in config.status
 lib_SCRIPTS += update-grub_lib
 CLEANFILES += update-grub_lib
 
+grub-gettext_lib: util/grub-gettext_lib.in config.status
+	./config.status --file=$@:$<
+	chmod +x $@
+lib_DATA += grub-gettext_lib
+CLEANFILES += grub-gettext_lib
+
 %: util/grub.d/%.in config.status
 	./config.status --file=$@:$<
 	chmod +x $@
@@ -164,6 +178,20 @@ endif
 CLEANFILES += $(grub-mkconfig_SCRIPTS)
 
 grub-mkconfig_DATA += util/grub.d/README
+
+# For grub-set-default.
+grub-set-default: util/grub-set-default.in config.status
+	./config.status --file=$@:$<
+	chmod +x $@
+sbin_SCRIPTS += grub-set-default
+CLEANFILES += grub-set-default
+
+# For grub-reboot.
+grub-reboot: util/grub-reboot.in config.status
+	./config.status --file=$@:$<
+	chmod +x $@
+sbin_SCRIPTS += grub-reboot
+CLEANFILES += grub-reboot
 
 # Filing systems.
 pkglib_MODULES += fshelp.mod fat.mod ufs1.mod ufs2.mod ext2.mod ntfs.mod \
@@ -361,7 +389,7 @@ scsi_mod_LDFLAGS = $(COMMON_LDFLAGS)
 # Commands.
 pkglib_MODULES += minicmd.mod extcmd.mod hello.mod handler.mod	\
 	ls.mod cmp.mod cat.mod help.mod search.mod loopback.mod	\
-	fs_file.mod fs_uuid.mod configfile.mod echo.mod		\
+	configfile.mod echo.mod		\
 	terminfo.mod test.mod blocklist.mod hexdump.mod		\
 	read.mod sleep.mod loadenv.mod crc.mod parttool.mod	\
 	msdospart.mod memrw.mod normal.mod sh.mod 		\
@@ -392,6 +420,28 @@ extcmd_mod_LDFLAGS = $(COMMON_LDFLAGS)
 hello_mod_SOURCES = hello/hello.c
 hello_mod_CFLAGS = $(COMMON_CFLAGS)
 hello_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For gfxmenu.mod.
+pkglib_MODULES += gfxmenu.mod
+gfxmenu_mod_SOURCES = \
+	gfxmenu/gfxmenu.c \
+	gfxmenu/model.c \
+	gfxmenu/view.c \
+	gfxmenu/icon_manager.c \
+	gfxmenu/theme_loader.c \
+	gfxmenu/widget-box.c \
+	gfxmenu/gui_canvas.c \
+	gfxmenu/gui_circular_progress.c \
+	gfxmenu/gui_box.c \
+	gfxmenu/gui_label.c \
+	gfxmenu/gui_list.c \
+	gfxmenu/gui_image.c \
+	gfxmenu/gui_progress_bar.c \
+	gfxmenu/gui_util.c \
+	gfxmenu/gui_string_util.c \
+	gfxmenu/named_colors.c
+gfxmenu_mod_CFLAGS = $(COMMON_CFLAGS)
+gfxmenu_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For parttool.mod.
 parttool_mod_SOURCES = commands/parttool.c
@@ -434,9 +484,26 @@ help_mod_CFLAGS = $(COMMON_CFLAGS)
 help_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For search.mod.
-search_mod_SOURCES = commands/search.c
+search_mod_SOURCES = commands/search_wrap.c
 search_mod_CFLAGS = $(COMMON_CFLAGS)
 search_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+pkglib_MODULES += search_fs_file.mod search_fs_uuid.mod search_label.mod
+
+# For search.mod.
+search_fs_file_mod_SOURCES = commands/search_file.c
+search_fs_file_mod_CFLAGS = $(COMMON_CFLAGS)
+search_fs_file_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For search.mod.
+search_label_mod_SOURCES = commands/search_label.c
+search_label_mod_CFLAGS = $(COMMON_CFLAGS)
+search_label_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For search.mod.
+search_fs_uuid_mod_SOURCES = commands/search_uuid.c
+search_fs_uuid_mod_CFLAGS = $(COMMON_CFLAGS)
+search_fs_uuid_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For test.mod.
 test_mod_SOURCES = commands/test.c
@@ -447,16 +514,6 @@ test_mod_LDFLAGS = $(COMMON_LDFLAGS)
 loopback_mod_SOURCES = disk/loopback.c
 loopback_mod_CFLAGS = $(COMMON_CFLAGS)
 loopback_mod_LDFLAGS = $(COMMON_LDFLAGS)
-
-# For fs_file.mod
-fs_file_mod_SOURCES = disk/fs_file.c
-fs_file_mod_CFLAGS = $(COMMON_CFLAGS)
-fs_file_mod_LDFLAGS = $(COMMON_LDFLAGS)
-
-# For fs_uuid.mod
-fs_uuid_mod_SOURCES = disk/fs_uuid.c
-fs_uuid_mod_CFLAGS = $(COMMON_CFLAGS)
-fs_uuid_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For configfile.mod
 configfile_mod_SOURCES = commands/configfile.c
@@ -528,8 +585,8 @@ normal_mod_CFLAGS = $(COMMON_CFLAGS)
 normal_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For sh.mod.
-sh_mod_SOURCES = script/sh/main.c script/sh/script.c script/sh/execute.c \
-	script/sh/function.c script/sh/lexer.c grub_script.tab.c
+sh_mod_SOURCES = script/main.c script/script.c script/execute.c \
+	script/function.c script/lexer.c grub_script.tab.c
 sh_mod_CFLAGS = $(COMMON_CFLAGS)
 sh_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
@@ -556,6 +613,12 @@ videotest_mod_LDFLAGS = $(COMMON_LDFLAGS)
 bitmap_mod_SOURCES = video/bitmap.c
 bitmap_mod_CFLAGS = $(COMMON_CFLAGS)
 bitmap_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For bitmap_scale.mod
+pkglib_MODULES += bitmap_scale.mod
+bitmap_scale_mod_SOURCES = video/bitmap_scale.c
+bitmap_scale_mod_CFLAGS = $(COMMON_CFLAGS)
+bitmap_scale_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For tga.mod
 tga_mod_SOURCES = video/readers/tga.c
@@ -600,6 +663,12 @@ bufio_mod_SOURCES = io/bufio.c
 bufio_mod_CFLAGS = $(COMMON_CFLAGS)
 bufio_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
+# For gettext.mod.
+pkglib_MODULES += gettext.mod
+gettext_mod_SOURCES = gettext/gettext.c
+gettext_mod_CFLAGS = $(COMMON_CFLAGS)
+gettext_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
 # Misc.
 pkglib_MODULES += xnu_uuid.mod
 
@@ -607,6 +676,18 @@ pkglib_MODULES += xnu_uuid.mod
 xnu_uuid_mod_SOURCES = commands/xnu_uuid.c
 xnu_uuid_mod_CFLAGS = $(COMMON_CFLAGS)
 xnu_uuid_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+pkglib_MODULES += trig.mod
+trig_mod_SOURCES = trigtables.c
+trig_mod_CFLAGS = $(COMMON_CFLAGS)
+trig_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+trigtables.c: gentrigtables
+	./gentrigtables > $@
+DISTCLEANFILES += trigtables.c
+gentrigtables: gentrigtables.c
+	$(CC) -o $@ $^ $(CPPFLAGS) -lm
+DISTCLEANFILES += gentrigtables
 
 pkglib_MODULES += setjmp.mod
 setjmp_mod_SOURCES = lib/$(target_cpu)/setjmp.S

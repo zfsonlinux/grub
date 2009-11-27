@@ -6,7 +6,7 @@ COMMON_CFLAGS = -ffreestanding -m64 -mno-app-regs
 COMMON_LDFLAGS = -melf64_sparc -nostdlib -mno-relax
 
 # Used by various components.  These rules need to precede them.
-script/sh/lexer.c_DEPENDENCIES = grub_script.tab.h
+script/lexer.c_DEPENDENCIES = grub_script.tab.h
 
 # Images.
 pkglib_IMAGES = boot.img diskboot.img kernel.img
@@ -29,7 +29,7 @@ DEFSYMFILES += kernel_syms.lst
 kernel_img_HEADERS = boot.h cache.h device.h disk.h dl.h elf.h elfload.h \
 	env.h err.h file.h fs.h kernel.h loader.h misc.h mm.h net.h parser.h \
 	partition.h msdos_partition.h reader.h symbol.h term.h time.h types.h \
-	list.h handler.h command.h \
+	list.h handler.h command.h i18n.h \
 	sparc64/libgcc.h ieee1275/ieee1275.h machine/kernel.h \
 	sparc64/ieee1275/ieee1275.h
 kernel_img_SOURCES = kern/sparc64/ieee1275/crt0.S kern/ieee1275/cmain.c	\
@@ -59,7 +59,7 @@ kernel_syms.lst: $(addprefix include/grub/,$(kernel_img_HEADERS)) config.h genke
 
 # Utilities.
 bin_UTILITIES = grub-mkimage
-sbin_UTILITIES = grub-setup grub-mkdevicemap grub-ofpathname
+sbin_UTILITIES = grub-setup grub-ofpathname
 
 # For grub-mkimage.
 grub_mkimage_SOURCES = util/sparc64/ieee1275/grub-mkimage.c util/misc.c \
@@ -84,10 +84,6 @@ grub_setup_SOURCES = util/sparc64/ieee1275/grub-setup.c util/hostdisk.c	\
 	disk/raid.c disk/mdraid_linux.c disk/lvm.c		\
 	util/raid.c util/lvm.c					\
 	grub_setup_init.c
-
-# For grub-mkdevicemap.
-grub_mkdevicemap_SOURCES = util/grub-mkdevicemap.c util/deviceiter.c \
-	util/ieee1275/ofpath.c util/ieee1275/devicemap.c util/misc.c
 
 # For grub-ofpathname.
 grub_ofpathname_SOURCES = util/sparc64/ieee1275/grub-ofpathname.c \
