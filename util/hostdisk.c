@@ -679,14 +679,14 @@ make_device_name (int drive, int dos_part, int bsd_part)
   char *bsd_part_str = NULL;
 
   if (dos_part >= 0)
-    dos_part_str = xasprintf (",%d", dos_part + (getenv ("GRUB_LEGACY_0_BASED_PARTITIONS") ? 0 : 1));
+    asprintf (&dos_part_str, ",%d", dos_part + 1);
 
   if (bsd_part >= 0)
-    bsd_part_str = xasprintf (",%c", dos_part + 'a');
+    asprintf (&bsd_part_str, ",%c", dos_part + 'a');
 
-  ret = xasprintf ("%s%s%s", map[drive].drive,
-                   dos_part_str ? : "",
-                   bsd_part_str ? : "");
+  asprintf (&ret, "%s%s%s", map[drive].drive,
+           dos_part_str ? : "",
+           bsd_part_str ? : "");
 
   if (dos_part_str)
     free (dos_part_str);
