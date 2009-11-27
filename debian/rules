@@ -21,10 +21,10 @@ endif
 CC := gcc-4.4
 
 # Enable external modules from grub-extras.
-export GRUB_CONTRIB := debian/grub-extras
+export GRUB_CONTRIB := $(CURDIR)/debian/grub-extras
 
-CONFIGURE = CC=$(CC) \
-	$(CURDIR)/configure --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --includedir="\$${prefix}/include" \
+CONFIGURE = $(CURDIR)/configure CC=$(CC) TARGET_CC=$(CC) \
+	--build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --includedir="\$${prefix}/include" \
 	--mandir="\$${prefix}/share/man" --infodir="\$${prefix}/share/info" --sysconfdir=/etc --localstatedir=/var \
 	--libexecdir="\$${prefix}/lib/$(package)" --srcdir=$(CURDIR) \
 	--enable-grub-mkfont --disable-grub-fstest 
@@ -58,23 +58,6 @@ configure/grub-common:: $(AUTOGEN_FILES)
 build/grub-common build/grub-pc build/grub-efi-ia32 build/grub-efi-amd64 build/grub-ieee1275 build/grub-coreboot build/grub-emu::
 	$(MAKE) -C $@
 
-build/grub-rescue-pc:: build/grub-pc
-	mkdir -p $@
-	mkdir -p $@/rescue-disk/boot/grub
-	cp docs/grub.cfg $@/rescue-disk/boot/grub/
-	$(CURDIR)/build/grub-pc/grub-mkrescue \
-		--pkglibdir=$(CURDIR)/build/grub-pc \
-		--grub-mkimage=$(CURDIR)/build/grub-pc/grub-mkimage \
-		--overlay=$@/rescue-disk/ \
-		--image-type=floppy \
-		$(CURDIR)/$@/grub-rescue-floppy.img
-	$(CURDIR)/build/grub-pc/grub-mkrescue \
-		--pkglibdir=$(CURDIR)/build/grub-pc \
-		--grub-mkimage=$(CURDIR)/build/grub-pc/grub-mkimage \
-		--overlay=$@/rescue-disk/ \
-		--image-type=cdrom \
-		$(CURDIR)/$@/grub-rescue-cdrom.iso
-
 build/grub-firmware-qemu::
 	$(MAKE) -C $@
 	grub_dir=`mktemp -d` ; \
@@ -94,9 +77,9 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee12
 	# shipped with grub-common
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/etc/grub.d
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{grub-dumpbios,grub-probe,grub-mkconfig,grub-mkdevicemap,grub-ofpathname}{,.8}
-	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkelfimage,grub-mkfont,grub-editenv,grub-mkisofs,grub-mkrelpath}{,.1}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkelfimage,grub-mkfont,grub-editenv,grub-mkisofs,grub-mkrescue,grub-mkrelpath}{,.1}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{grub-mkconfig_lib,update-grub_lib}
-	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/share/{grub,info}/
+	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/share/{grub,info,locale}/
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/include
 
 	if [ "$@" != "install/grub-emu" ] ; then \
@@ -139,7 +122,7 @@ install/grub-common::
 	$(MAKE) -C $(subst install/,build/,$@) install DESTDIR=$(CURDIR)/debian/$(subst install/,,$@)/
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{i386,powerpc,sparc64}-*
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{update-grub,grub-install,grub-setup,grub-set-default,grub-reboot}{,.8}
-	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/grub-{mkimage,mkrescue}{,.1}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkimage,grub-mkfloppy}{,.1}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/share/info/dir*
 
 clean:: debian/legacy/update-grub debian/grub-extras
@@ -153,7 +136,7 @@ clean:: debian/legacy/update-grub debian/grub-extras
 	debconf-updatepo
 
 debian/legacy/update-grub:
-	@echo "Missing $@.  You can get it from \"bzr branch https://alioth.debian.org/anonscm/bzr/pkg-grub/trunk/grub-legacy/\""
+	@echo "Missing $@.  Try: \"bzr cat http://bzr.debian.org/bzr/pkg-grub/trunk/grub-legacy/debian/update-grub > $@\""
 	exit 1
 
 debian/grub-extras:

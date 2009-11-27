@@ -1,3 +1,42 @@
+grub2 (1.97+experimental.20091127-1) experimental; urgency=low
+
+  * New Bazaar snapshot.
+    - Same grub-mkrescue for grub-pc and grub-coreboot, used by
+      grub-rescue-pc during postinst now. (Closes: #501867)
+    - Fix grub-mkisofs related FTBFS on powerpc. (Closes: #557704)
+    - Create fake GRUB devices for devices not listed in device.map.
+      This also makes dmraid and multipath work as long as
+      search --fs-uuid works. (Closes: #442382, #540549, LP: #392136)
+    - Fix slowness when $prefix uses the (UUID=) hack.
+      (Closes: #541145, LP: #420933)
+
+  [ Robert Millan ]
+  * Add gettext to Build-Depends and gettext-base to grub-common's
+    Depends.
+
+  [ Felix Zielcke ]
+  * Update info how to get debian/legacy/update-grub from Bazaar.
+  * Use grub-probe to get the GRUB device of /boot/grub instead of
+    passing (hd0) to grub-install when creating the core.img with
+    chainloading. This avoids the (UUID=) hack slowness in case
+    /boot/grub is on a different disk then (hd0) in device.map.
+  * Change the bt-utf-source build dependency to xfonts-unifont. It's
+    more complete, better maintained and grub-mkfont supports actually
+    more then BDF fonts as input, thanks to libfreetype.
+  * Revert the Replaces: grub-common to (<= 1.96+20080413-1) on the
+    grub-pc package. It was wrongly modified long ago.
+  * patches/903_grub_legacy_0_based_partitions.diff: Update.
+  * Add a build dependency on automake and python.
+  * Set TARGET_CC=$(CC) to really use gcc-4.4 everywhere. Also pass it
+    and CC as arguments to ./configure instead of env vars so they get
+    preserved.
+  * Ship the locale files and grub-mkrescue in grub-common.
+
+  [ Updated translations ]
+  * Bulgarian (bg.po) by Damyan Ivanovi (Closes: #558039)
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Fri, 27 Nov 2009 01:38:39 +0100
+
 grub2 (1.97+experimental.20091114-1) experimental; urgency=low
 
   * New Bazaar snapshot.
