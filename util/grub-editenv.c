@@ -22,15 +22,12 @@
 #include <grub/util/misc.h>
 #include <grub/lib/envblk.h>
 #include <grub/handler.h>
-#include <grub/i18n.h>
 
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
 #include <getopt.h>
-
-#include "progname.h"
 
 #define DEFAULT_ENVBLK_SIZE	1024
 
@@ -255,10 +252,7 @@ main (int argc, char *argv[])
   char *filename;
   char *command;
 
-  set_program_name (argv[0]);
-  setlocale (LC_ALL, "");
-  bindtextdomain (PACKAGE, LOCALEDIR);
-  textdomain (PACKAGE);
+  progname = "grub-editenv";
 
   /* Check for options.  */
   while (1)
@@ -275,7 +269,7 @@ main (int argc, char *argv[])
 	    break;
 
 	  case 'V':
-	    printf ("%s (%s) %s\n", program_name, PACKAGE_NAME, PACKAGE_VERSION);
+	    printf ("%s (%s) %s\n", progname, PACKAGE_NAME, PACKAGE_VERSION);
 	    return 0;
 
 	  case 'v':

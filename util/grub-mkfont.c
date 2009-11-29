@@ -19,7 +19,6 @@
 #include <config.h>
 #include <grub/types.h>
 #include <grub/util/misc.h>
-#include <grub/i18n.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,8 +28,6 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include <freetype/ftsynth.h>
-
-#include "progname.h"
 
 #define GRUB_FONT_DEFAULT_SIZE		16
 
@@ -93,10 +90,10 @@ static void
 usage (int status)
 {
   if (status)
-    fprintf (stderr, "Try ``%s --help'' for more information.\n", program_name);
+    fprintf (stderr, "Try ``grub-mkfont --help'' for more information.\n");
   else
     printf ("\
-Usage: %s [OPTIONS] FONT_FILES\n\
+Usage: grub-mkfont [OPTIONS] FONT_FILES\n\
 \nOptions:\n\
   -o, --output=FILE_NAME    set output file name\n\
   -i, --index=N             set face index\n\
@@ -112,7 +109,7 @@ Usage: %s [OPTIONS] FONT_FILES\n\
   -V, --version             print version information and exit\n\
   -v, --verbose             print verbose messages\n\
 \n\
-Report bugs to <%s>.\n", program_name, PACKAGE_BUGREPORT);
+Report bugs to <%s>.\n", PACKAGE_BUGREPORT);
 
   exit (status);
 }
@@ -475,10 +472,7 @@ main (int argc, char *argv[])
 
   memset (&font_info, 0, sizeof (font_info));
 
-  set_program_name (argv[0]);
-  setlocale (LC_ALL, "");
-  bindtextdomain (PACKAGE, LOCALEDIR);
-  textdomain (PACKAGE);
+  progname = "grub-mkfont";
 
   /* Check for options.  */
   while (1)
@@ -566,7 +560,7 @@ main (int argc, char *argv[])
 	    break;
 
 	  case 'V':
-	    printf ("%s (%s) %s\n", program_name, PACKAGE_NAME, PACKAGE_VERSION);
+	    printf ("%s (%s) %s\n", progname, PACKAGE_NAME, PACKAGE_VERSION);
 	    return 0;
 
 	  case 'v':

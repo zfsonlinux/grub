@@ -24,14 +24,11 @@ int main(int argc, char **argv)
 {
   char *of_path;
 
-  set_program_name (argv[0]);
-  setlocale (LC_ALL, "");
-  bindtextdomain (PACKAGE, LOCALEDIR);
-  textdomain (PACKAGE);
+  progname = "grub-ofpathname";
 
   if (argc != 2)
     {
-      printf("Usage: %s DEVICE\n", program_name);
+      printf("Usage: grub-ofpathname DEVICE\n");
       return 1;
     }
 
