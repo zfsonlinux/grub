@@ -1,3 +1,10 @@
+grub2 (1.97+20091130-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+  * Enable ntldr-img from grub-extras.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 30 Nov 2009 02:33:03 +0100
+
 grub2 (1.97+20091125-2) unstable; urgency=low
 
   [ Updated translations ]
@@ -12,7 +19,7 @@ grub2 (1.97+20091125-2) unstable; urgency=low
   * patches/02_fix_mountpoints_in_mkrelpath.diff: New patch to handle
     mount points like the old shell function did. (Closes: #558042)
 
- -- Felix Zielcke <fzielcke@z-51.de>  Sun, 29 Nov 2009 21:26:37 +0100
+ -- Felix Zielcke <fzielcke@z-51.de>  Sun, 29 Nov 2009 21:38:00 +0100
 
 grub2 (1.97+20091125-1) unstable; urgency=low
 

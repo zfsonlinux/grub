@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: grub 1.97+20091122\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-11-22 11:48+0100\n"
-"PO-Revision-Date: 2009-11-23 18:36+0800\n"
-"Last-Translator: Aron Xu <happyaron.xu@gmail.com>\n"
+"PO-Revision-Date: 2009-11-29 22:07+0800\n"
+"Last-Translator: Xin Ye <alyex.ye@gmail.com>\n"
 "Language-Team: Chinese (simplified) <translation-team-zh-cn@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,7 +26,7 @@ msgstr "无法压缩内核映像"
 
 #: util/i386/pc/grub-mkimage.c:138
 msgid "prefix is too long"
-msgstr "前缀太长"
+msgstr "所指定的目录太长"
 
 #: util/i386/pc/grub-mkimage.c:206
 msgid "the core image is too big"
@@ -65,6 +65,19 @@ msgid ""
 "\n"
 "Report bugs to <%s>.\n"
 msgstr ""
+"用法: grub-mkimage [选项]... [模块]\n"
+"\n"
+"制作一个可引导的GRUB镜像。\n"
+"  -d, --directory=DIR     使用 DIR 目录下的镜像和模块 [默认 %s]\n"
+"  -p, --prefix=DIR        设定 grub_prefix 路径 [默认 %s]\n"
+"  -m, --memdisk=FILE      所嵌 FILE 文件作为内存盘镜像\n"
+"  -c, --config=FILE       所嵌 FILE 作为引导配置文件\n"
+"  -o, --output=FILE       将生成的镜像写入 FILE [默认标准输出设备(stdout)]\n"
+"  -h, --help              显示此信息并退出\n"
+"  -V, --version           显示版本信息并退出\n"
+"  -v, --verbose           显示详细信息\n"
+"\n"
+"将错误报告至 <%s>。\n"
 
 #: util/i386/pc/grub-mkimage.c:429
 #, c-format
@@ -73,15 +86,15 @@ msgstr "无法打开 %s"
 
 #: util/i386/pc/grub-setup.c:166
 msgid "The first sector of the core file is not sector-aligned"
-msgstr ""
+msgstr "核心文件的第一扇区未对齐"
 
 #: util/i386/pc/grub-setup.c:180
 msgid "Non-sector-aligned data is found in the core file"
-msgstr ""
+msgstr "核心文件中发现未对齐的扇区"
 
 #: util/i386/pc/grub-setup.c:194
 msgid "The sectors of the core file are too fragmented"
-msgstr ""
+msgstr "核心文件的扇区碎片太多"
 
 #: util/i386/pc/grub-setup.c:205
 #, c-format
@@ -101,12 +114,12 @@ msgstr "`%s' 太大"
 #: util/i386/pc/grub-setup.c:261
 #, c-format
 msgid "Unable to identify a filesystem in %s; safety check can't be performed"
-msgstr ""
+msgstr "无法在 %s 中识别文件系统；无法执行安全性检测"
 
 #: util/i386/pc/grub-setup.c:265
 #, c-format
 msgid "%s appears to contain a %s filesystem which isn't known to reserve space for DOS-style boot.  Installing GRUB there could result in FILESYSTEM DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe disables this check, use at your own risk)"
-msgstr ""
+msgstr "%s 中似乎包含一个 %s 文件系统，不被DOS类型引导的保留区所知。在此处安装 GRUB 若重要数据被 grub-setup (--skip-fs-probe可以禁用这个检查，使用该选项请自行承担风险)覆盖则可能导致文件系统损坏"
 
 #: util/i386/pc/grub-setup.c:314
 msgid "No DOS-style partitions found"
@@ -169,11 +182,11 @@ msgstr "核心映像中没有终止符"
 
 #: util/i386/pc/grub-setup.c:522
 msgid "Failed to read the first sector of the core image"
-msgstr ""
+msgstr "读取核心镜像的第一扇区失败"
 
 #: util/i386/pc/grub-setup.c:528
 msgid "Failed to read the rest sectors of the core image"
-msgstr ""
+msgstr "读取核心镜像的剩余扇区失败"
 
 #: util/i386/pc/grub-setup.c:547
 #, c-format
@@ -244,17 +257,17 @@ msgstr ""
 #: util/mkisofs/eltorito.c:110
 #, c-format
 msgid "Error creating boot catalog (%s)"
-msgstr ""
+msgstr "创建引导编目时出错（%s）"
 
 #: util/mkisofs/eltorito.c:114
 #, c-format
 msgid "Error writing to boot catalog (%s)"
-msgstr ""
+msgstr "写引导编目时出错 （%s）"
 
 #: util/mkisofs/eltorito.c:144
 #, c-format
 msgid "Boot catalog cannot be found!\n"
-msgstr ""
+msgstr "无法找到引导编目！\n"
 
 #: util/mkisofs/eltorito.c:158
 #, c-format
@@ -305,7 +318,7 @@ msgstr ""
 
 #: util/mkisofs/eltorito.c:275 util/mkisofs/eltorito.c:277
 msgid "Error writing to boot catalog"
-msgstr ""
+msgstr "写引导编目时出错"
 
 #: util/mkisofs/eltorito.c:291
 #, c-format
@@ -335,7 +348,7 @@ msgstr ""
 #: util/mkisofs/joliet.c:398 util/mkisofs/write.c:1017
 #, c-format
 msgid "Entry %d not in path tables\n"
-msgstr ""
+msgstr "条目 %d 不在路径列表中\n"
 
 #: util/mkisofs/joliet.c:412
 #, c-format
@@ -791,15 +804,15 @@ msgstr ""
 
 #: util/grub.d/10_kfreebsd.in:40
 msgid "%s, with kFreeBSD %s"
-msgstr ""
+msgstr "%s，以 kFreeBSD %s"
 
 #: util/grub.d/10_linux.in:57
 msgid "%s, with Linux %s (recovery mode)"
-msgstr ""
+msgstr "%s， 以 Linux %s （恢复模式）"
 
 #: util/grub.d/10_linux.in:59
 msgid "%s, with Linux %s"
-msgstr ""
+msgstr "%s，以 Linux %s"
 
 #~ msgid "the size of memory disk is 0x%x"
 #~ msgstr "内存磁盘大小为 0x%x"
