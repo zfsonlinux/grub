@@ -1,3 +1,11 @@
+grub2 (1.97+experimental.20091205-1) experimental; urgency=low
+
+  * New Bazaar snapshot.
+    - Includes mipsel port.
+  * Add grub-yeeloong package.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Sat, 05 Dec 2009 20:51:18 +0100
+
 grub2 (1.97+experimental.20091127-1) experimental; urgency=low
 
   * New Bazaar snapshot.

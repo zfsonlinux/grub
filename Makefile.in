@@ -45,7 +45,9 @@ XGETTEXT = @XGETTEXT@
 MSGMERGE = @MSGMERGE@
 MSGFMT = @MSGFMT@
 
-LINGUAS = $(shell tr '\n' ' ' < $(srcdir)/po/LINGUAS)
+LINGUAS = $(shell for i in $(srcdir)/po/*.po ; do \
+			if test -e $$i ; then echo $$i ; fi ; \
+		done | sed -e "s,.*/po/\(.*\)\.po$$,\1,")
 
 PACKAGE = @PACKAGE@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -108,12 +110,14 @@ AWK = @AWK@
 LIBCURSES = @LIBCURSES@
 LIBUSB = @LIBUSB@
 LIBSDL = @LIBSDL@
+LIBPCIACCESS = @LIBPCIACCESS@
 YACC = @YACC@
 FONT_SOURCE = @FONT_SOURCE@
 
 # Options.
 enable_grub_emu_usb = @enable_grub_emu_usb@
 enable_grub_emu_sdl = @enable_grub_emu_sdl@
+enable_grub_emu_pci = @enable_grub_emu_pci@
 enable_grub_fstest = @enable_grub_fstest@
 enable_grub_pe2elf = @enable_grub_pe2elf@
 enable_grub_mkfont = @enable_grub_mkfont@

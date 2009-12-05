@@ -1,3 +1,200 @@
+2009-12-05  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	Rename kernel.mod to kernel.img.
+
+	* conf/i386-efi.rmk (pkglib_MODULES): Change kernel.mod to kernel.img.
+	(kernel_mod_EXPORTS): Rename to ...
+	(kernel_img_EXPORTS): ... this.
+	(kernel_mod_SOURCES): Rename to ...
+	(kernel_img_SOURCES): ... this.
+	(kernel_mod_HEADERS): Rename to ...
+	(kernel_img_HEADERS): ... this. All users updated.
+	(kernel_mod_CFLAGS): Rename to ...
+	(kernel_img_CFLAGS): ... this.
+	(kernel_mod_ASFLAGS): Rename to ...
+	(kernel_img_ASFLAGS): ... this.
+	(kernel_mod_LDFLAGS): Rename to ...
+	(kernel_img_LDFLAGS): ... this.
+	* conf/x86_64-efi.rmk: Likewise.
+	* util/i386/efi/grub-mkimage.c (read_kernel_module): Rename to ...
+	(read_kernel_image): ... this. All users updated.
+	(read_kernel_image): Read "kernel.img" instead of "kernel.mod".
+
+2009-12-05  Carles Pina i Estany  <carles@pina.cat>
+
+	* normal/menu_text.c (grub_color_menu_high): Gettexttize string.
+	(print_spaces): New function.
+	(grub_print_ucs4): New function.
+	(getstringwidth): New function.
+	(print_message_indented): New function.
+	(print_message): Gettexttize strings using print_message_indented.
+	(run_menu): Replaces grub_printf by print_spaces and dynamic terminal
+	width.
+	(get_entry_number): Gettextize and uses dynamic terminal width.
+	(notify_booting, notify_fallback, notify_execution_failure): 
+	Gettextize.
+	* normal/menu_entry.c (store_completion): Cleanup the gettextized
+	string.
+	(run): Likewise.
+	(grub_menu_entry_run): Likewise.
+	* PO/POTFILES: Add normal/menu_entry.c.
+
+2009-12-05  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	* configure.ac (TARGET_ASFLAGS): Add "-D<MACHINE>".
+
+2009-12-05  Carles Pina i Estany  <carles@pina.cat>
+
+	* util/grub-install.in: Install gettext .mo files.
+	* util/grub-mkrescue.in (process_input_dir): Copy gettext .mo files.
+
+2009-12-05  Carles Pina i Estany  <carles@pina.cat>
+
+	* gettext/gettext.c (grub_gettext_init_ext): Replace grub_printf with
+	grub_dprintf.
+
+2009-12-05  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* kern/ieee1275/openfw.c (grub_reboot): Disable for i386.  The
+	non-firmware-dependant one in realmode.S takes precedence.
+
+2009-12-04  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* commands/halt.c: Replace misc arch-specific headers with
+	`<grub/misc.h>'.
+	* commands/reboot.c: Likewise.
+	* commands/i386/pc/halt.c: Replace `<grub/machine/init.h>' with
+	`<grub/misc.h>'.
+	* conf/i386-coreboot.rmk (kernel_img_HEADERS): Remove `cpu/reboot.h'.
+	(halt_mod_SOURCES): Move `kern/i386/halt.c' from here ...
+	(kernel_img_SOURCES): ... to here.
+
+	* include/grub/efi/efi.h (grub_reboot, grub_halt): Remove prototypes.
+	* include/grub/i386/pc/init.h: Likewise.
+	* include/grub/powerpc/ieee1275/kernel.h: Likewise.
+	* include/grub/sparc64/ieee1275/kernel.h: Likewise.
+
+	* include/grub/misc.h (grub_reboot, grub_halt): New prototypes.
+
+	* include/grub/i386/halt.h: Remove.
+	* include/grub/i386/reboot.h: Likewise.
+
+	* kern/i386/halt.c: Remove `<grub/cpu/halt.h>'.
+
+2009-12-03  David S. Miller  <davem@sunset.davemloft.net>
+
+	* conf/sparc64-ieee1275.rmk (grub_mkimage_SOURCES,
+	grub_setup_SOURCES, grub_ofpathname_SOURCES): Add gnulib/progname.c
+	* util/sparc64/ieee1275/grub-mkimage.c: Include <grub/i18n.h> and
+	"progname.h"
+	* util/sparc64/ieee1275/grub-ofpathname.c: Likewise.
+	* util/sparc64/ieee1275/grub-setup.c: Likewise.
+	(usage): Add missing comma in printf.
+
+2009-12-02  Robert Millan  <rmh.grub@aybabtu.com>
+
+	Use the same reboot approach on i386 coreboot and qemu as we do on
+	BIOS.
+
+	* conf/i386-coreboot.rmk (kernel_img_HEADERS): Add `cpu/reboot.h'.
+	(reboot_mod_SOURCES): Remove `kern/i386/reboot.c'.
+	* kern/i386/reboot.c: Remove.
+	* include/grub/i386/reboot.h (grub_reboot): Export function.
+	* kern/i386/pc/startup.S (grub_reboot): Move from here ...
+	* kern/i386/realmode.S (grub_reboot): ... to here.  Jump to
+	0xf000:0xfff0 instead of 0xffff:0x0000.
+	[!GRUB_MACHINE_PCBIOS] (prot_to_real): Do not restore interrupts.
+	* kern/i386/qemu/startup.S: Include `"../realmode.S"'.
+
+2009-11-30  Robert Millan  <rmh.grub@aybabtu.com>
+
+	Fix $srcdir != $objdir build.
+
+	* Makefile.in (po/%.po):  Rewrite as ...
+	($(foreach lang, $(LINGUAS), $(srcdir)/po/$(lang).po)): ... this.
+
+2009-11-29  Samuel Thibault  <samuel.thibault@ens-lyon.org>
+
+	Fix GNU/Hurd grub-install crash.
+	* util/grub-probe.c (probe): Try to access `path' only when it is not
+	NULL.
+
+2009-11-28  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	Correct module naming.
+
+	* video/efi_uga.c (GRUB_MOD_INIT(efi_fb)): Renamed from this ...
+	(GRUB_MOD_INIT(efi_uga)): ... to this
+	(GRUB_MOD_FINI(efi_fb)): Renamed from this ...
+	(GRUB_MOD_FINI(efi_uga)): ... to this
+	* video/efi_gop.c (GRUB_MOD_INIT(efi_fb)): Renamed from this ...
+	(GRUB_MOD_INIT(efi_gop)): ... to this
+	(GRUB_MOD_FINI(efi_fb)): Renamed from this ...
+	(GRUB_MOD_FINI(efi_gop)): ... to this
+
+2009-11-28  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* util/mkisofs/mkisofs.c (ld_options): Mark all `arg' strings as
+	translatable.
+	(usage): Translate `arg' strings using gettext().
+	Thanks to Jordi Mallach for the suggestion.
+
+2009-11-28  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	GOP support. Based on patch from Bean
+	(http://lists.gnu.org/archive/html/grub-devel/2009-08/msg00384.html)
+
+	* video/efi_gop.c: New file.
+	* include/grub/efi/graphics_output.h: Likewise.
+	* conf/i386-efi.rmk (pkglib_MODULES): Add `efi_gop.mod'.
+	(efi_fb_mod_SOURCES, efi_fb_mod_CFLAGS, efi_fb_mod_LDFLAGS): New
+	variables.
+	* conf/x86_64-efi.rmk: Likewise.
+
+2009-11-28  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	Rename efi_fb to efi_uga.
+
+	* conf/i386-efi.rmk (pkglib_MODULES): Rename 'efi_fb.mod' to
+	'efi_uga.mod'.
+	(efi_fb_mod_SOURCES): Rename this ...
+	(efi_uga_mod_SOURCES): ... to this.
+	(efi_fb_mod_CFLAGS): Rename this ...
+	(efi_uga_mod_CFLAGS): ... to this.
+	(efi_fb_mod_LDFLAGS): Rename this ...
+	(efi_uga_mod_LDFLAGS): ... to this.
+	* conf/x86_64-efi.rmk (pkglib_MODULES): Rename 'efi_fb.mod' to
+	'efi_uga.mod'.
+	(efi_fb_mod_SOURCES): Rename this ...
+	(efi_uga_mod_SOURCES): ... to this.
+	(efi_fb_mod_CFLAGS): Rename this ...
+	(efi_uga_mod_CFLAGS): ... to this.
+	(efi_fb_mod_LDFLAGS): Rename this ...
+	(efi_uga_mod_LDFLAGS): ... to this.
+	* video/efi_fb.c: Move this ...
+	* video/efi_uga.c: ... to this. Change prefix to 'grub_video_uga_'.
+
+2009-11-27  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* po/README: New file.  Explain our PO file workflow.
+
+2009-11-27  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* po/ChangeLog: Remove.  Move relevant entries back to ...
+	* ChangeLog: ... here.
+	* po/ca.po: Remove (now handled by TLP).
+	* po/id.po: Likewise.
+	* po/zh_CN.po: Likewise.
+	* Makefile.in (LINGUAS): Initialize in a way that supports
+	empty set.
+
+2009-11-27  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* Makefile.in (LINGUAS): Rewrite by scanning po/ directory instead of
+	reliing on po/LINGUAS.
+	($(foreach lang, $(LINGUAS), $(srcdir)/po/$(lang).po)): Rewrite as ...
+	(po/%.po): ... this.
+
 2009-11-26 Felix Zielcke <fzielcke@z-51.de>
 
 	* util/i386/efi/grub-mkimage.c: Include "progname.h".
@@ -181,6 +378,8 @@
 	* normal/menu_text.c: Include <grub/i18n.h>.
 	* normal/menu_text.c (print_timeout): Gettexttize string.
 	* normal/menu_text.c (print_message): Gettexttize string.
+	* po/POTFILES: Add `normal/menu_text.c'.
+	* po/ca.po: Add new translations.
 	* util/grub.d/00_header.in: Define locale_dir and lang. insmod
 	  gettext module and defines locale_dir and lang in grub.cfg.
 	* NEWS: Add gettext support.
@@ -383,6 +582,8 @@
 	* Makefile.in (po/*.po): Redefine as ...
 	($(foreach lang, $(LINGUAS), po/$(lang).po)): ... this.
 
+	* po/POTFILES: Add `util/i386/pc/grub-setup.c'.
+
 2009-11-19  Robert Millan  <rmh.grub@aybabtu.com>
 
 	* conf/common.rmk (grub_mkisofs_SOURCES): Add `gnulib/progname.c'.
@@ -400,6 +601,8 @@
 	* util/mkisofs/rock.c: Likewise.
 	* util/mkisofs/tree.c: Likewise.
 	* util/mkisofs/write.c: Likewise.
+
+	* po/POTFILES: Update with new files.
 
 2009-11-18  Robert Millan  <rmh.grub@aybabtu.com>
 
@@ -428,6 +631,8 @@
 
 2009-11-18  Robert Millan  <rmh.grub@aybabtu.com>
 
+	* po/POTFILES-shell: New file.  List `util/grub.d/10_kfreebsd.in'
+	and `util/grub.d/10_linux.in'.
 	* Makefile.in (po/$(PACKAGE).pot): Process `po/POTFILES-shell' for
 	translatable Shell files.
 
@@ -438,6 +643,7 @@
 2009-11-17  Robert Millan  <rmh.grub@aybabtu.com>
 
 	* INSTALL: Document Automake is needed for bootstrap.
+	* po/ca.po: Fix PO-Revision-Date and Language-Team fields.
 	* util/grub.d/10_kfreebsd.in (bindir): New variable.
 	Add gettext initialization.
 	(kfreebsd_entry): Make menuentry output translatable.
@@ -449,6 +655,7 @@
 	(po/*.po): Replace `msgmerge' with `$(MSGMERGE)'.
 	(po/%.mo): Replace `msgfmt' with `$(MSGFMT)'.
 	(LINGUAS): Auto-generate using `po/LINGUAS'.
+	* po/LINGUAS: New file.
 
 2009-11-17  Robert Millan  <rmh.grub@aybabtu.com>
 
@@ -488,6 +695,8 @@
 	(install-local): Install MO files.
 	(po/$(PACKAGE).pot, po/*.po, po/%.mo): New rules.
 	* include/grub/i18n.h: New file.
+	* po/POTFILES: New file.
+	* po/ca.po: New file.
 	* util/grub.d/10_linux.in (bindir): New variable.
 	Add gettext initialization.
 	(linux_entry): Make menuentry output translatable.

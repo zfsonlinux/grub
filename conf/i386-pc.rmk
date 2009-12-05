@@ -84,7 +84,7 @@ bin_UTILITIES = grub-mkimage
 sbin_UTILITIES = grub-setup
 
 # For grub-mkimage.
-grub_mkimage_SOURCES = gnulib/progname.c util/i386/pc/grub-mkimage.c util/misc.c \
+grub_mkimage_SOURCES = gnulib/progname.c util/grub-mkrawimage.c util/misc.c \
 	util/resolve.c lib/LzmaEnc.c lib/LzFind.c
 grub_mkimage_CFLAGS = -DGRUB_KERNEL_MACHINE_LINK_ADDR=$(GRUB_KERNEL_MACHINE_LINK_ADDR)
 util/i386/pc/grub-mkimage.c_DEPENDENCIES = Makefile
@@ -188,8 +188,7 @@ linux_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 pkglib_MODULES += xnu.mod
 xnu_mod_SOURCES = loader/xnu_resume.c loader/i386/xnu.c loader/i386/pc/xnu.c \
-	 loader/macho32.c loader/macho64.c loader/macho.c loader/xnu.c	\
-	 loader/i386/xnu_helper.S
+	 loader/macho32.c loader/macho64.c loader/macho.c loader/xnu.c
 xnu_mod_CFLAGS = $(COMMON_CFLAGS)
 xnu_mod_LDFLAGS = $(COMMON_LDFLAGS)
 xnu_mod_ASFLAGS = $(COMMON_ASFLAGS)
@@ -205,7 +204,7 @@ halt_mod_CFLAGS = $(COMMON_CFLAGS)
 halt_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For serial.mod.
-serial_mod_SOURCES = term/i386/pc/serial.c
+serial_mod_SOURCES = term/serial.c
 serial_mod_CFLAGS = $(COMMON_CFLAGS)
 serial_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
