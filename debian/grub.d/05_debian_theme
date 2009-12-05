@@ -5,7 +5,7 @@ source /usr/lib/grub/grub-mkconfig_lib
 # Tell Linux loader that switching back to text mode before
 # transferring control to Linux is not necessary (which
 # is true for Debian Linux packages).
-echo "gfxpayload=keep"
+echo "set gfxpayload=keep"
 
 # this allows desktop-base to override our settings
 f=/usr/share/desktop-base/grub_background.sh
@@ -37,7 +37,7 @@ if [ "$GRUB_TERMINAL_OUTPUT" = "gfxterm" ] ; then
         *.jpg|*.jpeg)	reader=jpeg ;;
       esac
       if test -e /boot/grub/${reader}.mod ; then
-        echo "Found Debian background: `basename ${bg}`" >&2
+        echo "Found background image: `basename ${bg}`" >&2
         use_bg=true
         break
       fi

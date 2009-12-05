@@ -98,10 +98,13 @@ struct grub_virtual_screen
   /* Color settings.  */
   grub_video_color_t fg_color;
   grub_video_color_t bg_color;
+  grub_video_color_t bg_color_display;
 
   /* Text buffer for virtual screen.  Contains (columns * rows) number
      of entries.  */
   struct grub_colored_char *text_buffer;
+
+  int total_scroll;
 };
 
 struct grub_gfxterm_window
@@ -225,6 +228,7 @@ grub_virtual_screen_setup (unsigned int x, unsigned int y,
   virtual_screen.cursor_x = 0;
   virtual_screen.cursor_y = 0;
   virtual_screen.cursor_state = 1;
+  virtual_screen.total_scroll = 0;
 
   /* Calculate size of text buffer.  */
   virtual_screen.columns = virtual_screen.width / virtual_screen.normal_char_width;
@@ -260,6 +264,8 @@ grub_virtual_screen_setup (unsigned int x, unsigned int y,
   set_term_color (virtual_screen.term_color);
 
   grub_video_set_active_render_target (render_target);
+
+  virtual_screen.bg_color_display = grub_video_map_rgba(0, 0, 0, 0);
 
   /* Clear out text buffer. */
   for (i = 0; i < virtual_screen.columns * virtual_screen.rows; i++)
@@ -445,7 +451,7 @@ redraw_screen_rect (unsigned int x, unsigned int y,
 
       /* If bitmap is smaller than requested blit area, use background
          color.  */
-      color = virtual_screen.bg_color;
+      color = virtual_screen.bg_color_display;
 
       /* Fill right side of the bitmap if needed.  */
       if ((x + width >= bitmap_width) && (y < bitmap_height))
@@ -492,7 +498,7 @@ redraw_screen_rect (unsigned int x, unsigned int y,
   else
     {
       /* Render background layer.  */
-      color = virtual_screen.bg_color;
+      color = virtual_screen.bg_color_display;
       grub_video_fill_rect (color, x, y, width, height);
 
       /* Render text layer as replaced (to get texts background color).  */
@@ -586,8 +592,8 @@ dirty_region_redraw (void)
   redraw_screen_rect (x, y, width, height);
 }
 
-static void
-write_char (void)
+static inline void
+paint_char (unsigned cx, unsigned cy)
 {
   struct grub_colored_char *p;
   struct grub_font_glyph *glyph;
@@ -599,10 +605,12 @@ write_char (void)
   unsigned int height;
   unsigned int width;
 
+  if (cy + virtual_screen.total_scroll >= virtual_screen.rows)
+    return;
+
   /* Find out active character.  */
   p = (virtual_screen.text_buffer
-       + virtual_screen.cursor_x
-       + (virtual_screen.cursor_y * virtual_screen.columns));
+       + cx + (cy * virtual_screen.columns));
 
   p -= p->index;
 
@@ -616,8 +624,8 @@ write_char (void)
   color = p->fg_color;
   bgcolor = p->bg_color;
 
-  x = virtual_screen.cursor_x * virtual_screen.normal_char_width;
-  y = virtual_screen.cursor_y * virtual_screen.normal_char_height;
+  x = cx * virtual_screen.normal_char_width;
+  y = (cy + virtual_screen.total_scroll) * virtual_screen.normal_char_height;
 
   /* Render glyph to text layer.  */
   grub_video_set_active_render_target (text_layer);
@@ -630,64 +638,58 @@ write_char (void)
                     width, height);
 }
 
-static void
+static inline void
+write_char (void)
+{
+  paint_char (virtual_screen.cursor_x, virtual_screen.cursor_y);
+}
+
+static inline void
 draw_cursor (int show)
 {
+  unsigned int x;
+  unsigned int y;
+  unsigned int width;
+  unsigned int height;
+  grub_video_color_t color;
+  
   write_char ();
 
-  if (show)
-    {
-      unsigned int x;
-      unsigned int y;
-      unsigned int width;
-      unsigned int height;
-      grub_video_color_t color;
+  if (!show)
+    return;
 
-      /* Determine cursor properties and position on text layer. */
-      x = virtual_screen.cursor_x * virtual_screen.normal_char_width;
-      width = virtual_screen.normal_char_width;
-      color = virtual_screen.fg_color;
-      y = (virtual_screen.cursor_y * virtual_screen.normal_char_height
-           + grub_font_get_ascent (virtual_screen.font));
-      height = 2;
+  if (virtual_screen.cursor_y + virtual_screen.total_scroll
+      >= virtual_screen.rows)
+    return;
 
-      /* Render cursor to text layer.  */
-      grub_video_set_active_render_target (text_layer);
-      grub_video_fill_rect (color, x, y, width, height);
-      grub_video_set_active_render_target (render_target);
-
-      /* Mark cursor to be redrawn.  */
-      dirty_region_add (virtual_screen.offset_x + x,
-                        virtual_screen.offset_y + y,
-                        width, height);
-    }
+  /* Determine cursor properties and position on text layer. */
+  x = virtual_screen.cursor_x * virtual_screen.normal_char_width;
+  width = virtual_screen.normal_char_width;
+  color = virtual_screen.fg_color;
+  y = ((virtual_screen.cursor_y + virtual_screen.total_scroll)
+       * virtual_screen.normal_char_height
+       + grub_font_get_ascent (virtual_screen.font));
+  height = 2;
+  
+  /* Render cursor to text layer.  */
+  grub_video_set_active_render_target (text_layer);
+  grub_video_fill_rect (color, x, y, width, height);
+  grub_video_set_active_render_target (render_target);
+  
+  /* Mark cursor to be redrawn.  */
+  dirty_region_add (virtual_screen.offset_x + x,
+		    virtual_screen.offset_y + y,
+		    width, height);
 }
 
 static void
-scroll_up (void)
+real_scroll (void)
 {
-  unsigned int i;
+  unsigned int i, j, was_scroll;
   grub_video_color_t color;
 
-  /* If we don't have background bitmap, remove cursor. */
-  if (!bitmap)
-    {
-      /* Remove cursor.  */
-      draw_cursor (0);
-    }
-
-  /* Scroll text buffer with one line to up.  */
-  grub_memmove (virtual_screen.text_buffer,
-                virtual_screen.text_buffer + virtual_screen.columns,
-                sizeof (*virtual_screen.text_buffer)
-                * virtual_screen.columns
-                * (virtual_screen.rows - 1));
-
-  /* Clear last line in text buffer.  */
-  for (i = virtual_screen.columns * (virtual_screen.rows - 1);
-       i < virtual_screen.columns * virtual_screen.rows;
-       i++)
-    clear_char (&(virtual_screen.text_buffer[i]));
+  if (!virtual_screen.total_scroll)
+    return;
 
   /* If we have bitmap, re-draw screen, otherwise scroll physical screen too.  */
   if (bitmap)
@@ -695,7 +697,8 @@ scroll_up (void)
       /* Scroll physical screen.  */
       grub_video_set_active_render_target (text_layer);
       color = virtual_screen.bg_color;
-      grub_video_scroll (color, 0, -virtual_screen.normal_char_height);
+      grub_video_scroll (color, 0, -virtual_screen.normal_char_height
+			 * virtual_screen.total_scroll);
 
       /* Mark virtual screen to be redrawn.  */
       dirty_region_add_virtualscreen ();
@@ -703,6 +706,9 @@ scroll_up (void)
   else
     {
       grub_video_rect_t saved_view;
+
+      /* Remove cursor.  */
+      draw_cursor (0);
 
       grub_video_set_active_render_target (render_target);
       /* Save viewport and set it to our window.  */
@@ -723,13 +729,15 @@ scroll_up (void)
 				virtual_screen.offset_x,
 				virtual_screen.offset_y,
 				virtual_screen.width,
-				virtual_screen.normal_char_height);
+				virtual_screen.normal_char_height
+				* virtual_screen.total_scroll);
 
 	  grub_video_set_active_render_target (render_target);
 	  dirty_region_redraw ();
 
 	  /* Scroll physical screen.  */
-	  grub_video_scroll (color, 0, -virtual_screen.normal_char_height);
+	  grub_video_scroll (color, 0, -virtual_screen.normal_char_height
+			     * virtual_screen.total_scroll);
 
 	  if (i)
 	    grub_video_swap_buffers ();
@@ -739,20 +747,55 @@ scroll_up (void)
       /* Scroll physical screen.  */
       grub_video_set_active_render_target (text_layer);
       color = virtual_screen.bg_color;
-      grub_video_scroll (color, 0, -virtual_screen.normal_char_height);
+      grub_video_scroll (color, 0, -virtual_screen.normal_char_height
+			 * virtual_screen.total_scroll);
 
       /* Restore saved viewport.  */
       grub_video_set_viewport (saved_view.x, saved_view.y,
                                saved_view.width, saved_view.height);
       grub_video_set_active_render_target (render_target);
 
-      /* Draw cursor if visible.  */
-      if (virtual_screen.cursor_state)
-	draw_cursor (1);
     }
+
+  was_scroll = virtual_screen.total_scroll;
+  virtual_screen.total_scroll = 0;
+
+  if (was_scroll > virtual_screen.rows)
+    was_scroll = virtual_screen.rows;
+
+  /* Draw shadow part.  */
+  for (i = virtual_screen.rows - was_scroll;
+       i < virtual_screen.rows; i++)
+    for (j = 0; j < virtual_screen.columns; j++)
+      paint_char (j, i);
+
+  /* Draw cursor if visible.  */
+  if (virtual_screen.cursor_state)
+    draw_cursor (1);
 
   if (repaint_callback)
     repaint_callback (window.x, window.y, window.width, window.height);
+}
+
+static void
+scroll_up (void)
+{
+  unsigned int i;
+
+  /* Scroll text buffer with one line to up.  */
+  grub_memmove (virtual_screen.text_buffer,
+                virtual_screen.text_buffer + virtual_screen.columns,
+                sizeof (*virtual_screen.text_buffer)
+                * virtual_screen.columns
+                * (virtual_screen.rows - 1));
+
+  /* Clear last line in text buffer.  */
+  for (i = virtual_screen.columns * (virtual_screen.rows - 1);
+       i < virtual_screen.columns * virtual_screen.rows;
+       i++)
+    clear_char (&(virtual_screen.text_buffer[i]));
+
+  virtual_screen.total_scroll++;
 }
 
 static void
@@ -1023,6 +1066,8 @@ grub_gfxterm_setcursor (int on)
 static void
 grub_gfxterm_refresh (void)
 {
+  real_scroll ();
+
   /* Redraw only changed regions.  */
   dirty_region_redraw ();
 
