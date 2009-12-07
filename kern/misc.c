@@ -23,12 +23,22 @@
 #include <stdarg.h>
 #include <grub/term.h>
 #include <grub/env.h>
+#include <grub/i18n.h>
 
 static int
 grub_iswordseparator (int c)
 {
   return (grub_isspace (c) || c == ',' || c == ';' || c == '|' || c == '&');
 }
+
+/* grub_gettext_dummy is not translating anything.  */
+const char *
+grub_gettext_dummy (const char *s)
+{
+  return s;
+}
+
+const char* (*grub_gettext) (const char *s) = grub_gettext_dummy;
 
 void *
 grub_memmove (void *dest, const void *src, grub_size_t n)
@@ -223,12 +233,12 @@ grub_strncmp (const char *s1, const char *s2, grub_size_t n)
 char *
 grub_strchr (const char *s, int c)
 {
-  while (*s)
+  do
     {
       if (*s == c)
 	return (char *) s;
-      s++;
     }
+  while (*s++);
 
   return 0;
 }
@@ -236,14 +246,14 @@ grub_strchr (const char *s, int c)
 char *
 grub_strrchr (const char *s, int c)
 {
-  char *p = 0;
+  char *p = NULL;
 
-  while (*s)
+  do
     {
       if (*s == c)
 	p = (char *) s;
-      s++;
     }
+  while (*s++);
 
   return p;
 }
