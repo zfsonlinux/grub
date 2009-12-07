@@ -18,13 +18,13 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.96+20090725-1ubuntu1/util/grub.d/10_linux.
 +
  linux_entry ()
  {
-   cat << EOF
+   os="$1"
 @@ -92,7 +97,7 @@
    fi
  
-   linux_entry "${OS}, Linux ${version}" \
+   linux_entry "${OS}" "${version}" false \
 -      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
 +      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}"
    if [ "x${GRUB_DISABLE_LINUX_RECOVERY}" != "xtrue" ]; then
-     linux_entry "${OS}, Linux ${version} (recovery mode)" \
+     linux_entry "${OS}" "${version}" true \
  	"single ${GRUB_CMDLINE_LINUX}"

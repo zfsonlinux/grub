@@ -1,0 +1,23 @@
+Ubuntu: fix compilation errors
+Upstream: similar patch sent to grub-devel 2009-12-07
+
+diff -Nur -x '*.orig' -x '*~' grub2-1.97+20091130/normal/menu_entry.c grub2-1.97+20091130.new/normal/menu_entry.c
+--- grub2-1.97+20091130/normal/menu_entry.c	2009-11-30 02:42:17.000000000 +0000
++++ grub2-1.97+20091130.new/normal/menu_entry.c	2009-12-07 18:14:43.000000000 +0000
+@@ -997,7 +997,7 @@
+     }
+ 
+   grub_cls ();
+-  grub_printf (_("  Booting a command list\n\n"));
++  grub_printf ("%s", _("  Booting a command list\n\n"));
+ 
+ 
+   /* Execute the script, line for line.  */
+@@ -1177,6 +1177,6 @@
+   grub_cls ();
+   grub_print_error ();
+   grub_errno = GRUB_ERR_NONE;
+-  grub_printf (_("\nPress any key to continue..."));
++  grub_printf ("%s", _("\nPress any key to continue..."));
+   (void) grub_getkey ();
+ }

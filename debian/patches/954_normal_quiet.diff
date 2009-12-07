@@ -21,7 +21,7 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/normal/main.c grub2-1.97~beta2.ne
 @@ -524,6 +524,13 @@
  {
    grub_parser_t parser = grub_parser_get_current ();
-   char prompt[8 + grub_strlen (parser->name)];
+   char prompt[sizeof("> ") + grub_strlen (parser->name)];
 +  static int displayed_intro;
 +
 +  if (! displayed_intro)
@@ -30,7 +30,7 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/normal/main.c grub2-1.97~beta2.ne
 +      displayed_intro = 1;
 +    }
  
-   grub_sprintf (prompt, "%s:%s> ", parser->name, (cont) ? "" : "grub");
+   grub_sprintf (prompt, "%s> ", parser->name);
  
 @@ -547,7 +554,6 @@
  static struct grub_reader grub_normal_reader =

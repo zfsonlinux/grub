@@ -1,3 +1,190 @@
+grub2 (1.97+20091130-1ubuntu1) lucid; urgency=low
+
+  * Resynchronise with Debian (LP: #485457). Remaining changes:
+    + debian/default/grub:
+      - Adjust for default Ubuntu boot options.
+      - Use GRUB_CMDLINE_LINUX_DEFAULT option to set "quiet splash" for
+        default items only.  These options won't be set in single user mode.
+      - Default to hiding the menu; holding down Shift at boot will show it.
+    + debian/templates.in:
+      - Change default value of grub2/linux_cmdline_default to "quiet
+        splash".
+    + debian/config.in, debian/postinst.in, debian/grub-pc.templates.in:
+      - Migrate timeout settings from menu.lst.
+    + debian/grub.d/05_debian_theme:
+      - Set a monochromatic theme for Ubuntu.
+    + debian/legacy/update-grub:
+      - Apply Ubuntu branding: title, recovery mode, quiet option, and tweak
+        how memtest86+ is displayed.
+      - Use UUIDs where appropriate.
+    + debian/control:
+      - Conflict with grub (<< 0.97-54) as well as grub-legacy.
+    + debian/postinst.in:
+      - Fix backslash-escaping in merge_debconf_into_conf.
+    + debian/patches/03_ubuntu_grub_standards:
+      - Remove GNU/Linux from default string.
+    + debian/patches/10_crashkernel.patch:
+      - Add crashkernel= options if kdump and makedumpfile are available.
+    + debian/patches/951_quick_boot.diff:
+      - If other operating systems are installed, then automatically unhide
+        the menu.
+      - Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus if
+        available to check whether Shift is pressed. If it is, show the
+        menu, otherwise boot immediately. If keystatus is not available,
+        then fall back to a short delay interruptible with Escape.
+    + debian/patches/952_sleep_shift.diff:
+      - Allow Shift to interrupt 'sleep --interruptible'.
+    + debian/patches/954_normal_quiet.diff:
+      - Don't display introductory message about line editing unless we're
+        actually offering a shell prompt. Don't clear the screen just before
+        booting if we never drew the menu in the first place.
+    + debian/patches/955_really_quiet.diff:
+      - Remove some verbose messages printed before reading the
+        configuration file.
+    + debian/patches/956_linux_quiet.diff:
+      - If the environment variable "quiet" is set to something other than
+        0, suppress progress messages as the kernel and initrd load. Set
+        this for non-recovery kernel menu entries.
+    + debian/patches/957_savedefault.diff, debian/rules:
+      - Add GRUB_DEFAULT=saved, as well as grub-set-default and grub-reboot
+        utilities. Provides functionality essentially equivalent to GRUB
+        Legacy's savedefault.
+    + debian/patches/959_loopback_root.diff:
+      - Keep the loopback file open so that subsequent changes to the "root"
+        environment variable don't affect it.
+    + debian/patches/961_handle_loopback.diff:
+      - Change prepare_grub_to_access_device to handle filesystems
+        loop-mounted on file images.
+    + debian/patches/963_linux_no_loopmount.diff:
+      - Ignore devices loop-mounted from files in 10_linux.
+    + debian/patches/965_failed_boot_menu.diff, debian/grub-common.init,
+      debian/grub-common.pm-sleep, debian/grub-common.dirs, debian/rules:
+      - Show the boot menu if the previous boot failed, that is if it failed
+        to get to the end of one of the normal runlevels.
+    + debian/patches/968_raid_virtio.diff:
+      - Handle RAID devices containing virtio components.
+  * debian/patches/957_savedefault.diff: Fix --version output from
+    grub-reboot and grub-set-default (see LP #480571).
+  * debian/patches/957_savedefault.diff: Cope with /boot being on a separate
+    filesystem (LP: #478035).
+  * debian/patches/957_savedefault.diff, 965_failed_boot_menu.diff: Use 'set
+    var=val' rather than plain 'var=val'.
+  * debian/patches/969_format_errors.diff: Fix compilation errors due to
+    gettext work.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 07 Dec 2009 20:04:28 +0000
+
+grub2 (1.97+20091130-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+  * Enable ntldr-img from grub-extras.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 30 Nov 2009 02:33:03 +0100
+
+grub2 (1.97+20091125-2) unstable; urgency=low
+
+  [ Updated translations ]
+  * Bulgarian (bg.po) by Damyan Ivanovi (Closes: #558039)
+
+  [ Robert Millan ]
+  * control: Remove genisoimage from Build-Depends/Suggests (no longer
+    used).
+  * grub.d/05_debian_theme: Make output string distro-agnostic.
+
+  [ Felix Zielcke ]
+  * patches/02_fix_mountpoints_in_mkrelpath.diff: New patch to handle
+    mount points like the old shell function did. (Closes: #558042)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sun, 29 Nov 2009 21:38:00 +0100
+
+grub2 (1.97+20091125-1) unstable; urgency=low
+
+  [ Robert Millan ]
+  * New upstream snapshot.
+    - Fixes script parser load error.
+
+  * Add gettext to Build-Depends and gettext-base to grub-common's
+    Depends.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 25 Nov 2009 19:22:51 +0100
+
+grub2 (1.97+20091124-1) unstable; urgency=low
+
+  * New upstream snapshot.
+    - Fix grub-mkisofs related FTBFS on powerpc. (Closes: #557704)
+    - Create fake GRUB devices for devices not listed in device.map.
+      This also makes dmraid and multipath work as long as
+      search --fs-uuid works. (Closes: #442382, #540549, LP: #392136)
+    - rules: grub-emu is now built as a port.
+
+  [ Felix Zielcke ]
+  * Change the bt-utf-source build dependency to xfonts-unifont. It's
+    more complete, better maintained and grub-mkfont supports actually
+    more then BDF fonts as input, thanks to libfreetype.
+  * Use grub-probe to get the GRUB device of /boot/grub instead of
+    passing (hd0) to grub-install when creating the core.img with
+    chainloading. This avoids the (UUID=) hack slowness in case
+    /boot/grub is on a different disk then (hd0) in device.map.
+  * patches/903_grub_legacy_0_based_partitions.diff: Update.
+  * Add a build dependency on automake and python.
+  * Set TARGET_CC=$(CC) to really use gcc-4.4 everywhere. Also pass it
+    and CC as arguments to ./configure instead of env vars so they get
+    preserved.
+  * Ship grub-mkrelpath in grub-common.
+  * Ship the locale files in grub-common.
+  * Add a dependency on 'dpkg (>= 1.15.4) | install-info' for grub-common
+    as recommended by Policy and lintian.
+
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 24 Nov 2009 21:20:00 +0100
+
+grub2 (1.97+20091115-1) unstable; urgency=low
+
+  * New upstream snapshot.
+    - Fix security problem with password checking.  (Closes: #555195)
+    - Fix the generated GNU/Hurd menu entries and also add support for
+      it in 30_os-prober. (Closes: #555188)
+    - Same grub-mkrescue for grub-pc and grub-coreboot, used by
+      grub-rescue-pc during postinst now. (Closes: #501867)
+
+  [ Felix Zielcke ]
+  * Ship grub-mkisofs in grub-common.
+  * patches/002_grub.d_freebsd.in.diff: Remove (merged upstream).
+  * patches/906_grub_extras.diff: Remove. Superseded by GRUB_CONTRIB variable
+    in recent upstream trunk.
+  * rules: Export GRUB_CONTRIB to enable grub-extras add-ons.
+  * Pass --force to grub-install in the postinst. (Closes: #553415) 
+  * Don't strip debug symbols from grub-emu. It's meant for debugging
+    and with them it's much more useful.
+  * Ship grub-mkfloppy in grub-pc.
+  * Revert the Replaces: grub-common to (<= 1.96+20080413-1) on the
+    grub-pc package. It was wrongly modified long ago.
+
+  [ Robert Millan ]
+  * copyright: Document mkisofs.
+  * control: Update Vcs- fields (moved to Bazaar).
+  * rules: Update debian/legacy/update-grub rule to Bazaar.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sun, 15 Nov 2009 19:13:31 +0100
+
+grub2 (1.97-1) unstable; urgency=low
+
+  [ Robert Millan ]
+  * patches/905_setup_force.diff: Remove, no longer needed as of
+    grub-installer >= 1.47.
+  * grub.d/05_debian_theme: Attempt to source grub_background.sh from
+    desktop-base (Needed for #495282, #495616, #500134, see also
+    #550984).
+
+  [ Felix Zielcke ]
+  * Add a build dependency on texinfo.
+  * Fix little typo in /etc/default/grub. (LP: #457703)
+
+  [ Updated translations ]
+  * Finnish (fi.po) by Esko Arajärvi. (Closes: #551912)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sun, 25 Oct 2009 19:50:21 +0100
+
 grub2 (1.97~beta4-1ubuntu4) karmic-proposed; urgency=low
 
   * New patch, 969_os_prober_separate_boot, fixes wrong kernel/initrd

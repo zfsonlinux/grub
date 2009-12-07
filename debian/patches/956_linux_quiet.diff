@@ -53,24 +53,24 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta1/util/grub.d/10_linux.in grub2-1.9
 --- grub2-1.97~beta1/util/grub.d/10_linux.in	2009-09-03 21:23:13.000000000 +0100
 +++ grub2-1.97~beta1.new/util/grub.d/10_linux.in	2009-09-03 21:23:22.000000000 +0100
 @@ -53,6 +53,11 @@
-   cat << EOF
- menuentry "$1" {
- EOF
-+  if [ "x$3" = "xquiet" ]; then
+     title="$(gettext "%s, with Linux %s")"
+   fi
+   printf "menuentry \"${title}\" {\n" "${os}" "${version}"
++  if [ "x$5" = "xquiet" ]; then
 +    cat << EOF
 +	set quiet=1
 +EOF
 +  fi
-   prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/"
-   cat << EOF
- 	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro $2
+   if [ -z "${prepare_boot_cache}" ]; then
+     prepare_boot_cache="$(prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/")"
+   fi
 @@ -98,7 +103,8 @@
    fi
  
-   linux_entry "${OS}, Linux ${version}" \
+   linux_entry "${OS}" "${version}" false \
 -      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}"
 +      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}" \
 +      quiet
    if [ "x${GRUB_DISABLE_LINUX_RECOVERY}" != "xtrue" ]; then
-     linux_entry "${OS}, Linux ${version} (recovery mode)" \
+     linux_entry "${OS}" "${version}" true \
  	"single ${GRUB_CMDLINE_LINUX}"
