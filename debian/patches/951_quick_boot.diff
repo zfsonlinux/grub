@@ -11,8 +11,8 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/util/grub.d/00_header.in grub2-1.
 --- grub2-1.97~beta4/util/grub.d/00_header.in	2009-08-25 20:42:56.000000000 +0100
 +++ grub2-1.97~beta4.new/util/grub.d/00_header.in	2009-10-12 11:58:44.000000000 +0100
 @@ -100,19 +100,6 @@
-   ;;
- esac
+ EOF
+ fi
  
 -if [ "x${GRUB_HIDDEN_TIMEOUT}" != "x" ] ; then
 -  if [ "x${GRUB_HIDDEN_TIMEOUT_QUIET}" = "xtrue" ] ; then 

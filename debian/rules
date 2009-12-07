@@ -5,6 +5,8 @@ package		:= grub2
 
 DEB_HOST_ARCH_CPU ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_CPU 2>/dev/null)
 
+DEB_STRIP_EXCLUDE := /usr/sbin/grub-emu
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
@@ -18,15 +20,14 @@ endif
 
 CC := gcc-4.4
 
-# grub-extras components
-export enable_zfs := yes
-export enable_915resolution := yes
+# Enable external modules from grub-extras.
+export GRUB_CONTRIB := $(CURDIR)/debian/grub-extras
 
-CONFIGURE = CC=$(CC) \
-	$(CURDIR)/configure --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --includedir="\$${prefix}/include" \
+CONFIGURE = $(CURDIR)/configure CC=$(CC) TARGET_CC=$(CC) \
+	--build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --includedir="\$${prefix}/include" \
 	--mandir="\$${prefix}/share/man" --infodir="\$${prefix}/share/info" --sysconfdir=/etc --localstatedir=/var \
 	--libexecdir="\$${prefix}/lib/$(package)" --srcdir=$(CURDIR) \
-	--enable-grub-emu --enable-grub-mkfont --disable-grub-fstest 
+	--enable-grub-mkfont --disable-grub-fstest 
 
 DEB_UPDATE_RCD_PARAMS_grub-common += start 99 2 3 4 5 .
 
@@ -36,7 +37,7 @@ AUTOGEN_DEB_FILES = docs examples manpages config templates postinst postrm dirs
 $(AUTOGEN_FILES): autogen.sh configure.ac conf/*.rmk
 	./autogen.sh
 
-configure/grub-pc configure/grub-ieee1275 configure/grub-coreboot:: $(AUTOGEN_FILES)
+configure/grub-pc configure/grub-ieee1275 configure/grub-coreboot configure/grub-emu:: $(AUTOGEN_FILES)
 	mkdir -p $(subst configure/,build/,$@)
 	cd $(subst configure/,build/,$@) && $(CONFIGURE) --with-platform=$(subst configure/grub-,,$@)
 
@@ -52,32 +53,12 @@ configure/grub-firmware-qemu:: $(AUTOGEN_FILES)
 	mkdir -p $(subst configure/,build/,$@)
 	cd $(subst configure/,build/,$@) && $(CONFIGURE) --with-platform=qemu
 
-configure/grub-common configure/grub-emu:: $(AUTOGEN_FILES)
+configure/grub-common:: $(AUTOGEN_FILES)
 	mkdir -p $(subst configure/,build/,$@)
 	cd $(subst configure/,build/,$@) && $(CONFIGURE)
 
-build/grub-common build/grub-pc build/grub-efi-ia32 build/grub-efi-amd64 build/grub-ieee1275 build/grub-coreboot::
+build/grub-common build/grub-pc build/grub-efi-ia32 build/grub-efi-amd64 build/grub-ieee1275 build/grub-coreboot build/grub-emu::
 	$(MAKE) -C $@
-
-build/grub-emu::
-	$(MAKE) -C $@ grub-emu
-
-build/grub-rescue-pc:: build/grub-pc
-	mkdir -p $@
-	mkdir -p $@/rescue-disk/boot/grub
-	cp docs/grub.cfg $@/rescue-disk/boot/grub/
-	$(CURDIR)/build/grub-pc/grub-mkrescue \
-		--pkglibdir=$(CURDIR)/build/grub-pc \
-		--grub-mkimage=$(CURDIR)/build/grub-pc/grub-mkimage \
-		--overlay=$@/rescue-disk/ \
-		--image-type=floppy \
-		$(CURDIR)/$@/grub-rescue-floppy.img
-	$(CURDIR)/build/grub-pc/grub-mkrescue \
-		--pkglibdir=$(CURDIR)/build/grub-pc \
-		--grub-mkimage=$(CURDIR)/build/grub-pc/grub-mkimage \
-		--overlay=$@/rescue-disk/ \
-		--image-type=cdrom \
-		$(CURDIR)/$@/grub-rescue-cdrom.iso
 
 build/grub-firmware-qemu::
 	$(MAKE) -C $@
@@ -92,26 +73,24 @@ build/grub-firmware-qemu::
 		-m $${grub_memdisk} \
 		-o $(CURDIR)/$@/grub.bin
 
-install/grub-emu::
-	mkdir -p $(CURDIR)/debian/$(subst install/,,$@)/usr/sbin
-	install -m755 build/grub-emu/grub-emu $(CURDIR)/debian/$(subst install/,,$@)/usr/sbin/grub-emu
-
-install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee1275 install/grub-coreboot::
+install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee1275 install/grub-coreboot install/grub-emu::
 	$(MAKE) -C $(subst install/,build/,$@) install DESTDIR=$(CURDIR)/debian/$(subst install/,,$@)/
 
 	# shipped with grub-common
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/etc/grub.d
-	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{grub-dumpbios,grub-probe,grub-emu,grub-mkconfig,grub-mkdevicemap,grub-ofpathname}{,.8}
-	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkelfimage,grub-mkfont,grub-editenv}{,.1}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{grub-dumpbios,grub-probe,grub-mkconfig,grub-mkdevicemap,grub-ofpathname}{,.8}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkelfimage,grub-mkfont,grub-editenv,grub-mkisofs,grub-mkrescue,grub-mkrelpath}{,.1}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{grub-mkconfig_lib,update-grub_lib}
-	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/share/{grub,info}/
+	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/share/{grub,info,locale}/
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/include
 
-	for i in $(AUTOGEN_DEB_FILES) ; do \
-		sed debian/$$i.in \
-			-e "s/@PACKAGE@/$(subst install/,,$@)/g" \
-			> debian/$(subst install/,,$@).$$i ; \
-	done
+	if [ "$@" != "install/grub-emu" ] ; then \
+		for i in $(AUTOGEN_DEB_FILES) ; do \
+			sed debian/$$i.in \
+				-e "s/@PACKAGE@/$(subst install/,,$@)/g" \
+				> debian/$(subst install/,,$@).$$i ; \
+		done ; \
+	fi
 
 	# grub-pc is a bit special.  It includes a few overlays for autogen files.
 	if [ "$@" = "install/grub-pc" ] ; then \
@@ -144,8 +123,8 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee12
 install/grub-common::
 	$(MAKE) -C $(subst install/,build/,$@) install DESTDIR=$(CURDIR)/debian/$(subst install/,,$@)/
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{i386,powerpc,sparc64}-*
-	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{update-grub,grub-install,grub-setup,grub-emu,grub-reboot,grub-set-default}{,.8}
-	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/grub-{mkimage,mkrescue}{,.1}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{update-grub,grub-install,grub-setup,grub-reboot,grub-set-default}{,.8}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkimage,grub-mkfloppy}{,.1}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/share/info/dir*
 	install -m 0755 debian/grub-common.pm-sleep $(CURDIR)/debian/$(subst install/,,$@)/etc/pm/sleep.d/10_grub-common
 
@@ -160,26 +139,9 @@ clean:: debian/legacy/update-grub debian/grub-extras
 	debconf-updatepo
 
 debian/legacy/update-grub:
-	@echo "Missing $@.  Try: \"svn cat svn://svn.debian.org/pkg-grub/grub/trunk/debian/update-grub > $@\""
+	@echo "Missing $@.  Try: \"bzr cat http://bzr.debian.org/bzr/pkg-grub/trunk/grub-legacy/debian/update-grub > $@\""
 	exit 1
 
 debian/grub-extras:
 	@echo "Missing $@.  Try: \"svn export svn://svn.sv.nongnu.org/grub-extras/trunk $@\""
 	exit 1
-
-# Grab fixes from SVN using our version as reference.
-svn-sync:
-	svn co svn://svn.sv.gnu.org/grub/trunk/grub2 grub2-svn; \
-	UVERSION=$$(dpkg-parsechangelog | grep Version \
-	                                | sed 's,Version: ,,g;s,-[0-9]*$$,,g;s,\.,_,g'); \
-	cd grub2-svn && \
-	svn diff -uN -r release_$$UVERSION -r HEAD > ../debian/patches/00_svn-sync.patch; \
-	cd .. && rm -rf grub2-svn
-
-svn-snapshot:
-	UVERSION=$$(dpkg-parsechangelog | grep Version \
-	                                | sed 's,Version: ,,g;s,-[0-9]*$$,,g'); \
-	svn co svn://svn.sv.gnu.org/grub/trunk/grub2 grub2-$$UVERSION; \
-	tar -czf grub2_$$UVERSION.orig.tar.gz grub2-$$UVERSION; \
-	rm -rf grub2-$$UVERSION; \
-	mv grub2_$$UVERSION.orig.tar.gz ../tarballs/

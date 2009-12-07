@@ -1,8 +1,8 @@
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/util/grub.d/00_header.in grub2-1.97~beta4.new/util/grub.d/00_header.in
---- grub2-1.97~beta4/util/grub.d/00_header.in	2009-10-12 12:11:21.000000000 +0100
-+++ grub2-1.97~beta4.new/util/grub.d/00_header.in	2009-10-12 12:11:22.000000000 +0100
-@@ -112,5 +112,9 @@
- esac
+diff -Nur -x '*.orig' -x '*~' grub2-1.97+20091130/util/grub.d/00_header.in grub2-1.97+20091130.new/util/grub.d/00_header.in
+--- grub2-1.97+20091130/util/grub.d/00_header.in	2009-12-07 18:01:48.000000000 +0000
++++ grub2-1.97+20091130.new/util/grub.d/00_header.in	2009-12-07 18:01:49.000000000 +0000
+@@ -123,5 +123,9 @@
+ fi
  
  cat << EOF
 -set timeout=${GRUB_TIMEOUT}
@@ -12,15 +12,17 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/util/grub.d/00_header.in grub2-1.
 +  set timeout=${GRUB_TIMEOUT}
 +fi
  EOF
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/util/grub.d/10_linux.in grub2-1.97~beta4.new/util/grub.d/10_linux.in
---- grub2-1.97~beta4/util/grub.d/10_linux.in	2009-10-12 12:11:21.000000000 +0100
-+++ grub2-1.97~beta4.new/util/grub.d/10_linux.in	2009-10-12 12:12:11.000000000 +0100
-@@ -57,6 +57,8 @@
- {
-   cat << EOF
- menuentry "$1" {
-+        recordfail=1
+diff -Nur -x '*.orig' -x '*~' grub2-1.97+20091130/util/grub.d/10_linux.in grub2-1.97+20091130.new/util/grub.d/10_linux.in
+--- grub2-1.97+20091130/util/grub.d/10_linux.in	2009-12-07 18:01:48.000000000 +0000
++++ grub2-1.97+20091130.new/util/grub.d/10_linux.in	2009-12-07 18:03:04.000000000 +0000
+@@ -70,6 +70,10 @@
+     title="$(gettext "%s, with Linux %s")"
+   fi
+   printf "menuentry \"${title}\" {\n" "${os}" "${version}"
++  cat << EOF
++        set recordfail=1
 +        if [ -n \${have_grubenv} ]; then save_env recordfail; fi
- EOF
-   if [ "x$3" = "xquiet" ]; then
++EOF
+   if [ "x$5" = "xquiet" ]; then
      cat << EOF
+ 	set quiet=1
