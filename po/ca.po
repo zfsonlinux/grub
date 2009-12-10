@@ -1,51 +1,69 @@
-# grub 软件包的简体中文翻译。
-# Copyright (C) 2009 Free Software Foundation, Inc.
-# This file is distributed under the same license as the grub package.
-# Aron Xu <happyaron.xu@gmail.com>, 2009.
-# Zhengyu Ji <zhengyuji@gmail.com>, 2009.
-# Xin Ye <alyex.ye@gmail.com>, 2009.
+# Copyright (C) 2009  Free Software Foundation, Inc
+# This file is distributed under the same license as the GNU GRUB package.
+# Robert Millan <rmh.grub@aybabtu.com>, 2009.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: grub 1.97+20091122\n"
+"Project-Id-Version: GNU GRUB\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-22 11:48+0100\n"
-"PO-Revision-Date: 2009-12-05 23:16+0800\n"
-"Last-Translator: Xin Ye <alyex.ye@gmail.com>\n"
-"Language-Team: Chinese (simplified) <translation-team-zh-cn@lists.sourceforge.net>\n"
+"POT-Creation-Date: 2009-11-19 00:16+0100\n"
+"PO-Revision-Date: 2009-11-17 12:26+0100\n"
+"Last-Translator: Robert Millan <rmh.grub@aybabtu.com>\n"
+"Language-Team: None <no-team-yet@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: util/i386/pc/grub-mkimage.c:65
 msgid "the core image is too small"
-msgstr "核心镜像太小"
+msgstr ""
 
 #: util/i386/pc/grub-mkimage.c:77
 msgid "cannot compress the kernel image"
-msgstr "无法压缩内核镜像"
+msgstr ""
+
+#: util/i386/pc/grub-mkimage.c:117
+#, c-format
+msgid "the size of memory disk is 0x%x"
+msgstr ""
+
+#: util/i386/pc/grub-mkimage.c:124
+#, c-format
+msgid "the size of config file is 0x%x"
+msgstr ""
+
+#: util/i386/pc/grub-mkimage.c:132
+#, c-format
+msgid "the total module size is 0x%x"
+msgstr ""
 
 #: util/i386/pc/grub-mkimage.c:138
 msgid "prefix is too long"
-msgstr "所指定的目录太长"
+msgstr ""
+
+#: util/i386/pc/grub-mkimage.c:199
+#, c-format
+msgid "the core size is 0x%x"
+msgstr ""
 
 #: util/i386/pc/grub-mkimage.c:206
 msgid "the core image is too big"
-msgstr "核心镜像太大"
+msgstr ""
 
 #: util/i386/pc/grub-mkimage.c:211
 #, c-format
 msgid "diskboot.img size must be %u bytes"
-msgstr "diskboot.img 的大小必须为 %u 字节"
+msgstr ""
 
 #: util/i386/pc/grub-mkimage.c:284
 #, c-format
 msgid "Core image is too big (%p > %p)\n"
-msgstr "核心镜像太大(%p > %p)\n"
+msgstr ""
 
 #: util/i386/pc/grub-mkimage.c:321 util/i386/pc/grub-setup.c:587
 #, c-format
 msgid "Try ``%s --help'' for more information.\n"
-msgstr "请尝试运行 “%s --help” 以获得更多信息。\n"
+msgstr "Proveu «%s --help» per a obtenir més informació.\n"
 
 #: util/i386/pc/grub-mkimage.c:323
 #, c-format
@@ -65,139 +83,191 @@ msgid ""
 "\n"
 "Report bugs to <%s>.\n"
 msgstr ""
-"用法: grub-mkimage [选项]... [模块]\n"
-"\n"
-"制作一个可引导的GRUB镜像。\n"
-"  -d, --directory=DIR     使用 DIR 目录下的镜像和模块 [默认 %s]\n"
-"  -p, --prefix=DIR        设定 grub_prefix 路径 [默认 %s]\n"
-"  -m, --memdisk=FILE      所嵌 FILE 文件作为内存盘镜像\n"
-"  -c, --config=FILE       所嵌 FILE 文件作为引导配置文件\n"
-"  -o, --output=FILE       将生成的镜像写入 FILE 文件s[默认标准输出设备(stdout)]\n"
-"  -h, --help              显示此信息并退出\n"
-"  -V, --version           显示版本信息并退出\n"
-"  -v, --verbose           显示详细信息\n"
-"\n"
-"将错误报告至 <%s>。\n"
 
 #: util/i386/pc/grub-mkimage.c:429
 #, c-format
 msgid "cannot open %s"
-msgstr "无法打开 %s"
+msgstr ""
+
+#: util/i386/pc/grub-setup.c:162
+#, c-format
+msgid "the first sector is <%llu,%u,%u>"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:166
 msgid "The first sector of the core file is not sector-aligned"
-msgstr "核心文件的第一扇区未对齐"
+msgstr ""
+
+#: util/i386/pc/grub-setup.c:176
+#, c-format
+msgid "saving <%llu,%u,%u> with the segment 0x%x"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:180
 msgid "Non-sector-aligned data is found in the core file"
-msgstr "核心文件中发现未对齐的扇区"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:194
 msgid "The sectors of the core file are too fragmented"
-msgstr "核心文件的扇区碎片太多"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:205
 #, c-format
 msgid "The size of `%s' is not %u"
-msgstr "“%s” 的大小不是 %u"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:222
 #, c-format
 msgid "The size of `%s' is too small"
-msgstr "“%s” 太小"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:224
 #, c-format
 msgid "The size of `%s' is too large"
-msgstr "“%s” 太大"
+msgstr ""
+
+#: util/i386/pc/grub-setup.c:247
+#, c-format
+msgid "setting the root device to `%s'"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:261
 #, c-format
 msgid "Unable to identify a filesystem in %s; safety check can't be performed"
-msgstr "无法在 %s 中识别文件系统；无法执行安全性检测"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:265
 #, c-format
-msgid "%s appears to contain a %s filesystem which isn't known to reserve space for DOS-style boot.  Installing GRUB there could result in FILESYSTEM DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe disables this check, use at your own risk)"
-msgstr "%s 中似乎包含一个 %s 文件系统，不被 DOS 引导的保留区所知。在此处安装 GRUB 可能导致 grub-setup覆盖重要数据从而损坏文件系统 (--skip-fs-probe 可以禁用这个检查，使用该选项风险自负)"
+msgid ""
+"%s appears to contain a %s filesystem which isn't known to reserve space for "
+"DOS-style boot.  Installing GRUB there could result in FILESYSTEM "
+"DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe "
+"disables this check, use at your own risk)"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:314
 msgid "No DOS-style partitions found"
-msgstr "未找到 DOS 类型分区"
+msgstr ""
+
+#: util/i386/pc/grub-setup.c:325
+#, c-format
+msgid "dos partition is %d, bsd partition is %d"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:330 util/i386/pc/grub-setup.c:355
-msgid "Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
-msgstr "正在试图将 GRUB 安装至未分区的磁盘。 这是一个坏主意。"
+msgid ""
+"Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:336
-msgid "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD idea."
-msgstr "正在试图将 GRUB 安装至一个分区而非 MBR。 这是一个坏主意。"
+msgid ""
+"Attempting to install GRUB to a partition instead of the MBR.  This is a BAD "
+"idea."
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:365
-msgid "This msdos-style partition label has no post-MBR gap; embedding won't be possible!"
+msgid ""
+"This msdos-style partition label has no post-MBR gap; embedding won't be "
+"possible!"
 msgstr ""
 
 #: util/i386/pc/grub-setup.c:367
-msgid "This GPT partition label has no BIOS Boot Partition; embedding won't be possible!"
+msgid ""
+"This GPT partition label has no BIOS Boot Partition; embedding won't be "
+"possible!"
 msgstr ""
 
 #: util/i386/pc/grub-setup.c:374
 msgid "Your core.img is unusually large.  It won't fit in the embedding area."
-msgstr "您的 core.img 超乎寻常的巨大。它不适用于嵌入式环境。"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:376
 msgid "Your embedding area is unusually small.  core.img won't fit in it."
-msgstr "您的嵌入式环境超乎寻常的小。core.img 无法适用于此处。"
-
-#: util/i386/pc/grub-setup.c:418
-msgid "Embedding is not possible, but this is required when the root device is on a RAID array or LVM volume."
 msgstr ""
 
-# fuzzy
+#: util/i386/pc/grub-setup.c:381
+#, c-format
+msgid "the core image will be embedded at sector 0x%llx"
+msgstr ""
+
+#: util/i386/pc/grub-setup.c:418
+msgid ""
+"Embedding is not possible, but this is required when the root device is on a "
+"RAID array or LVM volume."
+msgstr ""
+
 #: util/i386/pc/grub-setup.c:421
-msgid "Embedding is not possible.  GRUB can only be installed in this setup by using blocklists.  However, blocklists are UNRELIABLE and its use is discouraged."
-msgstr "嵌入无法进行。在此次安装中 GRUB 只能通过使用块列表安装。但是，块列表是不可信赖的，不推荐使用"
+msgid ""
+"Embedding is not possible.  GRUB can only be installed in this setup by "
+"using blocklists.  However, blocklists are UNRELIABLE and its use is "
+"discouraged."
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:425
 msgid "If you really want blocklists, use --force."
-msgstr "如果确实需要块列表，请使用 --force 选项"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:439
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB"
-msgstr "正在尝试从 GRUB 读取核心镜像 \"%s\""
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:440
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB again"
-msgstr "正在尝试再次从 GRUB 读取核心镜像 “%s”"
+msgstr ""
+
+#: util/i386/pc/grub-setup.c:449
+#, c-format
+msgid ""
+"succeeded in opening the core image but the size is different (%d != %d)"
+msgstr ""
+
+#: util/i386/pc/grub-setup.c:453
+#, c-format
+msgid "succeeded in opening the core image but cannot read %d bytes"
+msgstr ""
+
+#: util/i386/pc/grub-setup.c:476
+msgid "succeeded in opening the core image but the data is different"
+msgstr ""
+
+#: util/i386/pc/grub-setup.c:487
+msgid "couldn't open the core image"
+msgstr ""
+
+#: util/i386/pc/grub-setup.c:490
+#, c-format
+msgid "error message = %s"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:498
 #, c-format
 msgid "Cannot read `%s' correctly"
-msgstr "无法正确读取 “%s”"
+msgstr ""
 
-# fuzzy
 #: util/i386/pc/grub-setup.c:511
 msgid "No terminator in the core image"
-msgstr "核心镜像中没有终止符"
+msgstr ""
 
-# fuzzy
 #: util/i386/pc/grub-setup.c:522
 msgid "Failed to read the first sector of the core image"
-msgstr "读取核心镜像的第一扇区失败"
+msgstr ""
 
-# fuzzy
 #: util/i386/pc/grub-setup.c:528
 msgid "Failed to read the rest sectors of the core image"
-msgstr "读取核心镜像的剩余扇区失败"
+msgstr ""
+
+#: util/i386/pc/grub-setup.c:544
+#, c-format
+msgid "opening the core image `%s'"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:547
 #, c-format
 msgid "Cannot open `%s'"
-msgstr "无法打开 “%s”"
+msgstr ""
 
-# fuzzy
 #: util/i386/pc/grub-setup.c:589
 #, c-format
 msgid ""
@@ -219,47 +289,35 @@ msgid ""
 "\n"
 "Report bugs to <%s>.\n"
 msgstr ""
-"用法：grub-setup [选项]...DEVICE\n"
-"\n"
-"设置从 DEVICE 引导的镜像。\n"
-"DEVICE 必须是 GRUB 设备格式（例如 \"(hd0,1)\"）。\n"
-"\n"
-"  -b, --boot-image=FILE   使用 FILE 文件作为引导镜像 [默认为 %s]\n"
-"  -c, --core-image=FILE   使用 FILE 文件作为核心镜像 [默认为 %s]\n"
-"  -d, --directory=DIR     使用 DIR 目录中的 GRUB 文件 [默认为 %s]\n"
-"  -m, --device-map=FILE   使用 FILE 文件作为设备映射 [默认为 %s]\n"
-"  -r, --root-device=DEV   使用 DEV 设备作为根设备 [默认为guessed]\n"
-"  -f, --force             检测到问题的情况下仍强制安装\n"
-"  -s, --skip-fs-probe     不在 DEVICE 中探测文件系统\n"
-"  -h, --help              显示此信息并且退出\n"
-"  -V, --version           显示版本信息并且退出\n"
-"  -v, --verbose           显示详细信息\n"
-"\n"
-"软件错误请报告给 <%s>。\n"
 
 #: util/i386/pc/grub-setup.c:719
 #, c-format
 msgid "No device is specified.\n"
-msgstr "没有指定设备。\n"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:725
 #, c-format
 msgid "Unknown extra argument `%s'.\n"
-msgstr "未知的额外参数 “%s”。\n"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:742
 #, c-format
 msgid "Invalid device `%s'.\n"
-msgstr "无效的设备 “%s”。\n"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:755
 #, c-format
 msgid "Invalid root device `%s'"
-msgstr "无效的根设备 “%s”"
+msgstr ""
+
+#: util/i386/pc/grub-setup.c:766
+#, c-format
+msgid "guessing the root device failed, because of `%s'"
+msgstr ""
 
 #: util/i386/pc/grub-setup.c:768
 msgid "Cannot guess the root device. Specify the option ``--root-device''."
-msgstr "无法猜测根设备。请使用 \"--root-device\" 选项指定。"
+msgstr ""
 
 #: util/mkisofs/eltorito.c:96
 #, c-format
@@ -269,35 +327,32 @@ msgstr ""
 #: util/mkisofs/eltorito.c:97
 #, c-format
 msgid "Please check the following file: %s.\n"
-msgstr "请检查以下文件: %s。\n"
+msgstr ""
 
 #: util/mkisofs/eltorito.c:98
 #, c-format
 msgid "This file must be removed before a bootable CD can be done.\n"
 msgstr ""
 
-# fuzzy
 #: util/mkisofs/eltorito.c:110
 #, c-format
 msgid "Error creating boot catalog (%s)"
-msgstr "创建引导编目时出错(%s)"
+msgstr ""
 
-# fuzzy
 #: util/mkisofs/eltorito.c:114
 #, c-format
 msgid "Error writing to boot catalog (%s)"
-msgstr "写引导编目时出错 (%s)"
+msgstr ""
 
-# fuzzy
 #: util/mkisofs/eltorito.c:144
 #, c-format
 msgid "Boot catalog cannot be found!\n"
-msgstr "无法找到引导编目！\n"
+msgstr ""
 
 #: util/mkisofs/eltorito.c:158
 #, c-format
 msgid "Boot image cannot be found!\n"
-msgstr "无法找到引导映像！\n"
+msgstr ""
 
 #: util/mkisofs/eltorito.c:221
 #, c-format
@@ -305,80 +360,71 @@ msgid ""
 "\n"
 "Size of boot image is %d sectors"
 msgstr ""
-"\n"
-"引导映像的大小为 %d 个扇区"
 
 #: util/mkisofs/eltorito.c:227
 #, c-format
 msgid "No emulation\n"
-msgstr "无模拟\n"
+msgstr ""
 
 #: util/mkisofs/eltorito.c:235
 #, c-format
 msgid "Emulating a 1.44 meg floppy\n"
-msgstr "模拟 1.44MB 软盘\n"
+msgstr ""
 
 #: util/mkisofs/eltorito.c:240
 #, c-format
 msgid "Emulating a 2.88 meg floppy\n"
-msgstr "模拟 2.88MB 软盘\n"
+msgstr ""
 
 #: util/mkisofs/eltorito.c:245
 #, c-format
 msgid "Emulating a 1.2 meg floppy\n"
-msgstr "模拟 1.2MB 软盘\n"
+msgstr ""
 
-# fuzzy
 #: util/mkisofs/eltorito.c:249
 #, c-format
 msgid ""
 "\n"
 "Error - boot image is not the an allowable size.\n"
 msgstr ""
-"\n"
-"错误 - 引导镜像大小不被允许。\n"
 
-# fuzzy
 #: util/mkisofs/eltorito.c:269
 msgid "Error opening boot catalog for update"
-msgstr "无法打开引导编目用于更新"
+msgstr ""
 
-# fuzzy
 #: util/mkisofs/eltorito.c:275 util/mkisofs/eltorito.c:277
 msgid "Error writing to boot catalog"
-msgstr "写引导编目时出错"
+msgstr ""
 
 #: util/mkisofs/eltorito.c:291
 #, c-format
 msgid "Error opening boot image file '%s' for update"
-msgstr "无法打开引导镜像文件 '%s' 用于更新"
+msgstr ""
 
-# fuzzy
 #: util/mkisofs/eltorito.c:299
 #, c-format
 msgid "Odd alignment at non-end-of-file in boot image '%s'"
-msgstr "引导镜像 “%s“在非文件结束位置上存在错误的对齐。"
+msgstr ""
 
 #: util/mkisofs/eltorito.c:311
 #, c-format
 msgid "Boot image file '%s' changed unexpectedly"
-msgstr "引导镜像文件 “%s” 意外改变"
+msgstr ""
 
 #: util/mkisofs/eltorito.c:323
 #, c-format
 msgid "Error writing to boot image (%s)"
-msgstr "写入到引导映像出错(%s)"
+msgstr ""
 
-# fuzzy
 #: util/mkisofs/joliet.c:359 util/mkisofs/write.c:981
 #, c-format
 msgid "Unable to generate sane path tables - too many directories (%d)\n"
-msgstr "无法生成合理的路径表? - 太多目录(%d)\n"
+msgstr ""
 
 #: util/mkisofs/joliet.c:398 util/mkisofs/write.c:1017
 #, c-format
 msgid "Entry %d not in path tables\n"
-msgstr "条目 %d 不在路径表中\n"
+msgstr ""
 
 #: util/mkisofs/joliet.c:412
 #, c-format
@@ -393,7 +439,7 @@ msgstr ""
 #: util/mkisofs/joliet.c:530
 #, c-format
 msgid "Unable to locate relocated directory\n"
-msgstr "无法找到重定位的目录\n"
+msgstr ""
 
 #: util/mkisofs/joliet.c:605
 #, c-format
@@ -408,66 +454,62 @@ msgstr ""
 #: util/mkisofs/mkisofs.c:373
 #, c-format
 msgid "Using \"%s\"\n"
-msgstr "使用 “%s”\n"
+msgstr ""
 
-# fuzzy
 #: util/mkisofs/mkisofs.c:401
 #, c-format
 msgid "%s:%d: name required\n"
-msgstr "%s:%d: 需要名称\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:411
 #, c-format
 msgid "%s:%d: equals sign required\n"
-msgstr "%s:%d: 需要等号\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:445
 #, c-format
 msgid "%s:%d: field name \"%s\" unknown\n"
-msgstr "%s:%d: 字段名 “%s” 未知\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:474
 #, c-format
 msgid "Usage: %s [options] file...\n"
-msgstr "用法: %s [选项] 文件...\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:476
 #, c-format
 msgid "Options:\n"
-msgstr "选项: \n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:706
 #, c-format
 msgid "-i option no longer supported.\n"
-msgstr "-i 选项已不再被支持。\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:720
 #, c-format
 msgid "Required boot image pathname missing\n"
-msgstr "所需要的引导镜像路径名缺失\n"
+msgstr ""
 
-# fuzzy
 #: util/mkisofs/mkisofs.c:729
 #, c-format
 msgid "Required boot catalog pathname missing\n"
-msgstr "所需要的引导编目路径名缺失\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:737
 #, c-format
 msgid "Ignoring -no-emul-boot (no-emulation is the default behaviour)\n"
-msgstr "忽略 -no-emul-boot 选项（no-emulation是默认行为）\n"
+msgstr ""
 
-# fuzzy
 #: util/mkisofs/mkisofs.c:746
 #, c-format
 msgid "Abstract filename string too long\n"
-msgstr "摘要文件名太长\n"
+msgstr ""
 
-# fuzzy
 #: util/mkisofs/mkisofs.c:754
 #, c-format
 msgid "Application-id string too long\n"
-msgstr "应用程序编号串太长\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:762
 #, c-format
@@ -477,87 +519,87 @@ msgstr ""
 #: util/mkisofs/mkisofs.c:770
 #, c-format
 msgid "Copyright filename string too long\n"
-msgstr "版权文件名字符串太长\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:805
 #, c-format
 msgid "Preparer string too long\n"
-msgstr "编制人员信息太长\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:816
 #, c-format
 msgid "Publisher string too long\n"
-msgstr "出版者描述信息太长\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:837
 #, c-format
 msgid "System ID string too long\n"
-msgstr "系统编号串太长\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:848
 #, c-format
 msgid "Volume ID string too long\n"
-msgstr "卷编号串太长\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:856
 #, c-format
 msgid "Volume set ID string too long\n"
-msgstr "卷集合的识别码太长\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:867
 #, c-format
 msgid "Volume set sequence number too big\n"
-msgstr "卷集合的序列号太大\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:909 util/mkisofs/mkisofs.c:919
 #: util/mkisofs/mkisofs.c:929 util/mkisofs/mkisofs.c:939
 #, c-format
 msgid "date string must be 16 characters.\n"
-msgstr "日期字符串长度必须为 16 个字符。\n"
+msgstr ""
 
-# fuzzy
 #: util/mkisofs/mkisofs.c:958
 msgid "Warning: getrlimit"
-msgstr "警告: getrlimit"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:962
 msgid "Warning: setrlimit"
-msgstr "警告: setrlimit"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:978
 #, c-format
 msgid "Multisession usage bug: Must specify -C if -M is used.\n"
-msgstr "多会话使用错误: 若使用 -M选项则必须指定 -C 选项。\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:984
 #, c-format
-msgid "Warning: -C specified without -M: old session data will not be merged.\n"
-msgstr "警告: 在未使用 -M 的情况下使用了 -C选项: 原有回话数据将不被合并。\n"
+msgid ""
+"Warning: -C specified without -M: old session data will not be merged.\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:1023
 #, c-format
 msgid "can't open logfile: %s"
-msgstr "无法打开日志文件: %s"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:1027
 #, c-format
 msgid "re-directing all messages to %s\n"
-msgstr "重定向所有信息到 %s\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:1032
 #, c-format
 msgid "can't open logfile: %s\n"
-msgstr "无法打开日志文件: %s\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:1073
 #, c-format
 msgid "Unable to open previous session image %s\n"
-msgstr "无法打开上一会话使用的镜像 %s\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:1184
 #, c-format
 msgid "Invalid node - %s\n"
-msgstr "无效的节点 - %s\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:1246
 msgid "Joliet tree sort failed.\n"
@@ -565,11 +607,11 @@ msgstr ""
 
 #: util/mkisofs/mkisofs.c:1261
 msgid "Unable to open /dev/null\n"
-msgstr "无法打开 /dev/null\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:1265
 msgid "Unable to open disc image file\n"
-msgstr "无法打开磁盘镜像文件\n"
+msgstr ""
 
 #: util/mkisofs/mkisofs.c:1387
 #, c-format
@@ -583,7 +625,7 @@ msgstr ""
 
 #: util/mkisofs/multi.c:161
 msgid "Seek error on old image\n"
-msgstr "在旧镜像上发生搜寻错误\n"
+msgstr ""
 
 #: util/mkisofs/multi.c:179 util/mkisofs/multi.c:250
 #, c-format
@@ -592,15 +634,15 @@ msgstr ""
 
 #: util/mkisofs/multi.c:546
 #, c-format
-msgid "Warning: Neither Rock Ridge (-R) nor TRANS.TBL (-T) name translations were found on previous session. ISO (8.3) file names have been used instead.\n"
+msgid ""
+"Warning: Neither Rock Ridge (-R) nor TRANS.TBL (-T) name translations were "
+"found on previous session. ISO (8.3) file names have been used instead.\n"
 msgstr ""
 
-# need to check source code.
-# Is %s referring to the "old image" or the error msg?
 #: util/mkisofs/multi.c:764
 #, c-format
 msgid "Read error on old image %s\n"
-msgstr "在旧镜像 %s 上发生读错误\n"
+msgstr ""
 
 #: util/mkisofs/multi.c:1084
 msgid "Special parameters for cdwrite not specified with -C\n"
@@ -618,20 +660,20 @@ msgstr ""
 #: util/mkisofs/rock.c:517
 #, c-format
 msgid "Unable to insert transparent compressed file - name conflict\n"
-msgstr "无法插入透明压缩文件 - 文件名冲突\n"
+msgstr ""
 
 #: util/mkisofs/rock.c:591
 msgid "Extension record too long\n"
-msgstr "扩展记录太长\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:226 util/mkisofs/write.c:565 util/mkisofs/write.c:1037
 msgid "Fatal goof\n"
-msgstr "致命错误\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:284
 #, c-format
 msgid "Unable to  generate unique  name for file %s\n"
-msgstr "无法为文件 %s 生成唯一的名字\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:295 util/mkisofs/tree.c:317
 #, c-format
@@ -643,12 +685,10 @@ msgstr ""
 msgid "Fatal error - RR overflow for file %s\n"
 msgstr ""
 
-# need to check source code:
-# is the %s referring to the "directory" or the error msg?
 #: util/mkisofs/tree.c:449
 #, c-format
 msgid "Unable to sort directory %s\n"
-msgstr "无法为目录 %s 排序\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:480
 #, c-format
@@ -662,21 +702,21 @@ msgstr ""
 #: util/mkisofs/tree.c:796
 #, c-format
 msgid "Scanning %s\n"
-msgstr "正在扫描 %s\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:811
 #, c-format
 msgid "Unable to open directory %s\n"
-msgstr "无法打开目录 %s\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:856
 #, c-format
 msgid "Ignoring file %s\n"
-msgstr "忽略文件 %s\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:863
 msgid "Overflow of stat buffer\n"
-msgstr "状态缓冲区溢出\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:876
 #, c-format
@@ -686,61 +726,61 @@ msgstr ""
 #: util/mkisofs/tree.c:891
 #, c-format
 msgid "Excluded: %s\n"
-msgstr "已排除: %s\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:961
 #, c-format
 msgid "Non-existant or inaccessible: %s\n"
-msgstr "不存在或不可访问: %s\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:997 util/mkisofs/tree.c:1103
 #, c-format
 msgid "Unable to stat file %s - ignoring and continuing.\n"
-msgstr "无法查询文件 %s 的状态 - 忽略并继续。\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:1003
 #, c-format
 msgid "Symlink %s ignored - continuing.\n"
-msgstr "已忽略符号链接 %s - 继续。\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:1028
 #, c-format
 msgid "Already cached directory seen (%s)\n"
-msgstr "发现已缓冲目录(%s)\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:1070
 #, c-format
 msgid "File %s is not readable (%s) - ignoring\n"
-msgstr "文件 %s 无法读取(%s) - 忽略\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:1083
 #, c-format
 msgid "Directory loop - fatal goof (%s %lx %lu).\n"
-msgstr "目录循环嵌套 - 致命错误 (%s %lx %lu)。\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:1093
 #, c-format
 msgid "Unknown file type %s - ignoring and continuing.\n"
-msgstr "未知文件类型 %s - 忽略并继续。\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:1179
 #, c-format
 msgid "Hidden from ISO9660 tree: %s\n"
-msgstr "从 ISO9660 树隐藏: %s\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:1191
 #, c-format
 msgid "Hidden from Joliet tree: %s\n"
-msgstr "从 Joliet 树隐藏: %s\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:1600
 #, c-format
 msgid "Directories too deep  %s\n"
-msgstr "目录层次太深 %s\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:1632
 msgid "Unable to delete non-empty directory\n"
-msgstr "无法删除非空目录\n"
+msgstr ""
 
 #: util/mkisofs/tree.c:1655
 msgid "Unable to locate child directory in parent list\n"
@@ -759,48 +799,47 @@ msgstr ""
 #: util/mkisofs/write.c:158
 #, c-format
 msgid "Cannot open '%s'"
-msgstr "无法打开 “%s”"
+msgstr ""
 
-# fuzzy
 #: util/mkisofs/write.c:166
 #, c-format
 msgid "cannot fwrite %llu*%llu\n"
-msgstr "无法 fwrite %llu*%llu\n"
+msgstr ""
 
 #: util/mkisofs/write.c:248
 #, c-format
 msgid "cannot open %s\n"
-msgstr "无法打开 %s\n"
+msgstr ""
 
 #: util/mkisofs/write.c:257
 #, c-format
 msgid "cannot read %llu bytes from %s"
-msgstr "无法从 %2$s 读取 %1$llu 字节"
+msgstr ""
 
 #: util/mkisofs/write.c:275
 #, c-format
 msgid "%6.2f%% done, estimate finish %s"
-msgstr "已完成 %6.2f%%，估计 %s 完成"
+msgstr ""
 
 #: util/mkisofs/write.c:542
 #, c-format
 msgid "Cache hit for %s%s%s\n"
-msgstr "缓存命中： %s%s%s\n"
+msgstr ""
 
 #: util/mkisofs/write.c:896
 #, c-format
 msgid "Unexpected directory length %d %d %s\n"
-msgstr "目录长度异常 %d %d %s\n"
+msgstr ""
 
 #: util/mkisofs/write.c:908
 #, c-format
 msgid "Continuation entry record length mismatch (%d %d).\n"
-msgstr "延续条目记录的长度不匹配 (%d %d)。\n"
+msgstr ""
 
 #: util/mkisofs/write.c:1072
 #, c-format
 msgid "Path table lengths do not match %d %d\n"
-msgstr "路径表的长度不匹配 %d %d\n"
+msgstr ""
 
 #: util/mkisofs/write.c:1118 util/mkisofs/write.c:1128
 #, c-format
@@ -814,13 +853,14 @@ msgstr ""
 
 #: util/mkisofs/write.c:1154
 #, c-format
-msgid "Number of extents written different than what was predicted.  Please fix.\n"
+msgid ""
+"Number of extents written different than what was predicted.  Please fix.\n"
 msgstr ""
 
 #: util/mkisofs/write.c:1155
 #, c-format
 msgid "Predicted = %d, written = %llu\n"
-msgstr "预计 = %d，已写入 = %llu\n"
+msgstr ""
 
 #: util/mkisofs/write.c:1158
 #, c-format
@@ -844,42 +884,12 @@ msgstr ""
 
 #: util/grub.d/10_kfreebsd.in:40
 msgid "%s, with kFreeBSD %s"
-msgstr "%s，以 kFreeBSD %s"
+msgstr ""
 
 #: util/grub.d/10_linux.in:57
 msgid "%s, with Linux %s (recovery mode)"
-msgstr "%s， 以 Linux %s （恢复模式）"
+msgstr ""
 
 #: util/grub.d/10_linux.in:59
 msgid "%s, with Linux %s"
-msgstr "%s，以 Linux %s"
-
-#~ msgid "the size of memory disk is 0x%x"
-#~ msgstr "内存磁盘大小为 0x%x"
-
-#~ msgid "the size of config file is 0x%x"
-#~ msgstr "配置文件大小为 0x%x"
-
-#~ msgid "the total module size is 0x%x"
-#~ msgstr "模块总计大小为 0x%x"
-
-#~ msgid "the core size is 0x%x"
-#~ msgstr "核心大小位 0x%x"
-
-#~ msgid "setting the root device to `%s'"
-#~ msgstr "设置 `%s' 为根设备"
-
-#~ msgid "dos partition is %d, bsd partition is %d"
-#~ msgstr "DOS 分区为 %d，BSD 分区为 %d"
-
-#~ msgid "the core image will be embedded at sector 0x%llx"
-#~ msgstr "核心映像将被嵌入于 0x%llx 扇区"
-
-#~ msgid "error message = %s"
-#~ msgstr "错误信息 = %s"
-
-#~ msgid "opening the core image `%s'"
-#~ msgstr "正在打开核心映像 `%s'"
-
-#~ msgid "guessing the root device failed, because of `%s'"
-#~ msgstr "猜测根设备失败，原因为 `%s'"
+msgstr ""
