@@ -23,7 +23,6 @@
 #include <grub/machine/memory.h>
 #include <grub/machine/console.h>
 #include <grub/machine/kernel.h>
-#include <grub/machine/machine.h>
 #include <grub/types.h>
 #include <grub/err.h>
 #include <grub/dl.h>
@@ -62,7 +61,10 @@ grub_stop_floppy (void)
 void
 grub_exit (void)
 {
-  grub_fatal ("grub_exit() is not implemented.\n");
+  /* We can't use grub_fatal() in this function.  This would create an infinite
+     loop, since grub_fatal() calls grub_abort() which in turn calls grub_exit().  */
+  while (1)
+    grub_cpu_idle ();
 }
 
 void

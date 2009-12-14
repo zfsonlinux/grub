@@ -31,8 +31,9 @@ dnl (such as TARGET_CC, TARGET_CFLAGS, etc.) are used for the target
 dnl type.
 
 
-AC_INIT([GRUB],[1.97~beta3],[bug-grub@gnu.org])
-AC_PREREQ(2.59)
+AC_INIT([GRUB],[1.97],[bug-grub@gnu.org])
+AM_INIT_AUTOMAKE()
+AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR([include/grub/dl.h])
 AC_CONFIG_HEADER([config.h])
 
@@ -89,6 +90,7 @@ case "$target_cpu"-"$platform" in
   i386-qemu) ;;
   powerpc-ieee1275) ;;
   sparc64-ieee1275) ;;
+  *-emu) ;;
   *) AC_MSG_ERROR([platform "$platform" is not supported for target CPU "$target_cpu"]) ;;
 esac
 
@@ -98,7 +100,7 @@ case "$target_cpu" in
 esac
 
 case "$host_os" in
-  mingw32) host_os=cygwin ;;
+  mingw32*) host_os=cygwin ;;
 esac
 
 # This normalizes the names, and creates a new variable ("host_kernel")
@@ -107,9 +109,21 @@ esac
 case "$host_os" in
   gnu*)				host_kernel=hurd ;;
   linux*)			host_kernel=linux ;;
-  freebsd* | kfreebsd*-gnu)	host_kernel=freebsd ;;
+  freebsd* | kfreebsd*-gnu)	host_kernel=kfreebsd ;;
   cygwin)			host_kernel=windows ;;
 esac
+
+case "$platform" in
+  coreboot)	machine_CFLAGS="-DGRUB_MACHINE_COREBOOT=1" ;;
+  efi)		machine_CFLAGS="-DGRUB_MACHINE_EFI=1" ;;
+  ieee1275)	machine_CFLAGS="-DGRUB_MACHINE_IEEE1275=1" ;;
+  qemu)		machine_CFLAGS="-DGRUB_MACHINE_QEMU=1" ;;
+  pc)		machine_CFLAGS="-DGRUB_MACHINE_PCBIOS=1" ;;
+  emu)		machine_CFLAGS="-DGRUB_MACHINE_EMU=1" ;;
+esac
+CFLAGS="$CFLAGS $machine_CFLAGS"
+TARGET_ASFLAGS="$TARGET_ASFLAGS $machine_CFLAGS"
+TARGET_CFLAGS="$TARGET_CFLAGS $machine_CFLAGS"
 
 AC_SUBST(host_cpu)
 AC_SUBST(host_os)
@@ -134,9 +148,9 @@ if test "x$YACC" = x; then
   AC_MSG_ERROR([bison is not found])
 fi
 
-for file in /usr/src/unifont.bdf ; do
+for file in /usr/src/unifont.bdf /usr/share/fonts/X11/misc/unifont.pcf.gz ; do
   if test -e $file ; then
-    AC_SUBST([UNIFONT_BDF], [$file])
+    AC_SUBST([FONT_SOURCE], [$file])
     break
   fi
 done
@@ -144,9 +158,11 @@ done
 AC_PROG_INSTALL
 AC_PROG_AWK
 AC_PROG_MAKE_SET
+AC_PROG_MKDIR_P
 
 # These are not a "must".
 AC_PATH_PROG(RUBY, ruby)
+AC_PATH_PROG(MAKEINFO, makeinfo)
 
 #
 # Checks for host programs.
@@ -157,6 +173,7 @@ AC_PROG_CC
 test "x$GCC" = xyes || AC_MSG_ERROR([GCC is required])
 
 AC_GNU_SOURCE
+AM_GNU_GETTEXT
 AC_SYS_LARGEFILE
 
 # Identify characteristics of the host architecture.
@@ -177,7 +194,14 @@ else
 fi
 
 # Check for functions.
-AC_CHECK_FUNCS(posix_memalign memalign asprintf)
+AC_CHECK_FUNCS(posix_memalign memalign asprintf vasprintf)
+
+# For grub-mkisofs
+AC_HEADER_MAJOR
+AC_HEADER_DIRENT
+AC_CHECK_FUNCS(memmove sbrk strdup lstat getuid getgid)
+AC_CHECK_HEADERS(sys/mkdev.h sys/sysmacros.h malloc.h termios.h sys/types.h)
+AC_CHECK_HEADERS(unistd.h string.h strings.h sys/stat.h sys/fcntl.h)
 
 #
 # Check for target programs.
@@ -250,6 +274,10 @@ if test "x$TARGET_CFLAGS" = x; then
     else
       TARGET_CFLAGS="$TARGET_CFLAGS -malign-jumps=1 -malign-loops=1 -malign-functions=1"
     fi
+
+    # Some toolchains enable these features by default, but they need
+    # registers that aren't set up properly in GRUB.
+    TARGET_CFLAGS="$TARGET_CFLAGS -mno-mmx -mno-sse -mno-sse2 -mno-3dnow"
   fi
 
   # By default, GCC 4.4 generates .eh_frame sections containing unwind
@@ -390,6 +418,13 @@ if test x"$sap_possible" = xyes; then
   TARGET_CFLAGS="$TARGET_CFLAGS -mno-stack-arg-probe"
 fi
 
+AC_ARG_ENABLE([werror],
+	      [AS_HELP_STRING([--disable-werror],
+                             [do not use -Werror when building GRUB])])
+if test x"$enable_werror" != xno ; then
+  TARGET_CFLAGS="$TARGET_CFLAGS -Werror"
+fi
+
 AC_SUBST(TARGET_CFLAGS)
 AC_SUBST(TARGET_MODULE_FORMAT)
 AC_SUBST(OBJCONV)
@@ -397,6 +432,9 @@ AC_SUBST(TARGET_APPLE_CC)
 AC_SUBST(TARGET_ASFLAGS)
 AC_SUBST(TARGET_CPPFLAGS)
 AC_SUBST(TARGET_LDFLAGS)
+
+# Check for libgcc symbols (must be performed before we add -nostdlib to LDFLAGS)
+AC_CHECK_FUNCS(__bswapsi2 __bswapdi2 __ashldi3 __ashrdi3 __lshrdi3 __trampoline_setup __ucmpdi2)
 
 # Set them to their new values for the tests below.
 CC="$TARGET_CC"
@@ -484,40 +522,28 @@ AC_ARG_ENABLE([mm-debug],
               [AC_DEFINE([MM_DEBUG], [1],
                          [Define to 1 if you enable memory manager debugging.])])
 
-AC_ARG_ENABLE([grub-emu],
-	      [AS_HELP_STRING([--enable-grub-emu],
-                             [build and install the `grub-emu' debugging utility (default=guessed)])])
 AC_ARG_ENABLE([grub-emu-usb],
 	      [AS_HELP_STRING([--enable-grub-emu-usb],
                              [build and install the `grub-emu' debugging utility with USB support (default=guessed)])])
-if test x"$enable_grub_emu" = xno ; then
-  grub_emu_excuse="explicitly disabled"
-fi
 
-  [# Check for curses libraries.]
-[if [ x"$grub_emu_excuse" = x ]; then ]
+if test "$platform" = emu; then
+  missing_ncurses=
+[# Check for curses libraries.]
   AC_CHECK_LIB([ncurses], [wgetch], [LIBCURSES="-lncurses"],
     [AC_CHECK_LIB([curses], [wgetch], [LIBCURSES="-lcurses"],
-      [grub_emu_excuse=["need (n)curses libraries"]])])
+      [missing_ncurses=[true]])])
   AC_SUBST([LIBCURSES])
-[fi]
-[if [ x"$grub_emu_excuse" = x ]; then ]
+[if [ x"$missing_ncurses" = x ]; then ]
   [# Check for headers.]
   AC_CHECK_HEADERS([ncurses/curses.h], [],
     [AC_CHECK_HEADERS([ncurses.h], [],
       [AC_CHECK_HEADERS([curses.h], [],
-	[grub_emu_excuse=["need (n)curses headers"]])])])
+	[missing_ncurses=[true]])])])
 [fi]
+if test x"$missing_ncurses" = xtrue ; then
+  AC_MSG_ERROR([grub-emu can't be compiled without ncurses])
+fi
 
-if test x"$enable_grub_emu" = xyes && test x"$grub_emu_excuse" != x ; then
-  AC_MSG_ERROR([grub-emu was explicitly requested but can't be compiled])
-fi
-if test x"$grub_emu_excuse" = x ; then
-enable_grub_emu=yes
-else
-enable_grub_emu=no
-grub_emu_usb_excuse="grub-emu isn't built"
-fi
 if test x"$enable_grub_emu_usb" = xno ; then
   grub_emu_usb_excuse="explicitly disabled"
 fi
@@ -532,7 +558,7 @@ AC_CHECK_LIB([usb], [usb_claim_interface], [LIBUSB="-lusb"],
     AC_CHECK_HEADERS([usb.h], [],
       [grub_emu_usb_excuse=["need libusb headers"]])
 [fi]
-if test x"enable_grub_emu_usb" = xyes && test x"$grub_emu_usb_excuse" != x ; then
+if test x"$enable_grub_emu_usb" = xyes && test x"$grub_emu_usb_excuse" != x ; then
   AC_MSG_ERROR([USB support for grub-emu was explicitly requested but can't be compiled])
 fi
 if test x"$grub_emu_usb_excuse" = x ; then
@@ -540,9 +566,8 @@ enable_grub_emu_usb=yes
 else
 enable_grub_emu_usb=no
 fi
-
-AC_SUBST([enable_grub_emu])
 AC_SUBST([enable_grub_emu_usb])
+fi
 
 AC_ARG_ENABLE([grub-fstest],
 	      [AS_HELP_STRING([--enable-grub-fstest],
@@ -556,11 +581,6 @@ else
 enable_grub_fstest=no
 fi
 AC_SUBST([enable_grub_fstest])
-
-AC_ARG_ENABLE([grub-pe2elf],
-	      [AS_HELP_STRING([--enable-grub-pe2elf],
-                             [build and install the `grub-pe2elf' conversion utility])])
-AC_SUBST([enable_grub_pe2elf])
 
 AC_ARG_ENABLE([grub-mkfont],
 	      [AS_HELP_STRING([--enable-grub-mkfont],
@@ -595,14 +615,18 @@ AC_SUBST(ASFLAGS)
 # Output files.
 grub_CHECK_LINK_DIR
 if test x"$link_dir" = xyes ; then
-  AC_CONFIG_LINKS([include/grub/cpu:include/grub/$target_cpu
-	include/grub/machine:include/grub/$target_cpu/$platform])
+  AC_CONFIG_LINKS([include/grub/cpu:include/grub/$target_cpu])
+  if test "$platform" != emu ; then
+    AC_CONFIG_LINKS([include/grub/machine:include/grub/$target_cpu/$platform])
+  fi
 else
   mkdir -p include/grub 2>/dev/null
   rm -rf include/grub/cpu
   cp -rp $srcdir/include/grub/$target_cpu include/grub/cpu 2>/dev/null
-  rm -rf include/grub/machine
-  cp -rp $srcdir/include/grub/$target_cpu/$platform include/grub/machine 2>/dev/null
+  if test "$platform" != emu ; then
+    rm -rf include/grub/machine
+    cp -rp $srcdir/include/grub/$target_cpu/$platform include/grub/machine 2>/dev/null
+  fi
 fi
 AC_CONFIG_FILES([Makefile gensymlist.sh genkernsyms.sh])
 AC_CONFIG_FILES([stamp-h], [echo timestamp > stamp-h])
@@ -611,27 +635,17 @@ AC_OUTPUT
 echo "*******************************************************"
 echo GRUB2 will be compiled with following components:
 echo Platform: "$target_cpu"-"$platform"
-if [ x"$grub_emu_excuse" = x ]; then
-echo grub-emu: Yes
-else
-echo grub-emu: No "($grub_emu_excuse)"
-fi
+if [ x"$platform" = xemu ]; then
 if [ x"$grub_emu_usb_excuse" = x ]; then
 echo USB support for grub-emu: Yes
 else
 echo USB support for grub-emu: No "($grub_emu_usb_excuse)"
 fi
+fi
 if [ x"$enable_mm_debug" = xyes ]; then
 echo With memory debugging: Yes
 else
 echo With memory debugging: No
-fi
-if [ x"$enable_grub_pe2elf" = xyes ]; then
-echo grub-pe2elf will be built and installed
-elif [ x$TARGET_OBJ2ELF = xgrub-pe2elf ]; then
-echo grub-pe2elf will be built but not installed
-else
-echo grub-pe2elf will not be built
 fi
 if [ x"$efiemu_excuse" = x ]; then
 echo efiemu runtime: Yes

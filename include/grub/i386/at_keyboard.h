@@ -19,7 +19,6 @@
 #ifndef GRUB_CPU_AT_KEYBOARD_HEADER
 #define GRUB_CPU_AT_KEYBOARD_HEADER	1
 
-#include <grub/machine/machine.h>
 
 #define SHIFT_L		0x2a
 #define SHIFT_R		0x36
@@ -39,7 +38,7 @@
 #define KEYBOARD_SCANCODE_SET1		0x40
 
 #define KEYBOARD_ISMAKE(x)	!((x) & 0x80)
-#define KEYBOARD_ISREADY(x)	(((x) & 0x01) == 0)
+#define KEYBOARD_ISREADY(x)	((x) & 0x01)
 #define KEYBOARD_SCANCODE(x)	((x) & 0x7f)
 
 #ifdef GRUB_MACHINE_IEEE1275

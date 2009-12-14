@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2004,2005,2006,2007,2008  Free Software Foundation, Inc.
+ *  Copyright (C) 2004,2005,2006,2007,2008,2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,6 +31,9 @@
 #include <grub/util/resolve.h>
 #include <grub/kernel.h>
 #include <grub/cpu/kernel.h>
+#include <grub/i18n.h>
+
+#include "progname.h"
 
 #define GRUB_IEEE1275_NOTE_NAME "PowerPC"
 #define GRUB_IEEE1275_NOTE_TYPE 0x1275
@@ -144,7 +147,7 @@ load_modules (grub_addr_t modbase, Elf32_Phdr *phdr, const char *dir,
       mod_size = grub_util_get_image_size (p->name);
 
       header = (struct grub_module_header *) (module_img + offset);
-      header->type = grub_host_to_target32 (OBJ_TYPE_ELF);
+      header->type = OBJ_TYPE_ELF;
       header->size = grub_host_to_target32 (mod_size + sizeof (*header));
 
       grub_util_load_image (p->name, module_img + offset + sizeof (*header));
@@ -157,8 +160,8 @@ load_modules (grub_addr_t modbase, Elf32_Phdr *phdr, const char *dir,
       struct grub_module_header *header;
 
       header = (struct grub_module_header *) (module_img + offset);
-      header->type = grub_cpu_to_le32 (OBJ_TYPE_MEMDISK);
-      header->size = grub_cpu_to_le32 (memdisk_size + sizeof (*header));
+      header->type = OBJ_TYPE_MEMDISK;
+      header->size = grub_host_to_target32 (memdisk_size + sizeof (*header));
       offset += sizeof (*header);
 
       grub_util_load_image (memdisk_path, module_img + offset);
@@ -325,10 +328,10 @@ static void
 usage (int status)
 {
   if (status)
-    fprintf (stderr, "Try ``grub-mkimage --help'' for more information.\n");
+    fprintf (stderr, "Try ``%s --help'' for more information.\n", program_name);
   else
     printf ("\
-Usage: grub-mkimage -o FILE [OPTION]... [MODULES]\n\
+Usage: %s -o FILE [OPTION]... [MODULES]\n\
 \n\
 Make a bootable image of GRUB.\n\
 \n\
@@ -342,7 +345,7 @@ Make a bootable image of GRUB.\n\
   -v, --verbose           print verbose messages\n\
 \n\
 Report bugs to <%s>.\n\
-", GRUB_LIBDIR, PACKAGE_BUGREPORT);
+", program_name, GRUB_LIBDIR, PACKAGE_BUGREPORT);
 
   exit (status);
 }
@@ -357,7 +360,10 @@ main (int argc, char *argv[])
   char *memdisk = NULL;
   int chrp = 0;
 
-  progname = "grub-mkimage";
+  set_program_name (argv[0]);
+  setlocale (LC_ALL, "");
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
 
   while (1)
     {

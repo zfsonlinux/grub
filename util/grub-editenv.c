@@ -22,12 +22,15 @@
 #include <grub/util/misc.h>
 #include <grub/lib/envblk.h>
 #include <grub/handler.h>
+#include <grub/i18n.h>
 
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
 #include <getopt.h>
+
+#include "progname.h"
 
 #define DEFAULT_ENVBLK_SIZE	1024
 
@@ -72,7 +75,7 @@ usage (int status)
     fprintf (stderr, "Try ``grub-editenv --help'' for more information.\n");
   else
     printf ("\
-Usage: grub-editenv [OPTIONS] FILENAME COMMAND\n\
+Usage: grub-editenv [OPTIONS] [FILENAME] COMMAND\n\
 \n\
 Tool to edit environment block.\n\
 \nCommands:\n\
@@ -85,7 +88,10 @@ Tool to edit environment block.\n\
   -V, --version             print version information and exit\n\
   -v, --verbose             print verbose messages\n\
 \n\
-Report bugs to <%s>.\n", PACKAGE_BUGREPORT);
+If not given explicitly, FILENAME defaults to %s.\n\
+\n\
+Report bugs to <%s>.\n",
+DEFAULT_DIRECTORY "/" GRUB_ENVBLK_DEFCFG, PACKAGE_BUGREPORT);
 
   exit (status);
 }
@@ -95,25 +101,31 @@ create_envblk_file (const char *name)
 {
   FILE *fp;
   char *buf;
+  char *namenew;
 
   buf = malloc (DEFAULT_ENVBLK_SIZE);
   if (! buf)
     grub_util_error ("out of memory");
 
-  fp = fopen (name, "wb");
+  namenew = xasprintf ("%s.new", name);
+  fp = fopen (namenew, "wb");
   if (! fp)
-    grub_util_error ("cannot open the file %s", name);
+    grub_util_error ("cannot open the file %s", namenew);
 
   memcpy (buf, GRUB_ENVBLK_SIGNATURE, sizeof (GRUB_ENVBLK_SIGNATURE) - 1);
   memset (buf + sizeof (GRUB_ENVBLK_SIGNATURE) - 1, '#',
           DEFAULT_ENVBLK_SIZE - sizeof (GRUB_ENVBLK_SIGNATURE) + 1);
 
   if (fwrite (buf, 1, DEFAULT_ENVBLK_SIZE, fp) != DEFAULT_ENVBLK_SIZE)
-    grub_util_error ("cannot write to the file %s", name);
+    grub_util_error ("cannot write to the file %s", namenew);
 
   fsync (fileno (fp));
   free (buf);
   fclose (fp);
+
+  if (rename (namenew, name) < 0)
+    grub_util_error ("cannot rename the file %s to %s", namenew, name);
+  free (namenew);
 }
 
 static grub_envblk_t
@@ -243,7 +255,10 @@ main (int argc, char *argv[])
   char *filename;
   char *command;
 
-  progname = "grub-editenv";
+  set_program_name (argv[0]);
+  setlocale (LC_ALL, "");
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
 
   /* Check for options.  */
   while (1)
@@ -260,7 +275,7 @@ main (int argc, char *argv[])
 	    break;
 
 	  case 'V':
-	    printf ("%s (%s) %s\n", progname, PACKAGE_NAME, PACKAGE_VERSION);
+	    printf ("%s (%s) %s\n", program_name, PACKAGE_NAME, PACKAGE_VERSION);
 	    return 0;
 
 	  case 'v':
@@ -282,12 +297,14 @@ main (int argc, char *argv[])
 
   if (optind + 1 >= argc)
     {
-      fprintf (stderr, "no command specified\n");
-      usage (1);
+      filename = DEFAULT_DIRECTORY "/" GRUB_ENVBLK_DEFCFG;
+      command = argv[optind];
     }
-
-  filename = argv[optind];
-  command = argv[optind + 1];
+  else
+    {
+      filename = argv[optind];
+      command = argv[optind + 1];
+    }
 
   if (strcmp (command, "create") == 0)
     create_envblk_file (filename);
