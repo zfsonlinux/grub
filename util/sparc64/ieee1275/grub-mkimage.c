@@ -21,6 +21,7 @@
 #include <grub/machine/boot.h>
 #include <grub/machine/kernel.h>
 #include <grub/kernel.h>
+#include <grub/i18n.h>
 #include <grub/disk.h>
 #include <grub/util/misc.h>
 #include <grub/util/resolve.h>
@@ -33,6 +34,8 @@
 
 #define _GNU_SOURCE	1
 #include <getopt.h>
+
+#include "progname.h"
 
 static void
 compress_kernel (char *kernel_img, size_t kernel_size,
@@ -98,8 +101,8 @@ generate_image (const char *dir, const char *prefix, FILE *out, char *mods[], ch
       mod_size = grub_util_get_image_size (p->name);
 
       header = (struct grub_module_header *) (kernel_img + offset);
-      header->type = grub_cpu_to_be32 (OBJ_TYPE_ELF);
-      header->size = grub_cpu_to_be32 (mod_size + sizeof (*header));
+      header->type = OBJ_TYPE_ELF;
+      header->size = grub_host_to_target32 (mod_size + sizeof (*header));
       offset += sizeof (*header);
 
       grub_util_load_image (p->name, kernel_img + offset);
@@ -111,8 +114,8 @@ generate_image (const char *dir, const char *prefix, FILE *out, char *mods[], ch
       struct grub_module_header *header;
 
       header = (struct grub_module_header *) (kernel_img + offset);
-      header->type = grub_cpu_to_be32 (OBJ_TYPE_MEMDISK);
-      header->size = grub_cpu_to_be32 (memdisk_size + sizeof (*header));
+      header->type = OBJ_TYPE_MEMDISK;
+      header->size = grub_host_to_target32 (memdisk_size + sizeof (*header));
       offset += sizeof (*header);
 
       grub_util_load_image (memdisk_path, kernel_img + offset);
@@ -188,10 +191,10 @@ static void
 usage (int status)
 {
   if (status)
-    fprintf (stderr, "Try ``grub-mkimage --help'' for more information.\n");
+    fprintf (stderr, "Try ``%s --help'' for more information.\n", program_name);
   else
     printf ("\
-Usage: grub-mkimage [OPTION]... [MODULES]\n\
+Usage: %s [OPTION]... [MODULES]\n\
 \n\
 Make a bootable image of GRUB.\n\
 \n\
@@ -204,7 +207,7 @@ Make a bootable image of GRUB.\n\
   -v, --verbose           print verbose messages\n\
 \n\
 Report bugs to <%s>.\n\
-", GRUB_LIBDIR, DEFAULT_DIRECTORY, PACKAGE_BUGREPORT);
+", program_name, GRUB_LIBDIR, DEFAULT_DIRECTORY, PACKAGE_BUGREPORT);
 
   exit (status);
 }
@@ -218,7 +221,11 @@ main (int argc, char *argv[])
   char *memdisk = NULL;
   FILE *fp = stdout;
 
-  progname = "grub-mkimage";
+  set_program_name (argv[0]);
+  setlocale (LC_ALL, "");
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
+
   while (1)
     {
       int c = getopt_long (argc, argv, "d:p:m:o:hVv", options, 0);

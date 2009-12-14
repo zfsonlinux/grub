@@ -1,7 +1,7 @@
 /* misc.h - prototypes for misc functions */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2003,2005,2006,2007,2008,2009,2008  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2003,2005,2006,2007,2008,2009,2008,2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 #define ALIGN_UP(addr, align) \
 	((addr + (typeof (addr)) align - 1) & ~((typeof (addr)) align - 1))
 #define ARRAY_SIZE(array) (sizeof (array) / sizeof (array[0]))
+#define COMPILE_TIME_ASSERT(cond) switch (0) { case 1: case !(cond): ; }
 
 #define grub_dprintf(condition, fmt, args...) grub_real_dprintf(__FILE__, __LINE__, condition, fmt, ## args)
 /* XXX: If grub_memmove is too slow, we must implement grub_memcpy.  */
@@ -75,9 +76,11 @@ grub_strncat (char *dest, const char *src, int c)
 }
 
 /* Prototypes for aliases.  */
-#if !defined (GRUB_UTIL) || !defined (APPLE_CC)
+#ifndef GRUB_UTIL
+int EXPORT_FUNC(memcmp) (const void *s1, const void *s2, grub_size_t n);
 void *EXPORT_FUNC(memmove) (void *dest, const void *src, grub_size_t n);
 void *EXPORT_FUNC(memcpy) (void *dest, const void *src, grub_size_t n);
+void *EXPORT_FUNC(memset) (void *s, int c, grub_size_t n);
 #endif
 
 int EXPORT_FUNC(grub_memcmp) (const void *s1, const void *s2, grub_size_t n);
@@ -168,6 +171,7 @@ char *EXPORT_FUNC(grub_strndup) (const char *s, grub_size_t n);
 void *EXPORT_FUNC(grub_memset) (void *s, int c, grub_size_t n);
 grub_size_t EXPORT_FUNC(grub_strlen) (const char *s);
 int EXPORT_FUNC(grub_printf) (const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+int EXPORT_FUNC(grub_printf_) (const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
 void EXPORT_FUNC(grub_real_dprintf) (const char *file,
                                      const int line,
                                      const char *condition,
@@ -218,5 +222,16 @@ grub_div_roundup (unsigned int x, unsigned int y)
 {
   return (x + y - 1) / y;
 }
+
+/* Reboot the machine.  */
+void EXPORT_FUNC (grub_reboot) (void);
+
+#ifdef GRUB_MACHINE_PCBIOS
+/* Halt the system, using APM if possible. If NO_APM is true, don't
+ * use APM even if it is available.  */
+void EXPORT_FUNC (grub_halt) (int no_apm);
+#else
+void EXPORT_FUNC (grub_halt) (void);
+#endif
 
 #endif /* ! GRUB_MISC_HEADER */
