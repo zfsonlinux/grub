@@ -1,3 +1,25 @@
+grub2 (1.98~experimental.20091216-1) experimental; urgency=low
+
+  * New Bazaar snapshot.
+  * Upload again to experimental.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 16 Dec 2009 18:58:41 +0100
+
+grub2 (1.97+experimental.20091213-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Fix search command failing on some broken BIOSes (Closes: #530357)
+
+  [ Robert Millan ]
+  * grub-extras moved to Bazaar.
+
+  [ Felix Zielcke ]
+  * Ship grub-mkpasswd-* only in grub-common.
+  * Delete obsolete /etc/grub.d/10_freebsd if it has not been modified,
+    else disable it. (Closes: 560346)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sun, 13 Dec 2009 21:36:03 +0100
+
 grub2 (1.97+experimental.20091205-1) experimental; urgency=low
 
   * New Bazaar snapshot.
