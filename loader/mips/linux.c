@@ -26,6 +26,11 @@
 #include <grub/machine/loader.h>
 #include <grub/command.h>
 #include <grub/mips/relocator.h>
+#include <grub/machine/memory.h>
+
+/* For frequencies.  */
+#include <grub/pci.h>
+#include <grub/machine/time.h>
 
 #define ELF32_LOADMASK (0x00000000UL)
 #define ELF64_LOADMASK (0x0000000000000000ULL)
@@ -176,7 +181,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   int size;
   void *extra = NULL;
   grub_uint32_t *linux_argv, *linux_envp;
-  char *linux_args;
+  char *linux_args, *linux_envs;
   grub_err_t err;
 
   if (argc == 0)
@@ -200,15 +205,14 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   /* For arguments.  */
   linux_argc = argc;
   /* Main arguments.  */
-  size = (linux_argc + 1) * sizeof (grub_uint32_t); 
+  size = (linux_argc) * sizeof (grub_uint32_t); 
   /* Initrd address and size.  */
   size += 2 * sizeof (grub_uint32_t); 
   /* NULL terminator.  */
   size += sizeof (grub_uint32_t); 
 
-  /* First arguments are always "a0" and "a1".  */
+  /* First argument is always "a0".  */
   size += ALIGN_UP (sizeof ("a0"), 4);
-  size += ALIGN_UP (sizeof ("a1"), 4);
   /* Normal arguments.  */
   for (i = 1; i < argc; i++)
     size += ALIGN_UP (grub_strlen (argv[i]) + 1, 4);
@@ -218,7 +222,12 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   size += ALIGN_UP (sizeof ("rd_size=0xXXXXXXXXXXXXXXXX"), 4);
 
   /* For the environment.  */
-  size += sizeof (grub_uint32_t); 
+  size += sizeof (grub_uint32_t);
+  size += 4 * sizeof (grub_uint32_t);
+  size += ALIGN_UP (sizeof ("memsize=XXXXXXXXXXXXXXXXXXXX"), 4)
+    + ALIGN_UP (sizeof ("highmemsize=XXXXXXXXXXXXXXXXXXXX"), 4)
+    + ALIGN_UP (sizeof ("busclock=XXXXXXXXXX"), 4)
+    + ALIGN_UP (sizeof ("cpuclock=XXXXXXXXXX"), 4);
 
   if (grub_elf_is_elf32 (elf))
     err = grub_linux_load32 (elf, &extra, size);
@@ -235,7 +244,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 
   linux_argv = extra;
   argv_off = (grub_uint8_t *) linux_argv - (grub_uint8_t *) playground;
-  extra = linux_argv + (linux_argc + 1 + 1 + 2);
+  extra = linux_argv + (linux_argc + 1 + 2);
   linux_args = extra;
 
   grub_memcpy (linux_args, "a0", sizeof ("a0"));
@@ -243,12 +252,6 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
     + target_addr;
   linux_argv++;
   linux_args += ALIGN_UP (sizeof ("a0"), 4);
-
-  grub_memcpy (linux_args, "a1", sizeof ("a1"));
-  *linux_argv = (grub_uint8_t *) linux_args - (grub_uint8_t *) playground
-    + target_addr;
-  linux_argv++;
-  linux_args += ALIGN_UP (sizeof ("a1"), 4);
 
   for (i = 1; i < argc; i++)
     {
@@ -276,7 +279,27 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 
   linux_envp = extra;
   envp_off = (grub_uint8_t *) linux_envp - (grub_uint8_t *) playground;
-  linux_envp[0] = 0;
+  linux_envs = (char *) (linux_envp + 5);
+  grub_sprintf (linux_envs, "memsize=%lld", (unsigned long long) grub_mmap_get_lower () >> 20);
+  linux_envp[0] = (grub_uint8_t *) linux_envs - (grub_uint8_t *) playground
+    + target_addr;
+  linux_envs += ALIGN_UP (grub_strlen (linux_envs) + 1, 4);
+  grub_sprintf (linux_envs, "highmemsize=%lld", (unsigned long long) grub_mmap_get_upper () >> 20);
+  linux_envp[1] = (grub_uint8_t *) linux_envs - (grub_uint8_t *) playground
+    + target_addr;
+  linux_envs += ALIGN_UP (grub_strlen (linux_envs) + 1, 4);
+
+  grub_sprintf (linux_envs, "busclock=%d", grub_arch_busclock);
+  linux_envp[2] = (grub_uint8_t *) linux_envs - (grub_uint8_t *) playground
+    + target_addr;
+  linux_envs += ALIGN_UP (grub_strlen (linux_envs) + 1, 4);
+  grub_sprintf (linux_envs, "cpuclock=%d", grub_arch_cpuclock);
+  linux_envp[3] = (grub_uint8_t *) linux_envs - (grub_uint8_t *) playground
+    + target_addr;
+  linux_envs += ALIGN_UP (grub_strlen (linux_envs) + 1, 4);
+
+
+  linux_envp[4] = 0;
 
   grub_loader_set (grub_linux_boot, grub_linux_unload, 1);
   initrd_loaded = 0;

@@ -3,7 +3,13 @@
 sbin_UTILITIES += grub-mkdevicemap
 grub_mkdevicemap_SOURCES = gnulib/progname.c util/grub-mkdevicemap.c \
 	util/deviceiter.c \
-	util/devicemap.c util/misc.c
+	util/misc.c
+
+ifeq ($(target_cpu)-$(platform), sparc64-ieee1275)
+grub_mkdevicemap_SOURCES += util/ieee1275/ofpath.c util/ieee1275/devicemap.c
+else
+grub_mkdevicemap_SOURCES += util/devicemap.c
+endif
 
 # For grub-mkelfimage.
 bin_UTILITIES += grub-mkelfimage
@@ -717,6 +723,6 @@ password_pbkdf2_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 bin_UTILITIES += grub-mkpasswd-pbkdf2
 grub_mkpasswd_pbkdf2_SOURCES = gnulib/progname.c util/grub-mkpasswd-pbkdf2.c lib/crypto.c lib/libgcrypt-grub/cipher/sha512.c lib/pbkdf2.c util/misc.c kern/err.c
-grub_mkpasswd_pbkdf2_CFLAGS += -Wno-missing-field-initializers -Wno-error -I$(srcdir)/lib/libgcrypt_wrap
+grub_mkpasswd_pbkdf2_CFLAGS += -Wno-missing-field-initializers -Wno-error -I$(srcdir)/lib/libgcrypt_wrap -DGRUB_MKPASSWD=1
 
 include $(srcdir)/conf/gcry.mk
