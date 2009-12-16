@@ -1,3 +1,206 @@
+2009-12-16  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	UUID support for HFS.
+
+	* fs/hfs.c (grub_hfs_uuid): New function.
+	(grub_hfs_fs): New value .uuid.
+	* include/grub/hfs.h (grub_hfs_sblock): New field 'num_serial'.
+
+2009-12-14 Felix Zielcke <fzielcke@z-51.de>
+
+	Fix a segfault with parsing unknown long options.
+
+	* util/grub-mkrelpath.c (options): Zero terminate it.
+
+2009-12-13  Carles Pina i Estany  <carles@pina.cat>
+
+	* include/grub/misc.h (grub_puts): New declaration.
+	(grub_puts_): Likewise.
+	* kern/mis.c (grub_puts): New definition.
+	(grub_puts_): Likewise.
+
+2009-12-13  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* util/grub-probe.c (probe): Improve error message.
+
+2009-12-13  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* loader/i386/multiboot_elfxx.c
+	(CONCAT(grub_multiboot_load_elf, XX)): Fix `grub_multiboot_payload_eip'
+	initialization.
+
+2009-12-13  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	Relocator framework
+
+	* loader/i386/xnu_helper.S: Removed. All users updated.
+	* conf/i386.rmk (pkglib_MODULES): Add relocator.mod.
+	(relocator_mod_SOURCES): New variable.
+	(relocator_mod_CFLAGS): Likewise.
+	(relocator_mod_LDFLAGS): Likewise.
+	(relocator_mod_ASFLAGS): Likewise.
+	* conf/x86_64.rmk: Likewise.
+	* include/grub/i386/multiboot.h (grub_multiboot_payload_orig): Removed.
+	(grub_multiboot_payload_entry_offset): Likewise.
+	(grub_multiboot_forward_relocator): Likewise.
+	(grub_multiboot_forward_relocator_end): Likewise.
+	(grub_multiboot_backward_relocator): Likewise.
+	(grub_multiboot_backward_relocator_end): Likewise.
+	(grub_multiboot_payload_eip): New variable.
+	(grub_multiboot_payload_orig): Likewise.
+	* include/grub/i386/pc/memory.h: Include grub/i386/memory.h.
+	(GRUB_MEMORY_MACHINE_CR0_PE_ON): Move from here ...
+	* include/grub/i386/memory.h
+	(GRUB_MEMORY_CPU_CR0_PE_ON): ... to here
+	(GRUB_MEMORY_CPU_CR4_PAE_ON): New definition.
+	(GRUB_MEMORY_CPU_CR0_PAGING_ON): Likewise.
+	(GRUB_MEMORY_CPU_AMD64_MSR): Likewise.
+	(GRUB_MEMORY_CPU_AMD64_MSR_ON): Likewise.
+	* include/grub/i386/relocator.h: New file.
+	* include/grub/x86_64/relocator.h: Likewise.
+	* include/grub/i386/xnu.h: Include grub/cpu/relocator.h.
+	(XNU_RELOCATOR): New macro.
+	(grub_xnu_launcher_start): Remove.
+	(grub_xnu_launcher_end): Likewise.
+	* include/grub/xnu.h (grub_xnu_boot_resume): New prototype.
+	(grub_xnu_heap_real_start): Remove.
+	(grub_xnu_heap_start): Change to void *. All users updated.
+	* kern/i386/realmode.S (real_to_prot): Use GRUB_MEMORY_CPU_CR0_PE_ON.
+	* lib/i386/relocator.c: New file.
+	* lib/i386/relocator_asm.S: Likewise.
+	* lib/i386/relocator_backward.S: Likewise.
+	* lib/mips/relocator.c: Likewise.
+	* lib/mips/relocator_asm.S: Likewise.
+	* lib/relocator.c: Likewise.
+	* loader/i386/multiboot.c: Include grub/i386/relocator.h.
+	(entry): Removed.
+	(playground): Likewise.
+	(grub_multiboot_payload_orig): New variable.
+	(grub_multiboot_payload_dest): Likewise.
+	(grub_multiboot_payload_size): Likewise.
+	(grub_multiboot_payload_eip): Likewise.
+	(grub_multiboot_payload_esp): Likewise.
+	(grub_multiboot_boot): Use grub_relocator32_boot.
+	(grub_multiboot_unload): Free relocators.
+	(grub_multiboot): Setup stack. Use relocators.
+	* loader/i386/multiboot_elfxx.c: Include grub/i386/relocator.h.
+	(grub_multiboot_load_elfXX): Use relocators.
+	* loader/i386/multiboot_helper.S (grub_multiboot_payload_orig): Removed.
+	(grub_multiboot_payload_size): Likewise.
+	(grub_multiboot_payload_dest): Likewise.
+	(grub_multiboot_payload_entry_offset): Likewise.
+	(grub_multiboot_forward_relocator): Likewise.
+	(grub_multiboot_backward_relocator): Likewise.
+	(grub_multiboot_real_boot): Likewise.
+	* loader/i386/xnu.c (grub_xnu_heap_will_be_at): New variable.
+	(grub_xnu_entry_point): Likewise.
+	(grub_xnu_arg1): Likewise.
+	(grub_xnu_stack): Likewise.
+	(grub_xnu_launch): Removed.
+	(grub_xnu_boot_resume): New function.
+	(grub_xnu_boot): Use relocators.
+	* loader/i386/xnu_helper.S: Removed.
+	* loader/xnu.c (grub_xnu_heap_start): New variable.
+	(grub_xnu_heap_size): Likewise.
+	(grub_xnu_heap_malloc): Use relocators.
+	* loader/xnu_resume.c (grub_xnu_resume): Use relocators.
+
+2009-12-13  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	* kern/i386/pc/startup.S (multiboot_entry): Setup stack before calling
+	anything.
+
+2009-12-13  Carles Pina i Estany  <carles@pina.cat>
+
+	* script/execute.c (grub_script_execute_cmdline): Set grub_errno to
+	GRUB_ERR_NONE before calling grub_env_set.
+
+2009-12-12  Robert Millan  <rmh@aybabtu.com>
+
+	* gendistlist.sh (EXTRA_DISTFILES): Add `genvideolist.sh'.
+	* genmk.rb (video): New variable.
+	(CLEANFILES, VIDEOFILES): Add #{video}.
+	(#{video}): New target rule.
+	* genvideolist.sh: New file.
+	* Makefile.in (pkglib_DATA): Add video.lst.
+	(video.lst): New target rule.
+	* util/grub-mkconfig.in: Initialize ${GRUB_VIDEO_BACKEND} using
+	`video.lst'.
+	* util/grub.d/30_os-prober.in: Replace `vbe' with
+	${GRUB_VIDEO_BACKEND}.
+
+2009-12-11  Robert Millan  <rmh.grub@aybabtu.com>
+
+	* THANKS: Add David Miller.
+
+2009-12-11  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	libpciaccess support.
+
+	* Makefile.in (LIBPCIACCESS): New variable.
+	(enable_grub_emu_pci): Likewise.
+	* conf/any-emu.rmk (grub_emu_SOURCES) [enable_grub_emu_pci]: Add
+	util/pci.c and commands/lspci.c.
+	(grub_emu_LDFLAGS) [enable_grub_emu_pci]: Add $(LIBPCIACCESS).
+	* configure.ac (grub-emu-pci): New option.
+	* include/grub/i386/pci.h (grub_pci_device_map_range): New function.
+	(grub_pci_device_unmap_range): Likewise.
+	* include/grub/pci.h [GRUB_UTIL]: Include grub/pciutils.h.
+	(grub_pci_device) [!GRUB_UTIL]: New structure. All users updated.
+	(grub_pci_address_t) [!GRUB_UTIL]: New type.
+	(grub_pci_device_t) [!GRUB_UTIL]: Likewise.
+	(grub_pci_get_bus) [!GRUB_UTIL]: New function.
+	(grub_pci_get_device) [!GRUB_UTIL]: Likewise.
+	(grub_pci_get_function) [!GRUB_UTIL]: Likewise.
+	* include/grub/pciutils.h: New file.
+	* util/pci.c: Likewise.
+
+2009-12-11 Felix Zielcke <fzielcke@z-51.de>
+
+	* util/misc.c: Don't include <errno.h> twice.
+
+2009-12-10 Felix Zielcke <fzielcke@z-51.de>
+
+	* disk/i386/pc/biosdisk.c (grub_biosdisk_open): Show the disk
+	name in an error message.
+	(grub_biosdisk_rw): Likewise.
+
+2009-12-10  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	Eliminate NTFS 4Gib barrier.
+
+	* fs/ntfs.c (read_attr): Use grub_disk_addr_t and grub_size_t.
+	(read_run_data): Likewise.
+	(grub_ntfs_read_run_list): Likewise.
+	(grub_ntfs_read_block): Likewise.
+	(grub_ntfs_iterate_dir): Likewise.
+	(read_mft): Likewise.
+	(read_data): Likewise.
+	Use COM_LOG_LEN.
+	* fs/ntfscomp.c (read_block): Cast ctx->target_vcn & 0xF to unsigned
+	to avoid 64-bit division
+	* include/grub/ntfs.h (COM_LOG_LEN): New definition.
+	(grub_ntfs_rlst): Use grub_disk_addr_t.
+
+2009-12-10  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	Eliminate grub-fstest 4Gib barrier.
+
+	* util/grub-fstest.c (skip, leng): Use grub_disk_addr_t.
+	(read_file): Fix error reporting.
+
+2009-12-10  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	Eliminate hexdump 4Gib barrier.
+
+	* commands/hexdump.c (grub_cmd_hexdump): Use grub_disk_addr_t.
+	* lib/arg.c (grub_arg_parse): Use grub_strtoull.
+
+2009-12-10  Vladimir Serbinenko  <phcoder@gmail.com>
+
+	* kern/device.c (grub_device_iterate): Ignore errors during first scan.
+	Fixes amarsh bug.
+
 2009-12-09  Bruce Dubbs  <bruce.dubbs@gmail.com>
 
 	Remove miscellaneous files in distclean target.
