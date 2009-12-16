@@ -1,108 +1,133 @@
-grub2 (1.97+20091210-1) unstable; urgency=low
+grub2 (1.98~experimental.20091216-1) experimental; urgency=low
 
   * New Bazaar snapshot.
-    - patches/02_fix_mountpoints_in_mkrelpath.diff: Remove (merged). 
-    - Fixes FTBFS on powerpc (again) and sparc.
-    - patches/903_grub_legacy_0_based_partitions.diff: Resync (merged into
-      debian branch).
+  * Upload again to experimental.
 
-  [ Felix Zielcke ]
-  * Fix dpkg dependency for lenny compatibility.
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 15 Dec 2009 09:01:19 +0100
 
- -- Robert Millan <rmh.debian@aybabtu.com>  Thu, 10 Dec 2009 00:35:20 +0100
-
-grub2 (1.97+20091130-1) unstable; urgency=low
+grub2 (1.97+experimental.20091213-1) unstable; urgency=low
 
   * New Bazaar snapshot.
-  * Enable ntldr-img from grub-extras.
-
- -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 30 Nov 2009 02:33:03 +0100
-
-grub2 (1.97+20091125-2) unstable; urgency=low
-
-  [ Updated translations ]
-  * Bulgarian (bg.po) by Damyan Ivanovi (Closes: #558039)
+    - Fix search command failing on some broken BIOSes (Closes: #530357)
 
   [ Robert Millan ]
-  * control: Remove genisoimage from Build-Depends/Suggests (no longer
-    used).
-  * grub.d/05_debian_theme: Make output string distro-agnostic.
+  * grub-extras moved to Bazaar.
 
   [ Felix Zielcke ]
-  * patches/02_fix_mountpoints_in_mkrelpath.diff: New patch to handle
-    mount points like the old shell function did. (Closes: #558042)
+  * Ship grub-mkpasswd-* only in grub-common.
+  * Delete obsolete /etc/grub.d/10_freebsd if it has not been modified,
+    else disable it. (Closes: 560346)
 
- -- Felix Zielcke <fzielcke@z-51.de>  Sun, 29 Nov 2009 21:38:00 +0100
+ -- Felix Zielcke <fzielcke@z-51.de>  Sun, 13 Dec 2009 21:36:03 +0100
 
-grub2 (1.97+20091125-1) unstable; urgency=low
+grub2 (1.97+experimental.20091205-1) experimental; urgency=low
 
-  [ Robert Millan ]
-  * New upstream snapshot.
-    - Fixes script parser load error.
+  * New Bazaar snapshot.
+    - Includes mipsel port.
+  * Add grub-yeeloong package.
 
-  * Add gettext to Build-Depends and gettext-base to grub-common's
-    Depends.
+ -- Robert Millan <rmh.debian@aybabtu.com>  Sat, 05 Dec 2009 20:51:18 +0100
 
- -- Felix Zielcke <fzielcke@z-51.de>  Wed, 25 Nov 2009 19:22:51 +0100
+grub2 (1.97+experimental.20091127-1) experimental; urgency=low
 
-grub2 (1.97+20091124-1) unstable; urgency=low
-
-  * New upstream snapshot.
+  * New Bazaar snapshot.
+    - Same grub-mkrescue for grub-pc and grub-coreboot, used by
+      grub-rescue-pc during postinst now. (Closes: #501867)
     - Fix grub-mkisofs related FTBFS on powerpc. (Closes: #557704)
     - Create fake GRUB devices for devices not listed in device.map.
       This also makes dmraid and multipath work as long as
       search --fs-uuid works. (Closes: #442382, #540549, LP: #392136)
-    - rules: grub-emu is now built as a port.
+    - Fix slowness when $prefix uses the (UUID=) hack.
+      (Closes: #541145, LP: #420933)
+
+  [ Robert Millan ]
+  * Add gettext to Build-Depends and gettext-base to grub-common's
+    Depends.
 
   [ Felix Zielcke ]
-  * Change the bt-utf-source build dependency to xfonts-unifont. It's
-    more complete, better maintained and grub-mkfont supports actually
-    more then BDF fonts as input, thanks to libfreetype.
+  * Update info how to get debian/legacy/update-grub from Bazaar.
   * Use grub-probe to get the GRUB device of /boot/grub instead of
     passing (hd0) to grub-install when creating the core.img with
     chainloading. This avoids the (UUID=) hack slowness in case
     /boot/grub is on a different disk then (hd0) in device.map.
+  * Change the bt-utf-source build dependency to xfonts-unifont. It's
+    more complete, better maintained and grub-mkfont supports actually
+    more then BDF fonts as input, thanks to libfreetype.
+  * Revert the Replaces: grub-common to (<= 1.96+20080413-1) on the
+    grub-pc package. It was wrongly modified long ago.
   * patches/903_grub_legacy_0_based_partitions.diff: Update.
   * Add a build dependency on automake and python.
   * Set TARGET_CC=$(CC) to really use gcc-4.4 everywhere. Also pass it
     and CC as arguments to ./configure instead of env vars so they get
     preserved.
-  * Ship grub-mkrelpath in grub-common.
-  * Ship the locale files in grub-common.
-  * Add a dependency on 'dpkg (>= 1.15.4) | install-info' for grub-common
-    as recommended by Policy and lintian.
+  * Ship the locale files and grub-mkrescue in grub-common.
 
+  [ Updated translations ]
+  * Bulgarian (bg.po) by Damyan Ivanovi (Closes: #558039)
 
- -- Felix Zielcke <fzielcke@z-51.de>  Tue, 24 Nov 2009 21:20:00 +0100
+ -- Robert Millan <rmh.debian@aybabtu.com>  Fri, 27 Nov 2009 01:38:39 +0100
 
-grub2 (1.97+20091115-1) unstable; urgency=low
+grub2 (1.97+experimental.20091114-1) experimental; urgency=low
 
-  * New upstream snapshot.
+  * New Bazaar snapshot.
+    - Revert faulty patch which breaks normal mode. (Closes: #555842)
+
+  * Ship grub-mkrelpath only in grub-common. (Closes: #554454)
+  * Don't strip debug symbols from grub-emu. It's meant for debugging
+    and with them it's much more useful.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sat, 14 Nov 2009 10:49:58 +0100
+
+grub2 (1.97+experimental.20091111-1) experimental; urgency=low
+
+  * New Bazaar snapshot.
+
+  * Remove conflicting files from grub-emu package. 
+  * Switch back to source format 1.0.  Buildds don't cope yet
+    well with it.
+  * Remove SVN rules from debian/rules and update where to get grub-
+    legacy/update-grub from.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 11 Nov 2009 15:41:02 +0100
+
+grub2 (1.97+experimental.20091110-1) experimental; urgency=high
+
+  [ Robert Millan ]
+  * New Bazaar snapshot.
     - Fix security problem with password checking.  (Closes: #555195)
+    - rules: grub-emu is now built as a port.
     - Fix the generated GNU/Hurd menu entries and also add support for
       it in 30_os-prober. (Closes: #555188)
-    - Same grub-mkrescue for grub-pc and grub-coreboot, used by
-      grub-rescue-pc during postinst now. (Closes: #501867)
 
-  [ Felix Zielcke ]
-  * Ship grub-mkisofs in grub-common.
-  * patches/002_grub.d_freebsd.in.diff: Remove (merged upstream).
+  * grub.d/05_debian_theme: Set "gfxpayload=keep".  This superceeds
+    -DGRUB_ASSUME_LINUX_HAS_FB_SUPPORT=1 setting which was disabled in
+    July.
+  * copyright: Document mkisofs.
+  * control: Update Vcs- fields (moved to Bazaar).
   * patches/906_grub_extras.diff: Remove. Superseded by GRUB_CONTRIB variable
     in recent upstream trunk.
   * rules: Export GRUB_CONTRIB to enable grub-extras add-ons.
+
+  [ Felix Zielcke ]
+  * Urgency high to due to security fix.
+  * Ship grub-reboot and grub-set-default only in the GRUB flavour
+    packages and not also grub-common.
+  * Switch to source format 3.0 (quilt).
+    - Make grub-extras a component orig tarball.
+    - keep CDBS simple-patchsys for now.
+  * Ship grub-mkisofs in grub-common.
+  * Add a dependency on 'dpkg (>= 1.15.4) | install-info' for grub-common
+    as recommended by Policy and lintian.
   * Pass --force to grub-install in the postinst. (Closes: #553415) 
-  * Don't strip debug symbols from grub-emu. It's meant for debugging
-    and with them it's much more useful.
-  * Ship grub-mkfloppy in grub-pc.
-  * Revert the Replaces: grub-common to (<= 1.96+20080413-1) on the
-    grub-pc package. It was wrongly modified long ago.
 
-  [ Robert Millan ]
-  * copyright: Document mkisofs.
-  * control: Update Vcs- fields (moved to Bazaar).
-  * rules: Update debian/legacy/update-grub rule to Bazaar.
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 10 Nov 2009 17:57:46 +0100
 
- -- Felix Zielcke <fzielcke@z-51.de>  Sun, 15 Nov 2009 19:13:31 +0100
+grub2 (1.97+experimental.20091026-1) experimental; urgency=low
+
+   * New Bazaar snapshot.
+   * patches/002_grub.d_freebsd.in.diff: Remove (merged upstream).
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 26 Oct 2009 02:06:20 +0100 
 
 grub2 (1.97-1) unstable; urgency=low
 

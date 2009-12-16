@@ -68,7 +68,7 @@ MOSTLYCLEAN_IMAGE_TARGETS += mostlyclean-image-#{@name}.#{@rule_count}
 
 ifneq ($(TARGET_APPLE_CC),1)
 #{@name}: #{exe}
-	$(OBJCOPY) -O $(#{prefix}_FORMAT) --strip-unneeded -R .note -R .comment -R .note.gnu.build-id $< $@
+	$(OBJCOPY) -O $(#{prefix}_FORMAT) --strip-unneeded -R .note -R .comment -R .note.gnu.build-id -R .reginfo -R .rel.dyn $< $@
 else
 ifneq (#{exe},kernel.exec)
 #{@name}: #{exe} ./grub-macho2img
@@ -193,6 +193,7 @@ endif
       partmap = 'partmap-' + obj.suffix('lst')
       handler = 'handler-' + obj.suffix('lst')
       parttool = 'parttool-' + obj.suffix('lst')
+      video = 'video-' + obj.suffix('lst')
       dep = deps[i]
       flag = if /\.c$/ =~ src then 'CFLAGS' else 'ASFLAGS' end
       extra_flags = if /\.S$/ =~ src then '-DASM_FILE=1' else '' end
@@ -203,7 +204,7 @@ endif
 -include #{dep}
 
 clean-module-#{extra_target}.#{@rule_count}:
-	rm -f #{command} #{fs} #{partmap} #{handler} #{parttool}
+	rm -f #{command} #{fs} #{partmap} #{handler} #{parttool} #{video}
 
 CLEAN_MODULE_TARGETS += clean-module-#{extra_target}.#{@rule_count}
 
@@ -212,6 +213,7 @@ FSFILES += #{fs}
 PARTTOOLFILES += #{parttool}
 PARTMAPFILES += #{partmap}
 HANDLERFILES += #{handler}
+VIDEOFILES += #{video}
 
 #{command}: #{src} $(#{src}_DEPENDENCIES) gencmdlist.sh
 	set -e; \
@@ -237,6 +239,11 @@ HANDLERFILES += #{handler}
 	set -e; \
 	  $(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) #{extra_flags} $(TARGET_#{flag}) $(#{prefix}_#{flag}) -E $< \
 	  | sh $(srcdir)/genhandlerlist.sh #{symbolic_name} > $@ || (rm -f $@; exit 1)
+
+#{video}: #{src} $(#{src}_DEPENDENCIES) genvideolist.sh
+	set -e; \
+	  $(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) #{extra_flags} $(TARGET_#{flag}) $(#{prefix}_#{flag}) -E $< \
+	  | sh $(srcdir)/genvideolist.sh #{symbolic_name} > $@ || (rm -f $@; exit 1)
 
 "
     end.join('')
@@ -319,6 +326,7 @@ MOSTLYCLEANFILES += #{deps_str}
 
 #{@name}: $(#{prefix}_DEPENDENCIES) #{objs_str}
 	$(TARGET_CC) -o $@ #{objs_str} $(TARGET_LDFLAGS) $(#{prefix}_LDFLAGS)
+	$(STRIP) -R .rel.dyn -R .reginfo -R .note -R .comment $@
 
 " + objs.collect_with_index do |obj, i|
       src = sources[i]
@@ -330,6 +338,7 @@ MOSTLYCLEANFILES += #{deps_str}
 
       "#{obj}: #{src} $(#{src}_DEPENDENCIES)
 	$(TARGET_CC) -I#{dir} -I$(srcdir)/#{dir} $(TARGET_CPPFLAGS) #{extra_flags} $(TARGET_#{flag}) $(#{prefix}_#{flag}) -MD -c -o $@ $<
+
 -include #{dep}
 
 "
