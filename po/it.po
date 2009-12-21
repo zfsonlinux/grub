@@ -1,0 +1,857 @@
+# Italian translations for grub package
+# Copyright (C) 2009 Free Software Foundation, Inc.
+# This file is distributed under the same license as the grub package.
+# Milo Casagrande <milo@casagrande.name>, 2009.
+#
+# transparent compression -> compressione immediata
+# non avendo trovato molto in giro, ho cercato un sinonimo di 
+# "trasparente". Praticamente la "transparent compression" è una 
+# compressione on-the-fly, "trasparente" all'utente, da qui 
+# "immediata", visto che non si nota
+# boot catalog -> lasciato invariato, dovrebbe essere il file boot.catalog, non so
+# se tradurlo con "catalogo di boot" sia comprensibile...
+# Joliet -> usato sempre con la maiuscola
+#
+# http://en.wikipedia.org/wiki/Transparency_(computing)
+# http://en.wikipedia.org/wiki/Rock_Ridge
+# http://en.wikipedia.org/wiki/Joliet_(file_system)
+# http://www.linux.com/archive/feature/151485
+# http://grub.enbug.org/
+# Milo Casagrande <milo@casagrande.name>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: grub-1.97+20091122\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-11-22 11:48+0100\n"
+"PO-Revision-Date: 2009-12-21 21:06+0100\n"
+"Last-Translator: Milo Casagrande <milo@casagrande.name>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: util/i386/pc/grub-mkimage.c:65
+msgid "the core image is too small"
+msgstr "l'immagine core è troppo piccola"
+
+#: util/i386/pc/grub-mkimage.c:77
+msgid "cannot compress the kernel image"
+msgstr "impossibile comprimere l'immagine del kernel"
+
+#: util/i386/pc/grub-mkimage.c:138
+msgid "prefix is too long"
+msgstr "il prefisso è troppo lungo"
+
+#: util/i386/pc/grub-mkimage.c:206
+msgid "the core image is too big"
+msgstr "l'immagine core è troppo grande"
+
+#: util/i386/pc/grub-mkimage.c:211
+#, c-format
+msgid "diskboot.img size must be %u bytes"
+msgstr "la dimensione di diskboot.img deve essere di %u byte"
+
+#: util/i386/pc/grub-mkimage.c:284
+#, c-format
+msgid "Core image is too big (%p > %p)\n"
+msgstr "L'immagine core è troppo grande (%p > %p)\n"
+
+#: util/i386/pc/grub-mkimage.c:321 util/i386/pc/grub-setup.c:587
+#, c-format
+msgid "Try ``%s --help'' for more information.\n"
+msgstr "Usare \"%s --help\" per ulteriori informazioni.\n"
+
+#: util/i386/pc/grub-mkimage.c:323
+#, c-format
+msgid ""
+"Usage: grub-mkimage [OPTION]... [MODULES]\n"
+"\n"
+"Make a bootable image of GRUB.\n"
+"\n"
+"  -d, --directory=DIR     use images and modules under DIR [default=%s]\n"
+"  -p, --prefix=DIR        set grub_prefix directory [default=%s]\n"
+"  -m, --memdisk=FILE      embed FILE as a memdisk image\n"
+"  -c, --config=FILE       embed FILE as boot config\n"
+"  -o, --output=FILE       output a generated image to FILE [default=stdout]\n"
+"  -h, --help              display this message and exit\n"
+"  -V, --version           print version information and exit\n"
+"  -v, --verbose           print verbose messages\n"
+"\n"
+"Report bugs to <%s>.\n"
+msgstr ""
+"Uso: grub-mkimage [OPZIONI]... [MODULI]\n"
+"\n"
+"Crea un'immagine avviabile di GRUB.\n"
+"\n"
+"  -d, --directory=DIR     Usa le immagini e i moduli in DIR [predefinito=%s]\n"
+"  -p, --prefix=DIR        Imposta la directory di grub_prefix [predefinito=%s]\n"
+"  -m, --memdisk=FILE      Incorpora FILE come immagine memdisk\n"
+"  -c, --config=FILE       Incorpora FILE come configurazione di boot\n"
+"  -o, --output=FILE       Invia in output un'immagine generata su FILE [predefinito=stdout]\n"
+"  -h, --help              Visualizza questo messaggio ed esce\n"
+"  -V, --version           Stampa la versione ed esce\n"
+"  -v, --verbose           Stampa messaggi verbosi\n"
+"\n"
+"Segnalare i bug a <%s>.\n"
+
+#: util/i386/pc/grub-mkimage.c:429
+#, c-format
+msgid "cannot open %s"
+msgstr "impossibile aprire %s"
+
+#: util/i386/pc/grub-setup.c:166
+msgid "The first sector of the core file is not sector-aligned"
+msgstr "Il primo settore del file core non è allineato rispetto al settore"
+
+#: util/i386/pc/grub-setup.c:180
+msgid "Non-sector-aligned data is found in the core file"
+msgstr "Trovati dati non allineati rispetto al settore nel file core"
+
+#: util/i386/pc/grub-setup.c:194
+msgid "The sectors of the core file are too fragmented"
+msgstr "I settori del file core sono troppo frammentati"
+
+#: util/i386/pc/grub-setup.c:205
+#, c-format
+msgid "The size of `%s' is not %u"
+msgstr "La dimensione di \"%s\" non è %u"
+
+#: util/i386/pc/grub-setup.c:222
+#, c-format
+msgid "The size of `%s' is too small"
+msgstr "La dimensione di \"%s\" è troppo piccola"
+
+#: util/i386/pc/grub-setup.c:224
+#, c-format
+msgid "The size of `%s' is too large"
+msgstr "La dimensione di \"%s\" è troppo grande"
+
+#: util/i386/pc/grub-setup.c:261
+#, c-format
+msgid "Unable to identify a filesystem in %s; safety check can't be performed"
+msgstr "Impossibile identificare un file system in %s; non è possibile eseguire un controllo di sicurezza"
+
+#: util/i386/pc/grub-setup.c:265
+#, c-format
+msgid "%s appears to contain a %s filesystem which isn't known to reserve space for DOS-style boot.  Installing GRUB there could result in FILESYSTEM DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe disables this check, use at your own risk)"
+msgstr "Sembra che %s contenga un file system %s, noto per non riservare dello spazio per l'avvio in stile DOS. Installare GRUB qui potrebbe portare alla DISTRUZIONE del file system se dati importanti vengono sovrascritti da grub-setup (--skip-fs-probe disabilita questo controllo, usare a proprio rischio)."
+
+#: util/i386/pc/grub-setup.c:314
+msgid "No DOS-style partitions found"
+msgstr "Non sono state trovate partizioni in stile DOS"
+
+#: util/i386/pc/grub-setup.c:330 util/i386/pc/grub-setup.c:355
+msgid "Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
+msgstr "Tentativo di installare GRUB su un disco privo di partizioni. Non è una buona idea."
+
+#: util/i386/pc/grub-setup.c:336
+msgid "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD idea."
+msgstr "Tentativo di installare GRUB in una partizione invece che nel MBR. Non è una buona idea."
+
+#: util/i386/pc/grub-setup.c:365
+msgid "This msdos-style partition label has no post-MBR gap; embedding won't be possible!"
+msgstr "L'etichetta della partizione in stile MS-DOS non presenta uno spazio dopo l'MBR; l'embed non sarà possibile."
+
+#: util/i386/pc/grub-setup.c:367
+msgid "This GPT partition label has no BIOS Boot Partition; embedding won't be possible!"
+msgstr "L'etichetta della partizione GPT non presenta una BIOS Boot Partition; l'embed non sarà possibile."
+
+#: util/i386/pc/grub-setup.c:374
+msgid "Your core.img is unusually large.  It won't fit in the embedding area."
+msgstr "L'immagine core.img è troppo grande. Non può essere contenuta nell'area di embed."
+
+#: util/i386/pc/grub-setup.c:376
+msgid "Your embedding area is unusually small.  core.img won't fit in it."
+msgstr "L'area di embed è troppo piccola. L'immagine core.img non può esservi contenuta."
+
+#: util/i386/pc/grub-setup.c:418
+msgid "Embedding is not possible, but this is required when the root device is on a RAID array or LVM volume."
+msgstr "L'embed non è possibile, ma è richiesto quando il dispositivo di root si trova su un array RAID o un volume LVM."
+
+#: util/i386/pc/grub-setup.c:421
+msgid "Embedding is not possible.  GRUB can only be installed in this setup by using blocklists.  However, blocklists are UNRELIABLE and its use is discouraged."
+msgstr "L'embed non è possibile. GRUB può essere installato con questa configurazione solo usando blocklist. Le blocklist non sono comunque affidabili e ne viene sconsigliato l'uso."
+
+#: util/i386/pc/grub-setup.c:425
+msgid "If you really want blocklists, use --force."
+msgstr "Per utilizzare le blocklist, usare --force."
+
+#: util/i386/pc/grub-setup.c:439
+#, c-format
+msgid "attempting to read the core image `%s' from GRUB"
+msgstr "tentativo di leggere l'immagine core \"%s\" da GRUB"
+
+#: util/i386/pc/grub-setup.c:440
+#, c-format
+msgid "attempting to read the core image `%s' from GRUB again"
+msgstr "tentativo di leggere nuovamente l'immagine core \"%s\" da GRUB"
+
+#: util/i386/pc/grub-setup.c:498
+#, c-format
+msgid "Cannot read `%s' correctly"
+msgstr "Impossibile leggere \"%s\" correttamente"
+
+#: util/i386/pc/grub-setup.c:511
+msgid "No terminator in the core image"
+msgstr "Nessun terminatore nell'immagine core"
+
+#: util/i386/pc/grub-setup.c:522
+msgid "Failed to read the first sector of the core image"
+msgstr "Lettura del primo settore dell'immagine core non riuscita"
+
+#: util/i386/pc/grub-setup.c:528
+msgid "Failed to read the rest sectors of the core image"
+msgstr "Lettura dei restanti settori dell'immagine core non riuscita"
+
+#: util/i386/pc/grub-setup.c:547
+#, c-format
+msgid "Cannot open `%s'"
+msgstr "Impossibile aprire \"%s\""
+
+#: util/i386/pc/grub-setup.c:589
+#, c-format
+msgid ""
+"Usage: grub-setup [OPTION]... DEVICE\n"
+"\n"
+"Set up images to boot from DEVICE.\n"
+"DEVICE must be a GRUB device (e.g. ``(hd0,1)'').\n"
+"\n"
+"  -b, --boot-image=FILE   use FILE as the boot image [default=%s]\n"
+"  -c, --core-image=FILE   use FILE as the core image [default=%s]\n"
+"  -d, --directory=DIR     use GRUB files in the directory DIR [default=%s]\n"
+"  -m, --device-map=FILE   use FILE as the device map [default=%s]\n"
+"  -r, --root-device=DEV   use DEV as the root device [default=guessed]\n"
+"  -f, --force             install even if problems are detected\n"
+"  -s, --skip-fs-probe     do not probe for filesystems in DEVICE\n"
+"  -h, --help              display this message and exit\n"
+"  -V, --version           print version information and exit\n"
+"  -v, --verbose           print verbose messages\n"
+"\n"
+"Report bugs to <%s>.\n"
+msgstr ""
+"Uso: grub-setup [OPZIONI]... DEVICE\n"
+"\n"
+"Configura le immagini per essere avviate da DEVICE.\n"
+"DEVICE deve essere un device di GRUB (come \"(hd0,1)\").\n"
+"\n"
+"  -b, --boot-image=FILE   Usa FILE come l'immagine di boot [predefinito=%s]\n"
+"  -c, --core-image=FILE   Usa FILE come l'immagine core [predefinito=%s]\n"
+"  -d, --directory=DIR     Usa i file di GRUB nella directory DIR [predefinito=%s]\n"
+"  -m, --device-map=FILE   Usa FILE come device map [predefinito=%s]\n"
+"  -r, --root-device=DEV   Usa DEV come device root [predefinito=ipotizzato]\n"
+"  -f, --force             Installa anche in presenza di problemi\n"
+"  -s, --skip-fs-probe     Non cerca file system nel DEVICE\n"
+"  -h, --help              Visualizza questo messaggio ed esce\n"
+"  -V, --version           Stampa la versione ed esce\n"
+"  -v, --verbose           Stampa messaggi prolissi\n"
+"\n"
+"Segnalare i bug a <%s>.\n"
+
+#: util/i386/pc/grub-setup.c:719
+#, c-format
+msgid "No device is specified.\n"
+msgstr "Nessun device specificato.\n"
+
+#: util/i386/pc/grub-setup.c:725
+#, c-format
+msgid "Unknown extra argument `%s'.\n"
+msgstr "Argomento aggiuntivo \"%s\" sconosciuto.\n"
+
+#: util/i386/pc/grub-setup.c:742
+#, c-format
+msgid "Invalid device `%s'.\n"
+msgstr "Device \"%s\" non valido.\n"
+
+#: util/i386/pc/grub-setup.c:755
+#, c-format
+msgid "Invalid root device `%s'"
+msgstr "Device root \"%s\" non valido"
+
+#: util/i386/pc/grub-setup.c:768
+msgid "Cannot guess the root device. Specify the option ``--root-device''."
+msgstr "Impossibile ipotizzare il device di root. Specificare l'opzione \"--root-device\"."
+
+#: util/mkisofs/eltorito.c:96
+#, c-format
+msgid "A boot catalog exists and appears corrupted.\n"
+msgstr "Un boot catalog esiste e sembra danneggiato.\n"
+
+#: util/mkisofs/eltorito.c:97
+#, c-format
+msgid "Please check the following file: %s.\n"
+msgstr "Controllare il seguente file: %s.\n"
+
+#: util/mkisofs/eltorito.c:98
+#, c-format
+msgid "This file must be removed before a bootable CD can be done.\n"
+msgstr "Questo file deve essere rimosso prima di poter creare un CD avviabile.\n"
+
+#: util/mkisofs/eltorito.c:110
+#, c-format
+msgid "Error creating boot catalog (%s)"
+msgstr "Errore nel creare il boot catalog (%s)"
+
+#: util/mkisofs/eltorito.c:114
+#, c-format
+msgid "Error writing to boot catalog (%s)"
+msgstr "Errore nello scrivere sul boot catalog (%s)"
+
+#: util/mkisofs/eltorito.c:144
+#, c-format
+msgid "Boot catalog cannot be found!\n"
+msgstr "Impossibile trovare il boot catalog.\n"
+
+#: util/mkisofs/eltorito.c:158
+#, c-format
+msgid "Boot image cannot be found!\n"
+msgstr "Impossibile trovare l'immagine di boot.\n"
+
+#: util/mkisofs/eltorito.c:221
+#, c-format
+msgid ""
+"\n"
+"Size of boot image is %d sectors"
+msgstr ""
+"\n"
+"La dimensione dell'immagine di boot è di %d settori."
+
+#: util/mkisofs/eltorito.c:227
+#, c-format
+msgid "No emulation\n"
+msgstr "Nessuna emulazione\n"
+
+#: util/mkisofs/eltorito.c:235
+#, c-format
+msgid "Emulating a 1.44 meg floppy\n"
+msgstr "Emulazione di un disco floppy da 1.44MB\n"
+
+#: util/mkisofs/eltorito.c:240
+#, c-format
+msgid "Emulating a 2.88 meg floppy\n"
+msgstr "Emulazione di un disco floppy da 2.88MB\n"
+
+#: util/mkisofs/eltorito.c:245
+#, c-format
+msgid "Emulating a 1.2 meg floppy\n"
+msgstr "Emulazione di un disco floppy da 1.2MB\n"
+
+#: util/mkisofs/eltorito.c:249
+#, c-format
+msgid ""
+"\n"
+"Error - boot image is not the an allowable size.\n"
+msgstr ""
+"\n"
+"Errore: l'immagine di boot non è di una dimensione consentita.\n"
+
+#: util/mkisofs/eltorito.c:269
+msgid "Error opening boot catalog for update"
+msgstr "Errore nell'aprire il boot catalog per l'aggiornamento"
+
+#: util/mkisofs/eltorito.c:275 util/mkisofs/eltorito.c:277
+msgid "Error writing to boot catalog"
+msgstr "Errore nello scrivere sul boot catalog"
+
+#: util/mkisofs/eltorito.c:291
+#, c-format
+msgid "Error opening boot image file '%s' for update"
+msgstr "Errore nell'aprire il file dell'immagine di boot \"%s\" per l'aggiornamento"
+
+#: util/mkisofs/eltorito.c:299
+#, c-format
+msgid "Odd alignment at non-end-of-file in boot image '%s'"
+msgstr "Allineamento non corretto alla non-fine-del-file nell'immagine di boot \"%s\""
+
+#: util/mkisofs/eltorito.c:311
+#, c-format
+msgid "Boot image file '%s' changed unexpectedly"
+msgstr "Il file dell'immagine di boot \"%s\" è stato modificato inaspettatamente"
+
+#: util/mkisofs/eltorito.c:323
+#, c-format
+msgid "Error writing to boot image (%s)"
+msgstr "Errore nello scrivere sull'immagine di boot (%s)"
+
+#: util/mkisofs/joliet.c:359 util/mkisofs/write.c:981
+#, c-format
+msgid "Unable to generate sane path tables - too many directories (%d)\n"
+msgstr "Impossibile generare tabelle di percorso ragionevoli, troppe directory (%d)\n"
+
+#: util/mkisofs/joliet.c:398 util/mkisofs/write.c:1017
+#, c-format
+msgid "Entry %d not in path tables\n"
+msgstr "Voce %d non presente nelle tabelle di percorso\n"
+
+# (ndt) originale fantastica...
+#: util/mkisofs/joliet.c:412
+#, c-format
+msgid "Fatal goof - directory has amnesia\n"
+msgstr "Errore fatale: la directory ha perso memoria\n"
+
+#: util/mkisofs/joliet.c:478
+#, c-format
+msgid "Joliet path table lengths do not match %d %d\n"
+msgstr "Le lunghezze della tabella dei percorsi Joliet non corrispondono %d %d\n"
+
+#: util/mkisofs/joliet.c:530
+#, c-format
+msgid "Unable to locate relocated directory\n"
+msgstr "Impossibile localizzare la directory spostata\n"
+
+#: util/mkisofs/joliet.c:605
+#, c-format
+msgid "Fatal goof - unable to find directory location\n"
+msgstr "Errore fatale: impossibile trovare la posizione della directory\n"
+
+#: util/mkisofs/joliet.c:654
+#, c-format
+msgid "Unexpected joliet directory length %d %d %s\n"
+msgstr "Lunghezza directory Joliet non attesa %d %d %s\n"
+
+#: util/mkisofs/mkisofs.c:373
+#, c-format
+msgid "Using \"%s\"\n"
+msgstr "In uso \"%s\"\n"
+
+#: util/mkisofs/mkisofs.c:401
+#, c-format
+msgid "%s:%d: name required\n"
+msgstr "%s:%d: richiesto il nome\n"
+
+#: util/mkisofs/mkisofs.c:411
+#, c-format
+msgid "%s:%d: equals sign required\n"
+msgstr "%s:%d: richiesto il segno di uguale\n"
+
+#: util/mkisofs/mkisofs.c:445
+#, c-format
+msgid "%s:%d: field name \"%s\" unknown\n"
+msgstr "%s:%d: nome \"%s\" del campo sconosciuto\n"
+
+#: util/mkisofs/mkisofs.c:474
+#, c-format
+msgid "Usage: %s [options] file...\n"
+msgstr "Uso: %s [OPZIONI] FILE...\n"
+
+#: util/mkisofs/mkisofs.c:476
+#, c-format
+msgid "Options:\n"
+msgstr "Opzioni:\n"
+
+#: util/mkisofs/mkisofs.c:706
+#, c-format
+msgid "-i option no longer supported.\n"
+msgstr "Opzione -i non più supportata.\n"
+
+#: util/mkisofs/mkisofs.c:720
+#, c-format
+msgid "Required boot image pathname missing\n"
+msgstr "Manca il percorso richiesto dell'immagine di boot\n"
+
+#: util/mkisofs/mkisofs.c:729
+#, c-format
+msgid "Required boot catalog pathname missing\n"
+msgstr "Manca il percorso richiesto del boot catalog\n"
+
+#: util/mkisofs/mkisofs.c:737
+#, c-format
+msgid "Ignoring -no-emul-boot (no-emulation is the default behaviour)\n"
+msgstr "Viene ignorato -no-emul-boot (nessuna emulazione è il comportamento predefinito)\n"
+
+#: util/mkisofs/mkisofs.c:746
+#, c-format
+msgid "Abstract filename string too long\n"
+msgstr "Stringa del nome file astratto troppo lunga\n"
+
+#: util/mkisofs/mkisofs.c:754
+#, c-format
+msgid "Application-id string too long\n"
+msgstr "Stringa dell'ID applicazione troppo lunga\n"
+
+#: util/mkisofs/mkisofs.c:762
+#, c-format
+msgid "Bibliographic filename string too long\n"
+msgstr "Stringa del nome file bibliografico troppo lunga\n"
+
+#: util/mkisofs/mkisofs.c:770
+#, c-format
+msgid "Copyright filename string too long\n"
+msgstr "Stringa del nome file copyright troppo lunga\n"
+
+# (ndt) sembra "il preparatore di macchine"...
+#: util/mkisofs/mkisofs.c:805
+#, c-format
+msgid "Preparer string too long\n"
+msgstr "Stringa del preparatore troppo lunga\n"
+
+#: util/mkisofs/mkisofs.c:816
+#, c-format
+msgid "Publisher string too long\n"
+msgstr "Stringa dell'editore troppo lunga\n"
+
+#: util/mkisofs/mkisofs.c:837
+#, c-format
+msgid "System ID string too long\n"
+msgstr "Stringa dell'ID di sistema troppo lunga\n"
+
+#: util/mkisofs/mkisofs.c:848
+#, c-format
+msgid "Volume ID string too long\n"
+msgstr "Stringa dell'ID del volume troppo lunga\n"
+
+#: util/mkisofs/mkisofs.c:856
+#, c-format
+msgid "Volume set ID string too long\n"
+msgstr "Stringa dell'ID del set di volumi troppo lunga\n"
+
+#: util/mkisofs/mkisofs.c:867
+#, c-format
+msgid "Volume set sequence number too big\n"
+msgstr "Numero di sequenza del set di volumi troppo grande\n"
+
+#: util/mkisofs/mkisofs.c:909 util/mkisofs/mkisofs.c:919
+#: util/mkisofs/mkisofs.c:929 util/mkisofs/mkisofs.c:939
+#, c-format
+msgid "date string must be 16 characters.\n"
+msgstr "La stringa della data deve essere di 16 caratteri.\n"
+
+#: util/mkisofs/mkisofs.c:958
+msgid "Warning: getrlimit"
+msgstr "Attenzione: getrlimit"
+
+#: util/mkisofs/mkisofs.c:962
+msgid "Warning: setrlimit"
+msgstr "Attenzione: setrlimit"
+
+#: util/mkisofs/mkisofs.c:978
+#, c-format
+msgid "Multisession usage bug: Must specify -C if -M is used.\n"
+msgstr "Errore di utilizzo multi-sessione: è necessario specificare -C se viene usata -M.\n"
+
+#: util/mkisofs/mkisofs.c:984
+#, c-format
+msgid "Warning: -C specified without -M: old session data will not be merged.\n"
+msgstr "Attenzione: -C specificata senza -M, i vecchi dati della sessione non verranno uniti.\n"
+
+#: util/mkisofs/mkisofs.c:1023
+#, c-format
+msgid "can't open logfile: %s"
+msgstr "impossibile aprire il file di registro: %s"
+
+#: util/mkisofs/mkisofs.c:1027
+#, c-format
+msgid "re-directing all messages to %s\n"
+msgstr "ridirezione di tutti i messaggi verso %s\n"
+
+#: util/mkisofs/mkisofs.c:1032
+#, c-format
+msgid "can't open logfile: %s\n"
+msgstr "impossibile aprire il file di registro: %s\n"
+
+#: util/mkisofs/mkisofs.c:1073
+#, c-format
+msgid "Unable to open previous session image %s\n"
+msgstr "Impossibile aprire l'immagine %s della sessione precedente\n"
+
+#: util/mkisofs/mkisofs.c:1184
+#, c-format
+msgid "Invalid node - %s\n"
+msgstr "Nodo non valido - %s\n"
+
+#: util/mkisofs/mkisofs.c:1246
+msgid "Joliet tree sort failed.\n"
+msgstr "Ordinamento albero Joliet non riuscito.\n"
+
+#: util/mkisofs/mkisofs.c:1261
+msgid "Unable to open /dev/null\n"
+msgstr "Impossibile aprire /dev/null\n"
+
+#: util/mkisofs/mkisofs.c:1265
+msgid "Unable to open disc image file\n"
+msgstr "Impossibile aprire l'immagine disco\n"
+
+# (ndt) http://opengroup.org/onlinepubs/007908775/xsh/brk.html
+#: util/mkisofs/mkisofs.c:1387
+#, c-format
+msgid "Max brk space used %x\n"
+msgstr "Massimo spazio brk usato %x\n"
+
+#: util/mkisofs/mkisofs.c:1390
+#, c-format
+msgid "%llu extents written (%llu MiB)\n"
+msgstr "Scritti %llu extent (%llu MiB)\n"
+
+#: util/mkisofs/multi.c:161
+msgid "Seek error on old image\n"
+msgstr "Errore di posizionamento nella vecchia immagine\n"
+
+#: util/mkisofs/multi.c:179 util/mkisofs/multi.c:250
+#, c-format
+msgid "**Bad RR version attribute"
+msgstr "**Attributo versione RR errato"
+
+#: util/mkisofs/multi.c:546
+#, c-format
+msgid "Warning: Neither Rock Ridge (-R) nor TRANS.TBL (-T) name translations were found on previous session. ISO (8.3) file names have been used instead.\n"
+msgstr "Attenzione: le traduzioni dei nomi Rock Ridge (-R) o TRANS.TBL (-T) non sono state trovate nella sessione precedente. Sono stati usati nomi di file ISO (8.3).\n"
+
+#: util/mkisofs/multi.c:764
+#, c-format
+msgid "Read error on old image %s\n"
+msgstr "Errore di lettura sulla vecchia immagine %s\n"
+
+#: util/mkisofs/multi.c:1084
+msgid "Special parameters for cdwrite not specified with -C\n"
+msgstr "Parametri speciali per cdwrite non specificati con -C\n"
+
+#: util/mkisofs/multi.c:1091
+msgid "Malformed cdwrite parameters\n"
+msgstr "Parametri di cdrwrite non corretti\n"
+
+# (ndt) SL sta per Symbolic Link, il resto pare sia qualche cosa proprio di Rock Ridge
+#: util/mkisofs/rock.c:309
+#, c-format
+msgid "symbolic link ``%s'' to long for one SL System Use Field, splitting"
+msgstr "collegamento simbolico \"%s\" troppo lungo per un SL System Use Field, viene diviso"
+
+# (ndt) vedi nota a inizio file per "transparent compression"
+#: util/mkisofs/rock.c:517
+#, c-format
+msgid "Unable to insert transparent compressed file - name conflict\n"
+msgstr "Impossibile inserire un file a compressione immediata, conflitto nel nome\n"
+
+#: util/mkisofs/rock.c:591
+msgid "Extension record too long\n"
+msgstr "Record estensione troppo lungo\n"
+
+#: util/mkisofs/tree.c:226 util/mkisofs/write.c:565 util/mkisofs/write.c:1037
+msgid "Fatal goof\n"
+msgstr "Errore fatale\n"
+
+#: util/mkisofs/tree.c:284
+#, c-format
+msgid "Unable to  generate unique  name for file %s\n"
+msgstr "Impossibile generare un nome univoco per il file %s\n"
+
+#: util/mkisofs/tree.c:295 util/mkisofs/tree.c:317
+#, c-format
+msgid "Using %s for %s%s%s (%s)\n"
+msgstr "Viene usato %s per %s%s%s (%s)\n"
+
+#: util/mkisofs/tree.c:441
+#, c-format
+msgid "Fatal error - RR overflow for file %s\n"
+msgstr "Errore fatale: overflow RR per il file %s\n"
+
+#: util/mkisofs/tree.c:449
+#, c-format
+msgid "Unable to sort directory %s\n"
+msgstr "Impossibile ordinare la directory %s\n"
+
+# (ndt) non sono sicuro di tradurre "translation table"
+#: util/mkisofs/tree.c:480
+#, c-format
+msgid "Translation table size mismatch %d %d\n"
+msgstr "La dimensione della translation table non corrisponde %d %d\n"
+
+#: util/mkisofs/tree.c:746
+msgid "Unable to locate directory parent\n"
+msgstr "Impossibile localizzare la directory superiore\n"
+
+#: util/mkisofs/tree.c:796
+#, c-format
+msgid "Scanning %s\n"
+msgstr "Analisi di %s\n"
+
+#: util/mkisofs/tree.c:811
+#, c-format
+msgid "Unable to open directory %s\n"
+msgstr "Impossibile aprire la directory %s\n"
+
+#: util/mkisofs/tree.c:856
+#, c-format
+msgid "Ignoring file %s\n"
+msgstr "File %s ignorato\n"
+
+#: util/mkisofs/tree.c:863
+msgid "Overflow of stat buffer\n"
+msgstr "Overflow del buffer stat\n"
+
+#: util/mkisofs/tree.c:876
+#, c-format
+msgid "Excluded by match: %s\n"
+msgstr "Escluso per corrispondenza: %s\n"
+
+#: util/mkisofs/tree.c:891
+#, c-format
+msgid "Excluded: %s\n"
+msgstr "Escluso: %s\n"
+
+#: util/mkisofs/tree.c:961
+#, c-format
+msgid "Non-existant or inaccessible: %s\n"
+msgstr "Non esistente o inaccessibile: %s\n"
+
+#: util/mkisofs/tree.c:997 util/mkisofs/tree.c:1103
+#, c-format
+msgid "Unable to stat file %s - ignoring and continuing.\n"
+msgstr "Impossibile eseguire stat sul file %s. Viene ignorato e si continua.\n"
+
+#: util/mkisofs/tree.c:1003
+#, c-format
+msgid "Symlink %s ignored - continuing.\n"
+msgstr "Collegamento simbolico %s ignorato. Si continua.\n"
+
+#: util/mkisofs/tree.c:1028
+#, c-format
+msgid "Already cached directory seen (%s)\n"
+msgstr "Vista una directory che è già nella cache (%s)\n"
+
+#: util/mkisofs/tree.c:1070
+#, c-format
+msgid "File %s is not readable (%s) - ignoring\n"
+msgstr "Il file %s non è leggibile (%s), viene ignorato\n"
+
+#: util/mkisofs/tree.c:1083
+#, c-format
+msgid "Directory loop - fatal goof (%s %lx %lu).\n"
+msgstr "Ciclo nella directory. Errore fatale (%s %lx %lu).\n"
+
+#: util/mkisofs/tree.c:1093
+#, c-format
+msgid "Unknown file type %s - ignoring and continuing.\n"
+msgstr "Tipo di file %s sconosciuto. Viene ignorato e si continua.\n"
+
+#: util/mkisofs/tree.c:1179
+#, c-format
+msgid "Hidden from ISO9660 tree: %s\n"
+msgstr "Nascosto dall'albero ISO9660: %s\n"
+
+#: util/mkisofs/tree.c:1191
+#, c-format
+msgid "Hidden from Joliet tree: %s\n"
+msgstr "Nascosto dall'albero Joliet: %s\n"
+
+#: util/mkisofs/tree.c:1600
+#, c-format
+msgid "Directories too deep  %s\n"
+msgstr "Directory troppo profonde %s\n"
+
+#: util/mkisofs/tree.c:1632
+msgid "Unable to delete non-empty directory\n"
+msgstr "Impossibile eliminare una directory non vuota\n"
+
+#: util/mkisofs/tree.c:1655
+msgid "Unable to locate child directory in parent list\n"
+msgstr "Impossibile localizzare la directory discendente nell'elenco di quella superiore\n"
+
+#: util/mkisofs/tree.c:1772
+#, c-format
+msgid "call to search_tree_file with an absolute path, stripping\n"
+msgstr "chiamata a search_tree_file con un percorso assoluto, viene rimosso\n"
+
+# (ndt) che schifo!
+#: util/mkisofs/tree.c:1773
+#, c-format
+msgid "initial path separator. Hope this was intended...\n"
+msgstr "separatore di percorso iniziale. Si presume sia voluto...\n"
+
+#: util/mkisofs/write.c:158
+#, c-format
+msgid "Cannot open '%s'"
+msgstr "Impossibile aprire \"%s\""
+
+#: util/mkisofs/write.c:166
+#, c-format
+msgid "cannot fwrite %llu*%llu\n"
+msgstr "impossibile eseguire fwrite %llu*%llu\n"
+
+#: util/mkisofs/write.c:248
+#, c-format
+msgid "cannot open %s\n"
+msgstr "impossibile aprire %s\n"
+
+#: util/mkisofs/write.c:257
+#, c-format
+msgid "cannot read %llu bytes from %s"
+msgstr "impossibile leggere %llu byte da %s"
+
+#: util/mkisofs/write.c:275
+#, c-format
+msgid "%6.2f%% done, estimate finish %s"
+msgstr "%6.2f%% completato, termine previsto %s"
+
+#: util/mkisofs/write.c:542
+#, c-format
+msgid "Cache hit for %s%s%s\n"
+msgstr "Hit della cache per %s%s%s\n"
+
+#: util/mkisofs/write.c:896
+#, c-format
+msgid "Unexpected directory length %d %d %s\n"
+msgstr "Lunghezza directory inaspettata %d %d %s\n"
+
+# (ndt) ???
+#: util/mkisofs/write.c:908
+#, c-format
+msgid "Continuation entry record length mismatch (%d %d).\n"
+msgstr "Lunghezza del record della voce di continuazione non corrispondente (%d %d).\n"
+
+#: util/mkisofs/write.c:1072
+#, c-format
+msgid "Path table lengths do not match %d %d\n"
+msgstr "Le lunghezze della tabella del percorso non corrispondono %d %d\n"
+
+#: util/mkisofs/write.c:1118 util/mkisofs/write.c:1128
+#, c-format
+msgid "Total extents scheduled to be written = %llu\n"
+msgstr "Totale extent da scrivere = %llu\n"
+
+#: util/mkisofs/write.c:1145
+#, c-format
+msgid "Total extents actually written = %llu\n"
+msgstr "Totale extent scritti = %llu\n"
+
+#: util/mkisofs/write.c:1154
+#, c-format
+msgid "Number of extents written different than what was predicted.  Please fix.\n"
+msgstr "Numero degli extent scritti diverso da quello previsto. Correggere.\n"
+
+# (ndt) preferisco lasciarla un po' più libera
+#: util/mkisofs/write.c:1155
+#, c-format
+msgid "Predicted = %d, written = %llu\n"
+msgstr "Previsti = %d Scritti = %llu\n"
+
+#: util/mkisofs/write.c:1158
+#, c-format
+msgid "Total translation table size: %d\n"
+msgstr "Dimensione totale della translation table: %d\n"
+
+#: util/mkisofs/write.c:1159
+#, c-format
+msgid "Total rockridge attributes bytes: %d\n"
+msgstr "Totale byte degli attributi rockridge: %d\n"
+
+#: util/mkisofs/write.c:1160
+#, c-format
+msgid "Total directory bytes: %d\n"
+msgstr "Totale byte della directory: %d\n"
+
+#: util/mkisofs/write.c:1161
+#, c-format
+msgid "Path table size(bytes): %d\n"
+msgstr "Dimensione tabella dei percorsi (byte): %d\n"
+
+#: util/grub.d/10_kfreebsd.in:40
+msgid "%s, with kFreeBSD %s"
+msgstr "%s, con kFreeBSD %s"
+
+#: util/grub.d/10_linux.in:57
+msgid "%s, with Linux %s (recovery mode)"
+msgstr "%s, con Linux %s (modalità ripristino)"
+
+#: util/grub.d/10_linux.in:59
+msgid "%s, with Linux %s"
+msgstr "%s, con Linux %s"
