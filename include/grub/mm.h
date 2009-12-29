@@ -28,12 +28,29 @@
 # define NULL	((void *) 0)
 #endif
 
-void grub_mm_init_region (void *addr, grub_size_t size);
+void grub_mm_init_region (void *addr, grub_size_t size, grub_size_t *policies);
 void *EXPORT_FUNC(grub_malloc) (grub_size_t size);
 void *EXPORT_FUNC(grub_zalloc) (grub_size_t size);
 void EXPORT_FUNC(grub_free) (void *ptr);
 void *EXPORT_FUNC(grub_realloc) (void *ptr, grub_size_t size);
 void *EXPORT_FUNC(grub_memalign) (grub_size_t align, grub_size_t size);
+
+void *EXPORT_FUNC(grub_memalign_policy) (grub_size_t align, grub_size_t size,
+					 int policy);
+
+void *EXPORT_FUNC(grub_rememalign_policy) (void *ptr, grub_size_t align,
+					   grub_size_t size, int policy);
+
+#define GRUB_MM_ALLOCATOR_SKIP     0
+#define GRUB_MM_ALLOCATOR_FIRST  1
+#define GRUB_MM_ALLOCATOR_SECOND 2
+#define GRUB_MM_ALLOCATOR_LAST 3
+
+#define GRUB_MM_MALLOC_DEFAULT     0
+#define GRUB_MM_MALLOC_KERNEL     1
+
+/* Number of policies. For alignment reasons must be a multiple of 4.  */
+#define GRUB_MM_NPOLICIES 4
 
 /* For debugging.  */
 #if defined(MM_DEBUG) && !defined(GRUB_UTIL)

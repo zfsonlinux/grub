@@ -45,7 +45,6 @@ cdboot_img_FORMAT = binary
 
 # For kernel.img.
 kernel_img_SOURCES = kern/i386/pc/startup.S \
-	kern/i386/misc.S \
 	kern/main.c kern/device.c \
 	kern/disk.c kern/dl.c kern/file.c kern/fs.c kern/err.c \
 	kern/misc.c kern/mm.c kern/reader.c kern/term.c \
@@ -63,8 +62,9 @@ kernel_img_HEADERS = boot.h cache.h device.h disk.h dl.h elf.h elfload.h \
 	env.h err.h file.h fs.h kernel.h loader.h misc.h mm.h net.h parser.h \
 	partition.h msdos_partition.h reader.h symbol.h term.h time.h types.h \
 	machine/biosdisk.h machine/boot.h machine/console.h machine/init.h \
-	machine/memory.h machine/loader.h machine/vga.h machine/vbe.h \
-	machine/kernel.h machine/pxe.h i386/pit.h list.h handler.h command.h i18n.h
+	machine/memory.h cpu/memory.h cpu/loader.h  \
+	machine/kernel.h i386/pit.h list.h handler.h command.h i18n.h \
+	env_private.h
 kernel_img_CFLAGS = $(COMMON_CFLAGS)  $(TARGET_IMG_CFLAGS)
 kernel_img_ASFLAGS = $(COMMON_ASFLAGS)
 kernel_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS)$(GRUB_KERNEL_MACHINE_LINK_ADDR) $(COMMON_CFLAGS)
@@ -132,7 +132,7 @@ pkglib_MODULES = biosdisk.mod chain.mod 				\
 	efiemu.mod mmap.mod acpi.mod drivemap.mod
 
 # For boot.mod.
-pkglib_MODULES += boot.mod 
+pkglib_MODULES += boot.mod
 boot_mod_SOURCES = commands/boot.c lib/i386/pc/biosnum.c
 boot_mod_CFLAGS = $(COMMON_CFLAGS)
 boot_mod_LDFLAGS = $(COMMON_LDFLAGS)
@@ -167,18 +167,21 @@ mmap_mod_LDFLAGS = $(COMMON_LDFLAGS)
 mmap_mod_ASFLAGS = $(COMMON_ASFLAGS)
 
 # For biosdisk.mod.
-biosdisk_mod_SOURCES = disk/i386/pc/biosdisk.c
+biosdisk_mod_SOURCES = disk/i386/pc/biosdisk.c disk/i386/pc/biosdisk_helper.S
 biosdisk_mod_CFLAGS = $(COMMON_CFLAGS)
+biosdisk_mod_ASFLAGS = $(COMMON_ASFLAGS)
 biosdisk_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For chain.mod.
-chain_mod_SOURCES = loader/i386/pc/chainloader.c
+chain_mod_SOURCES = loader/i386/pc/chainloader.c loader/i386/pc/chainloader_helper.S
 chain_mod_CFLAGS = $(COMMON_CFLAGS)
+chain_mod_ASFLAGS = $(COMMON_ASFLAGS)
 chain_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 pkglib_MODULES += linux16.mod
-linux16_mod_SOURCES = loader/i386/pc/linux.c
+linux16_mod_SOURCES = loader/i386/pc/linux.c loader/i386/pc/linux_helper.S
 linux16_mod_CFLAGS = $(COMMON_CFLAGS)
+linux16_mod_ASFLAGS = $(COMMON_ASFLAGS)
 linux16_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 pkglib_MODULES += linux.mod
@@ -187,7 +190,7 @@ linux_mod_CFLAGS = $(COMMON_CFLAGS)
 linux_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 pkglib_MODULES += xnu.mod
-xnu_mod_SOURCES = loader/xnu_resume.c loader/i386/xnu.c loader/i386/pc/xnu.c \
+xnu_mod_SOURCES = loader/xnu_resume.c loader/i386/xnu.c \
 	 loader/macho32.c loader/macho64.c loader/macho.c loader/xnu.c
 xnu_mod_CFLAGS = $(COMMON_CFLAGS)
 xnu_mod_LDFLAGS = $(COMMON_LDFLAGS)
@@ -199,8 +202,9 @@ reboot_mod_CFLAGS = $(COMMON_CFLAGS)
 reboot_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For halt.mod.
-halt_mod_SOURCES = commands/i386/pc/halt.c
+halt_mod_SOURCES = commands/i386/pc/halt.c commands/i386/pc/halt_helper.S commands/i386/halt_helper.S
 halt_mod_CFLAGS = $(COMMON_CFLAGS)
+halt_mod_ASFLAGS = $(COMMON_ASFLAGS)
 halt_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For serial.mod.
@@ -219,8 +223,9 @@ multiboot_mod_LDFLAGS = $(COMMON_LDFLAGS)
 multiboot_mod_ASFLAGS = $(COMMON_ASFLAGS)
 
 # For vbe.mod.
-vbe_mod_SOURCES = video/i386/pc/vbe.c
+vbe_mod_SOURCES = video/i386/pc/vbe.c video/i386/pc/vbe_helper.S
 vbe_mod_CFLAGS = $(COMMON_CFLAGS)
+vbe_mod_ASFLAGS = $(COMMON_ASFLAGS)
 vbe_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For vbeinfo.mod.
@@ -239,7 +244,8 @@ play_mod_CFLAGS = $(COMMON_CFLAGS)
 play_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For vga.mod.
-vga_mod_SOURCES = term/i386/pc/vga.c
+vga_mod_SOURCES = term/i386/pc/vga.c term/i386/pc/vga_helper.S
+vga_mod_ASFLAGS = $(COMMON_ASFLAGS)
 vga_mod_CFLAGS = $(COMMON_CFLAGS)
 vga_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
@@ -300,8 +306,9 @@ usb_keyboard_mod_CFLAGS = $(COMMON_CFLAGS)
 usb_keyboard_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For pxe.mod
-pxe_mod_SOURCES = fs/i386/pc/pxe.c
+pxe_mod_SOURCES = fs/i386/pc/pxe.c fs/i386/pc/pxe_helper.S
 pxe_mod_CFLAGS = $(COMMON_CFLAGS)
+pxe_mod_ASFLAGS = $(COMMON_ASFLAGS)
 pxe_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 # For pxecmd.mod

@@ -16,6 +16,7 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <grub/i386/memory.h>
 
 /*
  * Note: These functions defined in this file may be called from C.
@@ -116,7 +117,7 @@ gdtdesc:
  *  NOTE:  Use of either one messes up %eax and %ebp.
  */
 
-real_to_prot:
+FUNCTION(grub_real_to_prot)
 	.code16
 	cli
 
@@ -144,7 +145,9 @@ protcseg:
 	movw	%ax, %ss
 
 	/* put the return address in a known safe location */
-	movl	(%esp), %eax
+	movl	4(%esp), %eax
+	shll	$4, %eax
+	addl	(%esp), %eax
 	movl	%eax, GRUB_MEMORY_MACHINE_REAL_STACK
 
 	/* get protected mode stack */
@@ -162,7 +165,7 @@ protcseg:
 	/* return on the old (or initialized) stack! */
 	ret
 
-prot_to_real:
+FUNCTION(grub_prot_to_real)
 	/* just in case, set GDT */
 	lgdt	gdtdesc
 
@@ -171,8 +174,11 @@ prot_to_real:
 	movl	%eax, protstack
 
 	/* get the return address */
-	movl	(%esp), %eax
-	movl	%eax, GRUB_MEMORY_MACHINE_REAL_STACK
+	movw	(%esp), %ax
+	movw	%ax, GRUB_MEMORY_MACHINE_REAL_STACK
+	movw	2(%esp), %ax
+	shlw	$12, %ax
+	movw	%ax, GRUB_MEMORY_MACHINE_REAL_STACK+2
 
 	/* set up new stack */
 	movl	$GRUB_MEMORY_MACHINE_REAL_STACK, %eax
@@ -221,7 +227,7 @@ realcseg:
 #endif
 
 	/* return on new stack! */
-	DATA32	ret
+	lret
 
 	.code32
 
@@ -231,7 +237,7 @@ realcseg:
  * Reboot the system. At the moment, rely on BIOS.
  */
 FUNCTION(grub_reboot)
-	call	prot_to_real
+	PROT_TO_REAL
 	.code16
 cold_reboot:
 	/* set 0x472 to 0x0000 for cold boot (0x1234 for warm boot) */

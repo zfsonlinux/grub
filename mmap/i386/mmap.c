@@ -18,6 +18,7 @@
  */
 
 #include <grub/machine/memory.h>
+#include <grub/cpu/memory.h>
 #include <grub/memory.h>
 #include <grub/err.h>
 #include <grub/misc.h>
@@ -30,33 +31,12 @@ void *
 grub_mmap_malign_and_register (grub_uint64_t align, grub_uint64_t size,
 			       int *handle, int type, int flags)
 {
-  grub_uint64_t highestlow = 0;
-
-  auto int NESTED_FUNC_ATTR find_hook (grub_uint64_t, grub_uint64_t,
-				       grub_uint32_t);
-  int NESTED_FUNC_ATTR find_hook (grub_uint64_t start, grub_uint64_t rangesize,
-				  grub_uint32_t memtype)
-  {
-    grub_uint64_t end = start + rangesize;
-    if (memtype != GRUB_MACHINE_MEMORY_AVAILABLE)
-      return 0;
-    if (end > 0x100000)
-      end = 0x100000;
-    if (end > start + size
-	&& highestlow < ((end - size) - ((end - size) & (align - 1))))
-      highestlow = (end - size)  - ((end - size) & (align - 1));
-    return 0;
-  }
-
   void *ret;
-  if (flags & GRUB_MMAP_MALLOC_LOW)
-    {
-      /* FIXME: use low-memory mm allocation once it's available. */
-      grub_mmap_iterate (find_hook);
-      ret = UINT_TO_PTR (highestlow);
-    }
-  else
-    ret = grub_memalign (align, size);
+
+  ret = grub_memalign_policy (align, size,
+			      (flags & GRUB_MMAP_MALLOC_LOW)
+			      ? GRUB_MM_MALLOC_LOW_END
+			      : GRUB_MM_MALLOC_DEFAULT);
 
   if (! ret)
     {
@@ -91,8 +71,7 @@ grub_mmap_free_and_unregister (int handle)
 
   grub_mmap_unregister (handle);
 
-  if (addr >= 0x100000)
-    grub_free (UINT_TO_PTR (addr));
+  grub_free (UINT_TO_PTR (addr));
 }
 
 #endif
