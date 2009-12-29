@@ -12,7 +12,7 @@ pkglib_PROGRAMS = kernel.img
 
 # For kernel.img.
 kernel_img_SOURCES = kern/i386/ieee1275/startup.S \
-	kern/i386/misc.S \
+	commands/i386/halt_helper.S \
 	kern/i386/ieee1275/init.c \
 	kern/ieee1275/init.c \
 	kern/ieee1275/mmap.c \
@@ -33,7 +33,7 @@ kernel_img_HEADERS = cache.h device.h disk.h dl.h elf.h elfload.h \
 	env.h err.h file.h fs.h kernel.h loader.h misc.h mm.h net.h parser.h \
 	partition.h msdos_partition.h reader.h symbol.h term.h time.h types.h \
 	ieee1275/ieee1275.h machine/kernel.h machine/loader.h machine/memory.h \
-	list.h handler.h command.h i18n.h
+	list.h handler.h command.h i18n.h env_private.h
 kernel_img_CFLAGS = $(COMMON_CFLAGS)
 kernel_img_ASFLAGS = $(COMMON_ASFLAGS)
 kernel_img_LDFLAGS = $(COMMON_LDFLAGS) -Wl,-N,-S,-Ttext,0x10000,-Bstatic
@@ -60,7 +60,7 @@ pkglib_MODULES = halt.mod reboot.mod suspend.mod		\
 	date.mod datehook.mod lsmmap.mod mmap.mod
 
 # For boot.mod.
-pkglib_MODULES += boot.mod 
+pkglib_MODULES += boot.mod
 boot_mod_SOURCES = commands/boot.c
 boot_mod_CFLAGS = $(COMMON_CFLAGS)
 boot_mod_LDFLAGS = $(COMMON_LDFLAGS)

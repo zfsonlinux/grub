@@ -39,12 +39,14 @@ if [ "x${GRUB_TIMEOUT}" = "x" ] ; then GRUB_TIMEOUT=5 ; fi
 if [ "x${GRUB_GFXMODE}" = "x" ] ; then GRUB_GFXMODE=640x480 ; fi
 
 cat << EOF
-load_env
-set default=${GRUB_DEFAULT}
+if [ -s \$prefix/grubenv ]; then
+  load_env
+fi
+set default="${GRUB_DEFAULT}"
 if [ \${prev_saved_entry} ]; then
-  saved_entry=\${prev_saved_entry}
+  set saved_entry=\${prev_saved_entry}
   save_env saved_entry
-  prev_saved_entry=
+  set prev_saved_entry=
   save_env prev_saved_entry
 fi
 EOF
@@ -115,12 +117,12 @@ if [ "x${LANG}" != "xC" ] ; then
   cat << EOF
 set locale_dir=${locale_dir}
 set lang=${grub_lang}
-insmod gettext 
+insmod gettext
 EOF
 fi
 
 if [ "x${GRUB_HIDDEN_TIMEOUT}" != "x" ] ; then
-  if [ "x${GRUB_HIDDEN_TIMEOUT_QUIET}" = "xtrue" ] ; then 
+  if [ "x${GRUB_HIDDEN_TIMEOUT_QUIET}" = "xtrue" ] ; then
     verbose=
   else
     verbose=" --verbose"

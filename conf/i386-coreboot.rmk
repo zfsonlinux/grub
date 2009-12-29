@@ -15,7 +15,7 @@ ifeq ($(platform), coreboot)
 
 pkglib_PROGRAMS += kernel.img
 kernel_img_SOURCES = kern/i386/coreboot/startup.S \
-	kern/i386/misc.S \
+	commands/i386/halt_helper.S \
 	kern/i386/coreboot/init.c \
 	kern/i386/multiboot_mmap.c \
 	kern/i386/halt.c \
@@ -35,7 +35,8 @@ kernel_img_HEADERS = boot.h cache.h device.h disk.h dl.h elf.h elfload.h \
 	env.h err.h file.h fs.h kernel.h loader.h misc.h mm.h net.h parser.h \
 	partition.h msdos_partition.h reader.h symbol.h term.h time.h types.h \
 	machine/boot.h machine/console.h machine/init.h \
-	machine/memory.h machine/loader.h list.h handler.h command.h i18n.h
+	machine/memory.h machine/loader.h list.h handler.h command.h i18n.h \
+	env_private.h
 kernel_img_CFLAGS = $(COMMON_CFLAGS)
 kernel_img_ASFLAGS = $(COMMON_ASFLAGS)
 kernel_img_LDFLAGS = $(COMMON_LDFLAGS) -Wl,-N,-S,-Ttext,$(GRUB_KERNEL_MACHINE_LINK_ADDR),-Bstatic
@@ -61,7 +62,7 @@ util/grub-mkrawimage.c_DEPENDENCIES = Makefile
 
 pkglib_IMAGES += kernel.img
 kernel_img_SOURCES = kern/i386/qemu/startup.S \
-	kern/i386/misc.S \
+	commands/i386/halt_helper.S \
 	kern/i386/coreboot/init.c \
 	kern/i386/qemu/mmap.c \
 	kern/i386/halt.c \
@@ -81,7 +82,8 @@ kernel_img_HEADERS = boot.h cache.h device.h disk.h dl.h elf.h elfload.h \
 	env.h err.h file.h fs.h kernel.h loader.h misc.h mm.h net.h parser.h \
 	partition.h msdos_partition.h reader.h symbol.h term.h time.h types.h \
 	machine/boot.h machine/console.h machine/init.h \
-	machine/memory.h machine/loader.h list.h handler.h command.h i18n.h
+	machine/memory.h machine/loader.h list.h handler.h command.h i18n.h \
+	env_private.h
 kernel_img_CFLAGS = $(COMMON_CFLAGS) -DGRUB_BOOT_MACHINE_LINK_ADDR=$(GRUB_BOOT_MACHINE_LINK_ADDR)
 kernel_img_ASFLAGS = $(COMMON_ASFLAGS) -DGRUB_KERNEL_MACHINE_LINK_ADDR=$(GRUB_KERNEL_MACHINE_LINK_ADDR)
 kernel_img_LDFLAGS = $(COMMON_LDFLAGS) $(TARGET_IMG_LDFLAGS)$(GRUB_KERNEL_MACHINE_LINK_ADDR)
@@ -111,7 +113,7 @@ pkglib_MODULES = linux.mod multiboot.mod 		\
 	lsmmap.mod mmap.mod
 
 # For boot.mod.
-pkglib_MODULES += boot.mod 
+pkglib_MODULES += boot.mod
 boot_mod_SOURCES = commands/boot.c
 boot_mod_CFLAGS = $(COMMON_CFLAGS)
 boot_mod_LDFLAGS = $(COMMON_LDFLAGS)

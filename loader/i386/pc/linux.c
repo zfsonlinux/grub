@@ -18,7 +18,7 @@
  */
 
 #include <grub/loader.h>
-#include <grub/machine/loader.h>
+#include <grub/cpu/loader.h>
 #include <grub/file.h>
 #include <grub/err.h>
 #include <grub/device.h>
@@ -33,6 +33,13 @@
 
 #define GRUB_LINUX_CL_OFFSET		0x9000
 #define GRUB_LINUX_CL_END_OFFSET	0x90FF
+
+extern grub_uint32_t grub_linux_prot_size;
+extern char *grub_linux_tmp_addr;
+extern char *grub_linux_real_addr;
+extern grub_int32_t grub_linux_is_bzimage;
+extern char grub_linux16_boot_end[];
+grub_err_t grub_linux16_boot (void);
 
 static grub_dl_t my_mod;
 
@@ -115,6 +122,16 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
       if (grub_linux_real_addr > (char *) GRUB_LINUX_OLD_REAL_MODE_ADDR)
 	grub_linux_real_addr = (char *) GRUB_LINUX_OLD_REAL_MODE_ADDR;
 
+      /* Ensure that it doesn't overlap with helper.  */
+      if (((char *) grub_linux16_boot <= grub_linux_real_addr
+	   && grub_linux16_boot_end >= grub_linux_real_addr)
+	  || ((char *) grub_linux16_boot 
+	      <= grub_linux_real_addr + GRUB_LINUX_SETUP_MOVE_SIZE
+	      && grub_linux16_boot_end
+	      >= grub_linux_real_addr + GRUB_LINUX_SETUP_MOVE_SIZE))
+	grub_linux_real_addr = ((char *) grub_linux16_boot)
+	  - GRUB_LINUX_SETUP_MOVE_SIZE;
+
       if (grub_le_to_cpu16 (lh.version) >= 0x0201)
 	{
 	  lh.heap_end_ptr = grub_cpu_to_le16 (GRUB_LINUX_HEAP_END_OFFSET);
@@ -139,6 +156,19 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
       setup_sects = GRUB_LINUX_DEFAULT_SETUP_SECTS;
 
       grub_linux_real_addr = (char *) GRUB_LINUX_OLD_REAL_MODE_ADDR;
+
+      /* Ensure that it doesn't overlap with helper.  */
+      if (((char *) grub_linux16_boot <= grub_linux_real_addr
+	   && grub_linux16_boot_end >= grub_linux_real_addr)
+	  || ((char *) grub_linux16_boot 
+	      <= grub_linux_real_addr + GRUB_LINUX_SETUP_MOVE_SIZE
+	      && grub_linux16_boot_end
+	      >= grub_linux_real_addr + GRUB_LINUX_SETUP_MOVE_SIZE))
+	{
+	  grub_error (GRUB_ERR_OUT_OF_RANGE, "Too much low memory allocated and"
+		      " your kernel is too old.");
+	  goto fail;
+	}
     }
 
   /* If SETUP_SECTS is not set, set it to the default (4).  */
@@ -234,7 +264,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   len = real_size + GRUB_DISK_SECTOR_SIZE - sizeof (lh);
   if (grub_file_read (file, grub_linux_tmp_addr + sizeof (lh), len) != len)
     {
-      grub_error (GRUB_ERR_FILE_READ_ERROR, "Couldn't read file");
+      grub_error (GRUB_ERR_FILE_READ_ERROR, "couldn't read file");
       goto fail;
     }
 
@@ -265,7 +295,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 
   len = prot_size;
   if (grub_file_read (file, (void *) GRUB_LINUX_BZIMAGE_ADDR, len) != len)
-    grub_error (GRUB_ERR_FILE_READ_ERROR, "Couldn't read file");
+    grub_error (GRUB_ERR_FILE_READ_ERROR, "couldn't read file");
 
   if (grub_errno == GRUB_ERR_NONE)
     {
@@ -299,13 +329,13 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
 
   if (argc == 0)
     {
-      grub_error (GRUB_ERR_BAD_ARGUMENT, "No module specified");
+      grub_error (GRUB_ERR_BAD_ARGUMENT, "no module specified");
       goto fail;
     }
 
   if (!loaded)
     {
-      grub_error (GRUB_ERR_BAD_ARGUMENT, "You need to load the kernel first.");
+      grub_error (GRUB_ERR_BAD_ARGUMENT, "you need to load the kernel first");
       goto fail;
     }
 
@@ -314,7 +344,7 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
   if (!(lh->header == grub_cpu_to_le32 (GRUB_LINUX_MAGIC_SIGNATURE)
 	&& grub_le_to_cpu16 (lh->version) >= 0x0200))
     {
-      grub_error (GRUB_ERR_BAD_OS, "The kernel is too old for initrd.");
+      grub_error (GRUB_ERR_BAD_OS, "the kernel is too old for initrd");
       goto fail;
     }
 
@@ -357,13 +387,13 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
 
   if (addr < addr_min)
     {
-      grub_error (GRUB_ERR_OUT_OF_RANGE, "The initrd is too big");
+      grub_error (GRUB_ERR_OUT_OF_RANGE, "the initrd is too big");
       goto fail;
     }
 
   if (grub_file_read (file, (void *) addr, size) != size)
     {
-      grub_error (GRUB_ERR_FILE_READ_ERROR, "Couldn't read file");
+      grub_error (GRUB_ERR_FILE_READ_ERROR, "couldn't read file");
       goto fail;
     }
 
@@ -383,10 +413,10 @@ GRUB_MOD_INIT(linux16)
 {
   cmd_linux =
     grub_register_command ("linux16", grub_cmd_linux,
-			   0, "load linux");
+			   0, "Load Linux.");
   cmd_initrd =
     grub_register_command ("initrd16", grub_cmd_initrd,
-			   0, "load initrd");
+			   0, "Load initrd.");
   my_mod = mod;
 }
 

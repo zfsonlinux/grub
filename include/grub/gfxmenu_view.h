@@ -24,7 +24,6 @@
 #include <grub/err.h>
 #include <grub/menu.h>
 #include <grub/font.h>
-#include <grub/gfxmenu_model.h>
 #include <grub/gfxwidgets.h>
 
 struct grub_gfxmenu_view;   /* Forward declaration of opaque type.  */
@@ -32,7 +31,7 @@ typedef struct grub_gfxmenu_view *grub_gfxmenu_view_t;
 
 
 grub_gfxmenu_view_t grub_gfxmenu_view_new (const char *theme_path,
-                                           grub_gfxmenu_model_t model);
+					   int width, int height);
 
 void grub_gfxmenu_view_destroy (grub_gfxmenu_view_t view);
 
@@ -46,14 +45,6 @@ grub_err_t grub_gui_recreate_box (grub_gfxmenu_box_t *boxptr,
 
 void grub_gfxmenu_view_draw (grub_gfxmenu_view_t view);
 
-int grub_gfxmenu_view_execute_with_fallback (grub_gfxmenu_view_t view,
-                                             grub_menu_entry_t entry);
-
-int grub_gfxmenu_view_execute_entry (grub_gfxmenu_view_t view,
-                                     grub_menu_entry_t entry);
-
-void grub_gfxmenu_view_run_terminal (grub_gfxmenu_view_t view);
-
 void
 grub_gfxmenu_redraw_menu (grub_gfxmenu_view_t view);
 
@@ -63,6 +54,13 @@ grub_gfxmenu_redraw_timeout (grub_gfxmenu_view_t view);
 void
 grub_gfxmenu_view_redraw (grub_gfxmenu_view_t view,
 			  const grub_video_rect_t *region);
+
+void 
+grub_gfxmenu_clear_timeout (void *data);
+void 
+grub_gfxmenu_print_timeout (int timeout, void *data);
+void
+grub_gfxmenu_set_chosen_entry (int entry, void *data);
 
 /* Implementation details -- this should not be used outside of the
    view itself.  */
@@ -93,13 +91,17 @@ struct grub_gfxmenu_view
 
   grub_gui_container_t canvas;
 
-  grub_gfxmenu_model_t model;
-
-  int last_seconds_remaining;
-
   int double_repaint;
 
+  int selected;
+
   grub_video_rect_t progress_message_frame;
+
+  grub_menu_t menu;
+
+  int nested;
+
+  int first_timeout;
 };
 
 #endif /* ! GRUB_GFXMENU_VIEW_HEADER */

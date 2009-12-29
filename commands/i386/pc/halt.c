@@ -23,9 +23,14 @@
 
 static const struct grub_arg_option options[] =
   {
-    {"no-apm", 'n', 0, "do not use APM to halt the computer", 0, 0},
+    {"no-apm", 'n', 0, "Do not use APM to halt the computer.", 0, 0},
     {0, 0, 0, 0, 0, 0}
   };
+
+/* Halt the system, using APM if possible. If NO_APM is true, don't
+ * use APM even if it is available.  */
+void grub_halt (int no_apm);
+
 
 static grub_err_t
 grub_cmd_halt (grub_extcmd_t cmd,
@@ -46,8 +51,8 @@ static grub_extcmd_t cmd;
 GRUB_MOD_INIT(halt)
 {
   cmd = grub_register_extcmd ("halt", grub_cmd_halt, GRUB_COMMAND_FLAG_BOTH,
-			      "halt [-n]",
-			      "Halt the system, if possible using APM",
+			      "[-n]",
+			      "Halt the system, if possible using APM.",
 			      options);
 }
 

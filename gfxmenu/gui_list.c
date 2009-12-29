@@ -26,13 +26,11 @@
 
 struct grub_gui_list_impl
 {
-  struct grub_gui_list_ops *list_ops;
+  struct grub_gui_list list;
 
   grub_gui_container_t parent;
   grub_video_rect_t bounds;
   char *id;
-  int preferred_width;
-  int preferred_height;
   int visible;
 
   int icon_width;
@@ -67,7 +65,8 @@ struct grub_gui_list_impl
   grub_gfxmenu_box_t selected_item_box;
 
   grub_gfxmenu_icon_manager_t icon_manager;
-  grub_gfxmenu_model_t menu;
+
+  grub_gfxmenu_view_t view;
 };
 
 typedef struct grub_gui_list_impl *list_impl_t;
@@ -93,7 +92,7 @@ list_destroy (void *vself)
 static int
 get_num_shown_items (list_impl_t self)
 {
-  int n = grub_gfxmenu_model_get_num_entries (self->menu);
+  int n = self->view->menu->size;
   if (self->min_items_shown != -1 && n < self->min_items_shown)
     n = self->min_items_shown;
   if (self->max_items_shown != -1 && n > self->max_items_shown)
@@ -157,7 +156,7 @@ static struct grub_video_bitmap *
 get_item_icon (list_impl_t self, int item_index)
 {
   grub_menu_entry_t entry;
-  entry = grub_gfxmenu_model_get_entry (self->menu, item_index);
+  entry = grub_menu_get_entry (self->view->menu, item_index);
   if (! entry)
     return 0;
 
@@ -167,7 +166,7 @@ get_item_icon (list_impl_t self, int item_index)
 static void
 make_selected_item_visible (list_impl_t self)
 {
-  int selected_index = grub_gfxmenu_model_get_selected_index (self->menu);
+  int selected_index = self->view->selected;
   if (selected_index < 0)
     return;   /* No item is selected.  */
   int num_shown_items = get_num_shown_items (self);
@@ -222,7 +221,7 @@ draw_menu (list_impl_t self)
   int descent = grub_font_get_descent (self->item_font);
   int item_height = self->item_height;
 
-  int total_num_items = grub_gfxmenu_model_get_num_entries (self->menu);
+  int total_num_items = self->view->menu->size;
   int num_shown_items = get_num_shown_items (self);
   grub_gfxmenu_box_t box = self->menu_box;
   int width = self->bounds.width;
@@ -256,8 +255,7 @@ draw_menu (list_impl_t self)
        visible_index < num_shown_items && menu_index < total_num_items;
        visible_index++, menu_index++)
     {
-      int is_selected =
-        (menu_index == grub_gfxmenu_model_get_selected_index (self->menu));
+      int is_selected = (menu_index == self->view->selected);
 
       if (is_selected)
         {
@@ -282,7 +280,7 @@ draw_menu (list_impl_t self)
                                 0, 0, self->icon_width, self->icon_height);
 
       const char *item_title =
-        grub_gfxmenu_model_get_entry_title (self->menu, menu_index);
+        grub_menu_get_entry (self->view->menu, menu_index)->title;
       grub_font_t font =
         (is_selected && self->selected_item_font
          ? self->selected_item_font
@@ -357,7 +355,7 @@ list_get_bounds (void *vself, grub_video_rect_t *bounds)
 }
 
 static void
-list_get_preferred_size (void *vself, int *width, int *height)
+list_get_minimal_size (void *vself, unsigned *width, unsigned *height)
 {
   list_impl_t self = vself;
 
@@ -387,12 +385,6 @@ list_get_preferred_size (void *vself, int *width, int *height)
       *width = 0;
       *height = 0;
     }
-
-  /* Allow preferred dimensions to override the computed dimensions.  */
-  if (self->preferred_width >= 0)
-    *width = self->preferred_width;
-  if (self->preferred_height >= 0)
-    *height = self->preferred_height;
 }
 
 static grub_err_t
@@ -507,15 +499,6 @@ list_set_property (void *vself, const char *name, const char *value)
       grub_free (self->theme_dir);
       self->theme_dir = value ? grub_strdup (value) : 0;
     }
-  else if (grub_strcmp (name, "preferred_size") == 0)
-    {
-      int w;
-      int h;
-      if (grub_gui_parse_2_tuple (value, &w, &h) != GRUB_ERR_NONE)
-        return grub_errno;
-      self->preferred_width = w;
-      self->preferred_height = h;
-    }
   else if (grub_strcmp (name, "id") == 0)
     {
       grub_free (self->id);
@@ -530,29 +513,30 @@ list_set_property (void *vself, const char *name, const char *value)
 /* Set necessary information that the gfxmenu view provides.  */
 static void
 list_set_view_info (void *vself,
-                    const char *theme_path,
-                    grub_gfxmenu_model_t menu)
+                    grub_gfxmenu_view_t view)
 {
   list_impl_t self = vself;
-  grub_gfxmenu_icon_manager_set_theme_path (self->icon_manager, theme_path);
-  self->menu = menu;
+  grub_gfxmenu_icon_manager_set_theme_path (self->icon_manager,
+					    view->theme_path);
+  self->view = view;
 }
+
+static struct grub_gui_component_ops list_comp_ops =
+  {
+    .destroy = list_destroy,
+    .get_id = list_get_id,
+    .is_instance = list_is_instance,
+    .paint = list_paint,
+    .set_parent = list_set_parent,
+    .get_parent = list_get_parent,
+    .set_bounds = list_set_bounds,
+    .get_bounds = list_get_bounds,
+    .get_minimal_size = list_get_minimal_size,
+    .set_property = list_set_property
+  };
 
 static struct grub_gui_list_ops list_ops =
 {
-  .component_ops =
-    {
-      .destroy = list_destroy,
-      .get_id = list_get_id,
-      .is_instance = list_is_instance,
-      .paint = list_paint,
-      .set_parent = list_set_parent,
-      .get_parent = list_get_parent,
-      .set_bounds = list_set_bounds,
-      .get_bounds = list_get_bounds,
-      .get_preferred_size = list_get_preferred_size,
-      .set_property = list_set_property
-    },
   .set_view_info = list_set_view_info
 };
 
@@ -564,19 +548,13 @@ grub_gui_list_new (void)
   grub_gui_color_t default_fg_color;
   grub_gui_color_t default_bg_color;
 
-  self = grub_malloc (sizeof (*self));
+  self = grub_zalloc (sizeof (*self));
   if (! self)
     return 0;
 
-  self->list_ops = &list_ops;
-  self->parent = 0;
-  self->bounds.x = 0;
-  self->bounds.y = 0;
-  self->bounds.width = 0;
-  self->bounds.height = 0;
-  self->id = 0;
-  self->preferred_width = -1;
-  self->preferred_height = -1;
+  self->list.ops = &list_ops;
+  self->list.component.ops = &list_comp_ops;
+
   self->visible = 1;
 
   default_font = grub_font_get ("Helvetica 12");
@@ -617,7 +595,7 @@ grub_gui_list_new (void)
   self->icon_manager = grub_gfxmenu_icon_manager_new ();
   if (! self->icon_manager)
     {
-      self->list_ops->component_ops.destroy (self);
+      self->list.component.ops->destroy (self);
       return 0;
     }
   grub_gfxmenu_icon_manager_set_icon_size (self->icon_manager,

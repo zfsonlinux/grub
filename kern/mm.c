@@ -80,16 +80,10 @@
 
 typedef struct grub_mm_header
 {
+  struct grub_mm_header *prev;
   struct grub_mm_header *next;
   grub_size_t size;
   grub_size_t magic;
-#if GRUB_CPU_SIZEOF_VOID_P == 4
-  char padding[4];
-#elif GRUB_CPU_SIZEOF_VOID_P == 8
-  char padding[8];
-#else
-# error "unknown word size"
-#endif
 }
 *grub_mm_header_t;
 
@@ -107,6 +101,7 @@ typedef struct grub_mm_region
   struct grub_mm_region *next;
   grub_addr_t addr;
   grub_size_t size;
+  grub_size_t policies[GRUB_MM_NPOLICIES];
 }
 *grub_mm_region_t;
 
@@ -139,32 +134,33 @@ get_header_from_pointer (void *ptr, grub_mm_header_t *p, grub_mm_region_t *r)
 /* Initialize a region starting from ADDR and whose size is SIZE,
    to use it as free space.  */
 void
-grub_mm_init_region (void *addr, grub_size_t size)
+grub_mm_init_region (void *addr, grub_size_t size, grub_size_t *policies)
 {
   grub_mm_header_t h;
   grub_mm_region_t r, *p, q;
 
-#if 0
+#ifdef MM_DEBUG
   grub_printf ("Using memory for heap: start=%p, end=%p\n", addr, addr + (unsigned int) size);
 #endif
 
   /* If this region is too small, ignore it.  */
-  if (size < GRUB_MM_ALIGN * 2)
+  if (size < GRUB_MM_ALIGN * 4)
     return;
 
   /* Allocate a region from the head.  */
-  r = (grub_mm_region_t) (((grub_addr_t) addr + GRUB_MM_ALIGN - 1)
-			  & (~(GRUB_MM_ALIGN - 1)));
+  r = (grub_mm_region_t) ALIGN_UP((grub_addr_t) addr, GRUB_MM_ALIGN);
   size -= (char *) r - (char *) addr + sizeof (*r);
 
-  h = (grub_mm_header_t) ((char *) r + GRUB_MM_ALIGN);
+  h = (grub_mm_header_t) (r + 1);
   h->next = h;
+  h->prev = h;
   h->magic = GRUB_MM_FREE_MAGIC;
   h->size = (size >> GRUB_MM_ALIGN_LOG2);
 
   r->first = h;
   r->addr = (grub_addr_t) h;
   r->size = (h->size << GRUB_MM_ALIGN_LOG2);
+  grub_memcpy (&(r->policies), policies, sizeof (r->policies));
 
   /* Find where to insert this region. Put a smaller one before bigger ones,
      to prevent fragmentation.  */
@@ -176,38 +172,87 @@ grub_mm_init_region (void *addr, grub_size_t size)
   r->next = q;
 }
 
+static void
+split_chunk (grub_mm_header_t p, grub_size_t size)
+{
+  grub_mm_header_t q;
+  if (p->size <= size)
+    return;
+  q = p + size;
+  q->magic = GRUB_MM_FREE_MAGIC;
+  q->size = p->size - size;
+  q->next = p->next;
+  q->prev = p;
+  p->next = q;
+  q->next->prev = q;
+  p->size = size;
+}
 /* Allocate the number of units N with the alignment ALIGN from the ring
    buffer starting from *FIRST.  ALIGN must be a power of two. Both N and
    ALIGN are in units of GRUB_MM_ALIGN.  Return a non-NULL if successful,
    otherwise return NULL.  */
 static void *
-grub_real_malloc (grub_mm_header_t *first, grub_size_t n, grub_size_t align)
+grub_real_malloc (grub_size_t align, grub_size_t size,
+		 grub_mm_header_t *first, int allocator)
 {
-  grub_mm_header_t p, q;
+  grub_mm_header_t p, last;
+  grub_size_t n = ((size + GRUB_MM_ALIGN - 1) >> GRUB_MM_ALIGN_LOG2) + 1;
+
+  align = (align >> GRUB_MM_ALIGN_LOG2);
+  if (align == 0)
+    align = 1;
+
+#ifdef MM_DEBUG
+  grub_printf ("Allocator %d, header %p, requested %d\n", allocator, *first,
+	       size);
+#endif
 
   /* When everything is allocated side effect is that *first will have alloc
      magic marked, meaning that there is no room in this region.  */
   if ((*first)->magic == GRUB_MM_ALLOC_MAGIC)
     return 0;
 
-  /* Try to search free slot for allocation in this memory region.  */
-  for (q = *first, p = q->next; ; q = p, p = p->next)
+  switch (allocator)
     {
-      grub_off_t extra;
+    default:
+    case GRUB_MM_ALLOCATOR_FIRST:
+      p = *first;
+      last = (*first)->prev;
+      break;
+    case GRUB_MM_ALLOCATOR_SECOND:
+      p = (*first)->next;
+      last = *first;
+      break;
+    case GRUB_MM_ALLOCATOR_LAST:
+      p = (*first)->prev;
+      last = *first;
+      break;
+    }
 
-      extra = ((grub_addr_t) (p + 1) >> GRUB_MM_ALIGN_LOG2) % align;
-      if (extra)
-	extra = align - extra;
+  /* Try to search free slot for allocation in this memory region.  */
+  for ( ; ; p = (allocator == GRUB_MM_ALLOCATOR_LAST) ? p->prev : p->next)
+    {
+      grub_size_t want;
+
+      want = n + (((grub_addr_t) (p + 1) >> GRUB_MM_ALIGN_LOG2) & (align - 1));
 
       if (! p)
 	grub_fatal ("null in the ring");
 
       if (p->magic != GRUB_MM_FREE_MAGIC)
 	grub_fatal ("free magic is broken at %p: 0x%x", p, p->magic);
+#ifdef MM_DEBUG
+      grub_printf ("region of %d blocks\n", p->size);
+#endif
 
-      if (p->size >= n + extra)
+      if (p->size >= want)
 	{
-	  if (extra == 0 && p->size == n)
+	  if (allocator == GRUB_MM_ALLOCATOR_LAST)
+	    want += ((p->size - want) / align) * align;
+
+	  split_chunk (p, want);
+	      
+	  if (want == n)
 	    {
 	      /* There is no special alignment requirement and memory block
 	         is complete match.
@@ -220,10 +265,13 @@ grub_real_malloc (grub_mm_header_t *first, grub_size_t n, grub_size_t align)
 	         | alloc, size=n |          |
 	         +---------------+          v
 	       */
-	      q->next = p->next;
+	      if (p == *first)
+		*first = p->next;
+	      p->prev->next = p->next;
+	      p->next->prev = p->prev;
 	      p->magic = GRUB_MM_ALLOC_MAGIC;
 	    }
-	  else if (extra == 0 || p->size == n + extra)
+	  else
 	    {
 	      /* There might be alignment requirement, when taking it into
 	         account memory block fits in.
@@ -245,76 +293,46 @@ grub_real_malloc (grub_mm_header_t *first, grub_size_t n, grub_size_t align)
 	      p->size = n;
 	      p->magic = GRUB_MM_ALLOC_MAGIC;
 	    }
-	  else
-	    {
-	      /* There is alignment requirement and there is room in memory
-	         block.  Split memory block to three pieces.
 
-	         1. Create new memory block right after section being
-	            allocated.  Mark it as free.
-	         2. Add new memory block to free chain.
-	         3. Mark current memory block having only extra blocks.
-	         4. Advance to aligned block and mark that as allocated and
-	            "remove" it from free list.
-
-	         Result:
-	         +------------------------------+
-	         | free, size=extra             | next --+
-	         +------------------------------+        |
-	         | alloc, size=n                |        |
-	         +------------------------------+        |
-	         | free, size=orig.size-extra-n | <------+, next --+
-	         +------------------------------+                  v
-	       */
-	      grub_mm_header_t r;
-
-	      r = p + extra + n;
-	      r->magic = GRUB_MM_FREE_MAGIC;
-	      r->size = p->size - extra - n;
-	      r->next = p->next;
-
-	      p->size = extra;
-	      p->next = r;
-	      p += extra;
-	      p->size = n;
-	      p->magic = GRUB_MM_ALLOC_MAGIC;
-	    }
-
-	  /* Mark find as a start marker for next allocation to fasten it.
-	     This will have side effect of fragmenting memory as small
-	     pieces before this will be un-used.  */
-	  *first = q;
+#ifdef MM_DEBUG
+	  grub_printf ("allocated %p\n", p+1);
+#endif
 
 	  return p + 1;
 	}
 
       /* Search was completed without result.  */
-      if (p == *first)
+      if (p == last)
 	break;
     }
 
   return 0;
 }
 
-/* Allocate SIZE bytes with the alignment ALIGN and return the pointer.  */
 void *
-grub_memalign (grub_size_t align, grub_size_t size)
+grub_memalign_policy (grub_size_t align, grub_size_t size, int policy)
 {
   grub_mm_region_t r;
-  grub_size_t n = ((size + GRUB_MM_ALIGN - 1) >> GRUB_MM_ALIGN_LOG2) + 1;
   int count = 0;
 
-  align = (align >> GRUB_MM_ALIGN_LOG2);
-  if (align == 0)
-    align = 1;
-
  again:
+
+#ifdef MM_DEBUG
+  grub_printf ("base %p, policy %d\n", base, policy);
+#endif
 
   for (r = base; r; r = r->next)
     {
       void *p;
 
-      p = grub_real_malloc (&(r->first), n, align);
+#ifdef MM_DEBUG
+      grub_printf ("rpol %d, %p\n", r->policies[policy], r->first);
+#endif
+
+      if (r->policies[policy] == GRUB_MM_ALLOCATOR_SKIP)
+	continue;
+
+      p = grub_real_malloc (align, size, &(r->first), r->policies[policy]);
       if (p)
 	return p;
     }
@@ -349,6 +367,13 @@ grub_malloc (grub_size_t size)
   return grub_memalign (0, size);
 }
 
+/* Allocate SIZE bytes with the alignment ALIGN and return the pointer.  */
+void *
+grub_memalign (grub_size_t align, grub_size_t size)
+{
+  return grub_memalign_policy (align, size, GRUB_MM_MALLOC_DEFAULT);
+}
+
 /* Allocate SIZE bytes, clear them and return the pointer.  */
 void *
 grub_zalloc (grub_size_t size)
@@ -377,13 +402,13 @@ grub_free (void *ptr)
   if (r->first->magic == GRUB_MM_ALLOC_MAGIC)
     {
       p->magic = GRUB_MM_FREE_MAGIC;
-      r->first = p->next = p;
+      r->first = p->next = p->prev = p;
     }
   else
     {
       grub_mm_header_t q;
 
-#if 0
+#ifdef MM_DEBUG
       q = r->first;
       do
 	{
@@ -394,27 +419,29 @@ grub_free (void *ptr)
       while (q != r->first);
 #endif
 
-      for (q = r->first; q >= p || q->next <= p; q = q->next)
+      for (q = r->first;  p >= q && q != r->first->prev; q = q->next)
 	{
 	  if (q->magic != GRUB_MM_FREE_MAGIC)
 	    grub_fatal ("free magic is broken at %p: 0x%x", q, q->magic);
-
-	  if (q >= q->next && (q < p || q->next > p))
-	    break;
 	}
+      if (p < q)
+	q = q->prev;
+
+      if (r->first == q->next && p < q->next)
+	r->first = p;
 
       p->magic = GRUB_MM_FREE_MAGIC;
       p->next = q->next;
+      p->next->prev = p;
       q->next = p;
+      q->next->prev = q;
 
       if (p + p->size == p->next)
 	{
-	  if (p->next == q)
-	    q = p;
-
 	  p->next->magic = 0;
 	  p->size += p->next->size;
 	  p->next = p->next->next;
+	  p->next->prev = p;
 	}
 
       if (q + q->size == p)
@@ -422,24 +449,24 @@ grub_free (void *ptr)
 	  p->magic = 0;
 	  q->size += p->size;
 	  q->next = p->next;
+	  q->next->prev = q;
 	}
-
-      r->first = q;
     }
 }
 
 /* Reallocate SIZE bytes and return the pointer. The contents will be
    the same as that of PTR.  */
 void *
-grub_realloc (void *ptr, grub_size_t size)
+grub_rememalign_policy (void *ptr, grub_size_t align,
+			grub_size_t size, int policy)
 {
-  grub_mm_header_t p;
   grub_mm_region_t r;
   void *q;
   grub_size_t n;
+  grub_mm_header_t p, p2;
 
   if (! ptr)
-    return grub_malloc (size);
+    return grub_memalign_policy (align, size, policy);
 
   if (! size)
     {
@@ -447,20 +474,46 @@ grub_realloc (void *ptr, grub_size_t size)
       return 0;
     }
 
-  /* FIXME: Not optimal.  */
   n = ((size + GRUB_MM_ALIGN - 1) >> GRUB_MM_ALIGN_LOG2) + 1;
   get_header_from_pointer (ptr, &p, &r);
 
+  /* Should we shrink the region?  */
   if (p->size >= n)
     return ptr;
 
-  q = grub_malloc (size);
+  /* Try extend in place.  */
+  p2 = p + p->size;
+  if ((grub_addr_t) p2 < r->addr + (r->size << GRUB_MM_ALIGN_LOG2)
+      && p2->magic == GRUB_MM_FREE_MAGIC && p->size + p2->size >= n)
+    {
+      split_chunk (p2, n - p->size);
+
+      p2->next->prev = p2->prev;
+      p2->prev->next = p2->next;
+
+      if (r->first == p2)
+	r->first = p2->next;
+
+      /* Perhaps we're the last free block in this region.  */
+      if (r->first == p2)
+	r->first = p;
+      p->size = n;
+      return ptr;
+    }
+
+  q = grub_memalign_policy (align, size, policy);
   if (! q)
     return q;
 
   grub_memcpy (q, ptr, size);
   grub_free (ptr);
   return q;
+}
+
+void *
+grub_realloc (void *ptr, grub_size_t size)
+{
+  return grub_rememalign_policy (ptr, 1, size, GRUB_MM_MALLOC_DEFAULT);
 }
 
 #ifdef MM_DEBUG

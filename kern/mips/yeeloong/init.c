@@ -82,9 +82,15 @@ void
 grub_machine_init (void)
 {
   void *modend;
+  grub_size_t policy_normal[GRUB_MM_NPOLICIES]
+    = { [GRUB_MM_MALLOC_DEFAULT] = GRUB_MM_ALLOCATOR_LAST,
+	[GRUB_MM_MALLOC_KERNEL] = GRUB_MM_ALLOCATOR_FIRST
+  };
+
   modend = get_modules_end ();
   grub_mm_init_region (modend, (grub_arch_memsize << 20)
-		       - (((grub_addr_t) modend) - GRUB_ARCH_LOWMEMVSTART));
+		       - (((grub_addr_t) modend) - GRUB_ARCH_LOWMEMVSTART),
+		       policy_normal);
   /* FIXME: use upper memory as well.  */
   grub_install_get_time_ms (grub_rtc_get_time_ms);
 }

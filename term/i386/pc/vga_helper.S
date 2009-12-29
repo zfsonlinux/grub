@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2003,2004,2007  Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2005,2006,2007,2008 Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,13 +16,39 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GRUB_LOADER_MACHINE_HEADER
-#define GRUB_LOADER_MACHINE_HEADER	1
-
 #include <grub/symbol.h>
-#include <grub/cpu/loader.h>
+#include <grub/i386/memory.h>
+	
+	LOWMEM
+	.code32
 
-/* This is an asm part of the chainloader.  */
-void EXPORT_FUNC(grub_chainloader_real_boot) (int drive, void *part_addr) __attribute__ ((noreturn));
+/*
+ * unsigned char grub_vga_set_mode (unsigned char mode)
+ */
+FUNCTION(grub_vga_set_mode)
+	pushl	%ebp
+	pushl	%ebx
+	movl	%eax, %ecx
 
-#endif /* ! GRUB_LOADER_MACHINE_HEADER */
+	PROT_TO_REAL
+	.code16
+	/* get current mode */
+	xorw	%bx, %bx
+	movb	$0x0f, %ah
+	int	$0x10
+	movb	%al, %dl
+
+	/* set the new mode */
+	movb	%cl, %al
+	xorb	%ah, %ah
+	int	$0x10
+
+	REAL_TO_PROT
+	.code32
+
+	movb	%dl, %al
+	popl	%ebx
+	popl	%ebp
+	ret
+
+

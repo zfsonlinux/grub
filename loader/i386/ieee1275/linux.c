@@ -109,8 +109,38 @@ grub_linux_boot (void)
   params->cl_magic = GRUB_LINUX_CL_MAGIC;
   params->cl_offset = GRUB_OFW_LINUX_CL_OFFSET;
 
-  params->video_width = (grub_getwh () >> 8);
-  params->video_height = (grub_getwh () & 0xff);
+  {
+    grub_term_output_t term;
+    int found = 0;
+    FOR_ACTIVE_TERM_OUTPUTS(term)
+      if (grub_strcmp (term->name, "vga_text") == 0)
+	{
+	  grub_uint16_t pos = grub_term_getxy (term);
+	  params->video_cursor_x = pos >> 8;
+	  params->video_cursor_y = pos & 0xff;
+	  params->video_width = grub_term_width (term);
+	  params->video_height = grub_term_height (term);
+	  found = 1;
+	}
+    if (!found)
+      FOR_ACTIVE_TERM_OUTPUTS(term)
+	if (grub_strcmp (term->name, "console") == 0)
+	  {
+	    grub_uint16_t pos = grub_term_getxy (term);
+	    params->video_cursor_x = pos >> 8;
+	    params->video_cursor_y = pos & 0xff;
+	    params->video_width = grub_term_width (term);
+	    params->video_height = grub_term_height (term);
+	    found = 1;
+	  }
+    if (!found)
+      {
+	params->video_cursor_x = 0;
+	params->video_cursor_y = 0;
+	params->video_width = 80;
+	params->video_height = 25;
+      }
+  }
   params->font_size = 16;
 
   params->ofw_signature = GRUB_LINUX_OFW_SIGNATURE;
@@ -211,7 +241,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 
   kernel_size = prot_size;
   if (grub_file_read (file, kernel_addr, prot_size) != (int) prot_size)
-    grub_error (GRUB_ERR_FILE_READ_ERROR, "Couldn't read file");
+    grub_error (GRUB_ERR_FILE_READ_ERROR, "couldn't read file");
 
   if (grub_errno == GRUB_ERR_NONE)
     grub_loader_set (grub_linux_boot, grub_linux_unload, 1);
@@ -242,13 +272,13 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
 
   if (argc == 0)
     {
-      grub_error (GRUB_ERR_BAD_ARGUMENT, "No module specified");
+      grub_error (GRUB_ERR_BAD_ARGUMENT, "no module specified");
       goto fail;
     }
 
   if (! kernel_addr)
     {
-      grub_error (GRUB_ERR_BAD_ARGUMENT, "You need to load the kernel first.");
+      grub_error (GRUB_ERR_BAD_ARGUMENT, "you need to load the kernel first");
       goto fail;
     }
 
@@ -260,7 +290,7 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
   if (grub_file_read (file, (void *) GRUB_OFW_LINUX_INITRD_ADDR,
                       initrd_size) != (int) initrd_size)
     {
-      grub_error (GRUB_ERR_FILE_READ_ERROR, "Couldn't read file");
+      grub_error (GRUB_ERR_FILE_READ_ERROR, "couldn't read file");
       goto fail;
     }
 
@@ -276,9 +306,9 @@ static grub_command_t cmd_linux, cmd_initrd;
 GRUB_MOD_INIT(linux)
 {
   cmd_linux = grub_register_command ("linux", grub_cmd_linux,
-				     0, "load linux");
+				     0, "Load Linux.");
   cmd_initrd = grub_register_command ("initrd", grub_cmd_initrd,
-				      0, "load initrd");
+				      0, "Load initrd.");
   my_mod = mod;
 }
 

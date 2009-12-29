@@ -18,6 +18,7 @@
 
 #include <grub/symbol.h>
 #include <grub/machine/memory.h>
+#include <grub/cpu/memory.h>
 #include <grub/cpu/linux.h>
 #include <grub/cpu/kernel.h>
 #include <multiboot.h>
@@ -66,7 +67,7 @@ multiboot_header:
 	.long	-0x1BADB002 - MULTIBOOT_MEMORY_INFO
 
 codestart:
-	cmpl	$MULTIBOOT_MAGIC2, %eax
+	cmpl	$MULTIBOOT_BOOTLOADER_MAGIC, %eax
 	jne 0f
 	movl	%ebx, EXT_C(startup_multiboot_info)
 0:
@@ -82,8 +83,3 @@ codestart:
  *  only needed for BIOS gates).
  */
 #include "../realmode.S"
-
-/*
- *  Routines needed by Linux and Multiboot loaders.
- */
-#include "../loader.S"

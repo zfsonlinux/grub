@@ -9,9 +9,9 @@ msgstr ""
 "Project-Id-Version: grub 1.97+20091122\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-11-22 11:48+0100\n"
-"PO-Revision-Date: 2009-12-09 19:41+0800\n"
+"PO-Revision-Date: 2009-12-17 22:48+0800\n"
 "Last-Translator: Xin Ye <alyex.ye@gmail.com>\n"
-"Language-Team: Chinese (simplified) <translation-team-zh-cn@lists.sourceforge.net>\n"
+"Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -133,13 +133,15 @@ msgstr "正在试图将 GRUB 安装至未分区的磁盘。 这是一个坏主�
 msgid "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD idea."
 msgstr "正在试图将 GRUB 安装至一个分区而非 MBR。 这是一个坏主意。"
 
+# fuzzy
 #: util/i386/pc/grub-setup.c:365
 msgid "This msdos-style partition label has no post-MBR gap; embedding won't be possible!"
-msgstr ""
+msgstr "此 DOS 分区标签没有MBR后间隔； 嵌套将不可能！"
 
+# fuzzy
 #: util/i386/pc/grub-setup.c:367
 msgid "This GPT partition label has no BIOS Boot Partition; embedding won't be possible!"
-msgstr ""
+msgstr "此 GPT 分区标签没有 BIOS 引导分区；嵌套将不可能！"
 
 #: util/i386/pc/grub-setup.c:374
 msgid "Your core.img is unusually large.  It won't fit in the embedding area."
@@ -297,7 +299,7 @@ msgstr "无法找到引导编目！\n"
 #: util/mkisofs/eltorito.c:158
 #, c-format
 msgid "Boot image cannot be found!\n"
-msgstr "无法找到引导映像！\n"
+msgstr "无法找到引导镜像！\n"
 
 #: util/mkisofs/eltorito.c:221
 #, c-format
@@ -306,7 +308,7 @@ msgid ""
 "Size of boot image is %d sectors"
 msgstr ""
 "\n"
-"引导映像的大小为 %d 个扇区"
+"引导镜像的大小为 %d 个扇区"
 
 #: util/mkisofs/eltorito.c:227
 #, c-format
@@ -367,7 +369,7 @@ msgstr "引导镜像文件 “%s” 意外改变"
 #: util/mkisofs/eltorito.c:323
 #, c-format
 msgid "Error writing to boot image (%s)"
-msgstr "写入到引导映像出错(%s)"
+msgstr "写入到引导镜像出错(%s)"
 
 # fuzzy
 #: util/mkisofs/joliet.c:359 util/mkisofs/write.c:981
@@ -380,10 +382,11 @@ msgstr "无法生成合理的路径表? - 太多目录(%d)\n"
 msgid "Entry %d not in path tables\n"
 msgstr "条目 %d 不在路径表中\n"
 
+# fuzzy
 #: util/mkisofs/joliet.c:412
 #, c-format
 msgid "Fatal goof - directory has amnesia\n"
-msgstr ""
+msgstr "致命错误 - 目录失忆\n"
 
 #: util/mkisofs/joliet.c:478
 #, c-format
@@ -469,10 +472,11 @@ msgstr "摘要文件名太长\n"
 msgid "Application-id string too long\n"
 msgstr "应用程序编号串太长\n"
 
+# fuzzy
 #: util/mkisofs/mkisofs.c:762
 #, c-format
 msgid "Bibliographic filename string too long\n"
-msgstr ""
+msgstr "参考书目文件名字符串太长\n"
 
 #: util/mkisofs/mkisofs.c:770
 #, c-format
@@ -574,12 +578,13 @@ msgstr "无法打开磁盘镜像文件\n"
 #: util/mkisofs/mkisofs.c:1387
 #, c-format
 msgid "Max brk space used %x\n"
-msgstr ""
+msgstr "使用了最大的 brk 空间 %x\n"
 
+# fuzzy
 #: util/mkisofs/mkisofs.c:1390
 #, c-format
 msgid "%llu extents written (%llu MiB)\n"
-msgstr ""
+msgstr "%llu 已经写入扩展块 (%llu 兆字节)\n"
 
 #: util/mkisofs/multi.c:161
 msgid "Seek error on old image\n"

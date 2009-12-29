@@ -29,6 +29,7 @@
 #define TEXT_WIDTH	80
 #define TEXT_HEIGHT	24
 
+static struct grub_term_output grub_serial_term_output;
 static unsigned int xpos, ypos;
 static unsigned int keep_track = 1;
 static unsigned int registered = 0;
@@ -416,7 +417,7 @@ grub_serial_gotoxy (grub_uint8_t x, grub_uint8_t y)
   else
     {
       keep_track = 0;
-      grub_terminfo_gotoxy (x, y);
+      grub_terminfo_gotoxy (x, y, &grub_serial_term_output);
       keep_track = 1;
 
       xpos = x;
@@ -428,7 +429,7 @@ static void
 grub_serial_cls (void)
 {
   keep_track = 0;
-  grub_terminfo_cls ();
+  grub_terminfo_cls (&grub_serial_term_output);
   keep_track = 1;
 
   xpos = ypos = 0;
@@ -442,10 +443,10 @@ grub_serial_setcolorstate (const grub_term_color_state state)
     {
     case GRUB_TERM_COLOR_STANDARD:
     case GRUB_TERM_COLOR_NORMAL:
-      grub_terminfo_reverse_video_off ();
+      grub_terminfo_reverse_video_off (&grub_serial_term_output);
       break;
     case GRUB_TERM_COLOR_HIGHLIGHT:
-      grub_terminfo_reverse_video_on ();
+      grub_terminfo_reverse_video_on (&grub_serial_term_output);
       break;
     default:
       break;
@@ -457,9 +458,9 @@ static void
 grub_serial_setcursor (const int on)
 {
   if (on)
-    grub_terminfo_cursor_on ();
+    grub_terminfo_cursor_on (&grub_serial_term_output);
   else
-    grub_terminfo_cursor_off ();
+    grub_terminfo_cursor_off (&grub_serial_term_output);
 }
 
 static struct grub_term_input grub_serial_term_input =
@@ -501,7 +502,7 @@ grub_cmd_serial (grub_extcmd_t cmd,
       unit = grub_strtoul (state[0].arg, 0, 0);
       serial_settings.port = serial_hw_get_port (unit);
       if (!serial_settings.port)
-	return grub_error (GRUB_ERR_BAD_ARGUMENT, "bad unit number.");
+	return grub_error (GRUB_ERR_BAD_ARGUMENT, "bad unit number");
     }
 
   if (state[1].set)
