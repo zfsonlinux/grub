@@ -32,6 +32,11 @@
 #include <grub/env.h>
 #include <grub/cache.h>
 
+#if defined (__i386__) || defined (__x86_64__)
+#include <grub/i386/memory.h>
+#endif
+
+
 /* Platforms where modules are in a readonly area of memory.  */
 #if defined(GRUB_MACHINE_QEMU)
 #define GRUB_MODULES_MACHINE_READONLY
@@ -251,6 +256,13 @@ grub_dl_load_segments (grub_dl_t mod, const Elf_Ehdr *e)
   unsigned i;
   Elf_Shdr *s;
 
+#if defined (__i386__) || defined (__x86_64__)
+  char *str;
+
+  s = (Elf_Shdr *) ((char *) e + e->e_shoff + e->e_shentsize * e->e_shstrndx);
+  str = (char *) e + s->sh_offset;
+#endif
+
   for (i = 0, s = (Elf_Shdr *)((char *) e + e->e_shoff);
        i < e->e_shnum;
        i++, s = (Elf_Shdr *)((char *) s + e->e_shentsize))
@@ -267,7 +279,13 @@ grub_dl_load_segments (grub_dl_t mod, const Elf_Ehdr *e)
 	    {
 	      void *addr;
 
-	      addr = grub_memalign (s->sh_addralign, s->sh_size);
+#if defined (__i386__) || defined (__x86_64__)
+	      if (grub_strcmp (str + s->sh_name, ".lowmem") == 0)
+		addr = grub_memalign_policy (s->sh_addralign, s->sh_size,
+					     GRUB_MM_MALLOC_LOW);
+	      else
+#endif
+		addr = grub_memalign (s->sh_addralign, s->sh_size);
 	      if (! addr)
 		{
 		  grub_free (seg);
@@ -703,22 +721,5 @@ grub_dl_unload_unneeded (void)
 	}
 
       p = p->next;
-    }
-}
-
-/* Unload all modules.  */
-void
-grub_dl_unload_all (void)
-{
-  while (grub_dl_head)
-    {
-      grub_dl_list_t p;
-
-      grub_dl_unload_unneeded ();
-
-      /* Force to decrement the ref count. This will purge pre-loaded
-	 modules and manually inserted modules.  */
-      for (p = grub_dl_head; p; p = p->next)
-	p->mod->ref_count--;
     }
 }

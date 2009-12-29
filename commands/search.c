@@ -27,6 +27,7 @@
 #include <grub/env.h>
 #include <grub/command.h>
 #include <grub/search.h>
+#include <grub/i18n.h>
 
 void
 FUNC_NAME (const char *key, const char *var, int no_floppy)
@@ -164,10 +165,10 @@ GRUB_MOD_INIT(search_fs_label)
 {
   cmd =
     grub_register_command (COMMAND_NAME, grub_cmd_do_search,
-			   COMMAND_NAME " NAME [VARIABLE]",
+			   "NAME [VARIABLE]",
 			   "Search devices by " SEARCH_TARGET "."
-			  " If VARIABLE is specified, the first device found is"
-			  " set to a variable.");
+			   " If VARIABLE is specified, "
+			   "the first device found is set to a variable.");
 }
 
 #ifdef DO_SEARCH_FILE

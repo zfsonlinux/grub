@@ -35,6 +35,7 @@
 #include <grub/cpu/io.h>
 #include <grub/cpu/kernel.h>
 #include <grub/cpu/tsc.h>
+#include <grub/cpu/memory.h>
 
 #define GRUB_FLOPPY_REG_DIGITAL_OUTPUT		0x3f2
 
@@ -76,6 +77,12 @@ grub_arch_sync_caches (void *address __attribute__ ((unused)),
 void
 grub_machine_init (void)
 {
+  grub_size_t policy_normal[GRUB_MM_NPOLICIES]
+    = { [GRUB_MM_MALLOC_DEFAULT] = GRUB_MM_ALLOCATOR_SECOND,
+	[GRUB_MM_MALLOC_KERNEL] = GRUB_MM_ALLOCATOR_SECOND,
+	[GRUB_MM_MALLOC_LOW] = GRUB_MM_ALLOCATOR_SKIP
+  };
+
   /* Initialize the console as early as possible.  */
   grub_vga_text_init ();
 
@@ -115,10 +122,11 @@ grub_machine_init (void)
 	grub_os_area_addr = addr;
 	grub_os_area_size = size - quarter;
 	grub_mm_init_region ((void *) (grub_os_area_addr + grub_os_area_size),
-			     quarter);
+			     quarter, policy_normal);
       }
     else
-      grub_mm_init_region ((void *) (grub_addr_t) addr, (grub_size_t) size);
+      grub_mm_init_region ((void *) (grub_addr_t) addr, (grub_size_t) size,
+			   policy_normal);
 
     return 0;
   }

@@ -106,7 +106,7 @@ generate_image (const char *dir, char *prefix, FILE *out, char *mods[],
 {
   char *kernel_img, *core_img;
   size_t kernel_size, total_module_size, core_size;
-  size_t memdisk_size = 0, font_size = 0, config_size = 0;
+  size_t memdisk_size = 0, font_size = 0, config_size = 0, config_size_pure = 0;
   char *kernel_path;
   size_t offset;
   struct grub_util_path_list *path_list, *p, *next;
@@ -134,7 +134,8 @@ generate_image (const char *dir, char *prefix, FILE *out, char *mods[],
 
   if (config_path)
     {
-      config_size = ALIGN_UP(grub_util_get_image_size (config_path) + 1, 4);
+      config_size_pure = grub_util_get_image_size (config_path) + 1;
+      config_size = ALIGN_UP(config_size_pure, 4);
       grub_util_info ("the size of config file is 0x%x", config_size);
       total_module_size += config_size + sizeof (struct grub_module_header);
     }
@@ -218,8 +219,8 @@ generate_image (const char *dir, char *prefix, FILE *out, char *mods[],
       offset += sizeof (*header);
 
       grub_util_load_image (config_path, kernel_img + offset);
+      *(kernel_img + offset + config_size_pure - 1) = 0;
       offset += config_size;
-      *(kernel_img + offset - 1) = 0;
     }
 
   grub_util_info ("kernel_img=%p, kernel_size=0x%x", kernel_img, kernel_size);
@@ -236,19 +237,19 @@ generate_image (const char *dir, char *prefix, FILE *out, char *mods[],
     num = ((core_size + GRUB_DISK_SECTOR_SIZE - 1) >> GRUB_DISK_SECTOR_BITS);
     if (num > 0xffff)
       grub_util_error (_("the core image is too big"));
-    
+
     boot_path = grub_util_get_path (dir, "diskboot.img");
     boot_size = grub_util_get_image_size (boot_path);
     if (boot_size != GRUB_DISK_SECTOR_SIZE)
       grub_util_error (_("diskboot.img size must be %u bytes"),
 		       GRUB_DISK_SECTOR_SIZE);
-    
+
     boot_img = grub_util_read_image (boot_path);
-    
+
     *((grub_uint16_t *) (boot_img + GRUB_DISK_SECTOR_SIZE
 			 - GRUB_BOOT_MACHINE_LIST_SIZE + 8))
       = grub_host_to_target16 (num);
-    
+
     grub_util_write_image (boot_img, boot_size, out);
     free (boot_img);
     free (boot_path);
@@ -357,13 +358,13 @@ generate_image (const char *dir, char *prefix, FILE *out, char *mods[],
       ehdr->e_shentsize = grub_host_to_target16 (0);
       ehdr->e_shnum = grub_host_to_target16 (0);
       ehdr->e_shstrndx = grub_host_to_target16 (0);
-      
+
       ehdr->e_ehsize = grub_host_to_target16 (sizeof (*ehdr));
-      
+
       phdr->p_type = grub_host_to_target32 (PT_LOAD);
       phdr->p_offset = grub_host_to_target32 (sizeof (*ehdr) + sizeof (*phdr));
       phdr->p_flags = grub_host_to_target32 (PF_R | PF_W | PF_X);
-      
+
       target_addr = ALIGN_UP (GRUB_KERNEL_MACHINE_LINK_ADDR 
 			      + kernel_size + total_module_size, 32);
       ehdr->e_entry = grub_host_to_target32 (target_addr);

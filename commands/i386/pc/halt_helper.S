@@ -45,76 +45,69 @@
  *  This is the area for all of the special variables.
  */
 
-	.p2align	2	/* force 4-byte alignment */
-
-/*
- * void grub_linux_boot_zimage (void)
- */
-VARIABLE(grub_linux_prot_size)
-	.long	0
-VARIABLE(grub_linux_tmp_addr)
-	.long	0
-VARIABLE(grub_linux_real_addr)
-	.long	0
-VARIABLE(grub_linux_is_bzimage)
-	.long	0
-
-FUNCTION(grub_linux16_boot)
-	/* Must be done before zImage copy.  */
-	call	EXT_C(grub_dl_unload_all)
-
-	movl	EXT_C(grub_linux_is_bzimage), %ebx
-	test	%ebx, %ebx
-	jne bzimage
-
-	/* copy the kernel */
-	movl	EXT_C(grub_linux_prot_size), %ecx
-	addl	$3, %ecx
-	shrl	$2, %ecx
-	movl	$GRUB_LINUX_BZIMAGE_ADDR, %esi
-	movl	$GRUB_LINUX_ZIMAGE_ADDR, %edi
-	cld
-	rep
-	movsl
-
-bzimage:
-	movl	EXT_C(grub_linux_real_addr), %ebx
-
-	/* copy the real mode code */
-	movl	EXT_C(grub_linux_tmp_addr), %esi
-	movl	%ebx, %edi
-	movl	$GRUB_LINUX_SETUP_MOVE_SIZE, %ecx
-	cld
-	rep
-	movsb
-
-	/* change %ebx to the segment address */
-	shrl	$4, %ebx
-	movl	%ebx, %eax
-	addl	$0x20, %eax
-	movw	%ax, linux_setup_seg
-
-	/* XXX new stack pointer in safe area for calling functions */
-	movl	$0x4000, %esp
-	call	EXT_C(grub_stop_floppy)
-
-	/* final setup for linux boot */
-	call	prot_to_real
-	.code16
-
-	cli
-	movw	%bx, %ss
-	movw	$GRUB_LINUX_SETUP_STACK, %sp
-
-	movw	%bx, %ds
-	movw	%bx, %es
-	movw	%bx, %fs
-	movw	%bx, %gs
-
-	/* ljmp */
-	.byte	0xea
-	.word	0
-linux_setup_seg:
-	.word	0
+#include <grub/symbol.h>
+#include <grub/cpu/memory.h>
+#include <grub/cpu/linux.h>
+#include <grub/machine/memory.h>
+	
+	LOWMEM
 	.code32
 
+	/*
+	 * This next part is sort of evil.  It takes advantage of the
+	 * byte ordering on the x86 to work in either 16-bit or 32-bit
+	 * mode, so think about it before changing it.
+	 */
+
+FUNCTION(grub_hard_stop)
+	hlt
+	jmp EXT_C(grub_hard_stop)
+
+/*
+ * grub_halt(int no_apm)
+ *
+ * Halt the system, using APM if possible. If NO_APM is true, don't use
+ * APM even if it is available.
+ */
+FUNCTION(grub_halt)
+	/* see if zero */
+	testl	%eax, %eax
+	jnz	EXT_C(grub_stop)
+
+	PROT_TO_REAL
+	.code16
+
+	/* detect APM */
+	movw	$0x5300, %ax
+	xorw	%bx, %bx
+	int	$0x15
+	jc	EXT_C(grub_hard_stop)
+	/* don't check %bx for buggy BIOSes... */
+
+	/* disconnect APM first */
+	movw	$0x5304, %ax
+	xorw	%bx, %bx
+	int	$0x15
+
+	/* connect APM */
+	movw	$0x5301, %ax
+	xorw	%bx, %bx
+	int	$0x15
+	jc	EXT_C(grub_hard_stop)
+
+	/* set APM protocol level - 1.1 or bust. (this covers APM 1.2 also) */
+	movw	$0x530E, %ax
+	xorw	%bx, %bx
+	movw	$0x0101, %cx
+	int	$0x15
+	jc	EXT_C(grub_hard_stop)
+
+	/* set the power state to off */
+	movw	$0x5307, %ax
+	movw	$1, %bx
+	movw	$3, %cx
+	int	$0x15
+
+	/* shouldn't reach here */
+	jmp	EXT_C(grub_hard_stop)
+	.code32

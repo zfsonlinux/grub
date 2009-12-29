@@ -21,6 +21,7 @@
 #include <grub/misc.h>
 #include <grub/term.h>
 #include <grub/extcmd.h>
+#include <grub/i18n.h>
 
 static grub_err_t
 grub_cmd_help (grub_extcmd_t ext __attribute__ ((unused)), int argc,
@@ -37,18 +38,27 @@ grub_cmd_help (grub_extcmd_t ext __attribute__ ((unused)), int argc,
       if ((cmd->prio & GRUB_PRIO_LIST_FLAG_ACTIVE) &&
 	  (cmd->flags & GRUB_COMMAND_FLAG_CMDLINE))
 	{
-	  char description[GRUB_TERM_WIDTH / 2];
-	  int desclen = grub_strlen (cmd->summary);
+	  struct grub_term_output *cur;
+	  FOR_ACTIVE_TERM_OUTPUTS(cur)
+	  {
+	    int width = grub_term_width(cur);
+	    const char* summary_translated = _(cmd->summary);
+	    int desclen = grub_strlen (summary_translated);
+	    char description[width / 2];
 
-	  /* Make a string with a length of GRUB_TERM_WIDTH / 2 - 1 filled
-	     with the description followed by spaces.  */
-	  grub_memset (description, ' ', GRUB_TERM_WIDTH / 2 - 1);
-	  description[GRUB_TERM_WIDTH / 2 - 1] = '\0';
-	  grub_memcpy (description, cmd->summary,
-		       (desclen < GRUB_TERM_WIDTH / 2 - 1
-			? desclen : GRUB_TERM_WIDTH / 2 - 1));
-
-	  grub_printf ("%s%s", description, (cnt++) % 2 ? "\n" : " ");
+	    /* Make a string with a length of GRUB_TERM_WIDTH / 2 - 1 filled
+	       with the description followed by spaces.  */
+	    grub_memset (description, ' ', width / 2 - 1);
+	    description[width / 2 - 1] = '\0';
+	    grub_memcpy (description, summary_translated,
+			 (desclen < width / 2 - 1
+			  ? desclen : width / 2 - 1));
+	    grub_puts_terminal (description, cur);
+	  }
+	  if ((cnt++) % 2)
+	    grub_printf ("\n");
+	  else
+	    grub_printf (" ");
 	}
       return 0;
     }
@@ -65,15 +75,19 @@ grub_cmd_help (grub_extcmd_t ext __attribute__ ((unused)), int argc,
 	      if (cmd->flags & GRUB_COMMAND_FLAG_EXTCMD)
 		grub_arg_show_help ((grub_extcmd_t) cmd->data);
 	      else
-		grub_printf ("Usage: %s\n%s\b", cmd->summary,
-			     cmd->description);
+		grub_printf ("%s %s %s\n%s\b", _("Usage:"), cmd->name, _(cmd->summary),
+			     _(cmd->description));
 	    }
 	}
       return 0;
     }
 
   if (argc == 0)
-    grub_command_iterate (print_command_info);
+    {
+      grub_command_iterate (print_command_info);
+      if (!(cnt % 2))
+	grub_printf ("\n");
+    }
   else
     {
       int i;
@@ -94,8 +108,8 @@ GRUB_MOD_INIT(help)
 {
   cmd = grub_register_extcmd ("help", grub_cmd_help,
 			      GRUB_COMMAND_FLAG_CMDLINE,
-			      "help [PATTERN ...]",
-			      "Show a help message.", 0);
+			      N_("[PATTERN ...]"),
+			      N_("Show a help message."), 0);
 }
 
 GRUB_MOD_FINI(help)
