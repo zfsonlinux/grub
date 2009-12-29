@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: grub 1.97+20091122\n"
+"Project-Id-Version: grub 1.97+20091221\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-22 11:48+0100\n"
-"PO-Revision-Date: 2009-11-22 20:00+0700\n"
+"POT-Creation-Date: 2009-12-21 21:31+0000\n"
+"PO-Revision-Date: 2009-12-23 07:30+0700\n"
 "Last-Translator: Arif E. Nugroho <arif_endro@yahoo.com>\n"
 "Language-Team: Indonesian <translation-team-id@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -41,7 +41,7 @@ msgstr "besar diskboot.img seharusnya %u bytes"
 msgid "Core image is too big (%p > %p)\n"
 msgstr "Image core terlalu besar (%p >%p)\n"
 
-#: util/i386/pc/grub-mkimage.c:321 util/i386/pc/grub-setup.c:587
+#: util/i386/pc/grub-mkimage.c:321 util/i386/pc/grub-setup.c:593
 #, c-format
 msgid "Try ``%s --help'' for more information.\n"
 msgstr "Coba ``%s --help'' untuk informasi lebih lanjut.\n"
@@ -121,7 +121,7 @@ msgstr "Tidak dapat mengidentifikasikan sebuah sistem berkas dalam %s; pemeriksa
 msgid "%s appears to contain a %s filesystem which isn't known to reserve space for DOS-style boot.  Installing GRUB there could result in FILESYSTEM DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe disables this check, use at your own risk)"
 msgstr "%s sepertinya berisi sebuah sistem berkas %s yang tidak diketahui untuk mereserve ruang untuk boot gaya-DOS. Memasang GRUB disana dapat berakibat KERUSAKAN SISTEM BERKAS jika data berharga dipaksa tulis oleh grub-setup (--skip-fs-probe menonaktifkan pemeriksaan ini, gunakan sesuai resiko anda)"
 
-#: util/i386/pc/grub-setup.c:314
+#: util/i386/pc/grub-setup.c:314 util/i386/pc/grub-setup.c:364
 msgid "No DOS-style partitions found"
 msgstr "Tidak ditemukan gaya partisi DOS"
 
@@ -133,67 +133,67 @@ msgstr "Mencoba memasang GRUB ke sebuah disk yang tidak berpartisi. Ini mungkin 
 msgid "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD idea."
 msgstr "Mencoba memasang GRUB ke sebuah partisi daripada MBR. Ini mungkin bukan ide baik."
 
-#: util/i386/pc/grub-setup.c:365
+#: util/i386/pc/grub-setup.c:369
 msgid "This msdos-style partition label has no post-MBR gap; embedding won't be possible!"
 msgstr "Label partisi gaya msdos ini tidak memiliki post-MBR gap; penempatan tidak memungkinkan!"
 
-#: util/i386/pc/grub-setup.c:367
+#: util/i386/pc/grub-setup.c:371
 msgid "This GPT partition label has no BIOS Boot Partition; embedding won't be possible!"
 msgstr "Label partisi GPT ini tidak memiliki partisi boot BIOS; penempatan tidak memungkinkan!"
 
-#: util/i386/pc/grub-setup.c:374
+#: util/i386/pc/grub-setup.c:378
 msgid "Your core.img is unusually large.  It won't fit in the embedding area."
 msgstr "Besar core.img anda sangat besar. Ini tidak akan masuk dalam area penempatan."
 
-#: util/i386/pc/grub-setup.c:376
+#: util/i386/pc/grub-setup.c:380
 msgid "Your embedding area is unusually small.  core.img won't fit in it."
 msgstr "Penempatan anda sangat kecil. core.img tidak akan masuk disana."
 
-#: util/i386/pc/grub-setup.c:418
+#: util/i386/pc/grub-setup.c:422
 msgid "Embedding is not possible, but this is required when the root device is on a RAID array or LVM volume."
 msgstr "Penempatan tidak memungkinkan, tetapi ini dibutuhkan ketika perangkat root berada di sebuah array RAID atau volume LVM."
 
-#: util/i386/pc/grub-setup.c:421
+#: util/i386/pc/grub-setup.c:425
 msgid "Embedding is not possible.  GRUB can only be installed in this setup by using blocklists.  However, blocklists are UNRELIABLE and its use is discouraged."
 msgstr "Penempatan tidak memungkinkan. GRUB hanya dapat dipasang di konfigurasi ini dengan menggunakan blocklists. Akan tetapi, blocklists TIDAK DAPAT DIJAGAKAN dan penggunaan ini tidak disarankan."
 
-#: util/i386/pc/grub-setup.c:425
+#: util/i386/pc/grub-setup.c:429
 msgid "If you really want blocklists, use --force."
 msgstr "Jika anda benar benar menginginkan blocklists, gunakan --force."
 
-#: util/i386/pc/grub-setup.c:439
+#: util/i386/pc/grub-setup.c:445
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB"
 msgstr "mencoba untuk membaca image core `%s' dari GRUB"
 
-#: util/i386/pc/grub-setup.c:440
+#: util/i386/pc/grub-setup.c:446
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB again"
 msgstr "mencoba untuk membaca image core `%s' dari GRUB lagi"
 
-#: util/i386/pc/grub-setup.c:498
+#: util/i386/pc/grub-setup.c:504
 #, c-format
 msgid "Cannot read `%s' correctly"
 msgstr "Tidak dapat membaca `%s' secara benar"
 
-#: util/i386/pc/grub-setup.c:511
+#: util/i386/pc/grub-setup.c:517
 msgid "No terminator in the core image"
 msgstr "Tidak ada pengakhir dalam image core"
 
-#: util/i386/pc/grub-setup.c:522
+#: util/i386/pc/grub-setup.c:528
 msgid "Failed to read the first sector of the core image"
 msgstr "Gagal untuk membaca sektor pertama dari core image"
 
-#: util/i386/pc/grub-setup.c:528
+#: util/i386/pc/grub-setup.c:534
 msgid "Failed to read the rest sectors of the core image"
 msgstr "Gagal untuk membaca sektor selanjutnya dari image core"
 
-#: util/i386/pc/grub-setup.c:547
+#: util/i386/pc/grub-setup.c:553
 #, c-format
 msgid "Cannot open `%s'"
 msgstr "Tidak dapat membuka `%s'"
 
-#: util/i386/pc/grub-setup.c:589
+#: util/i386/pc/grub-setup.c:595
 #, c-format
 msgid ""
 "Usage: grub-setup [OPTION]... DEVICE\n"
@@ -232,27 +232,27 @@ msgstr ""
 "\n"
 "Laporkan bugs ke <%s>.\n"
 
-#: util/i386/pc/grub-setup.c:719
+#: util/i386/pc/grub-setup.c:725
 #, c-format
 msgid "No device is specified.\n"
 msgstr "Perangkat tidak dispesifikasikan.\n"
 
-#: util/i386/pc/grub-setup.c:725
+#: util/i386/pc/grub-setup.c:731
 #, c-format
 msgid "Unknown extra argument `%s'.\n"
 msgstr "Argumen ekstra `%s' tidak diketahui.\n"
 
-#: util/i386/pc/grub-setup.c:742
+#: util/i386/pc/grub-setup.c:748
 #, c-format
 msgid "Invalid device `%s'.\n"
 msgstr "Perangkat `%s' tidak valid.\n"
 
-#: util/i386/pc/grub-setup.c:755
+#: util/i386/pc/grub-setup.c:761
 #, c-format
 msgid "Invalid root device `%s'"
 msgstr "Perangkat root `%s' tidak valid"
 
-#: util/i386/pc/grub-setup.c:768
+#: util/i386/pc/grub-setup.c:774
 msgid "Cannot guess the root device. Specify the option ``--root-device''."
 msgstr "Tidak dapat menebak perangkat root. Spesifikasikan pilihan ``--root-device''."
 
@@ -357,12 +357,12 @@ msgstr "Berkas image boot '%s' berubah secara tidak terduga"
 msgid "Error writing to boot image (%s)"
 msgstr "Error menulis ke boot image (%s)"
 
-#: util/mkisofs/joliet.c:359 util/mkisofs/write.c:981
+#: util/mkisofs/joliet.c:359 util/mkisofs/write.c:984
 #, c-format
 msgid "Unable to generate sane path tables - too many directories (%d)\n"
 msgstr "Tidak dapat menghasilkan tabel jalur yang masuk akal - terlalu banyak direktori (%d)\n"
 
-#: util/mkisofs/joliet.c:398 util/mkisofs/write.c:1017
+#: util/mkisofs/joliet.c:398 util/mkisofs/write.c:1020
 #, c-format
 msgid "Entry %d not in path tables\n"
 msgstr "Masukan %d tidak dalam tabel jalur\n"
@@ -392,173 +392,410 @@ msgstr "Fatal goof - tidak dapat menemukan lokasi direktori\n"
 msgid "Unexpected joliet directory length %d %d %s\n"
 msgstr "Panjang direktori joliet tidak terduga %d %d %s\n"
 
-#: util/mkisofs/mkisofs.c:373
+#: util/mkisofs/mkisofs.c:208
+msgid "Process all files (don't skip backup files)"
+msgstr "Proses seluruh berkas (jangan lewatkan berkas cadangan)"
+
+#: util/mkisofs/mkisofs.c:210 util/mkisofs/mkisofs.c:214
+#: util/mkisofs/mkisofs.c:216 util/mkisofs/mkisofs.c:218
+#: util/mkisofs/mkisofs.c:222 util/mkisofs/mkisofs.c:224
+#: util/mkisofs/mkisofs.c:262 util/mkisofs/mkisofs.c:270
+#: util/mkisofs/mkisofs.c:300
+msgid "FILE"
+msgstr "BERKAS"
+
+#: util/mkisofs/mkisofs.c:210
+msgid "Set Abstract filename"
+msgstr "Set nama berkas abstrak"
+
+#: util/mkisofs/mkisofs.c:212 util/mkisofs/mkisofs.c:286
+#: util/mkisofs/mkisofs.c:292 util/mkisofs/mkisofs.c:294
+msgid "ID"
+msgstr "ID"
+
+#: util/mkisofs/mkisofs.c:212
+msgid "Set Application ID"
+msgstr "Set ID Aplikasi"
+
+#: util/mkisofs/mkisofs.c:214
+msgid "Set Bibliographic filename"
+msgstr "Set nama berkas bibliographic"
+
+#: util/mkisofs/mkisofs.c:216
+msgid "Set Copyright filename"
+msgstr "Set nama berkas Hak Cipta"
+
+#: util/mkisofs/mkisofs.c:218
+msgid "Set embedded boot image name"
+msgstr "Set nama image embedded boot"
+
+#: util/mkisofs/mkisofs.c:220
+msgid "Patch a protective DOS-style label in the image"
+msgstr "Patch sebuah label proteksi bergaya DOS dalam image"
+
+#: util/mkisofs/mkisofs.c:222
+msgid "Set El Torito boot image name"
+msgstr "Set nama El Torito boot image"
+
+#: util/mkisofs/mkisofs.c:224
+msgid "Set El Torito boot catalog name"
+msgstr "Set nama katalog boot El Torito"
+
+#: util/mkisofs/mkisofs.c:226
+msgid "Patch Boot Info Table in El Torito boot image"
+msgstr "Patch Tabel Informasi boot dalam image boot El Torito"
+
+#: util/mkisofs/mkisofs.c:228
+msgid "Dummy option for backward compatibility"
+msgstr "Pilihan dummy untuk kompabilitas kebelakang"
+
+#: util/mkisofs/mkisofs.c:230
+msgid "Enable floppy drive emulation for El Torito"
+msgstr "Aktifkan emulasi drive floppy untuk El Torito"
+
+#: util/mkisofs/mkisofs.c:232
+msgid "PARAMS"
+msgstr "PARAMETER"
+
+#: util/mkisofs/mkisofs.c:232
+msgid "Magic parameters from cdrecord"
+msgstr "Majik parameter dari cdrecord"
+
+#: util/mkisofs/mkisofs.c:234
+msgid "Omit trailing periods from filenames"
+msgstr "Abaikan sisa titik dari nama berkas"
+
+#: util/mkisofs/mkisofs.c:236
+msgid "Disable deep directory relocation"
+msgstr "Non aktifkan relokasi dalam direktori"
+
+#: util/mkisofs/mkisofs.c:238
+msgid "Follow symbolic links"
+msgstr "Ikuti link simbolik"
+
+#: util/mkisofs/mkisofs.c:240 util/mkisofs/mkisofs.c:242
+msgid "Print option help"
+msgstr "Tampilkan pilihan bantuan"
+
+#: util/mkisofs/mkisofs.c:244
+msgid "Print version information and exit"
+msgstr "Tampilkan informasi versi dan keluar"
+
+#: util/mkisofs/mkisofs.c:246 util/mkisofs/mkisofs.c:248
+#: util/mkisofs/mkisofs.c:260
+msgid "GLOBFILE"
+msgstr "GLOBFILE"
+
+#: util/mkisofs/mkisofs.c:246
+msgid "Hide ISO9660/RR file"
+msgstr "Sembunyikan berkas ISO9660/RR"
+
+#: util/mkisofs/mkisofs.c:248
+msgid "Hide Joliet file"
+msgstr "Sembunyikan berkas Joliet"
+
+#: util/mkisofs/mkisofs.c:250
+msgid "ADD_FILES"
+msgstr "ADD_FILES"
+
+#: util/mkisofs/mkisofs.c:250
+msgid "No longer supported"
+msgstr "Tidak lagi didukung"
+
+#: util/mkisofs/mkisofs.c:252
+msgid "Generate Joliet directory information"
+msgstr "Hasilkan informasi direktori Joliet"
+
+#: util/mkisofs/mkisofs.c:254
+msgid "Allow full 32 character filenames for iso9660 names"
+msgstr "Ijinkan panjang nama berkas 32 karakter untuk nama iso9660"
+
+#: util/mkisofs/mkisofs.c:256
+msgid "Allow iso9660 filenames to start with '.'"
+msgstr "Ijinkan nama berkas iso9660 dimulai dengan '.'"
+
+#: util/mkisofs/mkisofs.c:258
+msgid "LOG_FILE"
+msgstr "LOG_FILE"
+
+#: util/mkisofs/mkisofs.c:258
+msgid "Re-direct messages to LOG_FILE"
+msgstr "Alihkan pesan ke LOG_FILE"
+
+#: util/mkisofs/mkisofs.c:260
+msgid "Exclude file name"
+msgstr "Nama berkas yang diabaikan"
+
+#: util/mkisofs/mkisofs.c:262
+msgid "Set path to previous session to merge"
+msgstr "Set jalur untuk sesi sebelumnya untuk digabungkan"
+
+#: util/mkisofs/mkisofs.c:264
+msgid "Omit version number from iso9660 filename"
+msgstr "Abaikan nomor versi dari nama berkas iso9660"
+
+#: util/mkisofs/mkisofs.c:266
+msgid "Inhibit splitting symlink components"
+msgstr "Halangi pembagian komponen simlink"
+
+#: util/mkisofs/mkisofs.c:268
+msgid "Inhibit splitting symlink fields"
+msgstr "Halangi pembagian daerah simlink"
+
+#: util/mkisofs/mkisofs.c:270
+msgid "Set output file name"
+msgstr "Set nama berkas keluaran"
+
+#: util/mkisofs/mkisofs.c:272
+msgid "PREP"
+msgstr "PREP"
+
+#: util/mkisofs/mkisofs.c:272
+msgid "Set Volume preparer"
+msgstr "Set penyiap Volume"
+
+#: util/mkisofs/mkisofs.c:274
+msgid "Print estimated filesystem size and exit"
+msgstr "Tampilkan perkiraan besar sistem berkas dan keluar"
+
+#: util/mkisofs/mkisofs.c:276
+msgid "PUB"
+msgstr "PUB"
+
+#: util/mkisofs/mkisofs.c:276
+msgid "Set Volume publisher"
+msgstr "Set Volume penerbit"
+
+#: util/mkisofs/mkisofs.c:278
+msgid "Run quietly"
+msgstr "Jalankan dengan diam"
+
+#: util/mkisofs/mkisofs.c:280
+msgid "Generate rationalized Rock Ridge directory information"
+msgstr "Hasilkan informasi direktori Rock Ridge secara rasional"
+
+#: util/mkisofs/mkisofs.c:282
+msgid "Generate Rock Ridge directory information"
+msgstr "Hasilkan informasi direktori Rock Ridge"
+
+#: util/mkisofs/mkisofs.c:284
+msgid "Split output into files of approx. 1GB size"
+msgstr "Bagi keluaran kedalam berkas kira kira sebesar 1GB"
+
+#: util/mkisofs/mkisofs.c:286
+msgid "Set System ID"
+msgstr "Set ID Sistem"
+
+#: util/mkisofs/mkisofs.c:288
+msgid "Generate translation tables for systems that don't understand long filenames"
+msgstr "Hasilkan tabel terjemahan untuk sistem yang tidak mengerti nama berkas panjang"
+
+#: util/mkisofs/mkisofs.c:290
+msgid "Verbose"
+msgstr "Detail"
+
+#: util/mkisofs/mkisofs.c:292
+msgid "Set Volume ID"
+msgstr "Set ID Volume"
+
+#: util/mkisofs/mkisofs.c:294
+msgid "Set Volume set ID"
+msgstr "Set Volume ID set"
+
+#: util/mkisofs/mkisofs.c:296
+msgid "Set Volume set size"
+msgstr "Set Volume set ukuran"
+
+#: util/mkisofs/mkisofs.c:298
+msgid "Set Volume set sequence number"
+msgstr "Set Volume set nomor urutan"
+
+#: util/mkisofs/mkisofs.c:300
+msgid "Exclude file name (deprecated)"
+msgstr "Abaikan nama berkas (ditinggalkan)"
+
+#: util/mkisofs/mkisofs.c:306
+msgid "Override creation date"
+msgstr "Paksa tanggal pembuatan"
+
+#: util/mkisofs/mkisofs.c:308
+msgid "Override modification date"
+msgstr "Paksa tanggal modifikasi"
+
+#: util/mkisofs/mkisofs.c:310
+msgid "Override expiration date"
+msgstr "Paksa tanggal ekpirasi"
+
+#: util/mkisofs/mkisofs.c:312
+msgid "Override effective date"
+msgstr "Paksa tanggal efektif"
+
+#: util/mkisofs/mkisofs.c:382
 #, c-format
 msgid "Using \"%s\"\n"
 msgstr "Menggunakan \"%s\"\n"
 
-#: util/mkisofs/mkisofs.c:401
+#: util/mkisofs/mkisofs.c:410
 #, c-format
 msgid "%s:%d: name required\n"
 msgstr "%s:%d: nama dibutuhkan\n"
 
-#: util/mkisofs/mkisofs.c:411
+#: util/mkisofs/mkisofs.c:420
 #, c-format
 msgid "%s:%d: equals sign required\n"
 msgstr "%s:%d: tanda sama dibutuhkan\n"
 
-#: util/mkisofs/mkisofs.c:445
+#: util/mkisofs/mkisofs.c:454
 #, c-format
 msgid "%s:%d: field name \"%s\" unknown\n"
 msgstr "%s:%d: nama daerah \"%s\" tidak diketahui\n"
 
-#: util/mkisofs/mkisofs.c:474
+#: util/mkisofs/mkisofs.c:483
 #, c-format
 msgid "Usage: %s [options] file...\n"
 msgstr "Penggunaan: %s [pilihan] berkas...\n"
 
-#: util/mkisofs/mkisofs.c:476
+#: util/mkisofs/mkisofs.c:485
 #, c-format
 msgid "Options:\n"
 msgstr "Pilihan:\n"
 
-#: util/mkisofs/mkisofs.c:706
+#: util/mkisofs/mkisofs.c:718
 #, c-format
 msgid "-i option no longer supported.\n"
 msgstr "pilihan -i tidak lagi didukung.\n"
 
-#: util/mkisofs/mkisofs.c:720
-#, c-format
-msgid "Required boot image pathname missing\n"
-msgstr "Nama jalur boot image yang dibutuhkan hilang\n"
+#: util/mkisofs/mkisofs.c:731 util/mkisofs/mkisofs.c:737
+msgid "Required boot image pathname missing"
+msgstr "Nama jalur boot image yang dibutuhkan hilang"
 
-#: util/mkisofs/mkisofs.c:729
+#: util/mkisofs/mkisofs.c:747
 #, c-format
 msgid "Required boot catalog pathname missing\n"
 msgstr "Nama jalur katalog boot yang dibutuhkan hilang\n"
 
-#: util/mkisofs/mkisofs.c:737
+#: util/mkisofs/mkisofs.c:755
 #, c-format
 msgid "Ignoring -no-emul-boot (no-emulation is the default behaviour)\n"
 msgstr "Mengabaikan -no-emul-boot (no-emulation adalah perilaku baku)\n"
 
-#: util/mkisofs/mkisofs.c:746
+#: util/mkisofs/mkisofs.c:764
 #, c-format
 msgid "Abstract filename string too long\n"
 msgstr "String nama berkas abstrak terlalu panjang\n"
 
-#: util/mkisofs/mkisofs.c:754
+#: util/mkisofs/mkisofs.c:772
 #, c-format
 msgid "Application-id string too long\n"
 msgstr "String ID-Aplikasi terlalu panjang\n"
 
-#: util/mkisofs/mkisofs.c:762
+#: util/mkisofs/mkisofs.c:780
 #, c-format
 msgid "Bibliographic filename string too long\n"
 msgstr "String nama berkas bibliographic terlalu panjang\n"
 
-#: util/mkisofs/mkisofs.c:770
+#: util/mkisofs/mkisofs.c:788
 #, c-format
 msgid "Copyright filename string too long\n"
 msgstr "String nama berkas Hak Cipta terlalu panjang\n"
 
-#: util/mkisofs/mkisofs.c:805
+#: util/mkisofs/mkisofs.c:823
 #, c-format
 msgid "Preparer string too long\n"
 msgstr "String penyiap terlalu panjang\n"
 
-#: util/mkisofs/mkisofs.c:816
+#: util/mkisofs/mkisofs.c:834
 #, c-format
 msgid "Publisher string too long\n"
 msgstr "String penerbit terlalu panjang\n"
 
-#: util/mkisofs/mkisofs.c:837
+#: util/mkisofs/mkisofs.c:855
 #, c-format
 msgid "System ID string too long\n"
 msgstr "String ID sistem terlalu panjang\n"
 
-#: util/mkisofs/mkisofs.c:848
+#: util/mkisofs/mkisofs.c:866
 #, c-format
 msgid "Volume ID string too long\n"
 msgstr "String ID volume terlalu penjang\n"
 
-#: util/mkisofs/mkisofs.c:856
+#: util/mkisofs/mkisofs.c:874
 #, c-format
 msgid "Volume set ID string too long\n"
 msgstr "String ID set volume terlalu panjang\n"
 
-#: util/mkisofs/mkisofs.c:867
+#: util/mkisofs/mkisofs.c:885
 #, c-format
 msgid "Volume set sequence number too big\n"
 msgstr "Set urutan nomor volume terlalu besar\n"
 
-#: util/mkisofs/mkisofs.c:909 util/mkisofs/mkisofs.c:919
-#: util/mkisofs/mkisofs.c:929 util/mkisofs/mkisofs.c:939
+#: util/mkisofs/mkisofs.c:927 util/mkisofs/mkisofs.c:937
+#: util/mkisofs/mkisofs.c:947 util/mkisofs/mkisofs.c:957
 #, c-format
 msgid "date string must be 16 characters.\n"
 msgstr "string tanggal harus berupa 16 karakter.\n"
 
-#: util/mkisofs/mkisofs.c:958
+#: util/mkisofs/mkisofs.c:976
 msgid "Warning: getrlimit"
 msgstr "Peringatan: getrlimit"
 
-#: util/mkisofs/mkisofs.c:962
+#: util/mkisofs/mkisofs.c:980
 msgid "Warning: setrlimit"
 msgstr "Peringatan: setrlimit"
 
-#: util/mkisofs/mkisofs.c:978
+#: util/mkisofs/mkisofs.c:996
 #, c-format
 msgid "Multisession usage bug: Must specify -C if -M is used.\n"
 msgstr "Bug penggunaan multi sesi: Harus menspesifikasikan -C jika -M digunakan.\n"
 
-#: util/mkisofs/mkisofs.c:984
+#: util/mkisofs/mkisofs.c:1002
 #, c-format
 msgid "Warning: -C specified without -M: old session data will not be merged.\n"
 msgstr "Peringatan: -C dispesifikasikan tanpa -M: data sesi lama tidak akan digabungkan.\n"
 
-#: util/mkisofs/mkisofs.c:1023
+#: util/mkisofs/mkisofs.c:1041
 #, c-format
 msgid "can't open logfile: %s"
 msgstr "tidak dapat membuka berkas log: %s"
 
-#: util/mkisofs/mkisofs.c:1027
+#: util/mkisofs/mkisofs.c:1045
 #, c-format
 msgid "re-directing all messages to %s\n"
 msgstr "menredireksikan seluruh pesan ke %s\n"
 
-#: util/mkisofs/mkisofs.c:1032
+#: util/mkisofs/mkisofs.c:1050
 #, c-format
 msgid "can't open logfile: %s\n"
 msgstr "tidak dapat membuka berkas log: %s\n"
 
-#: util/mkisofs/mkisofs.c:1073
+#: util/mkisofs/mkisofs.c:1091
 #, c-format
 msgid "Unable to open previous session image %s\n"
 msgstr "Tidak dapat membuka sesi image sebelumnya %s\n"
 
-#: util/mkisofs/mkisofs.c:1184
+#: util/mkisofs/mkisofs.c:1202
 #, c-format
 msgid "Invalid node - %s\n"
 msgstr "Node tidak valid -%s\n"
 
-#: util/mkisofs/mkisofs.c:1246
+#: util/mkisofs/mkisofs.c:1264
 msgid "Joliet tree sort failed.\n"
 msgstr "Pengurutan pohon joliet gagal.\n"
 
-#: util/mkisofs/mkisofs.c:1261
+#: util/mkisofs/mkisofs.c:1279
 msgid "Unable to open /dev/null\n"
 msgstr "Tidak dapat membuka /dev/null\n"
 
-#: util/mkisofs/mkisofs.c:1265
+#: util/mkisofs/mkisofs.c:1283
 msgid "Unable to open disc image file\n"
 msgstr "Tidak dapat membuka berkas image disk\n"
 
-#: util/mkisofs/mkisofs.c:1387
+#: util/mkisofs/mkisofs.c:1405
 #, c-format
 msgid "Max brk space used %x\n"
 msgstr "Ruang maksimal brk yang digunakan %x\n"
 
-#: util/mkisofs/mkisofs.c:1390
+#: util/mkisofs/mkisofs.c:1408
 #, c-format
 msgid "%llu extents written (%llu MiB)\n"
 msgstr "%llu ekstensi ditulis (%llu MiB)\n"
@@ -604,7 +841,7 @@ msgstr "Tidak dapat memasukan berkas terkompress secara transparan - konflik nam
 msgid "Extension record too long\n"
 msgstr "Rekaman ekstensi terlalu panjang\n"
 
-#: util/mkisofs/tree.c:226 util/mkisofs/write.c:565 util/mkisofs/write.c:1037
+#: util/mkisofs/tree.c:226 util/mkisofs/write.c:568 util/mkisofs/write.c:1040
 msgid "Fatal goof\n"
 msgstr "Fatal goof\n"
 
@@ -734,90 +971,214 @@ msgstr "memanggil ke search_tree_file dengan sebuah jalur absolut, dipotong\n"
 msgid "initial path separator. Hope this was intended...\n"
 msgstr "jalur pemisah awal. Semoga ini yang diinginkan...\n"
 
-#: util/mkisofs/write.c:158
+#: util/mkisofs/write.c:161
 #, c-format
 msgid "Cannot open '%s'"
 msgstr "Tidak dapat membuka '%s'"
 
-#: util/mkisofs/write.c:166
+#: util/mkisofs/write.c:169
 #, c-format
 msgid "cannot fwrite %llu*%llu\n"
 msgstr "tidak dapat fwrite %llu*%llu\n"
 
-#: util/mkisofs/write.c:248
+#: util/mkisofs/write.c:251
 #, c-format
 msgid "cannot open %s\n"
 msgstr "tidak dapat membuka %s\n"
 
-#: util/mkisofs/write.c:257
+#: util/mkisofs/write.c:260
 #, c-format
 msgid "cannot read %llu bytes from %s"
 msgstr "tidak dapat membaca %llu bytes dari %s"
 
-#: util/mkisofs/write.c:275
+#: util/mkisofs/write.c:278
 #, c-format
 msgid "%6.2f%% done, estimate finish %s"
 msgstr "%6.2f%% selesai, kira kira selesai %s"
 
-#: util/mkisofs/write.c:542
+#: util/mkisofs/write.c:545
 #, c-format
 msgid "Cache hit for %s%s%s\n"
 msgstr "Cache kena untuk %s%s%s\n"
 
-#: util/mkisofs/write.c:896
+#: util/mkisofs/write.c:899
 #, c-format
 msgid "Unexpected directory length %d %d %s\n"
 msgstr "Panjang direktori tidak terduga %d %d %s\n"
 
-#: util/mkisofs/write.c:908
+#: util/mkisofs/write.c:911
 #, c-format
 msgid "Continuation entry record length mismatch (%d %d).\n"
 msgstr "Panjang masukan rekaman lanjutan tidak cocok (%d %d).\n"
 
-#: util/mkisofs/write.c:1072
+#: util/mkisofs/write.c:1075
 #, c-format
 msgid "Path table lengths do not match %d %d\n"
 msgstr "Panjang jalur tabel tidak cocok %d %d\n"
 
-#: util/mkisofs/write.c:1118 util/mkisofs/write.c:1128
+#: util/mkisofs/write.c:1121 util/mkisofs/write.c:1131
 #, c-format
 msgid "Total extents scheduled to be written = %llu\n"
 msgstr "Total ekstensi telah terjadwal untuk ditulis = %llu\n"
 
-#: util/mkisofs/write.c:1145
+#: util/mkisofs/write.c:1148
 #, c-format
 msgid "Total extents actually written = %llu\n"
 msgstr "Total ekstensi yang sebenarnya tertulis = %llu\n"
 
-#: util/mkisofs/write.c:1154
+#: util/mkisofs/write.c:1157
 #, c-format
 msgid "Number of extents written different than what was predicted.  Please fix.\n"
 msgstr "Jumlah dari ekstensi yang ditulis berbeda dari apa yang direncanakan. Mohon betulkan.\n"
 
-#: util/mkisofs/write.c:1155
+#: util/mkisofs/write.c:1158
 #, c-format
 msgid "Predicted = %d, written = %llu\n"
 msgstr "Diperkirakan = %d, tertulis = %llu\n"
 
-#: util/mkisofs/write.c:1158
+#: util/mkisofs/write.c:1161
 #, c-format
 msgid "Total translation table size: %d\n"
 msgstr "Total besar tabel terjemahan: %d\n"
 
-#: util/mkisofs/write.c:1159
+#: util/mkisofs/write.c:1162
 #, c-format
 msgid "Total rockridge attributes bytes: %d\n"
 msgstr "Total atribut rockridge bytes: %d\n"
 
-#: util/mkisofs/write.c:1160
+#: util/mkisofs/write.c:1163
 #, c-format
 msgid "Total directory bytes: %d\n"
 msgstr "Total bytes direktori: %d\n"
 
-#: util/mkisofs/write.c:1161
+#: util/mkisofs/write.c:1164
 #, c-format
 msgid "Path table size(bytes): %d\n"
 msgstr "Ukuran tabel jalur(bytes): %d\n"
+
+#: util/mkisofs/write.c:1438
+#, c-format
+msgid "Unable to open %s"
+msgstr "Tidak dapat membuka %s"
+
+#: normal/auth.c:241
+msgid "Enter username:"
+msgstr "Masukan nama pengguna:"
+
+#: normal/color.c:80
+#, c-format
+msgid "Warning: syntax error (missing slash) in `%s'\n"
+msgstr "Peringatan: kesalahan dalam sintaks (hilang slash) dalam `%s'\n"
+
+#: normal/color.c:89
+#, c-format
+msgid "Warning: invalid foreground color `%s'\n"
+msgstr "Peringatan: warna depan tidak valid `%s'\n"
+
+#: normal/color.c:95
+#, c-format
+msgid "Warning: invalid background color `%s'\n"
+msgstr "Peringatan: nama belakang tidak valid `%s'\n"
+
+#: normal/main.c:390
+#, c-format
+msgid "GNU GRUB  version %s"
+msgstr "GNU GRUB  versi %s"
+
+#: normal/main.c:525
+#, c-format
+msgid "Minimal BASH-like line editing is supported. For the first word, TAB lists possible command completions. Anywhere else TAB lists possible device or file completions. %s"
+msgstr "Penyuntingan minimal bergaya BASH didukung. Untuk kata pertama, TAB menampilkan pelengkapan perintah yang memungkin. Dimanapun TAB menampilkan perangkat yang memungkinkan atau pelengkapan berkas. %s"
+
+#: normal/main.c:529
+msgid "ESC at any time exits."
+msgstr "ESC di waktu apapun keluar."
+
+#: normal/menu_entry.c:840
+#, c-format
+msgid "Possible %s are:"
+msgstr "Kemungkinan %s adalah:"
+
+#: normal/menu_entry.c:1003
+msgid "Booting a command list"
+msgstr "Mem-boot dari sebuah daftar perintah"
+
+#: normal/menu_entry.c:1185 normal/menu_text.c:43
+msgid "Press any key to continue..."
+msgstr "Tekan tombol apapun untuk melanjutkan..."
+
+#: normal/menu_text.c:207
+msgid "Minimum Emacs-like screen editing is supported. TAB lists completions. Press Ctrl-x to boot, Ctrl-c for a command-line or ESC to return menu."
+msgstr "Penyuntingan layar minimum bergaya Emacs didukung. TAB menampilkan pelengkapan. Tekan Ctrl-x untuk boot, Ctrl-c untuk baris perintah atau ESC untuk kembali ke menu."
+
+#: normal/menu_text.c:213
+#, c-format
+msgid "Use the %C and %C keys to select which entry is highlighted.\n"
+msgstr "Gunakan tombol-tombol %C dan %C untuk memiliki masukan mana yang disoroti.\n"
+
+#: normal/menu_text.c:225
+msgid "Press enter to boot the selected OS, 'e' to edit the commands before booting or 'c' for a command-line.\n"
+msgstr "Tekan enter untuk mem-boot OS yang dipilih, 'e' untuk mengubah perintah sebelum booting atau 'c' untuk sebuah baris perintah.\n"
+
+#: normal/menu_text.c:231
+msgid "ESC to return previous menu."
+msgstr "ESC kembali ke menu sebelumnya."
+
+#: normal/menu_text.c:396
+#, c-format
+msgid "The highlighted entry will be booted automatically in %ds."
+msgstr "Masukan yang disoroti akan diboot secara otomatis dalam %ds."
+
+#: normal/menu_text.c:656
+#, c-format
+msgid "Booting '%s'"
+msgstr "Mem-boot '%s'"
+
+#: normal/menu_text.c:668
+#, c-format
+msgid "Falling back to '%s'"
+msgstr "Kembali ke '%s'"
+
+#: normal/menu_text.c:684
+msgid "Failed to boot default entries.\n"
+msgstr "Gagal untuk mem-boot masukan baku.\n"
+
+#: normal/misc.c:41
+#, c-format
+msgid "Partition %s:"
+msgstr "Partisi %s:"
+
+#: normal/misc.c:46
+#, c-format
+msgid "Device %s:"
+msgstr "Perankat %s:"
+
+#: normal/misc.c:52
+msgid "Filesystem cannot be accessed"
+msgstr "Sistem berkas tidak dapat diakses"
+
+#: normal/misc.c:63
+#, c-format
+msgid "Filesystem type %s"
+msgstr "Tipe sistem berkas %s"
+
+#: normal/misc.c:71
+#, c-format
+msgid "- Label %s"
+msgstr "- Label %s"
+
+#: normal/misc.c:84
+#, c-format
+msgid "- Last modification time %d-%02d-%02d %02d:%02d:%02d %s"
+msgstr "- Waktu modifikasi terakhir %d-%02d-%02d %02d:%02d:%02d %s"
+
+#: normal/misc.c:107
+msgid "Unknown filesystem"
+msgstr "Sistem berkas tidak diketahui"
+
+#: normal/misc.c:109
+msgid "Partition table"
+msgstr "Tabel partisi"
 
 #: util/grub.d/10_kfreebsd.in:40
 msgid "%s, with kFreeBSD %s"
