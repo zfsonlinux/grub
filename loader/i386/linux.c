@@ -18,7 +18,9 @@
 
 #include <grub/loader.h>
 #include <grub/machine/memory.h>
-#include <grub/machine/loader.h>
+#include <grub/cpu/loader.h>
+#include <grub/cpu/memory.h>
+#include <grub/cpu/loader.h>
 #include <grub/normal.h>
 #include <grub/file.h>
 #include <grub/disk.h>
@@ -33,6 +35,7 @@
 #include <grub/video_fb.h>
 #include <grub/command.h>
 #include <grub/i386/pc/vbe.h>
+#include <grub/i386/pc/console.h>
 
 #define GRUB_LINUX_CL_OFFSET		0x1000
 #define GRUB_LINUX_CL_END_OFFSET	0x2000
@@ -288,7 +291,8 @@ find_mmap_size (void)
 static void
 free_pages (void)
 {
-  real_mode_mem = prot_mode_mem = initrd_mem = 0;
+  grub_free (real_mode_mem);
+  real_mode_mem = prot_mode_mem = initrd_mem = NULL;
 }
 
 /* Allocate pages for the real mode code and the protected mode code
@@ -314,42 +318,10 @@ allocate_pages (grub_size_t prot_size)
   /* Initialize the memory pointers with NULL for convenience.  */
   free_pages ();
 
-  /* FIXME: Should request low memory from the heap when this feature is
-     implemented.  */
-
-  auto int NESTED_FUNC_ATTR hook (grub_uint64_t, grub_uint64_t, grub_uint32_t);
-  int NESTED_FUNC_ATTR hook (grub_uint64_t addr, grub_uint64_t size, grub_uint32_t type)
-    {
-      /* We must put real mode code in the traditional space.  */
-
-      if (type == GRUB_MACHINE_MEMORY_AVAILABLE
-	  && addr <= 0x90000)
-	{
-	  if (addr < 0x10000)
-	    {
-	      size += addr - 0x10000;
-	      addr = 0x10000;
-	    }
-
-	  if (addr + size > 0x90000)
-	    size = 0x90000 - addr;
-
-	  if (real_size + mmap_size > size)
-	    return 0;
-
-	  real_mode_mem =
-	    (void *) (grub_size_t) ((addr + size) - (real_size + mmap_size));
-	  return 1;
-	}
-
-      return 0;
-    }
-  grub_mmap_iterate (hook);
+  real_mode_mem = grub_memalign_policy (1, real_size + mmap_size,
+					GRUB_MM_MALLOC_LOW);
   if (! real_mode_mem)
-    {
-      grub_error (GRUB_ERR_OUT_OF_MEMORY, "cannot allocate real mode pages");
-      goto fail;
-    }
+    goto fail;
 
   prot_mode_mem = (void *) 0x100000;
 
@@ -547,8 +519,30 @@ grub_linux_boot (void)
   /* Initialize these last, because terminal position could be affected by printfs above.  */
   if (params->have_vga == GRUB_VIDEO_TYPE_TEXT)
     {
-      params->video_cursor_x = grub_getxy () >> 8;
-      params->video_cursor_y = grub_getxy () & 0xff;
+      grub_term_output_t term;
+      int found = 0;
+      FOR_ACTIVE_TERM_OUTPUTS(term)
+	if (grub_strcmp (term->name, "vga_text") == 0)
+	  {
+	    grub_uint16_t pos = grub_term_getxy (term);
+	    params->video_cursor_x = pos >> 8;
+	    params->video_cursor_y = pos & 0xff;
+	    found = 1;
+	  }
+      if (!found)
+	FOR_ACTIVE_TERM_OUTPUTS(term)
+	  if (grub_strcmp (term->name, "console") == 0)
+	  {
+	    grub_uint16_t pos = grub_term_getxy (term);
+	    params->video_cursor_x = pos >> 8;
+	    params->video_cursor_y = pos & 0xff;
+	    found = 1;
+	  }
+      if (!found)
+	{
+	  params->video_cursor_x = 0;
+	  params->video_cursor_y = 0;
+	}
     }
 
 #ifdef __x86_64__
@@ -673,7 +667,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
   len = 0x400 - sizeof (lh);
   if (grub_file_read (file, (char *) real_mode_mem + sizeof (lh), len) != len)
     {
-      grub_error (GRUB_ERR_FILE_READ_ERROR, "Couldn't read file");
+      grub_error (GRUB_ERR_FILE_READ_ERROR, "couldn't read file");
       goto fail;
     }
 
@@ -862,7 +856,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 
   len = prot_size;
   if (grub_file_read (file, (void *) GRUB_LINUX_BZIMAGE_ADDR, len) != len)
-    grub_error (GRUB_ERR_FILE_READ_ERROR, "Couldn't read file");
+    grub_error (GRUB_ERR_FILE_READ_ERROR, "couldn't read file");
 
   if (grub_errno == GRUB_ERR_NONE)
     {
@@ -897,13 +891,13 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
 
   if (argc == 0)
     {
-      grub_error (GRUB_ERR_BAD_ARGUMENT, "No module specified");
+      grub_error (GRUB_ERR_BAD_ARGUMENT, "no module specified");
       goto fail;
     }
 
   if (! loaded)
     {
-      grub_error (GRUB_ERR_BAD_ARGUMENT, "You need to load the kernel first.");
+      grub_error (GRUB_ERR_BAD_ARGUMENT, "you need to load the kernel first");
       goto fail;
     }
 
@@ -951,7 +945,7 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
 
   if (addr < addr_min)
     {
-      grub_error (GRUB_ERR_OUT_OF_RANGE, "The initrd is too big");
+      grub_error (GRUB_ERR_OUT_OF_RANGE, "the initrd is too big");
       goto fail;
     }
 
@@ -959,7 +953,7 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
 
   if (grub_file_read (file, initrd_mem, size) != size)
     {
-      grub_error (GRUB_ERR_FILE_READ_ERROR, "Couldn't read file");
+      grub_error (GRUB_ERR_FILE_READ_ERROR, "couldn't read file");
       goto fail;
     }
 
@@ -982,9 +976,9 @@ static grub_command_t cmd_linux, cmd_initrd;
 GRUB_MOD_INIT(linux)
 {
   cmd_linux = grub_register_command ("linux", grub_cmd_linux,
-				     0, "load linux");
+				     0, "Load Linux.");
   cmd_initrd = grub_register_command ("initrd", grub_cmd_initrd,
-				      0, "load initrd");
+				      0, "Load initrd.");
   my_mod = mod;
 }
 

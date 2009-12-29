@@ -1,9 +1,28 @@
+grub2 (1.98~experimental.20091229-1) experimental; urgency=high
+
+  * New Baazar snapshot.
+    - Correctly set TARGET_CFLAGS. (Closes: #562953)
+
+  [ Felix Zielcke ]
+  * Urgency=high due to RC bug fix.
+  * patches/05_insmod_in_rescue_disks.diff: Remove. No longer needed.
+  * Add Replaces:/Conflicts: grub-linuxbios to grub-coreboot. (Closes: #561811)
+  * Fix version comparison in grub-common.preinst for handling obsolete
+    /etc/grub.d/10_freebsd. (Closes: #562921)
+
+  [ Robert Millan ]
+  * grub-rescue-pc.postinst: Build USB rescue image.
+  * rules: Invoke configure with relative path.  This makes binaries
+    smaller, since dprintf strings are constructed using this path.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 29 Dec 2009 18:59:24 +0100
+
 grub2 (1.98~experimental.20091216-1) experimental; urgency=low
 
   * New Bazaar snapshot.
   * Upload again to experimental.
 
- -- Felix Zielcke <fzielcke@z-51.de>  Wed, 16 Dec 2009 18:58:41 +0100
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 16 Dec 2009 21:00:03 +0100
 
 grub2 (1.97+experimental.20091213-1) unstable; urgency=low
 

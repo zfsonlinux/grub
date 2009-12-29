@@ -26,9 +26,9 @@
 #include <grub/extcmd.h>
 
 static const struct grub_arg_option options[] = {
-  {"skip", 's', 0, "skip offset bytes from the beginning of file.", 0,
+  {"skip", 's', 0, "Skip offset bytes from the beginning of file.", 0,
    ARG_TYPE_INT},
-  {"length", 'n', 0, "read only length bytes", 0, ARG_TYPE_INT},
+  {"length", 'n', 0, "Read only LENGTH bytes.", 0, ARG_TYPE_INT},
   {0, 0, 0, 0, 0, 0}
 };
 
@@ -121,7 +121,7 @@ GRUB_MOD_INIT (hexdump)
 {
   cmd = grub_register_extcmd ("hexdump", grub_cmd_hexdump,
 			      GRUB_COMMAND_FLAG_BOTH,
-			      "hexdump [OPTIONS] FILE_OR_DEVICE",
+			      "[OPTIONS] FILE_OR_DEVICE",
 			      "Dump the contents of a file or memory.",
 			      options);
 }

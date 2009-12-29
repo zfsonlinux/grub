@@ -171,7 +171,7 @@ endif
 ### General targets.
 
 CLEANFILES += $(pkglib_DATA) $(pkgdata_DATA) po/*.mo
-pkglib_DATA += moddep.lst command.lst fs.lst partmap.lst parttool.lst handler.lst video.lst
+pkglib_DATA += moddep.lst command.lst fs.lst partmap.lst parttool.lst handler.lst video.lst crypto.lst terminal.lst
 moddep.lst: $(DEFSYMFILES) $(UNDSYMFILES) genmoddep.awk
 	cat $(DEFSYMFILES) /dev/null \
 	  | $(AWK) -f $(srcdir)/genmoddep.awk $(UNDSYMFILES) > $@ \
@@ -189,11 +189,17 @@ partmap.lst: $(PARTMAPFILES)
 handler.lst: $(HANDLERFILES)
 	cat $^ /dev/null | sort > $@
 
+terminal.lst: $(TERMINALFILES)
+	cat $^ /dev/null | sort > $@
+
 parttool.lst: $(PARTTOOLFILES)
 	cat $^ /dev/null | sort | uniq > $@
 
 video.lst: $(VIDEOFILES)
 	cat $^ /dev/null | sort | uniq > $@
+
+crypto.lst: lib/libgcrypt-grub/cipher/crypto.lst
+	cp $^ $@
 
 ifneq (true, $(MAKEINFO))
 info_INFOS += docs/grub.info
@@ -486,8 +492,8 @@ genkernsyms.sh: genkernsyms.sh.in config.status
 	$(SHELL) ./config.status
 
 $(srcdir)/po/$(PACKAGE).pot: po/POTFILES po/POTFILES-shell
-	cd $(srcdir) && $(XGETTEXT) --from-code=utf-8 -o $@ -f $< --keyword=_ --keyword=N_
-	cd $(srcdir) && $(XGETTEXT) --from-code=utf-8 -o $@ -f po/POTFILES-shell -j --language=Shell
+	cd $(srcdir) && $(XGETTEXT) -ctranslate --from-code=utf-8 -o $@ -f $< --keyword=_ --keyword=N_
+	cd $(srcdir) && $(XGETTEXT) -ctranslate --from-code=utf-8 -o $@ -f po/POTFILES-shell -j --language=Shell
 
 $(foreach lang, $(LINGUAS), $(srcdir)/po/$(lang).po): po/$(PACKAGE).pot
 	$(MSGMERGE) -U $@ $^

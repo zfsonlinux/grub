@@ -27,13 +27,11 @@
 
 struct grub_gui_progress_bar
 {
-  struct grub_gui_component_ops *progress_bar;
+  struct grub_gui_component component;
 
   grub_gui_container_t parent;
   grub_video_rect_t bounds;
   char *id;
-  int preferred_width;
-  int preferred_height;
   int visible;
   int start;
   int end;
@@ -139,11 +137,16 @@ draw_pixmap_bar (grub_gui_progress_bar_t self)
   int bar_v_pad = bar_t_pad + bar_b_pad;
   int tracklen = w - bar_h_pad;
   int trackheight = h - bar_v_pad;
+  int barwidth;
+
+  if (self->end == self->start)
+    return;
+
   bar->set_content_size (bar, tracklen, trackheight);
 
-  int barwidth = (tracklen
-                  * (self->value - self->start)
-                  / (self->end - self->start));
+  barwidth = (tracklen * (self->value - self->start) 
+	      / (self->end - self->start));
+
   hl->set_content_size (hl, barwidth, h - bar_v_pad);
 
   bar->draw (bar, 0, 0);
@@ -174,12 +177,13 @@ static void
 progress_bar_paint (void *vself, const grub_video_rect_t *region)
 {
   grub_gui_progress_bar_t self = vself;
+  grub_video_rect_t vpsave;
+
   if (! self->visible)
     return;
   if (!grub_video_have_common_points (region, &self->bounds))
     return;
 
-  grub_video_rect_t vpsave;
   grub_gui_set_viewport (&self->bounds, &vpsave);
 
   if (check_pixmaps (self))
@@ -221,18 +225,11 @@ progress_bar_get_bounds (void *vself, grub_video_rect_t *bounds)
 }
 
 static void
-progress_bar_get_preferred_size (void *vself, int *width, int *height)
+progress_bar_get_minimal_size (void *vself __attribute__ ((unused)),
+			       unsigned *width, unsigned *height)
 {
-  grub_gui_progress_bar_t self = vself;
-
   *width = 200;
   *height = 28;
-
-  /* Allow preferred dimensions to override the progress_bar dimensions.  */
-  if (self->preferred_width >= 0)
-    *width = self->preferred_width;
-  if (self->preferred_height >= 0)
-    *height = self->preferred_height;
 }
 
 static grub_err_t
@@ -296,15 +293,6 @@ progress_bar_set_property (void *vself, const char *name, const char *value)
       grub_free (self->theme_dir);
       self->theme_dir = value ? grub_strdup (value) : 0;
     }
-  else if (grub_strcmp (name, "preferred_size") == 0)
-    {
-      int w;
-      int h;
-      if (grub_gui_parse_2_tuple (value, &w, &h) != GRUB_ERR_NONE)
-        return grub_errno;
-      self->preferred_width = w;
-      self->preferred_height = h;
-    }
   else if (grub_strcmp (name, "visible") == 0)
     {
       self->visible = grub_strcmp (value, "false") != 0;
@@ -334,7 +322,7 @@ static struct grub_gui_component_ops progress_bar_ops =
   .get_parent = progress_bar_get_parent,
   .set_bounds = progress_bar_set_bounds,
   .get_bounds = progress_bar_get_bounds,
-  .get_preferred_size = progress_bar_get_preferred_size,
+  .get_minimal_size = progress_bar_get_minimal_size,
   .set_property = progress_bar_set_property
 };
 
@@ -342,22 +330,11 @@ grub_gui_component_t
 grub_gui_progress_bar_new (void)
 {
   grub_gui_progress_bar_t self;
-  self = grub_malloc (sizeof (*self));
+  self = grub_zalloc (sizeof (*self));
   if (! self)
     return 0;
-  self->progress_bar = &progress_bar_ops;
-  self->parent = 0;
-  self->bounds.x = 0;
-  self->bounds.y = 0;
-  self->bounds.width = 0;
-  self->bounds.height = 0;
-  self->id = 0;
-  self->preferred_width = -1;
-  self->preferred_height = -1;
+  self->component.ops = &progress_bar_ops;
   self->visible = 1;
-  self->start = 0;
-  self->end = 0;
-  self->value = 0;
   self->show_text = 1;
   self->text = grub_strdup ("");
   self->font = grub_font_get ("Helvetica 10");
@@ -368,13 +345,6 @@ grub_gui_progress_bar_new (void)
   self->border_color = black;
   self->bg_color = gray;
   self->fg_color = lightgray;
-
-  self->theme_dir = 0;
-  self->need_to_recreate_pixmaps = 0;
-  self->bar_pattern = 0;
-  self->highlight_pattern = 0;
-  self->bar_box = 0;
-  self->highlight_box = 0;
 
   return (grub_gui_component_t) self;
 }

@@ -161,23 +161,14 @@ iterate_dev (const char *devname)
 
   if (dev)
     {
-      char tmp[grub_strlen (devname) + sizeof (",")];
-
-      grub_memcpy (tmp, devname, grub_strlen (devname));
-
-      if (grub_strcmp (devname, current_word) == 0)
+      if (dev->disk && dev->disk->has_partitions)
 	{
-	  if (add_completion (devname, ")", GRUB_COMPLETION_TYPE_PARTITION))
+	  if (add_completion (devname, ",", GRUB_COMPLETION_TYPE_DEVICE))
 	    return 1;
-
-	  if (dev->disk)
-	    if (grub_partition_iterate (dev->disk, iterate_partition))
-	      return 1;
 	}
       else
 	{
-	  grub_memcpy (tmp + grub_strlen (devname), "", sizeof (""));
-	  if (add_completion (tmp, "", GRUB_COMPLETION_TYPE_DEVICE))
+	  if (add_completion (devname, ")", GRUB_COMPLETION_TYPE_DEVICE))
 	    return 1;
 	}
     }
@@ -225,7 +216,7 @@ complete_device (void)
 
       if (dev)
 	{
-	  if (dev->disk)
+	  if (dev->disk && dev->disk->has_partitions)
 	    {
 	      if (grub_partition_iterate (dev->disk, iterate_partition))
 		{
@@ -418,13 +409,16 @@ grub_normal_do_completion (char *buf, int *restore,
   if (grub_parser_split_cmdline (buf, 0, &argc, &argv))
     return 0;
 
-  current_word = argv[argc];
+  if (argc == 0)
+    current_word = "";
+  else
+    current_word = argv[argc - 1];
 
   /* Determine the state the command line is in, depending on the
      state, it can be determined how to complete.  */
   cmdline_state = get_state (buf);
 
-  if (argc == 0)
+  if (argc == 1 || argc == 0)
     {
       /* Complete a command.  */
       if (grub_command_iterate (iterate_command))
@@ -494,13 +488,15 @@ grub_normal_do_completion (char *buf, int *restore,
           goto fail;
 	}
 
-      grub_free (argv[0]);
+      if (argc != 0)
+	grub_free (argv[0]);
       grub_free (match);
       return ret;
     }
 
  fail:
-  grub_free (argv[0]);
+  if (argc != 0)
+    grub_free (argv[0]);
   grub_free (match);
   grub_errno = GRUB_ERR_NONE;
 

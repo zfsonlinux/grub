@@ -30,7 +30,6 @@ static int relocated_handle = 0;
 static int ptv_requested = 0;
 static struct grub_efiemu_sym *efiemu_syms = 0;
 
-
 struct grub_efiemu_sym
 {
   struct grub_efiemu_sym *next;
@@ -223,7 +222,7 @@ grub_efiemu_set_virtual_address_map (grub_efi_uintn_t memory_map_size,
 
   /* Ensure that we are called only once */
   if (*ptv_relocated)
-    return grub_error (GRUB_ERR_BAD_ARGUMENT, "EfiEmu is already relocated.");
+    return grub_error (GRUB_ERR_BAD_ARGUMENT, "EfiEmu is already relocated");
   *ptv_relocated = 1;
 
   /* Correct addresses using information supplied by grub */
