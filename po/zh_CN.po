@@ -9,9 +9,9 @@ msgstr ""
 "Project-Id-Version: grub 1.97+20091122\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-11-22 11:48+0100\n"
-"PO-Revision-Date: 2009-12-05 23:16+0800\n"
+"PO-Revision-Date: 2009-12-17 22:48+0800\n"
 "Last-Translator: Xin Ye <alyex.ye@gmail.com>\n"
-"Language-Team: Chinese (simplified) <translation-team-zh-cn@lists.sourceforge.net>\n"
+"Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -133,13 +133,15 @@ msgstr "正在试图将 GRUB 安装至未分区的磁盘。 这是一个坏主�
 msgid "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD idea."
 msgstr "正在试图将 GRUB 安装至一个分区而非 MBR。 这是一个坏主意。"
 
+# fuzzy
 #: util/i386/pc/grub-setup.c:365
 msgid "This msdos-style partition label has no post-MBR gap; embedding won't be possible!"
-msgstr ""
+msgstr "此 DOS 分区标签没有MBR后间隔； 嵌套将不可能！"
 
+# fuzzy
 #: util/i386/pc/grub-setup.c:367
 msgid "This GPT partition label has no BIOS Boot Partition; embedding won't be possible!"
-msgstr ""
+msgstr "此 GPT 分区标签没有 BIOS 引导分区；嵌套将不可能！"
 
 #: util/i386/pc/grub-setup.c:374
 msgid "Your core.img is unusually large.  It won't fit in the embedding area."
@@ -151,7 +153,7 @@ msgstr "您的嵌入式环境超乎寻常的小。core.img 无法适用于此处
 
 #: util/i386/pc/grub-setup.c:418
 msgid "Embedding is not possible, but this is required when the root device is on a RAID array or LVM volume."
-msgstr ""
+msgstr "嵌入不可被完成，但当根设备位于磁盘阵列或者逻辑卷上时嵌入是必须的。"
 
 # fuzzy
 #: util/i386/pc/grub-setup.c:421
@@ -264,7 +266,7 @@ msgstr "无法猜测根设备。请使用 \"--root-device\" 选项指定。"
 #: util/mkisofs/eltorito.c:96
 #, c-format
 msgid "A boot catalog exists and appears corrupted.\n"
-msgstr ""
+msgstr "引导编目存在且似乎已损坏。\n"
 
 #: util/mkisofs/eltorito.c:97
 #, c-format
@@ -274,7 +276,7 @@ msgstr "请检查以下文件: %s。\n"
 #: util/mkisofs/eltorito.c:98
 #, c-format
 msgid "This file must be removed before a bootable CD can be done.\n"
-msgstr ""
+msgstr "此文件在可引导CD完成之前必须被删除。\n"
 
 # fuzzy
 #: util/mkisofs/eltorito.c:110
@@ -297,7 +299,7 @@ msgstr "无法找到引导编目！\n"
 #: util/mkisofs/eltorito.c:158
 #, c-format
 msgid "Boot image cannot be found!\n"
-msgstr "无法找到引导映像！\n"
+msgstr "无法找到引导镜像！\n"
 
 #: util/mkisofs/eltorito.c:221
 #, c-format
@@ -306,7 +308,7 @@ msgid ""
 "Size of boot image is %d sectors"
 msgstr ""
 "\n"
-"引导映像的大小为 %d 个扇区"
+"引导镜像的大小为 %d 个扇区"
 
 #: util/mkisofs/eltorito.c:227
 #, c-format
@@ -367,7 +369,7 @@ msgstr "引导镜像文件 “%s” 意外改变"
 #: util/mkisofs/eltorito.c:323
 #, c-format
 msgid "Error writing to boot image (%s)"
-msgstr "写入到引导映像出错(%s)"
+msgstr "写入到引导镜像出错(%s)"
 
 # fuzzy
 #: util/mkisofs/joliet.c:359 util/mkisofs/write.c:981
@@ -380,15 +382,16 @@ msgstr "无法生成合理的路径表? - 太多目录(%d)\n"
 msgid "Entry %d not in path tables\n"
 msgstr "条目 %d 不在路径表中\n"
 
+# fuzzy
 #: util/mkisofs/joliet.c:412
 #, c-format
 msgid "Fatal goof - directory has amnesia\n"
-msgstr ""
+msgstr "致命错误 - 目录失忆\n"
 
 #: util/mkisofs/joliet.c:478
 #, c-format
 msgid "Joliet path table lengths do not match %d %d\n"
-msgstr ""
+msgstr "Joliet 路径表长度不匹配 %d %d\n"
 
 #: util/mkisofs/joliet.c:530
 #, c-format
@@ -398,12 +401,12 @@ msgstr "无法找到重定位的目录\n"
 #: util/mkisofs/joliet.c:605
 #, c-format
 msgid "Fatal goof - unable to find directory location\n"
-msgstr ""
+msgstr "致命错误 - 无法找到目录位置\n"
 
 #: util/mkisofs/joliet.c:654
 #, c-format
 msgid "Unexpected joliet directory length %d %d %s\n"
-msgstr ""
+msgstr "意外的 joliet 目录长度 %d %d %s\n"
 
 #: util/mkisofs/mkisofs.c:373
 #, c-format
@@ -469,10 +472,11 @@ msgstr "摘要文件名太长\n"
 msgid "Application-id string too long\n"
 msgstr "应用程序编号串太长\n"
 
+# fuzzy
 #: util/mkisofs/mkisofs.c:762
 #, c-format
 msgid "Bibliographic filename string too long\n"
-msgstr ""
+msgstr "参考书目文件名字符串太长\n"
 
 #: util/mkisofs/mkisofs.c:770
 #, c-format
@@ -561,7 +565,7 @@ msgstr "无效的节点 - %s\n"
 
 #: util/mkisofs/mkisofs.c:1246
 msgid "Joliet tree sort failed.\n"
-msgstr ""
+msgstr "Joliet 树排序失败。\n"
 
 #: util/mkisofs/mkisofs.c:1261
 msgid "Unable to open /dev/null\n"
@@ -574,12 +578,13 @@ msgstr "无法打开磁盘镜像文件\n"
 #: util/mkisofs/mkisofs.c:1387
 #, c-format
 msgid "Max brk space used %x\n"
-msgstr ""
+msgstr "使用了最大的 brk 空间 %x\n"
 
+# fuzzy
 #: util/mkisofs/mkisofs.c:1390
 #, c-format
 msgid "%llu extents written (%llu MiB)\n"
-msgstr ""
+msgstr "%llu 已经写入扩展块 (%llu 兆字节)\n"
 
 #: util/mkisofs/multi.c:161
 msgid "Seek error on old image\n"
@@ -604,11 +609,11 @@ msgstr "在旧镜像 %s 上发生读错误\n"
 
 #: util/mkisofs/multi.c:1084
 msgid "Special parameters for cdwrite not specified with -C\n"
-msgstr ""
+msgstr "cdwrite的特别参数没有用 -C指定\n"
 
 #: util/mkisofs/multi.c:1091
 msgid "Malformed cdwrite parameters\n"
-msgstr ""
+msgstr "cdwrite参数格式错误\n"
 
 #: util/mkisofs/rock.c:309
 #, c-format
@@ -653,11 +658,11 @@ msgstr "无法为目录 %s 排序\n"
 #: util/mkisofs/tree.c:480
 #, c-format
 msgid "Translation table size mismatch %d %d\n"
-msgstr ""
+msgstr "翻译表大小不匹配 %d %d\n"
 
 #: util/mkisofs/tree.c:746
 msgid "Unable to locate directory parent\n"
-msgstr ""
+msgstr "无法定位上级目录\n"
 
 #: util/mkisofs/tree.c:796
 #, c-format
@@ -744,12 +749,12 @@ msgstr "无法删除非空目录\n"
 
 #: util/mkisofs/tree.c:1655
 msgid "Unable to locate child directory in parent list\n"
-msgstr ""
+msgstr "在上级目录列表中无法定位子目\n"
 
 #: util/mkisofs/tree.c:1772
 #, c-format
 msgid "call to search_tree_file with an absolute path, stripping\n"
-msgstr ""
+msgstr "search_tree_file的调用使用了绝对路径，正在剥离\n"
 
 #: util/mkisofs/tree.c:1773
 #, c-format
@@ -805,17 +810,17 @@ msgstr "路径表的长度不匹配 %d %d\n"
 #: util/mkisofs/write.c:1118 util/mkisofs/write.c:1128
 #, c-format
 msgid "Total extents scheduled to be written = %llu\n"
-msgstr ""
+msgstr "预计要写入的扩展块总数 = %llu \n"
 
 #: util/mkisofs/write.c:1145
 #, c-format
 msgid "Total extents actually written = %llu\n"
-msgstr ""
+msgstr "实际写入的扩展块总数 = %llu\n"
 
 #: util/mkisofs/write.c:1154
 #, c-format
 msgid "Number of extents written different than what was predicted.  Please fix.\n"
-msgstr ""
+msgstr "实际写入的扩展块数量和预计不同。请修正。\n"
 
 #: util/mkisofs/write.c:1155
 #, c-format
@@ -825,22 +830,23 @@ msgstr "预计 = %d，已写入 = %llu\n"
 #: util/mkisofs/write.c:1158
 #, c-format
 msgid "Total translation table size: %d\n"
-msgstr ""
+msgstr "翻译表整体大小: %d\n"
 
 #: util/mkisofs/write.c:1159
 #, c-format
 msgid "Total rockridge attributes bytes: %d\n"
 msgstr ""
 
+# fuzzy
 #: util/mkisofs/write.c:1160
 #, c-format
 msgid "Total directory bytes: %d\n"
-msgstr ""
+msgstr "目录所含字节数: %d\n"
 
 #: util/mkisofs/write.c:1161
 #, c-format
 msgid "Path table size(bytes): %d\n"
-msgstr ""
+msgstr "路径表大小: %d 字节\n"
 
 #: util/grub.d/10_kfreebsd.in:40
 msgid "%s, with kFreeBSD %s"
