@@ -1,0 +1,1203 @@
+# translation of grub-1.97+20091221.ru.po to Russian
+# Copyright (C) 2009 Free Software Foundation, Inc.
+# This file is distributed under the same license as the grub package.
+#
+# Yuri Kozlov <yuray@komyakino.ru>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: grub 1.97+20091221\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-12-21 21:31+0000\n"
+"PO-Revision-Date: 2009-12-26 12:50+0300\n"
+"Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
+"Language-Team: Russian <gnu@mx.ru>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: util/i386/pc/grub-mkimage.c:65
+msgid "the core image is too small"
+msgstr "базовый образ слишком мал"
+
+#: util/i386/pc/grub-mkimage.c:77
+msgid "cannot compress the kernel image"
+msgstr "не удалось сжать образ ядра"
+
+#: util/i386/pc/grub-mkimage.c:138
+msgid "prefix is too long"
+msgstr "слишком длинный префикс"
+
+#: util/i386/pc/grub-mkimage.c:206
+msgid "the core image is too big"
+msgstr "базовый образ слишком большой"
+
+#: util/i386/pc/grub-mkimage.c:211
+#, c-format
+msgid "diskboot.img size must be %u bytes"
+msgstr "размер diskboot.img должен быть %u байт"
+
+#: util/i386/pc/grub-mkimage.c:284
+#, c-format
+msgid "Core image is too big (%p > %p)\n"
+msgstr "Базовый образ слишком большой (%p > %p)\n"
+
+#: util/i386/pc/grub-mkimage.c:321 util/i386/pc/grub-setup.c:593
+#, c-format
+msgid "Try ``%s --help'' for more information.\n"
+msgstr "Для получения справки запускайте как %s --help.\n"
+
+#: util/i386/pc/grub-mkimage.c:323
+#, c-format
+msgid ""
+"Usage: grub-mkimage [OPTION]... [MODULES]\n"
+"\n"
+"Make a bootable image of GRUB.\n"
+"\n"
+"  -d, --directory=DIR     use images and modules under DIR [default=%s]\n"
+"  -p, --prefix=DIR        set grub_prefix directory [default=%s]\n"
+"  -m, --memdisk=FILE      embed FILE as a memdisk image\n"
+"  -c, --config=FILE       embed FILE as boot config\n"
+"  -o, --output=FILE       output a generated image to FILE [default=stdout]\n"
+"  -h, --help              display this message and exit\n"
+"  -V, --version           print version information and exit\n"
+"  -v, --verbose           print verbose messages\n"
+"\n"
+"Report bugs to <%s>.\n"
+msgstr ""
+"Использование: grub-mkimage [ПАРАМЕТР]... [МОДУЛИ]\n"
+"\n"
+"Создаёт загрузочный образ GRUB.\n"
+"\n"
+"  -d, --directory=КАТ     использовать образы и модули из КАТалога\n"
+"                          [по умолчанию %s]\n"
+"  -p, --prefix=КАТ        задать каталог для grub_prefix [по умолчанию %s]\n"
+"  -m, --memdisk=ФАЙЛ      встроить ФАЙЛ в качестве образа memdisk\n"
+"  -c, --config=ФАЙЛ       встроить ФАЙЛ в качестве загрузочного\n"
+"                          файла настройки\n"
+"  -o, --output=ФАЙЛ       записать созданный образ в ФАЙЛ\n"
+"                          [по умолчанию=stdout]\n"
+"  -h, --help              показать эту справку и завершить работу\n"
+"  -V, --version           показать версию и завершить работу\n"
+"  -v, --verbose           выводить доп. информацию при работе\n"
+"\n"
+"Сообщения об ошибках направляйте на <%s>.\n"
+
+#: util/i386/pc/grub-mkimage.c:429
+#, c-format
+msgid "cannot open %s"
+msgstr "не удалось открыть %s"
+
+#: util/i386/pc/grub-setup.c:166
+msgid "The first sector of the core file is not sector-aligned"
+msgstr "Первый сектор базового файла не выровнен посекторно"
+
+#: util/i386/pc/grub-setup.c:180
+msgid "Non-sector-aligned data is found in the core file"
+msgstr "В базовом файле найдены невыровненные посекторно данные"
+
+#: util/i386/pc/grub-setup.c:194
+msgid "The sectors of the core file are too fragmented"
+msgstr "Секторы базового файла слишком фрагментированы"
+
+#: util/i386/pc/grub-setup.c:205
+#, c-format
+msgid "The size of `%s' is not %u"
+msgstr "Размер %s не равен %u"
+
+#: util/i386/pc/grub-setup.c:222
+#, c-format
+msgid "The size of `%s' is too small"
+msgstr "Размер %s слишком мал"
+
+#: util/i386/pc/grub-setup.c:224
+#, c-format
+msgid "The size of `%s' is too large"
+msgstr "Размер %s слишком велик"
+
+#: util/i386/pc/grub-setup.c:261
+#, c-format
+msgid "Unable to identify a filesystem in %s; safety check can't be performed"
+msgstr "Не удалось определить файловую систему в %s; невозможно выполнить безопасную проверку"
+
+#: util/i386/pc/grub-setup.c:265
+#, c-format
+msgid "%s appears to contain a %s filesystem which isn't known to reserve space for DOS-style boot.  Installing GRUB there could result in FILESYSTEM DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe disables this check, use at your own risk)"
+msgstr "Кажется, что %s содержит файловую систему %s, на которой, как известно, нет места для загрузчика в стиле DOS. Установка GRUB в этом случае может привести к ПОВРЕЖДЕНИЮ ФАЙЛОВОЙ СИСТЕМЫ, если важные данные будут перезаписаны grub-setup (параметр --skip-fs-probe выключает эту проверку, но вас предупредили)"
+
+#: util/i386/pc/grub-setup.c:314 util/i386/pc/grub-setup.c:364
+msgid "No DOS-style partitions found"
+msgstr "Разделов в стиле DOS не найдено"
+
+#: util/i386/pc/grub-setup.c:330 util/i386/pc/grub-setup.c:355
+msgid "Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
+msgstr "Попытка установить GRUB на диск без разделов. Лучше этого НЕ ДЕЛАТЬ."
+
+#: util/i386/pc/grub-setup.c:336
+msgid "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD idea."
+msgstr "Попытка установить GRUB на раздел вместо MBR. Лучше этого НЕ ДЕЛАТЬ."
+
+#: util/i386/pc/grub-setup.c:369
+msgid "This msdos-style partition label has no post-MBR gap; embedding won't be possible!"
+msgstr "Метка раздела в стиле msdos не имеет промежутка после MBR; встраивание невозможно!"
+
+#: util/i386/pc/grub-setup.c:371
+msgid "This GPT partition label has no BIOS Boot Partition; embedding won't be possible!"
+msgstr "Метка раздела GPT не имеет BIOS Boot Partition; встраивание невозможно!"
+
+#: util/i386/pc/grub-setup.c:378
+msgid "Your core.img is unusually large.  It won't fit in the embedding area."
+msgstr "Данный core.img необычно большого размера. Он не влезет во встраиваемую область."
+
+#: util/i386/pc/grub-setup.c:380
+msgid "Your embedding area is unusually small.  core.img won't fit in it."
+msgstr "Встраиваемая область необычно маленького размера. core.img не влезет в неё."
+
+#: util/i386/pc/grub-setup.c:422
+msgid "Embedding is not possible, but this is required when the root device is on a RAID array or LVM volume."
+msgstr "Встраивание невозможно, но оно необходимо, если корневое устройство располагается в RAID-массиве или томе LVM."
+
+#: util/i386/pc/grub-setup.c:425
+msgid "Embedding is not possible.  GRUB can only be installed in this setup by using blocklists.  However, blocklists are UNRELIABLE and its use is discouraged."
+msgstr "Встраивание невозможно. При имеющихся параметрах GRUB можно установить только с помощью списка блоков (blocklists). Однако, список блоков является НЕНАДЁЖНЫМ механизмом и его лучше не использовать."
+
+#: util/i386/pc/grub-setup.c:429
+msgid "If you really want blocklists, use --force."
+msgstr "Если вы всё равно хотите использовать список блоков, укажите --force."
+
+#: util/i386/pc/grub-setup.c:445
+#, c-format
+msgid "attempting to read the core image `%s' from GRUB"
+msgstr "попытка прочитать базовый образ %s из GRUB"
+
+#: util/i386/pc/grub-setup.c:446
+#, c-format
+msgid "attempting to read the core image `%s' from GRUB again"
+msgstr "повторная попытка прочитать базовый образ %s из GRUB"
+
+#: util/i386/pc/grub-setup.c:504
+#, c-format
+msgid "Cannot read `%s' correctly"
+msgstr "Не удалось прочитать %s правильно"
+
+#: util/i386/pc/grub-setup.c:517
+msgid "No terminator in the core image"
+msgstr "В базовом образе нет метки окончания"
+
+#: util/i386/pc/grub-setup.c:528
+msgid "Failed to read the first sector of the core image"
+msgstr "Не удалось прочитать первый сектор базового образа"
+
+#: util/i386/pc/grub-setup.c:534
+msgid "Failed to read the rest sectors of the core image"
+msgstr "Не удалось прочитать оставшиеся секторы базового образа"
+
+#: util/i386/pc/grub-setup.c:553
+#, c-format
+msgid "Cannot open `%s'"
+msgstr "Не удалось открыть %s"
+
+#: util/i386/pc/grub-setup.c:595
+#, c-format
+msgid ""
+"Usage: grub-setup [OPTION]... DEVICE\n"
+"\n"
+"Set up images to boot from DEVICE.\n"
+"DEVICE must be a GRUB device (e.g. ``(hd0,1)'').\n"
+"\n"
+"  -b, --boot-image=FILE   use FILE as the boot image [default=%s]\n"
+"  -c, --core-image=FILE   use FILE as the core image [default=%s]\n"
+"  -d, --directory=DIR     use GRUB files in the directory DIR [default=%s]\n"
+"  -m, --device-map=FILE   use FILE as the device map [default=%s]\n"
+"  -r, --root-device=DEV   use DEV as the root device [default=guessed]\n"
+"  -f, --force             install even if problems are detected\n"
+"  -s, --skip-fs-probe     do not probe for filesystems in DEVICE\n"
+"  -h, --help              display this message and exit\n"
+"  -V, --version           print version information and exit\n"
+"  -v, --verbose           print verbose messages\n"
+"\n"
+"Report bugs to <%s>.\n"
+msgstr ""
+"Использование: grub-setup [ПАРАМЕТР]... УСТРОЙСТВО\n"
+"\n"
+"Настройка образов для загрузки с УСТРОЙСТВА.\n"
+"УСТРОЙСТВО должно указываться как устройства GRUB (например (hd0,1)).\n"
+"\n"
+"  -b, --boot-image=ФАЙЛ   использовать ФАЙЛ в качестве загрузочного образа\n"
+"                          [по умолчанию %s]\n"
+"  -c, --core-image=ФАЙЛ   использовать ФАЙЛ в качестве базового образа\n"
+"                          [по умолчанию %s]\n"
+"  -d, --directory=КАТ     использовать файлы GRUB из КАТалога\n"
+"                          [по умолчанию %s]\n"
+"  -m, --device-map=ФАЙЛ   использовать ФАЙЛ в качестве карты устройства\n"
+"                          [по умолчанию %s]\n"
+"  -r, --root-device=УСТР  использовать УСТРойство в качестве корневого\n"
+"                          устройства [по умолчанию вычисляется]\n"
+"  -f, --force             устанавливать даже если обнаружены проблемы\n"
+"  -s, --skip-fs-probe     не тестировать файловую систему на УСТРОЙСТВЕ\n"
+"  -h, --help              показать эту справку и завершить работу\n"
+"  -V, --version           показать версию и завершить работу\n"
+"  -v, --verbose           выводить доп. информацию при работе\n"
+"\n"
+"Сообщения об ошибках направляйте на <%s>.\n"
+
+#: util/i386/pc/grub-setup.c:725
+#, c-format
+msgid "No device is specified.\n"
+msgstr "Не указано устройство.\n"
+
+#: util/i386/pc/grub-setup.c:731
+#, c-format
+msgid "Unknown extra argument `%s'.\n"
+msgstr "Неизвестный дополнительный параметр %s.\n"
+
+#: util/i386/pc/grub-setup.c:748
+#, c-format
+msgid "Invalid device `%s'.\n"
+msgstr "Неверное устройство %s.\n"
+
+#: util/i386/pc/grub-setup.c:761
+#, c-format
+msgid "Invalid root device `%s'"
+msgstr "Неверное корневое устройство %s"
+
+#: util/i386/pc/grub-setup.c:774
+msgid "Cannot guess the root device. Specify the option ``--root-device''."
+msgstr "Не удалось вычислить корневое устройство. Укажите его параметром --root-device."
+
+#: util/mkisofs/eltorito.c:96
+#, c-format
+msgid "A boot catalog exists and appears corrupted.\n"
+msgstr "Загрузочный каталог существует, но, вероятно, повреждён.\n"
+
+#: util/mkisofs/eltorito.c:97
+#, c-format
+msgid "Please check the following file: %s.\n"
+msgstr "Проверьте следующий файл: %s.\n"
+
+#: util/mkisofs/eltorito.c:98
+#, c-format
+msgid "This file must be removed before a bootable CD can be done.\n"
+msgstr "Этот файл должен быть удалён до того как будет создан загружаемый CD.\n"
+
+#: util/mkisofs/eltorito.c:110
+#, c-format
+msgid "Error creating boot catalog (%s)"
+msgstr "Ошибка при создании загрузочного каталога (%s)"
+
+#: util/mkisofs/eltorito.c:114
+#, c-format
+msgid "Error writing to boot catalog (%s)"
+msgstr "Ошибка записи в загрузочный каталог (%s)"
+
+#: util/mkisofs/eltorito.c:144
+#, c-format
+msgid "Boot catalog cannot be found!\n"
+msgstr "Загрузочный каталог не найден!\n"
+
+#: util/mkisofs/eltorito.c:158
+#, c-format
+msgid "Boot image cannot be found!\n"
+msgstr "Загрузочный образ не найден!\n"
+
+#: util/mkisofs/eltorito.c:221
+#, c-format
+msgid ""
+"\n"
+"Size of boot image is %d sectors"
+msgstr ""
+"\n"
+"Размер загрузочного образа %d секторов"
+
+#: util/mkisofs/eltorito.c:227
+#, c-format
+msgid "No emulation\n"
+msgstr "Эмуляция отсутствует\n"
+
+#: util/mkisofs/eltorito.c:235
+#, c-format
+msgid "Emulating a 1.44 meg floppy\n"
+msgstr "Эмулируется дискета 1.44 МБ\n"
+
+#: util/mkisofs/eltorito.c:240
+#, c-format
+msgid "Emulating a 2.88 meg floppy\n"
+msgstr "Эмулируется дискета 2.88 МБ\n"
+
+#: util/mkisofs/eltorito.c:245
+#, c-format
+msgid "Emulating a 1.2 meg floppy\n"
+msgstr "Эмулируется дискета 1.2 МБ\n"
+
+#: util/mkisofs/eltorito.c:249
+#, c-format
+msgid ""
+"\n"
+"Error - boot image is not the an allowable size.\n"
+msgstr ""
+"\n"
+"Ошибка - загрузочный образ имеет недопустимый размер.\n"
+
+#: util/mkisofs/eltorito.c:269
+msgid "Error opening boot catalog for update"
+msgstr "Ошибка при открытии загрузочного каталога для обновления"
+
+#: util/mkisofs/eltorito.c:275 util/mkisofs/eltorito.c:277
+msgid "Error writing to boot catalog"
+msgstr "Ошибка записи в загрузочный каталог"
+
+#: util/mkisofs/eltorito.c:291
+#, c-format
+msgid "Error opening boot image file '%s' for update"
+msgstr "Ошибка при открытии файл загрузочного образа %s для обновления"
+
+#: util/mkisofs/eltorito.c:299
+#, c-format
+msgid "Odd alignment at non-end-of-file in boot image '%s'"
+msgstr "Нечётное выравнивание у конца файла в загрузочном образе %s"
+
+#: util/mkisofs/eltorito.c:311
+#, c-format
+msgid "Boot image file '%s' changed unexpectedly"
+msgstr "Неожиданно изменился файл загрузочного образа %s"
+
+#: util/mkisofs/eltorito.c:323
+#, c-format
+msgid "Error writing to boot image (%s)"
+msgstr "Ошибка записи в загрузочный образ (%s)"
+
+#: util/mkisofs/joliet.c:359 util/mkisofs/write.c:984
+#, c-format
+msgid "Unable to generate sane path tables - too many directories (%d)\n"
+msgstr "Не удалось сгенерировать разумную таблицу путей - слишком много каталогов (%d)\n"
+
+#: util/mkisofs/joliet.c:398 util/mkisofs/write.c:1020
+#, c-format
+msgid "Entry %d not in path tables\n"
+msgstr "Запись %d отсутствует в таблице путей\n"
+
+#: util/mkisofs/joliet.c:412
+#, c-format
+msgid "Fatal goof - directory has amnesia\n"
+msgstr "Роковая ошибка - забыли каталог\n"
+
+#: util/mkisofs/joliet.c:478
+#, c-format
+msgid "Joliet path table lengths do not match %d %d\n"
+msgstr "Не совпадает длина таблицы путей joliet: %d %d\n"
+
+#: util/mkisofs/joliet.c:530
+#, c-format
+msgid "Unable to locate relocated directory\n"
+msgstr "Не удалось найти перемещаемый каталог\n"
+
+#: util/mkisofs/joliet.c:605
+#, c-format
+msgid "Fatal goof - unable to find directory location\n"
+msgstr "Роковая ошибка - не удалось найти расположение каталога\n"
+
+#: util/mkisofs/joliet.c:654
+#, c-format
+msgid "Unexpected joliet directory length %d %d %s\n"
+msgstr "Неожиданный размер каталога joliet: %d %d %s\n"
+
+#: util/mkisofs/mkisofs.c:208
+msgid "Process all files (don't skip backup files)"
+msgstr "Обработать все файлы (не пропускать файлы с резервными копиями)"
+
+#: util/mkisofs/mkisofs.c:210 util/mkisofs/mkisofs.c:214
+#: util/mkisofs/mkisofs.c:216 util/mkisofs/mkisofs.c:218
+#: util/mkisofs/mkisofs.c:222 util/mkisofs/mkisofs.c:224
+#: util/mkisofs/mkisofs.c:262 util/mkisofs/mkisofs.c:270
+#: util/mkisofs/mkisofs.c:300
+msgid "FILE"
+msgstr "ФАЙЛ"
+
+#: util/mkisofs/mkisofs.c:210
+msgid "Set Abstract filename"
+msgstr "Задать файл для Abstract"
+
+#: util/mkisofs/mkisofs.c:212 util/mkisofs/mkisofs.c:286
+#: util/mkisofs/mkisofs.c:292 util/mkisofs/mkisofs.c:294
+msgid "ID"
+msgstr "ID"
+
+#: util/mkisofs/mkisofs.c:212
+msgid "Set Application ID"
+msgstr "Задать ID приложения"
+
+#: util/mkisofs/mkisofs.c:214
+msgid "Set Bibliographic filename"
+msgstr "Задать файл для Bibliographic"
+
+#: util/mkisofs/mkisofs.c:216
+msgid "Set Copyright filename"
+msgstr "Задать файл для Copyright"
+
+#: util/mkisofs/mkisofs.c:218
+msgid "Set embedded boot image name"
+msgstr "Задать имя встраиваемого загрузочного образа"
+
+#: util/mkisofs/mkisofs.c:220
+msgid "Patch a protective DOS-style label in the image"
+msgstr "Исправить защищённую метку в стиле DOS в образе"
+
+#: util/mkisofs/mkisofs.c:222
+msgid "Set El Torito boot image name"
+msgstr "Задать имя для загрузочного образа El Torito"
+
+#: util/mkisofs/mkisofs.c:224
+msgid "Set El Torito boot catalog name"
+msgstr "Задать имя для загрузочного каталога El Torito"
+
+#: util/mkisofs/mkisofs.c:226
+msgid "Patch Boot Info Table in El Torito boot image"
+msgstr "Исправить Boot Info Table в загрузочном образе El Torito"
+
+#: util/mkisofs/mkisofs.c:228
+msgid "Dummy option for backward compatibility"
+msgstr "Пустой параметр для обратной совместимости"
+
+#: util/mkisofs/mkisofs.c:230
+msgid "Enable floppy drive emulation for El Torito"
+msgstr "Включить эмуляцию дисковода для El Torito"
+
+#: util/mkisofs/mkisofs.c:232
+msgid "PARAMS"
+msgstr "ПАРАМЕТРЫ"
+
+#: util/mkisofs/mkisofs.c:232
+msgid "Magic parameters from cdrecord"
+msgstr "Магические параметры из cdrecord"
+
+#: util/mkisofs/mkisofs.c:234
+msgid "Omit trailing periods from filenames"
+msgstr "Пропускать завершающих точек из имён файлов"
+
+#: util/mkisofs/mkisofs.c:236
+msgid "Disable deep directory relocation"
+msgstr "Выключить перемещение каталога большой вложенности"
+
+#: util/mkisofs/mkisofs.c:238
+msgid "Follow symbolic links"
+msgstr "Переходить по символическим ссылкам"
+
+#: util/mkisofs/mkisofs.c:240 util/mkisofs/mkisofs.c:242
+msgid "Print option help"
+msgstr "Показать справку по параметрам"
+
+#: util/mkisofs/mkisofs.c:244
+msgid "Print version information and exit"
+msgstr "Показать версию и завершить работу"
+
+#: util/mkisofs/mkisofs.c:246 util/mkisofs/mkisofs.c:248
+#: util/mkisofs/mkisofs.c:260
+msgid "GLOBFILE"
+msgstr "GLOBFILE"
+
+#: util/mkisofs/mkisofs.c:246
+msgid "Hide ISO9660/RR file"
+msgstr "Скрывать файл ISO9660/RR"
+
+#: util/mkisofs/mkisofs.c:248
+msgid "Hide Joliet file"
+msgstr "Скрывать файл Joliet"
+
+#: util/mkisofs/mkisofs.c:250
+msgid "ADD_FILES"
+msgstr "ADD_FILES"
+
+#: util/mkisofs/mkisofs.c:250
+msgid "No longer supported"
+msgstr "Больше не поддерживается"
+
+#: util/mkisofs/mkisofs.c:252
+msgid "Generate Joliet directory information"
+msgstr "Генерировать информационный каталог Joliet"
+
+#: util/mkisofs/mkisofs.c:254
+msgid "Allow full 32 character filenames for iso9660 names"
+msgstr "Разрешить полные 32-символьные имена файлов для имён iso9660"
+
+#: util/mkisofs/mkisofs.c:256
+msgid "Allow iso9660 filenames to start with '.'"
+msgstr "Разрешить именам файлов iso9660 начинаться с '.'"
+
+#: util/mkisofs/mkisofs.c:258
+msgid "LOG_FILE"
+msgstr "LOG_FILE"
+
+#: util/mkisofs/mkisofs.c:258
+msgid "Re-direct messages to LOG_FILE"
+msgstr "Перенаправить сообщения в LOG_FILE"
+
+#: util/mkisofs/mkisofs.c:260
+msgid "Exclude file name"
+msgstr "Исключить имя файла"
+
+#: util/mkisofs/mkisofs.c:262
+msgid "Set path to previous session to merge"
+msgstr "Задать путь к предыдущему сеансу для объединения"
+
+#: util/mkisofs/mkisofs.c:264
+msgid "Omit version number from iso9660 filename"
+msgstr "Пропустить номер версии у имени файла iso9660"
+
+#: util/mkisofs/mkisofs.c:266
+msgid "Inhibit splitting symlink components"
+msgstr "Блокировать разделение компонентов символических ссылок"
+
+#: util/mkisofs/mkisofs.c:268
+msgid "Inhibit splitting symlink fields"
+msgstr "Блокировать разделение полей символических ссылок"
+
+#: util/mkisofs/mkisofs.c:270
+msgid "Set output file name"
+msgstr "Задать имя выходного файла"
+
+#: util/mkisofs/mkisofs.c:272
+msgid "PREP"
+msgstr "PREP"
+
+#: util/mkisofs/mkisofs.c:272
+msgid "Set Volume preparer"
+msgstr "Задать Volume preparer"
+
+#: util/mkisofs/mkisofs.c:274
+msgid "Print estimated filesystem size and exit"
+msgstr "Показать предполагаемый размер файловой системы и закончить работу"
+
+#: util/mkisofs/mkisofs.c:276
+msgid "PUB"
+msgstr "PUB"
+
+#: util/mkisofs/mkisofs.c:276
+msgid "Set Volume publisher"
+msgstr "Задать Volume publisher"
+
+#: util/mkisofs/mkisofs.c:278
+msgid "Run quietly"
+msgstr "Ничего не выводить при работе"
+
+#: util/mkisofs/mkisofs.c:280
+msgid "Generate rationalized Rock Ridge directory information"
+msgstr "Генерировать объясняющую информацию по каталогу Rock Ridge"
+
+#: util/mkisofs/mkisofs.c:282
+msgid "Generate Rock Ridge directory information"
+msgstr "Генерировать информацию по каталогу Rock Ridge"
+
+#: util/mkisofs/mkisofs.c:284
+msgid "Split output into files of approx. 1GB size"
+msgstr "Разделять результат на файлы приблизительно по 1ГБ"
+
+#: util/mkisofs/mkisofs.c:286
+msgid "Set System ID"
+msgstr "Задать System ID"
+
+#: util/mkisofs/mkisofs.c:288
+msgid "Generate translation tables for systems that don't understand long filenames"
+msgstr "Генерировать таблицы трансляции для систем, которые не поддерживают длинные имена файлов"
+
+#: util/mkisofs/mkisofs.c:290
+msgid "Verbose"
+msgstr "Подробно"
+
+#: util/mkisofs/mkisofs.c:292
+msgid "Set Volume ID"
+msgstr "Задать Volume ID"
+
+#: util/mkisofs/mkisofs.c:294
+msgid "Set Volume set ID"
+msgstr "Задать Volume set ID"
+
+#: util/mkisofs/mkisofs.c:296
+msgid "Set Volume set size"
+msgstr "Задать Volume set size"
+
+#: util/mkisofs/mkisofs.c:298
+msgid "Set Volume set sequence number"
+msgstr "Задать Volume set sequence number"
+
+#: util/mkisofs/mkisofs.c:300
+msgid "Exclude file name (deprecated)"
+msgstr "Исключить имя файла (устарело)"
+
+#: util/mkisofs/mkisofs.c:306
+msgid "Override creation date"
+msgstr "Заменять дату создания"
+
+#: util/mkisofs/mkisofs.c:308
+msgid "Override modification date"
+msgstr "Заменять дату изменения"
+
+#: util/mkisofs/mkisofs.c:310
+msgid "Override expiration date"
+msgstr "Заменять дату просрочки"
+
+#: util/mkisofs/mkisofs.c:312
+msgid "Override effective date"
+msgstr "Заменять эффективную дату"
+
+#: util/mkisofs/mkisofs.c:382
+#, c-format
+msgid "Using \"%s\"\n"
+msgstr "Используется \"%s\"\n"
+
+#: util/mkisofs/mkisofs.c:410
+#, c-format
+msgid "%s:%d: name required\n"
+msgstr "%s:%d: требуется имя\n"
+
+#: util/mkisofs/mkisofs.c:420
+#, c-format
+msgid "%s:%d: equals sign required\n"
+msgstr "%s:%d: требуется знак равенства\n"
+
+#: util/mkisofs/mkisofs.c:454
+#, c-format
+msgid "%s:%d: field name \"%s\" unknown\n"
+msgstr "%s:%d: неизвестное поле имени \"%s\"\n"
+
+#: util/mkisofs/mkisofs.c:483
+#, c-format
+msgid "Usage: %s [options] file...\n"
+msgstr "Использование: %s [параметры] файл...\n"
+
+#: util/mkisofs/mkisofs.c:485
+#, c-format
+msgid "Options:\n"
+msgstr "Параметры:\n"
+
+#: util/mkisofs/mkisofs.c:718
+#, c-format
+msgid "-i option no longer supported.\n"
+msgstr "Параметр -i более не поддерживается.\n"
+
+#: util/mkisofs/mkisofs.c:731 util/mkisofs/mkisofs.c:737
+msgid "Required boot image pathname missing"
+msgstr "Отсутствует требуемый путь к загрузочному образу"
+
+#: util/mkisofs/mkisofs.c:747
+#, c-format
+msgid "Required boot catalog pathname missing\n"
+msgstr "Отсутствует требуемый путь к загрузочному каталогу\n"
+
+#: util/mkisofs/mkisofs.c:755
+#, c-format
+msgid "Ignoring -no-emul-boot (no-emulation is the default behaviour)\n"
+msgstr "Игнорируется -no-emul-boot (по умолчанию используется no-emulation)\n"
+
+#: util/mkisofs/mkisofs.c:764
+#, c-format
+msgid "Abstract filename string too long\n"
+msgstr "Строка с именем файла Abstract слишком длинна\n"
+
+#: util/mkisofs/mkisofs.c:772
+#, c-format
+msgid "Application-id string too long\n"
+msgstr "Строка Application-id слишком длинна\n"
+
+#: util/mkisofs/mkisofs.c:780
+#, c-format
+msgid "Bibliographic filename string too long\n"
+msgstr "Строка с именем файла Bibliographic слишком длинна\n"
+
+#: util/mkisofs/mkisofs.c:788
+#, c-format
+msgid "Copyright filename string too long\n"
+msgstr "Строка с именем файла Copyright слишком длинна\n"
+
+#: util/mkisofs/mkisofs.c:823
+#, c-format
+msgid "Preparer string too long\n"
+msgstr "Строка Preparer слишком длинна\n"
+
+#: util/mkisofs/mkisofs.c:834
+#, c-format
+msgid "Publisher string too long\n"
+msgstr "Строка Publisher слишком длинна\n"
+
+#: util/mkisofs/mkisofs.c:855
+#, c-format
+msgid "System ID string too long\n"
+msgstr "Строка System ID слишком длинна\n"
+
+#: util/mkisofs/mkisofs.c:866
+#, c-format
+msgid "Volume ID string too long\n"
+msgstr "Строка Volume ID слишком длинна\n"
+
+#: util/mkisofs/mkisofs.c:874
+#, c-format
+msgid "Volume set ID string too long\n"
+msgstr "Строка Volume set ID слишком длинна\n"
+
+#: util/mkisofs/mkisofs.c:885
+#, c-format
+msgid "Volume set sequence number too big\n"
+msgstr "Строка Volume set sequence number слишком длинна\n"
+
+#: util/mkisofs/mkisofs.c:927 util/mkisofs/mkisofs.c:937
+#: util/mkisofs/mkisofs.c:947 util/mkisofs/mkisofs.c:957
+#, c-format
+msgid "date string must be 16 characters.\n"
+msgstr "Строка с датой должна быть 16 символов.\n"
+
+#: util/mkisofs/mkisofs.c:976
+msgid "Warning: getrlimit"
+msgstr "Предупреждение: getrlimit"
+
+#: util/mkisofs/mkisofs.c:980
+msgid "Warning: setrlimit"
+msgstr "Предупреждение: setrlimit"
+
+#: util/mkisofs/mkisofs.c:996
+#, c-format
+msgid "Multisession usage bug: Must specify -C if -M is used.\n"
+msgstr "Ошибка работы с мультисессией: Должно быть указано -C, если используется -M.\n"
+
+#: util/mkisofs/mkisofs.c:1002
+#, c-format
+msgid "Warning: -C specified without -M: old session data will not be merged.\n"
+msgstr "Предупреждение: задан параметр -C без -M: данные предыдущего сеанса добавлены не будут.\n"
+
+#: util/mkisofs/mkisofs.c:1041
+#, c-format
+msgid "can't open logfile: %s"
+msgstr "не удалось открыть файл журнала: %s"
+
+#: util/mkisofs/mkisofs.c:1045
+#, c-format
+msgid "re-directing all messages to %s\n"
+msgstr "перенаправление всех сообщений в %s\n"
+
+#: util/mkisofs/mkisofs.c:1050
+#, c-format
+msgid "can't open logfile: %s\n"
+msgstr "не удалось открыть файл журнала: %s\n"
+
+#: util/mkisofs/mkisofs.c:1091
+#, c-format
+msgid "Unable to open previous session image %s\n"
+msgstr "Не удалось открыть образ от предыдущего сеанса %s\n"
+
+#: util/mkisofs/mkisofs.c:1202
+#, c-format
+msgid "Invalid node - %s\n"
+msgstr "Неверная нода - %s\n"
+
+#: util/mkisofs/mkisofs.c:1264
+msgid "Joliet tree sort failed.\n"
+msgstr "Не удалось отсортировать дерево Joliet.\n"
+
+#: util/mkisofs/mkisofs.c:1279
+msgid "Unable to open /dev/null\n"
+msgstr "Не удалось открыть /dev/null\n"
+
+#: util/mkisofs/mkisofs.c:1283
+msgid "Unable to open disc image file\n"
+msgstr "Не удалось открыть файл образа disc\n"
+
+#: util/mkisofs/mkisofs.c:1405
+#, c-format
+msgid "Max brk space used %x\n"
+msgstr "Используемое максимальное пространство brk: %x\n"
+
+#: util/mkisofs/mkisofs.c:1408
+#, c-format
+msgid "%llu extents written (%llu MiB)\n"
+msgstr "Записано %llu областей (%llu МиБ)\n"
+
+#: util/mkisofs/multi.c:161
+msgid "Seek error on old image\n"
+msgstr "Ошибка перемещения по старому образу\n"
+
+#: util/mkisofs/multi.c:179 util/mkisofs/multi.c:250
+#, c-format
+msgid "**Bad RR version attribute"
+msgstr "**Плохой атрибут версии RR"
+
+#: util/mkisofs/multi.c:546
+#, c-format
+msgid "Warning: Neither Rock Ridge (-R) nor TRANS.TBL (-T) name translations were found on previous session. ISO (8.3) file names have been used instead.\n"
+msgstr "Предупреждение: В предыдущем сеансе нет трансляций имён ни Rock Ridge (-R) ни TRANS.TBL (-T). Будут использованы имена файлов ISO (8.3).\n"
+
+#: util/mkisofs/multi.c:764
+#, c-format
+msgid "Read error on old image %s\n"
+msgstr "Ошибка чтения старого образа %s\n"
+
+#: util/mkisofs/multi.c:1084
+msgid "Special parameters for cdwrite not specified with -C\n"
+msgstr "С параметром -C не заданы специальные параметры для cdwrite\n"
+
+#: util/mkisofs/multi.c:1091
+msgid "Malformed cdwrite parameters\n"
+msgstr "Искажённые параметры cdwrite\n"
+
+#: util/mkisofs/rock.c:309
+#, c-format
+msgid "symbolic link ``%s'' to long for one SL System Use Field, splitting"
+msgstr "символическая ссылка %s слишком длинна для SL System Use Field, производится разделение"
+
+#: util/mkisofs/rock.c:517
+#, c-format
+msgid "Unable to insert transparent compressed file - name conflict\n"
+msgstr "Не удалось вставить прозрачно сжатый файл - конфликт имён\n"
+
+#: util/mkisofs/rock.c:591
+msgid "Extension record too long\n"
+msgstr "Расширенная запись слишком длинна\n"
+
+#: util/mkisofs/tree.c:226 util/mkisofs/write.c:568 util/mkisofs/write.c:1040
+msgid "Fatal goof\n"
+msgstr "Роковая ошибка\n"
+
+#: util/mkisofs/tree.c:284
+#, c-format
+msgid "Unable to  generate unique  name for file %s\n"
+msgstr "Не удалось сгенерировать уникальное имя для файла %s\n"
+
+#: util/mkisofs/tree.c:295 util/mkisofs/tree.c:317
+#, c-format
+msgid "Using %s for %s%s%s (%s)\n"
+msgstr "Используется %s для %s%s%s (%s)\n"
+
+#: util/mkisofs/tree.c:441
+#, c-format
+msgid "Fatal error - RR overflow for file %s\n"
+msgstr "Неисправимая ошибка - переполнение RR для файла %s\n"
+
+#: util/mkisofs/tree.c:449
+#, c-format
+msgid "Unable to sort directory %s\n"
+msgstr "Не удалось отсортировать каталог %s\n"
+
+#: util/mkisofs/tree.c:480
+#, c-format
+msgid "Translation table size mismatch %d %d\n"
+msgstr "Размер таблицы трансляции не совпадает: %d %d\n"
+
+#: util/mkisofs/tree.c:746
+msgid "Unable to locate directory parent\n"
+msgstr "Не удалось найти родительский каталог\n"
+
+#: util/mkisofs/tree.c:796
+#, c-format
+msgid "Scanning %s\n"
+msgstr "Обследование %s\n"
+
+#: util/mkisofs/tree.c:811
+#, c-format
+msgid "Unable to open directory %s\n"
+msgstr "Не удалось открыть каталог %s\n"
+
+#: util/mkisofs/tree.c:856
+#, c-format
+msgid "Ignoring file %s\n"
+msgstr "Игнорируется файл %s\n"
+
+#: util/mkisofs/tree.c:863
+msgid "Overflow of stat buffer\n"
+msgstr "Переполнение буфера stat\n"
+
+#: util/mkisofs/tree.c:876
+#, c-format
+msgid "Excluded by match: %s\n"
+msgstr "Исключается из-за совпадения: %s\n"
+
+#: util/mkisofs/tree.c:891
+#, c-format
+msgid "Excluded: %s\n"
+msgstr "Исключён: %s\n"
+
+#: util/mkisofs/tree.c:961
+#, c-format
+msgid "Non-existant or inaccessible: %s\n"
+msgstr "Не существует или недоступен: %s\n"
+
+#: util/mkisofs/tree.c:997 util/mkisofs/tree.c:1103
+#, c-format
+msgid "Unable to stat file %s - ignoring and continuing.\n"
+msgstr "Не удалось выполнить вызов stat для файла %s - игнорируется, продолжение работы.\n"
+
+#: util/mkisofs/tree.c:1003
+#, c-format
+msgid "Symlink %s ignored - continuing.\n"
+msgstr "Игнорируется символическая ссылка %s - продолжение работы.\n"
+
+#: util/mkisofs/tree.c:1028
+#, c-format
+msgid "Already cached directory seen (%s)\n"
+msgstr "Просмотр уже кэшированного каталога (%s)\n"
+
+#: util/mkisofs/tree.c:1070
+#, c-format
+msgid "File %s is not readable (%s) - ignoring\n"
+msgstr "Файл %s недоступен для чтения (%s) - игнорируется\n"
+
+#: util/mkisofs/tree.c:1083
+#, c-format
+msgid "Directory loop - fatal goof (%s %lx %lu).\n"
+msgstr "Зацикленный каталог - неустранимая ошибка (%s %lx %lu).\n"
+
+#: util/mkisofs/tree.c:1093
+#, c-format
+msgid "Unknown file type %s - ignoring and continuing.\n"
+msgstr "Неизвестный тип файла %s - игнорируется, продолжение работы.\n"
+
+#: util/mkisofs/tree.c:1179
+#, c-format
+msgid "Hidden from ISO9660 tree: %s\n"
+msgstr "Скрытый из дерева ISO9660: %s\n"
+
+#: util/mkisofs/tree.c:1191
+#, c-format
+msgid "Hidden from Joliet tree: %s\n"
+msgstr "Скрытый из дерева IJoliet: %s\n"
+
+#: util/mkisofs/tree.c:1600
+#, c-format
+msgid "Directories too deep  %s\n"
+msgstr "Слишком глубокое вложение каталогов %s\n"
+
+#: util/mkisofs/tree.c:1632
+msgid "Unable to delete non-empty directory\n"
+msgstr "Не удалось удалить непустой каталог\n"
+
+#: util/mkisofs/tree.c:1655
+msgid "Unable to locate child directory in parent list\n"
+msgstr "Не удалось найти дочерний каталог в родительском списке\n"
+
+#: util/mkisofs/tree.c:1772
+#, c-format
+msgid "call to search_tree_file with an absolute path, stripping\n"
+msgstr "вызов search_tree_file с абсолютным путём, обрезается\n"
+
+#: util/mkisofs/tree.c:1773
+#, c-format
+msgid "initial path separator. Hope this was intended...\n"
+msgstr "начальный разделитель каталога. Предполагается, что он указан намеренно...\n"
+
+#: util/mkisofs/write.c:161
+#, c-format
+msgid "Cannot open '%s'"
+msgstr "Не удалось открыть %s"
+
+#: util/mkisofs/write.c:169
+#, c-format
+msgid "cannot fwrite %llu*%llu\n"
+msgstr "ошибка вызова fwrite %llu*%llu\n"
+
+#: util/mkisofs/write.c:251
+#, c-format
+msgid "cannot open %s\n"
+msgstr "не удалось открыть %s\n"
+
+#: util/mkisofs/write.c:260
+#, c-format
+msgid "cannot read %llu bytes from %s"
+msgstr "не удалось прочитать %llu байт из %s"
+
+#: util/mkisofs/write.c:278
+#, c-format
+msgid "%6.2f%% done, estimate finish %s"
+msgstr "%6.2f%% выполнено, предполагаемое завершение %s"
+
+#: util/mkisofs/write.c:545
+#, c-format
+msgid "Cache hit for %s%s%s\n"
+msgstr "Попадание в кэш для %s%s%s\n"
+
+#: util/mkisofs/write.c:899
+#, c-format
+msgid "Unexpected directory length %d %d %s\n"
+msgstr "Неожиданная длина каталога %d %d %s\n"
+
+#: util/mkisofs/write.c:911
+#, c-format
+msgid "Continuation entry record length mismatch (%d %d).\n"
+msgstr "Несовпадение длины продолжения элемента записи (%d %d).\n"
+
+#: util/mkisofs/write.c:1075
+#, c-format
+msgid "Path table lengths do not match %d %d\n"
+msgstr "Несовпадение длин таблицы путей %d %d\n"
+
+#: util/mkisofs/write.c:1121 util/mkisofs/write.c:1131
+#, c-format
+msgid "Total extents scheduled to be written = %llu\n"
+msgstr "Всего запланировано для записи %llu областей\n"
+
+#: util/mkisofs/write.c:1148
+#, c-format
+msgid "Total extents actually written = %llu\n"
+msgstr "Реально записано всего %llu областей\n"
+
+#: util/mkisofs/write.c:1157
+#, c-format
+msgid "Number of extents written different than what was predicted.  Please fix.\n"
+msgstr "Количество записанных областей отличается от предполагаемого. Исправьте это.\n"
+
+#: util/mkisofs/write.c:1158
+#, c-format
+msgid "Predicted = %d, written = %llu\n"
+msgstr "Предполагалось = %d, записано = %llu\n"
+
+#: util/mkisofs/write.c:1161
+#, c-format
+msgid "Total translation table size: %d\n"
+msgstr "Полный размер таблицы трансляций: %d\n"
+
+#: util/mkisofs/write.c:1162
+#, c-format
+msgid "Total rockridge attributes bytes: %d\n"
+msgstr "Количество байт для атрибутов rockridge: %d\n"
+
+#: util/mkisofs/write.c:1163
+#, c-format
+msgid "Total directory bytes: %d\n"
+msgstr "Количество байл для каталога: %d\n"
+
+#: util/mkisofs/write.c:1164
+#, c-format
+msgid "Path table size(bytes): %d\n"
+msgstr "Размер таблицы путей (в байтах): %d\n"
+
+#: util/mkisofs/write.c:1438
+#, c-format
+msgid "Unable to open %s"
+msgstr "Не удалось открыть %s"
+
+#: normal/auth.c:241
+msgid "Enter username:"
+msgstr "Введите имя файла:"
+
+#: normal/color.c:80
+#, c-format
+msgid "Warning: syntax error (missing slash) in `%s'\n"
+msgstr "Предупреждение: синтаксическая ошибка (отсутствует косая черта) в %s\n"
+
+#: normal/color.c:89
+#, c-format
+msgid "Warning: invalid foreground color `%s'\n"
+msgstr "Предупреждение: неправильный цвет текста (foreground) %s\n"
+
+#: normal/color.c:95
+#, c-format
+msgid "Warning: invalid background color `%s'\n"
+msgstr "Предупреждение: неправильный цвет фона (background) %s\n"
+
+#: normal/main.c:390
+#, c-format
+msgid "GNU GRUB  version %s"
+msgstr "GNU GRUB, версия %s"
+
+#: normal/main.c:525
+#, c-format
+msgid "Minimal BASH-like line editing is supported. For the first word, TAB lists possible command completions. Anywhere else TAB lists possible device or file completions. %s"
+msgstr "Поддерживается несколько BASH-подобных команд редактирования строки. Есть вывод списка команд по TAB для дополнения. Также есть везде, где возможно, вывод списка по TAB для устройств или файлов. %s"
+
+#: normal/main.c:529
+msgid "ESC at any time exits."
+msgstr "Для выхода нажмите ESC в любой момент."
+
+#: normal/menu_entry.c:840
+#, c-format
+msgid "Possible %s are:"
+msgstr "Возможные %s:"
+
+#: normal/menu_entry.c:1003
+msgid "Booting a command list"
+msgstr "Загрузка списка команд"
+
+#: normal/menu_entry.c:1185 normal/menu_text.c:43
+msgid "Press any key to continue..."
+msgstr "Нажмите любую клавишу для продолжения..."
+
+#: normal/menu_text.c:207
+msgid "Minimum Emacs-like screen editing is supported. TAB lists completions. Press Ctrl-x to boot, Ctrl-c for a command-line or ESC to return menu."
+msgstr "Поддерживается несколько Emacs-подобных команд редактирования на экране. Есть списки дополнений по TAB. Нажмите Ctrl-x для загрузки, Ctrl-c для получения командной строки или ESC для возврата в меню."
+
+#: normal/menu_text.c:213
+#, c-format
+msgid "Use the %C and %C keys to select which entry is highlighted.\n"
+msgstr "Используйте клавиши %C и %C для перемещения по элементам.\n"
+
+#: normal/menu_text.c:225
+msgid "Press enter to boot the selected OS, 'e' to edit the commands before booting or 'c' for a command-line.\n"
+msgstr "Нажмите \"enter\" для загрузки выбранной ОС, \"e\" для редактирования команд до загрузки или \"c\" для получения командной строки.\n"
+
+#: normal/menu_text.c:231
+msgid "ESC to return previous menu."
+msgstr "Для возврата в предыдущее меню нажмите ESC."
+
+#: normal/menu_text.c:396
+#, c-format
+msgid "The highlighted entry will be booted automatically in %ds."
+msgstr "ОС выделенного пункта будет загружена автоматически через %dс."
+
+#: normal/menu_text.c:656
+#, c-format
+msgid "Booting '%s'"
+msgstr "Загружается %s"
+
+#: normal/menu_text.c:668
+#, c-format
+msgid "Falling back to '%s'"
+msgstr "Откат на %s"
+
+#: normal/menu_text.c:684
+msgid "Failed to boot default entries.\n"
+msgstr "Не удалось загрузить ОС по умолчанию.\n"
+
+#: normal/misc.c:41
+#, c-format
+msgid "Partition %s:"
+msgstr "Раздел %s:"
+
+#: normal/misc.c:46
+#, c-format
+msgid "Device %s:"
+msgstr "Устройство %s:"
+
+#: normal/misc.c:52
+msgid "Filesystem cannot be accessed"
+msgstr "Файловая система недоступна"
+
+#: normal/misc.c:63
+#, c-format
+msgid "Filesystem type %s"
+msgstr "Тип файловой системы %s"
+
+#: normal/misc.c:71
+#, c-format
+msgid "- Label %s"
+msgstr "- Метка %s"
+
+#: normal/misc.c:84
+#, c-format
+msgid "- Last modification time %d-%02d-%02d %02d:%02d:%02d %s"
+msgstr "- Время последнего изменения %d-%02d-%02d %02d:%02d:%02d %s"
+
+#: normal/misc.c:107
+msgid "Unknown filesystem"
+msgstr "Неизвестная файловая система"
+
+#: normal/misc.c:109
+msgid "Partition table"
+msgstr "Таблица разделов"
+
+#: util/grub.d/10_kfreebsd.in:40
+msgid "%s, with kFreeBSD %s"
+msgstr "%s, с kFreeBSD %s"
+
+#: util/grub.d/10_linux.in:57
+msgid "%s, with Linux %s (recovery mode)"
+msgstr "%s, с Linux %s (режим восстановления)"
+
+#: util/grub.d/10_linux.in:59
+msgid "%s, with Linux %s"
+msgstr "%s, с Linux %s"
