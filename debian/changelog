@@ -1,3 +1,13 @@
+grub2 (1.98~20100110-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+
+  [ Robert Millan ]
+  * grub-rescue-pc.postinst: Fix image generation during upgrades.
+    (Closes: #564261)
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Sun, 10 Jan 2010 02:45:52 +0100
+
 grub2 (1.98~20100107-1) unstable; urgency=low
 
   * New Bazaar snapshot.
