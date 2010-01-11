@@ -39,7 +39,6 @@ grub_cmd_read (grub_extcmd_t cmd, int argc, char **argv)
 {
   grub_target_addr_t addr;
   grub_uint32_t value = 0;
-  char buf[sizeof ("XXXXXXXX")];
 
   if (argc != 1)
     return grub_error (GRUB_ERR_BAD_ARGUMENT, "Invalid number of arguments");
@@ -62,7 +61,8 @@ grub_cmd_read (grub_extcmd_t cmd, int argc, char **argv)
 
   if (cmd->state[0].set)
     {
-      grub_sprintf (buf, "%x", value);
+      char buf[sizeof ("XXXXXXXX")];
+      grub_snprintf (buf, sizeof (buf), "%x", value);
       grub_env_set (cmd->state[0].arg, buf);
     }
   else

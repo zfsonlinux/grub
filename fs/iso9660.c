@@ -2,7 +2,7 @@
    SUSP, Rock Ridge.  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2004,2005,2006,2007,2008  Free Software Foundation, Inc.
+ *  Copyright (C) 2004,2005,2006,2007,2008,2009,2010  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -773,7 +773,10 @@ grub_iso9660_read (grub_file_t file, char *buf, grub_size_t len)
 		  data->first_sector << GRUB_ISO9660_LOG2_BLKSZ,
 		  file->offset,
 		  len, buf);
-  data->disk->read_hook = 0;
+  data->disk->read_hook = NULL;
+
+  if (grub_errno)
+    return -1;
 
   return len;
 }
@@ -837,16 +840,23 @@ grub_iso9660_uuid (grub_device_t device, char **uuid)
 	}
       else
 	{
-	  *uuid = grub_malloc (sizeof ("YYYY-MM-DD-HH-mm-ss-hh"));
-	  grub_sprintf (*uuid, "%c%c%c%c-%c%c-%c%c-%c%c-%c%c-%c%c-%c%c",
-			data->voldesc.modified.year[0], data->voldesc.modified.year[1],
-			data->voldesc.modified.year[2], data->voldesc.modified.year[3],
-			data->voldesc.modified.month[0], data->voldesc.modified.month[1],
-			data->voldesc.modified.day[0], data->voldesc.modified.day[1],
-			data->voldesc.modified.hour[0], data->voldesc.modified.hour[1],
-			data->voldesc.modified.minute[0], data->voldesc.modified.minute[1],
-			data->voldesc.modified.second[0], data->voldesc.modified.second[1],
-			data->voldesc.modified.hundredth[0], data->voldesc.modified.hundredth[1]);
+	  *uuid = grub_asprintf ("%c%c%c%c-%c%c-%c%c-%c%c-%c%c-%c%c-%c%c",
+				 data->voldesc.modified.year[0],
+				 data->voldesc.modified.year[1],
+				 data->voldesc.modified.year[2],
+				 data->voldesc.modified.year[3],
+				 data->voldesc.modified.month[0],
+				 data->voldesc.modified.month[1],
+				 data->voldesc.modified.day[0],
+				 data->voldesc.modified.day[1],
+				 data->voldesc.modified.hour[0],
+				 data->voldesc.modified.hour[1],
+				 data->voldesc.modified.minute[0],
+				 data->voldesc.modified.minute[1],
+				 data->voldesc.modified.second[0],
+				 data->voldesc.modified.second[1],
+				 data->voldesc.modified.hundredth[0],
+				 data->voldesc.modified.hundredth[1]);
 	}
     }
   else

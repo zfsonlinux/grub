@@ -1,0 +1,52 @@
+=== modified file 'zfs.c'
+--- debian/grub-extras/zfs/zfs.c	2009-10-26 20:15:26 +0000
++++ debian/grub-extras/zfs/zfs.c	2009-12-30 21:53:32 +0000
+@@ -2123,11 +2123,10 @@
+   if (! found)
+     return grub_errno;
+   grub_free (nvlist);
+-  *uuid = grub_malloc (16 + sizeof ('\0'));
++  *uuid = grub_asprintf ("%016llx", (long long unsigned) guid);
++  zfs_unmount (data);
+   if (! *uuid)
+     return grub_errno;
+-  grub_sprintf (*uuid, "%016llx", (long long unsigned) guid);
+-  zfs_unmount (data);
+   return GRUB_ERR_NONE;
+ }
+ 
+
+=== modified file 'zfsinfo.c'
+--- debian/grub-extras/zfs/zfsinfo.c	2009-10-26 20:15:26 +0000
++++ debian/grub-extras/zfs/zfsinfo.c	2009-12-30 14:58:15 +0000
+@@ -368,24 +368,18 @@
+ 
+   if (bootpath && devid)
+     {
+-      bootfs = grub_malloc
+-	(sizeof ("zfs-bootfs=/XXXXXXXXXXXXXXXXXXXXXXXX bootpath= diskdevid=")
+-	 + grub_strlen (bootpath) + grub_strlen (devid)
+-	 + grub_strlen (poolname));
++      bootfs = grub_asprintf ("zfs-bootfs=%s/%llu bootpath=%s diskdevid=%s",
++			      poolname, (unsigned long long) mdnobj,
++			      bootpath, devid);
+       if (!bootfs)
+ 	return grub_errno;
+-      grub_sprintf (bootfs, "zfs-bootfs=%s/%llu bootpath=%s diskdevid=%s",
+-		    poolname, (unsigned long long) mdnobj, bootpath, devid);
+     }
+   else
+     {
+-      bootfs = grub_malloc
+-	(sizeof ("zfs-bootfs=/XXXXXXXXXXXXXXXXXXXXXXXX")
+-	 + grub_strlen (poolname));
++      bootfs = grub_asprintf ("zfs-bootfs=%s/%llu",
++			      poolname, (unsigned long long) mdnobj);
+       if (!bootfs)
+ 	return grub_errno;
+-      grub_sprintf (bootfs, "zfs-bootfs=%s/%llu",
+-		    poolname, (unsigned long long) mdnobj);
+     }
+   if (argc >= 2)
+     grub_env_set (args[1], bootfs);
+
