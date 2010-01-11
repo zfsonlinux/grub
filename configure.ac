@@ -1,6 +1,6 @@
 # Process this file with autoconf to produce a configure script.
 
-# Copyright (C) 2002,2003,2004,2005,2006,2007,2008,2009  Free Software Foundation, Inc.
+# Copyright (C) 2002,2003,2004,2005,2006,2007,2008,2009,2010  Free Software Foundation, Inc.
 #
 # This configure.ac is free software; the author
 # gives unlimited permission to copy and/or distribute it,
@@ -31,7 +31,7 @@ dnl (such as TARGET_CC, TARGET_CFLAGS, etc.) are used for the target
 dnl type.
 
 
-AC_INIT([GRUB],[1.97+experimental],[bug-grub@gnu.org])
+AC_INIT([GRUB],[0],[bug-grub@gnu.org]) dnl version is filled by debian/rules
 AM_INIT_AUTOMAKE()
 AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR([include/grub/dl.h])
@@ -193,7 +193,7 @@ AC_PROG_CC
 test "x$GCC" = xyes || AC_MSG_ERROR([GCC is required])
 
 AC_GNU_SOURCE
-AM_GNU_GETTEXT
+AM_GNU_GETTEXT([external])
 AC_SYS_LARGEFILE
 
 # Identify characteristics of the host architecture.

@@ -48,7 +48,15 @@ if [ \${prev_saved_entry} ]; then
   save_env saved_entry
   set prev_saved_entry=
   save_env prev_saved_entry
+  set boot_once=true
 fi
+
+function savedefault {
+  if [ -z \${boot_once} ]; then
+    saved_entry=\${chosen}
+    save_env saved_entry
+  fi
+}
 EOF
 
 case ${GRUB_TERMINAL_INPUT}:${GRUB_TERMINAL_OUTPUT} in
@@ -95,6 +103,15 @@ if loadfont `make_system_path_relative_to_its_root ${GRUB_FONT_PATH}` ; then
     # understand terminal_output
     terminal gfxterm
   fi
+EOF
+if [ x$GRUB_THEME != x ] && [ -f $GRUB_THEME ] \
+	&& is_path_readable_by_grub $GRUB_THEME; then
+    echo "Found theme: $GRUB_THEME" >&2
+    prepare_grub_to_access_device `${grub_probe} --target=device $GRUB_THEME`
+    echo "insmod gfxmenu"
+    echo "set theme=(\$root)/`make_system_path_relative_to_its_root $GRUB_THEME`"
+fi
+    cat << EOF
 fi
 EOF
   ;;

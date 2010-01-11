@@ -1,7 +1,7 @@
 /* grub-fstest.c - debug tool for filesystem driver */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2008,2009 Free Software Foundation, Inc.
+ *  Copyright (C) 2008,2009,2010 Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -278,18 +278,26 @@ cmd_crc (char *pathname)
 static void
 fstest (char **images, int num_disks, int cmd, int n, char **args)
 {
-  char host_file[128];
-  char loop_name[8];
-  char *argv[3] = { "-p", loop_name, host_file};
+  char *host_file;
+  char *loop_name;
+  char *argv[3] = { "-p" };
   int i;
 
   for (i = 0; i < num_disks; i++)
     {
-      if (grub_strlen (images[i]) + 7 > sizeof (host_file))
-        grub_util_error ("Pathname %s too long.", images[i]);
+      loop_name = grub_asprintf ("loop%d", i);
+      host_file = grub_asprintf ("(host)%s", images[i]);
 
-      grub_sprintf (loop_name, "loop%d", i);
-      grub_sprintf (host_file, "(host)%s", images[i]);
+      if (!loop_name || !host_file)
+	{
+	  grub_free (loop_name);
+	  grub_free (host_file);
+	  grub_util_error (grub_errmsg);
+	  return;
+	}
+
+      argv[1] = loop_name;
+      argv[2] = host_file;
 
       if (execute_command ("loopback", 3, argv))
         grub_util_error ("loopback command fails.");
@@ -328,9 +336,19 @@ fstest (char **images, int num_disks, int cmd, int n, char **args)
 
   for (i = 0; i < num_disks; i++)
     {
-      grub_sprintf (loop_name, "loop%d", i);
+      grub_free (loop_name);
+      loop_name = grub_asprintf ("loop%d", i);
+      if (!loop_name)
+	{
+	  grub_free (host_file);
+	  grub_util_error (grub_errmsg);
+	  return;
+	}
       execute_command ("loopback", 2, argv);
     }
+
+  grub_free (loop_name);
+  grub_free (host_file);
 }
 
 static struct option options[] = {
@@ -384,9 +402,8 @@ main (int argc, char *argv[])
   int i, cmd, num_opts, image_index, num_disks = 1;
 
   set_program_name (argv[0]);
-  setlocale (LC_ALL, "");
-  bindtextdomain (PACKAGE, LOCALEDIR);
-  textdomain (PACKAGE);
+
+  grub_util_init_nls ();
 
   /* Find the first non option entry.  */
   for (num_opts = 1; num_opts < argc; num_opts++)

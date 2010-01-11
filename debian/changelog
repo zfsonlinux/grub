@@ -1,3 +1,23 @@
+grub2 (1.98~experimental.20100111-1) experimental; urgency=low
+
+  * New Bazaar snapshot.
+
+  [ Robert Millan ]
+  * grub-rescue-pc.postinst: Fix image generation during upgrades.
+    (Closes: #564261)
+  * grub-rescue-pc.postinst: Use grub-mkrescue for floppy as well.
+  * rules: Auto-update version from debian/changelog.
+
+  [ Felix Zielcke ]
+  * Add -O0 to CFLAGS on powerpc to avoid the `_restgpr_31_x in boot is
+    not defined' FTBFS.
+  * patches/02_fix_zfs_FTBFS.diff: New patch to let zfs.mod compile.
+
+  [ Updated translations ]
+  * Chinese (zh_TW.po) by Tetralet. (Closes: #564044)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Mon, 11 Jan 2010 11:38:04 +0100
+
 grub2 (1.98~experimental.20091229-1) experimental; urgency=high
 
   * New Baazar snapshot.
