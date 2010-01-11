@@ -1,3 +1,118 @@
+grub2 (1.98~20100101-1ubuntu1) lucid; urgency=low
+
+  * Resynchronise with Debian. Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script: title,
+      recovery mode, quiet option, tweak how memtest86+ is displayed, and
+      use UUIDs where appropriate.
+    - Conflict with grub (<< 0.97-54) as well as grub-legacy.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel= options if kdump and makedumpfile are available.
+    - If other operating systems are installed, then automatically unhide
+      the menu. Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus
+      if available to check whether Shift is pressed. If it is, show the
+      menu, otherwise boot immediately. If keystatus is not available, then
+      fall back to a short delay interruptible with Escape.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Don't display introductory message about line editing unless we're
+      actually offering a shell prompt. Don't clear the screen just before
+      booting if we never drew the menu in the first place.
+    - Remove some verbose messages printed before reading the configuration
+      file.
+    - If the environment variable "quiet" is set to something other than 0,
+      suppress progress messages as the kernel and initrd load. Set this for
+      non-recovery kernel menu entries.
+    - Add GRUB_DEFAULT=saved, as well as grub-set-default and grub-reboot
+      utilities. Provides functionality essentially equivalent to GRUB
+      Legacy's savedefault.
+    - Keep the loopback file open so that subsequent changes to the "root"
+      environment variable don't affect it.
+    - Change prepare_grub_to_access_device to handle filesystems
+      loop-mounted on file images.
+    - Ignore devices loop-mounted from files in 10_linux.
+    - Show the boot menu if the previous boot failed, that is if it failed
+      to get to the end of one of the normal runlevels.
+    - Handle RAID devices containing virtio components.
+  * Update savedefault patch from current Bazaar branch, fixing grub-reboot
+    to have distinct behaviour from grub-set-default (LP: #497326).
+  * Fix grub-mkisofs compilation error with FORTIFY_SOURCE.
+  * Convert recordfail boilerplate in each menu entry to use a function.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 11 Jan 2010 11:12:55 +0000
+
+grub2 (1.98~20100101-1) unstable; urgency=high
+
+  * New Bazaar snapshot.
+    - Fix FTBS on sparc.
+
+  [ Robert Millan ]
+  * rules: Auto-update version from debian/changelog.
+
+  [ Felix Zielcke ]
+  * Add -O0 to CFLAGS on powerpc to avoid the `_restgpr_31_x in boot is
+    not defined' FTBFS.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Fri, 01 Jan 2010 00:31:37 +0100
+
+grub2 (1.98~20091229-1) unstable; urgency=high
+
+  * New Bazaar snapshot.
+    - Fix slowness when $prefix uses an UUID.
+      (Closes: #541145, LP: #420933)
+    - Correctly set TARGET_CFLAGS. (Closes: #562953)
+
+  [ Robert Millan ]
+  * grub-rescue-pc.postinst: Build USB rescue image.
+  * rules: Invoke configure with relative path.  This makes binaries smaller,
+    since dprintf strings are constructed using this path.
+
+  [ Felix Zielcke ]
+  * Urgency=high due to RC bug fix.
+  * Fix version comparison in grub-common.preinst for handling obsolete
+    /etc/grub.d/10_freebsd. (Closes: #562921)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 29 Dec 2009 16:05:00 +0100
+
+grub2 (1.98~20091222-1) unstable; urgency=low
+
+  * New Baazar snapshot.
+    - Make 30_os-prober again dash compatible. (Closes: #562034) 
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 22 Dec 2009 12:50:57 +0100
+
+grub2 (1.98~20091221-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Fix search command failing on some broken BIOSes. (Closes: #530357)
+
+  [ Felix Zielcke ]
+  * Add Replaces:/Conflicts: grub-linuxbios to grub-coreboot. (Closes: #561811)
+  * Delete obsolete /etc/grub.d/10_freebsd if it has not been modified,
+    else disable it. (Closes: #560346)
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 21 Dec 2009 22:04:17 +0100
+
+grub2 (1.98~20091210-1) unstable; urgency=low
+
+  * Version bump.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 14 Dec 2009 14:52:59 +0100
+
+grub2 (1.97+20091210-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - patches/02_fix_mountpoints_in_mkrelpath.diff: Remove (merged). 
+    - Fixes FTBFS on powerpc (again) and sparc.
+    - patches/903_grub_legacy_0_based_partitions.diff: Resync (merged into
+      debian branch).
+
+  * Fix dpkg dependency for lenny compatibility.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Thu, 10 Dec 2009 00:35:20 +0100
+
 grub2 (1.97+20091130-1ubuntu1) lucid; urgency=low
 
   * Resynchronise with Debian (LP: #485457). Remaining changes:

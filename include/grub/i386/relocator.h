@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2008  Free Software Foundation, Inc.
+ *  Copyright (C) 2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,17 +16,26 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <grub/cpu/io.h>
-#include <grub/cpu/at_keyboard.h>
-#include <grub/cpu/reboot.h>
-#include <grub/misc.h>
+#ifndef GRUB_RELOCATOR_CPU_HEADER
+#define GRUB_RELOCATOR_CPU_HEADER	1
 
-void
-grub_reboot (void)
+#include <grub/types.h>
+#include <grub/err.h>
+
+struct grub_relocator32_state
 {
-  /* Use the keyboard controller to reboot.  That's what keyboards were
-     designed for, isn't it?  */
-  grub_outb (KEYBOARD_COMMAND_REBOOT, KEYBOARD_REG_STATUS);
+  grub_uint32_t esp;
+  grub_uint32_t eax;
+  grub_uint32_t ebx;
+  grub_uint32_t ecx;
+  grub_uint32_t edx;
+  grub_uint32_t eip;
+};
 
-  grub_printf ("GRUB doesn't know how to reboot this machine yet!\n");
-}
+void *grub_relocator32_alloc (grub_size_t size);
+grub_err_t grub_relocator32_boot (void *relocator, grub_uint32_t dest,
+				  struct grub_relocator32_state state);
+void *grub_relocator32_realloc (void *relocator, grub_size_t size);
+void grub_relocator32_free (void *relocator);
+
+#endif /* ! GRUB_RELOCATOR_CPU_HEADER */

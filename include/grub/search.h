@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2008  Free Software Foundation, Inc.
+ *  Copyright (C) 2009  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,4 +16,11 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-extern void grub_reboot (void);
+#ifndef GRUB_SEARCH_HEADER
+#define GRUB_SEARCH_HEADER 1
+
+void grub_search_fs_file (const char *key, const char *var, int no_floppy);
+void grub_search_fs_uuid (const char *key, const char *var, int no_floppy);
+void grub_search_label (const char *key, const char *var, int no_floppy);
+
+#endif

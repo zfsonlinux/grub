@@ -6,9 +6,9 @@ Description: Remove some verbose messages printed before reading the
 UbuntuSpecific: Removes status messages that are arguably useful for
  debugging; we think it looks tidier, but upstream isn't interested.
 
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/kern/main.c grub2-1.97~beta4.new/kern/main.c
---- grub2-1.97~beta4/kern/main.c	2009-06-10 22:04:23.000000000 +0100
-+++ grub2-1.97~beta4.new/kern/main.c	2009-10-12 13:14:45.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2/kern/main.c grub2.new/kern/main.c
+--- grub2/kern/main.c	2009-12-07 17:55:50.000000000 +0000
++++ grub2.new/kern/main.c	2010-01-05 10:17:12.000000000 +0000
 @@ -152,11 +152,6 @@
    /* First of all, initialize the machine.  */
    grub_machine_init ();
@@ -21,9 +21,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/kern/main.c grub2-1.97~beta4.new/
    /* Load pre-loaded modules and free the space.  */
    grub_register_exported_symbols ();
    grub_load_modules ();
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/kern/rescue_reader.c grub2-1.97~beta4.new/kern/rescue_reader.c
---- grub2-1.97~beta4/kern/rescue_reader.c	2009-05-02 20:49:34.000000000 +0100
-+++ grub2-1.97~beta4.new/kern/rescue_reader.c	2009-10-12 13:14:45.000000000 +0100
+diff -Nur -x '*.orig' -x '*~' grub2/kern/rescue_reader.c grub2.new/kern/rescue_reader.c
+--- grub2/kern/rescue_reader.c	2009-12-07 17:55:50.000000000 +0000
++++ grub2.new/kern/rescue_reader.c	2010-01-05 10:17:12.000000000 +0000
 @@ -29,7 +29,6 @@
  static grub_err_t
  grub_rescue_init (void)
@@ -32,10 +32,10 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/kern/rescue_reader.c grub2-1.97~b
    return 0;
  }
  
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/normal/menu_text.c grub2-1.97~beta4.new/normal/menu_text.c
---- grub2-1.97~beta4/normal/menu_text.c	2009-10-12 13:14:43.000000000 +0100
-+++ grub2-1.97~beta4.new/normal/menu_text.c	2009-10-13 11:14:19.000000000 +0100
-@@ -513,10 +513,9 @@
+diff -Nur -x '*.orig' -x '*~' grub2/normal/menu_text.c grub2.new/normal/menu_text.c
+--- grub2/normal/menu_text.c	2010-01-05 10:17:10.000000000 +0000
++++ grub2.new/normal/menu_text.c	2010-01-05 10:18:01.000000000 +0000
+@@ -649,12 +649,9 @@
  
  /* Callback invoked immediately before a menu entry is executed.  */
  static void
@@ -43,7 +43,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta4/normal/menu_text.c grub2-1.97~bet
 +notify_booting (grub_menu_entry_t entry __attribute__((unused)),
  		void *userdata __attribute__((unused)))
  {
--  grub_printf ("  Booting \'%s\'\n\n", entry->title);
+-  grub_printf ("  ");
+-  grub_printf_ (N_("Booting \'%s\'"), entry->title);
+-  grub_printf ("\n\n");
  }
  
  /* Callback invoked when a default menu entry executed because of a timeout

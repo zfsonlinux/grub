@@ -1,6 +1,9 @@
 #!/usr/bin/make -f
-
 SHELL		:= bash
+
+deb_version		:= $(shell dpkg-parsechangelog | sed -ne "s/^Version: \(.*\)/\1/p")
+upstream_version	:= $(shell echo $(deb_version) | sed -e "s/-[^-]*$$//")
+
 package		:= grub2
 
 DEB_HOST_ARCH_CPU ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_CPU 2>/dev/null)
@@ -15,7 +18,12 @@ CFLAGS := -g -Wall
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
 else
+# Avoid `_restgpr_31_x in boot is not defined' FTBFS.
+  ifeq (powerpc,$(DEB_HOST_ARCH_CPU))
+	CFLAGS += -O0
+  else
 	CFLAGS += -O2
+  endif
 endif
 
 CC := gcc-4.4
@@ -23,7 +31,7 @@ CC := gcc-4.4
 # Enable external modules from grub-extras.
 export GRUB_CONTRIB := $(CURDIR)/debian/grub-extras
 
-CONFIGURE = $(CURDIR)/configure CC=$(CC) TARGET_CC=$(CC) \
+CONFIGURE = ../../configure CC=$(CC) TARGET_CC=$(CC) \
 	--build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --includedir="\$${prefix}/include" \
 	--mandir="\$${prefix}/share/man" --infodir="\$${prefix}/share/info" --sysconfdir=/etc --localstatedir=/var \
 	--libexecdir="\$${prefix}/lib/$(package)" --srcdir=$(CURDIR) \
@@ -35,6 +43,7 @@ AUTOGEN_FILES = configure config.h.in conf/*.mk
 AUTOGEN_DEB_FILES = docs examples manpages config templates postinst postrm dirs install
 
 $(AUTOGEN_FILES): autogen.sh configure.ac conf/*.rmk
+	sed -i configure.ac -e "s/^AC_INIT.*/AC_INIT(\[GRUB\],\[$(deb_version)\],\[bug-grub@gnu.org\])/"
 	./autogen.sh
 
 configure/grub-pc configure/grub-ieee1275 configure/grub-coreboot configure/grub-emu:: $(AUTOGEN_FILES)
@@ -130,6 +139,9 @@ install/grub-common::
 
 clean:: debian/legacy/update-grub debian/grub-extras
 	chmod +x debian/{script,grub.d/*,legacy/*}
+
+	sed -i configure.ac -e "s/^AC_INIT.*/AC_INIT(\[GRUB\],\[0\],\[bug-grub@gnu.org\]) dnl version is filled by debian\/rules/"
+
 	for i in $(AUTOGEN_DEB_FILES) ; do \
 		rm -f debian/grub-{pc,efi-*,ieee1275,coreboot}.$$i ; \
 	done
