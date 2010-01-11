@@ -98,6 +98,11 @@ case "$1" in
           done
         fi
 
+        # Jo Shield's gfxmenu theme
+        grub-mkfont -s 10 -o /boot/grub/dejavu_sans_10.pf2 /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf
+        grub-mkfont -s 12 -o /boot/grub/dejavu_sans_12.pf2 /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf
+        grub-mkfont -s 14 -o /boot/grub/dejavu_sans_bold_14.pf2 /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf
+        cp -a /usr/share/grub/debian-theme /boot/grub/
       ;;
     esac
 
