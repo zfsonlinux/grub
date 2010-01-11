@@ -183,13 +183,14 @@ command-line or ESC to return menu."), STANDARD_MARGIN, STANDARD_MARGIN,
     }
   else
     {
-      const char *msg = _("Use the %C and %C keys to select which \
-entry is highlighted.\n");
-      char *msg_translated =
-       grub_malloc (sizeof (char) * grub_strlen (msg) + 1);
+      const char *msg = _("Use the %C and %C keys to select which "
+			  "entry is highlighted.\n");
+      char *msg_translated;
 
-      grub_sprintf (msg_translated, msg, (grub_uint32_t) GRUB_TERM_DISP_UP,
-                   (grub_uint32_t) GRUB_TERM_DISP_DOWN);
+      msg_translated = grub_asprintf (msg, (grub_uint32_t) GRUB_TERM_DISP_UP,
+				     (grub_uint32_t) GRUB_TERM_DISP_DOWN);
+      if (!msg_translated)
+	return;
       grub_putchar ('\n');
       grub_print_message_indented (msg_translated, STANDARD_MARGIN,
 				   STANDARD_MARGIN, term);
@@ -359,14 +360,14 @@ static void
 menu_text_print_timeout (int timeout, void *dataptr)
 {
   const char *msg =
-    _("The highlighted entry will be booted automatically in %ds.");
+    _("The highlighted entry will be executed automatically in %ds.");
   struct menu_viewer_data *data = dataptr;
   char *msg_translated;
   int posx;
 
   grub_term_gotoxy (data->term, 0, grub_term_height (data->term) - 3);
 
-  msg_translated = grub_malloc (sizeof (char) * grub_strlen (msg) + 5);
+  msg_translated = grub_asprintf (msg, timeout);
   if (!msg_translated)
     {
       grub_print_error ();
@@ -374,7 +375,6 @@ menu_text_print_timeout (int timeout, void *dataptr)
       return;
     }
 
-  grub_sprintf (msg_translated, msg, timeout);
   grub_print_message_indented (msg_translated, 3, 0, data->term);
  
   posx = grub_term_getxy (data->term) >> 8;

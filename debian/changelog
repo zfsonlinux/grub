@@ -1,7 +1,27 @@
+grub2 (1.98~experimental.20100111-1) experimental; urgency=low
+
+  * New Bazaar snapshot.
+
+  [ Robert Millan ]
+  * grub-rescue-pc.postinst: Fix image generation during upgrades.
+    (Closes: #564261)
+  * grub-rescue-pc.postinst: Use grub-mkrescue for floppy as well.
+  * rules: Auto-update version from debian/changelog.
+
+  [ Felix Zielcke ]
+  * Add -O0 to CFLAGS on powerpc to avoid the `_restgpr_31_x in boot is
+    not defined' FTBFS.
+  * patches/02_fix_zfs_FTBFS.diff: New patch to let zfs.mod compile.
+
+  [ Updated translations ]
+  * Chinese (zh_TW.po) by Tetralet. (Closes: #564044)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Mon, 11 Jan 2010 10:28:35 +0100
+
 grub2 (1.98~experimental.20091229-1) experimental; urgency=high
 
   * New Baazar snapshot.
-    - Correctly set TARGET_CFLAGS (Closes: #562953)
+    - Correctly set TARGET_CFLAGS. (Closes: #562953)
 
   [ Felix Zielcke ]
   * Urgency=high due to RC bug fix.
@@ -15,7 +35,7 @@ grub2 (1.98~experimental.20091229-1) experimental; urgency=high
   * rules: Invoke configure with relative path.  This makes binaries
     smaller, since dprintf strings are constructed using this path.
 
- -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 28 Dec 2009 01:43:11 +0100
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 29 Dec 2009 18:59:24 +0100
 
 grub2 (1.98~experimental.20091216-1) experimental; urgency=low
 

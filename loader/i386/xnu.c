@@ -33,6 +33,7 @@
 #include <grub/command.h>
 #include <grub/gzio.h>
 #include <grub/bitmap_scale.h>
+#include <grub/i18n.h>
 
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #define max(a,b) (((a) > (b)) ? (a) : (b))
@@ -754,11 +755,13 @@ grub_cpu_xnu_fill_devicetree (void)
 #endif
 
       /* The name of key for new table. */
-      grub_sprintf (guidbuf, "%08x-%04x-%04x-%02x%02x-",
-		    guid.data1, guid.data2, guid.data3, guid.data4[0],
-		    guid.data4[1]);
+      grub_snprintf (guidbuf, sizeof (guidbuf), "%08x-%04x-%04x-%02x%02x-",
+		     guid.data1, guid.data2, guid.data3, guid.data4[0],
+		     guid.data4[1]);
       for (j = 2; j < 8; j++)
-	grub_sprintf (guidbuf + grub_strlen (guidbuf), "%02x", guid.data4[j]);
+	grub_snprintf (guidbuf + grub_strlen (guidbuf),
+		       sizeof (guidbuf) - grub_strlen (guidbuf),
+		       "%02x", guid.data4[j]);
       /* For some reason GUID has to be in uppercase. */
       for (j = 0; guidbuf[j] ; j++)
 	if (guidbuf[j] >= 'a' && guidbuf[j] <= 'f')
@@ -861,12 +864,10 @@ grub_xnu_set_video (struct grub_xnu_boot_params *params)
 			       32 << GRUB_VIDEO_MODE_TYPE_DEPTH_POS);
   else
     {
-      tmp = grub_malloc (grub_strlen (modevar)
-			 + sizeof (DEFAULT_VIDEO_MODE) + 1);
+      tmp = grub_asprintf ("%s;" DEFAULT_VIDEO_MODE, modevar);
       if (! tmp)
 	return grub_error (GRUB_ERR_OUT_OF_MEMORY,
 			   "couldn't allocate temporary storag");
-      grub_sprintf (tmp, "%s;" DEFAULT_VIDEO_MODE, modevar);
       err = grub_video_set_mode (tmp,
 				 GRUB_VIDEO_MODE_TYPE_PURE_TEXT
 				 | GRUB_VIDEO_MODE_TYPE_DEPTH_MASK,
@@ -1127,7 +1128,7 @@ grub_cpu_xnu_init (void)
 {
   cmd_devprop_load = grub_register_command ("xnu_devprop_load",
 					    grub_cmd_devprop_load,
-					    0, "Load device-properties dump.");
+					    0, N_("Load device-properties dump."));
 }
 
 void

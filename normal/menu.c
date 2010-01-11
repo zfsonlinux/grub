@@ -98,7 +98,7 @@ grub_menu_set_timeout (int timeout)
     {
       char buf[16];
 
-      grub_sprintf (buf, "%d", timeout);
+      grub_snprintf (buf, sizeof (buf), "%d", timeout);
       grub_env_set ("timeout", buf);
     }
 }
@@ -362,6 +362,8 @@ run_menu (grub_menu_t menu, int nested, int *auto_boot)
 
   if (timeout > 0)
     menu_print_timeout (timeout);
+  else
+    clear_timeout ();
 
   while (1)
     {
@@ -476,6 +478,18 @@ run_menu (grub_menu_t menu, int nested, int *auto_boot)
 	      goto refresh;
 
 	    default:
+	      {
+		grub_menu_entry_t entry;
+		int i;
+		for (i = 0, entry = menu->entry_list; i < menu->size;
+		     i++, entry = entry->next)
+		  if (entry->hotkey == c)
+		    {
+		      menu_fini ();
+		      *auto_boot = 0;
+		      return i;
+		    }
+	      }
 	      break;
 	    }
 	}

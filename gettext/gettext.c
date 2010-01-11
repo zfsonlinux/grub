@@ -275,14 +275,19 @@ grub_gettext_init_ext (const char *lang)
   /* Warning: if changing some paths in the below line, change the grub_malloc
      contents below.  */
 
-  grub_sprintf (mo_file, "%s/%s.mo", locale_dir, lang);
+  mo_file = grub_asprintf ("%s/%s.mo", locale_dir, lang);
+  if (!mo_file)
+    return;
 
   fd_mo = grub_mofile_open (mo_file);
 
   /* Will try adding .gz as well.  */
   if (fd_mo == NULL)
     {
-      grub_sprintf (mo_file, "%s.gz", mo_file);
+      grub_free (mo_file);
+      mo_file = grub_asprintf ("%s.gz", mo_file);
+      if (!mo_file)
+	return;
       fd_mo = grub_mofile_open (mo_file);
     }
 
@@ -347,8 +352,8 @@ GRUB_MOD_INIT (gettext)
   grub_gettext_init_ext (lang);
 
   grub_register_command_p1 ("gettext", grub_cmd_translate,
-			    "STRING",
-			    "Translates the string with the current settings.");
+			    N_("STRING"),
+			    N_("Translates the string with the current settings."));
 
   /* Reload .mo file information if lang changes.  */
   grub_register_variable_hook ("lang", NULL, grub_gettext_env_write_lang);

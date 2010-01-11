@@ -31,6 +31,7 @@
 #include <grub/misc.h>
 #include <grub/env.h>
 #include <grub/command.h>
+#include <grub/i18n.h>
 #include <grub/crypto.h>
 
 /* This prefix is used by xnu and boot-132 to hash
@@ -60,18 +61,18 @@ grub_cmd_xnu_uuid (grub_command_t cmd __attribute__ ((unused)),
   GRUB_MD_MD5->final (&ctx);
   xnu_uuid = GRUB_MD_MD5->read (&ctx);
 
-  grub_sprintf (uuid_string,
-		"%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
-		(unsigned int) xnu_uuid[0], (unsigned int) xnu_uuid[1],
-		(unsigned int) xnu_uuid[2], (unsigned int) xnu_uuid[3],
-		(unsigned int) xnu_uuid[4], (unsigned int) xnu_uuid[5],
-		(unsigned int) ((xnu_uuid[6] & 0xf) | 0x30),
-		(unsigned int) xnu_uuid[7],
-		(unsigned int) ((xnu_uuid[8] & 0x3f) | 0x80),
-		(unsigned int) xnu_uuid[9],
-		(unsigned int) xnu_uuid[10], (unsigned int) xnu_uuid[11],
-		(unsigned int) xnu_uuid[12], (unsigned int) xnu_uuid[13],
-		(unsigned int) xnu_uuid[14], (unsigned int) xnu_uuid[15]);
+  grub_snprintf (uuid_string, sizeof (uuid_string),
+		 "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
+		 (unsigned int) xnu_uuid[0], (unsigned int) xnu_uuid[1],
+		 (unsigned int) xnu_uuid[2], (unsigned int) xnu_uuid[3],
+		 (unsigned int) xnu_uuid[4], (unsigned int) xnu_uuid[5],
+		 (unsigned int) ((xnu_uuid[6] & 0xf) | 0x30),
+		 (unsigned int) xnu_uuid[7],
+		 (unsigned int) ((xnu_uuid[8] & 0x3f) | 0x80),
+		 (unsigned int) xnu_uuid[9],
+		 (unsigned int) xnu_uuid[10], (unsigned int) xnu_uuid[11],
+		 (unsigned int) xnu_uuid[12], (unsigned int) xnu_uuid[13],
+		 (unsigned int) xnu_uuid[14], (unsigned int) xnu_uuid[15]);
   for (ptr = uuid_string; *ptr; ptr++)
     *ptr = grub_toupper (*ptr);
   if (argc == 1)
@@ -88,9 +89,9 @@ static grub_command_t cmd;
 GRUB_MOD_INIT (xnu_uuid)
 {
   cmd = grub_register_command ("xnu_uuid", grub_cmd_xnu_uuid,
-			       "GRUBUUID [VARNAME]",
-			       "Transform 64-bit UUID to format "
-			       "suitable for xnu.");
+			       N_("GRUBUUID [VARNAME]"),
+			       N_("Transform 64-bit UUID to format "
+			       "suitable for XNU."));
 }
 
 GRUB_MOD_FINI (xnu_uuid)
