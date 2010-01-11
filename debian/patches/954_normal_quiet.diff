@@ -6,10 +6,10 @@ UbuntuSpecific: The line editing change is believed to be a workaround for a
  different bug. We'll go with this for now, but will drop this in favour of
  a better fix upstream if somebody figures out what that is.
 
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/normal/main.c grub2-1.97~beta2.new/normal/main.c
---- grub2-1.97~beta2/normal/main.c	2009-09-09 17:19:13.000000000 +0100
-+++ grub2-1.97~beta2.new/normal/main.c	2009-09-09 17:19:20.000000000 +0100
-@@ -503,7 +503,7 @@
+diff -Nur -x '*.orig' -x '*~' grub2/normal/main.c grub2.new/normal/main.c
+--- grub2/normal/main.c	2010-01-05 10:07:49.000000000 +0000
++++ grub2.new/normal/main.c	2010-01-05 10:15:58.000000000 +0000
+@@ -517,7 +517,7 @@
  }
  
  static grub_err_t
@@ -18,10 +18,10 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/normal/main.c grub2-1.97~beta2.ne
  {
    grub_normal_init_page ();
    grub_setcursor (1);
-@@ -524,6 +524,13 @@
+@@ -547,6 +547,13 @@
  {
    grub_parser_t parser = grub_parser_get_current ();
-   char prompt[sizeof("> ") + grub_strlen (parser->name)];
+   char prompt[sizeof(">") + grub_strlen (parser->name)];
 +  static int displayed_intro;
 +
 +  if (! displayed_intro)
@@ -30,9 +30,9 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/normal/main.c grub2-1.97~beta2.ne
 +      displayed_intro = 1;
 +    }
  
-   grub_sprintf (prompt, "%s> ", parser->name);
+   grub_sprintf (prompt, "%s>", parser->name);
  
-@@ -547,7 +554,6 @@
+@@ -570,7 +577,6 @@
  static struct grub_reader grub_normal_reader =
    {
      .name = "normal",
@@ -40,10 +40,10 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/normal/main.c grub2-1.97~beta2.ne
      .read_line = grub_normal_read_line
    };
  
-diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/normal/menu_text.c grub2-1.97~beta2.new/normal/menu_text.c
---- grub2-1.97~beta2/normal/menu_text.c	2009-09-09 17:19:13.000000000 +0100
-+++ grub2-1.97~beta2.new/normal/menu_text.c	2009-09-09 17:21:36.000000000 +0100
-@@ -561,6 +561,7 @@
+diff -Nur -x '*.orig' -x '*~' grub2/normal/menu_text.c grub2.new/normal/menu_text.c
+--- grub2/normal/menu_text.c	2010-01-05 10:07:49.000000000 +0000
++++ grub2.new/normal/menu_text.c	2010-01-05 10:14:41.000000000 +0000
+@@ -702,6 +702,7 @@
        int boot_entry;
        grub_menu_entry_t e;
        int auto_boot;
@@ -51,7 +51,7 @@ diff -Nur -x '*.orig' -x '*~' grub2-1.97~beta2/normal/menu_text.c grub2-1.97~bet
  
        boot_entry = run_menu (menu, nested, &auto_boot);
        if (boot_entry < 0)
-@@ -570,8 +571,12 @@
+@@ -711,8 +712,12 @@
        if (! e)
  	continue; /* Menu is empty.  */
  
