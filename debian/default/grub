@@ -7,6 +7,8 @@ GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
 GRUB_CMDLINE_LINUX_DEFAULT="quiet"
 GRUB_CMDLINE_LINUX=""
 
+GRUB_THEME=/boot/grub/debian-theme/theme.txt
+
 # Uncomment to disable graphical terminal (grub-pc only)
 #GRUB_TERMINAL=console
 
