@@ -1,7 +1,7 @@
 /*  init.c -- Initialize GRUB on the newworld mac (PPC).  */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2003,2004,2005,2007,2008 Free Software Foundation, Inc.
+ *  Copyright (C) 2003,2004,2005,2007,2008,2009 Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -111,11 +111,12 @@ grub_machine_set_prefix (void)
 	  *lastslash = '\0';
 	  grub_translate_ieee1275_path (filename);
 
-	  newprefix = grub_malloc (grub_strlen (prefix)
-				   + grub_strlen (filename));
-	  grub_sprintf (newprefix, "%s%s", prefix, filename);
-	  grub_free (prefix);
-	  prefix = newprefix;
+	  newprefix = grub_asprintf ("%s%s", prefix, filename);
+	  if (newprefix)
+	    {
+	      grub_free (prefix);
+	      prefix = newprefix;
+	    }
 	}
     }
 

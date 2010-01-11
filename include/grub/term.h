@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2002,2003,2005,2007,2008,2009  Free Software Foundation, Inc.
+ *  Copyright (C) 2002,2003,2005,2007,2008,2009,2010  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -199,37 +199,36 @@ extern struct grub_term_output *EXPORT_VAR(grub_term_outputs);
 extern struct grub_term_input *EXPORT_VAR(grub_term_inputs);
 
 static inline void
-grub_term_register_input_active (const char *name __attribute__ ((unused)),
-				 grub_term_input_t term)
-{
-  if (term->init)
-    term->init ();
-  grub_list_push (GRUB_AS_LIST_P (&grub_term_inputs), GRUB_AS_LIST (term));
-}
-
-static inline void
 grub_term_register_input (const char *name __attribute__ ((unused)),
 			  grub_term_input_t term)
 {
-  grub_list_push (GRUB_AS_LIST_P (&grub_term_inputs_disabled),
-		  GRUB_AS_LIST (term));
-}
-
-static inline void
-grub_term_register_output_active (const char *name __attribute__ ((unused)),
-				  grub_term_output_t term)
-{
-  if (term->init)
-    term->init ();
-  grub_list_push (GRUB_AS_LIST_P (&grub_term_outputs), GRUB_AS_LIST (term));
+  if (grub_term_inputs)
+    grub_list_push (GRUB_AS_LIST_P (&grub_term_inputs_disabled),
+		    GRUB_AS_LIST (term));
+  else
+    {
+      /* If this is the first terminal, enable automatically.  */
+      if (term->init)
+        term->init ();
+      grub_list_push (GRUB_AS_LIST_P (&grub_term_inputs), GRUB_AS_LIST (term));
+    }
 }
 
 static inline void
 grub_term_register_output (const char *name __attribute__ ((unused)),
 			   grub_term_output_t term)
 {
-  grub_list_push (GRUB_AS_LIST_P (&grub_term_outputs_disabled),
-		  GRUB_AS_LIST (term));
+  if (grub_term_outputs)
+    grub_list_push (GRUB_AS_LIST_P (&grub_term_outputs_disabled),
+		    GRUB_AS_LIST (term));
+  else
+    {
+      /* If this is the first terminal, enable automatically.  */
+      if (term->init)
+	term->init ();
+      grub_list_push (GRUB_AS_LIST_P (&grub_term_outputs),
+		      GRUB_AS_LIST (term));
+    }
 }
 
 static inline void
@@ -404,6 +403,14 @@ struct grub_term_autoload
 
 extern struct grub_term_autoload *grub_term_input_autoload;
 extern struct grub_term_autoload *grub_term_output_autoload;
+
+static inline void
+grub_print_spaces (struct grub_term_output *term, int number_spaces)
+{
+  while (--number_spaces >= 0)
+    grub_putcode (' ', term);
+}
+
 
 /* For convenience.  */
 #define GRUB_TERM_ASCII_CHAR(c)	((c) & 0xff)

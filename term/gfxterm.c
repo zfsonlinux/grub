@@ -318,6 +318,7 @@ grub_gfxterm_fullscreen (void)
   struct grub_video_mode_info mode_info;
   grub_video_color_t color;
   grub_err_t err;
+  int double_redraw;
 
   err = grub_video_get_info (&mode_info);
   /* Figure out what mode we ended up.  */
@@ -326,9 +327,17 @@ grub_gfxterm_fullscreen (void)
 
   grub_video_set_active_render_target (GRUB_VIDEO_RENDER_TARGET_DISPLAY);
 
+  double_redraw = mode_info.mode_type & GRUB_VIDEO_MODE_TYPE_DOUBLE_BUFFERED
+    && !(mode_info.mode_type & GRUB_VIDEO_MODE_TYPE_UPDATING_SWAP);
+
   /* Make sure screen is black.  */
   color = grub_video_map_rgb (0, 0, 0);
   grub_video_fill_rect (color, 0, 0, mode_info.width, mode_info.height);
+  if (double_redraw)
+    {
+      grub_video_swap_buffers ();
+      grub_video_fill_rect (color, 0, 0, mode_info.width, mode_info.height);
+    }
   bitmap = 0;
 
   /* Select the font to use.  */
@@ -340,10 +349,7 @@ grub_gfxterm_fullscreen (void)
 
   return grub_gfxterm_set_window (GRUB_VIDEO_RENDER_TARGET_DISPLAY,
 				  0, 0, mode_info.width, mode_info.height,
-				  mode_info.mode_type
-				  & GRUB_VIDEO_MODE_TYPE_DOUBLE_BUFFERED
-				  && !(mode_info.mode_type 
-				       & GRUB_VIDEO_MODE_TYPE_UPDATING_SWAP),
+				  double_redraw,
 				  font_name, DEFAULT_BORDER_WIDTH);
 }
 
@@ -361,13 +367,10 @@ grub_gfxterm_init (void)
 			       GRUB_VIDEO_MODE_TYPE_PURE_TEXT, 0);
   else
     {
-      tmp = grub_malloc (grub_strlen (modevar)
-			 + sizeof (DEFAULT_VIDEO_MODE) + 1);
-      if (! tmp)
-        return grub_errno;
-      grub_sprintf (tmp, "%s;" DEFAULT_VIDEO_MODE, modevar);
-      err = grub_video_set_mode (tmp,
-				 GRUB_VIDEO_MODE_TYPE_PURE_TEXT, 0);
+      tmp = grub_asprintf ("%s;" DEFAULT_VIDEO_MODE, modevar);
+      if (!tmp)
+	return grub_errno;
+      err = grub_video_set_mode (tmp, GRUB_VIDEO_MODE_TYPE_PURE_TEXT, 0);
       grub_free (tmp);
     }
 
@@ -1179,12 +1182,7 @@ static grub_extcmd_t background_image_cmd_handle;
 
 GRUB_MOD_INIT(term_gfxterm)
 {
-#ifdef GRUB_MACHINE_MIPS_YEELOONG
-  grub_term_register_output_active ("gfxterm", &grub_video_term);
-#else
   grub_term_register_output ("gfxterm", &grub_video_term);
-#endif
-
   background_image_cmd_handle =
     grub_register_extcmd ("background_image",
                           grub_gfxterm_background_image_cmd,
