@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: grub-1.97+20091221\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-12-21 21:31+0000\n"
-"PO-Revision-Date: 2009-12-23 16:31+0100\n"
+"PO-Revision-Date: 2010-01-15 14:15+0100\n"
 "Last-Translator: Marcos Alvarez Costales <marcos.alvarez.costales@gmail.com>\n"
 "Language-Team: Asturian <ubuntu-l10n-ast@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
@@ -385,19 +385,19 @@ msgstr "ID"
 
 #: util/mkisofs/mkisofs.c:212
 msgid "Set Application ID"
-msgstr ""
+msgstr "Afitar ID d'Aplicación"
 
 #: util/mkisofs/mkisofs.c:214
 msgid "Set Bibliographic filename"
-msgstr ""
+msgstr "Afitar nome de ficheru Bibliográficu"
 
 #: util/mkisofs/mkisofs.c:216
 msgid "Set Copyright filename"
-msgstr ""
+msgstr "Afitar nome de ficheru Copyright"
 
 #: util/mkisofs/mkisofs.c:218
 msgid "Set embedded boot image name"
-msgstr ""
+msgstr "Afitar nome d'imaxe d'arranque embebida"
 
 #: util/mkisofs/mkisofs.c:220
 msgid "Patch a protective DOS-style label in the image"
@@ -405,11 +405,11 @@ msgstr ""
 
 #: util/mkisofs/mkisofs.c:222
 msgid "Set El Torito boot image name"
-msgstr ""
+msgstr "Afitar nome d'imaxe d'arranque El Torito"
 
 #: util/mkisofs/mkisofs.c:224
 msgid "Set El Torito boot catalog name"
-msgstr ""
+msgstr "Afitar el nome de catálogu d'arranque El Torito"
 
 #: util/mkisofs/mkisofs.c:226
 msgid "Patch Boot Info Table in El Torito boot image"
@@ -421,15 +421,15 @@ msgstr ""
 
 #: util/mkisofs/mkisofs.c:230
 msgid "Enable floppy drive emulation for El Torito"
-msgstr ""
+msgstr "Activar emulación de preséu disquete pa El Torito"
 
 #: util/mkisofs/mkisofs.c:232
 msgid "PARAMS"
-msgstr ""
+msgstr "PARAMS"
 
 #: util/mkisofs/mkisofs.c:232
 msgid "Magic parameters from cdrecord"
-msgstr ""
+msgstr "Parámetros Magic pa cdrecord"
 
 #: util/mkisofs/mkisofs.c:234
 msgid "Omit trailing periods from filenames"
@@ -441,7 +441,7 @@ msgstr ""
 
 #: util/mkisofs/mkisofs.c:238
 msgid "Follow symbolic links"
-msgstr ""
+msgstr "Siguir enllaces simbólicos"
 
 #: util/mkisofs/mkisofs.c:240 util/mkisofs/mkisofs.c:242
 msgid "Print option help"
@@ -449,12 +449,12 @@ msgstr "Imprentar opción d'aida"
 
 #: util/mkisofs/mkisofs.c:244
 msgid "Print version information and exit"
-msgstr ""
+msgstr "Imprentar información de versión y colar"
 
 #: util/mkisofs/mkisofs.c:246 util/mkisofs/mkisofs.c:248
 #: util/mkisofs/mkisofs.c:260
 msgid "GLOBFILE"
-msgstr ""
+msgstr "GLOBFILE"
 
 #: util/mkisofs/mkisofs.c:246
 msgid "Hide ISO9660/RR file"
@@ -478,7 +478,7 @@ msgstr "Xenerar información de direutoriu Joliet"
 
 #: util/mkisofs/mkisofs.c:254
 msgid "Allow full 32 character filenames for iso9660 names"
-msgstr ""
+msgstr "Permitir nomes de ficheru de 32 carauteres de llargo pa nomes iso9660"
 
 #: util/mkisofs/mkisofs.c:256
 msgid "Allow iso9660 filenames to start with '.'"
@@ -490,7 +490,7 @@ msgstr "LOG_FILE"
 
 #: util/mkisofs/mkisofs.c:258
 msgid "Re-direct messages to LOG_FILE"
-msgstr ""
+msgstr "Redireicionar mensaxes a LOG_FILE"
 
 #: util/mkisofs/mkisofs.c:260
 msgid "Exclude file name"
@@ -498,19 +498,19 @@ msgstr "Escluyir nome de ficheru"
 
 #: util/mkisofs/mkisofs.c:262
 msgid "Set path to previous session to merge"
-msgstr ""
+msgstr "Afitar camín a sesión previa p'amestar"
 
 #: util/mkisofs/mkisofs.c:264
 msgid "Omit version number from iso9660 filename"
-msgstr ""
+msgstr "Omitir númberu de versión pa nome de ficheros iso9660"
 
 #: util/mkisofs/mkisofs.c:266
 msgid "Inhibit splitting symlink components"
-msgstr ""
+msgstr "Impedir cortar componentes d'enllaces simbólicos"
 
 #: util/mkisofs/mkisofs.c:268
 msgid "Inhibit splitting symlink fields"
-msgstr ""
+msgstr "Impedir cortar campos d'enllaces simbólicos"
 
 #: util/mkisofs/mkisofs.c:270
 msgid "Set output file name"
@@ -550,7 +550,7 @@ msgstr ""
 
 #: util/mkisofs/mkisofs.c:284
 msgid "Split output into files of approx. 1GB size"
-msgstr ""
+msgstr "Cortar salida en ficheros d'aprosimadamente 1Gb de tamañu"
 
 #: util/mkisofs/mkisofs.c:286
 msgid "Set System ID"
@@ -558,11 +558,11 @@ msgstr "Afitar ID Sistema"
 
 #: util/mkisofs/mkisofs.c:288
 msgid "Generate translation tables for systems that don't understand long filenames"
-msgstr ""
+msgstr "Xenerar tables de tornes pa sistemes que nun entienden nomes de ficheros llargos"
 
 #: util/mkisofs/mkisofs.c:290
 msgid "Verbose"
-msgstr ""
+msgstr "Detallao"
 
 #: util/mkisofs/mkisofs.c:292
 msgid "Set Volume ID"
@@ -570,31 +570,31 @@ msgstr "Afitar ID Volume"
 
 #: util/mkisofs/mkisofs.c:294
 msgid "Set Volume set ID"
-msgstr ""
+msgstr "Afitar ID de Volume"
 
 #: util/mkisofs/mkisofs.c:296
 msgid "Set Volume set size"
-msgstr ""
+msgstr "Afitar tamañu de Volume"
 
 #: util/mkisofs/mkisofs.c:298
 msgid "Set Volume set sequence number"
-msgstr ""
+msgstr "Afitar númberu de secuencia a Volume"
 
 #: util/mkisofs/mkisofs.c:300
 msgid "Exclude file name (deprecated)"
-msgstr ""
+msgstr "Escleyir nome de ficheru (anticuao)"
 
 #: util/mkisofs/mkisofs.c:306
 msgid "Override creation date"
-msgstr ""
+msgstr "Sobroescribir data de criación"
 
 #: util/mkisofs/mkisofs.c:308
 msgid "Override modification date"
-msgstr ""
+msgstr "Sobroescribir data de modificación"
 
 #: util/mkisofs/mkisofs.c:310
 msgid "Override expiration date"
-msgstr ""
+msgstr "Sobroescribir data d'espiración"
 
 #: util/mkisofs/mkisofs.c:312
 msgid "Override effective date"
@@ -618,7 +618,7 @@ msgstr ""
 #: util/mkisofs/mkisofs.c:454
 #, c-format
 msgid "%s:%d: field name \"%s\" unknown\n"
-msgstr ""
+msgstr "%s:%d: nome de campu \"%s\" desconocíu\n"
 
 #: util/mkisofs/mkisofs.c:483
 #, c-format
@@ -637,17 +637,17 @@ msgstr ""
 
 #: util/mkisofs/mkisofs.c:731 util/mkisofs/mkisofs.c:737
 msgid "Required boot image pathname missing"
-msgstr ""
+msgstr "Falta camín pa la imaxe d'arranque"
 
 #: util/mkisofs/mkisofs.c:747
 #, c-format
 msgid "Required boot catalog pathname missing\n"
-msgstr ""
+msgstr "Falta camín pal catálogu d'arranque\n"
 
 #: util/mkisofs/mkisofs.c:755
 #, c-format
 msgid "Ignoring -no-emul-boot (no-emulation is the default behaviour)\n"
-msgstr ""
+msgstr "Ignorando -no-emul-boot (no-emulation ye'l comportamientu por defeutu)\n"
 
 #: util/mkisofs/mkisofs.c:764
 #, c-format
@@ -657,7 +657,7 @@ msgstr ""
 #: util/mkisofs/mkisofs.c:772
 #, c-format
 msgid "Application-id string too long\n"
-msgstr ""
+msgstr "Cadena Application-id demasiao llarga\n"
 
 #: util/mkisofs/mkisofs.c:780
 #, c-format
@@ -667,7 +667,7 @@ msgstr ""
 #: util/mkisofs/mkisofs.c:788
 #, c-format
 msgid "Copyright filename string too long\n"
-msgstr ""
+msgstr "Cadena del nome de ficheru Copyright demasiao llarga\n"
 
 #: util/mkisofs/mkisofs.c:823
 #, c-format
@@ -682,12 +682,12 @@ msgstr ""
 #: util/mkisofs/mkisofs.c:855
 #, c-format
 msgid "System ID string too long\n"
-msgstr ""
+msgstr "Cadena System ID demasiao llarga\n"
 
 #: util/mkisofs/mkisofs.c:866
 #, c-format
 msgid "Volume ID string too long\n"
-msgstr ""
+msgstr "Cadena Volume ID demasiao llarga\n"
 
 #: util/mkisofs/mkisofs.c:874
 #, c-format
@@ -703,20 +703,20 @@ msgstr ""
 #: util/mkisofs/mkisofs.c:947 util/mkisofs/mkisofs.c:957
 #, c-format
 msgid "date string must be 16 characters.\n"
-msgstr ""
+msgstr "cadena data tien de ser 16 carauteres.\n"
 
 #: util/mkisofs/mkisofs.c:976
 msgid "Warning: getrlimit"
-msgstr ""
+msgstr "Avisu: getrlimit"
 
 #: util/mkisofs/mkisofs.c:980
 msgid "Warning: setrlimit"
-msgstr ""
+msgstr "Avisu: setrlimit"
 
 #: util/mkisofs/mkisofs.c:996
 #, c-format
 msgid "Multisession usage bug: Must specify -C if -M is used.\n"
-msgstr ""
+msgstr "Fallu n'usu Multisesión: Tienes qu'especificar -C si -M ye usao.\n"
 
 #: util/mkisofs/mkisofs.c:1002
 #, c-format
@@ -726,27 +726,27 @@ msgstr ""
 #: util/mkisofs/mkisofs.c:1041
 #, c-format
 msgid "can't open logfile: %s"
-msgstr ""
+msgstr "Nun pudó abrise ficheru de rexistru: %s"
 
 #: util/mkisofs/mkisofs.c:1045
 #, c-format
 msgid "re-directing all messages to %s\n"
-msgstr ""
+msgstr "redireicionar tolos mensaxes a %s\n"
 
 #: util/mkisofs/mkisofs.c:1050
 #, c-format
 msgid "can't open logfile: %s\n"
-msgstr ""
+msgstr "nun pudó abrise ficheru de rexistru: %s\n"
 
 #: util/mkisofs/mkisofs.c:1091
 #, c-format
 msgid "Unable to open previous session image %s\n"
-msgstr ""
+msgstr "Nun pudó abrise imaxe de sesión previa %s\n"
 
 #: util/mkisofs/mkisofs.c:1202
 #, c-format
 msgid "Invalid node - %s\n"
-msgstr ""
+msgstr "nodu nun válidu - %s\n"
 
 #: util/mkisofs/mkisofs.c:1264
 msgid "Joliet tree sort failed.\n"
@@ -754,11 +754,11 @@ msgstr ""
 
 #: util/mkisofs/mkisofs.c:1279
 msgid "Unable to open /dev/null\n"
-msgstr ""
+msgstr "Nun pudó abrise /dev/null\n"
 
 #: util/mkisofs/mkisofs.c:1283
 msgid "Unable to open disc image file\n"
-msgstr ""
+msgstr "Nun pudó abrise ficheru d'imaxe de discu\n"
 
 #: util/mkisofs/mkisofs.c:1405
 #, c-format
@@ -787,15 +787,15 @@ msgstr ""
 #: util/mkisofs/multi.c:764
 #, c-format
 msgid "Read error on old image %s\n"
-msgstr ""
+msgstr "Fallu lleendo imaxe vieya %s\n"
 
 #: util/mkisofs/multi.c:1084
 msgid "Special parameters for cdwrite not specified with -C\n"
-msgstr ""
+msgstr "Non especificaos parámetros especiales pa cdwrite con -C\n"
 
 #: util/mkisofs/multi.c:1091
 msgid "Malformed cdwrite parameters\n"
-msgstr ""
+msgstr "Parámetros pa cdwrite mal formaos\n"
 
 #: util/mkisofs/rock.c:309
 #, c-format
@@ -818,7 +818,7 @@ msgstr ""
 #: util/mkisofs/tree.c:284
 #, c-format
 msgid "Unable to  generate unique  name for file %s\n"
-msgstr ""
+msgstr "Nun pudó xenerase nome únicu pal ficheru %s\n"
 
 #: util/mkisofs/tree.c:295 util/mkisofs/tree.c:317
 #, c-format
@@ -833,7 +833,7 @@ msgstr ""
 #: util/mkisofs/tree.c:449
 #, c-format
 msgid "Unable to sort directory %s\n"
-msgstr ""
+msgstr "Nun pudó ordenase'l direutoriu %s\n"
 
 #: util/mkisofs/tree.c:480
 #, c-format
@@ -842,12 +842,12 @@ msgstr ""
 
 #: util/mkisofs/tree.c:746
 msgid "Unable to locate directory parent\n"
-msgstr ""
+msgstr "Nun pudó llocalizase direutoriu padre\n"
 
 #: util/mkisofs/tree.c:796
 #, c-format
 msgid "Scanning %s\n"
-msgstr ""
+msgstr "Escaneando %s\n"
 
 #: util/mkisofs/tree.c:811
 #, c-format
@@ -876,7 +876,7 @@ msgstr "Escluyíu: %s\n"
 #: util/mkisofs/tree.c:961
 #, c-format
 msgid "Non-existant or inaccessible: %s\n"
-msgstr ""
+msgstr "Non esiste o inacesible: %s\n"
 
 #: util/mkisofs/tree.c:997 util/mkisofs/tree.c:1103
 #, c-format
@@ -886,7 +886,7 @@ msgstr ""
 #: util/mkisofs/tree.c:1003
 #, c-format
 msgid "Symlink %s ignored - continuing.\n"
-msgstr ""
+msgstr "Enllaz simbólicu %s ignoráu - siguiendo.\n"
 
 #: util/mkisofs/tree.c:1028
 #, c-format
@@ -911,12 +911,12 @@ msgstr "Triba de ficheru desconocíu %s - inorando y continuando.\n"
 #: util/mkisofs/tree.c:1179
 #, c-format
 msgid "Hidden from ISO9660 tree: %s\n"
-msgstr ""
+msgstr "Anubríu pal árbol ISO9660: %s\n"
 
 #: util/mkisofs/tree.c:1191
 #, c-format
 msgid "Hidden from Joliet tree: %s\n"
-msgstr ""
+msgstr "Anubríu pal árbol Joliet: %s\n"
 
 #: util/mkisofs/tree.c:1600
 #, c-format
@@ -929,7 +929,7 @@ msgstr "Imposible desaniciar direutoriu non-ermu\n"
 
 #: util/mkisofs/tree.c:1655
 msgid "Unable to locate child directory in parent list\n"
-msgstr ""
+msgstr "Nun pudó llocalizase direutoriu fíyu na llista del padre\n"
 
 #: util/mkisofs/tree.c:1772
 #, c-format
@@ -1009,7 +1009,7 @@ msgstr "Predecíu = %d, escritu = %llu\n"
 #: util/mkisofs/write.c:1161
 #, c-format
 msgid "Total translation table size: %d\n"
-msgstr ""
+msgstr "Tamañu total de la tabla de torna: %d\n"
 
 #: util/mkisofs/write.c:1162
 #, c-format
@@ -1019,7 +1019,7 @@ msgstr ""
 #: util/mkisofs/write.c:1163
 #, c-format
 msgid "Total directory bytes: %d\n"
-msgstr ""
+msgstr "Total de bytes del direutoriu: %d\n"
 
 #: util/mkisofs/write.c:1164
 #, c-format
@@ -1038,17 +1038,17 @@ msgstr "Introduz nome_d'usuariu:"
 #: normal/color.c:80
 #, c-format
 msgid "Warning: syntax error (missing slash) in `%s'\n"
-msgstr ""
+msgstr "Avisu: fallu de sintasis (falta slash) en `%s'\n"
 
 #: normal/color.c:89
 #, c-format
 msgid "Warning: invalid foreground color `%s'\n"
-msgstr ""
+msgstr "Avisu: color de primer planu nun válidu `%s'\n"
 
 #: normal/color.c:95
 #, c-format
 msgid "Warning: invalid background color `%s'\n"
-msgstr ""
+msgstr "Avisu: color de fondu nun válidu `%s'\n"
 
 #: normal/main.c:390
 #, c-format
@@ -1062,16 +1062,16 @@ msgstr ""
 
 #: normal/main.c:529
 msgid "ESC at any time exits."
-msgstr ""
+msgstr "Calcar ESC en cualisquier momentu sal."
 
 #: normal/menu_entry.c:840
 #, c-format
 msgid "Possible %s are:"
-msgstr ""
+msgstr "Posiblemente %s ye:"
 
 #: normal/menu_entry.c:1003
 msgid "Booting a command list"
-msgstr ""
+msgstr "Llista de comandos nel arranque"
 
 #: normal/menu_entry.c:1185 normal/menu_text.c:43
 msgid "Press any key to continue..."
