@@ -1,3 +1,11 @@
+grub2 (1.98~20100101-1ubuntu2) lucid; urgency=low
+
+  * Renumber Ubuntu patches to start from 950 with no gaps.
+  * Don't record failed boots when using grub-reboot, as that can leave
+    remote users stranded at a timeout=-1 menu (thanks, Jordan Uggla).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 15 Jan 2010 12:29:50 +0000
+
 grub2 (1.98~20100101-1ubuntu1) lucid; urgency=low
 
   * Resynchronise with Debian. Remaining changes:
