@@ -1,6 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2006,2007,2008,2009  Free Software Foundation, Inc.
+ *  Copyright (C) 2006,2007,2008,2009,2010  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -316,7 +316,7 @@ grub_linux_setup_video (struct linux_kernel_params *params)
   params->reserved_mask_size = mode_info.reserved_mask_size;
   params->reserved_field_pos = mode_info.reserved_field_pos;
 
-  params->have_vga = GRUB_VIDEO_TYPE_EFI;
+  params->have_vga = GRUB_VIDEO_LINUX_TYPE_SIMPLE;
 
 #ifdef GRUB_MACHINE_PCBIOS
   /* VESA packed modes may come with zeroed mask sizes, which need
@@ -433,7 +433,7 @@ grub_linux_boot (void)
      May change in future if we have modes without framebuffer.  */
   if (modevar && *modevar != 0)
     {
-      tmp = grub_asprintf ("%s;auto", modevar);
+      tmp = grub_xasprintf ("%s;auto", modevar);
       if (! tmp)
 	return grub_errno;
       err = grub_video_set_mode (tmp, GRUB_VIDEO_MODE_TYPE_PURE_TEXT, 0);
@@ -607,8 +607,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
       goto fail;
     }
 
-  /* XXX Linux assumes that only elilo can boot Linux on EFI!!!  */
-  params->type_of_loader = (LINUX_LOADER_ID_ELILO << 4);
+  params->type_of_loader = (LINUX_LOADER_ID_GRUB << 4);
 
   params->cl_magic = GRUB_LINUX_CL_MAGIC;
   params->cl_offset = 0x1000;
@@ -781,7 +780,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
     else if (grub_memcmp (argv[i], "video=efifb", 11) == 0)
       {
 	if (params->have_vga)
-	  params->have_vga = GRUB_VIDEO_TYPE_EFI;
+	  params->have_vga = GRUB_VIDEO_LINUX_TYPE_SIMPLE;
       }
 
   /* Specify the boot file.  */

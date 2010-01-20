@@ -63,7 +63,7 @@ grub_efi_set_prefix (void)
 	  if (p)
 	    *p = '\0';
 
-	  prefix = grub_asprintf ("(%s)%s", device, file);
+	  prefix = grub_xasprintf ("(%s)%s", device, file);
 	  if (prefix)
 	    {
 	      
@@ -81,6 +81,5 @@ void
 grub_efi_fini (void)
 {
   grub_efidisk_fini ();
-  grub_efi_mm_fini ();
   grub_console_fini ();
 }

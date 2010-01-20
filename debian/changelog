@@ -1,3 +1,16 @@
+grub2 (1.98~experimental.20100120-1) experimental; urgency=low
+
+  * New Bazaar snapshot.
+    - Linux loader is more careful about video mode transition now.
+      (Closes: #565160)
+
+  [ Robert Millan ]
+  * Fix handling of separate /boot in gfxmenu code.  (Closes: #565375)
+    - debian/debian-theme/theme.txt: Turn absolute path into relative.
+    - debian/grub.d/05_debian_theme: Fix handling of /boot/grub path.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Wed, 20 Jan 2010 20:20:02 +0100
+
 grub2 (1.98~experimental.20100111.1-1) experimental; urgency=low
 
   * New Bazaar snapshot.

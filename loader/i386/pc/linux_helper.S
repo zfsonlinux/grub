@@ -67,7 +67,7 @@ VARIABLE(grub_linux_real_addr)
 VARIABLE(grub_linux_is_bzimage)
 	.long	0
 
-FUNCTION(grub_linux16_boot)
+FUNCTION(grub_linux16_real_boot)
 
 	movl	EXT_C(grub_linux_is_bzimage), %ebx
 	test	%ebx, %ebx

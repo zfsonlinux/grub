@@ -2,18 +2,15 @@
 
 source /usr/lib/grub/grub-mkconfig_lib
 
-# Tell Linux loader that switching back to text mode before
-# transferring control to Linux is not necessary (which
-# is true for Debian Linux packages).
-echo "set gfxpayload=keep"
-
 if [ "$GRUB_TERMINAL_OUTPUT" = "gfxterm" ] ; then
   # Jo Shield's theme
+    prepare_grub_to_access_device $(${grub_probe} --target=device /boot/grub)
+    relpath=$(make_system_path_relative_to_its_root /boot/grub)
   cat << EOF
 insmod png
-loadfont /boot/grub/dejavu_sans_10.pf2
-loadfont /boot/grub/dejavu_sans_12.pf2
-loadfont /boot/grub/dejavu_sans_bold_14.pf2
+loadfont ${relpath}/dejavu_sans_10.pf2
+loadfont ${relpath}/dejavu_sans_12.pf2
+loadfont ${relpath}/dejavu_sans_bold_14.pf2
 EOF
 fi
 

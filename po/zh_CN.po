@@ -1,15 +1,16 @@
 # grub 软件包的简体中文翻译。
-# Copyright (C) 2009 Free Software Foundation, Inc.
+# Copyright (C) 2009, 2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the grub package.
-# Aron Xu <happyaron.xu@gmail.com>, 2009.
+# Aron Xu <happyaron.xu@gmail.com>, 2009, 2010.
 # Zhengyu Ji <zhengyuji@gmail.com>, 2009.
 # Xin Ye <alyex.ye@gmail.com>, 2009.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: grub 1.97+20091221\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-12-21 21:31+0000\n"
-"PO-Revision-Date: 2010-01-10 15:03+0800\n"
+"PO-Revision-Date: 2010-01-16 17:47+0800\n"
 "Last-Translator: Aron Xu <happyaron.xu@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +27,7 @@ msgstr "无法压缩内核镜像"
 
 #: util/i386/pc/grub-mkimage.c:138
 msgid "prefix is too long"
-msgstr "所指定的目录太长"
+msgstr "前缀太长"
 
 #: util/i386/pc/grub-mkimage.c:206
 msgid "the core image is too big"
@@ -45,7 +46,7 @@ msgstr "核心镜像太大(%p > %p)\n"
 #: util/i386/pc/grub-mkimage.c:321 util/i386/pc/grub-setup.c:593
 #, c-format
 msgid "Try ``%s --help'' for more information.\n"
-msgstr "请尝试运行 “%s --help” 以获得更多信息。\n"
+msgstr "请尝试运行“%s --help”以获得更多信息。\n"
 
 #: util/i386/pc/grub-mkimage.c:323
 #, c-format
@@ -65,15 +66,15 @@ msgid ""
 "\n"
 "Report bugs to <%s>.\n"
 msgstr ""
-"用法: grub-mkimage [选项]... [模块]\n"
+"用法：grub-mkimage [选项]... [模块]\n"
 "\n"
-"制作一个可引导的GRUB镜像。\n"
+"制作一个可引导的 GRUB 镜像。\n"
 "  -d, --directory=DIR     使用 DIR 目录下的镜像和模块 [默认 %s]\n"
 "  -p, --prefix=DIR        设定 grub_prefix 路径 [默认 %s]\n"
-"  -m, --memdisk=FILE      所嵌 FILE 文件作为内存盘镜像\n"
-"  -c, --config=FILE       所嵌 FILE 文件作为引导配置文件\n"
-"  -o, --output=FILE       将生成的镜像写入 FILE 文件s[默认标准输出设备(stdout)]\n"
-"  -h, --help              显示此信息并退出\n"
+"  -m, --memdisk=FILE      嵌入 FILE 文件作为内存盘镜像\n"
+"  -c, --config=FILE       嵌入 FILE 文件作为引导配置\n"
+"  -o, --output=FILE       将生成的镜像写入 FILE 文件 [默认 标准输出]\n"
+"  -h, --help              显示此帮助信息并退出\n"
 "  -V, --version           显示版本信息并退出\n"
 "  -v, --verbose           显示详细信息\n"
 "\n"
@@ -99,27 +100,27 @@ msgstr "核心文件的扇区碎片太多"
 #: util/i386/pc/grub-setup.c:205
 #, c-format
 msgid "The size of `%s' is not %u"
-msgstr "“%s” 的大小不是 %u"
+msgstr "“%s”的大小不是 %u"
 
 #: util/i386/pc/grub-setup.c:222
 #, c-format
 msgid "The size of `%s' is too small"
-msgstr "“%s” 太小"
+msgstr "“%s”的尺寸太小"
 
 #: util/i386/pc/grub-setup.c:224
 #, c-format
 msgid "The size of `%s' is too large"
-msgstr "“%s” 太大"
+msgstr "“%s”的尺寸太大"
 
 #: util/i386/pc/grub-setup.c:261
 #, c-format
 msgid "Unable to identify a filesystem in %s; safety check can't be performed"
-msgstr "无法在 %s 中识别文件系统；无法执行安全性检测"
+msgstr "无法在 %s 中识别文件系统，无法执行安全性检测"
 
 #: util/i386/pc/grub-setup.c:265
 #, c-format
 msgid "%s appears to contain a %s filesystem which isn't known to reserve space for DOS-style boot.  Installing GRUB there could result in FILESYSTEM DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe disables this check, use at your own risk)"
-msgstr "%s 中似乎包含一个 %s 文件系统，不被 DOS 引导的保留区所知。在此处安装 GRUB 可能导致 grub-setup覆盖重要数据从而损坏文件系统 (--skip-fs-probe 可以禁用这个检查，使用该选项风险自负)"
+msgstr "%s 中似乎包含一个不为 DOS 引导保留空间的 %s 文件系统。在此处安装 GRUB 可能导致 grub-setup 覆盖重要数据从而损坏文件系统(--skip-fs-probe 参数可以禁用这个检查，使用该选项风险自负)"
 
 #: util/i386/pc/grub-setup.c:314 util/i386/pc/grub-setup.c:364
 msgid "No DOS-style partitions found"
@@ -135,70 +136,64 @@ msgstr "正在试图将 GRUB 安装至一个分区而非 MBR。这是一个坏�
 
 #: util/i386/pc/grub-setup.c:369
 msgid "This msdos-style partition label has no post-MBR gap; embedding won't be possible!"
-msgstr "此 DOS 分区标签没有 MBR 后间隔；嵌套将不可能！"
+msgstr "此 DOS 分区标签没有 MBR 前间隔，将无法进行嵌入！"
 
-# fuzzy
 #: util/i386/pc/grub-setup.c:371
 msgid "This GPT partition label has no BIOS Boot Partition; embedding won't be possible!"
-msgstr "此 GPT 分区标签没有 BIOS 引导分区；嵌套将不可能！"
+msgstr "此 GPT 分区标签没有 BIOS 引导分区，将无法进行嵌入！"
 
 #: util/i386/pc/grub-setup.c:378
 msgid "Your core.img is unusually large.  It won't fit in the embedding area."
-msgstr "您的 core.img 超乎寻常的巨大。它不适用于嵌入式环境。"
+msgstr "您的 core.img 过大，无法装入嵌入区域。"
 
 #: util/i386/pc/grub-setup.c:380
 msgid "Your embedding area is unusually small.  core.img won't fit in it."
-msgstr "您的嵌入式环境超乎寻常的小。core.img 无法适用于此处。"
+msgstr "您的嵌入区域过小，无法装入 core.img。"
 
 #: util/i386/pc/grub-setup.c:422
 msgid "Embedding is not possible, but this is required when the root device is on a RAID array or LVM volume."
-msgstr "嵌入不可被完成，但当根设备位于磁盘阵列或者逻辑卷上时嵌入是必须的。"
+msgstr "无法嵌入。但在根设备位于 RAID 阵列或 LVM 卷上时必须使用嵌入。"
 
-# fuzzy
 #: util/i386/pc/grub-setup.c:425
 msgid "Embedding is not possible.  GRUB can only be installed in this setup by using blocklists.  However, blocklists are UNRELIABLE and its use is discouraged."
-msgstr "嵌入无法进行。在此次安装中 GRUB 只能通过使用块列表安装。但是，块列表是不可信赖的，不推荐使用"
+msgstr "无法嵌入。在此次安装中 GRUB 只能通过使用块列表安装。但是块列表是不可信赖的，不推荐使用"
 
 #: util/i386/pc/grub-setup.c:429
 msgid "If you really want blocklists, use --force."
-msgstr "如果确实需要块列表，请使用 --force 选项"
+msgstr "如果确实要使用块列表，请使用 --force 选项"
 
 #: util/i386/pc/grub-setup.c:445
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB"
-msgstr "正在尝试从 GRUB 读取核心镜像 \"%s\""
+msgstr "正在尝试从 GRUB 读取核心镜像“%s”"
 
 #: util/i386/pc/grub-setup.c:446
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB again"
-msgstr "正在尝试再次从 GRUB 读取核心镜像 “%s”"
+msgstr "正在尝试再次从 GRUB 读取核心镜像“%s”"
 
 #: util/i386/pc/grub-setup.c:504
 #, c-format
 msgid "Cannot read `%s' correctly"
-msgstr "无法正确读取 “%s”"
+msgstr "无法正确读取“%s”"
 
-# fuzzy
 #: util/i386/pc/grub-setup.c:517
 msgid "No terminator in the core image"
 msgstr "核心镜像中没有终止符"
 
-# fuzzy
 #: util/i386/pc/grub-setup.c:528
 msgid "Failed to read the first sector of the core image"
 msgstr "读取核心镜像的第一扇区失败"
 
-# fuzzy
 #: util/i386/pc/grub-setup.c:534
 msgid "Failed to read the rest sectors of the core image"
-msgstr "读取核心镜像的剩余扇区失败"
+msgstr "读取核心镜像的其他扇区失败"
 
 #: util/i386/pc/grub-setup.c:553
 #, c-format
 msgid "Cannot open `%s'"
-msgstr "无法打开 “%s”"
+msgstr "无法打开“%s”"
 
-# fuzzy
 #: util/i386/pc/grub-setup.c:595
 #, c-format
 msgid ""
@@ -220,10 +215,10 @@ msgid ""
 "\n"
 "Report bugs to <%s>.\n"
 msgstr ""
-"用法：grub-setup [选项]...DEVICE\n"
+"用法：grub-setup [选项]...[设备]\n"
 "\n"
-"设置从 DEVICE 引导的镜像。\n"
-"DEVICE 必须是 GRUB 设备格式（例如 \"(hd0,1)\"）。\n"
+"设置从指定设备引导的镜像。\n"
+"指定的设备必须是 GRUB 设备格式(例如“(hd0,1)”)。\n"
 "\n"
 "  -b, --boot-image=FILE   使用 FILE 文件作为引导镜像 [默认为 %s]\n"
 "  -c, --core-image=FILE   使用 FILE 文件作为核心镜像 [默认为 %s]\n"
@@ -236,7 +231,7 @@ msgstr ""
 "  -V, --version           显示版本信息并且退出\n"
 "  -v, --verbose           显示详细信息\n"
 "\n"
-"软件错误请报告给 <%s>。\n"
+"软件错误请报告给 %s\n"
 
 #: util/i386/pc/grub-setup.c:725
 #, c-format
@@ -246,54 +241,51 @@ msgstr "没有指定设备。\n"
 #: util/i386/pc/grub-setup.c:731
 #, c-format
 msgid "Unknown extra argument `%s'.\n"
-msgstr "未知的额外参数 “%s”。\n"
+msgstr "未知的额外参数“%s”。\n"
 
 #: util/i386/pc/grub-setup.c:748
 #, c-format
 msgid "Invalid device `%s'.\n"
-msgstr "无效的设备 “%s”。\n"
+msgstr "无效的设备“%s”。\n"
 
 #: util/i386/pc/grub-setup.c:761
 #, c-format
 msgid "Invalid root device `%s'"
-msgstr "无效的根设备 “%s”"
+msgstr "无效的根设备“%s”"
 
 #: util/i386/pc/grub-setup.c:774
 msgid "Cannot guess the root device. Specify the option ``--root-device''."
-msgstr "无法猜测根设备。请使用 \"--root-device\" 选项指定。"
+msgstr "无法猜测根设备。请使用“--root-device”参数指定。"
 
 #: util/mkisofs/eltorito.c:96
 #, c-format
 msgid "A boot catalog exists and appears corrupted.\n"
-msgstr "引导编目存在且似乎已损坏。\n"
+msgstr "引导目录存在且似乎已损坏。\n"
 
 #: util/mkisofs/eltorito.c:97
 #, c-format
 msgid "Please check the following file: %s.\n"
-msgstr "请检查以下文件: %s。\n"
+msgstr "请检查以下文件：%s。\n"
 
 #: util/mkisofs/eltorito.c:98
 #, c-format
 msgid "This file must be removed before a bootable CD can be done.\n"
-msgstr "此文件在可引导CD完成之前必须被删除。\n"
+msgstr "必须在可引导 CD 完成之前删除此文件。\n"
 
-# fuzzy
 #: util/mkisofs/eltorito.c:110
 #, c-format
 msgid "Error creating boot catalog (%s)"
-msgstr "创建引导编目时出错(%s)"
+msgstr "创建引导目录时出错(%s)"
 
-# fuzzy
 #: util/mkisofs/eltorito.c:114
 #, c-format
 msgid "Error writing to boot catalog (%s)"
-msgstr "写引导编目时出错 (%s)"
+msgstr "写入引导目录时出错(%s)"
 
-# fuzzy
 #: util/mkisofs/eltorito.c:144
 #, c-format
 msgid "Boot catalog cannot be found!\n"
-msgstr "无法找到引导编目！\n"
+msgstr "无法找到引导目录！\n"
 
 #: util/mkisofs/eltorito.c:158
 #, c-format
@@ -329,7 +321,6 @@ msgstr "模拟 2.88MB 软盘\n"
 msgid "Emulating a 1.2 meg floppy\n"
 msgstr "模拟 1.2MB 软盘\n"
 
-# fuzzy
 #: util/mkisofs/eltorito.c:249
 #, c-format
 msgid ""
@@ -339,49 +330,44 @@ msgstr ""
 "\n"
 "错误 - 引导镜像大小不被允许。\n"
 
-# fuzzy
 #: util/mkisofs/eltorito.c:269
 msgid "Error opening boot catalog for update"
-msgstr "无法打开引导编目用于更新"
+msgstr "无法打开引导目录进行更新"
 
-# fuzzy
 #: util/mkisofs/eltorito.c:275 util/mkisofs/eltorito.c:277
 msgid "Error writing to boot catalog"
-msgstr "写引导编目时出错"
+msgstr "写入到引导目录时出错"
 
 #: util/mkisofs/eltorito.c:291
 #, c-format
 msgid "Error opening boot image file '%s' for update"
-msgstr "无法打开引导镜像文件 '%s' 用于更新"
+msgstr "无法打开引导镜像文件“%s”进行更新"
 
-# fuzzy
 #: util/mkisofs/eltorito.c:299
 #, c-format
 msgid "Odd alignment at non-end-of-file in boot image '%s'"
-msgstr "引导镜像 “%s“在非文件结束位置上存在错误的对齐。"
+msgstr "引导镜像“%s”在非文件结束位置上存在错误的对齐。"
 
 #: util/mkisofs/eltorito.c:311
 #, c-format
 msgid "Boot image file '%s' changed unexpectedly"
-msgstr "引导镜像文件 “%s” 意外改变"
+msgstr "引导镜像文件“%s”意外改变"
 
 #: util/mkisofs/eltorito.c:323
 #, c-format
 msgid "Error writing to boot image (%s)"
 msgstr "写入到引导镜像出错(%s)"
 
-# fuzzy
 #: util/mkisofs/joliet.c:359 util/mkisofs/write.c:984
 #, c-format
 msgid "Unable to generate sane path tables - too many directories (%d)\n"
-msgstr "无法生成合理的路径表? - 太多目录(%d)\n"
+msgstr "无法生成合理的路径表 - 目录过多(%d)\n"
 
 #: util/mkisofs/joliet.c:398 util/mkisofs/write.c:1020
 #, c-format
 msgid "Entry %d not in path tables\n"
 msgstr "条目 %d 不在路径表中\n"
 
-# fuzzy
 #: util/mkisofs/joliet.c:412
 #, c-format
 msgid "Fatal goof - directory has amnesia\n"
@@ -405,7 +391,7 @@ msgstr "致命错误 - 无法找到目录位置\n"
 #: util/mkisofs/joliet.c:654
 #, c-format
 msgid "Unexpected joliet directory length %d %d %s\n"
-msgstr "意外的 joliet 目录长度 %d %d %s\n"
+msgstr "未预料的 Joliet 目录长度 %d %d %s\n"
 
 #: util/mkisofs/mkisofs.c:208
 msgid "Process all files (don't skip backup files)"
@@ -417,7 +403,7 @@ msgstr "处理全部文件(包括备份文件)"
 #: util/mkisofs/mkisofs.c:262 util/mkisofs/mkisofs.c:270
 #: util/mkisofs/mkisofs.c:300
 msgid "FILE"
-msgstr ""
+msgstr "FILE"
 
 #: util/mkisofs/mkisofs.c:210
 msgid "Set Abstract filename"
@@ -426,17 +412,15 @@ msgstr "设置摘要文件名"
 #: util/mkisofs/mkisofs.c:212 util/mkisofs/mkisofs.c:286
 #: util/mkisofs/mkisofs.c:292 util/mkisofs/mkisofs.c:294
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: util/mkisofs/mkisofs.c:212
 msgid "Set Application ID"
-msgstr ""
+msgstr "设置应用 ID"
 
-# fuzzy
 #: util/mkisofs/mkisofs.c:214
-#, fuzzy
 msgid "Set Bibliographic filename"
-msgstr "参考书目文件名字符串太长\n"
+msgstr "设置参考信息文件名"
 
 #: util/mkisofs/mkisofs.c:216
 msgid "Set Copyright filename"
@@ -444,49 +428,47 @@ msgstr "设置版权文件名"
 
 #: util/mkisofs/mkisofs.c:218
 msgid "Set embedded boot image name"
-msgstr "设置嵌入式启动映像名称"
+msgstr "设置嵌入式启动镜像名称"
 
 #: util/mkisofs/mkisofs.c:220
 msgid "Patch a protective DOS-style label in the image"
-msgstr ""
+msgstr "在镜像中补充保护性的 DOS 类型标签"
 
 #: util/mkisofs/mkisofs.c:222
 msgid "Set El Torito boot image name"
-msgstr ""
+msgstr "设置 El Torito 引导镜像名称"
 
 #: util/mkisofs/mkisofs.c:224
-#, fuzzy
 msgid "Set El Torito boot catalog name"
-msgstr "写引导编目时出错"
+msgstr "设置 El Torito 引导目录名称"
 
 #: util/mkisofs/mkisofs.c:226
 msgid "Patch Boot Info Table in El Torito boot image"
-msgstr ""
+msgstr "在 El Torito 引导镜像中补充引导信息表"
 
 #: util/mkisofs/mkisofs.c:228
 msgid "Dummy option for backward compatibility"
-msgstr ""
+msgstr "为与过去兼容设计的过渡选项"
 
 #: util/mkisofs/mkisofs.c:230
 msgid "Enable floppy drive emulation for El Torito"
-msgstr ""
+msgstr "为 El Torito 启用软驱模拟"
 
 #: util/mkisofs/mkisofs.c:232
 msgid "PARAMS"
-msgstr ""
+msgstr "PARAMS"
 
 #: util/mkisofs/mkisofs.c:232
 msgid "Magic parameters from cdrecord"
-msgstr ""
+msgstr "cdrecord 使用的 magic 参数"
 
 #: util/mkisofs/mkisofs.c:234
 msgid "Omit trailing periods from filenames"
-msgstr ""
+msgstr "忽略文件名尾部的句号"
 
 #: util/mkisofs/mkisofs.c:236
-#, fuzzy
 msgid "Disable deep directory relocation"
-msgstr "致命错误 - 无法找到目录位置\n"
+msgstr "禁用深度目录重定位"
 
 #: util/mkisofs/mkisofs.c:238
 msgid "Follow symbolic links"
@@ -494,28 +476,28 @@ msgstr "跟随符号链接"
 
 #: util/mkisofs/mkisofs.c:240 util/mkisofs/mkisofs.c:242
 msgid "Print option help"
-msgstr "打印选项帮助信息"
+msgstr "输出选项帮助信息"
 
 #: util/mkisofs/mkisofs.c:244
 msgid "Print version information and exit"
-msgstr "打印版本信息并退出"
+msgstr "输出版本信息并退出"
 
 #: util/mkisofs/mkisofs.c:246 util/mkisofs/mkisofs.c:248
 #: util/mkisofs/mkisofs.c:260
 msgid "GLOBFILE"
-msgstr ""
+msgstr "GLOBFILE"
 
 #: util/mkisofs/mkisofs.c:246
 msgid "Hide ISO9660/RR file"
-msgstr ""
+msgstr "隐藏 ISO9660/RR 文件"
 
 #: util/mkisofs/mkisofs.c:248
 msgid "Hide Joliet file"
-msgstr ""
+msgstr "隐藏 Joliet 文件"
 
 #: util/mkisofs/mkisofs.c:250
 msgid "ADD_FILES"
-msgstr ""
+msgstr "ADD_FILES"
 
 #: util/mkisofs/mkisofs.c:250
 msgid "No longer supported"
@@ -523,24 +505,23 @@ msgstr "不再支持"
 
 #: util/mkisofs/mkisofs.c:252
 msgid "Generate Joliet directory information"
-msgstr ""
+msgstr "生成 Joliet 目录信息"
 
 #: util/mkisofs/mkisofs.c:254
 msgid "Allow full 32 character filenames for iso9660 names"
-msgstr ""
+msgstr "允许 ISO9660 文件名完整包含 32 个字符"
 
 #: util/mkisofs/mkisofs.c:256
 msgid "Allow iso9660 filenames to start with '.'"
-msgstr "允许 ISO9660 文件名以 '.' 开头"
+msgstr "允许 ISO9660 文件名以“.”开头"
 
 #: util/mkisofs/mkisofs.c:258
 msgid "LOG_FILE"
-msgstr ""
+msgstr "LOG_FILE"
 
 #: util/mkisofs/mkisofs.c:258
-#, fuzzy
 msgid "Re-direct messages to LOG_FILE"
-msgstr "重定向所有信息到 %s\n"
+msgstr "重定向所有信息到 LOG_FILE"
 
 #: util/mkisofs/mkisofs.c:260
 msgid "Exclude file name"
@@ -556,11 +537,11 @@ msgstr "从 ISO9660 文件名中忽略版本号"
 
 #: util/mkisofs/mkisofs.c:266
 msgid "Inhibit splitting symlink components"
-msgstr ""
+msgstr "禁止分割符号链接组件"
 
 #: util/mkisofs/mkisofs.c:268
 msgid "Inhibit splitting symlink fields"
-msgstr ""
+msgstr "禁止分割符号链接域"
 
 #: util/mkisofs/mkisofs.c:270
 msgid "Set output file name"
@@ -568,23 +549,23 @@ msgstr "设置输出文件名"
 
 #: util/mkisofs/mkisofs.c:272
 msgid "PREP"
-msgstr ""
+msgstr "PREP"
 
 #: util/mkisofs/mkisofs.c:272
 msgid "Set Volume preparer"
-msgstr ""
+msgstr "设置卷编制者"
 
 #: util/mkisofs/mkisofs.c:274
 msgid "Print estimated filesystem size and exit"
-msgstr "打印文件系统估计尺寸并退出"
+msgstr "输出文件系统估计尺寸并退出"
 
 #: util/mkisofs/mkisofs.c:276
 msgid "PUB"
-msgstr ""
+msgstr "PUB"
 
 #: util/mkisofs/mkisofs.c:276
 msgid "Set Volume publisher"
-msgstr ""
+msgstr "设置卷发行者"
 
 #: util/mkisofs/mkisofs.c:278
 msgid "Run quietly"
@@ -592,49 +573,47 @@ msgstr "静默执行"
 
 #: util/mkisofs/mkisofs.c:280
 msgid "Generate rationalized Rock Ridge directory information"
-msgstr ""
+msgstr "生成合理化的 Rock Ridge 目录信息"
 
 #: util/mkisofs/mkisofs.c:282
 msgid "Generate Rock Ridge directory information"
-msgstr ""
+msgstr "生成 Rock Ridge 目录信息"
 
 #: util/mkisofs/mkisofs.c:284
 msgid "Split output into files of approx. 1GB size"
-msgstr ""
+msgstr "将输出分割为 1GB 大小的文件"
 
 #: util/mkisofs/mkisofs.c:286
 msgid "Set System ID"
-msgstr ""
+msgstr "设置系统 ID"
 
 #: util/mkisofs/mkisofs.c:288
-#, fuzzy
 msgid "Generate translation tables for systems that don't understand long filenames"
 msgstr "为无法识别长文件名的系统生成翻译表"
 
 #: util/mkisofs/mkisofs.c:290
 msgid "Verbose"
-msgstr ""
+msgstr "详细"
 
 #: util/mkisofs/mkisofs.c:292
 msgid "Set Volume ID"
-msgstr ""
+msgstr "设置卷 ID"
 
 #: util/mkisofs/mkisofs.c:294
 msgid "Set Volume set ID"
-msgstr ""
+msgstr "设置卷集合 ID"
 
 #: util/mkisofs/mkisofs.c:296
 msgid "Set Volume set size"
-msgstr ""
+msgstr "设置卷集合大小"
 
 #: util/mkisofs/mkisofs.c:298
-#, fuzzy
 msgid "Set Volume set sequence number"
-msgstr "卷集合的序列号太大\n"
+msgstr "设置卷集合序列号"
 
 #: util/mkisofs/mkisofs.c:300
 msgid "Exclude file name (deprecated)"
-msgstr ""
+msgstr "排除文件名(不建议使用)"
 
 #: util/mkisofs/mkisofs.c:306
 msgid "Override creation date"
@@ -650,37 +629,37 @@ msgstr "覆盖过期日期"
 
 #: util/mkisofs/mkisofs.c:312
 msgid "Override effective date"
-msgstr ""
+msgstr "覆盖有效日期"
 
 #: util/mkisofs/mkisofs.c:382
 #, c-format
 msgid "Using \"%s\"\n"
-msgstr "使用 “%s”\n"
+msgstr "使用“%s”\n"
 
 #: util/mkisofs/mkisofs.c:410
 #, c-format
 msgid "%s:%d: name required\n"
-msgstr "%s:%d: 需要名称\n"
+msgstr "%s:%d：需要名称\n"
 
 #: util/mkisofs/mkisofs.c:420
 #, c-format
 msgid "%s:%d: equals sign required\n"
-msgstr "%s:%d: 需要等号\n"
+msgstr "%s:%d：需要等号\n"
 
 #: util/mkisofs/mkisofs.c:454
 #, c-format
 msgid "%s:%d: field name \"%s\" unknown\n"
-msgstr "%s:%d: 字段名 “%s” 未知\n"
+msgstr "%s:%d：域名“%s”未知\n"
 
 #: util/mkisofs/mkisofs.c:483
 #, c-format
 msgid "Usage: %s [options] file...\n"
-msgstr "用法: %s [选项] 文件...\n"
+msgstr "用法：%s [选项] 文件...\n"
 
 #: util/mkisofs/mkisofs.c:485
 #, c-format
 msgid "Options:\n"
-msgstr "选项: \n"
+msgstr "选项：\n"
 
 #: util/mkisofs/mkisofs.c:718
 #, c-format
@@ -689,17 +668,17 @@ msgstr "-i 选项已不再被支持。\n"
 
 #: util/mkisofs/mkisofs.c:731 util/mkisofs/mkisofs.c:737
 msgid "Required boot image pathname missing"
-msgstr "需要的引导镜像路径名缺失"
+msgstr "缺少必须的引导镜像路径名"
 
 #: util/mkisofs/mkisofs.c:747
 #, c-format
 msgid "Required boot catalog pathname missing\n"
-msgstr "所需要的引导编目路径名缺失\n"
+msgstr "缺少必须的引导目录路径名\n"
 
 #: util/mkisofs/mkisofs.c:755
 #, c-format
 msgid "Ignoring -no-emul-boot (no-emulation is the default behaviour)\n"
-msgstr "忽略 -no-emul-boot 选项（no-emulation是默认行为）\n"
+msgstr "忽略 -no-emul-boot 选项(no-emulation是默认行为)\n"
 
 #: util/mkisofs/mkisofs.c:764
 #, c-format
@@ -712,44 +691,44 @@ msgid "Application-id string too long\n"
 msgstr "应用程序编号串太长\n"
 
 #: util/mkisofs/mkisofs.c:780
-#, fuzzy, c-format
+#, c-format
 msgid "Bibliographic filename string too long\n"
-msgstr "参考书目文件名字符串太长\n"
+msgstr "参考信息文件名太长\n"
 
 #: util/mkisofs/mkisofs.c:788
 #, c-format
 msgid "Copyright filename string too long\n"
-msgstr "版权文件名字符串太长\n"
+msgstr "版权文件名太长\n"
 
 #: util/mkisofs/mkisofs.c:823
 #, c-format
 msgid "Preparer string too long\n"
-msgstr "编制人员信息太长\n"
+msgstr "编制者描述信息太长\n"
 
 #: util/mkisofs/mkisofs.c:834
 #, c-format
 msgid "Publisher string too long\n"
-msgstr "出版者描述信息太长\n"
+msgstr "发行者描述信息太长\n"
 
 #: util/mkisofs/mkisofs.c:855
 #, c-format
 msgid "System ID string too long\n"
-msgstr "系统编号串太长\n"
+msgstr "系统 ID 字符串太长\n"
 
 #: util/mkisofs/mkisofs.c:866
 #, c-format
 msgid "Volume ID string too long\n"
-msgstr "卷编号串太长\n"
+msgstr "卷 ID 字符串太长\n"
 
 #: util/mkisofs/mkisofs.c:874
 #, c-format
 msgid "Volume set ID string too long\n"
-msgstr "卷集合的识别码太长\n"
+msgstr "卷集合 ID 太长\n"
 
 #: util/mkisofs/mkisofs.c:885
 #, c-format
 msgid "Volume set sequence number too big\n"
-msgstr "卷集合的序列号太大\n"
+msgstr "卷集合序列号太大\n"
 
 #: util/mkisofs/mkisofs.c:927 util/mkisofs/mkisofs.c:937
 #: util/mkisofs/mkisofs.c:947 util/mkisofs/mkisofs.c:957
@@ -759,11 +738,11 @@ msgstr "日期字符串长度必须为 16 个字符。\n"
 
 #: util/mkisofs/mkisofs.c:976
 msgid "Warning: getrlimit"
-msgstr "警告: getrlimit"
+msgstr "警告：getrlimit"
 
 #: util/mkisofs/mkisofs.c:980
 msgid "Warning: setrlimit"
-msgstr "警告: setrlimit"
+msgstr "警告：setrlimit"
 
 #: util/mkisofs/mkisofs.c:996
 #, c-format
@@ -773,7 +752,7 @@ msgstr "多会话使用错误: 若使用 -M 选项则必须指定 -C 选项。\n
 #: util/mkisofs/mkisofs.c:1002
 #, c-format
 msgid "Warning: -C specified without -M: old session data will not be merged.\n"
-msgstr "警告：在未使用 -M 的情况下使用了 -C 选项：原有回话数据将不被合并。\n"
+msgstr "警告：在未使用 -M 的情况下使用了 -C 选项：原有会话数据将不被合并。\n"
 
 #: util/mkisofs/mkisofs.c:1041
 #, c-format
@@ -788,7 +767,7 @@ msgstr "重定向所有信息到 %s\n"
 #: util/mkisofs/mkisofs.c:1050
 #, c-format
 msgid "can't open logfile: %s\n"
-msgstr "无法打开日志文件: %s\n"
+msgstr "无法打开日志文件：%s\n"
 
 #: util/mkisofs/mkisofs.c:1091
 #, c-format
@@ -815,12 +794,12 @@ msgstr "无法打开磁盘镜像文件\n"
 #: util/mkisofs/mkisofs.c:1405
 #, c-format
 msgid "Max brk space used %x\n"
-msgstr "使用了最大的 brk 空间 %x\n"
+msgstr "已使用的最大中断空间 %x\n"
 
 #: util/mkisofs/mkisofs.c:1408
 #, c-format
 msgid "%llu extents written (%llu MiB)\n"
-msgstr "%llu 已经写入扩展块 (%llu MiB)\n"
+msgstr "%llu 已经写入扩展块(%llu MiB)\n"
 
 #: util/mkisofs/multi.c:161
 msgid "Seek error on old image\n"
@@ -829,12 +808,12 @@ msgstr "在旧镜像上发生搜寻错误\n"
 #: util/mkisofs/multi.c:179 util/mkisofs/multi.c:250
 #, c-format
 msgid "**Bad RR version attribute"
-msgstr ""
+msgstr "**错误的 Rock Ridge 版本属性"
 
 #: util/mkisofs/multi.c:546
 #, c-format
 msgid "Warning: Neither Rock Ridge (-R) nor TRANS.TBL (-T) name translations were found on previous session. ISO (8.3) file names have been used instead.\n"
-msgstr ""
+msgstr "警告：未在前一会话中发现 Rock Ridge (-R) 或 TRANS.TBL (-T) 名称翻译，使用 ISO (8.3) 文件名代替。\n"
 
 # need to check source code.
 # Is %s referring to the "old image" or the error msg?
@@ -845,16 +824,16 @@ msgstr "在旧镜像 %s 上发生读错误\n"
 
 #: util/mkisofs/multi.c:1084
 msgid "Special parameters for cdwrite not specified with -C\n"
-msgstr "cdwrite的特别参数没有用 -C指定\n"
+msgstr "cdwrite 的特殊参数没有通过 -C 指定\n"
 
 #: util/mkisofs/multi.c:1091
 msgid "Malformed cdwrite parameters\n"
-msgstr "cdwrite参数格式错误\n"
+msgstr "cdwrite 参数格式错误\n"
 
 #: util/mkisofs/rock.c:309
 #, c-format
 msgid "symbolic link ``%s'' to long for one SL System Use Field, splitting"
-msgstr ""
+msgstr "符号链接“%s”对于单个 SL 系统使用域太长，进行分割"
 
 #: util/mkisofs/rock.c:517
 #, c-format
@@ -877,12 +856,12 @@ msgstr "无法为文件 %s 生成唯一的名字\n"
 #: util/mkisofs/tree.c:295 util/mkisofs/tree.c:317
 #, c-format
 msgid "Using %s for %s%s%s (%s)\n"
-msgstr ""
+msgstr "为 %2$s%3$s%4$s 使用 %1$s (%5$s)\n"
 
 #: util/mkisofs/tree.c:441
 #, c-format
 msgid "Fatal error - RR overflow for file %s\n"
-msgstr ""
+msgstr "致命错误 - 文件 %s 发生 Rock Ridge 溢出\n"
 
 # need to check source code:
 # is the %s referring to the "directory" or the error msg?
@@ -922,27 +901,27 @@ msgstr "状态缓冲区溢出\n"
 #: util/mkisofs/tree.c:876
 #, c-format
 msgid "Excluded by match: %s\n"
-msgstr ""
+msgstr "匹配排除条件：%s\n"
 
 #: util/mkisofs/tree.c:891
 #, c-format
 msgid "Excluded: %s\n"
-msgstr "已排除: %s\n"
+msgstr "已排除：%s\n"
 
 #: util/mkisofs/tree.c:961
 #, c-format
 msgid "Non-existant or inaccessible: %s\n"
-msgstr "不存在或不可访问: %s\n"
+msgstr "不存在或不可访问：%s\n"
 
 #: util/mkisofs/tree.c:997 util/mkisofs/tree.c:1103
 #, c-format
 msgid "Unable to stat file %s - ignoring and continuing.\n"
-msgstr "无法查询文件 %s 的状态 - 忽略并继续。\n"
+msgstr "无法获得文件 %s 的状态 - 忽略并继续。\n"
 
 #: util/mkisofs/tree.c:1003
 #, c-format
 msgid "Symlink %s ignored - continuing.\n"
-msgstr "已忽略符号链接 %s - 继续。\n"
+msgstr "忽略符号链接 %s - 继续。\n"
 
 #: util/mkisofs/tree.c:1028
 #, c-format
@@ -957,7 +936,7 @@ msgstr "文件 %s 无法读取(%s) - 忽略\n"
 #: util/mkisofs/tree.c:1083
 #, c-format
 msgid "Directory loop - fatal goof (%s %lx %lu).\n"
-msgstr "目录循环嵌套 - 致命错误 (%s %lx %lu)。\n"
+msgstr "目录循环嵌套 - 致命错误(%s %lx %lu)。\n"
 
 #: util/mkisofs/tree.c:1093
 #, c-format
@@ -967,12 +946,12 @@ msgstr "未知文件类型 %s - 忽略并继续。\n"
 #: util/mkisofs/tree.c:1179
 #, c-format
 msgid "Hidden from ISO9660 tree: %s\n"
-msgstr "从 ISO9660 树隐藏: %s\n"
+msgstr "从 ISO9660 树隐藏：%s\n"
 
 #: util/mkisofs/tree.c:1191
 #, c-format
 msgid "Hidden from Joliet tree: %s\n"
-msgstr "从 Joliet 树隐藏: %s\n"
+msgstr "从 Joliet 树隐藏：%s\n"
 
 #: util/mkisofs/tree.c:1600
 #, c-format
@@ -995,12 +974,12 @@ msgstr "search_tree_file 的调用使用了绝对路径，正在剥离\n"
 #: util/mkisofs/tree.c:1773
 #, c-format
 msgid "initial path separator. Hope this was intended...\n"
-msgstr ""
+msgstr "初始路径分隔符。希望这是预期的结果...\n"
 
 #: util/mkisofs/write.c:161
 #, c-format
 msgid "Cannot open '%s'"
-msgstr "无法打开 “%s”"
+msgstr "无法打开“%s”"
 
 #: util/mkisofs/write.c:169
 #, c-format
@@ -1025,17 +1004,17 @@ msgstr "已完成 %6.2f%%，估计 %s 完成"
 #: util/mkisofs/write.c:545
 #, c-format
 msgid "Cache hit for %s%s%s\n"
-msgstr "缓存命中： %s%s%s\n"
+msgstr "命中缓存：%s%s%s\n"
 
 #: util/mkisofs/write.c:899
 #, c-format
 msgid "Unexpected directory length %d %d %s\n"
-msgstr "目录长度异常 %d %d %s\n"
+msgstr "未预料的目录长度 %d %d %s\n"
 
 #: util/mkisofs/write.c:911
 #, c-format
 msgid "Continuation entry record length mismatch (%d %d).\n"
-msgstr "延续条目记录的长度不匹配 (%d %d)。\n"
+msgstr "延续条目记录的长度不匹配(%d %d)。\n"
 
 #: util/mkisofs/write.c:1075
 #, c-format
@@ -1065,17 +1044,17 @@ msgstr "预计 = %d，已写入 = %llu\n"
 #: util/mkisofs/write.c:1161
 #, c-format
 msgid "Total translation table size: %d\n"
-msgstr "翻译表整体大小: %d\n"
+msgstr "翻译表总大小：%d\n"
 
 #: util/mkisofs/write.c:1162
 #, c-format
 msgid "Total rockridge attributes bytes: %d\n"
-msgstr ""
+msgstr "Rock Ridge 属性总大小：%d\n"
 
 #: util/mkisofs/write.c:1163
 #, c-format
 msgid "Total directory bytes: %d\n"
-msgstr "目录所含字节数：%d\n"
+msgstr "目录总字节数：%d\n"
 
 #: util/mkisofs/write.c:1164
 #, c-format
@@ -1114,37 +1093,37 @@ msgstr "GNU GRUB  %s 版"
 #: normal/main.c:525
 #, c-format
 msgid "Minimal BASH-like line editing is supported. For the first word, TAB lists possible command completions. Anywhere else TAB lists possible device or file completions. %s"
-msgstr ""
+msgstr "支持最小化的类 Bash 行编辑。对于第一个单词 Tab 列出可用的命令名补全；对于其他位置 Tab 列出可能的设备或文件。%s"
 
 #: normal/main.c:529
 msgid "ESC at any time exits."
-msgstr "任何时候按下 ESC 退出。"
+msgstr "任何时候按下 ESC 均可退出。"
 
 #: normal/menu_entry.c:840
 #, c-format
 msgid "Possible %s are:"
-msgstr ""
+msgstr "可能的 %s 有："
 
 #: normal/menu_entry.c:1003
 msgid "Booting a command list"
-msgstr ""
+msgstr "正在按照命令列表进行引导"
 
 #: normal/menu_entry.c:1185 normal/menu_text.c:43
 msgid "Press any key to continue..."
-msgstr ""
+msgstr "按任意键继续..."
 
 #: normal/menu_text.c:207
 msgid "Minimum Emacs-like screen editing is supported. TAB lists completions. Press Ctrl-x to boot, Ctrl-c for a command-line or ESC to return menu."
-msgstr ""
+msgstr "支持最小化的类 Emacs 屏幕编辑。Tab 列出可补全项，Ctrl-x 引导，Ctrl-c 进入命令行，ESC 返回菜单。"
 
 #: normal/menu_text.c:213
 #, c-format
 msgid "Use the %C and %C keys to select which entry is highlighted.\n"
-msgstr ""
+msgstr "使用 %C 键和 %C 键选择要高亮的启动项。\n"
 
 #: normal/menu_text.c:225
 msgid "Press enter to boot the selected OS, 'e' to edit the commands before booting or 'c' for a command-line.\n"
-msgstr ""
+msgstr "按回车引导选定的操作系统，按 e 在编辑引导命令，按 c 进入命令行。\n"
 
 #: normal/menu_text.c:231
 msgid "ESC to return previous menu."
@@ -1153,7 +1132,7 @@ msgstr "按 ESC 返回上一菜单。"
 #: normal/menu_text.c:396
 #, c-format
 msgid "The highlighted entry will be booted automatically in %ds."
-msgstr ""
+msgstr "高亮显示的启动项将在 %d 秒后被自动引导。"
 
 #: normal/menu_text.c:656
 #, c-format
