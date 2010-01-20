@@ -1,0 +1,1352 @@
+# Finnish messages for grub.
+# Copyright © 2010 Free Software Foundation, Inc.
+# This file is distributed under the same license as the grub package.
+# Jorma Karvonen <karvonen.jorma@gmail.com>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: grub 1.97+20091221\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-12-21 21:31+0000\n"
+"PO-Revision-Date: 2010-01-16 13:33+0200\n"
+"Last-Translator: Jorma Karvonen <karvonen.jorma@gmail.com>\n"
+"Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: util/i386/pc/grub-mkimage.c:65
+msgid "the core image is too small"
+msgstr "ydinvedos on liian pieni"
+
+#: util/i386/pc/grub-mkimage.c:77
+msgid "cannot compress the kernel image"
+msgstr "ei voi tiivistää käyttöjärjestelmäytimen vedosta"
+
+#: util/i386/pc/grub-mkimage.c:138
+msgid "prefix is too long"
+msgstr "etuliite on liian pitkä"
+
+#: util/i386/pc/grub-mkimage.c:206
+msgid "the core image is too big"
+msgstr "ydinvedos on liian iso"
+
+#: util/i386/pc/grub-mkimage.c:211
+#, c-format
+msgid "diskboot.img size must be %u bytes"
+msgstr "diskboot.img:n koon on oltava %u tavua"
+
+#: util/i386/pc/grub-mkimage.c:284
+#, c-format
+msgid "Core image is too big (%p > %p)\n"
+msgstr "Ydinvedos on liian iso (%p > %p)\n"
+
+#: util/i386/pc/grub-mkimage.c:321 util/i386/pc/grub-setup.c:593
+#, c-format
+msgid "Try ``%s --help'' for more information.\n"
+msgstr "Lisätietoja komennolla ”%s --help”.\n"
+
+#: util/i386/pc/grub-mkimage.c:323
+#, c-format
+msgid ""
+"Usage: grub-mkimage [OPTION]... [MODULES]\n"
+"\n"
+"Make a bootable image of GRUB.\n"
+"\n"
+"  -d, --directory=DIR     use images and modules under DIR [default=%s]\n"
+"  -p, --prefix=DIR        set grub_prefix directory [default=%s]\n"
+"  -m, --memdisk=FILE      embed FILE as a memdisk image\n"
+"  -c, --config=FILE       embed FILE as boot config\n"
+"  -o, --output=FILE       output a generated image to FILE [default=stdout]\n"
+"  -h, --help              display this message and exit\n"
+"  -V, --version           print version information and exit\n"
+"  -v, --verbose           print verbose messages\n"
+"\n"
+"Report bugs to <%s>.\n"
+msgstr ""
+"Käyttö: grub-mkimage [VALITSIN]... [MODUULIT]\n"
+"\n"
+"Tee alkuladattava GRUB-vedos.\n"
+"\n"
+"  -d, --directory=DIR     käytä vedoksia ja moduuleja hakemiston DIR alla [oletus=%s]\n"
+"  -p, --prefix=DIR        aseta grub_prefix-hakemisto [oletus=%s]\n"
+"  -m, --memdisk=TIEDOSTO  upota TIEDOSTO memdisk-vedoksena\n"
+"  -c, --config=TIEDOSTO   upota TIEDOSTO alkulatausasetuksena\n"
+"  -o, --output=TIEDOSTO   tulosta tuotettu vedos TIEDOSTOon [oletus=vakiotuloste]\n"
+"  -h, --help              näytä tämä viesti ja poistu\n"
+"  -V, --version           tulosta versiotiedot ja poistu\n"
+"  -v, --verbose           tulosta viestit laveasti\n"
+"\n"
+"Ilmoita virheistä (englanniksi) osoitteeseen <%s>.\n"
+"Ilmoita käännösvirheistä osoitteeseen <translation-team-fi@lists.sourceforge.net>.\n"
+
+#  avattava kohden on parametrinä saatava tuloste(tiedosto)
+#: util/i386/pc/grub-mkimage.c:429
+#, c-format
+msgid "cannot open %s"
+msgstr "ei voi avata tulostekohdetta %s"
+
+#: util/i386/pc/grub-setup.c:166
+msgid "The first sector of the core file is not sector-aligned"
+msgstr "ydintiedoston ensimmäinen sektori ei ole sektoritasattu"
+
+#: util/i386/pc/grub-setup.c:180
+msgid "Non-sector-aligned data is found in the core file"
+msgstr "Ei-sektoritasattua dataa löytyi ydintiedostosta"
+
+#: util/i386/pc/grub-setup.c:194
+msgid "The sectors of the core file are too fragmented"
+msgstr "Ydintiedoston sektorit ovat liian hajallaan"
+
+#  paikankorvaajasta tulee "boot_path"
+#: util/i386/pc/grub-setup.c:205
+#, c-format
+msgid "The size of `%s' is not %u"
+msgstr "Alkulatauspolun ”%s” koko ei ole %u"
+
+#  paikankorvaajasta tulee "core_path"
+#: util/i386/pc/grub-setup.c:222
+#, c-format
+msgid "The size of `%s' is too small"
+msgstr "Ydinpolun ”%s” koko on liian pieni"
+
+#  paikankorvaajasta tulee "core_path"
+#: util/i386/pc/grub-setup.c:224
+#, c-format
+msgid "The size of `%s' is too large"
+msgstr "Ydinpolun ”%s” koko on liian suuri"
+
+#  dest_dev->disk->name eli kohdelevyaseman nimi
+#: util/i386/pc/grub-setup.c:261
+#, c-format
+msgid "Unable to identify a filesystem in %s; safety check can't be performed"
+msgstr "Ei kyetä tunnistamaan tiedostojärjestelmää levyasemassa %s; turvatarkistusta ei voitu suorittaa"
+
+#: util/i386/pc/grub-setup.c:265
+#, c-format
+msgid "%s appears to contain a %s filesystem which isn't known to reserve space for DOS-style boot.  Installing GRUB there could result in FILESYSTEM DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe disables this check, use at your own risk)"
+msgstr "%s vaikuttaa sisältävän %s-tiedostojärjestelmän, jonka tiedetään varaavan tilaa DOS-tyyliselle alkulataukselle. GRUB-ohjelman asentaminen sinne voi aiheuttaa TIEDOSTOJÄRJESTELMÄN TUHOUTUMISEN, jos grub-setup korvaa arvokasta tietoa (valitsin --skip-fs-probe ottaa pois käytöstä tämän tarkistuksen, käytä sitä omalla vastuullasi)"
+
+#: util/i386/pc/grub-setup.c:314 util/i386/pc/grub-setup.c:364
+msgid "No DOS-style partitions found"
+msgstr "DOS-tyylisiä osioita ei löytynyt"
+
+#: util/i386/pc/grub-setup.c:330 util/i386/pc/grub-setup.c:355
+msgid "Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
+msgstr "Yritetään asentaa GRUB osioimattomalle levyasemalle. Tämä on HUONO ajatus."
+
+#: util/i386/pc/grub-setup.c:336
+msgid "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD idea."
+msgstr "Yritetään asentaa GRUB osioon eikä MBR:ään. Tämä on HUONO ajatus."
+
+#: util/i386/pc/grub-setup.c:369
+msgid "This msdos-style partition label has no post-MBR gap; embedding won't be possible!"
+msgstr "Tässä msdos-tyylisessä osionimiössä ei ole MBR:n jälkeistä aukkoa; upottaminen ei ole mahdollista!"
+
+#: util/i386/pc/grub-setup.c:371
+msgid "This GPT partition label has no BIOS Boot Partition; embedding won't be possible!"
+msgstr "Tässä GPT-osionimiössä ei ole BIOS alkulatausosiota; upottaminen ei ole mahdollista!"
+
+#: util/i386/pc/grub-setup.c:378
+msgid "Your core.img is unusually large.  It won't fit in the embedding area."
+msgstr "Tiedostosi core.img on epätavallisen iso. Se ei sovi upotusalueelle."
+
+#: util/i386/pc/grub-setup.c:380
+msgid "Your embedding area is unusually small.  core.img won't fit in it."
+msgstr "Upotettava alueesi on epätavallisen pieni.  Tiedosto core.img ei mahdu siihen."
+
+#: util/i386/pc/grub-setup.c:422
+msgid "Embedding is not possible, but this is required when the root device is on a RAID array or LVM volume."
+msgstr "Upottaminen ei ole mahdollista, mutta sitä vaaditaan kun juurilaite on RAID-taulukko tai LVM-taltio"
+
+#: util/i386/pc/grub-setup.c:425
+msgid "Embedding is not possible.  GRUB can only be installed in this setup by using blocklists.  However, blocklists are UNRELIABLE and its use is discouraged."
+msgstr "Upottaminen ei ole mahdollista.  GRUB voidaan asentaa tällä asetuksella vain käyttäen lohkoluetteloja.  Lohkoluettelot ovat kuitenkin EPÄLUOTETTAVIA ja niiden käyttöä ei suositella."
+
+#: util/i386/pc/grub-setup.c:429
+msgid "If you really want blocklists, use --force."
+msgstr "Jos todella haluat käyttää lohkoluetteloja, käytä valitsinta --force."
+
+#: util/i386/pc/grub-setup.c:445
+#, c-format
+msgid "attempting to read the core image `%s' from GRUB"
+msgstr "yritetään lukea ydinvedosta ”%s” GRUB:sta"
+
+#: util/i386/pc/grub-setup.c:446
+#, c-format
+msgid "attempting to read the core image `%s' from GRUB again"
+msgstr "yritetään lukea ydinvedosta ”%s” GRUB:sta uudelleen"
+
+#  Ydinvedoksen luku GRUBista epäonnistui maksimiyrityskertojen määrän
+#: util/i386/pc/grub-setup.c:504
+#, c-format
+msgid "Cannot read `%s' correctly"
+msgstr "Ei voida lukea ydinvedosta ”%s” oikein"
+
+#: util/i386/pc/grub-setup.c:517
+msgid "No terminator in the core image"
+msgstr "Ei päätöslohkoa ydinvedoksessa"
+
+#: util/i386/pc/grub-setup.c:528
+msgid "Failed to read the first sector of the core image"
+msgstr "Ydinvedoksen ensimmäisen sektorin lukeminen epäonnistui"
+
+#: util/i386/pc/grub-setup.c:534
+msgid "Failed to read the rest sectors of the core image"
+msgstr "Ydinvedoksen loppujen sektoreiden lukeminen epäonnistui"
+
+#  avattava kohde on "core_path"
+#: util/i386/pc/grub-setup.c:553
+#, c-format
+msgid "Cannot open `%s'"
+msgstr "Ei voi avata ydintä ”%s”"
+
+#: util/i386/pc/grub-setup.c:595
+#, c-format
+msgid ""
+"Usage: grub-setup [OPTION]... DEVICE\n"
+"\n"
+"Set up images to boot from DEVICE.\n"
+"DEVICE must be a GRUB device (e.g. ``(hd0,1)'').\n"
+"\n"
+"  -b, --boot-image=FILE   use FILE as the boot image [default=%s]\n"
+"  -c, --core-image=FILE   use FILE as the core image [default=%s]\n"
+"  -d, --directory=DIR     use GRUB files in the directory DIR [default=%s]\n"
+"  -m, --device-map=FILE   use FILE as the device map [default=%s]\n"
+"  -r, --root-device=DEV   use DEV as the root device [default=guessed]\n"
+"  -f, --force             install even if problems are detected\n"
+"  -s, --skip-fs-probe     do not probe for filesystems in DEVICE\n"
+"  -h, --help              display this message and exit\n"
+"  -V, --version           print version information and exit\n"
+"  -v, --verbose           print verbose messages\n"
+"\n"
+"Report bugs to <%s>.\n"
+msgstr ""
+"Käyttö: grub-setup [VALITSIN]... LAITE\n"
+"\n"
+"Aseta alkulatausvedokset laitteesta LAITE.\n"
+"LAITE on GRUB-laite (esim. ”(hd0,1)”).\n"
+"\n"
+"  -b, --boot-image=FILE   käytä tiedostoa FILE alkulatausvedoksena [oletus=%s]\n"
+"  -c, --core-image=FILE   käytä tiedostoa FILE ydinvedoksena [oletus=%s]\n"
+"  -d, --directory=DIR     käytä GRUB-tiedostoja hakemistossa DIR [oletus=%s]\n"
+"  -m, --device-map=FILE   käytä tiedostoa FILE laitekarttana [oletus=%s]\n"
+"  -r, --root-device=DEV   käytä DEV root-laitteena [oletus=arvattu]\n"
+"  -f, --force             asenna vielä silloin kun on kohdattu pulmia\n"
+"  -s, --skip-fs-probe     älä koesta tiedostojärjestelmiä laitteessa LAITE\n"
+"  -h, --help              näytä tämä sanoma ja poistu\n"
+"  -V, --version           tulosta versiotiedot ja poistu\n"
+"  -v, --verbose           tulosta sanomat laveasti\n"
+"\n"
+"Ilmoita virheistä (englanniksi) osoitteeseen <%s>.\n"
+"Ilmoita käännösvirheistä osoitteeseen <translation-team-fi@lists.sourceforge.net>.\n"
+
+#: util/i386/pc/grub-setup.c:725
+#, c-format
+msgid "No device is specified.\n"
+msgstr "Laitetta ei ole annettu.\n"
+
+#: util/i386/pc/grub-setup.c:731
+#, c-format
+msgid "Unknown extra argument `%s'.\n"
+msgstr "Tuntematon ylimääräinen argumentti ”%s”.\n"
+
+#: util/i386/pc/grub-setup.c:748
+#, c-format
+msgid "Invalid device `%s'.\n"
+msgstr "Virheellinen laite ”%s”.\n"
+
+#: util/i386/pc/grub-setup.c:761
+#, c-format
+msgid "Invalid root device `%s'"
+msgstr "Virheellinen juurilaite ”%s”."
+
+#: util/i386/pc/grub-setup.c:774
+msgid "Cannot guess the root device. Specify the option ``--root-device''."
+msgstr "Ei kyetä arvaamaan juurilaitetta. Anna valitsin ”--root-device”."
+
+#: util/mkisofs/eltorito.c:96
+#, c-format
+msgid "A boot catalog exists and appears corrupted.\n"
+msgstr "Alkulatausluettelo on olemassa ja vaikuttaa rikkinäiseltä.\n"
+
+#: util/mkisofs/eltorito.c:97
+#, c-format
+msgid "Please check the following file: %s.\n"
+msgstr "Tarkista seuraava tiedosto: %s.\n"
+
+#: util/mkisofs/eltorito.c:98
+#, c-format
+msgid "This file must be removed before a bootable CD can be done.\n"
+msgstr "Tämä tiedosto on poistettava ennen kuin käynnistys-CD voidaan tehdä.\n"
+
+#: util/mkisofs/eltorito.c:110
+#, c-format
+msgid "Error creating boot catalog (%s)"
+msgstr "Virhe luotaessa alkulatausluetteloa (%s)"
+
+#: util/mkisofs/eltorito.c:114
+#, c-format
+msgid "Error writing to boot catalog (%s)"
+msgstr "Virhe kirjoitettaessa alkulatausluetteloa (%s)"
+
+#: util/mkisofs/eltorito.c:144
+#, c-format
+msgid "Boot catalog cannot be found!\n"
+msgstr "Alkulatausluetteloa ei voitu löytää!\n"
+
+#: util/mkisofs/eltorito.c:158
+#, c-format
+msgid "Boot image cannot be found!\n"
+msgstr "Alkulatausvedosta ei löytynyt!\n"
+
+#: util/mkisofs/eltorito.c:221
+#, c-format
+msgid ""
+"\n"
+"Size of boot image is %d sectors"
+msgstr ""
+"\n"
+"Alkulatausvedoksen koko on %d sektoria"
+
+#: util/mkisofs/eltorito.c:227
+#, c-format
+msgid "No emulation\n"
+msgstr "Ei emulointia\n"
+
+#: util/mkisofs/eltorito.c:235
+#, c-format
+msgid "Emulating a 1.44 meg floppy\n"
+msgstr "Emuloidaan 1,44 megatavun levykettä\n"
+
+#: util/mkisofs/eltorito.c:240
+#, c-format
+msgid "Emulating a 2.88 meg floppy\n"
+msgstr "Emuloidaan 2,88 megatavun levykettä\n"
+
+#: util/mkisofs/eltorito.c:245
+#, c-format
+msgid "Emulating a 1.2 meg floppy\n"
+msgstr "Emuloidaan 1,2 megatavun levykettä\n"
+
+#: util/mkisofs/eltorito.c:249
+#, c-format
+msgid ""
+"\n"
+"Error - boot image is not the an allowable size.\n"
+msgstr ""
+"\n"
+"Virhe - alkulatausvedos ei ole sallitun kokoinen.\n"
+
+#: util/mkisofs/eltorito.c:269
+msgid "Error opening boot catalog for update"
+msgstr "Virhe avattaessa alkulatausluetteloa päivitystä varten"
+
+#: util/mkisofs/eltorito.c:275 util/mkisofs/eltorito.c:277
+msgid "Error writing to boot catalog"
+msgstr "Virhe kirjoitettaessa alkulatausluetteloa"
+
+#: util/mkisofs/eltorito.c:291
+#, c-format
+msgid "Error opening boot image file '%s' for update"
+msgstr "Virhe avattaessa alkulatausvedostiedostoa ”%s” päivitystä varten"
+
+#: util/mkisofs/eltorito.c:299
+#, c-format
+msgid "Odd alignment at non-end-of-file in boot image '%s'"
+msgstr "Outo tasaus ei-tiedoston-lopussa alkulatausvedoksessa ”%s”"
+
+#: util/mkisofs/eltorito.c:311
+#, c-format
+msgid "Boot image file '%s' changed unexpectedly"
+msgstr "Alkulatausvedostiedosto ”%s” muuttunut odottamattomasti"
+
+#: util/mkisofs/eltorito.c:323
+#, c-format
+msgid "Error writing to boot image (%s)"
+msgstr "Virhe kirjoitettaessa alkulatausvedosta (%s)"
+
+#: util/mkisofs/joliet.c:359 util/mkisofs/write.c:984
+#, c-format
+msgid "Unable to generate sane path tables - too many directories (%d)\n"
+msgstr "Ei voi tuottaa järkeviä polkutauluja - liian monia hakemistoja (%d)\n"
+
+#: util/mkisofs/joliet.c:398 util/mkisofs/write.c:1020
+#, c-format
+msgid "Entry %d not in path tables\n"
+msgstr "Alkio %d ei ole polkutauluissa\n"
+
+#: util/mkisofs/joliet.c:412
+#, c-format
+msgid "Fatal goof - directory has amnesia\n"
+msgstr "Vakava moka - hakemistolla on muistinmenetys\n"
+
+#: util/mkisofs/joliet.c:478
+#, c-format
+msgid "Joliet path table lengths do not match %d %d\n"
+msgstr "Joliet-polkutaulupituudet eivät täsmää %d %d\n"
+
+#: util/mkisofs/joliet.c:530
+#, c-format
+msgid "Unable to locate relocated directory\n"
+msgstr "Ei kyetä paikallistamaan uudelleensijoitushakemistoa\n"
+
+#: util/mkisofs/joliet.c:605
+#, c-format
+msgid "Fatal goof - unable to find directory location\n"
+msgstr "Vakava moka - ei kyetä löytämään hakemistosijaintia\n"
+
+#: util/mkisofs/joliet.c:654
+#, c-format
+msgid "Unexpected joliet directory length %d %d %s\n"
+msgstr "Odottamaton joliet-hakemistopituus %d %d %s\n"
+
+#: util/mkisofs/mkisofs.c:208
+msgid "Process all files (don't skip backup files)"
+msgstr "Käsittele kaikki tiedostot (älä jätä varmuuskopiotiedostoja väliin)"
+
+#  Parametri pitkille valitsimelle, esim.: --abstract=FILE Aseta abstrakti tiedostonimi
+#: util/mkisofs/mkisofs.c:210 util/mkisofs/mkisofs.c:214
+#: util/mkisofs/mkisofs.c:216 util/mkisofs/mkisofs.c:218
+#: util/mkisofs/mkisofs.c:222 util/mkisofs/mkisofs.c:224
+#: util/mkisofs/mkisofs.c:262 util/mkisofs/mkisofs.c:270
+#: util/mkisofs/mkisofs.c:300
+msgid "FILE"
+msgstr "FILE"
+
+#: util/mkisofs/mkisofs.c:210
+msgid "Set Abstract filename"
+msgstr "Aseta abstrakti tiedostonimi"
+
+#  Parametri pitkille valitsimelle, esim.: --appid=ID Aseta sovellustunniste
+#: util/mkisofs/mkisofs.c:212 util/mkisofs/mkisofs.c:286
+#: util/mkisofs/mkisofs.c:292 util/mkisofs/mkisofs.c:294
+msgid "ID"
+msgstr "ID"
+
+#: util/mkisofs/mkisofs.c:212
+msgid "Set Application ID"
+msgstr "Aseta sovellustunniste"
+
+#: util/mkisofs/mkisofs.c:214
+msgid "Set Bibliographic filename"
+msgstr "Aseta bibliografinen tiedostonimi"
+
+#: util/mkisofs/mkisofs.c:216
+msgid "Set Copyright filename"
+msgstr "Aseta Copyright-tiedostonimi"
+
+#: util/mkisofs/mkisofs.c:218
+msgid "Set embedded boot image name"
+msgstr "Aseta upotettu alkulatausvedosnimi"
+
+#: util/mkisofs/mkisofs.c:220
+msgid "Patch a protective DOS-style label in the image"
+msgstr "Korjaus suojaavalle DOS-tyyliselle nimiölle vedoksessa"
+
+#: util/mkisofs/mkisofs.c:222
+msgid "Set El Torito boot image name"
+msgstr "Aseta El Torito -alkulatausvedosnimi"
+
+#: util/mkisofs/mkisofs.c:224
+msgid "Set El Torito boot catalog name"
+msgstr "Aseta El Torito -alkulatausluettelonimi"
+
+#: util/mkisofs/mkisofs.c:226
+msgid "Patch Boot Info Table in El Torito boot image"
+msgstr "Korjausalkulataustietotaulu El Torito -alkulatausvedoksessa"
+
+#: util/mkisofs/mkisofs.c:228
+msgid "Dummy option for backward compatibility"
+msgstr "Valevalitsin taaksepäinyhteensopivuutta varten"
+
+#: util/mkisofs/mkisofs.c:230
+msgid "Enable floppy drive emulation for El Torito"
+msgstr "Ota käyttöön levykeasemaemulointi El Toritolle"
+
+#  Parametri pitkille valitsimelle, esim.: --cdwrite-params=PARAMS Maagiset parametrit cdrecord-ohjelmasta
+#: util/mkisofs/mkisofs.c:232
+msgid "PARAMS"
+msgstr "PARAMS"
+
+#: util/mkisofs/mkisofs.c:232
+msgid "Magic parameters from cdrecord"
+msgstr "Maagiset parametrit cdrecord-ohjelmasta"
+
+#: util/mkisofs/mkisofs.c:234
+msgid "Omit trailing periods from filenames"
+msgstr "Jätä huomiotta alkupisteet tiedostonimistä"
+
+#: util/mkisofs/mkisofs.c:236
+msgid "Disable deep directory relocation"
+msgstr "Ota pois käytöstä syvä hakemiston uudelleensijoitus"
+
+#: util/mkisofs/mkisofs.c:238
+msgid "Follow symbolic links"
+msgstr "Seuraa symbolisia linkkejä"
+
+#: util/mkisofs/mkisofs.c:240 util/mkisofs/mkisofs.c:242
+msgid "Print option help"
+msgstr "Tulosta valitsinopaste"
+
+#: util/mkisofs/mkisofs.c:244
+msgid "Print version information and exit"
+msgstr "Tulosta versiotiedot ja poistu"
+
+#  Parametri pitkille valitsimelle, esim.: --hide=GLOBFILE Piilota ISO9660/RR-tiedosto
+#: util/mkisofs/mkisofs.c:246 util/mkisofs/mkisofs.c:248
+#: util/mkisofs/mkisofs.c:260
+msgid "GLOBFILE"
+msgstr "GLOBFILE"
+
+#: util/mkisofs/mkisofs.c:246
+msgid "Hide ISO9660/RR file"
+msgstr "Piilota ISO9660/RR-tiedosto"
+
+#: util/mkisofs/mkisofs.c:248
+msgid "Hide Joliet file"
+msgstr "Piilota Joliet-tiedosto"
+
+#  Parametri pitkille valitsimelle, esim.: --i=ADD_FILES Ei enää tueta
+#: util/mkisofs/mkisofs.c:250
+msgid "ADD_FILES"
+msgstr "ADD_FILES"
+
+#: util/mkisofs/mkisofs.c:250
+msgid "No longer supported"
+msgstr "Ei enää tuettu"
+
+#: util/mkisofs/mkisofs.c:252
+msgid "Generate Joliet directory information"
+msgstr "Tuota Joliet-hakemistotiedot"
+
+#: util/mkisofs/mkisofs.c:254
+msgid "Allow full 32 character filenames for iso9660 names"
+msgstr "Salli täydet 32 merkin tiedostonimet iso9660-nimille"
+
+#: util/mkisofs/mkisofs.c:256
+msgid "Allow iso9660 filenames to start with '.'"
+msgstr "Salli iso9660-tiedostonimien alkaa merkillä ”.”"
+
+#  Parametri pitkille valitsimelle, esim.: --log-file=LOG_FILE Ohjaa viestit edelleen tiedostoon LOG_FILE
+#: util/mkisofs/mkisofs.c:258
+msgid "LOG_FILE"
+msgstr "LOG_FILE"
+
+#: util/mkisofs/mkisofs.c:258
+msgid "Re-direct messages to LOG_FILE"
+msgstr "Ohjaa viestit edelleen tiedostoon LOG_FILE"
+
+#: util/mkisofs/mkisofs.c:260
+msgid "Exclude file name"
+msgstr "Älä sisällytä tiedostonimeä"
+
+#: util/mkisofs/mkisofs.c:262
+msgid "Set path to previous session to merge"
+msgstr "Aseta polku edelliseen yhteen liitettävään istuntoon"
+
+#: util/mkisofs/mkisofs.c:264
+msgid "Omit version number from iso9660 filename"
+msgstr "Jätä huomiotta versionumero iso9660-tiedostonimestä"
+
+#: util/mkisofs/mkisofs.c:266
+msgid "Inhibit splitting symlink components"
+msgstr "Estä symbolisesti linkitettyjen komponenttien jakautuminen"
+
+#: util/mkisofs/mkisofs.c:268
+msgid "Inhibit splitting symlink fields"
+msgstr "Estä symbolisesti linkitettyjen kenttien jakautuminen"
+
+#: util/mkisofs/mkisofs.c:270
+msgid "Set output file name"
+msgstr "Aseta tulostetiedostonimi"
+
+#  Parametri pitkille valitsimelle, esim.: --preparer=PREP Aseta taltiovalmistaja
+#: util/mkisofs/mkisofs.c:272
+msgid "PREP"
+msgstr "PREP"
+
+#: util/mkisofs/mkisofs.c:272
+msgid "Set Volume preparer"
+msgstr "Aseta taltiovalmistaja"
+
+#: util/mkisofs/mkisofs.c:274
+msgid "Print estimated filesystem size and exit"
+msgstr "Tulosta arvioitu tiedostojärjestelmäkoko ja poistu"
+
+#  Parametri pitkille valitsimelle, esim.: --publisher=PUB Aseta taltiojulkaisija
+#: util/mkisofs/mkisofs.c:276
+msgid "PUB"
+msgstr "PUB"
+
+#: util/mkisofs/mkisofs.c:276
+msgid "Set Volume publisher"
+msgstr "Aseta taltiojulkaisija"
+
+#: util/mkisofs/mkisofs.c:278
+msgid "Run quietly"
+msgstr "Suorita hiljaa"
+
+#: util/mkisofs/mkisofs.c:280
+msgid "Generate rationalized Rock Ridge directory information"
+msgstr "Tuota järkeistetyt Rock Ridge-hakemistotiedot"
+
+#: util/mkisofs/mkisofs.c:282
+msgid "Generate Rock Ridge directory information"
+msgstr "Tuota Rock Ridge-hakemistotiedot"
+
+#: util/mkisofs/mkisofs.c:284
+msgid "Split output into files of approx. 1GB size"
+msgstr "Jaa tuloste likimain 1 gigatavun tiedostoiksi"
+
+#: util/mkisofs/mkisofs.c:286
+msgid "Set System ID"
+msgstr "Aseta järjestelmätunniste"
+
+#: util/mkisofs/mkisofs.c:288
+msgid "Generate translation tables for systems that don't understand long filenames"
+msgstr "Tuota käännöstaulut järjestelmille, jotka eivät ymmärrä pitkiä tiedostonimiä"
+
+#: util/mkisofs/mkisofs.c:290
+msgid "Verbose"
+msgstr "Laveasti"
+
+#: util/mkisofs/mkisofs.c:292
+msgid "Set Volume ID"
+msgstr "Aseta taltiotunniste"
+
+#: util/mkisofs/mkisofs.c:294
+msgid "Set Volume set ID"
+msgstr "Aseta taltiojoukkotunniste"
+
+#: util/mkisofs/mkisofs.c:296
+msgid "Set Volume set size"
+msgstr "Aseta taltiojoukkokoko"
+
+#: util/mkisofs/mkisofs.c:298
+msgid "Set Volume set sequence number"
+msgstr "Aseta taltiojoukon sekvenssinumero"
+
+#: util/mkisofs/mkisofs.c:300
+msgid "Exclude file name (deprecated)"
+msgstr "Älä sisällytä tiedostonimeä (vanhentunut)"
+
+#: util/mkisofs/mkisofs.c:306
+msgid "Override creation date"
+msgstr "Korvaa luontipäivämäärä"
+
+#: util/mkisofs/mkisofs.c:308
+msgid "Override modification date"
+msgstr "Korvaa muokkauspäivämäärä"
+
+#: util/mkisofs/mkisofs.c:310
+msgid "Override expiration date"
+msgstr "Korvaa vanhenemispäivämäärä"
+
+#: util/mkisofs/mkisofs.c:312
+msgid "Override effective date"
+msgstr "Korvaa voimassaolopäivämäärä"
+
+#  Parametrina tiedostonimi
+#: util/mkisofs/mkisofs.c:382
+#, c-format
+msgid "Using \"%s\"\n"
+msgstr "Käytetään tiedostoa ”%s”\n"
+
+#: util/mkisofs/mkisofs.c:410
+#, c-format
+msgid "%s:%d: name required\n"
+msgstr "%s:%d: nimi vaadittu\n"
+
+#: util/mkisofs/mkisofs.c:420
+#, c-format
+msgid "%s:%d: equals sign required\n"
+msgstr "%s:%d: yhtäsuuruusmerkki vaadittu\n"
+
+#: util/mkisofs/mkisofs.c:454
+#, c-format
+msgid "%s:%d: field name \"%s\" unknown\n"
+msgstr "%s:%d: kenttänimi ”%s” tuntematon\n"
+
+#: util/mkisofs/mkisofs.c:483
+#, c-format
+msgid "Usage: %s [options] file...\n"
+msgstr "Käyttö: %s [valitsimet] tiedosto...\n"
+
+#: util/mkisofs/mkisofs.c:485
+#, c-format
+msgid "Options:\n"
+msgstr "Valitsimet:\n"
+
+#: util/mkisofs/mkisofs.c:718
+#, c-format
+msgid "-i option no longer supported.\n"
+msgstr "valitsinta -i ei enää tueta.\n"
+
+#: util/mkisofs/mkisofs.c:731 util/mkisofs/mkisofs.c:737
+msgid "Required boot image pathname missing"
+msgstr "Vaadittu alkulatausvedoksen polkunimi puuttuu"
+
+#: util/mkisofs/mkisofs.c:747
+#, c-format
+msgid "Required boot catalog pathname missing\n"
+msgstr "Vaadittu alkulatausluettelon polkunimi puuttuu\n"
+
+#: util/mkisofs/mkisofs.c:755
+#, c-format
+msgid "Ignoring -no-emul-boot (no-emulation is the default behaviour)\n"
+msgstr "Ei oteta huomioon valitsinta -no-emul-boot (ei-emulointia on oletuskäyttäytyminen)\n"
+
+#: util/mkisofs/mkisofs.c:764
+#, c-format
+msgid "Abstract filename string too long\n"
+msgstr "Abstrakti tiedostonimimerkkijono on liian pitkä\n"
+
+#: util/mkisofs/mkisofs.c:772
+#, c-format
+msgid "Application-id string too long\n"
+msgstr "Sovellustunnistemerkkijono on liian pitkä\n"
+
+#: util/mkisofs/mkisofs.c:780
+#, c-format
+msgid "Bibliographic filename string too long\n"
+msgstr "Bibliografinen tiedostonimimerkkijono on liian pitkä\n"
+
+#: util/mkisofs/mkisofs.c:788
+#, c-format
+msgid "Copyright filename string too long\n"
+msgstr "Copyright-tiedostonimimerkkijono on liian pitkä\n"
+
+#: util/mkisofs/mkisofs.c:823
+#, c-format
+msgid "Preparer string too long\n"
+msgstr "Valmistajamerkkijono on liian pitkä\n"
+
+#: util/mkisofs/mkisofs.c:834
+#, c-format
+msgid "Publisher string too long\n"
+msgstr "Julkaisijamerkkijono on liian pitkä\n"
+
+#: util/mkisofs/mkisofs.c:855
+#, c-format
+msgid "System ID string too long\n"
+msgstr "Järjestelmätunnistemerkkijono on liian pitkä\n"
+
+#: util/mkisofs/mkisofs.c:866
+#, c-format
+msgid "Volume ID string too long\n"
+msgstr "Taltiotunnistemerkkijono on liian pitkä\n"
+
+#: util/mkisofs/mkisofs.c:874
+#, c-format
+msgid "Volume set ID string too long\n"
+msgstr "Taltiojoukkotunnistemerkkijono on liian pitkä\n"
+
+#: util/mkisofs/mkisofs.c:885
+#, c-format
+msgid "Volume set sequence number too big\n"
+msgstr "Taltiojoukkosekvenssinumero on liian iso\n"
+
+#: util/mkisofs/mkisofs.c:927 util/mkisofs/mkisofs.c:937
+#: util/mkisofs/mkisofs.c:947 util/mkisofs/mkisofs.c:957
+#, c-format
+msgid "date string must be 16 characters.\n"
+msgstr "päivämäärämerkkijonon on oltava 16 merkkiä.\n"
+
+#: util/mkisofs/mkisofs.c:976
+msgid "Warning: getrlimit"
+msgstr "Varoitus: getrlimit"
+
+#: util/mkisofs/mkisofs.c:980
+msgid "Warning: setrlimit"
+msgstr "Varoitus: setrlimit"
+
+#: util/mkisofs/mkisofs.c:996
+#, c-format
+msgid "Multisession usage bug: Must specify -C if -M is used.\n"
+msgstr "Moni-istuntokäyttövirhe: Valitsin -C on annettava, jos käytetään valitsinta -M.\n"
+
+#: util/mkisofs/mkisofs.c:1002
+#, c-format
+msgid "Warning: -C specified without -M: old session data will not be merged.\n"
+msgstr "Varoitus: valitsin -C annettu ilman valitsinta -M: vanhaa istuntodataa ei liitetä yhteen.\n"
+
+#: util/mkisofs/mkisofs.c:1041
+#, c-format
+msgid "can't open logfile: %s"
+msgstr "ei voi avata lokitiedostoa: %s"
+
+#: util/mkisofs/mkisofs.c:1045
+#, c-format
+msgid "re-directing all messages to %s\n"
+msgstr "ohjataan kaikki viestit edelleen osoitteeseen %s\n"
+
+#: util/mkisofs/mkisofs.c:1050
+#, c-format
+msgid "can't open logfile: %s\n"
+msgstr "ei voi avata lokitiedostoa: %s\n"
+
+#: util/mkisofs/mkisofs.c:1091
+#, c-format
+msgid "Unable to open previous session image %s\n"
+msgstr "Ei kyetä avamaan edellistä istuntovedosta %s\n"
+
+#: util/mkisofs/mkisofs.c:1202
+#, c-format
+msgid "Invalid node - %s\n"
+msgstr "Virheellinen solmu - %s\n"
+
+#: util/mkisofs/mkisofs.c:1264
+msgid "Joliet tree sort failed.\n"
+msgstr "Joliet-puun lajittelu epäonnistui.\n"
+
+#: util/mkisofs/mkisofs.c:1279
+msgid "Unable to open /dev/null\n"
+msgstr "Ei kyetä avamaan /dev/null\n"
+
+#: util/mkisofs/mkisofs.c:1283
+msgid "Unable to open disc image file\n"
+msgstr "Ei kyetä avaamaan levyvedostiedostoa\n"
+
+#  brk eli break tarkoittaa virtuaalimuistiosoitteita, jotka prosessi pyytään datasegmentin loppuun kerneliltä.
+#: util/mkisofs/mkisofs.c:1405
+#, c-format
+msgid "Max brk space used %x\n"
+msgstr "Virtuaalimuistiosoitetta käytetty maksimaalisesti %x\n"
+
+#: util/mkisofs/mkisofs.c:1408
+#, c-format
+msgid "%llu extents written (%llu MiB)\n"
+msgstr "%llu aluetta kirjoitettu (%llu mebitavua)\n"
+
+#: util/mkisofs/multi.c:161
+msgid "Seek error on old image\n"
+msgstr "Etsintävirhe vanhassa vedoksessa\n"
+
+#: util/mkisofs/multi.c:179 util/mkisofs/multi.c:250
+#, c-format
+msgid "**Bad RR version attribute"
+msgstr "**Väärä RR-versioattribuutti"
+
+#: util/mkisofs/multi.c:546
+#, c-format
+msgid "Warning: Neither Rock Ridge (-R) nor TRANS.TBL (-T) name translations were found on previous session. ISO (8.3) file names have been used instead.\n"
+msgstr "Varoitus: Ei ”Rock Ridge (-R)”- eikä ”TRANS.TBL (-T)”-nimikäännöksiä löydetty edellisestä istunnosta. Käytetään sen sijaan ”ISO (8.3)”-tiedostonimiä.\n"
+
+#: util/mkisofs/multi.c:764
+#, c-format
+msgid "Read error on old image %s\n"
+msgstr "Lukuvirhe vanhassa vedoksessa %s\n"
+
+#: util/mkisofs/multi.c:1084
+msgid "Special parameters for cdwrite not specified with -C\n"
+msgstr "Erikoisparametrit ohjelmalle cdwrite ei ole annettu valitsimen -C kanssa\n"
+
+#: util/mkisofs/multi.c:1091
+msgid "Malformed cdwrite parameters\n"
+msgstr "Vääränmuotoisia cdwrite-parametrejä\n"
+
+#  kirjoitusvirhe "to long" ilmoitettu ja korjattu tuleviin versioihin
+#: util/mkisofs/rock.c:309
+#, c-format
+msgid "symbolic link ``%s'' to long for one SL System Use Field, splitting"
+msgstr "symbolinen linkki ”%s” on liian pitkä yhdelle SL-järjestelmäkäyttökentälle, jaetaan kahtia"
+
+#: util/mkisofs/rock.c:517
+#, c-format
+msgid "Unable to insert transparent compressed file - name conflict\n"
+msgstr "Ei kyetty lisäämään läpinäkyvää tiivistettyä tiedostoa - nimiristiriita\n"
+
+#: util/mkisofs/rock.c:591
+msgid "Extension record too long\n"
+msgstr "Laajennustietue on liian pitkä\n"
+
+#: util/mkisofs/tree.c:226 util/mkisofs/write.c:568 util/mkisofs/write.c:1040
+msgid "Fatal goof\n"
+msgstr "Vakava moka\n"
+
+#: util/mkisofs/tree.c:284
+#, c-format
+msgid "Unable to  generate unique  name for file %s\n"
+msgstr "Ei kyetty tuottamaan uniikkia nimeä tiedostolle %s\n"
+
+#  Ensimmäinen on uusi tiedostonimi, sen jälkeen ilmeisesti hakemisto, erotin, tiedostonimi jne.
+#: util/mkisofs/tree.c:295 util/mkisofs/tree.c:317
+#, c-format
+msgid "Using %s for %s%s%s (%s)\n"
+msgstr "Käytetään tiedostonimeä %s kohteelle %s%s%s (%s)\n"
+
+#: util/mkisofs/tree.c:441
+#, c-format
+msgid "Fatal error - RR overflow for file %s\n"
+msgstr "Vakava virhe - RR-ylivuoto tiedostolle %s\n"
+
+#: util/mkisofs/tree.c:449
+#, c-format
+msgid "Unable to sort directory %s\n"
+msgstr "Ei kyetä lajittelemaan hakemistoa %s\n"
+
+#: util/mkisofs/tree.c:480
+#, c-format
+msgid "Translation table size mismatch %d %d\n"
+msgstr "Käännöstaulukokotäsmäämättömyys %d %d\n"
+
+#: util/mkisofs/tree.c:746
+msgid "Unable to locate directory parent\n"
+msgstr "Ei kyetä paikallistamaan päähakemistoa\n"
+
+#: util/mkisofs/tree.c:796
+#, c-format
+msgid "Scanning %s\n"
+msgstr "Etsitään %s\n"
+
+#: util/mkisofs/tree.c:811
+#, c-format
+msgid "Unable to open directory %s\n"
+msgstr "Ei kyetä avamaan hakemistoa %s\n"
+
+#: util/mkisofs/tree.c:856
+#, c-format
+msgid "Ignoring file %s\n"
+msgstr "Ei oteta huomioon tiedostoa %s\n"
+
+#: util/mkisofs/tree.c:863
+msgid "Overflow of stat buffer\n"
+msgstr "Stat-puskurin ylivuoto\n"
+
+#: util/mkisofs/tree.c:876
+#, c-format
+msgid "Excluded by match: %s\n"
+msgstr "Täsmäyksen poissulkema: %s\n"
+
+#: util/mkisofs/tree.c:891
+#, c-format
+msgid "Excluded: %s\n"
+msgstr "Ei sisällytetty: %s\n"
+
+#: util/mkisofs/tree.c:961
+#, c-format
+msgid "Non-existant or inaccessible: %s\n"
+msgstr "Ei-olemassaoleva tai tavoittamaton: %s\n"
+
+#: util/mkisofs/tree.c:997 util/mkisofs/tree.c:1103
+#, c-format
+msgid "Unable to stat file %s - ignoring and continuing.\n"
+msgstr "Ei kyetä suorittamaan stat-komentoa tiedostolle %s - ei oteta huomioon ja jatketaan.\n"
+
+#: util/mkisofs/tree.c:1003
+#, c-format
+msgid "Symlink %s ignored - continuing.\n"
+msgstr "Symbolista linkkiä %s ei oteta huomioon - jatketaan.\n"
+
+#: util/mkisofs/tree.c:1028
+#, c-format
+msgid "Already cached directory seen (%s)\n"
+msgstr "Jo välimuistissa oleva hakemisto nähty (%s)\n"
+
+#: util/mkisofs/tree.c:1070
+#, c-format
+msgid "File %s is not readable (%s) - ignoring\n"
+msgstr "Tiedostoa %s ei pystytä lukemaan (%s) - ei oteta huomioon\n"
+
+#: util/mkisofs/tree.c:1083
+#, c-format
+msgid "Directory loop - fatal goof (%s %lx %lu).\n"
+msgstr "Hakemistosilmukka - vakava moka (%s %lx %lu).\n"
+
+#: util/mkisofs/tree.c:1093
+#, c-format
+msgid "Unknown file type %s - ignoring and continuing.\n"
+msgstr "Tuntematon tiedostotyyppi %s - ei oteta huomioon ja jatketaan.\n"
+
+#: util/mkisofs/tree.c:1179
+#, c-format
+msgid "Hidden from ISO9660 tree: %s\n"
+msgstr "Piilotettu ISO9660-puusta: %s\n"
+
+#: util/mkisofs/tree.c:1191
+#, c-format
+msgid "Hidden from Joliet tree: %s\n"
+msgstr "Piilotettu Joliet-puusta: %s\n"
+
+#: util/mkisofs/tree.c:1600
+#, c-format
+msgid "Directories too deep  %s\n"
+msgstr "Hakemistot liian syviä  %s\n"
+
+#: util/mkisofs/tree.c:1632
+msgid "Unable to delete non-empty directory\n"
+msgstr "Ei kyetä poistamaan ei-tyhjää hakemistoa\n"
+
+#: util/mkisofs/tree.c:1655
+msgid "Unable to locate child directory in parent list\n"
+msgstr "Ei kyetä paikallistamaan alihakemistoa päähakemistoluettelosta\n"
+
+#: util/mkisofs/tree.c:1772
+#, c-format
+msgid "call to search_tree_file with an absolute path, stripping\n"
+msgstr "kutsu kohteeseen search_tree_file absoluuttisella polulla, riisutaan\n"
+
+#: util/mkisofs/tree.c:1773
+#, c-format
+msgid "initial path separator. Hope this was intended...\n"
+msgstr "alkupolkuerotin. Toivotaan, että tämä oli tarkoitettu...\n"
+
+#  Puskuri, jonka koko 512 tavua
+#: util/mkisofs/write.c:161
+#, c-format
+msgid "Cannot open '%s'"
+msgstr "Ei voi avata puskuria ”%s”"
+
+#: util/mkisofs/write.c:169
+#, c-format
+msgid "cannot fwrite %llu*%llu\n"
+msgstr "ei voi kutsua fwrite %llu*%llu\n"
+
+#  Tässä on avattavana tiedosto
+#: util/mkisofs/write.c:251
+#, c-format
+msgid "cannot open %s\n"
+msgstr "ei voi avata tiedostoa %s\n"
+
+#  Luetaan tiedostosta
+#: util/mkisofs/write.c:260
+#, c-format
+msgid "cannot read %llu bytes from %s"
+msgstr "ei voida lukea %llu tavua tiedostosta %s"
+
+#: util/mkisofs/write.c:278
+#, c-format
+msgid "%6.2f%% done, estimate finish %s"
+msgstr "%6.2f%% valmis, arvioitu loppuminen %s"
+
+#: util/mkisofs/write.c:545
+#, c-format
+msgid "Cache hit for %s%s%s\n"
+msgstr "Välimuistiosuma kohteelle %s%s%s\n"
+
+#: util/mkisofs/write.c:899
+#, c-format
+msgid "Unexpected directory length %d %d %s\n"
+msgstr "Odottamaton hakemistopituus %d %d %s\n"
+
+#: util/mkisofs/write.c:911
+#, c-format
+msgid "Continuation entry record length mismatch (%d %d).\n"
+msgstr "Jatkosyötetietuepituuden täsmäämättömyys (%d %d).\n"
+
+#: util/mkisofs/write.c:1075
+#, c-format
+msgid "Path table lengths do not match %d %d\n"
+msgstr "Polkutaulupituudet eivät täsmää %d %d\n"
+
+#: util/mkisofs/write.c:1121 util/mkisofs/write.c:1131
+#, c-format
+msgid "Total extents scheduled to be written = %llu\n"
+msgstr "Yhteensä alueita aikataulutettu kirjoitettavaksi = %llu\n"
+
+#: util/mkisofs/write.c:1148
+#, c-format
+msgid "Total extents actually written = %llu\n"
+msgstr "Yhteenä alueita todella kirjoitettu = %llu\n"
+
+#: util/mkisofs/write.c:1157
+#, c-format
+msgid "Number of extents written different than what was predicted.  Please fix.\n"
+msgstr "Kirjoitettujen alueiden lukumäärä oli eri kuin oli arvioitu.  Korjaa.\n"
+
+#: util/mkisofs/write.c:1158
+#, c-format
+msgid "Predicted = %d, written = %llu\n"
+msgstr "Ennustettu = %d, kirjoitettu = %llu\n"
+
+#: util/mkisofs/write.c:1161
+#, c-format
+msgid "Total translation table size: %d\n"
+msgstr "Yhteensä käännöstaulun koko: %d\n"
+
+#: util/mkisofs/write.c:1162
+#, c-format
+msgid "Total rockridge attributes bytes: %d\n"
+msgstr "Yhteensä rockridge-attribuuttien tavuja: %d\n"
+
+#: util/mkisofs/write.c:1163
+#, c-format
+msgid "Total directory bytes: %d\n"
+msgstr "Yhteensä hakemistotavuja: %d\n"
+
+#: util/mkisofs/write.c:1164
+#, c-format
+msgid "Path table size(bytes): %d\n"
+msgstr "Polkutaulun koko (tavua): %d\n"
+
+#  use_embedded_boot
+#: util/mkisofs/write.c:1438
+#, c-format
+msgid "Unable to open %s"
+msgstr "Ei kyetä avamaan upotettua alkulatausta %s"
+
+#: normal/auth.c:241
+msgid "Enter username:"
+msgstr "Kirjoita käyttäjänimi:"
+
+#  edustavärin ja taustavärin välissä kauttaviiva väriparissa
+#: normal/color.c:80
+#, c-format
+msgid "Warning: syntax error (missing slash) in `%s'\n"
+msgstr "Varoitus: syntaksivirhe (puuttuu /-merkki) värinimiparissa ”%s”\n"
+
+#: normal/color.c:89
+#, c-format
+msgid "Warning: invalid foreground color `%s'\n"
+msgstr "Varoitus: virheellinen edustaväri ”%s”\n"
+
+#: normal/color.c:95
+#, c-format
+msgid "Warning: invalid background color `%s'\n"
+msgstr "Varoitus: virheellinen taustaväri ”%s”\n"
+
+#: normal/main.c:390
+#, c-format
+msgid "GNU GRUB  version %s"
+msgstr "GNU GRUB -versio %s"
+
+#: normal/main.c:525
+#, c-format
+msgid "Minimal BASH-like line editing is supported. For the first word, TAB lists possible command completions. Anywhere else TAB lists possible device or file completions. %s"
+msgstr "Minimaalista BASH-kaltaista rivimuokkausta tuetaan. Hae ensimmäiselle sanalle SARKAIN-painikkeella luettelot mahdollisista komentojen täydennyksistä. Kaikkialla muualla SARKAIN-painike luettelee mahdolliset laite- tai tiedostotäydennykset. %s"
+
+#: normal/main.c:529
+msgid "ESC at any time exits."
+msgstr "Poistuu aina ESC-painikkeella."
+
+#  paikankorvaaja voi olla commands/devices/files/partitions/arguments/things, ilmoitettu bugiksi
+#: normal/menu_entry.c:840
+#, c-format
+msgid "Possible %s are:"
+msgstr "Mahdollisia %s ovat:"
+
+#: normal/menu_entry.c:1003
+msgid "Booting a command list"
+msgstr "Alkuladataan komentoluettelo"
+
+#: normal/menu_entry.c:1185 normal/menu_text.c:43
+msgid "Press any key to continue..."
+msgstr "Jatka painamalla mitä tahansa painiketta..."
+
+#: normal/menu_text.c:207
+msgid "Minimum Emacs-like screen editing is supported. TAB lists completions. Press Ctrl-x to boot, Ctrl-c for a command-line or ESC to return menu."
+msgstr "Minimaalista Emacs-kaltaista näyttömuokkausta tuetaan. SARKAIN-painike luettelee täydennykset. Alkulataa näppäimillä Ctrl-x, komentoriville näppäimillä Ctrl-c tai palaa valikkoon ESC-painikkeella."
+
+#: normal/menu_text.c:213
+#, c-format
+msgid "Use the %C and %C keys to select which entry is highlighted.\n"
+msgstr "Käytä näppäimiä %C ja %C valitsemaan korostettu valikkorivi.\n"
+
+#: normal/menu_text.c:225
+msgid "Press enter to boot the selected OS, 'e' to edit the commands before booting or 'c' for a command-line.\n"
+msgstr "Paina enter-painiketta valitun käyttöjärjestelmä alkulataamiseksi, ”e” komentojen muokkaukseen ennen alkulatausta ja ”c” komentoriville.\n"
+
+#: normal/menu_text.c:231
+msgid "ESC to return previous menu."
+msgstr "Palaa edelliseen valikkoon ESC-painikkeella."
+
+#: normal/menu_text.c:396
+#, c-format
+msgid "The highlighted entry will be booted automatically in %ds."
+msgstr "Korostettu valikkorivi alkuladataan automaattisesti %d sekunnin kuluttua."
+
+#  Parametrina on grubin valikon rivi
+#: normal/menu_text.c:656
+#, c-format
+msgid "Booting '%s'"
+msgstr "Alkuladataan ”%s”"
+
+#: normal/menu_text.c:668
+#, c-format
+msgid "Falling back to '%s'"
+msgstr "Peräännytään kohteeseen ”%s”"
+
+#  Grub-valikon oletuksen alkulataus epäonnistui
+#: normal/menu_text.c:684
+msgid "Failed to boot default entries.\n"
+msgstr "Valikko-oletuksen alkulataus epäonnistui.\n"
+
+#: normal/misc.c:41
+#, c-format
+msgid "Partition %s:"
+msgstr "Osio %s:"
+
+#: normal/misc.c:46
+#, c-format
+msgid "Device %s:"
+msgstr "Laite %s:"
+
+#: normal/misc.c:52
+msgid "Filesystem cannot be accessed"
+msgstr "Tiedostojärjestelmään ei päästä"
+
+#: normal/misc.c:63
+#, c-format
+msgid "Filesystem type %s"
+msgstr "Tiedostojärjestelmätyyppi %s"
+
+#: normal/misc.c:71
+#, c-format
+msgid "- Label %s"
+msgstr "- Nimiö %s"
+
+#: normal/misc.c:84
+#, c-format
+msgid "- Last modification time %d-%02d-%02d %02d:%02d:%02d %s"
+msgstr "- Viimeinen muokkausaika %3$d.%2$d.%1$d %4$d:%5$d:%6$d %7$s"
+
+#: normal/misc.c:107
+msgid "Unknown filesystem"
+msgstr "Tuntematon tiedostojärjestelmä"
+
+#: normal/misc.c:109
+msgid "Partition table"
+msgstr "Osiotaulu"
+
+#: util/grub.d/10_kfreebsd.in:40
+msgid "%s, with kFreeBSD %s"
+msgstr "%s, jakeluversiolla kFreeBSD %s"
+
+#: util/grub.d/10_linux.in:57
+msgid "%s, with Linux %s (recovery mode)"
+msgstr "%s, jakeluversiolla Linux %s (toipumistila)"
+
+#: util/grub.d/10_linux.in:59
+msgid "%s, with Linux %s"
+msgstr "%s, jakeluversiolla Linux %s"
+
+#~ msgid "symbolic link ``%s'' too long for one SL System Use Field, splitting"
+#~ msgstr "symbolinen linkki ”%s” on liian pitkä yhdelle SL-järjestelmäkentälle, jaetaan kahtia"
+
+#~ msgid "Possible commands are:"
+#~ msgstr "Mahdollisia komentoja ovat:"
+
+#~ msgid "Possible devices are:"
+#~ msgstr "Mahdollisia laitteita ovat:"
+
+#~ msgid "Possible files are:"
+#~ msgstr "Mahdollisia tiedostoja ovat:"
+
+#~ msgid "Possible partitions are:"
+#~ msgstr "Mahdollisia osioita ovat:"
+
+#~ msgid "Possible arguments are:"
+#~ msgstr "Mahdollisia argumentteja ovat:"
+
+#~ msgid "Possible things are:"
+#~ msgstr "Mahdollisia asioita ovat:"
+
+#~ msgid "the size of memory disk is 0x%x"
+#~ msgstr "muistilevyn koko on 0x%x"
+
+#~ msgid "the size of config file is 0x%x"
+#~ msgstr "config-tiedoston koko on 0x%x"
+
+#~ msgid "the total module size is 0x%x"
+#~ msgstr "moduulin kokonaiskoko on 0x%x"
+
+#~ msgid "the core size is 0x%x"
+#~ msgstr "ydinkoko on 0x%x"
+
+#~ msgid "the first sector is <%llu,%u,%u>"
+#~ msgstr "ensimmäinen sektori on <%llu,%u,%u>"
+
+#~ msgid "saving <%llu,%u,%u> with the segment 0x%x"
+#~ msgstr "tallennetaan <%llu,%u,%u> segmentillä 0x%x"
+
+#~ msgid "setting the root device to `%s'"
+#~ msgstr "asetetaan juurilaitteeksi ”%s”"
+
+#~ msgid "dos partition is %d, bsd partition is %d"
+#~ msgstr "dos-osio on %d, bsd-osio on %d"
+
+#~ msgid "the core image will be embedded at sector 0x%llx"
+#~ msgstr "ydinvedos upotettu sektoriin 0x%llx"
+
+#~ msgid "succeeded in opening the core image but the size is different (%d != %d)"
+#~ msgstr "ydinvedoksen avaaminen onnistui, mutta se on eri kokoinen (%d != %d)"
+
+#~ msgid "succeeded in opening the core image but cannot read %d bytes"
+#~ msgstr "ydinvedoksen avaaminen onnistui, mutta ei voida lukea %d tavua"
+
+#~ msgid "succeeded in opening the core image but the data is different"
+#~ msgstr "ydinvedoksen avaaminen onnistui, mutta data on erilainen"
+
+#~ msgid "couldn't open the core image"
+#~ msgstr "ei voitu avata ydinvedosta"
+
+#~ msgid "error message = %s"
+#~ msgstr "virhesanoma = %s"
+
+#~ msgid "opening the core image `%s'"
+#~ msgstr "avataan ydinvedos ”%s”"
+
+#~ msgid "guessing the root device failed, because of `%s'"
+#~ msgstr "juurilaitteen arvaaminen epäonnistui, syy: ”%s”"
+
+#~ msgid "Unable to generate unique name for file %s\n"
+#~ msgstr "Ei kyetä tuottamaan uniikkia nimeä tiedostolle %s\n"
+
+#~ msgid "Looking for subdir called %s\n"
+#~ msgstr "Etsitään alihakemisto nimeltään %s\n"
+
+#~ msgid "Remainder of path name is now %s\n"
+#~ msgstr "Polkunimestä on nyt jäljellä %s\n"
+
+#~ msgid "Calling next level with filename = %s"
+#~ msgstr "Seuraavaa tasoa kutsutaan tiedostonimellä = %s"
+
+#~ msgid "Found our file %s"
+#~ msgstr "Etsitty tiedosto %s löytyi"
+
+#~ msgid "We cant get here in search_tree_file :-/ \n"
+#~ msgstr "Emme pääse tänne toiminnossa search_tree_file :-/ \n"
+
+#~ msgid "File %s\n"
+#~ msgstr "Tiedosto %s\n"
+
+#~ msgid "Warning: large file %s\n"
+#~ msgstr "Varoitus: iso tiedosto %s\n"
+
+#~ msgid "Starting block is %d\n"
+#~ msgstr "Aloituslohko on %d\n"
+
+#~ msgid "Reported file size is %d extents\n"
+#~ msgstr "Ilmoitettu tiedostokoko on %d aluetta\n"
+
+#~ msgid "Extent overflow processing file %s\n"
+#~ msgstr "Alueylivuoto käsiteltäessä tiedostoa %s\n"
+
+#~ msgid "Warning: ce_index(%d) && ce_address(%d) not initialized\n"
+#~ msgstr "Varoitus: ce_index(%d) && ce_address(%d) ei ole alustettu\n"
+
+#~ msgid "Total directory extents being written = %llu\n"
+#~ msgstr "Yhteensä hakemistoalueita kirjoitetaan = %llu\n"
+
+#~ msgid "next extent, last_extent, last_extent_written %d %d %d\n"
+#~ msgstr "seuraava alue, viimeinen_alue, viimenen_kirjoitettu_alue %d %d %d\n"
+
+#~ msgid "Blocksize = %d %d\n"
+#~ msgstr "Lohkokoko = %d %d\n"
+
+#~ msgid "no menu context"
+#~ msgstr "ei valikkokontekstia"
+
+#~ msgid "invalid argument for menuentry: %s"
+#~ msgstr "virheellinen argumentti valikkoriville: %s"
+
+#~ msgid "too many titles for menuentry: %s"
+#~ msgstr "liian monia otsikkoja valikkoriville: %s"
+
+#~ msgid "menuentry is missing title"
+#~ msgstr "valikkoriviltä puuttuu otsikko"
+
+#~ msgid "Enter normal mode"
+#~ msgstr "Siirry normaalitilaan"

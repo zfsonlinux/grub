@@ -83,12 +83,17 @@ grub_ofconsole_putchar (grub_uint32_t c)
       grub_curr_y++;
       grub_curr_x = 0;
     }
+  else if (c == '\r')
+    {
+      grub_curr_x = 0;
+    }
   else
     {
       grub_curr_x++;
-      if (grub_curr_x > grub_ofconsole_width)
+      if (grub_curr_x >= grub_ofconsole_width)
         {
           grub_ofconsole_putchar ('\n');
+          grub_ofconsole_putchar ('\r');
           grub_curr_x++;
         }
     }
@@ -123,7 +128,7 @@ grub_ofconsole_setcolorstate (grub_term_color_state state)
       return;
     }
 
-  setcol = grub_asprintf ("\e[3%dm\e[4%dm", fg, bg);
+  setcol = grub_xasprintf ("\e[3%dm\e[4%dm", fg, bg);
   if (setcol)
     grub_ofconsole_writeesc (setcol);
   grub_free (setcol);
@@ -236,15 +241,12 @@ grub_ofconsole_getxy (void)
   return ((grub_curr_x - 1) << 8) | grub_curr_y;
 }
 
-static grub_uint16_t
-grub_ofconsole_getwh (void)
+static void
+grub_ofconsole_dimensions (void)
 {
   grub_ieee1275_ihandle_t options;
   char *val;
   grub_ssize_t lval;
-
-  if (grub_ofconsole_width && grub_ofconsole_height)
-    return (grub_ofconsole_width << 8) | grub_ofconsole_height;
 
   if (! grub_ieee1275_finddevice ("/options", &options)
       && options != (grub_ieee1275_ihandle_t) -1)
@@ -282,7 +284,11 @@ grub_ofconsole_getwh (void)
     grub_ofconsole_width = 80;
   if (! grub_ofconsole_height)
     grub_ofconsole_height = 24;
+}
 
+static grub_uint16_t
+grub_ofconsole_getwh (void)
+{
   return (grub_ofconsole_width << 8) | grub_ofconsole_height;
 }
 
@@ -295,7 +301,7 @@ grub_ofconsole_gotoxy (grub_uint8_t x, grub_uint8_t y)
       grub_curr_x = x;
       grub_curr_y = y;
 
-      s = grub_asprintf ("\e[%d;%dH", y + 1, x + 1);
+      s = grub_xasprintf ("\e[%d;%dH", y + 1, x + 1);
       if (s)
 	grub_ofconsole_writeesc (s);
       grub_free (s);
@@ -381,6 +387,8 @@ grub_ofconsole_init_output (void)
     /* Set the right fg and bg colors.  */
       grub_ofconsole_setcolorstate (GRUB_TERM_COLOR_NORMAL);
     }
+
+  grub_ofconsole_dimensions ();
 
   return 0;
 }

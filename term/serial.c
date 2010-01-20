@@ -30,7 +30,6 @@
 #define TEXT_WIDTH	80
 #define TEXT_HEIGHT	24
 
-static struct grub_term_output grub_serial_term_output;
 static unsigned int xpos, ypos;
 static unsigned int keep_track = 1;
 static unsigned int registered = 0;
@@ -38,6 +37,8 @@ static unsigned int registered = 0;
 /* An input buffer.  */
 static char input_buf[8];
 static unsigned int npending = 0;
+
+static struct grub_term_output grub_serial_term_output;
 
 /* Argument options.  */
 static const struct grub_arg_option options[] =
@@ -607,8 +608,8 @@ GRUB_MOD_INIT(serial)
 {
   cmd = grub_register_extcmd ("serial", grub_cmd_serial,
 			      GRUB_COMMAND_FLAG_BOTH,
-			      N_("[OPTIONS...]"),
-			      N_("Configure serial port."), options);
+			      "serial [OPTIONS...]",
+			      "Configure serial port.", options);
 
   /* Set default settings.  */
   serial_settings.port      = serial_hw_get_port (0);

@@ -45,7 +45,7 @@ terminal-font: "Unknown Regular 16"
 	left = 0
 	width = 100%
 	height = 38
-	file="/boot/grub/debian-theme/boot_menu_n.png"
+	file = "boot_menu_n.png"
 }
 
 #menu

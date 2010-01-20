@@ -207,9 +207,25 @@ load_image (grub_gui_image_t self, const char *path)
 static grub_err_t
 image_set_property (void *vself, const char *name, const char *value)
 {
+  static const char *theme_dir = NULL;
   grub_gui_image_t self = vself;
-  if (grub_strcmp (name, "file") == 0)
-    return load_image (self, value);
+  if (grub_strcmp (name, "theme_dir") == 0)
+    {
+      theme_dir = value;
+    }
+  else if (grub_strcmp (name, "file") == 0)
+    {
+      char *absvalue;
+
+      /* Resolve to an absolute path.  */
+      if (! theme_dir)
+	return grub_error (GRUB_ERR_BAD_ARGUMENT, "unspecified theme_dir");
+      absvalue = grub_resolve_relative_path (theme_dir, value);
+      if (! absvalue)
+	return grub_errno;
+
+      return load_image (self, absvalue);
+    }
   else if (grub_strcmp (name, "id") == 0)
     {
       grub_free (self->id);

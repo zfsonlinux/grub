@@ -1,7 +1,7 @@
 /* linux.c - boot Linux */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 2003, 2004, 2005, 2007, 2009  Free Software Foundation, Inc.
+ *  Copyright (C) 2003,2004,2005,2007,2009,2010  Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 #include <grub/command.h>
 #include <grub/mips/relocator.h>
 #include <grub/machine/memory.h>
+#include <grub/i18n.h>
 
 /* For frequencies.  */
 #include <grub/pci.h>
@@ -324,10 +325,10 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
   grub_size_t overhead;
 
   if (argc == 0)
-    return grub_error (GRUB_ERR_BAD_ARGUMENT, "no initrd specified");
+    return grub_error (GRUB_ERR_BAD_ARGUMENT, "No initrd specified");
 
   if (!loaded)
-    return grub_error (GRUB_ERR_BAD_ARGUMENT, "You need to load the kernel first.");
+    return grub_error (GRUB_ERR_BAD_ARGUMENT, "You need to load Linux first.");
 
   if (initrd_loaded)
     return grub_error (GRUB_ERR_BAD_ARGUMENT, "Only one initrd can be loaded.");
@@ -358,17 +359,16 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
       return grub_errno;
     }
 
-  grub_snprintf ((char *) playground + rd_addr_arg_off, 
-		 sizeof ("rd_start=0xXXXXXXXXXXXXXXXX"),
-		 "rd_start=0x%llx",
+  grub_snprintf ((char *) playground + rd_addr_arg_off,
+		 sizeof ("rd_start=0xXXXXXXXXXXXXXXXX"), "rd_start=0x%llx",
 		(unsigned long long) target_addr + linux_size  + overhead);
   ((grub_uint32_t *) (playground + argv_off))[linux_argc]
     = target_addr + rd_addr_arg_off;
   linux_argc++;
 
-  grub_snprintf ((char *) playground + rd_size_arg_off, 
-		 sizeof ("rd_size=0xXXXXXXXXXXXXXXXX"),
-		"rd_size=0x%llx", (unsigned long long) size);
+  grub_snprintf ((char *) playground + rd_size_arg_off,
+		sizeof ("rd_size=0xXXXXXXXXXXXXXXXXX"), "rd_size=0x%llx",
+		(unsigned long long) size);
   ((grub_uint32_t *) (playground + argv_off))[linux_argc]
     = target_addr + rd_size_arg_off;
   linux_argc++;
@@ -385,9 +385,9 @@ static grub_command_t cmd_linux, cmd_initrd;
 GRUB_MOD_INIT(linux)
 {
   cmd_linux = grub_register_command ("linux", grub_cmd_linux,
-				     0, "load a linux kernel");
+				     0, N_("Load Linux."));
   cmd_initrd = grub_register_command ("initrd", grub_cmd_initrd,
-				      0, "load an initrd");
+				      0, N_("Load initrd."));
   my_mod = mod;
 }
 

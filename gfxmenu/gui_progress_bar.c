@@ -163,7 +163,7 @@ draw_text (grub_gui_progress_bar_t self)
       grub_video_color_t text_color = grub_gui_map_color (self->text_color);
       int width = self->bounds.width;
       int height = self->bounds.height;
-      char *text = grub_asprintf (self->template,
+      char *text = grub_xasprintf (self->template,
 				  self->value > 0 ? self->value : -self->value);
       if (!text)
 	{

@@ -30,7 +30,7 @@
 #include <grub/extcmd.h>
 #include <grub/bitmap_scale.h>
 
-#define DEFAULT_VIDEO_MODE "auto"
+#define DEFAULT_VIDEO_MODE	"auto"
 #define DEFAULT_BORDER_WIDTH	10
 
 #define DEFAULT_STANDARD_COLOR  0x07
@@ -367,7 +367,7 @@ grub_gfxterm_init (void)
 			       GRUB_VIDEO_MODE_TYPE_PURE_TEXT, 0);
   else
     {
-      tmp = grub_asprintf ("%s;" DEFAULT_VIDEO_MODE, modevar);
+      tmp = grub_xasprintf ("%s;" DEFAULT_VIDEO_MODE, modevar);
       if (!tmp)
 	return grub_errno;
       err = grub_video_set_mode (tmp, GRUB_VIDEO_MODE_TYPE_PURE_TEXT, 0);
