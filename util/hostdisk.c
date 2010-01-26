@@ -340,7 +340,7 @@ open_device (const grub_disk_t disk, grub_disk_addr_t sector, int flags)
       is_partition = linux_find_partition (dev, disk->partition->start);
 
     /* Open the partition.  */
-    grub_dprintf ("hostdisk", "opening the device `%s' in open_device()", dev);
+    grub_dprintf ("hostdisk", "opening the device `%s' in open_device()\n", dev);
     fd = open (dev, flags);
     if (fd < 0)
       {
@@ -568,7 +568,7 @@ read_device_map (const char *dev_map)
   fp = fopen (dev_map, "r");
   if (! fp)
     {
-      grub_util_info (_("Cannot open `%s'"), dev_map);
+      grub_util_info (_("cannot open `%s'"), dev_map);
       return;
     }
 
@@ -639,7 +639,7 @@ read_device_map (const char *dev_map)
 	 symbolic links.  */
       map[drive].device = xmalloc (PATH_MAX);
       if (! realpath (p, map[drive].device))
-	grub_util_error ("Cannot get the real path of `%s'", p);
+	grub_util_error ("cannot get the real path of `%s'", p);
 #else
       map[drive].device = xstrdup (p);
 #endif
