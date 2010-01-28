@@ -7,8 +7,8 @@ UbuntuSpecific: Removes status messages that are arguably useful for
  debugging; we think it looks tidier, but upstream isn't interested.
 
 diff -Nur -x '*.orig' -x '*~' grub2/kern/main.c grub2.new/kern/main.c
---- grub2/kern/main.c	2009-12-07 17:55:50.000000000 +0000
-+++ grub2.new/kern/main.c	2010-01-05 10:17:12.000000000 +0000
+--- grub2/kern/main.c	2010-01-20 01:20:49.000000000 +0000
++++ grub2.new/kern/main.c	2010-01-26 15:24:32.000000000 +0000
 @@ -152,11 +152,6 @@
    /* First of all, initialize the machine.  */
    grub_machine_init ();
@@ -22,20 +22,21 @@ diff -Nur -x '*.orig' -x '*~' grub2/kern/main.c grub2.new/kern/main.c
    grub_register_exported_symbols ();
    grub_load_modules ();
 diff -Nur -x '*.orig' -x '*~' grub2/kern/rescue_reader.c grub2.new/kern/rescue_reader.c
---- grub2/kern/rescue_reader.c	2009-12-07 17:55:50.000000000 +0000
-+++ grub2.new/kern/rescue_reader.c	2010-01-05 10:17:12.000000000 +0000
-@@ -29,7 +29,6 @@
- static grub_err_t
- grub_rescue_init (void)
+--- grub2/kern/rescue_reader.c	2010-01-20 01:20:48.000000000 +0000
++++ grub2.new/kern/rescue_reader.c	2010-01-26 15:25:25.000000000 +0000
+@@ -72,8 +72,6 @@
+ void
+ grub_rescue_run (void)
  {
 -  grub_printf ("Entering rescue mode...\n");
-   return 0;
- }
- 
-diff -Nur -x '*.orig' -x '*~' grub2/normal/menu_text.c grub2.new/normal/menu_text.c
---- grub2/normal/menu_text.c	2010-01-05 10:17:10.000000000 +0000
-+++ grub2.new/normal/menu_text.c	2010-01-05 10:18:01.000000000 +0000
-@@ -649,12 +649,9 @@
+-
+   while (1)
+     {
+       char *line;
+diff -Nur -x '*.orig' -x '*~' grub2/normal/menu.c grub2.new/normal/menu.c
+--- grub2/normal/menu.c	2010-01-26 15:24:30.000000000 +0000
++++ grub2.new/normal/menu.c	2010-01-26 15:26:01.000000000 +0000
+@@ -487,12 +487,9 @@
  
  /* Callback invoked immediately before a menu entry is executed.  */
  static void
