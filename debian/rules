@@ -21,6 +21,12 @@ else
 	CFLAGS += -O2
 endif
 
+ifneq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
+with_check := yes
+else
+with_check := no
+endif
+
 CC := gcc-4.4
 
 # Enable external modules from grub-extras.
@@ -59,8 +65,14 @@ configure/grub-common:: $(AUTOGEN_FILES)
 	mkdir -p $(subst configure/,build/,$@)
 	cd $(subst configure/,build/,$@) && $(CONFIGURE)
 
-build/grub-common build/grub-pc build/grub-efi-ia32 build/grub-efi-amd64 build/grub-ieee1275 build/grub-coreboot build/grub-emu build/grub-yeeloong::
+build/grub-common build/grub-efi-ia32 build/grub-efi-amd64 build/grub-ieee1275 build/grub-coreboot build/grub-emu build/grub-yeeloong::
 	$(MAKE) -C $@
+
+build/grub-pc::
+	$(MAKE) -C $@
+ifeq ($(with_check), yes)
+	$(MAKE) -C $@ check
+endif
 
 build/grub-firmware-qemu::
 	$(MAKE) -C $@
@@ -99,10 +111,6 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee12
 		for i in templates install dirs ; do \
 			cat debian/grub-pc.$$i.in >> debian/grub-pc.$$i ; \
 		done ; \
-	fi
-
-	if [ "$@" != "install/grub-pc" ] && [ "$(DEB_HOST_ARCH_CPU)" != "sparc" ] && [ "$(DEB_HOST_ARCH_CPU)" != "mipsel" ] ; then \
-		i=$(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/*/kernel.img ; if test -e $$i ; then strip -s $$i ; fi \
 	fi
 
 	mkdir -p $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides
