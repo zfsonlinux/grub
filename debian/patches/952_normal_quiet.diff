@@ -7,18 +7,9 @@ UbuntuSpecific: The line editing change is believed to be a workaround for a
  a better fix upstream if somebody figures out what that is.
 
 diff -Nur -x '*.orig' -x '*~' grub2/normal/main.c grub2.new/normal/main.c
---- grub2/normal/main.c	2010-01-05 10:07:49.000000000 +0000
-+++ grub2.new/normal/main.c	2010-01-05 10:15:58.000000000 +0000
-@@ -517,7 +517,7 @@
- }
- 
- static grub_err_t
--grub_normal_reader_init (void)
-+grub_normal_display_intro (void)
- {
-   grub_normal_init_page ();
-   grub_setcursor (1);
-@@ -547,6 +547,13 @@
+--- grub2/normal/main.c	2010-01-20 01:20:49.000000000 +0000
++++ grub2.new/normal/main.c	2010-01-26 15:20:03.000000000 +0000
+@@ -564,6 +564,13 @@
  {
    grub_parser_t parser = grub_parser_get_current ();
    char prompt[sizeof(">") + grub_strlen (parser->name)];
@@ -26,24 +17,25 @@ diff -Nur -x '*.orig' -x '*~' grub2/normal/main.c grub2.new/normal/main.c
 +
 +  if (! displayed_intro)
 +    {
-+      grub_normal_display_intro ();
++      grub_normal_reader_init (nested);
 +      displayed_intro = 1;
 +    }
  
-   grub_sprintf (prompt, "%s>", parser->name);
+   if (cont)
+     grub_sprintf (prompt, ">");
+@@ -607,8 +614,6 @@
+       return;
+     }
  
-@@ -570,7 +577,6 @@
- static struct grub_reader grub_normal_reader =
-   {
-     .name = "normal",
--    .init = grub_normal_reader_init,
-     .read_line = grub_normal_read_line
-   };
- 
-diff -Nur -x '*.orig' -x '*~' grub2/normal/menu_text.c grub2.new/normal/menu_text.c
---- grub2/normal/menu_text.c	2010-01-05 10:07:49.000000000 +0000
-+++ grub2.new/normal/menu_text.c	2010-01-05 10:14:41.000000000 +0000
-@@ -702,6 +702,7 @@
+-  grub_normal_reader_init (nested);
+-
+   while (1)
+     {
+       char *line;
+diff -Nur -x '*.orig' -x '*~' grub2/normal/menu.c grub2.new/normal/menu.c
+--- grub2/normal/menu.c	2010-01-20 01:20:49.000000000 +0000
++++ grub2.new/normal/menu.c	2010-01-26 15:23:51.000000000 +0000
+@@ -540,6 +540,7 @@
        int boot_entry;
        grub_menu_entry_t e;
        int auto_boot;
@@ -51,18 +43,14 @@ diff -Nur -x '*.orig' -x '*~' grub2/normal/menu_text.c grub2.new/normal/menu_tex
  
        boot_entry = run_menu (menu, nested, &auto_boot);
        if (boot_entry < 0)
-@@ -711,8 +712,12 @@
+@@ -549,7 +550,9 @@
        if (! e)
  	continue; /* Menu is empty.  */
  
 -      grub_cls ();
--      grub_setcursor (1);
 +      /* Only clear the screen if we drew the menu in the first place.  */
 +      if (initial_timeout != 0)
-+	{
-+	  grub_cls ();
-+	  grub_setcursor (1);
-+	}
++	grub_cls ();
  
        if (auto_boot)
          {
