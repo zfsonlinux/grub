@@ -5,9 +5,9 @@ Upstream: Maintained in an upstream branch,
 
 diff -Nur -x '*.orig' -x '*~' grub2/ChangeLog.dmraid-probe grub2.new/ChangeLog.dmraid-probe
 --- grub2/ChangeLog.dmraid-probe	1970-01-01 01:00:00.000000000 +0100
-+++ grub2.new/ChangeLog.dmraid-probe	2010-01-26 15:36:32.000000000 +0000
++++ grub2.new/ChangeLog.dmraid-probe	2010-01-31 19:39:13.000000000 +0000
 @@ -0,0 +1,26 @@
-+2010-01-26  Colin Watson  <cjwatson@ubuntu.com>
++2010-01-31  Colin Watson  <cjwatson@ubuntu.com>
 +
 +	* configure.ac: Check for Linux device-mapper support.
 +
@@ -35,7 +35,7 @@ diff -Nur -x '*.orig' -x '*~' grub2/ChangeLog.dmraid-probe grub2.new/ChangeLog.d
 +	(main): Set debug=all if -v -v is used.
 diff -Nur -x '*.orig' -x '*~' grub2/conf/common.rmk grub2.new/conf/common.rmk
 --- grub2/conf/common.rmk	2010-01-20 01:20:48.000000000 +0000
-+++ grub2.new/conf/common.rmk	2010-01-26 15:36:32.000000000 +0000
++++ grub2.new/conf/common.rmk	2010-01-31 19:39:13.000000000 +0000
 @@ -3,7 +3,8 @@
  sbin_UTILITIES += grub-mkdevicemap
  grub_mkdevicemap_SOURCES = gnulib/progname.c util/grub-mkdevicemap.c \
@@ -47,8 +47,8 @@ diff -Nur -x '*.orig' -x '*~' grub2/conf/common.rmk grub2.new/conf/common.rmk
  ifeq ($(target_cpu)-$(platform), sparc64-ieee1275)
  grub_mkdevicemap_SOURCES += util/ieee1275/ofpath.c util/ieee1275/devicemap.c
 diff -Nur -x '*.orig' -x '*~' grub2/configure.ac grub2.new/configure.ac
---- grub2/configure.ac	2010-01-26 15:35:36.000000000 +0000
-+++ grub2.new/configure.ac	2010-01-26 15:36:32.000000000 +0000
+--- grub2/configure.ac	2010-01-31 19:38:31.000000000 +0000
++++ grub2.new/configure.ac	2010-01-31 19:39:13.000000000 +0000
 @@ -637,6 +637,23 @@
  AC_SUBST([freetype_cflags])
  AC_SUBST([freetype_libs])
@@ -75,7 +75,7 @@ diff -Nur -x '*.orig' -x '*~' grub2/configure.ac grub2.new/configure.ac
  # Output files.
 diff -Nur -x '*.orig' -x '*~' grub2/util/deviceiter.c grub2.new/util/deviceiter.c
 --- grub2/util/deviceiter.c	2009-11-30 02:42:18.000000000 +0000
-+++ grub2.new/util/deviceiter.c	2010-01-26 15:36:32.000000000 +0000
++++ grub2.new/util/deviceiter.c	2010-01-31 19:39:13.000000000 +0000
 @@ -31,6 +31,8 @@
  
  #include <grub/util/misc.h>
@@ -252,7 +252,7 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/deviceiter.c grub2.new/util/deviceiter.
  
 diff -Nur -x '*.orig' -x '*~' grub2/util/grub-mkdevicemap.c grub2.new/util/grub-mkdevicemap.c
 --- grub2/util/grub-mkdevicemap.c	2010-01-20 01:20:49.000000000 +0000
-+++ grub2.new/util/grub-mkdevicemap.c	2010-01-26 15:36:32.000000000 +0000
++++ grub2.new/util/grub-mkdevicemap.c	2010-01-31 19:39:13.000000000 +0000
 @@ -31,6 +31,7 @@
  
  #include <grub/util/misc.h>
@@ -297,8 +297,8 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/grub-mkdevicemap.c grub2.new/util/grub-
  
    free (dev_map);
 diff -Nur -x '*.orig' -x '*~' grub2/util/hostdisk.c grub2.new/util/hostdisk.c
---- grub2/util/hostdisk.c	2010-01-26 15:35:40.000000000 +0000
-+++ grub2.new/util/hostdisk.c	2010-01-26 15:36:32.000000000 +0000
+--- grub2/util/hostdisk.c	2010-01-31 19:38:35.000000000 +0000
++++ grub2.new/util/hostdisk.c	2010-01-31 19:39:13.000000000 +0000
 @@ -97,6 +97,10 @@
  # include <sys/disk.h>
  #endif
@@ -465,7 +465,7 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/hostdisk.c grub2.new/util/hostdisk.c
  {
  #if defined(__linux__)
    char *path = xmalloc (PATH_MAX);
-@@ -829,6 +940,83 @@
+@@ -829,6 +940,96 @@
  	  p[4] = '\0';
  	  return path;
  	}
@@ -478,7 +478,7 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/hostdisk.c grub2.new/util/hostdisk.c
 +	  uint32_t maj, min;
 +	  struct dm_tree_node *node, *child;
 +	  void *handle;
-+	  const char *node_uuid, *child_uuid, *child_name;
++	  const char *node_uuid, *mapper_name, *child_uuid, *child_name;
 +
 +	  if (! tree)
 +	    tree = dm_tree_create ();
@@ -516,6 +516,7 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/hostdisk.c grub2.new/util/hostdisk.c
 +	    }
 +
 +	  handle = NULL;
++	  mapper_name = NULL;
 +	  /* Counter-intuitively, device-mapper refers to the disk-like
 +	     device containing a DM-RAID partition device as a "child" of
 +	     the partition device.  */
@@ -523,33 +524,45 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/hostdisk.c grub2.new/util/hostdisk.c
 +	  if (! child)
 +	    {
 +	      grub_dprintf ("hostdisk", "%s has no DM children\n", path);
-+	      return NULL;
++	      goto devmapper_out;
 +	    }
 +	  child_uuid = dm_tree_node_get_uuid (child);
 +	  if (! child_uuid)
 +	    {
 +	      grub_dprintf ("hostdisk", "%s child has no DM uuid\n", path);
-+	      return NULL;
++	      goto devmapper_out;
 +	    }
 +	  else if (strncmp (child_uuid, "DMRAID-", 7) != 0)
 +	    {
 +	      grub_dprintf ("hostdisk", "%s child is not DM-RAID\n", path);
-+	      return NULL;
++	      goto devmapper_out;
 +	    }
 +	  child_name = dm_tree_node_get_name (child);
 +	  if (! child_name)
 +	    {
 +	      grub_dprintf ("hostdisk", "%s child has no DM name\n", path);
-+	      return NULL;
++	      goto devmapper_out;
 +	    }
++	  mapper_name = child_name;
 +
-+	  return xasprintf ("/dev/mapper/%s", child_name);
++devmapper_out:
++	  if (! mapper_name)
++	    {
++	      /* This is a DM-RAID disk, not a partition.  */
++	      mapper_name = dm_tree_node_get_name (node);
++	      if (! mapper_name)
++		{
++		  grub_dprintf ("hostdisk", "%s has no DM name\n", path);
++		  return NULL;
++		}
++	    }
++	  return xasprintf ("/dev/mapper/%s", mapper_name);
 +	}
 +#endif /* HAVE_DEVICE_MAPPER */
      }
  
    return path;
-@@ -884,12 +1072,12 @@
+@@ -884,12 +1085,12 @@
  #endif
  
  static int
@@ -564,7 +577,7 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/hostdisk.c grub2.new/util/hostdisk.c
    if (! os_disk)
      return -1;
  
-@@ -923,7 +1111,7 @@
+@@ -923,7 +1124,7 @@
        return 0;
      }
  
@@ -573,7 +586,7 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/hostdisk.c grub2.new/util/hostdisk.c
    if (drive < 0)
      {
        grub_error (GRUB_ERR_BAD_DEVICE,
-@@ -931,8 +1119,8 @@
+@@ -931,8 +1132,8 @@
        return 0;
      }
  
@@ -584,7 +597,7 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/hostdisk.c grub2.new/util/hostdisk.c
      return make_device_name (drive, -1, -1);
  
  #if defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__APPLE__)
-@@ -954,8 +1142,7 @@
+@@ -954,8 +1155,7 @@
    {
      char *name;
      grub_disk_t disk;
@@ -594,7 +607,7 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/hostdisk.c grub2.new/util/hostdisk.c
      int dos_part = -1;
      int bsd_part = -1;
      auto int find_partition (grub_disk_t disk,
-@@ -985,7 +1172,7 @@
+@@ -985,7 +1185,7 @@
  			      partition->index, partition->start);
  	  }
  
@@ -603,7 +616,7 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/hostdisk.c grub2.new/util/hostdisk.c
  	  {
  	    if (pcdata)
  	      {
-@@ -1008,28 +1195,16 @@
+@@ -1008,28 +1208,16 @@
      if (MAJOR (st.st_rdev) == FLOPPY_MAJOR)
        return name;
  
