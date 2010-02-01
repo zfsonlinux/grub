@@ -1,3 +1,11 @@
+grub2 (1.98~20100115-1ubuntu3) lucid; urgency=low
+
+  * Build-depend on libdevmapper-dev for DM-RAID probing patch.
+  * Handle conversion of DM-RAID disk paths (as well as partition paths) to
+    GRUB drive names.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 01 Feb 2010 15:31:07 +0000
+
 grub2 (1.98~20100115-1ubuntu2) lucid; urgency=low
 
   * Restore patch to suppress progress messages as the kernel and initrd
