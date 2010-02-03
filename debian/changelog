@@ -1,3 +1,79 @@
+grub2 (1.98~20100128-1ubuntu1) lucid; urgency=low
+
+  * Resynchronise with Debian.  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script: title,
+      recovery mode, quiet option, tweak how memtest86+ is displayed, and
+      use UUIDs where appropriate.
+    - Conflict with grub (<< 0.97-54) as well as grub-legacy.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel= options if kdump and makedumpfile are available.
+    - If other operating systems are installed, then automatically unhide
+      the menu. Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus
+      if available to check whether Shift is pressed. If it is, show the
+      menu, otherwise boot immediately. If keystatus is not available, then
+      fall back to a short delay interruptible with Escape.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Don't display introductory message about line editing unless we're
+      actually offering a shell prompt. Don't clear the screen just before
+      booting if we never drew the menu in the first place.
+    - Remove some verbose messages printed before reading the configuration
+      file.
+    - Suppress progress messages as the kernel and initrd load for
+      non-recovery kernel menu entries.
+    - Keep the loopback file open so that subsequent changes to the "root"
+      environment variable don't affect it.
+    - Change prepare_grub_to_access_device to handle filesystems
+      loop-mounted on file images.
+    - Ignore devices loop-mounted from files in 10_linux.
+    - Show the boot menu if the previous boot failed, that is if it failed
+      to get to the end of one of the normal runlevels.
+    - Handle RAID devices containing virtio components.
+    - Improve DM-RAID probing support.
+  * Don't generate /boot/grub/device.map during grub-install by default.
+  * Store grub-pc/install_devices as persistent device names under
+    /dev/disk/by-id/.  Migrate previous device names to that, with explicit
+    confirmation in non-trivial cases to make sure we got the right ones.  If
+    the devices we were told to install to ever go away, ask again.
+  * If the user opts to install GRUB nowhere, make sure they really mean it.
+  * Backport disk read fixes from upstream.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 03 Feb 2010 16:53:33 -0800
+
+grub2 (1.98~20100128-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Fix corruption problem when reading files from CDROM.  (Closes: #567219)
+
+  [ Felix Zielcke ]
+  * Never strip kernel.img in rules. Upstream already does it when it
+    can be done. (Closes: #561933)
+  * Bump Standards-Version to 3.8.4.
+
+  [ Robert Millan ]
+  * rules: Run the testsuite (make check) when building grub-pc.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Thu, 28 Jan 2010 16:28:45 +0100
+
+grub2 (1.98~20100126-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Includes mipsel-yeeloong port.
+
+  [ Robert Millan ]
+  * config.in: Lower priority of grub2/linux_cmdline_default.
+
+  [ Felix Zielcke ]
+  * Drop `CFLAGS=-O0' workaround on powerpc. Should be fixed correctly now.
+  * Ship grub-bin2h and grub-script-check in grub-common.
+  * Terminate NEWS.Debian with a blank line like lintian would suggest
+    if that check would be working correctly.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 26 Jan 2010 19:26:25 +0100
+
 grub2 (1.98~20100115-1ubuntu3) lucid; urgency=low
 
   * Build-depend on libdevmapper-dev for DM-RAID probing patch.

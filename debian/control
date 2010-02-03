@@ -1,7 +1,7 @@
 Source: grub2
 Section: admin
 Priority: extra
-Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: GRUB Maintainers <pkg-grub-devel@lists.alioth.debian.org>
 Uploaders: Robert Millan <rmh.debian@aybabtu.com>, Felix Zielcke <fzielcke@z-51.de>, Jordi Mallach <jordi@debian.org>
 DM-Upload-Allowed: yes
@@ -24,7 +24,7 @@ Build-Depends: cdbs,
  gettext,
  libdevmapper-dev,
 Build-Conflicts: autoconf2.13 
-Standards-Version: 3.8.3
+Standards-Version: 3.8.4
 Homepage: http://www.gnu.org/software/grub/grub-2.en.html
 XS-Debian-Vcs-Bzr: https://alioth.debian.org/anonscm/bzr/pkg-grub/trunk/grub/
 XS-Debian-Vcs-Browser: http://bzr.debian.org/loggerhead/pkg-grub/
@@ -53,7 +53,7 @@ Description: GRand Unified Bootloader, version 2 (dummy package)
 
 
 Package: grub-common
-Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64 lpia powerpc sparc
+Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64 lpia powerpc sparc mipsel
 Depends: base-files (>= 4.0.1~), dpkg (>= 1.15.4) | install-info | dpkg (<= 1.14.25), lsb-base (>= 3.0-6), ${shlibs:Depends}, ${misc:Depends}, gettext-base
 Replaces: grub-pc (<< 1.97+20091114-1), grub-ieee1275 (<< 1.96+20080831-1), grub-efi (<< 1.96+20080831-1), grub-coreboot (<< 1.97+20091114-1), grub-linuxbios (<< 1.96+20080831-1)
 Recommends: os-prober (>= 1.33)
@@ -200,3 +200,20 @@ Description: GRUB firmware image for QEMU
  contain any code from coreboot itself, and is only suitable for QEMU. If
  you want to install GRUB as firmware on real hardware, you need to use the
  grub-coreboot package, and manually combine that with coreboot.
+
+Package: grub-yeeloong
+Architecture: mipsel
+Depends: ${shlibs:Depends}, grub-common (= ${binary:Version}), ${misc:Depends}, ucf
+Suggests: os-prober
+Description: GRand Unified Bootloader, version 2 (Yeeloong version)
+ GRUB is a portable, powerful bootloader.  This version of GRUB is based on a
+ cleaner design than its predecessors, and provides the following new features:
+ .
+  - Scripting in grub.cfg using BASH-like syntax.
+  - Support for modern partition maps such as GPT.
+  - Modular generation of grub.cfg via update-grub.  Packages providing GRUB
+    add-ons can plug in their own script rules and trigger updates by invoking
+    update-grub2.
+ .
+ This package contains a version of GRUB that has been built for use with
+ the Lemote Yeeloong laptop.

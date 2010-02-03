@@ -1,0 +1,85 @@
+Ubuntu: Fix disk read problems.
+Upstream: Backport of r2152 and r2153.
+
+diff -Nur -x '*.orig' -x '*~' grub2/kern/disk.c grub2.new/kern/disk.c
+--- grub2/kern/disk.c	2010-02-01 14:33:16.000000000 -0800
++++ grub2.new/kern/disk.c	2010-02-03 15:52:28.000000000 -0800
+@@ -441,7 +441,7 @@
+ 
+ 	      grub_errno = GRUB_ERR_NONE;
+ 
+-	      num = ((size + real_offset + pos + GRUB_DISK_SECTOR_SIZE - 1)
++	      num = ((size + real_offset + GRUB_DISK_SECTOR_SIZE - 1)
+ 		     >> GRUB_DISK_SECTOR_BITS);
+ 
+ 	      p = grub_realloc (tmp_buf, num << GRUB_DISK_SECTOR_BITS);
+@@ -458,7 +458,7 @@
+ 		  goto finish;
+ 		}
+ 
+-	      grub_memcpy (buf, tmp_buf + pos + real_offset, size);
++	      grub_memcpy (buf, tmp_buf + real_offset, size);
+ 
+ 	      /* Call the read hook, if any.  */
+ 	      if (disk->read_hook)
+diff -Nur -x '*.orig' -x '*~' grub2/util/hostdisk.c grub2.new/util/hostdisk.c
+--- grub2/util/hostdisk.c	2010-02-03 15:52:01.000000000 -0800
++++ grub2.new/util/hostdisk.c	2010-02-03 15:52:31.000000000 -0800
+@@ -447,7 +447,8 @@
+     char dev[PATH_MAX];
+ 
+     strcpy (dev, map[disk->id].device);
+-    if (disk->partition && strncmp (map[disk->id].device, "/dev/", 5) == 0)
++    if (disk->partition && sector >= disk->partition->start
++	&& strncmp (map[disk->id].device, "/dev/", 5) == 0)
+       is_partition = linux_find_partition (dev, disk->partition->start);
+ 
+     /* Open the partition.  */
+@@ -601,6 +602,23 @@
+ {
+   int fd;
+ 
++  /* Split pre-partition and partition reads.  */
++  if (disk->partition && sector < disk->partition->start
++      && sector + size > disk->partition->start)
++    {
++      grub_err_t err;
++      err = grub_util_biosdisk_read (disk, sector,
++				     disk->partition->start - sector,
++				     buf);
++      if (err)
++	return err;
++
++      return grub_util_biosdisk_read (disk, disk->partition->start,
++				      size - (disk->partition->start - sector),
++				      buf + ((disk->partition->start - sector)
++					     << GRUB_DISK_SECTOR_BITS));
++    }
++
+   fd = open_device (disk, sector, O_RDONLY);
+   if (fd < 0)
+     return grub_errno;
+@@ -638,6 +656,23 @@
+ {
+   int fd;
+ 
++  /* Split pre-partition and partition writes.  */
++  if (disk->partition && sector < disk->partition->start
++      && sector + size > disk->partition->start)
++    {
++      grub_err_t err;
++      err = grub_util_biosdisk_write (disk, sector,
++				      disk->partition->start - sector,
++				      buf);
++      if (err)
++	return err;
++
++      return grub_util_biosdisk_write (disk, disk->partition->start,
++				       size - (disk->partition->start - sector),
++				       buf + ((disk->partition->start - sector)
++					      << GRUB_DISK_SECTOR_BITS));
++    }
++
+   fd = open_device (disk, sector, O_WRONLY);
+   if (fd < 0)
+     return grub_errno;

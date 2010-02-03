@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Tell grub that resume was succesfull
+# Tell grub that resume was successful
 
 case "$1" in
 	thaw)
