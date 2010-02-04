@@ -220,7 +220,7 @@ case "$1" in
         else
           while :; do
             question=grub-pc/install_devices
-            device_map="$(grub-mkdevicemap -m - | grep -v '^(fd[0-9]\+)')"
+            device_map="$(grub-mkdevicemap -m - | grep -v '^(fd[0-9]\+)' || true)"
             devices="$(echo "$device_map" | cut -f2)"
             if dpkg --compare-versions "$2" lt 1.98~20100128-1ubuntu1; then
               # Migrate to new by-id naming scheme.

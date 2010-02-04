@@ -1,3 +1,14 @@
+grub2 (1.98~20100128-1ubuntu2) lucid; urgency=low
+
+  [ Michael Vogt ]
+  * Change the priority to optional to match the priority of grub.  This
+    prevents grub-pc getting removed in favour of grub (LP: #449679).
+
+  [ Colin Watson ]
+  * Stop the postinst failing if there are no devices.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 04 Feb 2010 12:44:29 -0800
+
 grub2 (1.98~20100128-1ubuntu1) lucid; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:
@@ -35,9 +46,10 @@ grub2 (1.98~20100128-1ubuntu1) lucid; urgency=low
     - Improve DM-RAID probing support.
   * Don't generate /boot/grub/device.map during grub-install by default.
   * Store grub-pc/install_devices as persistent device names under
-    /dev/disk/by-id/.  Migrate previous device names to that, with explicit
-    confirmation in non-trivial cases to make sure we got the right ones.  If
-    the devices we were told to install to ever go away, ask again.
+    /dev/disk/by-id/ (LP: #496435).  Migrate previous device names to that,
+    with explicit confirmation in non-trivial cases to make sure we got the
+    right ones.  If the devices we were told to install to ever go away, ask
+    again.
   * If the user opts to install GRUB nowhere, make sure they really mean it.
   * Backport disk read fixes from upstream.
 
