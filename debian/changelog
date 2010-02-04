@@ -1,3 +1,11 @@
+grub2 (1.98~20100128-1ubuntu3) lucid; urgency=low
+
+  * Stop forcing gfxpayload=keep when CONFIG_FB_EFI=y, which it always is on
+    Ubuntu kernels; this apparently causes trouble with some KMS
+    framebuffers.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 04 Feb 2010 18:23:39 -0800
+
 grub2 (1.98~20100128-1ubuntu2) lucid; urgency=low
 
   [ Michael Vogt ]
