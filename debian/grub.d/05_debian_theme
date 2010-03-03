@@ -16,7 +16,7 @@ set_mono_theme()
 {
   cat << EOF
 set menu_color_normal=white/black
-set menu_color_highlight=black/white
+set menu_color_highlight=black/light-gray
 EOF
 }
 

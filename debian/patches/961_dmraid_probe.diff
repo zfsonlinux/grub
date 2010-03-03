@@ -4,8 +4,8 @@ Upstream: Maintained in an upstream branch,
  http://lists.gnu.org/archive/html/grub-devel/2010-01/msg00345.html
 
 diff -Nur -x '*.orig' -x '*~' grub2/ChangeLog.dmraid-probe grub2.new/ChangeLog.dmraid-probe
---- grub2/ChangeLog.dmraid-probe	1970-01-01 01:00:00.000000000 +0100
-+++ grub2.new/ChangeLog.dmraid-probe	2010-01-31 19:39:13.000000000 +0000
+--- grub2/ChangeLog.dmraid-probe	1969-12-31 16:00:00.000000000 -0800
++++ grub2.new/ChangeLog.dmraid-probe	2010-02-06 10:33:54.000000000 -0800
 @@ -0,0 +1,26 @@
 +2010-01-31  Colin Watson  <cjwatson@ubuntu.com>
 +
@@ -34,8 +34,8 @@ diff -Nur -x '*.orig' -x '*~' grub2/ChangeLog.dmraid-probe grub2.new/ChangeLog.d
 +	(grub_refresh): New function.
 +	(main): Set debug=all if -v -v is used.
 diff -Nur -x '*.orig' -x '*~' grub2/conf/common.rmk grub2.new/conf/common.rmk
---- grub2/conf/common.rmk	2010-01-20 01:20:48.000000000 +0000
-+++ grub2.new/conf/common.rmk	2010-01-31 19:39:13.000000000 +0000
+--- grub2/conf/common.rmk	2010-02-06 10:32:37.000000000 -0800
++++ grub2.new/conf/common.rmk	2010-02-06 10:33:54.000000000 -0800
 @@ -3,7 +3,8 @@
  sbin_UTILITIES += grub-mkdevicemap
  grub_mkdevicemap_SOURCES = gnulib/progname.c util/grub-mkdevicemap.c \
@@ -47,9 +47,9 @@ diff -Nur -x '*.orig' -x '*~' grub2/conf/common.rmk grub2.new/conf/common.rmk
  ifeq ($(target_cpu)-$(platform), sparc64-ieee1275)
  grub_mkdevicemap_SOURCES += util/ieee1275/ofpath.c util/ieee1275/devicemap.c
 diff -Nur -x '*.orig' -x '*~' grub2/configure.ac grub2.new/configure.ac
---- grub2/configure.ac	2010-01-31 19:38:31.000000000 +0000
-+++ grub2.new/configure.ac	2010-01-31 19:39:13.000000000 +0000
-@@ -637,6 +637,23 @@
+--- grub2/configure.ac	2010-02-06 10:32:49.000000000 -0800
++++ grub2.new/configure.ac	2010-02-06 10:33:54.000000000 -0800
+@@ -660,6 +660,22 @@
  AC_SUBST([freetype_cflags])
  AC_SUBST([freetype_libs])
  
@@ -67,15 +67,14 @@ diff -Nur -x '*.orig' -x '*~' grub2/configure.ac grub2.new/configure.ac
 +                AC_DEFINE([HAVE_DEVICE_MAPPER], [1],
 +                          [Define to 1 if you have the devmapper library.])],
 +               [device_mapper_excuse="need devmapper library"])
-+  AC_SUBST([LIBDEVMAPPER])
 +fi
 +
  AC_SUBST(ASFLAGS)
  
  # Output files.
 diff -Nur -x '*.orig' -x '*~' grub2/util/deviceiter.c grub2.new/util/deviceiter.c
---- grub2/util/deviceiter.c	2009-11-30 02:42:18.000000000 +0000
-+++ grub2.new/util/deviceiter.c	2010-01-31 19:39:13.000000000 +0000
+--- grub2/util/deviceiter.c	2010-02-06 10:32:37.000000000 -0800
++++ grub2.new/util/deviceiter.c	2010-02-06 10:33:54.000000000 -0800
 @@ -31,6 +31,8 @@
  
  #include <grub/util/misc.h>
@@ -251,8 +250,8 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/deviceiter.c grub2.new/util/deviceiter.
  }
  
 diff -Nur -x '*.orig' -x '*~' grub2/util/grub-mkdevicemap.c grub2.new/util/grub-mkdevicemap.c
---- grub2/util/grub-mkdevicemap.c	2010-01-20 01:20:49.000000000 +0000
-+++ grub2.new/util/grub-mkdevicemap.c	2010-01-31 19:39:13.000000000 +0000
+--- grub2/util/grub-mkdevicemap.c	2010-02-06 10:32:37.000000000 -0800
++++ grub2.new/util/grub-mkdevicemap.c	2010-02-06 10:33:54.000000000 -0800
 @@ -31,6 +31,7 @@
  
  #include <grub/util/misc.h>
@@ -297,8 +296,8 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/grub-mkdevicemap.c grub2.new/util/grub-
  
    free (dev_map);
 diff -Nur -x '*.orig' -x '*~' grub2/util/hostdisk.c grub2.new/util/hostdisk.c
---- grub2/util/hostdisk.c	2010-01-31 19:38:35.000000000 +0000
-+++ grub2.new/util/hostdisk.c	2010-01-31 19:39:13.000000000 +0000
+--- grub2/util/hostdisk.c	2010-02-06 10:32:55.000000000 -0800
++++ grub2.new/util/hostdisk.c	2010-02-06 10:33:54.000000000 -0800
 @@ -97,6 +97,10 @@
  # include <sys/disk.h>
  #endif
