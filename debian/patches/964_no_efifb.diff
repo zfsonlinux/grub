@@ -1,5 +1,5 @@
-Ubuntu: gfxpayload=keep seems to cause trouble with KMS framebuffers, and in
- any case assuming that efifb is applicable to non-EFI systems seems
+Description: gfxpayload=keep seems to cause trouble with KMS framebuffers,
+ and in any case assuming that efifb is applicable to non-EFI systems seems
  optimistic so this test is bogus.
 
 diff -Nur -x '*.orig' -x '*~' grub2/util/grub.d/10_linux.in grub2.new/util/grub.d/10_linux.in

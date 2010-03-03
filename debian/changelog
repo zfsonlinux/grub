@@ -1,3 +1,20 @@
+grub2 (1.98~20100128-1ubuntu4) lucid; urgency=low
+
+  [ Colin Watson ]
+  * Update DM-RAID probing patch, removing some configure.ac cruft.
+  * Add patch from Colin King to shave eight bytes off the
+    pre-partition-table part of boot.img.
+  * Don't display "GRUB loading" unless Shift is held down.
+  * Use light-gray as the default background for highlighted menu entries;
+    white is not safe because some systems interpret the top bit as blink
+    (thanks, proski; LP: #527334).
+  * Adjust versions of grub-doc and grub-legacy-doc conflicts to tolerate
+    our backport of the grub-doc split (LP: #493968).
+  * Optimise hostdisk device handling, substantially speeding up grub-probe
+    filesystem reads (LP: #425650).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 03 Mar 2010 20:33:03 +0000
+
 grub2 (1.98~20100128-1ubuntu3) lucid; urgency=low
 
   * Stop forcing gfxpayload=keep when CONFIG_FB_EFI=y, which it always is on
