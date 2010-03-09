@@ -3,7 +3,7 @@ Section: admin
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: GRUB Maintainers <pkg-grub-devel@lists.alioth.debian.org>
-Uploaders: Robert Millan <rmh.debian@aybabtu.com>, Felix Zielcke <fzielcke@z-51.de>, Jordi Mallach <jordi@debian.org>
+Uploaders: Robert Millan <rmh.debian@aybabtu.com>, Felix Zielcke <fzielcke@z-51.de>, Jordi Mallach <jordi@debian.org>, Colin Watson <cjwatson@debian.org>
 DM-Upload-Allowed: yes
 Build-Depends: cdbs,
  debhelper (>= 7),
@@ -22,6 +22,7 @@ Build-Depends: cdbs,
  xfonts-unifont,
  libfreetype6-dev,
  gettext,
+ libusb-dev,
  libdevmapper-dev,
 Build-Conflicts: autoconf2.13 
 Standards-Version: 3.8.4

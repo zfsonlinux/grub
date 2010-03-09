@@ -1,3 +1,91 @@
+grub2 (1.98-1ubuntu1) lucid; urgency=low
+
+  * Resynchronise with Debian (bug-fixes relative to previous snapshot
+    release).  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script: title,
+      recovery mode, quiet option, tweak how memtest86+ is displayed, and
+      use UUIDs where appropriate.
+    - Conflict with grub (<< 0.97-54) as well as grub-legacy.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel= options if kdump and makedumpfile are available.
+    - If other operating systems are installed, then automatically unhide
+      the menu. Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus
+      if available to check whether Shift is pressed. If it is, show the
+      menu, otherwise boot immediately. If keystatus is not available, then
+      fall back to a short delay interruptible with Escape.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Don't display introductory message about line editing unless we're
+      actually offering a shell prompt. Don't clear the screen just before
+      booting if we never drew the menu in the first place.
+    - Remove some verbose messages printed before reading the configuration
+      file.
+    - Suppress progress messages as the kernel and initrd load for
+      non-recovery kernel menu entries.
+    - Keep the loopback file open so that subsequent changes to the "root"
+      environment variable don't affect it.
+    - Change prepare_grub_to_access_device to handle filesystems
+      loop-mounted on file images.
+    - Ignore devices loop-mounted from files in 10_linux.
+    - Show the boot menu if the previous boot failed, that is if it failed
+      to get to the end of one of the normal runlevels.
+    - Handle RAID devices containing virtio components.
+    - Improve DM-RAID probing support.
+    - Don't generate /boot/grub/device.map during grub-install by default.
+    - Store grub-pc/install_devices as persistent device names under
+      /dev/disk/by-id/.
+    - Change priority to optional to match the priority of grub.
+    - Shave eight bytes off the pre-partition-table part of boot.img.
+    - Don't display "GRUB loading" unless Shift is held down.
+    - Adjust versions of grub-doc and grub-legacy-doc conflicts to tolerate
+      our backport of the grub-doc split.
+    - Optimise hostdisk device handling, substantially speeding up
+      grub-probe filesystem reads.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 09 Mar 2010 22:18:14 +0000
+
+grub2 (1.98-1) unstable; urgency=low
+
+  * New upstream release (closes: #572898).
+    - Fix grub-script-check to handle empty lines (closes: #572302).
+    - Fix offset computation when reading last sectors.  Partition reads and
+      writes within and outside a partition (closes: #567469, #567884).
+    - Fix script execution error handling bug that meant that an error in a
+      menuentry's last statement caused the whole menuentry to fail (closes:
+      #566538, LP: #464743).
+    - Support GRUB_GFXPAYLOAD_LINUX (closes: #536453, LP: #416772).
+
+  [ Samuel Thibault ]
+  * Add GRUB_INIT_TUNE example to /etc/default/grub (closes: #570340).
+
+  [ Colin Watson ]
+  * Build-depend on libusb-dev so that grub-emu is reliably built with USB
+    support (closes: #572854).
+  * Update directions in debian/rules on exporting grub-extras to account
+    for it being maintained in Bazaar nowadays.
+  * Add myself to Uploaders.
+  * Acknowledge NMUs, thanks to Torsten Landschoff and Julien Cristau.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 09 Mar 2010 13:25:35 +0000
+
+grub2 (1.98~20100128-1.2) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Stop setting gfxpayload=keep (closes: #567245).
+
+ -- Julien Cristau <jcristau@debian.org>  Sun, 14 Feb 2010 20:37:51 +0100
+
+grub2 (1.98~20100128-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Apply trivial patch (already merged upstream) fixing the offset
+    computation for non-cached reads (closes: #567637).
+
+ -- Torsten Landschoff <torsten@debian.org>  Mon, 08 Feb 2010 22:15:01 +0100
+
 grub2 (1.98~20100128-1ubuntu4) lucid; urgency=low
 
   [ Colin Watson ]
