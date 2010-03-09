@@ -1,6 +1,6 @@
 diff -Nur -x '*.orig' -x '*~' grub2/util/grub.d/00_header.in grub2.new/util/grub.d/00_header.in
---- grub2/util/grub.d/00_header.in	2010-01-26 15:29:09.000000000 +0000
-+++ grub2.new/util/grub.d/00_header.in	2010-01-26 15:29:11.000000000 +0000
+--- grub2/util/grub.d/00_header.in	2010-03-09 16:58:14.000000000 +0000
++++ grub2.new/util/grub.d/00_header.in	2010-03-09 16:58:16.000000000 +0000
 @@ -57,6 +57,11 @@
      save_env saved_entry
    fi
@@ -13,7 +13,7 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/grub.d/00_header.in grub2.new/util/grub
  EOF
  
  case ${GRUB_TERMINAL_INPUT}:${GRUB_TERMINAL_OUTPUT} in
-@@ -130,5 +135,9 @@
+@@ -143,7 +148,11 @@
  fi
  
  cat << EOF
@@ -24,16 +24,18 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/grub.d/00_header.in grub2.new/util/grub
 +  set timeout=${GRUB_TIMEOUT}
 +fi
  EOF
+ 
+ # Play an initial tune
 diff -Nur -x '*.orig' -x '*~' grub2/util/grub.d/10_linux.in grub2.new/util/grub.d/10_linux.in
---- grub2/util/grub.d/10_linux.in	2010-01-26 15:29:09.000000000 +0000
-+++ grub2.new/util/grub.d/10_linux.in	2010-01-26 15:31:24.000000000 +0000
-@@ -70,6 +70,9 @@
+--- grub2/util/grub.d/10_linux.in	2010-03-09 16:58:14.000000000 +0000
++++ grub2.new/util/grub.d/10_linux.in	2010-03-09 16:59:38.000000000 +0000
+@@ -72,6 +72,9 @@
      title="$(gettext "%s, with Linux %s")"
    fi
-   printf "menuentry \"${title}\" {\n" "${os}" "${version}"
+   printf "menuentry \"${title}\" ${CLASS} {\n" "${os}" "${version}"
 +  cat << EOF
-+        recordfail
++	recordfail
 +EOF
    save_default_entry | sed -e "s/^/\t/"
-   if [ -z "${prepare_boot_cache}" ]; then
-     prepare_boot_cache="$(prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/")"
+ 
+   if [ "x$GRUB_GFXPAYLOAD_LINUX" != x ]; then
