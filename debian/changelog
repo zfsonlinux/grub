@@ -1,3 +1,27 @@
+grub2 (1.98-1) unstable; urgency=low
+
+  * New upstream release (closes: #572898).
+    - Fix grub-script-check to handle empty lines (closes: #572302).
+    - Fix offset computation when reading last sectors.  Partition reads and
+      writes within and outside a partition (closes: #567469, #567884).
+    - Fix script execution error handling bug that meant that an error in a
+      menuentry's last statement caused the whole menuentry to fail (closes:
+      #566538, LP: #464743).
+    - Support GRUB_GFXPAYLOAD_LINUX (closes: #536453, LP: #416772).
+
+  [ Samuel Thibault ]
+  * Add GRUB_INIT_TUNE example to /etc/default/grub (closes: #570340).
+
+  [ Colin Watson ]
+  * Build-depend on libusb-dev so that grub-emu is reliably built with USB
+    support (closes: #572854).
+  * Update directions in debian/rules on exporting grub-extras to account
+    for it being maintained in Bazaar nowadays.
+  * Add myself to Uploaders.
+  * Acknowledge NMUs, thanks to Torsten Landschoff and Julien Cristau.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 09 Mar 2010 13:25:35 +0000
+
 grub2 (1.98~20100128-1.2) unstable; urgency=low
 
   * Non-maintainer upload.
