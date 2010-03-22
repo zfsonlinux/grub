@@ -1,3 +1,19 @@
+grub2 (1.98-1ubuntu2) lucid; urgency=low
+
+  * Fix LVM/RAID probing in the absence of /boot/grub/device.map
+    (LP: #525085, #527401).
+  * Backport my upstream patch to copy .mo files from /usr/share/locale to
+    match where 'make install' puts them (LP: #537998).
+  * Look for .mo files in /usr/share/locale-langpack as well, in preference
+    (LP: #537998).
+  * Don't generate /boot/grub/device.map during grub-mkconfig (we already
+    suppressed it during grub-install, but then grub-mkconfig generated it
+    shortly afterwards, producing confusing results).
+  * Don't run /etc/grub.d/README, even if it somehow ended up being
+    executable (LP: #537123).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 22 Mar 2010 19:57:10 +0000
+
 grub2 (1.98-1ubuntu1) lucid; urgency=low
 
   * Resynchronise with Debian (bug-fixes relative to previous snapshot
