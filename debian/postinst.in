@@ -180,6 +180,7 @@ case "$1" in
     case @PACKAGE@ in
       grub-pc)
         merge_debconf_into_conf "$tmp_default_grub" GRUB_TIMEOUT grub-pc/timeout
+        sed -i -e 's/^\(GRUB_TIMEOUT=\)"\([0-9][0-9]*\)"/\1\2/' "$tmp_default_grub"
         db_get grub-pc/hidden_timeout
         if [ "$RET" = false ]; then
           sed -i -e 's/^GRUB_HIDDEN_TIMEOUT=/#&/' "$tmp_default_grub"
