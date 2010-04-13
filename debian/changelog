@@ -1,3 +1,10 @@
+grub2 (1.98-1ubuntu5) lucid; urgency=low
+
+  * Enclose all translated strings in grub.cfg in single quotes, and escape
+    them appropriately (LP: #552921).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 13 Apr 2010 14:29:45 +0100
+
 grub2 (1.98-1ubuntu4) lucid; urgency=low
 
   * Only use the first word of GRUB_DISTRIBUTOR for --class, to avoid
