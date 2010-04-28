@@ -1,3 +1,13 @@
+grub2 (1.98-1ubuntu6) lucid-proposed; urgency=low
+
+  * When migrating from the old grub-pc/install_devices scheme, check if the
+    old value indicated installation to a single partition on a single disk.
+    In that case, if there is only one disk present and it has a matching
+    partition number, then we can install to that partition without asking
+    (LP: #508173).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 28 Apr 2010 15:48:02 +0100
+
 grub2 (1.98-1ubuntu5) lucid; urgency=low
 
   * Enclose all translated strings in grub.cfg in single quotes, and escape

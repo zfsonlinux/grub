@@ -227,6 +227,7 @@ case "$1" in
               # Migrate to new by-id naming scheme.
               db_get grub-pc/install_devices
               old_devices="$RET"
+              new_devices=
               # Common-case optimisation: if the list of devices is
               # identical to the LHS of grub-mkdevicemap's output, then
               # there's no point asking again; just install to all disks.
@@ -235,7 +236,32 @@ case "$1" in
                    "$(echo "$old_devices" | xargs -n1 | sort)" ]; then
                 new_devices="$(devices_to_ids $devices)"
                 db_set grub-pc/install_devices "$new_devices"
-              else
+              # Alternatively, we might be installing to a single partition
+              # on a single disk, and we can deal with that too if there's
+              # only one available disk and it has an appropriate partition.
+              # This doesn't necessarily work for multiple disks because now
+              # the order matters.
+              elif [ "$(echo "$device_map" | wc -l)" = 1 ] && \
+                   [ "$(echo "$old_devices" | wc -w)" = 1 ] && \
+                   echo "$old_devices" | grep -q ,; then
+                old_device="${old_devices#(}"
+                old_device="${old_device%)}"
+                old_disk="${old_device%,*}"
+                old_partition="${old_device##*,}"
+                new_device="$(echo "$device_map" | grep "^($old_disk)" | \
+                              cut -f2)"
+                new_device="$(device_to_id $new_device)"
+                if [ "$new_device" ]; then
+                  new_device="$new_device-part$old_partition"
+                  # Run through device_to_id again to check for existence.
+                  new_device="$(device_to_id $new_device)"
+                fi
+                if [ "$new_device" ]; then
+                  new_devices="$new_device"
+                  db_set grub-pc/install_devices "$new_device"
+                fi
+              fi
+              if [ -z "$new_devices" ]; then
                 new_devices="$(devices_to_ids $old_devices)"
                 db_set grub-pc/install_devices "$new_devices"
                 # Common-case optimisation: if all devices are translatable
