@@ -1,3 +1,69 @@
+grub2 (1.98+20100527-2) unstable; urgency=low
+
+  * Always override statically-linked-binary Lintian tag for kernel.img;
+    dynamic linking makes no sense here.
+  * kernel.img is stripped upstream where it can be, but override Lintian's
+    error for the cases where it can't.
+  * Override binary-from-other-architecture for kernel.img as well as *.mod
+    when building grub-efi-amd64 on i386.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 01 Jun 2010 13:48:14 +0100
+
+grub2 (1.98+20100527-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Support multiple terminals in grub-mkconfig, e.g.
+      GRUB_TERMINAL='serial console' (closes: #506707).
+    - Speed up consecutive hostdisk operations on the same device (closes:
+      #508834, #574088).
+    - Fix grammar error in grub-setup warning (closes: #559005).
+    - Use xorriso for image creation rather than embedding a modified copy
+      of mkisofs (closes: #570156).
+    - Issue an error rather than segfaulting if only some LVM component
+      devices are in device.map (closes: #577808).
+    - Fix typo in make_device_name which caused grub-probe problems on
+      systems with BSD disk labels (closes: #578201).
+    - Add DM-RAID probe support (closes: #579919).
+    - Include all gnumach kernels on Hurd, not just gnumach and gnumach.gz
+      (closes: #581584).
+
+  [ Colin Watson ]
+  * Restore TEXTDOMAINDIR correction in grub.d files, lost by mistake in a
+    merge.  Noticed by Anthony Fok.
+  * Don't fail on purge if the ucf association has already been taken over
+    by a different grub package (closes: #574176).
+  * Add debian/grub-extras/*/conf/*.mk to AUTOGEN_FILES.
+  * Remove support for the lpia architecture, now removed from Ubuntu.
+  * Conflict with grub (<< 0.97-54) as well as grub-legacy.
+  * Build-depend on libdevmapper-dev for DM-RAID probe support.
+  * Switch to quilt.
+  * Suggest xorriso (>= 0.5.6.pl00) in grub-common, since grub-mkrescue now
+    needs it.  Depend on it in grub-rescue-pc.
+  * Move grub-mkimage to grub-common, now that it only has one
+    implementation.
+  * Clean up temporary files used while building grub-firmware-qemu.
+  * Make grub-probe work with symlinks under /dev/mapper (closes: #550704).
+  * When upgrading a system where GRUB 2 is chainloaded from GRUB Legacy and
+    upgrade-from-grub-legacy has not been run, upgrade the chainloaded image
+    rather than confusing the user by prompting them where they want to
+    install GRUB (closes: #546822).
+  * Build-depend on libsdl1.2-dev for SDL support in grub-emu.
+  * Don't leak debconf's file descriptor to update-grub, so that the LVM
+    tools called from os-prober don't complain about it (closes: #549976).
+    Other leaks are not this package's fault, may not be bugs at all, and in
+    any case os-prober 1.36 suppresses the warnings.
+  * Build-depend on flex (>= 2.5.35).
+  * Build-depend on gcc-4.4-multilib on amd64.
+
+  [ Updated translations ]
+  * Slovenian (sl.po) by Vanja Cvelbar (closes: #570110).
+  * Vietnamese (vi.po) by Clytie Siddall (closes: #574578).
+  * Tamil (ta.po) by Tirumurti Vasudevan (closes: #578282).
+  * Portuguese (pt.po) by Tiago Fernandes (closes: #580140).
+  * Romanian (ro.po) by Eddy Petrișor / Andrei Popescu (closes: #583185).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 01 Jun 2010 11:24:38 +0100
+
 grub2 (1.98-1) unstable; urgency=low
 
   * New upstream release (closes: #572898).

@@ -20,19 +20,27 @@ mostlyclean-module-cpuid.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-cpuid.mod.1
 UNDSYMFILES += und-cpuid.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+cpuid.mod: pre-cpuid.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(cpuid_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-cpuid.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 cpuid.mod: pre-cpuid.o mod-cpuid.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(cpuid_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-cpuid.o mod-cpuid.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 cpuid.mod: pre-cpuid.o mod-cpuid.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(cpuid_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-cpuid.o mod-cpuid.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-cpuid.o: $(cpuid_mod_DEPENDENCIES) cpuid_mod-commands_i386_cpuid.o
@@ -40,7 +48,7 @@ pre-cpuid.o: $(cpuid_mod_DEPENDENCIES) cpuid_mod-commands_i386_cpuid.o
 	$(TARGET_CC) $(cpuid_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ cpuid_mod-commands_i386_cpuid.o
 
 mod-cpuid.o: mod-cpuid.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(cpuid_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(cpuid_mod_CFLAGS) -DGRUB_FILE=\"mod-cpuid.c\" -c -o $@ $<
 
 mod-cpuid.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'cpuid' $< > $@ || (rm -f $@; exit 1)
@@ -58,7 +66,7 @@ und-cpuid.lst: pre-cpuid.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 cpuid_mod-commands_i386_cpuid.o: commands/i386/cpuid.c $(commands/i386/cpuid.c_DEPENDENCIES)
-	$(TARGET_CC) -Icommands/i386 -I$(srcdir)/commands/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(cpuid_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Icommands/i386 -I$(srcdir)/commands/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(cpuid_mod_CFLAGS) -DGRUB_FILE=\"commands/i386/cpuid.c\" -MD -c -o $@ $<
 -include cpuid_mod-commands_i386_cpuid.d
 
 clean-module-cpuid_mod-commands_i386_cpuid-extra.1:
@@ -117,19 +125,27 @@ mostlyclean-module-at_keyboard.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-at_keyboard.mod.1
 UNDSYMFILES += und-at_keyboard.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+at_keyboard.mod: pre-at_keyboard.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(at_keyboard_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-at_keyboard.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 at_keyboard.mod: pre-at_keyboard.o mod-at_keyboard.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(at_keyboard_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-at_keyboard.o mod-at_keyboard.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 at_keyboard.mod: pre-at_keyboard.o mod-at_keyboard.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(at_keyboard_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-at_keyboard.o mod-at_keyboard.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-at_keyboard.o: $(at_keyboard_mod_DEPENDENCIES) at_keyboard_mod-term_at_keyboard.o
@@ -137,7 +153,7 @@ pre-at_keyboard.o: $(at_keyboard_mod_DEPENDENCIES) at_keyboard_mod-term_at_keybo
 	$(TARGET_CC) $(at_keyboard_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ at_keyboard_mod-term_at_keyboard.o
 
 mod-at_keyboard.o: mod-at_keyboard.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(at_keyboard_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(at_keyboard_mod_CFLAGS) -DGRUB_FILE=\"mod-at_keyboard.c\" -c -o $@ $<
 
 mod-at_keyboard.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'at_keyboard' $< > $@ || (rm -f $@; exit 1)
@@ -155,7 +171,7 @@ und-at_keyboard.lst: pre-at_keyboard.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 at_keyboard_mod-term_at_keyboard.o: term/at_keyboard.c $(term/at_keyboard.c_DEPENDENCIES)
-	$(TARGET_CC) -Iterm -I$(srcdir)/term $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(at_keyboard_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Iterm -I$(srcdir)/term $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(at_keyboard_mod_CFLAGS) -DGRUB_FILE=\"term/at_keyboard.c\" -MD -c -o $@ $<
 -include at_keyboard_mod-term_at_keyboard.d
 
 clean-module-at_keyboard_mod-term_at_keyboard-extra.1:
@@ -214,19 +230,27 @@ mostlyclean-module-vga_text.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-vga_text.mod.1
 UNDSYMFILES += und-vga_text.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+vga_text.mod: pre-vga_text.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(vga_text_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-vga_text.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 vga_text.mod: pre-vga_text.o mod-vga_text.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(vga_text_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-vga_text.o mod-vga_text.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 vga_text.mod: pre-vga_text.o mod-vga_text.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(vga_text_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-vga_text.o mod-vga_text.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-vga_text.o: $(vga_text_mod_DEPENDENCIES) vga_text_mod-term_i386_pc_vga_text.o vga_text_mod-term_i386_vga_common.o
@@ -234,7 +258,7 @@ pre-vga_text.o: $(vga_text_mod_DEPENDENCIES) vga_text_mod-term_i386_pc_vga_text.
 	$(TARGET_CC) $(vga_text_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ vga_text_mod-term_i386_pc_vga_text.o vga_text_mod-term_i386_vga_common.o
 
 mod-vga_text.o: mod-vga_text.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(vga_text_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(vga_text_mod_CFLAGS) -DGRUB_FILE=\"mod-vga_text.c\" -c -o $@ $<
 
 mod-vga_text.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'vga_text' $< > $@ || (rm -f $@; exit 1)
@@ -252,7 +276,7 @@ und-vga_text.lst: pre-vga_text.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 vga_text_mod-term_i386_pc_vga_text.o: term/i386/pc/vga_text.c $(term/i386/pc/vga_text.c_DEPENDENCIES)
-	$(TARGET_CC) -Iterm/i386/pc -I$(srcdir)/term/i386/pc $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(vga_text_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Iterm/i386/pc -I$(srcdir)/term/i386/pc $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(vga_text_mod_CFLAGS) -DGRUB_FILE=\"term/i386/pc/vga_text.c\" -MD -c -o $@ $<
 -include vga_text_mod-term_i386_pc_vga_text.d
 
 clean-module-vga_text_mod-term_i386_pc_vga_text-extra.1:
@@ -290,7 +314,7 @@ video-vga_text_mod-term_i386_pc_vga_text.lst: term/i386/pc/vga_text.c $(term/i38
 	set -e; 	  $(TARGET_CC) -Iterm/i386/pc -I$(srcdir)/term/i386/pc $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(vga_text_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh vga_text > $@ || (rm -f $@; exit 1)
 
 vga_text_mod-term_i386_vga_common.o: term/i386/vga_common.c $(term/i386/vga_common.c_DEPENDENCIES)
-	$(TARGET_CC) -Iterm/i386 -I$(srcdir)/term/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(vga_text_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Iterm/i386 -I$(srcdir)/term/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(vga_text_mod_CFLAGS) -DGRUB_FILE=\"term/i386/vga_common.c\" -MD -c -o $@ $<
 -include vga_text_mod-term_i386_vga_common.d
 
 clean-module-vga_text_mod-term_i386_vga_common-extra.1:
@@ -349,19 +373,27 @@ mostlyclean-module-relocator.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-relocator.mod.1
 UNDSYMFILES += und-relocator.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+relocator.mod: pre-relocator.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(relocator_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-relocator.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 relocator.mod: pre-relocator.o mod-relocator.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(relocator_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-relocator.o mod-relocator.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 relocator.mod: pre-relocator.o mod-relocator.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(relocator_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-relocator.o mod-relocator.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-relocator.o: $(relocator_mod_DEPENDENCIES) relocator_mod-lib_i386_relocator.o relocator_mod-lib_i386_relocator_asm.o relocator_mod-lib_i386_relocator_backward.o
@@ -369,7 +401,7 @@ pre-relocator.o: $(relocator_mod_DEPENDENCIES) relocator_mod-lib_i386_relocator.
 	$(TARGET_CC) $(relocator_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ relocator_mod-lib_i386_relocator.o relocator_mod-lib_i386_relocator_asm.o relocator_mod-lib_i386_relocator_backward.o
 
 mod-relocator.o: mod-relocator.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(relocator_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(relocator_mod_CFLAGS) -DGRUB_FILE=\"mod-relocator.c\" -c -o $@ $<
 
 mod-relocator.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'relocator' $< > $@ || (rm -f $@; exit 1)
@@ -387,7 +419,7 @@ und-relocator.lst: pre-relocator.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 relocator_mod-lib_i386_relocator.o: lib/i386/relocator.c $(lib/i386/relocator.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/i386 -I$(srcdir)/lib/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(relocator_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/i386 -I$(srcdir)/lib/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(relocator_mod_CFLAGS) -DGRUB_FILE=\"lib/i386/relocator.c\" -MD -c -o $@ $<
 -include relocator_mod-lib_i386_relocator.d
 
 clean-module-relocator_mod-lib_i386_relocator-extra.1:
@@ -425,7 +457,7 @@ video-relocator_mod-lib_i386_relocator.lst: lib/i386/relocator.c $(lib/i386/relo
 	set -e; 	  $(TARGET_CC) -Ilib/i386 -I$(srcdir)/lib/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(relocator_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh relocator > $@ || (rm -f $@; exit 1)
 
 relocator_mod-lib_i386_relocator_asm.o: lib/i386/relocator_asm.S $(lib/i386/relocator_asm.S_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/i386 -I$(srcdir)/lib/i386 $(TARGET_CPPFLAGS) -DASM_FILE=1 $(TARGET_ASFLAGS) $(relocator_mod_ASFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/i386 -I$(srcdir)/lib/i386 $(TARGET_CPPFLAGS) -DASM_FILE=1 $(TARGET_ASFLAGS) $(relocator_mod_ASFLAGS) -DGRUB_FILE=\"lib/i386/relocator_asm.S\" -MD -c -o $@ $<
 -include relocator_mod-lib_i386_relocator_asm.d
 
 clean-module-relocator_mod-lib_i386_relocator_asm-extra.1:
@@ -463,7 +495,7 @@ video-relocator_mod-lib_i386_relocator_asm.lst: lib/i386/relocator_asm.S $(lib/i
 	set -e; 	  $(TARGET_CC) -Ilib/i386 -I$(srcdir)/lib/i386 $(TARGET_CPPFLAGS) -DASM_FILE=1 $(TARGET_ASFLAGS) $(relocator_mod_ASFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh relocator > $@ || (rm -f $@; exit 1)
 
 relocator_mod-lib_i386_relocator_backward.o: lib/i386/relocator_backward.S $(lib/i386/relocator_backward.S_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/i386 -I$(srcdir)/lib/i386 $(TARGET_CPPFLAGS) -DASM_FILE=1 $(TARGET_ASFLAGS) $(relocator_mod_ASFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/i386 -I$(srcdir)/lib/i386 $(TARGET_CPPFLAGS) -DASM_FILE=1 $(TARGET_ASFLAGS) $(relocator_mod_ASFLAGS) -DGRUB_FILE=\"lib/i386/relocator_backward.S\" -MD -c -o $@ $<
 -include relocator_mod-lib_i386_relocator_backward.d
 
 clean-module-relocator_mod-lib_i386_relocator_backward-extra.1:
@@ -523,19 +555,27 @@ mostlyclean-module-ata.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-ata.mod.1
 UNDSYMFILES += und-ata.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+ata.mod: pre-ata.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(ata_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-ata.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 ata.mod: pre-ata.o mod-ata.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(ata_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-ata.o mod-ata.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 ata.mod: pre-ata.o mod-ata.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(ata_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-ata.o mod-ata.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-ata.o: $(ata_mod_DEPENDENCIES) ata_mod-disk_ata.o
@@ -543,7 +583,7 @@ pre-ata.o: $(ata_mod_DEPENDENCIES) ata_mod-disk_ata.o
 	$(TARGET_CC) $(ata_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ ata_mod-disk_ata.o
 
 mod-ata.o: mod-ata.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(ata_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(ata_mod_CFLAGS) -DGRUB_FILE=\"mod-ata.c\" -c -o $@ $<
 
 mod-ata.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'ata' $< > $@ || (rm -f $@; exit 1)
@@ -561,7 +601,7 @@ und-ata.lst: pre-ata.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 ata_mod-disk_ata.o: disk/ata.c $(disk/ata.c_DEPENDENCIES)
-	$(TARGET_CC) -Idisk -I$(srcdir)/disk $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(ata_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Idisk -I$(srcdir)/disk $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(ata_mod_CFLAGS) -DGRUB_FILE=\"disk/ata.c\" -MD -c -o $@ $<
 -include ata_mod-disk_ata.d
 
 clean-module-ata_mod-disk_ata-extra.1:
@@ -621,19 +661,27 @@ mostlyclean-module-setpci.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-setpci.mod.1
 UNDSYMFILES += und-setpci.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+setpci.mod: pre-setpci.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(setpci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-setpci.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 setpci.mod: pre-setpci.o mod-setpci.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(setpci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-setpci.o mod-setpci.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 setpci.mod: pre-setpci.o mod-setpci.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(setpci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-setpci.o mod-setpci.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-setpci.o: $(setpci_mod_DEPENDENCIES) setpci_mod-commands_setpci.o
@@ -641,7 +689,7 @@ pre-setpci.o: $(setpci_mod_DEPENDENCIES) setpci_mod-commands_setpci.o
 	$(TARGET_CC) $(setpci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ setpci_mod-commands_setpci.o
 
 mod-setpci.o: mod-setpci.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(setpci_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(setpci_mod_CFLAGS) -DGRUB_FILE=\"mod-setpci.c\" -c -o $@ $<
 
 mod-setpci.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'setpci' $< > $@ || (rm -f $@; exit 1)
@@ -659,7 +707,7 @@ und-setpci.lst: pre-setpci.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 setpci_mod-commands_setpci.o: commands/setpci.c $(commands/setpci.c_DEPENDENCIES)
-	$(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(setpci_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(setpci_mod_CFLAGS) -DGRUB_FILE=\"commands/setpci.c\" -MD -c -o $@ $<
 -include setpci_mod-commands_setpci.d
 
 clean-module-setpci_mod-commands_setpci-extra.1:
@@ -700,12 +748,10 @@ setpci_mod_CFLAGS = $(COMMON_CFLAGS)
 setpci_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
 pkglib_MODULES += multiboot.mod
-multiboot_mod_SOURCES = loader/i386/multiboot.c \
-			loader/i386/multiboot_mbi.c \
-                        loader/multiboot_loader.c
+multiboot_mod_SOURCES = loader/multiboot.c loader/i386/multiboot_mbi.c
 
 clean-module-multiboot.mod.1:
-	rm -f multiboot.mod mod-multiboot.o mod-multiboot.c pre-multiboot.o multiboot_mod-loader_i386_multiboot.o multiboot_mod-loader_i386_multiboot_mbi.o multiboot_mod-loader_multiboot_loader.o und-multiboot.lst
+	rm -f multiboot.mod mod-multiboot.o mod-multiboot.c pre-multiboot.o multiboot_mod-loader_multiboot.o multiboot_mod-loader_i386_multiboot_mbi.o und-multiboot.lst
 
 CLEAN_MODULE_TARGETS += clean-module-multiboot.mod.1
 
@@ -715,32 +761,40 @@ clean-module-multiboot.mod-symbol.1:
 CLEAN_MODULE_TARGETS += clean-module-multiboot.mod-symbol.1
 DEFSYMFILES += def-multiboot.lst
 mostlyclean-module-multiboot.mod.1:
-	rm -f multiboot_mod-loader_i386_multiboot.d multiboot_mod-loader_i386_multiboot_mbi.d multiboot_mod-loader_multiboot_loader.d
+	rm -f multiboot_mod-loader_multiboot.d multiboot_mod-loader_i386_multiboot_mbi.d
 
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-multiboot.mod.1
 UNDSYMFILES += und-multiboot.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+multiboot.mod: pre-multiboot.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(multiboot_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-multiboot.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 multiboot.mod: pre-multiboot.o mod-multiboot.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(multiboot_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-multiboot.o mod-multiboot.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 multiboot.mod: pre-multiboot.o mod-multiboot.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(multiboot_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-multiboot.o mod-multiboot.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
 endif
+endif
 
-pre-multiboot.o: $(multiboot_mod_DEPENDENCIES) multiboot_mod-loader_i386_multiboot.o multiboot_mod-loader_i386_multiboot_mbi.o multiboot_mod-loader_multiboot_loader.o
+pre-multiboot.o: $(multiboot_mod_DEPENDENCIES) multiboot_mod-loader_multiboot.o multiboot_mod-loader_i386_multiboot_mbi.o
 	-rm -f $@
-	$(TARGET_CC) $(multiboot_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ multiboot_mod-loader_i386_multiboot.o multiboot_mod-loader_i386_multiboot_mbi.o multiboot_mod-loader_multiboot_loader.o
+	$(TARGET_CC) $(multiboot_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ multiboot_mod-loader_multiboot.o multiboot_mod-loader_i386_multiboot_mbi.o
 
 mod-multiboot.o: mod-multiboot.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -DGRUB_FILE=\"mod-multiboot.c\" -c -o $@ $<
 
 mod-multiboot.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'multiboot' $< > $@ || (rm -f $@; exit 1)
@@ -757,46 +811,46 @@ und-multiboot.lst: pre-multiboot.o
 	echo 'multiboot' > $@
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
-multiboot_mod-loader_i386_multiboot.o: loader/i386/multiboot.c $(loader/i386/multiboot.c_DEPENDENCIES)
-	$(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -MD -c -o $@ $<
--include multiboot_mod-loader_i386_multiboot.d
+multiboot_mod-loader_multiboot.o: loader/multiboot.c $(loader/multiboot.c_DEPENDENCIES)
+	$(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -DGRUB_FILE=\"loader/multiboot.c\" -MD -c -o $@ $<
+-include multiboot_mod-loader_multiboot.d
 
-clean-module-multiboot_mod-loader_i386_multiboot-extra.1:
-	rm -f cmd-multiboot_mod-loader_i386_multiboot.lst fs-multiboot_mod-loader_i386_multiboot.lst partmap-multiboot_mod-loader_i386_multiboot.lst handler-multiboot_mod-loader_i386_multiboot.lst parttool-multiboot_mod-loader_i386_multiboot.lst video-multiboot_mod-loader_i386_multiboot.lst terminal-multiboot_mod-loader_i386_multiboot.lst
+clean-module-multiboot_mod-loader_multiboot-extra.1:
+	rm -f cmd-multiboot_mod-loader_multiboot.lst fs-multiboot_mod-loader_multiboot.lst partmap-multiboot_mod-loader_multiboot.lst handler-multiboot_mod-loader_multiboot.lst parttool-multiboot_mod-loader_multiboot.lst video-multiboot_mod-loader_multiboot.lst terminal-multiboot_mod-loader_multiboot.lst
 
-CLEAN_MODULE_TARGETS += clean-module-multiboot_mod-loader_i386_multiboot-extra.1
+CLEAN_MODULE_TARGETS += clean-module-multiboot_mod-loader_multiboot-extra.1
 
-COMMANDFILES += cmd-multiboot_mod-loader_i386_multiboot.lst
-FSFILES += fs-multiboot_mod-loader_i386_multiboot.lst
-PARTTOOLFILES += parttool-multiboot_mod-loader_i386_multiboot.lst
-PARTMAPFILES += partmap-multiboot_mod-loader_i386_multiboot.lst
-HANDLERFILES += handler-multiboot_mod-loader_i386_multiboot.lst
-TERMINALFILES += terminal-multiboot_mod-loader_i386_multiboot.lst
-VIDEOFILES += video-multiboot_mod-loader_i386_multiboot.lst
+COMMANDFILES += cmd-multiboot_mod-loader_multiboot.lst
+FSFILES += fs-multiboot_mod-loader_multiboot.lst
+PARTTOOLFILES += parttool-multiboot_mod-loader_multiboot.lst
+PARTMAPFILES += partmap-multiboot_mod-loader_multiboot.lst
+HANDLERFILES += handler-multiboot_mod-loader_multiboot.lst
+TERMINALFILES += terminal-multiboot_mod-loader_multiboot.lst
+VIDEOFILES += video-multiboot_mod-loader_multiboot.lst
 
-cmd-multiboot_mod-loader_i386_multiboot.lst: loader/i386/multiboot.c $(loader/i386/multiboot.c_DEPENDENCIES) gencmdlist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh multiboot > $@ || (rm -f $@; exit 1)
+cmd-multiboot_mod-loader_multiboot.lst: loader/multiboot.c $(loader/multiboot.c_DEPENDENCIES) gencmdlist.sh
+	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh multiboot > $@ || (rm -f $@; exit 1)
 
-fs-multiboot_mod-loader_i386_multiboot.lst: loader/i386/multiboot.c $(loader/i386/multiboot.c_DEPENDENCIES) genfslist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh multiboot > $@ || (rm -f $@; exit 1)
+fs-multiboot_mod-loader_multiboot.lst: loader/multiboot.c $(loader/multiboot.c_DEPENDENCIES) genfslist.sh
+	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh multiboot > $@ || (rm -f $@; exit 1)
 
-parttool-multiboot_mod-loader_i386_multiboot.lst: loader/i386/multiboot.c $(loader/i386/multiboot.c_DEPENDENCIES) genparttoollist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genparttoollist.sh multiboot > $@ || (rm -f $@; exit 1)
+parttool-multiboot_mod-loader_multiboot.lst: loader/multiboot.c $(loader/multiboot.c_DEPENDENCIES) genparttoollist.sh
+	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genparttoollist.sh multiboot > $@ || (rm -f $@; exit 1)
 
-partmap-multiboot_mod-loader_i386_multiboot.lst: loader/i386/multiboot.c $(loader/i386/multiboot.c_DEPENDENCIES) genpartmaplist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh multiboot > $@ || (rm -f $@; exit 1)
+partmap-multiboot_mod-loader_multiboot.lst: loader/multiboot.c $(loader/multiboot.c_DEPENDENCIES) genpartmaplist.sh
+	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh multiboot > $@ || (rm -f $@; exit 1)
 
-handler-multiboot_mod-loader_i386_multiboot.lst: loader/i386/multiboot.c $(loader/i386/multiboot.c_DEPENDENCIES) genhandlerlist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genhandlerlist.sh multiboot > $@ || (rm -f $@; exit 1)
+handler-multiboot_mod-loader_multiboot.lst: loader/multiboot.c $(loader/multiboot.c_DEPENDENCIES) genhandlerlist.sh
+	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genhandlerlist.sh multiboot > $@ || (rm -f $@; exit 1)
 
-terminal-multiboot_mod-loader_i386_multiboot.lst: loader/i386/multiboot.c $(loader/i386/multiboot.c_DEPENDENCIES) genterminallist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genterminallist.sh multiboot > $@ || (rm -f $@; exit 1)
+terminal-multiboot_mod-loader_multiboot.lst: loader/multiboot.c $(loader/multiboot.c_DEPENDENCIES) genterminallist.sh
+	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genterminallist.sh multiboot > $@ || (rm -f $@; exit 1)
 
-video-multiboot_mod-loader_i386_multiboot.lst: loader/i386/multiboot.c $(loader/i386/multiboot.c_DEPENDENCIES) genvideolist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh multiboot > $@ || (rm -f $@; exit 1)
+video-multiboot_mod-loader_multiboot.lst: loader/multiboot.c $(loader/multiboot.c_DEPENDENCIES) genvideolist.sh
+	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh multiboot > $@ || (rm -f $@; exit 1)
 
 multiboot_mod-loader_i386_multiboot_mbi.o: loader/i386/multiboot_mbi.c $(loader/i386/multiboot_mbi.c_DEPENDENCIES)
-	$(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -DGRUB_FILE=\"loader/i386/multiboot_mbi.c\" -MD -c -o $@ $<
 -include multiboot_mod-loader_i386_multiboot_mbi.d
 
 clean-module-multiboot_mod-loader_i386_multiboot_mbi-extra.1:
@@ -833,55 +887,15 @@ terminal-multiboot_mod-loader_i386_multiboot_mbi.lst: loader/i386/multiboot_mbi.
 video-multiboot_mod-loader_i386_multiboot_mbi.lst: loader/i386/multiboot_mbi.c $(loader/i386/multiboot_mbi.c_DEPENDENCIES) genvideolist.sh
 	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh multiboot > $@ || (rm -f $@; exit 1)
 
-multiboot_mod-loader_multiboot_loader.o: loader/multiboot_loader.c $(loader/multiboot_loader.c_DEPENDENCIES)
-	$(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -MD -c -o $@ $<
--include multiboot_mod-loader_multiboot_loader.d
-
-clean-module-multiboot_mod-loader_multiboot_loader-extra.1:
-	rm -f cmd-multiboot_mod-loader_multiboot_loader.lst fs-multiboot_mod-loader_multiboot_loader.lst partmap-multiboot_mod-loader_multiboot_loader.lst handler-multiboot_mod-loader_multiboot_loader.lst parttool-multiboot_mod-loader_multiboot_loader.lst video-multiboot_mod-loader_multiboot_loader.lst terminal-multiboot_mod-loader_multiboot_loader.lst
-
-CLEAN_MODULE_TARGETS += clean-module-multiboot_mod-loader_multiboot_loader-extra.1
-
-COMMANDFILES += cmd-multiboot_mod-loader_multiboot_loader.lst
-FSFILES += fs-multiboot_mod-loader_multiboot_loader.lst
-PARTTOOLFILES += parttool-multiboot_mod-loader_multiboot_loader.lst
-PARTMAPFILES += partmap-multiboot_mod-loader_multiboot_loader.lst
-HANDLERFILES += handler-multiboot_mod-loader_multiboot_loader.lst
-TERMINALFILES += terminal-multiboot_mod-loader_multiboot_loader.lst
-VIDEOFILES += video-multiboot_mod-loader_multiboot_loader.lst
-
-cmd-multiboot_mod-loader_multiboot_loader.lst: loader/multiboot_loader.c $(loader/multiboot_loader.c_DEPENDENCIES) gencmdlist.sh
-	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh multiboot > $@ || (rm -f $@; exit 1)
-
-fs-multiboot_mod-loader_multiboot_loader.lst: loader/multiboot_loader.c $(loader/multiboot_loader.c_DEPENDENCIES) genfslist.sh
-	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh multiboot > $@ || (rm -f $@; exit 1)
-
-parttool-multiboot_mod-loader_multiboot_loader.lst: loader/multiboot_loader.c $(loader/multiboot_loader.c_DEPENDENCIES) genparttoollist.sh
-	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genparttoollist.sh multiboot > $@ || (rm -f $@; exit 1)
-
-partmap-multiboot_mod-loader_multiboot_loader.lst: loader/multiboot_loader.c $(loader/multiboot_loader.c_DEPENDENCIES) genpartmaplist.sh
-	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh multiboot > $@ || (rm -f $@; exit 1)
-
-handler-multiboot_mod-loader_multiboot_loader.lst: loader/multiboot_loader.c $(loader/multiboot_loader.c_DEPENDENCIES) genhandlerlist.sh
-	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genhandlerlist.sh multiboot > $@ || (rm -f $@; exit 1)
-
-terminal-multiboot_mod-loader_multiboot_loader.lst: loader/multiboot_loader.c $(loader/multiboot_loader.c_DEPENDENCIES) genterminallist.sh
-	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genterminallist.sh multiboot > $@ || (rm -f $@; exit 1)
-
-video-multiboot_mod-loader_multiboot_loader.lst: loader/multiboot_loader.c $(loader/multiboot_loader.c_DEPENDENCIES) genvideolist.sh
-	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh multiboot > $@ || (rm -f $@; exit 1)
-
 multiboot_mod_CFLAGS = $(COMMON_CFLAGS)
 multiboot_mod_LDFLAGS = $(COMMON_LDFLAGS)
 multiboot_mod_ASFLAGS = $(COMMON_ASFLAGS)
 
 pkglib_MODULES += multiboot2.mod
-multiboot2_mod_SOURCES = loader/i386/multiboot.c \
-			 loader/i386/multiboot_mbi.c \
-                         loader/multiboot_loader.c
+multiboot2_mod_SOURCES = loader/multiboot.c loader/multiboot_mbi2.c
 
 clean-module-multiboot2.mod.1:
-	rm -f multiboot2.mod mod-multiboot2.o mod-multiboot2.c pre-multiboot2.o multiboot2_mod-loader_i386_multiboot.o multiboot2_mod-loader_i386_multiboot_mbi.o multiboot2_mod-loader_multiboot_loader.o und-multiboot2.lst
+	rm -f multiboot2.mod mod-multiboot2.o mod-multiboot2.c pre-multiboot2.o multiboot2_mod-loader_multiboot.o multiboot2_mod-loader_multiboot_mbi2.o und-multiboot2.lst
 
 CLEAN_MODULE_TARGETS += clean-module-multiboot2.mod.1
 
@@ -891,32 +905,40 @@ clean-module-multiboot2.mod-symbol.1:
 CLEAN_MODULE_TARGETS += clean-module-multiboot2.mod-symbol.1
 DEFSYMFILES += def-multiboot2.lst
 mostlyclean-module-multiboot2.mod.1:
-	rm -f multiboot2_mod-loader_i386_multiboot.d multiboot2_mod-loader_i386_multiboot_mbi.d multiboot2_mod-loader_multiboot_loader.d
+	rm -f multiboot2_mod-loader_multiboot.d multiboot2_mod-loader_multiboot_mbi2.d
 
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-multiboot2.mod.1
 UNDSYMFILES += und-multiboot2.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+multiboot2.mod: pre-multiboot2.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(multiboot2_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-multiboot2.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 multiboot2.mod: pre-multiboot2.o mod-multiboot2.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(multiboot2_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-multiboot2.o mod-multiboot2.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 multiboot2.mod: pre-multiboot2.o mod-multiboot2.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(multiboot2_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-multiboot2.o mod-multiboot2.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
 endif
+endif
 
-pre-multiboot2.o: $(multiboot2_mod_DEPENDENCIES) multiboot2_mod-loader_i386_multiboot.o multiboot2_mod-loader_i386_multiboot_mbi.o multiboot2_mod-loader_multiboot_loader.o
+pre-multiboot2.o: $(multiboot2_mod_DEPENDENCIES) multiboot2_mod-loader_multiboot.o multiboot2_mod-loader_multiboot_mbi2.o
 	-rm -f $@
-	$(TARGET_CC) $(multiboot2_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ multiboot2_mod-loader_i386_multiboot.o multiboot2_mod-loader_i386_multiboot_mbi.o multiboot2_mod-loader_multiboot_loader.o
+	$(TARGET_CC) $(multiboot2_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ multiboot2_mod-loader_multiboot.o multiboot2_mod-loader_multiboot_mbi2.o
 
 mod-multiboot2.o: mod-multiboot2.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -DGRUB_FILE=\"mod-multiboot2.c\" -c -o $@ $<
 
 mod-multiboot2.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'multiboot2' $< > $@ || (rm -f $@; exit 1)
@@ -933,120 +955,612 @@ und-multiboot2.lst: pre-multiboot2.o
 	echo 'multiboot2' > $@
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
-multiboot2_mod-loader_i386_multiboot.o: loader/i386/multiboot.c $(loader/i386/multiboot.c_DEPENDENCIES)
-	$(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -MD -c -o $@ $<
--include multiboot2_mod-loader_i386_multiboot.d
+multiboot2_mod-loader_multiboot.o: loader/multiboot.c $(loader/multiboot.c_DEPENDENCIES)
+	$(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -DGRUB_FILE=\"loader/multiboot.c\" -MD -c -o $@ $<
+-include multiboot2_mod-loader_multiboot.d
 
-clean-module-multiboot2_mod-loader_i386_multiboot-extra.1:
-	rm -f cmd-multiboot2_mod-loader_i386_multiboot.lst fs-multiboot2_mod-loader_i386_multiboot.lst partmap-multiboot2_mod-loader_i386_multiboot.lst handler-multiboot2_mod-loader_i386_multiboot.lst parttool-multiboot2_mod-loader_i386_multiboot.lst video-multiboot2_mod-loader_i386_multiboot.lst terminal-multiboot2_mod-loader_i386_multiboot.lst
+clean-module-multiboot2_mod-loader_multiboot-extra.1:
+	rm -f cmd-multiboot2_mod-loader_multiboot.lst fs-multiboot2_mod-loader_multiboot.lst partmap-multiboot2_mod-loader_multiboot.lst handler-multiboot2_mod-loader_multiboot.lst parttool-multiboot2_mod-loader_multiboot.lst video-multiboot2_mod-loader_multiboot.lst terminal-multiboot2_mod-loader_multiboot.lst
 
-CLEAN_MODULE_TARGETS += clean-module-multiboot2_mod-loader_i386_multiboot-extra.1
+CLEAN_MODULE_TARGETS += clean-module-multiboot2_mod-loader_multiboot-extra.1
 
-COMMANDFILES += cmd-multiboot2_mod-loader_i386_multiboot.lst
-FSFILES += fs-multiboot2_mod-loader_i386_multiboot.lst
-PARTTOOLFILES += parttool-multiboot2_mod-loader_i386_multiboot.lst
-PARTMAPFILES += partmap-multiboot2_mod-loader_i386_multiboot.lst
-HANDLERFILES += handler-multiboot2_mod-loader_i386_multiboot.lst
-TERMINALFILES += terminal-multiboot2_mod-loader_i386_multiboot.lst
-VIDEOFILES += video-multiboot2_mod-loader_i386_multiboot.lst
+COMMANDFILES += cmd-multiboot2_mod-loader_multiboot.lst
+FSFILES += fs-multiboot2_mod-loader_multiboot.lst
+PARTTOOLFILES += parttool-multiboot2_mod-loader_multiboot.lst
+PARTMAPFILES += partmap-multiboot2_mod-loader_multiboot.lst
+HANDLERFILES += handler-multiboot2_mod-loader_multiboot.lst
+TERMINALFILES += terminal-multiboot2_mod-loader_multiboot.lst
+VIDEOFILES += video-multiboot2_mod-loader_multiboot.lst
 
-cmd-multiboot2_mod-loader_i386_multiboot.lst: loader/i386/multiboot.c $(loader/i386/multiboot.c_DEPENDENCIES) gencmdlist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh multiboot2 > $@ || (rm -f $@; exit 1)
-
-fs-multiboot2_mod-loader_i386_multiboot.lst: loader/i386/multiboot.c $(loader/i386/multiboot.c_DEPENDENCIES) genfslist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh multiboot2 > $@ || (rm -f $@; exit 1)
-
-parttool-multiboot2_mod-loader_i386_multiboot.lst: loader/i386/multiboot.c $(loader/i386/multiboot.c_DEPENDENCIES) genparttoollist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genparttoollist.sh multiboot2 > $@ || (rm -f $@; exit 1)
-
-partmap-multiboot2_mod-loader_i386_multiboot.lst: loader/i386/multiboot.c $(loader/i386/multiboot.c_DEPENDENCIES) genpartmaplist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh multiboot2 > $@ || (rm -f $@; exit 1)
-
-handler-multiboot2_mod-loader_i386_multiboot.lst: loader/i386/multiboot.c $(loader/i386/multiboot.c_DEPENDENCIES) genhandlerlist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genhandlerlist.sh multiboot2 > $@ || (rm -f $@; exit 1)
-
-terminal-multiboot2_mod-loader_i386_multiboot.lst: loader/i386/multiboot.c $(loader/i386/multiboot.c_DEPENDENCIES) genterminallist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genterminallist.sh multiboot2 > $@ || (rm -f $@; exit 1)
-
-video-multiboot2_mod-loader_i386_multiboot.lst: loader/i386/multiboot.c $(loader/i386/multiboot.c_DEPENDENCIES) genvideolist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh multiboot2 > $@ || (rm -f $@; exit 1)
-
-multiboot2_mod-loader_i386_multiboot_mbi.o: loader/i386/multiboot_mbi.c $(loader/i386/multiboot_mbi.c_DEPENDENCIES)
-	$(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -MD -c -o $@ $<
--include multiboot2_mod-loader_i386_multiboot_mbi.d
-
-clean-module-multiboot2_mod-loader_i386_multiboot_mbi-extra.1:
-	rm -f cmd-multiboot2_mod-loader_i386_multiboot_mbi.lst fs-multiboot2_mod-loader_i386_multiboot_mbi.lst partmap-multiboot2_mod-loader_i386_multiboot_mbi.lst handler-multiboot2_mod-loader_i386_multiboot_mbi.lst parttool-multiboot2_mod-loader_i386_multiboot_mbi.lst video-multiboot2_mod-loader_i386_multiboot_mbi.lst terminal-multiboot2_mod-loader_i386_multiboot_mbi.lst
-
-CLEAN_MODULE_TARGETS += clean-module-multiboot2_mod-loader_i386_multiboot_mbi-extra.1
-
-COMMANDFILES += cmd-multiboot2_mod-loader_i386_multiboot_mbi.lst
-FSFILES += fs-multiboot2_mod-loader_i386_multiboot_mbi.lst
-PARTTOOLFILES += parttool-multiboot2_mod-loader_i386_multiboot_mbi.lst
-PARTMAPFILES += partmap-multiboot2_mod-loader_i386_multiboot_mbi.lst
-HANDLERFILES += handler-multiboot2_mod-loader_i386_multiboot_mbi.lst
-TERMINALFILES += terminal-multiboot2_mod-loader_i386_multiboot_mbi.lst
-VIDEOFILES += video-multiboot2_mod-loader_i386_multiboot_mbi.lst
-
-cmd-multiboot2_mod-loader_i386_multiboot_mbi.lst: loader/i386/multiboot_mbi.c $(loader/i386/multiboot_mbi.c_DEPENDENCIES) gencmdlist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh multiboot2 > $@ || (rm -f $@; exit 1)
-
-fs-multiboot2_mod-loader_i386_multiboot_mbi.lst: loader/i386/multiboot_mbi.c $(loader/i386/multiboot_mbi.c_DEPENDENCIES) genfslist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh multiboot2 > $@ || (rm -f $@; exit 1)
-
-parttool-multiboot2_mod-loader_i386_multiboot_mbi.lst: loader/i386/multiboot_mbi.c $(loader/i386/multiboot_mbi.c_DEPENDENCIES) genparttoollist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genparttoollist.sh multiboot2 > $@ || (rm -f $@; exit 1)
-
-partmap-multiboot2_mod-loader_i386_multiboot_mbi.lst: loader/i386/multiboot_mbi.c $(loader/i386/multiboot_mbi.c_DEPENDENCIES) genpartmaplist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh multiboot2 > $@ || (rm -f $@; exit 1)
-
-handler-multiboot2_mod-loader_i386_multiboot_mbi.lst: loader/i386/multiboot_mbi.c $(loader/i386/multiboot_mbi.c_DEPENDENCIES) genhandlerlist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genhandlerlist.sh multiboot2 > $@ || (rm -f $@; exit 1)
-
-terminal-multiboot2_mod-loader_i386_multiboot_mbi.lst: loader/i386/multiboot_mbi.c $(loader/i386/multiboot_mbi.c_DEPENDENCIES) genterminallist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genterminallist.sh multiboot2 > $@ || (rm -f $@; exit 1)
-
-video-multiboot2_mod-loader_i386_multiboot_mbi.lst: loader/i386/multiboot_mbi.c $(loader/i386/multiboot_mbi.c_DEPENDENCIES) genvideolist.sh
-	set -e; 	  $(TARGET_CC) -Iloader/i386 -I$(srcdir)/loader/i386 $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh multiboot2 > $@ || (rm -f $@; exit 1)
-
-multiboot2_mod-loader_multiboot_loader.o: loader/multiboot_loader.c $(loader/multiboot_loader.c_DEPENDENCIES)
-	$(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -MD -c -o $@ $<
--include multiboot2_mod-loader_multiboot_loader.d
-
-clean-module-multiboot2_mod-loader_multiboot_loader-extra.1:
-	rm -f cmd-multiboot2_mod-loader_multiboot_loader.lst fs-multiboot2_mod-loader_multiboot_loader.lst partmap-multiboot2_mod-loader_multiboot_loader.lst handler-multiboot2_mod-loader_multiboot_loader.lst parttool-multiboot2_mod-loader_multiboot_loader.lst video-multiboot2_mod-loader_multiboot_loader.lst terminal-multiboot2_mod-loader_multiboot_loader.lst
-
-CLEAN_MODULE_TARGETS += clean-module-multiboot2_mod-loader_multiboot_loader-extra.1
-
-COMMANDFILES += cmd-multiboot2_mod-loader_multiboot_loader.lst
-FSFILES += fs-multiboot2_mod-loader_multiboot_loader.lst
-PARTTOOLFILES += parttool-multiboot2_mod-loader_multiboot_loader.lst
-PARTMAPFILES += partmap-multiboot2_mod-loader_multiboot_loader.lst
-HANDLERFILES += handler-multiboot2_mod-loader_multiboot_loader.lst
-TERMINALFILES += terminal-multiboot2_mod-loader_multiboot_loader.lst
-VIDEOFILES += video-multiboot2_mod-loader_multiboot_loader.lst
-
-cmd-multiboot2_mod-loader_multiboot_loader.lst: loader/multiboot_loader.c $(loader/multiboot_loader.c_DEPENDENCIES) gencmdlist.sh
+cmd-multiboot2_mod-loader_multiboot.lst: loader/multiboot.c $(loader/multiboot.c_DEPENDENCIES) gencmdlist.sh
 	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh multiboot2 > $@ || (rm -f $@; exit 1)
 
-fs-multiboot2_mod-loader_multiboot_loader.lst: loader/multiboot_loader.c $(loader/multiboot_loader.c_DEPENDENCIES) genfslist.sh
+fs-multiboot2_mod-loader_multiboot.lst: loader/multiboot.c $(loader/multiboot.c_DEPENDENCIES) genfslist.sh
 	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh multiboot2 > $@ || (rm -f $@; exit 1)
 
-parttool-multiboot2_mod-loader_multiboot_loader.lst: loader/multiboot_loader.c $(loader/multiboot_loader.c_DEPENDENCIES) genparttoollist.sh
+parttool-multiboot2_mod-loader_multiboot.lst: loader/multiboot.c $(loader/multiboot.c_DEPENDENCIES) genparttoollist.sh
 	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genparttoollist.sh multiboot2 > $@ || (rm -f $@; exit 1)
 
-partmap-multiboot2_mod-loader_multiboot_loader.lst: loader/multiboot_loader.c $(loader/multiboot_loader.c_DEPENDENCIES) genpartmaplist.sh
+partmap-multiboot2_mod-loader_multiboot.lst: loader/multiboot.c $(loader/multiboot.c_DEPENDENCIES) genpartmaplist.sh
 	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh multiboot2 > $@ || (rm -f $@; exit 1)
 
-handler-multiboot2_mod-loader_multiboot_loader.lst: loader/multiboot_loader.c $(loader/multiboot_loader.c_DEPENDENCIES) genhandlerlist.sh
+handler-multiboot2_mod-loader_multiboot.lst: loader/multiboot.c $(loader/multiboot.c_DEPENDENCIES) genhandlerlist.sh
 	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genhandlerlist.sh multiboot2 > $@ || (rm -f $@; exit 1)
 
-terminal-multiboot2_mod-loader_multiboot_loader.lst: loader/multiboot_loader.c $(loader/multiboot_loader.c_DEPENDENCIES) genterminallist.sh
+terminal-multiboot2_mod-loader_multiboot.lst: loader/multiboot.c $(loader/multiboot.c_DEPENDENCIES) genterminallist.sh
 	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genterminallist.sh multiboot2 > $@ || (rm -f $@; exit 1)
 
-video-multiboot2_mod-loader_multiboot_loader.lst: loader/multiboot_loader.c $(loader/multiboot_loader.c_DEPENDENCIES) genvideolist.sh
+video-multiboot2_mod-loader_multiboot.lst: loader/multiboot.c $(loader/multiboot.c_DEPENDENCIES) genvideolist.sh
+	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh multiboot2 > $@ || (rm -f $@; exit 1)
+
+multiboot2_mod-loader_multiboot_mbi2.o: loader/multiboot_mbi2.c $(loader/multiboot_mbi2.c_DEPENDENCIES)
+	$(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -DGRUB_FILE=\"loader/multiboot_mbi2.c\" -MD -c -o $@ $<
+-include multiboot2_mod-loader_multiboot_mbi2.d
+
+clean-module-multiboot2_mod-loader_multiboot_mbi2-extra.1:
+	rm -f cmd-multiboot2_mod-loader_multiboot_mbi2.lst fs-multiboot2_mod-loader_multiboot_mbi2.lst partmap-multiboot2_mod-loader_multiboot_mbi2.lst handler-multiboot2_mod-loader_multiboot_mbi2.lst parttool-multiboot2_mod-loader_multiboot_mbi2.lst video-multiboot2_mod-loader_multiboot_mbi2.lst terminal-multiboot2_mod-loader_multiboot_mbi2.lst
+
+CLEAN_MODULE_TARGETS += clean-module-multiboot2_mod-loader_multiboot_mbi2-extra.1
+
+COMMANDFILES += cmd-multiboot2_mod-loader_multiboot_mbi2.lst
+FSFILES += fs-multiboot2_mod-loader_multiboot_mbi2.lst
+PARTTOOLFILES += parttool-multiboot2_mod-loader_multiboot_mbi2.lst
+PARTMAPFILES += partmap-multiboot2_mod-loader_multiboot_mbi2.lst
+HANDLERFILES += handler-multiboot2_mod-loader_multiboot_mbi2.lst
+TERMINALFILES += terminal-multiboot2_mod-loader_multiboot_mbi2.lst
+VIDEOFILES += video-multiboot2_mod-loader_multiboot_mbi2.lst
+
+cmd-multiboot2_mod-loader_multiboot_mbi2.lst: loader/multiboot_mbi2.c $(loader/multiboot_mbi2.c_DEPENDENCIES) gencmdlist.sh
+	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh multiboot2 > $@ || (rm -f $@; exit 1)
+
+fs-multiboot2_mod-loader_multiboot_mbi2.lst: loader/multiboot_mbi2.c $(loader/multiboot_mbi2.c_DEPENDENCIES) genfslist.sh
+	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh multiboot2 > $@ || (rm -f $@; exit 1)
+
+parttool-multiboot2_mod-loader_multiboot_mbi2.lst: loader/multiboot_mbi2.c $(loader/multiboot_mbi2.c_DEPENDENCIES) genparttoollist.sh
+	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genparttoollist.sh multiboot2 > $@ || (rm -f $@; exit 1)
+
+partmap-multiboot2_mod-loader_multiboot_mbi2.lst: loader/multiboot_mbi2.c $(loader/multiboot_mbi2.c_DEPENDENCIES) genpartmaplist.sh
+	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh multiboot2 > $@ || (rm -f $@; exit 1)
+
+handler-multiboot2_mod-loader_multiboot_mbi2.lst: loader/multiboot_mbi2.c $(loader/multiboot_mbi2.c_DEPENDENCIES) genhandlerlist.sh
+	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genhandlerlist.sh multiboot2 > $@ || (rm -f $@; exit 1)
+
+terminal-multiboot2_mod-loader_multiboot_mbi2.lst: loader/multiboot_mbi2.c $(loader/multiboot_mbi2.c_DEPENDENCIES) genterminallist.sh
+	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genterminallist.sh multiboot2 > $@ || (rm -f $@; exit 1)
+
+video-multiboot2_mod-loader_multiboot_mbi2.lst: loader/multiboot_mbi2.c $(loader/multiboot_mbi2.c_DEPENDENCIES) genvideolist.sh
 	set -e; 	  $(TARGET_CC) -Iloader -I$(srcdir)/loader $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(multiboot2_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh multiboot2 > $@ || (rm -f $@; exit 1)
 
 multiboot2_mod_CFLAGS = $(COMMON_CFLAGS) -DGRUB_USE_MULTIBOOT2
 multiboot2_mod_LDFLAGS = $(COMMON_LDFLAGS)
 multiboot2_mod_ASFLAGS = $(COMMON_ASFLAGS)
+
+# For serial.mod.
+pkglib_MODULES += serial.mod
+serial_mod_SOURCES = term/serial.c
+
+clean-module-serial.mod.1:
+	rm -f serial.mod mod-serial.o mod-serial.c pre-serial.o serial_mod-term_serial.o und-serial.lst
+
+CLEAN_MODULE_TARGETS += clean-module-serial.mod.1
+
+clean-module-serial.mod-symbol.1:
+	rm -f def-serial.lst
+
+CLEAN_MODULE_TARGETS += clean-module-serial.mod-symbol.1
+DEFSYMFILES += def-serial.lst
+mostlyclean-module-serial.mod.1:
+	rm -f serial_mod-term_serial.d
+
+MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-serial.mod.1
+UNDSYMFILES += und-serial.lst
+
+ifeq ($(TARGET_NO_MODULES), yes)
+serial.mod: pre-serial.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(serial_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-serial.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
+ifneq ($(TARGET_APPLE_CC),1)
+serial.mod: pre-serial.o mod-serial.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(serial_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-serial.o mod-serial.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
+serial.mod: pre-serial.o mod-serial.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	-rm -f $@.bin
+	$(TARGET_CC) $(serial_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-serial.o mod-serial.o
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
+	-rm -f $@.bin
+endif
+endif
+
+pre-serial.o: $(serial_mod_DEPENDENCIES) serial_mod-term_serial.o
+	-rm -f $@
+	$(TARGET_CC) $(serial_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ serial_mod-term_serial.o
+
+mod-serial.o: mod-serial.c
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(serial_mod_CFLAGS) -DGRUB_FILE=\"mod-serial.c\" -c -o $@ $<
+
+mod-serial.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
+	sh $(srcdir)/genmodsrc.sh 'serial' $< > $@ || (rm -f $@; exit 1)
+
+ifneq ($(TARGET_APPLE_CC),1)
+def-serial.lst: pre-serial.o
+	$(NM) -g --defined-only -P -p $< | sed 's/^\([^ ]*\).*/\1 serial/' > $@
+else
+def-serial.lst: pre-serial.o
+	$(NM) -g -P -p $< | grep -E '^[a-zA-Z0-9_]* [TDS]'  | sed 's/^\([^ ]*\).*/\1 serial/' > $@
+endif
+
+und-serial.lst: pre-serial.o
+	echo 'serial' > $@
+	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
+
+serial_mod-term_serial.o: term/serial.c $(term/serial.c_DEPENDENCIES)
+	$(TARGET_CC) -Iterm -I$(srcdir)/term $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(serial_mod_CFLAGS) -DGRUB_FILE=\"term/serial.c\" -MD -c -o $@ $<
+-include serial_mod-term_serial.d
+
+clean-module-serial_mod-term_serial-extra.1:
+	rm -f cmd-serial_mod-term_serial.lst fs-serial_mod-term_serial.lst partmap-serial_mod-term_serial.lst handler-serial_mod-term_serial.lst parttool-serial_mod-term_serial.lst video-serial_mod-term_serial.lst terminal-serial_mod-term_serial.lst
+
+CLEAN_MODULE_TARGETS += clean-module-serial_mod-term_serial-extra.1
+
+COMMANDFILES += cmd-serial_mod-term_serial.lst
+FSFILES += fs-serial_mod-term_serial.lst
+PARTTOOLFILES += parttool-serial_mod-term_serial.lst
+PARTMAPFILES += partmap-serial_mod-term_serial.lst
+HANDLERFILES += handler-serial_mod-term_serial.lst
+TERMINALFILES += terminal-serial_mod-term_serial.lst
+VIDEOFILES += video-serial_mod-term_serial.lst
+
+cmd-serial_mod-term_serial.lst: term/serial.c $(term/serial.c_DEPENDENCIES) gencmdlist.sh
+	set -e; 	  $(TARGET_CC) -Iterm -I$(srcdir)/term $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(serial_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh serial > $@ || (rm -f $@; exit 1)
+
+fs-serial_mod-term_serial.lst: term/serial.c $(term/serial.c_DEPENDENCIES) genfslist.sh
+	set -e; 	  $(TARGET_CC) -Iterm -I$(srcdir)/term $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(serial_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh serial > $@ || (rm -f $@; exit 1)
+
+parttool-serial_mod-term_serial.lst: term/serial.c $(term/serial.c_DEPENDENCIES) genparttoollist.sh
+	set -e; 	  $(TARGET_CC) -Iterm -I$(srcdir)/term $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(serial_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genparttoollist.sh serial > $@ || (rm -f $@; exit 1)
+
+partmap-serial_mod-term_serial.lst: term/serial.c $(term/serial.c_DEPENDENCIES) genpartmaplist.sh
+	set -e; 	  $(TARGET_CC) -Iterm -I$(srcdir)/term $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(serial_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh serial > $@ || (rm -f $@; exit 1)
+
+handler-serial_mod-term_serial.lst: term/serial.c $(term/serial.c_DEPENDENCIES) genhandlerlist.sh
+	set -e; 	  $(TARGET_CC) -Iterm -I$(srcdir)/term $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(serial_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genhandlerlist.sh serial > $@ || (rm -f $@; exit 1)
+
+terminal-serial_mod-term_serial.lst: term/serial.c $(term/serial.c_DEPENDENCIES) genterminallist.sh
+	set -e; 	  $(TARGET_CC) -Iterm -I$(srcdir)/term $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(serial_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genterminallist.sh serial > $@ || (rm -f $@; exit 1)
+
+video-serial_mod-term_serial.lst: term/serial.c $(term/serial.c_DEPENDENCIES) genvideolist.sh
+	set -e; 	  $(TARGET_CC) -Iterm -I$(srcdir)/term $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(serial_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh serial > $@ || (rm -f $@; exit 1)
+
+serial_mod_CFLAGS = $(COMMON_CFLAGS)
+serial_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For pci.mod
+pkglib_MODULES += pci.mod
+pci_mod_SOURCES = bus/pci.c
+
+clean-module-pci.mod.1:
+	rm -f pci.mod mod-pci.o mod-pci.c pre-pci.o pci_mod-bus_pci.o und-pci.lst
+
+CLEAN_MODULE_TARGETS += clean-module-pci.mod.1
+
+clean-module-pci.mod-symbol.1:
+	rm -f def-pci.lst
+
+CLEAN_MODULE_TARGETS += clean-module-pci.mod-symbol.1
+DEFSYMFILES += def-pci.lst
+mostlyclean-module-pci.mod.1:
+	rm -f pci_mod-bus_pci.d
+
+MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-pci.mod.1
+UNDSYMFILES += und-pci.lst
+
+ifeq ($(TARGET_NO_MODULES), yes)
+pci.mod: pre-pci.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(pci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-pci.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
+ifneq ($(TARGET_APPLE_CC),1)
+pci.mod: pre-pci.o mod-pci.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(pci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-pci.o mod-pci.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
+pci.mod: pre-pci.o mod-pci.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	-rm -f $@.bin
+	$(TARGET_CC) $(pci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-pci.o mod-pci.o
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
+	-rm -f $@.bin
+endif
+endif
+
+pre-pci.o: $(pci_mod_DEPENDENCIES) pci_mod-bus_pci.o
+	-rm -f $@
+	$(TARGET_CC) $(pci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pci_mod-bus_pci.o
+
+mod-pci.o: mod-pci.c
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(pci_mod_CFLAGS) -DGRUB_FILE=\"mod-pci.c\" -c -o $@ $<
+
+mod-pci.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
+	sh $(srcdir)/genmodsrc.sh 'pci' $< > $@ || (rm -f $@; exit 1)
+
+ifneq ($(TARGET_APPLE_CC),1)
+def-pci.lst: pre-pci.o
+	$(NM) -g --defined-only -P -p $< | sed 's/^\([^ ]*\).*/\1 pci/' > $@
+else
+def-pci.lst: pre-pci.o
+	$(NM) -g -P -p $< | grep -E '^[a-zA-Z0-9_]* [TDS]'  | sed 's/^\([^ ]*\).*/\1 pci/' > $@
+endif
+
+und-pci.lst: pre-pci.o
+	echo 'pci' > $@
+	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
+
+pci_mod-bus_pci.o: bus/pci.c $(bus/pci.c_DEPENDENCIES)
+	$(TARGET_CC) -Ibus -I$(srcdir)/bus $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(pci_mod_CFLAGS) -DGRUB_FILE=\"bus/pci.c\" -MD -c -o $@ $<
+-include pci_mod-bus_pci.d
+
+clean-module-pci_mod-bus_pci-extra.1:
+	rm -f cmd-pci_mod-bus_pci.lst fs-pci_mod-bus_pci.lst partmap-pci_mod-bus_pci.lst handler-pci_mod-bus_pci.lst parttool-pci_mod-bus_pci.lst video-pci_mod-bus_pci.lst terminal-pci_mod-bus_pci.lst
+
+CLEAN_MODULE_TARGETS += clean-module-pci_mod-bus_pci-extra.1
+
+COMMANDFILES += cmd-pci_mod-bus_pci.lst
+FSFILES += fs-pci_mod-bus_pci.lst
+PARTTOOLFILES += parttool-pci_mod-bus_pci.lst
+PARTMAPFILES += partmap-pci_mod-bus_pci.lst
+HANDLERFILES += handler-pci_mod-bus_pci.lst
+TERMINALFILES += terminal-pci_mod-bus_pci.lst
+VIDEOFILES += video-pci_mod-bus_pci.lst
+
+cmd-pci_mod-bus_pci.lst: bus/pci.c $(bus/pci.c_DEPENDENCIES) gencmdlist.sh
+	set -e; 	  $(TARGET_CC) -Ibus -I$(srcdir)/bus $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(pci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh pci > $@ || (rm -f $@; exit 1)
+
+fs-pci_mod-bus_pci.lst: bus/pci.c $(bus/pci.c_DEPENDENCIES) genfslist.sh
+	set -e; 	  $(TARGET_CC) -Ibus -I$(srcdir)/bus $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(pci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh pci > $@ || (rm -f $@; exit 1)
+
+parttool-pci_mod-bus_pci.lst: bus/pci.c $(bus/pci.c_DEPENDENCIES) genparttoollist.sh
+	set -e; 	  $(TARGET_CC) -Ibus -I$(srcdir)/bus $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(pci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genparttoollist.sh pci > $@ || (rm -f $@; exit 1)
+
+partmap-pci_mod-bus_pci.lst: bus/pci.c $(bus/pci.c_DEPENDENCIES) genpartmaplist.sh
+	set -e; 	  $(TARGET_CC) -Ibus -I$(srcdir)/bus $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(pci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh pci > $@ || (rm -f $@; exit 1)
+
+handler-pci_mod-bus_pci.lst: bus/pci.c $(bus/pci.c_DEPENDENCIES) genhandlerlist.sh
+	set -e; 	  $(TARGET_CC) -Ibus -I$(srcdir)/bus $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(pci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genhandlerlist.sh pci > $@ || (rm -f $@; exit 1)
+
+terminal-pci_mod-bus_pci.lst: bus/pci.c $(bus/pci.c_DEPENDENCIES) genterminallist.sh
+	set -e; 	  $(TARGET_CC) -Ibus -I$(srcdir)/bus $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(pci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genterminallist.sh pci > $@ || (rm -f $@; exit 1)
+
+video-pci_mod-bus_pci.lst: bus/pci.c $(bus/pci.c_DEPENDENCIES) genvideolist.sh
+	set -e; 	  $(TARGET_CC) -Ibus -I$(srcdir)/bus $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(pci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh pci > $@ || (rm -f $@; exit 1)
+
+pci_mod_CFLAGS = $(COMMON_CFLAGS)
+pci_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For lspci.mod
+pkglib_MODULES += lspci.mod
+lspci_mod_SOURCES = commands/lspci.c
+
+clean-module-lspci.mod.1:
+	rm -f lspci.mod mod-lspci.o mod-lspci.c pre-lspci.o lspci_mod-commands_lspci.o und-lspci.lst
+
+CLEAN_MODULE_TARGETS += clean-module-lspci.mod.1
+
+clean-module-lspci.mod-symbol.1:
+	rm -f def-lspci.lst
+
+CLEAN_MODULE_TARGETS += clean-module-lspci.mod-symbol.1
+DEFSYMFILES += def-lspci.lst
+mostlyclean-module-lspci.mod.1:
+	rm -f lspci_mod-commands_lspci.d
+
+MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-lspci.mod.1
+UNDSYMFILES += und-lspci.lst
+
+ifeq ($(TARGET_NO_MODULES), yes)
+lspci.mod: pre-lspci.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(lspci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-lspci.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
+ifneq ($(TARGET_APPLE_CC),1)
+lspci.mod: pre-lspci.o mod-lspci.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(lspci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-lspci.o mod-lspci.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
+lspci.mod: pre-lspci.o mod-lspci.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	-rm -f $@.bin
+	$(TARGET_CC) $(lspci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-lspci.o mod-lspci.o
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
+	-rm -f $@.bin
+endif
+endif
+
+pre-lspci.o: $(lspci_mod_DEPENDENCIES) lspci_mod-commands_lspci.o
+	-rm -f $@
+	$(TARGET_CC) $(lspci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ lspci_mod-commands_lspci.o
+
+mod-lspci.o: mod-lspci.c
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -DGRUB_FILE=\"mod-lspci.c\" -c -o $@ $<
+
+mod-lspci.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
+	sh $(srcdir)/genmodsrc.sh 'lspci' $< > $@ || (rm -f $@; exit 1)
+
+ifneq ($(TARGET_APPLE_CC),1)
+def-lspci.lst: pre-lspci.o
+	$(NM) -g --defined-only -P -p $< | sed 's/^\([^ ]*\).*/\1 lspci/' > $@
+else
+def-lspci.lst: pre-lspci.o
+	$(NM) -g -P -p $< | grep -E '^[a-zA-Z0-9_]* [TDS]'  | sed 's/^\([^ ]*\).*/\1 lspci/' > $@
+endif
+
+und-lspci.lst: pre-lspci.o
+	echo 'lspci' > $@
+	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
+
+lspci_mod-commands_lspci.o: commands/lspci.c $(commands/lspci.c_DEPENDENCIES)
+	$(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -DGRUB_FILE=\"commands/lspci.c\" -MD -c -o $@ $<
+-include lspci_mod-commands_lspci.d
+
+clean-module-lspci_mod-commands_lspci-extra.1:
+	rm -f cmd-lspci_mod-commands_lspci.lst fs-lspci_mod-commands_lspci.lst partmap-lspci_mod-commands_lspci.lst handler-lspci_mod-commands_lspci.lst parttool-lspci_mod-commands_lspci.lst video-lspci_mod-commands_lspci.lst terminal-lspci_mod-commands_lspci.lst
+
+CLEAN_MODULE_TARGETS += clean-module-lspci_mod-commands_lspci-extra.1
+
+COMMANDFILES += cmd-lspci_mod-commands_lspci.lst
+FSFILES += fs-lspci_mod-commands_lspci.lst
+PARTTOOLFILES += parttool-lspci_mod-commands_lspci.lst
+PARTMAPFILES += partmap-lspci_mod-commands_lspci.lst
+HANDLERFILES += handler-lspci_mod-commands_lspci.lst
+TERMINALFILES += terminal-lspci_mod-commands_lspci.lst
+VIDEOFILES += video-lspci_mod-commands_lspci.lst
+
+cmd-lspci_mod-commands_lspci.lst: commands/lspci.c $(commands/lspci.c_DEPENDENCIES) gencmdlist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh lspci > $@ || (rm -f $@; exit 1)
+
+fs-lspci_mod-commands_lspci.lst: commands/lspci.c $(commands/lspci.c_DEPENDENCIES) genfslist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh lspci > $@ || (rm -f $@; exit 1)
+
+parttool-lspci_mod-commands_lspci.lst: commands/lspci.c $(commands/lspci.c_DEPENDENCIES) genparttoollist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genparttoollist.sh lspci > $@ || (rm -f $@; exit 1)
+
+partmap-lspci_mod-commands_lspci.lst: commands/lspci.c $(commands/lspci.c_DEPENDENCIES) genpartmaplist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh lspci > $@ || (rm -f $@; exit 1)
+
+handler-lspci_mod-commands_lspci.lst: commands/lspci.c $(commands/lspci.c_DEPENDENCIES) genhandlerlist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genhandlerlist.sh lspci > $@ || (rm -f $@; exit 1)
+
+terminal-lspci_mod-commands_lspci.lst: commands/lspci.c $(commands/lspci.c_DEPENDENCIES) genterminallist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genterminallist.sh lspci > $@ || (rm -f $@; exit 1)
+
+video-lspci_mod-commands_lspci.lst: commands/lspci.c $(commands/lspci.c_DEPENDENCIES) genvideolist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh lspci > $@ || (rm -f $@; exit 1)
+
+lspci_mod_CFLAGS = $(COMMON_CFLAGS)
+lspci_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For play.mod.
+pkglib_MODULES += play.mod
+play_mod_SOURCES = commands/i386/pc/play.c
+
+clean-module-play.mod.1:
+	rm -f play.mod mod-play.o mod-play.c pre-play.o play_mod-commands_i386_pc_play.o und-play.lst
+
+CLEAN_MODULE_TARGETS += clean-module-play.mod.1
+
+clean-module-play.mod-symbol.1:
+	rm -f def-play.lst
+
+CLEAN_MODULE_TARGETS += clean-module-play.mod-symbol.1
+DEFSYMFILES += def-play.lst
+mostlyclean-module-play.mod.1:
+	rm -f play_mod-commands_i386_pc_play.d
+
+MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-play.mod.1
+UNDSYMFILES += und-play.lst
+
+ifeq ($(TARGET_NO_MODULES), yes)
+play.mod: pre-play.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(play_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-play.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
+ifneq ($(TARGET_APPLE_CC),1)
+play.mod: pre-play.o mod-play.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(play_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-play.o mod-play.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
+play.mod: pre-play.o mod-play.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	-rm -f $@.bin
+	$(TARGET_CC) $(play_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-play.o mod-play.o
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
+	-rm -f $@.bin
+endif
+endif
+
+pre-play.o: $(play_mod_DEPENDENCIES) play_mod-commands_i386_pc_play.o
+	-rm -f $@
+	$(TARGET_CC) $(play_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ play_mod-commands_i386_pc_play.o
+
+mod-play.o: mod-play.c
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(play_mod_CFLAGS) -DGRUB_FILE=\"mod-play.c\" -c -o $@ $<
+
+mod-play.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
+	sh $(srcdir)/genmodsrc.sh 'play' $< > $@ || (rm -f $@; exit 1)
+
+ifneq ($(TARGET_APPLE_CC),1)
+def-play.lst: pre-play.o
+	$(NM) -g --defined-only -P -p $< | sed 's/^\([^ ]*\).*/\1 play/' > $@
+else
+def-play.lst: pre-play.o
+	$(NM) -g -P -p $< | grep -E '^[a-zA-Z0-9_]* [TDS]'  | sed 's/^\([^ ]*\).*/\1 play/' > $@
+endif
+
+und-play.lst: pre-play.o
+	echo 'play' > $@
+	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
+
+play_mod-commands_i386_pc_play.o: commands/i386/pc/play.c $(commands/i386/pc/play.c_DEPENDENCIES)
+	$(TARGET_CC) -Icommands/i386/pc -I$(srcdir)/commands/i386/pc $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(play_mod_CFLAGS) -DGRUB_FILE=\"commands/i386/pc/play.c\" -MD -c -o $@ $<
+-include play_mod-commands_i386_pc_play.d
+
+clean-module-play_mod-commands_i386_pc_play-extra.1:
+	rm -f cmd-play_mod-commands_i386_pc_play.lst fs-play_mod-commands_i386_pc_play.lst partmap-play_mod-commands_i386_pc_play.lst handler-play_mod-commands_i386_pc_play.lst parttool-play_mod-commands_i386_pc_play.lst video-play_mod-commands_i386_pc_play.lst terminal-play_mod-commands_i386_pc_play.lst
+
+CLEAN_MODULE_TARGETS += clean-module-play_mod-commands_i386_pc_play-extra.1
+
+COMMANDFILES += cmd-play_mod-commands_i386_pc_play.lst
+FSFILES += fs-play_mod-commands_i386_pc_play.lst
+PARTTOOLFILES += parttool-play_mod-commands_i386_pc_play.lst
+PARTMAPFILES += partmap-play_mod-commands_i386_pc_play.lst
+HANDLERFILES += handler-play_mod-commands_i386_pc_play.lst
+TERMINALFILES += terminal-play_mod-commands_i386_pc_play.lst
+VIDEOFILES += video-play_mod-commands_i386_pc_play.lst
+
+cmd-play_mod-commands_i386_pc_play.lst: commands/i386/pc/play.c $(commands/i386/pc/play.c_DEPENDENCIES) gencmdlist.sh
+	set -e; 	  $(TARGET_CC) -Icommands/i386/pc -I$(srcdir)/commands/i386/pc $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(play_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh play > $@ || (rm -f $@; exit 1)
+
+fs-play_mod-commands_i386_pc_play.lst: commands/i386/pc/play.c $(commands/i386/pc/play.c_DEPENDENCIES) genfslist.sh
+	set -e; 	  $(TARGET_CC) -Icommands/i386/pc -I$(srcdir)/commands/i386/pc $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(play_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh play > $@ || (rm -f $@; exit 1)
+
+parttool-play_mod-commands_i386_pc_play.lst: commands/i386/pc/play.c $(commands/i386/pc/play.c_DEPENDENCIES) genparttoollist.sh
+	set -e; 	  $(TARGET_CC) -Icommands/i386/pc -I$(srcdir)/commands/i386/pc $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(play_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genparttoollist.sh play > $@ || (rm -f $@; exit 1)
+
+partmap-play_mod-commands_i386_pc_play.lst: commands/i386/pc/play.c $(commands/i386/pc/play.c_DEPENDENCIES) genpartmaplist.sh
+	set -e; 	  $(TARGET_CC) -Icommands/i386/pc -I$(srcdir)/commands/i386/pc $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(play_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh play > $@ || (rm -f $@; exit 1)
+
+handler-play_mod-commands_i386_pc_play.lst: commands/i386/pc/play.c $(commands/i386/pc/play.c_DEPENDENCIES) genhandlerlist.sh
+	set -e; 	  $(TARGET_CC) -Icommands/i386/pc -I$(srcdir)/commands/i386/pc $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(play_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genhandlerlist.sh play > $@ || (rm -f $@; exit 1)
+
+terminal-play_mod-commands_i386_pc_play.lst: commands/i386/pc/play.c $(commands/i386/pc/play.c_DEPENDENCIES) genterminallist.sh
+	set -e; 	  $(TARGET_CC) -Icommands/i386/pc -I$(srcdir)/commands/i386/pc $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(play_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genterminallist.sh play > $@ || (rm -f $@; exit 1)
+
+video-play_mod-commands_i386_pc_play.lst: commands/i386/pc/play.c $(commands/i386/pc/play.c_DEPENDENCIES) genvideolist.sh
+	set -e; 	  $(TARGET_CC) -Icommands/i386/pc -I$(srcdir)/commands/i386/pc $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(play_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh play > $@ || (rm -f $@; exit 1)
+
+play_mod_CFLAGS = $(COMMON_CFLAGS)
+play_mod_LDFLAGS = $(COMMON_LDFLAGS)
+
+# For iorw.mod.
+pkglib_MODULES += iorw.mod
+iorw_mod_SOURCES = commands/iorw.c
+
+clean-module-iorw.mod.1:
+	rm -f iorw.mod mod-iorw.o mod-iorw.c pre-iorw.o iorw_mod-commands_iorw.o und-iorw.lst
+
+CLEAN_MODULE_TARGETS += clean-module-iorw.mod.1
+
+clean-module-iorw.mod-symbol.1:
+	rm -f def-iorw.lst
+
+CLEAN_MODULE_TARGETS += clean-module-iorw.mod-symbol.1
+DEFSYMFILES += def-iorw.lst
+mostlyclean-module-iorw.mod.1:
+	rm -f iorw_mod-commands_iorw.d
+
+MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-iorw.mod.1
+UNDSYMFILES += und-iorw.lst
+
+ifeq ($(TARGET_NO_MODULES), yes)
+iorw.mod: pre-iorw.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(iorw_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-iorw.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
+ifneq ($(TARGET_APPLE_CC),1)
+iorw.mod: pre-iorw.o mod-iorw.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(iorw_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-iorw.o mod-iorw.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
+iorw.mod: pre-iorw.o mod-iorw.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	-rm -f $@.bin
+	$(TARGET_CC) $(iorw_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-iorw.o mod-iorw.o
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
+	-rm -f $@.bin
+endif
+endif
+
+pre-iorw.o: $(iorw_mod_DEPENDENCIES) iorw_mod-commands_iorw.o
+	-rm -f $@
+	$(TARGET_CC) $(iorw_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ iorw_mod-commands_iorw.o
+
+mod-iorw.o: mod-iorw.c
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(iorw_mod_CFLAGS) -DGRUB_FILE=\"mod-iorw.c\" -c -o $@ $<
+
+mod-iorw.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
+	sh $(srcdir)/genmodsrc.sh 'iorw' $< > $@ || (rm -f $@; exit 1)
+
+ifneq ($(TARGET_APPLE_CC),1)
+def-iorw.lst: pre-iorw.o
+	$(NM) -g --defined-only -P -p $< | sed 's/^\([^ ]*\).*/\1 iorw/' > $@
+else
+def-iorw.lst: pre-iorw.o
+	$(NM) -g -P -p $< | grep -E '^[a-zA-Z0-9_]* [TDS]'  | sed 's/^\([^ ]*\).*/\1 iorw/' > $@
+endif
+
+und-iorw.lst: pre-iorw.o
+	echo 'iorw' > $@
+	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
+
+iorw_mod-commands_iorw.o: commands/iorw.c $(commands/iorw.c_DEPENDENCIES)
+	$(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(iorw_mod_CFLAGS) -DGRUB_FILE=\"commands/iorw.c\" -MD -c -o $@ $<
+-include iorw_mod-commands_iorw.d
+
+clean-module-iorw_mod-commands_iorw-extra.1:
+	rm -f cmd-iorw_mod-commands_iorw.lst fs-iorw_mod-commands_iorw.lst partmap-iorw_mod-commands_iorw.lst handler-iorw_mod-commands_iorw.lst parttool-iorw_mod-commands_iorw.lst video-iorw_mod-commands_iorw.lst terminal-iorw_mod-commands_iorw.lst
+
+CLEAN_MODULE_TARGETS += clean-module-iorw_mod-commands_iorw-extra.1
+
+COMMANDFILES += cmd-iorw_mod-commands_iorw.lst
+FSFILES += fs-iorw_mod-commands_iorw.lst
+PARTTOOLFILES += parttool-iorw_mod-commands_iorw.lst
+PARTMAPFILES += partmap-iorw_mod-commands_iorw.lst
+HANDLERFILES += handler-iorw_mod-commands_iorw.lst
+TERMINALFILES += terminal-iorw_mod-commands_iorw.lst
+VIDEOFILES += video-iorw_mod-commands_iorw.lst
+
+cmd-iorw_mod-commands_iorw.lst: commands/iorw.c $(commands/iorw.c_DEPENDENCIES) gencmdlist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(iorw_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh iorw > $@ || (rm -f $@; exit 1)
+
+fs-iorw_mod-commands_iorw.lst: commands/iorw.c $(commands/iorw.c_DEPENDENCIES) genfslist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(iorw_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh iorw > $@ || (rm -f $@; exit 1)
+
+parttool-iorw_mod-commands_iorw.lst: commands/iorw.c $(commands/iorw.c_DEPENDENCIES) genparttoollist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(iorw_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genparttoollist.sh iorw > $@ || (rm -f $@; exit 1)
+
+partmap-iorw_mod-commands_iorw.lst: commands/iorw.c $(commands/iorw.c_DEPENDENCIES) genpartmaplist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(iorw_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh iorw > $@ || (rm -f $@; exit 1)
+
+handler-iorw_mod-commands_iorw.lst: commands/iorw.c $(commands/iorw.c_DEPENDENCIES) genhandlerlist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(iorw_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genhandlerlist.sh iorw > $@ || (rm -f $@; exit 1)
+
+terminal-iorw_mod-commands_iorw.lst: commands/iorw.c $(commands/iorw.c_DEPENDENCIES) genterminallist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(iorw_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genterminallist.sh iorw > $@ || (rm -f $@; exit 1)
+
+video-iorw_mod-commands_iorw.lst: commands/iorw.c $(commands/iorw.c_DEPENDENCIES) genvideolist.sh
+	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(iorw_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh iorw > $@ || (rm -f $@; exit 1)
+
+iorw_mod_CFLAGS = $(COMMON_CFLAGS)
+iorw_mod_LDFLAGS = $(COMMON_LDFLAGS)

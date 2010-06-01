@@ -25,19 +25,27 @@ mostlyclean-module-gcry_blowfish.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_blowfish.mod.1
 UNDSYMFILES += und-gcry_blowfish.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_blowfish.mod: pre-gcry_blowfish.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_blowfish_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_blowfish.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_blowfish.mod: pre-gcry_blowfish.o mod-gcry_blowfish.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_blowfish_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_blowfish.o mod-gcry_blowfish.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_blowfish.mod: pre-gcry_blowfish.o mod-gcry_blowfish.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_blowfish_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_blowfish.o mod-gcry_blowfish.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_blowfish.o: $(gcry_blowfish_mod_DEPENDENCIES) gcry_blowfish_mod-lib_libgcrypt_grub_cipher_blowfish.o
@@ -45,7 +53,7 @@ pre-gcry_blowfish.o: $(gcry_blowfish_mod_DEPENDENCIES) gcry_blowfish_mod-lib_lib
 	$(TARGET_CC) $(gcry_blowfish_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_blowfish_mod-lib_libgcrypt_grub_cipher_blowfish.o
 
 mod-gcry_blowfish.o: mod-gcry_blowfish.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_blowfish_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_blowfish_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_blowfish.c\" -c -o $@ $<
 
 mod-gcry_blowfish.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_blowfish' $< > $@ || (rm -f $@; exit 1)
@@ -63,7 +71,7 @@ und-gcry_blowfish.lst: pre-gcry_blowfish.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_blowfish_mod-lib_libgcrypt_grub_cipher_blowfish.o: lib/libgcrypt-grub/cipher/blowfish.c $(lib/libgcrypt-grub/cipher/blowfish.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_blowfish_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_blowfish_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/blowfish.c\" -MD -c -o $@ $<
 -include gcry_blowfish_mod-lib_libgcrypt_grub_cipher_blowfish.d
 
 clean-module-gcry_blowfish_mod-lib_libgcrypt_grub_cipher_blowfish-extra.1:
@@ -123,19 +131,27 @@ mostlyclean-module-gcry_des.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_des.mod.1
 UNDSYMFILES += und-gcry_des.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_des.mod: pre-gcry_des.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_des_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_des.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_des.mod: pre-gcry_des.o mod-gcry_des.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_des_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_des.o mod-gcry_des.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_des.mod: pre-gcry_des.o mod-gcry_des.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_des_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_des.o mod-gcry_des.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_des.o: $(gcry_des_mod_DEPENDENCIES) gcry_des_mod-lib_libgcrypt_grub_cipher_des.o
@@ -143,7 +159,7 @@ pre-gcry_des.o: $(gcry_des_mod_DEPENDENCIES) gcry_des_mod-lib_libgcrypt_grub_cip
 	$(TARGET_CC) $(gcry_des_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_des_mod-lib_libgcrypt_grub_cipher_des.o
 
 mod-gcry_des.o: mod-gcry_des.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_des_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_des_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_des.c\" -c -o $@ $<
 
 mod-gcry_des.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_des' $< > $@ || (rm -f $@; exit 1)
@@ -161,7 +177,7 @@ und-gcry_des.lst: pre-gcry_des.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_des_mod-lib_libgcrypt_grub_cipher_des.o: lib/libgcrypt-grub/cipher/des.c $(lib/libgcrypt-grub/cipher/des.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_des_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_des_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/des.c\" -MD -c -o $@ $<
 -include gcry_des_mod-lib_libgcrypt_grub_cipher_des.d
 
 clean-module-gcry_des_mod-lib_libgcrypt_grub_cipher_des-extra.1:
@@ -222,19 +238,27 @@ mostlyclean-module-gcry_sha256.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_sha256.mod.1
 UNDSYMFILES += und-gcry_sha256.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_sha256.mod: pre-gcry_sha256.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_sha256_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_sha256.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_sha256.mod: pre-gcry_sha256.o mod-gcry_sha256.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_sha256_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_sha256.o mod-gcry_sha256.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_sha256.mod: pre-gcry_sha256.o mod-gcry_sha256.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_sha256_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_sha256.o mod-gcry_sha256.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_sha256.o: $(gcry_sha256_mod_DEPENDENCIES) gcry_sha256_mod-lib_libgcrypt_grub_cipher_sha256.o
@@ -242,7 +266,7 @@ pre-gcry_sha256.o: $(gcry_sha256_mod_DEPENDENCIES) gcry_sha256_mod-lib_libgcrypt
 	$(TARGET_CC) $(gcry_sha256_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_sha256_mod-lib_libgcrypt_grub_cipher_sha256.o
 
 mod-gcry_sha256.o: mod-gcry_sha256.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_sha256_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_sha256_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_sha256.c\" -c -o $@ $<
 
 mod-gcry_sha256.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_sha256' $< > $@ || (rm -f $@; exit 1)
@@ -260,7 +284,7 @@ und-gcry_sha256.lst: pre-gcry_sha256.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_sha256_mod-lib_libgcrypt_grub_cipher_sha256.o: lib/libgcrypt-grub/cipher/sha256.c $(lib/libgcrypt-grub/cipher/sha256.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_sha256_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_sha256_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/sha256.c\" -MD -c -o $@ $<
 -include gcry_sha256_mod-lib_libgcrypt_grub_cipher_sha256.d
 
 clean-module-gcry_sha256_mod-lib_libgcrypt_grub_cipher_sha256-extra.1:
@@ -321,19 +345,27 @@ mostlyclean-module-gcry_sha512.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_sha512.mod.1
 UNDSYMFILES += und-gcry_sha512.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_sha512.mod: pre-gcry_sha512.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_sha512_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_sha512.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_sha512.mod: pre-gcry_sha512.o mod-gcry_sha512.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_sha512_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_sha512.o mod-gcry_sha512.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_sha512.mod: pre-gcry_sha512.o mod-gcry_sha512.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_sha512_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_sha512.o mod-gcry_sha512.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_sha512.o: $(gcry_sha512_mod_DEPENDENCIES) gcry_sha512_mod-lib_libgcrypt_grub_cipher_sha512.o
@@ -341,7 +373,7 @@ pre-gcry_sha512.o: $(gcry_sha512_mod_DEPENDENCIES) gcry_sha512_mod-lib_libgcrypt
 	$(TARGET_CC) $(gcry_sha512_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_sha512_mod-lib_libgcrypt_grub_cipher_sha512.o
 
 mod-gcry_sha512.o: mod-gcry_sha512.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_sha512_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_sha512_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_sha512.c\" -c -o $@ $<
 
 mod-gcry_sha512.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_sha512' $< > $@ || (rm -f $@; exit 1)
@@ -359,7 +391,7 @@ und-gcry_sha512.lst: pre-gcry_sha512.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_sha512_mod-lib_libgcrypt_grub_cipher_sha512.o: lib/libgcrypt-grub/cipher/sha512.c $(lib/libgcrypt-grub/cipher/sha512.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_sha512_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_sha512_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/sha512.c\" -MD -c -o $@ $<
 -include gcry_sha512_mod-lib_libgcrypt_grub_cipher_sha512.d
 
 clean-module-gcry_sha512_mod-lib_libgcrypt_grub_cipher_sha512-extra.1:
@@ -421,19 +453,27 @@ mostlyclean-module-gcry_rmd160.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_rmd160.mod.1
 UNDSYMFILES += und-gcry_rmd160.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_rmd160.mod: pre-gcry_rmd160.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_rmd160_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_rmd160.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_rmd160.mod: pre-gcry_rmd160.o mod-gcry_rmd160.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_rmd160_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_rmd160.o mod-gcry_rmd160.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_rmd160.mod: pre-gcry_rmd160.o mod-gcry_rmd160.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_rmd160_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_rmd160.o mod-gcry_rmd160.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_rmd160.o: $(gcry_rmd160_mod_DEPENDENCIES) gcry_rmd160_mod-lib_libgcrypt_grub_cipher_rmd160.o
@@ -441,7 +481,7 @@ pre-gcry_rmd160.o: $(gcry_rmd160_mod_DEPENDENCIES) gcry_rmd160_mod-lib_libgcrypt
 	$(TARGET_CC) $(gcry_rmd160_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_rmd160_mod-lib_libgcrypt_grub_cipher_rmd160.o
 
 mod-gcry_rmd160.o: mod-gcry_rmd160.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_rmd160_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_rmd160_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_rmd160.c\" -c -o $@ $<
 
 mod-gcry_rmd160.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_rmd160' $< > $@ || (rm -f $@; exit 1)
@@ -459,7 +499,7 @@ und-gcry_rmd160.lst: pre-gcry_rmd160.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_rmd160_mod-lib_libgcrypt_grub_cipher_rmd160.o: lib/libgcrypt-grub/cipher/rmd160.c $(lib/libgcrypt-grub/cipher/rmd160.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_rmd160_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_rmd160_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/rmd160.c\" -MD -c -o $@ $<
 -include gcry_rmd160_mod-lib_libgcrypt_grub_cipher_rmd160.d
 
 clean-module-gcry_rmd160_mod-lib_libgcrypt_grub_cipher_rmd160-extra.1:
@@ -519,19 +559,27 @@ mostlyclean-module-gcry_cast5.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_cast5.mod.1
 UNDSYMFILES += und-gcry_cast5.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_cast5.mod: pre-gcry_cast5.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_cast5_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_cast5.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_cast5.mod: pre-gcry_cast5.o mod-gcry_cast5.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_cast5_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_cast5.o mod-gcry_cast5.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_cast5.mod: pre-gcry_cast5.o mod-gcry_cast5.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_cast5_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_cast5.o mod-gcry_cast5.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_cast5.o: $(gcry_cast5_mod_DEPENDENCIES) gcry_cast5_mod-lib_libgcrypt_grub_cipher_cast5.o
@@ -539,7 +587,7 @@ pre-gcry_cast5.o: $(gcry_cast5_mod_DEPENDENCIES) gcry_cast5_mod-lib_libgcrypt_gr
 	$(TARGET_CC) $(gcry_cast5_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_cast5_mod-lib_libgcrypt_grub_cipher_cast5.o
 
 mod-gcry_cast5.o: mod-gcry_cast5.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_cast5_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_cast5_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_cast5.c\" -c -o $@ $<
 
 mod-gcry_cast5.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_cast5' $< > $@ || (rm -f $@; exit 1)
@@ -557,7 +605,7 @@ und-gcry_cast5.lst: pre-gcry_cast5.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_cast5_mod-lib_libgcrypt_grub_cipher_cast5.o: lib/libgcrypt-grub/cipher/cast5.c $(lib/libgcrypt-grub/cipher/cast5.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_cast5_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_cast5_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/cast5.c\" -MD -c -o $@ $<
 -include gcry_cast5_mod-lib_libgcrypt_grub_cipher_cast5.d
 
 clean-module-gcry_cast5_mod-lib_libgcrypt_grub_cipher_cast5-extra.1:
@@ -617,19 +665,27 @@ mostlyclean-module-gcry_rijndael.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_rijndael.mod.1
 UNDSYMFILES += und-gcry_rijndael.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_rijndael.mod: pre-gcry_rijndael.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_rijndael_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_rijndael.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_rijndael.mod: pre-gcry_rijndael.o mod-gcry_rijndael.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_rijndael_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_rijndael.o mod-gcry_rijndael.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_rijndael.mod: pre-gcry_rijndael.o mod-gcry_rijndael.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_rijndael_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_rijndael.o mod-gcry_rijndael.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_rijndael.o: $(gcry_rijndael_mod_DEPENDENCIES) gcry_rijndael_mod-lib_libgcrypt_grub_cipher_rijndael.o
@@ -637,7 +693,7 @@ pre-gcry_rijndael.o: $(gcry_rijndael_mod_DEPENDENCIES) gcry_rijndael_mod-lib_lib
 	$(TARGET_CC) $(gcry_rijndael_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_rijndael_mod-lib_libgcrypt_grub_cipher_rijndael.o
 
 mod-gcry_rijndael.o: mod-gcry_rijndael.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_rijndael_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_rijndael_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_rijndael.c\" -c -o $@ $<
 
 mod-gcry_rijndael.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_rijndael' $< > $@ || (rm -f $@; exit 1)
@@ -655,7 +711,7 @@ und-gcry_rijndael.lst: pre-gcry_rijndael.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_rijndael_mod-lib_libgcrypt_grub_cipher_rijndael.o: lib/libgcrypt-grub/cipher/rijndael.c $(lib/libgcrypt-grub/cipher/rijndael.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_rijndael_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_rijndael_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/rijndael.c\" -MD -c -o $@ $<
 -include gcry_rijndael_mod-lib_libgcrypt_grub_cipher_rijndael.d
 
 clean-module-gcry_rijndael_mod-lib_libgcrypt_grub_cipher_rijndael-extra.1:
@@ -716,19 +772,27 @@ mostlyclean-module-gcry_seed.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_seed.mod.1
 UNDSYMFILES += und-gcry_seed.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_seed.mod: pre-gcry_seed.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_seed_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_seed.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_seed.mod: pre-gcry_seed.o mod-gcry_seed.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_seed_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_seed.o mod-gcry_seed.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_seed.mod: pre-gcry_seed.o mod-gcry_seed.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_seed_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_seed.o mod-gcry_seed.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_seed.o: $(gcry_seed_mod_DEPENDENCIES) gcry_seed_mod-lib_libgcrypt_grub_cipher_seed.o
@@ -736,7 +800,7 @@ pre-gcry_seed.o: $(gcry_seed_mod_DEPENDENCIES) gcry_seed_mod-lib_libgcrypt_grub_
 	$(TARGET_CC) $(gcry_seed_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_seed_mod-lib_libgcrypt_grub_cipher_seed.o
 
 mod-gcry_seed.o: mod-gcry_seed.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_seed_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_seed_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_seed.c\" -c -o $@ $<
 
 mod-gcry_seed.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_seed' $< > $@ || (rm -f $@; exit 1)
@@ -754,7 +818,7 @@ und-gcry_seed.lst: pre-gcry_seed.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_seed_mod-lib_libgcrypt_grub_cipher_seed.o: lib/libgcrypt-grub/cipher/seed.c $(lib/libgcrypt-grub/cipher/seed.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_seed_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_seed_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/seed.c\" -MD -c -o $@ $<
 -include gcry_seed_mod-lib_libgcrypt_grub_cipher_seed.d
 
 clean-module-gcry_seed_mod-lib_libgcrypt_grub_cipher_seed-extra.1:
@@ -814,19 +878,27 @@ mostlyclean-module-gcry_md4.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_md4.mod.1
 UNDSYMFILES += und-gcry_md4.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_md4.mod: pre-gcry_md4.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_md4_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_md4.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_md4.mod: pre-gcry_md4.o mod-gcry_md4.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_md4_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_md4.o mod-gcry_md4.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_md4.mod: pre-gcry_md4.o mod-gcry_md4.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_md4_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_md4.o mod-gcry_md4.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_md4.o: $(gcry_md4_mod_DEPENDENCIES) gcry_md4_mod-lib_libgcrypt_grub_cipher_md4.o
@@ -834,7 +906,7 @@ pre-gcry_md4.o: $(gcry_md4_mod_DEPENDENCIES) gcry_md4_mod-lib_libgcrypt_grub_cip
 	$(TARGET_CC) $(gcry_md4_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_md4_mod-lib_libgcrypt_grub_cipher_md4.o
 
 mod-gcry_md4.o: mod-gcry_md4.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_md4_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_md4_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_md4.c\" -c -o $@ $<
 
 mod-gcry_md4.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_md4' $< > $@ || (rm -f $@; exit 1)
@@ -852,7 +924,7 @@ und-gcry_md4.lst: pre-gcry_md4.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_md4_mod-lib_libgcrypt_grub_cipher_md4.o: lib/libgcrypt-grub/cipher/md4.c $(lib/libgcrypt-grub/cipher/md4.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_md4_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_md4_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/md4.c\" -MD -c -o $@ $<
 -include gcry_md4_mod-lib_libgcrypt_grub_cipher_md4.d
 
 clean-module-gcry_md4_mod-lib_libgcrypt_grub_cipher_md4-extra.1:
@@ -912,19 +984,27 @@ mostlyclean-module-gcry_tiger.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_tiger.mod.1
 UNDSYMFILES += und-gcry_tiger.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_tiger.mod: pre-gcry_tiger.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_tiger_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_tiger.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_tiger.mod: pre-gcry_tiger.o mod-gcry_tiger.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_tiger_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_tiger.o mod-gcry_tiger.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_tiger.mod: pre-gcry_tiger.o mod-gcry_tiger.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_tiger_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_tiger.o mod-gcry_tiger.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_tiger.o: $(gcry_tiger_mod_DEPENDENCIES) gcry_tiger_mod-lib_libgcrypt_grub_cipher_tiger.o
@@ -932,7 +1012,7 @@ pre-gcry_tiger.o: $(gcry_tiger_mod_DEPENDENCIES) gcry_tiger_mod-lib_libgcrypt_gr
 	$(TARGET_CC) $(gcry_tiger_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_tiger_mod-lib_libgcrypt_grub_cipher_tiger.o
 
 mod-gcry_tiger.o: mod-gcry_tiger.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_tiger_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_tiger_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_tiger.c\" -c -o $@ $<
 
 mod-gcry_tiger.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_tiger' $< > $@ || (rm -f $@; exit 1)
@@ -950,7 +1030,7 @@ und-gcry_tiger.lst: pre-gcry_tiger.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_tiger_mod-lib_libgcrypt_grub_cipher_tiger.o: lib/libgcrypt-grub/cipher/tiger.c $(lib/libgcrypt-grub/cipher/tiger.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_tiger_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_tiger_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/tiger.c\" -MD -c -o $@ $<
 -include gcry_tiger_mod-lib_libgcrypt_grub_cipher_tiger.d
 
 clean-module-gcry_tiger_mod-lib_libgcrypt_grub_cipher_tiger-extra.1:
@@ -1010,19 +1090,27 @@ mostlyclean-module-gcry_twofish.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_twofish.mod.1
 UNDSYMFILES += und-gcry_twofish.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_twofish.mod: pre-gcry_twofish.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_twofish_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_twofish.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_twofish.mod: pre-gcry_twofish.o mod-gcry_twofish.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_twofish_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_twofish.o mod-gcry_twofish.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_twofish.mod: pre-gcry_twofish.o mod-gcry_twofish.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_twofish_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_twofish.o mod-gcry_twofish.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_twofish.o: $(gcry_twofish_mod_DEPENDENCIES) gcry_twofish_mod-lib_libgcrypt_grub_cipher_twofish.o
@@ -1030,7 +1118,7 @@ pre-gcry_twofish.o: $(gcry_twofish_mod_DEPENDENCIES) gcry_twofish_mod-lib_libgcr
 	$(TARGET_CC) $(gcry_twofish_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_twofish_mod-lib_libgcrypt_grub_cipher_twofish.o
 
 mod-gcry_twofish.o: mod-gcry_twofish.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_twofish_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_twofish_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_twofish.c\" -c -o $@ $<
 
 mod-gcry_twofish.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_twofish' $< > $@ || (rm -f $@; exit 1)
@@ -1048,7 +1136,7 @@ und-gcry_twofish.lst: pre-gcry_twofish.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_twofish_mod-lib_libgcrypt_grub_cipher_twofish.o: lib/libgcrypt-grub/cipher/twofish.c $(lib/libgcrypt-grub/cipher/twofish.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_twofish_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_twofish_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/twofish.c\" -MD -c -o $@ $<
 -include gcry_twofish_mod-lib_libgcrypt_grub_cipher_twofish.d
 
 clean-module-gcry_twofish_mod-lib_libgcrypt_grub_cipher_twofish-extra.1:
@@ -1109,19 +1197,27 @@ mostlyclean-module-gcry_rfc2268.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_rfc2268.mod.1
 UNDSYMFILES += und-gcry_rfc2268.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_rfc2268.mod: pre-gcry_rfc2268.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_rfc2268_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_rfc2268.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_rfc2268.mod: pre-gcry_rfc2268.o mod-gcry_rfc2268.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_rfc2268_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_rfc2268.o mod-gcry_rfc2268.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_rfc2268.mod: pre-gcry_rfc2268.o mod-gcry_rfc2268.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_rfc2268_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_rfc2268.o mod-gcry_rfc2268.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_rfc2268.o: $(gcry_rfc2268_mod_DEPENDENCIES) gcry_rfc2268_mod-lib_libgcrypt_grub_cipher_rfc2268.o
@@ -1129,7 +1225,7 @@ pre-gcry_rfc2268.o: $(gcry_rfc2268_mod_DEPENDENCIES) gcry_rfc2268_mod-lib_libgcr
 	$(TARGET_CC) $(gcry_rfc2268_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_rfc2268_mod-lib_libgcrypt_grub_cipher_rfc2268.o
 
 mod-gcry_rfc2268.o: mod-gcry_rfc2268.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_rfc2268_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_rfc2268_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_rfc2268.c\" -c -o $@ $<
 
 mod-gcry_rfc2268.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_rfc2268' $< > $@ || (rm -f $@; exit 1)
@@ -1147,7 +1243,7 @@ und-gcry_rfc2268.lst: pre-gcry_rfc2268.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_rfc2268_mod-lib_libgcrypt_grub_cipher_rfc2268.o: lib/libgcrypt-grub/cipher/rfc2268.c $(lib/libgcrypt-grub/cipher/rfc2268.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_rfc2268_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_rfc2268_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/rfc2268.c\" -MD -c -o $@ $<
 -include gcry_rfc2268_mod-lib_libgcrypt_grub_cipher_rfc2268.d
 
 clean-module-gcry_rfc2268_mod-lib_libgcrypt_grub_cipher_rfc2268-extra.1:
@@ -1207,19 +1303,27 @@ mostlyclean-module-gcry_camellia.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_camellia.mod.1
 UNDSYMFILES += und-gcry_camellia.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_camellia.mod: pre-gcry_camellia.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_camellia_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_camellia.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_camellia.mod: pre-gcry_camellia.o mod-gcry_camellia.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_camellia_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_camellia.o mod-gcry_camellia.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_camellia.mod: pre-gcry_camellia.o mod-gcry_camellia.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_camellia_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_camellia.o mod-gcry_camellia.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_camellia.o: $(gcry_camellia_mod_DEPENDENCIES) gcry_camellia_mod-lib_libgcrypt_grub_cipher_camellia_glue.o gcry_camellia_mod-lib_libgcrypt_grub_cipher_camellia.o
@@ -1227,7 +1331,7 @@ pre-gcry_camellia.o: $(gcry_camellia_mod_DEPENDENCIES) gcry_camellia_mod-lib_lib
 	$(TARGET_CC) $(gcry_camellia_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_camellia_mod-lib_libgcrypt_grub_cipher_camellia_glue.o gcry_camellia_mod-lib_libgcrypt_grub_cipher_camellia.o
 
 mod-gcry_camellia.o: mod-gcry_camellia.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_camellia_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_camellia_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_camellia.c\" -c -o $@ $<
 
 mod-gcry_camellia.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_camellia' $< > $@ || (rm -f $@; exit 1)
@@ -1245,7 +1349,7 @@ und-gcry_camellia.lst: pre-gcry_camellia.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_camellia_mod-lib_libgcrypt_grub_cipher_camellia_glue.o: lib/libgcrypt-grub/cipher/camellia-glue.c $(lib/libgcrypt-grub/cipher/camellia-glue.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_camellia_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_camellia_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/camellia-glue.c\" -MD -c -o $@ $<
 -include gcry_camellia_mod-lib_libgcrypt_grub_cipher_camellia_glue.d
 
 clean-module-gcry_camellia_mod-lib_libgcrypt_grub_cipher_camellia_glue-extra.1:
@@ -1283,7 +1387,7 @@ video-gcry_camellia_mod-lib_libgcrypt_grub_cipher_camellia_glue.lst: lib/libgcry
 	set -e; 	  $(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_camellia_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh gcry_camellia > $@ || (rm -f $@; exit 1)
 
 gcry_camellia_mod-lib_libgcrypt_grub_cipher_camellia.o: lib/libgcrypt-grub/cipher/camellia.c $(lib/libgcrypt-grub/cipher/camellia.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_camellia_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_camellia_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/camellia.c\" -MD -c -o $@ $<
 -include gcry_camellia_mod-lib_libgcrypt_grub_cipher_camellia.d
 
 clean-module-gcry_camellia_mod-lib_libgcrypt_grub_cipher_camellia-extra.1:
@@ -1344,19 +1448,27 @@ mostlyclean-module-gcry_whirlpool.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_whirlpool.mod.1
 UNDSYMFILES += und-gcry_whirlpool.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_whirlpool.mod: pre-gcry_whirlpool.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_whirlpool_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_whirlpool.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_whirlpool.mod: pre-gcry_whirlpool.o mod-gcry_whirlpool.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_whirlpool_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_whirlpool.o mod-gcry_whirlpool.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_whirlpool.mod: pre-gcry_whirlpool.o mod-gcry_whirlpool.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_whirlpool_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_whirlpool.o mod-gcry_whirlpool.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_whirlpool.o: $(gcry_whirlpool_mod_DEPENDENCIES) gcry_whirlpool_mod-lib_libgcrypt_grub_cipher_whirlpool.o
@@ -1364,7 +1476,7 @@ pre-gcry_whirlpool.o: $(gcry_whirlpool_mod_DEPENDENCIES) gcry_whirlpool_mod-lib_
 	$(TARGET_CC) $(gcry_whirlpool_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_whirlpool_mod-lib_libgcrypt_grub_cipher_whirlpool.o
 
 mod-gcry_whirlpool.o: mod-gcry_whirlpool.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_whirlpool_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_whirlpool_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_whirlpool.c\" -c -o $@ $<
 
 mod-gcry_whirlpool.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_whirlpool' $< > $@ || (rm -f $@; exit 1)
@@ -1382,7 +1494,7 @@ und-gcry_whirlpool.lst: pre-gcry_whirlpool.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_whirlpool_mod-lib_libgcrypt_grub_cipher_whirlpool.o: lib/libgcrypt-grub/cipher/whirlpool.c $(lib/libgcrypt-grub/cipher/whirlpool.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_whirlpool_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_whirlpool_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/whirlpool.c\" -MD -c -o $@ $<
 -include gcry_whirlpool_mod-lib_libgcrypt_grub_cipher_whirlpool.d
 
 clean-module-gcry_whirlpool_mod-lib_libgcrypt_grub_cipher_whirlpool-extra.1:
@@ -1442,19 +1554,27 @@ mostlyclean-module-gcry_crc.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_crc.mod.1
 UNDSYMFILES += und-gcry_crc.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_crc.mod: pre-gcry_crc.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_crc_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_crc.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_crc.mod: pre-gcry_crc.o mod-gcry_crc.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_crc_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_crc.o mod-gcry_crc.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_crc.mod: pre-gcry_crc.o mod-gcry_crc.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_crc_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_crc.o mod-gcry_crc.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_crc.o: $(gcry_crc_mod_DEPENDENCIES) gcry_crc_mod-lib_libgcrypt_grub_cipher_crc.o
@@ -1462,7 +1582,7 @@ pre-gcry_crc.o: $(gcry_crc_mod_DEPENDENCIES) gcry_crc_mod-lib_libgcrypt_grub_cip
 	$(TARGET_CC) $(gcry_crc_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_crc_mod-lib_libgcrypt_grub_cipher_crc.o
 
 mod-gcry_crc.o: mod-gcry_crc.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_crc_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_crc_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_crc.c\" -c -o $@ $<
 
 mod-gcry_crc.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_crc' $< > $@ || (rm -f $@; exit 1)
@@ -1480,7 +1600,7 @@ und-gcry_crc.lst: pre-gcry_crc.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_crc_mod-lib_libgcrypt_grub_cipher_crc.o: lib/libgcrypt-grub/cipher/crc.c $(lib/libgcrypt-grub/cipher/crc.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_crc_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_crc_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/crc.c\" -MD -c -o $@ $<
 -include gcry_crc_mod-lib_libgcrypt_grub_cipher_crc.d
 
 clean-module-gcry_crc_mod-lib_libgcrypt_grub_cipher_crc-extra.1:
@@ -1540,19 +1660,27 @@ mostlyclean-module-gcry_md5.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_md5.mod.1
 UNDSYMFILES += und-gcry_md5.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_md5.mod: pre-gcry_md5.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_md5_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_md5.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_md5.mod: pre-gcry_md5.o mod-gcry_md5.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_md5_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_md5.o mod-gcry_md5.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_md5.mod: pre-gcry_md5.o mod-gcry_md5.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_md5_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_md5.o mod-gcry_md5.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_md5.o: $(gcry_md5_mod_DEPENDENCIES) gcry_md5_mod-lib_libgcrypt_grub_cipher_md5.o
@@ -1560,7 +1688,7 @@ pre-gcry_md5.o: $(gcry_md5_mod_DEPENDENCIES) gcry_md5_mod-lib_libgcrypt_grub_cip
 	$(TARGET_CC) $(gcry_md5_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_md5_mod-lib_libgcrypt_grub_cipher_md5.o
 
 mod-gcry_md5.o: mod-gcry_md5.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_md5_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_md5_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_md5.c\" -c -o $@ $<
 
 mod-gcry_md5.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_md5' $< > $@ || (rm -f $@; exit 1)
@@ -1578,7 +1706,7 @@ und-gcry_md5.lst: pre-gcry_md5.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_md5_mod-lib_libgcrypt_grub_cipher_md5.o: lib/libgcrypt-grub/cipher/md5.c $(lib/libgcrypt-grub/cipher/md5.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_md5_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_md5_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/md5.c\" -MD -c -o $@ $<
 -include gcry_md5_mod-lib_libgcrypt_grub_cipher_md5.d
 
 clean-module-gcry_md5_mod-lib_libgcrypt_grub_cipher_md5-extra.1:
@@ -1638,19 +1766,27 @@ mostlyclean-module-gcry_serpent.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_serpent.mod.1
 UNDSYMFILES += und-gcry_serpent.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_serpent.mod: pre-gcry_serpent.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_serpent_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_serpent.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_serpent.mod: pre-gcry_serpent.o mod-gcry_serpent.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_serpent_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_serpent.o mod-gcry_serpent.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_serpent.mod: pre-gcry_serpent.o mod-gcry_serpent.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_serpent_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_serpent.o mod-gcry_serpent.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_serpent.o: $(gcry_serpent_mod_DEPENDENCIES) gcry_serpent_mod-lib_libgcrypt_grub_cipher_serpent.o
@@ -1658,7 +1794,7 @@ pre-gcry_serpent.o: $(gcry_serpent_mod_DEPENDENCIES) gcry_serpent_mod-lib_libgcr
 	$(TARGET_CC) $(gcry_serpent_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_serpent_mod-lib_libgcrypt_grub_cipher_serpent.o
 
 mod-gcry_serpent.o: mod-gcry_serpent.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_serpent_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_serpent_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_serpent.c\" -c -o $@ $<
 
 mod-gcry_serpent.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_serpent' $< > $@ || (rm -f $@; exit 1)
@@ -1676,7 +1812,7 @@ und-gcry_serpent.lst: pre-gcry_serpent.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_serpent_mod-lib_libgcrypt_grub_cipher_serpent.o: lib/libgcrypt-grub/cipher/serpent.c $(lib/libgcrypt-grub/cipher/serpent.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_serpent_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_serpent_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/serpent.c\" -MD -c -o $@ $<
 -include gcry_serpent_mod-lib_libgcrypt_grub_cipher_serpent.d
 
 clean-module-gcry_serpent_mod-lib_libgcrypt_grub_cipher_serpent-extra.1:
@@ -1736,19 +1872,27 @@ mostlyclean-module-gcry_sha1.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_sha1.mod.1
 UNDSYMFILES += und-gcry_sha1.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_sha1.mod: pre-gcry_sha1.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_sha1_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_sha1.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_sha1.mod: pre-gcry_sha1.o mod-gcry_sha1.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_sha1_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_sha1.o mod-gcry_sha1.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_sha1.mod: pre-gcry_sha1.o mod-gcry_sha1.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_sha1_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_sha1.o mod-gcry_sha1.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_sha1.o: $(gcry_sha1_mod_DEPENDENCIES) gcry_sha1_mod-lib_libgcrypt_grub_cipher_sha1.o
@@ -1756,7 +1900,7 @@ pre-gcry_sha1.o: $(gcry_sha1_mod_DEPENDENCIES) gcry_sha1_mod-lib_libgcrypt_grub_
 	$(TARGET_CC) $(gcry_sha1_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_sha1_mod-lib_libgcrypt_grub_cipher_sha1.o
 
 mod-gcry_sha1.o: mod-gcry_sha1.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_sha1_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_sha1_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_sha1.c\" -c -o $@ $<
 
 mod-gcry_sha1.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_sha1' $< > $@ || (rm -f $@; exit 1)
@@ -1774,7 +1918,7 @@ und-gcry_sha1.lst: pre-gcry_sha1.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_sha1_mod-lib_libgcrypt_grub_cipher_sha1.o: lib/libgcrypt-grub/cipher/sha1.c $(lib/libgcrypt-grub/cipher/sha1.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_sha1_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_sha1_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/sha1.c\" -MD -c -o $@ $<
 -include gcry_sha1_mod-lib_libgcrypt_grub_cipher_sha1.d
 
 clean-module-gcry_sha1_mod-lib_libgcrypt_grub_cipher_sha1-extra.1:
@@ -1835,19 +1979,27 @@ mostlyclean-module-gcry_arcfour.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-gcry_arcfour.mod.1
 UNDSYMFILES += und-gcry_arcfour.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+gcry_arcfour.mod: pre-gcry_arcfour.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(gcry_arcfour_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_arcfour.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 gcry_arcfour.mod: pre-gcry_arcfour.o mod-gcry_arcfour.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(gcry_arcfour_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-gcry_arcfour.o mod-gcry_arcfour.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 gcry_arcfour.mod: pre-gcry_arcfour.o mod-gcry_arcfour.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(gcry_arcfour_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-gcry_arcfour.o mod-gcry_arcfour.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-gcry_arcfour.o: $(gcry_arcfour_mod_DEPENDENCIES) gcry_arcfour_mod-lib_libgcrypt_grub_cipher_arcfour.o
@@ -1855,7 +2007,7 @@ pre-gcry_arcfour.o: $(gcry_arcfour_mod_DEPENDENCIES) gcry_arcfour_mod-lib_libgcr
 	$(TARGET_CC) $(gcry_arcfour_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ gcry_arcfour_mod-lib_libgcrypt_grub_cipher_arcfour.o
 
 mod-gcry_arcfour.o: mod-gcry_arcfour.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_arcfour_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(gcry_arcfour_mod_CFLAGS) -DGRUB_FILE=\"mod-gcry_arcfour.c\" -c -o $@ $<
 
 mod-gcry_arcfour.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'gcry_arcfour' $< > $@ || (rm -f $@; exit 1)
@@ -1873,7 +2025,7 @@ und-gcry_arcfour.lst: pre-gcry_arcfour.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 gcry_arcfour_mod-lib_libgcrypt_grub_cipher_arcfour.o: lib/libgcrypt-grub/cipher/arcfour.c $(lib/libgcrypt-grub/cipher/arcfour.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_arcfour_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib/libgcrypt-grub/cipher -I$(srcdir)/lib/libgcrypt-grub/cipher $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(gcry_arcfour_mod_CFLAGS) -DGRUB_FILE=\"lib/libgcrypt-grub/cipher/arcfour.c\" -MD -c -o $@ $<
 -include gcry_arcfour_mod-lib_libgcrypt_grub_cipher_arcfour.d
 
 clean-module-gcry_arcfour_mod-lib_libgcrypt_grub_cipher_arcfour-extra.1:
