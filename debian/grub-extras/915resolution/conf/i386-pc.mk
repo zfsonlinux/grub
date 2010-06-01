@@ -20,19 +20,27 @@ mostlyclean-module-915resolution.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-915resolution.mod.1
 UNDSYMFILES += und-915resolution.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+915resolution.mod: pre-915resolution.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(915resolution_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-915resolution.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 915resolution.mod: pre-915resolution.o mod-915resolution.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(915resolution_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-915resolution.o mod-915resolution.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 915resolution.mod: pre-915resolution.o mod-915resolution.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(915resolution_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-915resolution.o mod-915resolution.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-915resolution.o: $(915resolution_mod_DEPENDENCIES) 915resolution_mod-__GRUB_CONTRIB__915resolution_915resolution.o
@@ -40,7 +48,7 @@ pre-915resolution.o: $(915resolution_mod_DEPENDENCIES) 915resolution_mod-__GRUB_
 	$(TARGET_CC) $(915resolution_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ 915resolution_mod-__GRUB_CONTRIB__915resolution_915resolution.o
 
 mod-915resolution.o: mod-915resolution.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(915resolution_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(915resolution_mod_CFLAGS) -DGRUB_FILE=\"mod-915resolution.c\" -c -o $@ $<
 
 mod-915resolution.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh '915resolution' $< > $@ || (rm -f $@; exit 1)
@@ -58,7 +66,7 @@ und-915resolution.lst: pre-915resolution.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 915resolution_mod-__GRUB_CONTRIB__915resolution_915resolution.o: $(GRUB_CONTRIB)/915resolution/915resolution.c $($(GRUB_CONTRIB)/915resolution/915resolution.c_DEPENDENCIES)
-	$(TARGET_CC) -I$(GRUB_CONTRIB)/915resolution -I$(srcdir)/$(GRUB_CONTRIB)/915resolution $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(915resolution_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -I$(GRUB_CONTRIB)/915resolution -I$(srcdir)/$(GRUB_CONTRIB)/915resolution $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(915resolution_mod_CFLAGS) -DGRUB_FILE=\"$(GRUB_CONTRIB)/915resolution/915resolution.c\" -MD -c -o $@ $<
 -include 915resolution_mod-__GRUB_CONTRIB__915resolution_915resolution.d
 
 clean-module-915resolution_mod-__GRUB_CONTRIB__915resolution_915resolution-extra.1:

@@ -5,11 +5,11 @@ target_machine=yeeloong
 COMMON_CFLAGS += -march=mips3
 COMMON_ASFLAGS += -march=mips3
 
-kernel_img_HEADERS += bitmap.h video.h gfxterm.h font.h bitmap_scale.h bufio.h
+kernel_img_HEADERS += pci.h bitmap.h video.h gfxterm.h font.h bitmap_scale.h bufio.h
 
 include $(srcdir)/conf/mips.mk
 
-pkglib_IMAGES = kernel.img
+pkglib_PROGRAMS = kernel.img
 kernel_img_SOURCES = kern/$(target_cpu)/startup.S \
 	kern/main.c kern/device.c kern/$(target_cpu)/init.c \
 	kern/$(target_cpu)/$(target_machine)/init.c 		\
@@ -28,217 +28,281 @@ kernel_img_SOURCES = kern/$(target_cpu)/startup.S \
 	video/bitmap_scale.c video/sm712.c bus/pci.c bus/bonito.c \
 	term/gfxterm.c commands/extcmd.c lib/arg.c \
 	symlist.c
-
-clean-image-kernel.img.1:
-	rm -f kernel.img kernel.exec kernel_img-kern___target_cpu__startup.o kernel_img-kern_main.o kernel_img-kern_device.o kernel_img-kern___target_cpu__init.o kernel_img-kern___target_cpu____target_machine__init.o kernel_img-kern_disk.o kernel_img-kern_dl.o kernel_img-kern_err.o kernel_img-kern_file.o kernel_img-kern_fs.o kernel_img-kern_misc.o kernel_img-kern_mm.o kernel_img-kern_term.o kernel_img-kern_rescue_parser.o kernel_img-kern_rescue_reader.o kernel_img-kern_list.o kernel_img-kern_handler.o kernel_img-kern_command.o kernel_img-kern_corecmd.o kernel_img-kern_parser.o kernel_img-kern_partition.o kernel_img-kern_env.o kernel_img-kern___target_cpu__dl.o kernel_img-kern_generic_millisleep.o kernel_img-kern_generic_rtc_get_time_ms.o kernel_img-kern_time.o kernel_img-kern___target_cpu__cache.o kernel_img-term_at_keyboard.o kernel_img-font_font_cmd.o kernel_img-font_font.o kernel_img-io_bufio.o kernel_img-video_video.o kernel_img-video_fb_video_fb.o kernel_img-video_fb_fbblit.o kernel_img-video_fb_fbfill.o kernel_img-video_fb_fbutil.o kernel_img-video_bitmap.o kernel_img-video_bitmap_scale.o kernel_img-video_sm712.o kernel_img-bus_pci.o kernel_img-bus_bonito.o kernel_img-term_gfxterm.o kernel_img-commands_extcmd.o kernel_img-lib_arg.o kernel_img-symlist.o
-
-CLEAN_IMAGE_TARGETS += clean-image-kernel.img.1
-
-mostlyclean-image-kernel.img.1:
-	rm -f kernel_img-kern___target_cpu__startup.d kernel_img-kern_main.d kernel_img-kern_device.d kernel_img-kern___target_cpu__init.d kernel_img-kern___target_cpu____target_machine__init.d kernel_img-kern_disk.d kernel_img-kern_dl.d kernel_img-kern_err.d kernel_img-kern_file.d kernel_img-kern_fs.d kernel_img-kern_misc.d kernel_img-kern_mm.d kernel_img-kern_term.d kernel_img-kern_rescue_parser.d kernel_img-kern_rescue_reader.d kernel_img-kern_list.d kernel_img-kern_handler.d kernel_img-kern_command.d kernel_img-kern_corecmd.d kernel_img-kern_parser.d kernel_img-kern_partition.d kernel_img-kern_env.d kernel_img-kern___target_cpu__dl.d kernel_img-kern_generic_millisleep.d kernel_img-kern_generic_rtc_get_time_ms.d kernel_img-kern_time.d kernel_img-kern___target_cpu__cache.d kernel_img-term_at_keyboard.d kernel_img-font_font_cmd.d kernel_img-font_font.d kernel_img-io_bufio.d kernel_img-video_video.d kernel_img-video_fb_video_fb.d kernel_img-video_fb_fbblit.d kernel_img-video_fb_fbfill.d kernel_img-video_fb_fbutil.d kernel_img-video_bitmap.d kernel_img-video_bitmap_scale.d kernel_img-video_sm712.d kernel_img-bus_pci.d kernel_img-bus_bonito.d kernel_img-term_gfxterm.d kernel_img-commands_extcmd.d kernel_img-lib_arg.d kernel_img-symlist.d
-
-MOSTLYCLEAN_IMAGE_TARGETS += mostlyclean-image-kernel.img.1
-
-ifneq ($(TARGET_APPLE_CC),1)
-kernel.img: kernel.exec
-	$(OBJCOPY) -O $(kernel_img_FORMAT) --strip-unneeded -R .note -R .comment -R .note.gnu.build-id -R .reginfo -R .rel.dyn $< $@
-else
-ifneq (kernel.exec,kernel.exec)
-kernel.img: kernel.exec ./grub-macho2img
-	./grub-macho2img $< $@
-else
-kernel.img: kernel.exec ./grub-macho2img
-	./grub-macho2img --bss $< $@
-endif
-endif
-
-kernel.exec: kernel_img-kern___target_cpu__startup.o kernel_img-kern_main.o kernel_img-kern_device.o kernel_img-kern___target_cpu__init.o kernel_img-kern___target_cpu____target_machine__init.o kernel_img-kern_disk.o kernel_img-kern_dl.o kernel_img-kern_err.o kernel_img-kern_file.o kernel_img-kern_fs.o kernel_img-kern_misc.o kernel_img-kern_mm.o kernel_img-kern_term.o kernel_img-kern_rescue_parser.o kernel_img-kern_rescue_reader.o kernel_img-kern_list.o kernel_img-kern_handler.o kernel_img-kern_command.o kernel_img-kern_corecmd.o kernel_img-kern_parser.o kernel_img-kern_partition.o kernel_img-kern_env.o kernel_img-kern___target_cpu__dl.o kernel_img-kern_generic_millisleep.o kernel_img-kern_generic_rtc_get_time_ms.o kernel_img-kern_time.o kernel_img-kern___target_cpu__cache.o kernel_img-term_at_keyboard.o kernel_img-font_font_cmd.o kernel_img-font_font.o kernel_img-io_bufio.o kernel_img-video_video.o kernel_img-video_fb_video_fb.o kernel_img-video_fb_fbblit.o kernel_img-video_fb_fbfill.o kernel_img-video_fb_fbutil.o kernel_img-video_bitmap.o kernel_img-video_bitmap_scale.o kernel_img-video_sm712.o kernel_img-bus_pci.o kernel_img-bus_bonito.o kernel_img-term_gfxterm.o kernel_img-commands_extcmd.o kernel_img-lib_arg.o kernel_img-symlist.o
-	$(TARGET_CC) -o $@ $^ $(TARGET_LDFLAGS) $(kernel_img_LDFLAGS)
+MOSTLYCLEANFILES += kernel_img-kern___target_cpu__startup.d kernel_img-kern_main.d kernel_img-kern_device.d kernel_img-kern___target_cpu__init.d kernel_img-kern___target_cpu____target_machine__init.d kernel_img-kern_disk.d kernel_img-kern_dl.d kernel_img-kern_err.d kernel_img-kern_file.d kernel_img-kern_fs.d kernel_img-kern_misc.d kernel_img-kern_mm.d kernel_img-kern_term.d kernel_img-kern_rescue_parser.d kernel_img-kern_rescue_reader.d kernel_img-kern_list.d kernel_img-kern_handler.d kernel_img-kern_command.d kernel_img-kern_corecmd.d kernel_img-kern_parser.d kernel_img-kern_partition.d kernel_img-kern_env.d kernel_img-kern___target_cpu__dl.d kernel_img-kern_generic_millisleep.d kernel_img-kern_generic_rtc_get_time_ms.d kernel_img-kern_time.d kernel_img-kern___target_cpu__cache.d kernel_img-term_at_keyboard.d kernel_img-font_font_cmd.d kernel_img-font_font.d kernel_img-io_bufio.d kernel_img-video_video.d kernel_img-video_fb_video_fb.d kernel_img-video_fb_fbblit.d kernel_img-video_fb_fbfill.d kernel_img-video_fb_fbutil.d kernel_img-video_bitmap.d kernel_img-video_bitmap_scale.d kernel_img-video_sm712.d kernel_img-bus_pci.d kernel_img-bus_bonito.d kernel_img-term_gfxterm.d kernel_img-commands_extcmd.d kernel_img-lib_arg.d kernel_img-symlist.d
 
 kernel_img-kern___target_cpu__startup.o: kern/$(target_cpu)/startup.S $(kern/$(target_cpu)/startup.S_DEPENDENCIES)
-	$(TARGET_CC) -Ikern/$(target_cpu) -I$(srcdir)/kern/$(target_cpu) $(TARGET_CPPFLAGS) -DASM_FILE=1 $(TARGET_ASFLAGS) $(kernel_img_ASFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern/$(target_cpu) -I$(srcdir)/kern/$(target_cpu) $(TARGET_CPPFLAGS) -DASM_FILE=1 $(TARGET_ASFLAGS) $(kernel_img_ASFLAGS) -DGRUB_FILE=\"kern/$(target_cpu)/startup.S\" -MD -c -o $@ $<
+
 -include kernel_img-kern___target_cpu__startup.d
 
+kernel_img_OBJECTS += kernel_img-kern___target_cpu__startup.o
 kernel_img-kern_main.o: kern/main.c $(kern/main.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/main.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_main.d
 
+kernel_img_OBJECTS += kernel_img-kern_main.o
 kernel_img-kern_device.o: kern/device.c $(kern/device.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/device.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_device.d
 
+kernel_img_OBJECTS += kernel_img-kern_device.o
 kernel_img-kern___target_cpu__init.o: kern/$(target_cpu)/init.c $(kern/$(target_cpu)/init.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern/$(target_cpu) -I$(srcdir)/kern/$(target_cpu) $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern/$(target_cpu) -I$(srcdir)/kern/$(target_cpu) $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/$(target_cpu)/init.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern___target_cpu__init.d
 
+kernel_img_OBJECTS += kernel_img-kern___target_cpu__init.o
 kernel_img-kern___target_cpu____target_machine__init.o: kern/$(target_cpu)/$(target_machine)/init.c $(kern/$(target_cpu)/$(target_machine)/init.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern/$(target_cpu)/$(target_machine) -I$(srcdir)/kern/$(target_cpu)/$(target_machine) $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern/$(target_cpu)/$(target_machine) -I$(srcdir)/kern/$(target_cpu)/$(target_machine) $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/$(target_cpu)/$(target_machine)/init.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern___target_cpu____target_machine__init.d
 
+kernel_img_OBJECTS += kernel_img-kern___target_cpu____target_machine__init.o
 kernel_img-kern_disk.o: kern/disk.c $(kern/disk.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/disk.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_disk.d
 
+kernel_img_OBJECTS += kernel_img-kern_disk.o
 kernel_img-kern_dl.o: kern/dl.c $(kern/dl.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/dl.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_dl.d
 
+kernel_img_OBJECTS += kernel_img-kern_dl.o
 kernel_img-kern_err.o: kern/err.c $(kern/err.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/err.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_err.d
 
+kernel_img_OBJECTS += kernel_img-kern_err.o
 kernel_img-kern_file.o: kern/file.c $(kern/file.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/file.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_file.d
 
+kernel_img_OBJECTS += kernel_img-kern_file.o
 kernel_img-kern_fs.o: kern/fs.c $(kern/fs.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/fs.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_fs.d
 
+kernel_img_OBJECTS += kernel_img-kern_fs.o
 kernel_img-kern_misc.o: kern/misc.c $(kern/misc.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/misc.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_misc.d
 
+kernel_img_OBJECTS += kernel_img-kern_misc.o
 kernel_img-kern_mm.o: kern/mm.c $(kern/mm.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/mm.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_mm.d
 
+kernel_img_OBJECTS += kernel_img-kern_mm.o
 kernel_img-kern_term.o: kern/term.c $(kern/term.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/term.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_term.d
 
+kernel_img_OBJECTS += kernel_img-kern_term.o
 kernel_img-kern_rescue_parser.o: kern/rescue_parser.c $(kern/rescue_parser.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/rescue_parser.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_rescue_parser.d
 
+kernel_img_OBJECTS += kernel_img-kern_rescue_parser.o
 kernel_img-kern_rescue_reader.o: kern/rescue_reader.c $(kern/rescue_reader.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/rescue_reader.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_rescue_reader.d
 
+kernel_img_OBJECTS += kernel_img-kern_rescue_reader.o
 kernel_img-kern_list.o: kern/list.c $(kern/list.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/list.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_list.d
 
+kernel_img_OBJECTS += kernel_img-kern_list.o
 kernel_img-kern_handler.o: kern/handler.c $(kern/handler.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/handler.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_handler.d
 
+kernel_img_OBJECTS += kernel_img-kern_handler.o
 kernel_img-kern_command.o: kern/command.c $(kern/command.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/command.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_command.d
 
+kernel_img_OBJECTS += kernel_img-kern_command.o
 kernel_img-kern_corecmd.o: kern/corecmd.c $(kern/corecmd.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/corecmd.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_corecmd.d
 
+kernel_img_OBJECTS += kernel_img-kern_corecmd.o
 kernel_img-kern_parser.o: kern/parser.c $(kern/parser.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/parser.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_parser.d
 
+kernel_img_OBJECTS += kernel_img-kern_parser.o
 kernel_img-kern_partition.o: kern/partition.c $(kern/partition.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/partition.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_partition.d
 
+kernel_img_OBJECTS += kernel_img-kern_partition.o
 kernel_img-kern_env.o: kern/env.c $(kern/env.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/env.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_env.d
 
+kernel_img_OBJECTS += kernel_img-kern_env.o
 kernel_img-kern___target_cpu__dl.o: kern/$(target_cpu)/dl.c $(kern/$(target_cpu)/dl.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern/$(target_cpu) -I$(srcdir)/kern/$(target_cpu) $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern/$(target_cpu) -I$(srcdir)/kern/$(target_cpu) $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/$(target_cpu)/dl.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern___target_cpu__dl.d
 
+kernel_img_OBJECTS += kernel_img-kern___target_cpu__dl.o
 kernel_img-kern_generic_millisleep.o: kern/generic/millisleep.c $(kern/generic/millisleep.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern/generic -I$(srcdir)/kern/generic $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern/generic -I$(srcdir)/kern/generic $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/generic/millisleep.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_generic_millisleep.d
 
+kernel_img_OBJECTS += kernel_img-kern_generic_millisleep.o
 kernel_img-kern_generic_rtc_get_time_ms.o: kern/generic/rtc_get_time_ms.c $(kern/generic/rtc_get_time_ms.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern/generic -I$(srcdir)/kern/generic $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern/generic -I$(srcdir)/kern/generic $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/generic/rtc_get_time_ms.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_generic_rtc_get_time_ms.d
 
+kernel_img_OBJECTS += kernel_img-kern_generic_rtc_get_time_ms.o
 kernel_img-kern_time.o: kern/time.c $(kern/time.c_DEPENDENCIES)
-	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern -I$(srcdir)/kern $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"kern/time.c\" -MD -c -o $@ $<
+
 -include kernel_img-kern_time.d
 
+kernel_img_OBJECTS += kernel_img-kern_time.o
 kernel_img-kern___target_cpu__cache.o: kern/$(target_cpu)/cache.S $(kern/$(target_cpu)/cache.S_DEPENDENCIES)
-	$(TARGET_CC) -Ikern/$(target_cpu) -I$(srcdir)/kern/$(target_cpu) $(TARGET_CPPFLAGS) -DASM_FILE=1 $(TARGET_ASFLAGS) $(kernel_img_ASFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ikern/$(target_cpu) -I$(srcdir)/kern/$(target_cpu) $(TARGET_CPPFLAGS) -DASM_FILE=1 $(TARGET_ASFLAGS) $(kernel_img_ASFLAGS) -DGRUB_FILE=\"kern/$(target_cpu)/cache.S\" -MD -c -o $@ $<
+
 -include kernel_img-kern___target_cpu__cache.d
 
+kernel_img_OBJECTS += kernel_img-kern___target_cpu__cache.o
 kernel_img-term_at_keyboard.o: term/at_keyboard.c $(term/at_keyboard.c_DEPENDENCIES)
-	$(TARGET_CC) -Iterm -I$(srcdir)/term $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Iterm -I$(srcdir)/term $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"term/at_keyboard.c\" -MD -c -o $@ $<
+
 -include kernel_img-term_at_keyboard.d
 
+kernel_img_OBJECTS += kernel_img-term_at_keyboard.o
 kernel_img-font_font_cmd.o: font/font_cmd.c $(font/font_cmd.c_DEPENDENCIES)
-	$(TARGET_CC) -Ifont -I$(srcdir)/font $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ifont -I$(srcdir)/font $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"font/font_cmd.c\" -MD -c -o $@ $<
+
 -include kernel_img-font_font_cmd.d
 
+kernel_img_OBJECTS += kernel_img-font_font_cmd.o
 kernel_img-font_font.o: font/font.c $(font/font.c_DEPENDENCIES)
-	$(TARGET_CC) -Ifont -I$(srcdir)/font $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ifont -I$(srcdir)/font $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"font/font.c\" -MD -c -o $@ $<
+
 -include kernel_img-font_font.d
 
+kernel_img_OBJECTS += kernel_img-font_font.o
 kernel_img-io_bufio.o: io/bufio.c $(io/bufio.c_DEPENDENCIES)
-	$(TARGET_CC) -Iio -I$(srcdir)/io $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Iio -I$(srcdir)/io $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"io/bufio.c\" -MD -c -o $@ $<
+
 -include kernel_img-io_bufio.d
 
+kernel_img_OBJECTS += kernel_img-io_bufio.o
 kernel_img-video_video.o: video/video.c $(video/video.c_DEPENDENCIES)
-	$(TARGET_CC) -Ivideo -I$(srcdir)/video $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ivideo -I$(srcdir)/video $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"video/video.c\" -MD -c -o $@ $<
+
 -include kernel_img-video_video.d
 
+kernel_img_OBJECTS += kernel_img-video_video.o
 kernel_img-video_fb_video_fb.o: video/fb/video_fb.c $(video/fb/video_fb.c_DEPENDENCIES)
-	$(TARGET_CC) -Ivideo/fb -I$(srcdir)/video/fb $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ivideo/fb -I$(srcdir)/video/fb $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"video/fb/video_fb.c\" -MD -c -o $@ $<
+
 -include kernel_img-video_fb_video_fb.d
 
+kernel_img_OBJECTS += kernel_img-video_fb_video_fb.o
 kernel_img-video_fb_fbblit.o: video/fb/fbblit.c $(video/fb/fbblit.c_DEPENDENCIES)
-	$(TARGET_CC) -Ivideo/fb -I$(srcdir)/video/fb $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ivideo/fb -I$(srcdir)/video/fb $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"video/fb/fbblit.c\" -MD -c -o $@ $<
+
 -include kernel_img-video_fb_fbblit.d
 
+kernel_img_OBJECTS += kernel_img-video_fb_fbblit.o
 kernel_img-video_fb_fbfill.o: video/fb/fbfill.c $(video/fb/fbfill.c_DEPENDENCIES)
-	$(TARGET_CC) -Ivideo/fb -I$(srcdir)/video/fb $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ivideo/fb -I$(srcdir)/video/fb $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"video/fb/fbfill.c\" -MD -c -o $@ $<
+
 -include kernel_img-video_fb_fbfill.d
 
+kernel_img_OBJECTS += kernel_img-video_fb_fbfill.o
 kernel_img-video_fb_fbutil.o: video/fb/fbutil.c $(video/fb/fbutil.c_DEPENDENCIES)
-	$(TARGET_CC) -Ivideo/fb -I$(srcdir)/video/fb $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ivideo/fb -I$(srcdir)/video/fb $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"video/fb/fbutil.c\" -MD -c -o $@ $<
+
 -include kernel_img-video_fb_fbutil.d
 
+kernel_img_OBJECTS += kernel_img-video_fb_fbutil.o
 kernel_img-video_bitmap.o: video/bitmap.c $(video/bitmap.c_DEPENDENCIES)
-	$(TARGET_CC) -Ivideo -I$(srcdir)/video $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ivideo -I$(srcdir)/video $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"video/bitmap.c\" -MD -c -o $@ $<
+
 -include kernel_img-video_bitmap.d
 
+kernel_img_OBJECTS += kernel_img-video_bitmap.o
 kernel_img-video_bitmap_scale.o: video/bitmap_scale.c $(video/bitmap_scale.c_DEPENDENCIES)
-	$(TARGET_CC) -Ivideo -I$(srcdir)/video $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ivideo -I$(srcdir)/video $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"video/bitmap_scale.c\" -MD -c -o $@ $<
+
 -include kernel_img-video_bitmap_scale.d
 
+kernel_img_OBJECTS += kernel_img-video_bitmap_scale.o
 kernel_img-video_sm712.o: video/sm712.c $(video/sm712.c_DEPENDENCIES)
-	$(TARGET_CC) -Ivideo -I$(srcdir)/video $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ivideo -I$(srcdir)/video $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"video/sm712.c\" -MD -c -o $@ $<
+
 -include kernel_img-video_sm712.d
 
+kernel_img_OBJECTS += kernel_img-video_sm712.o
 kernel_img-bus_pci.o: bus/pci.c $(bus/pci.c_DEPENDENCIES)
-	$(TARGET_CC) -Ibus -I$(srcdir)/bus $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ibus -I$(srcdir)/bus $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"bus/pci.c\" -MD -c -o $@ $<
+
 -include kernel_img-bus_pci.d
 
+kernel_img_OBJECTS += kernel_img-bus_pci.o
 kernel_img-bus_bonito.o: bus/bonito.c $(bus/bonito.c_DEPENDENCIES)
-	$(TARGET_CC) -Ibus -I$(srcdir)/bus $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ibus -I$(srcdir)/bus $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"bus/bonito.c\" -MD -c -o $@ $<
+
 -include kernel_img-bus_bonito.d
 
+kernel_img_OBJECTS += kernel_img-bus_bonito.o
 kernel_img-term_gfxterm.o: term/gfxterm.c $(term/gfxterm.c_DEPENDENCIES)
-	$(TARGET_CC) -Iterm -I$(srcdir)/term $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Iterm -I$(srcdir)/term $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"term/gfxterm.c\" -MD -c -o $@ $<
+
 -include kernel_img-term_gfxterm.d
 
+kernel_img_OBJECTS += kernel_img-term_gfxterm.o
 kernel_img-commands_extcmd.o: commands/extcmd.c $(commands/extcmd.c_DEPENDENCIES)
-	$(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"commands/extcmd.c\" -MD -c -o $@ $<
+
 -include kernel_img-commands_extcmd.d
 
+kernel_img_OBJECTS += kernel_img-commands_extcmd.o
 kernel_img-lib_arg.o: lib/arg.c $(lib/arg.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib -I$(srcdir)/lib $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib -I$(srcdir)/lib $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"lib/arg.c\" -MD -c -o $@ $<
+
 -include kernel_img-lib_arg.d
 
+kernel_img_OBJECTS += kernel_img-lib_arg.o
 kernel_img-symlist.o: symlist.c $(symlist.c_DEPENDENCIES)
-	$(TARGET_CC) -I. -I$(srcdir)/. $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -I. -I$(srcdir)/. $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(kernel_img_CFLAGS) -DGRUB_FILE=\"symlist.c\" -MD -c -o $@ $<
+
 -include kernel_img-symlist.d
 
+kernel_img_OBJECTS += kernel_img-symlist.o
 kernel_img_CFLAGS = $(COMMON_CFLAGS) -DUSE_ASCII_FAILBACK
 kernel_img_ASFLAGS = $(COMMON_ASFLAGS)
-kernel_img_LDFLAGS = $(COMMON_LDFLAGS) -static-libgcc -lgcc \
-	-Wl,-N,-S,-Ttext,$(LINK_BASE),-Bstatic
+kernel_img_LDFLAGS += $(COMMON_LDFLAGS) -Wl,-N,-S,-Ttext,$(LINK_BASE),-Bstatic
 kernel_img_FORMAT = binary
 
 # For ata.mod.
@@ -261,19 +325,27 @@ mostlyclean-module-ata.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-ata.mod.1
 UNDSYMFILES += und-ata.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+ata.mod: pre-ata.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(ata_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-ata.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 ata.mod: pre-ata.o mod-ata.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(ata_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-ata.o mod-ata.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 ata.mod: pre-ata.o mod-ata.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(ata_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-ata.o mod-ata.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-ata.o: $(ata_mod_DEPENDENCIES) ata_mod-disk_ata.o
@@ -281,7 +353,7 @@ pre-ata.o: $(ata_mod_DEPENDENCIES) ata_mod-disk_ata.o
 	$(TARGET_CC) $(ata_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ ata_mod-disk_ata.o
 
 mod-ata.o: mod-ata.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(ata_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(ata_mod_CFLAGS) -DGRUB_FILE=\"mod-ata.c\" -c -o $@ $<
 
 mod-ata.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'ata' $< > $@ || (rm -f $@; exit 1)
@@ -299,7 +371,7 @@ und-ata.lst: pre-ata.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 ata_mod-disk_ata.o: disk/ata.c $(disk/ata.c_DEPENDENCIES)
-	$(TARGET_CC) -Idisk -I$(srcdir)/disk $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(ata_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Idisk -I$(srcdir)/disk $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(ata_mod_CFLAGS) -DGRUB_FILE=\"disk/ata.c\" -MD -c -o $@ $<
 -include ata_mod-disk_ata.d
 
 clean-module-ata_mod-disk_ata-extra.1:
@@ -359,19 +431,27 @@ mostlyclean-module-lspci.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-lspci.mod.1
 UNDSYMFILES += und-lspci.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+lspci.mod: pre-lspci.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(lspci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-lspci.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 lspci.mod: pre-lspci.o mod-lspci.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(lspci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-lspci.o mod-lspci.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 lspci.mod: pre-lspci.o mod-lspci.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(lspci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-lspci.o mod-lspci.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-lspci.o: $(lspci_mod_DEPENDENCIES) lspci_mod-commands_lspci.o
@@ -379,7 +459,7 @@ pre-lspci.o: $(lspci_mod_DEPENDENCIES) lspci_mod-commands_lspci.o
 	$(TARGET_CC) $(lspci_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ lspci_mod-commands_lspci.o
 
 mod-lspci.o: mod-lspci.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -DGRUB_FILE=\"mod-lspci.c\" -c -o $@ $<
 
 mod-lspci.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'lspci' $< > $@ || (rm -f $@; exit 1)
@@ -397,7 +477,7 @@ und-lspci.lst: pre-lspci.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 lspci_mod-commands_lspci.o: commands/lspci.c $(commands/lspci.c_DEPENDENCIES)
-	$(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(lspci_mod_CFLAGS) -DGRUB_FILE=\"commands/lspci.c\" -MD -c -o $@ $<
 -include lspci_mod-commands_lspci.d
 
 clean-module-lspci_mod-commands_lspci-extra.1:
@@ -457,19 +537,27 @@ mostlyclean-module-ata_pthru.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-ata_pthru.mod.1
 UNDSYMFILES += und-ata_pthru.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+ata_pthru.mod: pre-ata_pthru.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(ata_pthru_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-ata_pthru.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 ata_pthru.mod: pre-ata_pthru.o mod-ata_pthru.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(ata_pthru_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-ata_pthru.o mod-ata_pthru.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 ata_pthru.mod: pre-ata_pthru.o mod-ata_pthru.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(ata_pthru_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-ata_pthru.o mod-ata_pthru.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-ata_pthru.o: $(ata_pthru_mod_DEPENDENCIES) ata_pthru_mod-disk_ata_pthru.o
@@ -477,7 +565,7 @@ pre-ata_pthru.o: $(ata_pthru_mod_DEPENDENCIES) ata_pthru_mod-disk_ata_pthru.o
 	$(TARGET_CC) $(ata_pthru_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ ata_pthru_mod-disk_ata_pthru.o
 
 mod-ata_pthru.o: mod-ata_pthru.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(ata_pthru_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(ata_pthru_mod_CFLAGS) -DGRUB_FILE=\"mod-ata_pthru.c\" -c -o $@ $<
 
 mod-ata_pthru.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'ata_pthru' $< > $@ || (rm -f $@; exit 1)
@@ -495,7 +583,7 @@ und-ata_pthru.lst: pre-ata_pthru.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 ata_pthru_mod-disk_ata_pthru.o: disk/ata_pthru.c $(disk/ata_pthru.c_DEPENDENCIES)
-	$(TARGET_CC) -Idisk -I$(srcdir)/disk $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(ata_pthru_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Idisk -I$(srcdir)/disk $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(ata_pthru_mod_CFLAGS) -DGRUB_FILE=\"disk/ata_pthru.c\" -MD -c -o $@ $<
 -include ata_pthru_mod-disk_ata_pthru.d
 
 clean-module-ata_pthru_mod-disk_ata_pthru-extra.1:
@@ -555,19 +643,27 @@ mostlyclean-module-mmap.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-mmap.mod.1
 UNDSYMFILES += und-mmap.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+mmap.mod: pre-mmap.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(mmap_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-mmap.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 mmap.mod: pre-mmap.o mod-mmap.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(mmap_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-mmap.o mod-mmap.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 mmap.mod: pre-mmap.o mod-mmap.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(mmap_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-mmap.o mod-mmap.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-mmap.o: $(mmap_mod_DEPENDENCIES) mmap_mod-mmap_mmap.o mmap_mod-mmap_mips_yeeloong_uppermem.o
@@ -575,7 +671,7 @@ pre-mmap.o: $(mmap_mod_DEPENDENCIES) mmap_mod-mmap_mmap.o mmap_mod-mmap_mips_yee
 	$(TARGET_CC) $(mmap_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ mmap_mod-mmap_mmap.o mmap_mod-mmap_mips_yeeloong_uppermem.o
 
 mod-mmap.o: mod-mmap.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(mmap_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(mmap_mod_CFLAGS) -DGRUB_FILE=\"mod-mmap.c\" -c -o $@ $<
 
 mod-mmap.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'mmap' $< > $@ || (rm -f $@; exit 1)
@@ -593,7 +689,7 @@ und-mmap.lst: pre-mmap.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 mmap_mod-mmap_mmap.o: mmap/mmap.c $(mmap/mmap.c_DEPENDENCIES)
-	$(TARGET_CC) -Immap -I$(srcdir)/mmap $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(mmap_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Immap -I$(srcdir)/mmap $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(mmap_mod_CFLAGS) -DGRUB_FILE=\"mmap/mmap.c\" -MD -c -o $@ $<
 -include mmap_mod-mmap_mmap.d
 
 clean-module-mmap_mod-mmap_mmap-extra.1:
@@ -631,7 +727,7 @@ video-mmap_mod-mmap_mmap.lst: mmap/mmap.c $(mmap/mmap.c_DEPENDENCIES) genvideoli
 	set -e; 	  $(TARGET_CC) -Immap -I$(srcdir)/mmap $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(mmap_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh mmap > $@ || (rm -f $@; exit 1)
 
 mmap_mod-mmap_mips_yeeloong_uppermem.o: mmap/mips/yeeloong/uppermem.c $(mmap/mips/yeeloong/uppermem.c_DEPENDENCIES)
-	$(TARGET_CC) -Immap/mips/yeeloong -I$(srcdir)/mmap/mips/yeeloong $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(mmap_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Immap/mips/yeeloong -I$(srcdir)/mmap/mips/yeeloong $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(mmap_mod_CFLAGS) -DGRUB_FILE=\"mmap/mips/yeeloong/uppermem.c\" -MD -c -o $@ $<
 -include mmap_mod-mmap_mips_yeeloong_uppermem.d
 
 clean-module-mmap_mod-mmap_mips_yeeloong_uppermem-extra.1:
@@ -692,19 +788,27 @@ mostlyclean-module-datetime.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-datetime.mod.1
 UNDSYMFILES += und-datetime.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+datetime.mod: pre-datetime.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(datetime_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-datetime.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 datetime.mod: pre-datetime.o mod-datetime.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(datetime_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-datetime.o mod-datetime.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 datetime.mod: pre-datetime.o mod-datetime.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(datetime_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-datetime.o mod-datetime.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-datetime.o: $(datetime_mod_DEPENDENCIES) datetime_mod-lib_cmos_datetime.o
@@ -712,7 +816,7 @@ pre-datetime.o: $(datetime_mod_DEPENDENCIES) datetime_mod-lib_cmos_datetime.o
 	$(TARGET_CC) $(datetime_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ datetime_mod-lib_cmos_datetime.o
 
 mod-datetime.o: mod-datetime.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(datetime_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(datetime_mod_CFLAGS) -DGRUB_FILE=\"mod-datetime.c\" -c -o $@ $<
 
 mod-datetime.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'datetime' $< > $@ || (rm -f $@; exit 1)
@@ -730,7 +834,7 @@ und-datetime.lst: pre-datetime.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 datetime_mod-lib_cmos_datetime.o: lib/cmos_datetime.c $(lib/cmos_datetime.c_DEPENDENCIES)
-	$(TARGET_CC) -Ilib -I$(srcdir)/lib $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(datetime_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Ilib -I$(srcdir)/lib $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(datetime_mod_CFLAGS) -DGRUB_FILE=\"lib/cmos_datetime.c\" -MD -c -o $@ $<
 -include datetime_mod-lib_cmos_datetime.d
 
 clean-module-datetime_mod-lib_cmos_datetime-extra.1:
@@ -770,202 +874,6 @@ video-datetime_mod-lib_cmos_datetime.lst: lib/cmos_datetime.c $(lib/cmos_datetim
 datetime_mod_CFLAGS = $(COMMON_CFLAGS)
 datetime_mod_LDFLAGS = $(COMMON_LDFLAGS)
 
-# For date.mod
-pkglib_MODULES += date.mod
-date_mod_SOURCES = commands/date.c
-
-clean-module-date.mod.1:
-	rm -f date.mod mod-date.o mod-date.c pre-date.o date_mod-commands_date.o und-date.lst
-
-CLEAN_MODULE_TARGETS += clean-module-date.mod.1
-
-clean-module-date.mod-symbol.1:
-	rm -f def-date.lst
-
-CLEAN_MODULE_TARGETS += clean-module-date.mod-symbol.1
-DEFSYMFILES += def-date.lst
-mostlyclean-module-date.mod.1:
-	rm -f date_mod-commands_date.d
-
-MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-date.mod.1
-UNDSYMFILES += und-date.lst
-
-ifneq ($(TARGET_APPLE_CC),1)
-date.mod: pre-date.o mod-date.o $(TARGET_OBJ2ELF)
-	-rm -f $@
-	$(TARGET_CC) $(date_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-date.o mod-date.o
-	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
-else
-date.mod: pre-date.o mod-date.o $(TARGET_OBJ2ELF)
-	-rm -f $@
-	-rm -f $@.bin
-	$(TARGET_CC) $(date_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-date.o mod-date.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
-	-rm -f $@.bin
-endif
-
-pre-date.o: $(date_mod_DEPENDENCIES) date_mod-commands_date.o
-	-rm -f $@
-	$(TARGET_CC) $(date_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ date_mod-commands_date.o
-
-mod-date.o: mod-date.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(date_mod_CFLAGS) -c -o $@ $<
-
-mod-date.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
-	sh $(srcdir)/genmodsrc.sh 'date' $< > $@ || (rm -f $@; exit 1)
-
-ifneq ($(TARGET_APPLE_CC),1)
-def-date.lst: pre-date.o
-	$(NM) -g --defined-only -P -p $< | sed 's/^\([^ ]*\).*/\1 date/' > $@
-else
-def-date.lst: pre-date.o
-	$(NM) -g -P -p $< | grep -E '^[a-zA-Z0-9_]* [TDS]'  | sed 's/^\([^ ]*\).*/\1 date/' > $@
-endif
-
-und-date.lst: pre-date.o
-	echo 'date' > $@
-	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
-
-date_mod-commands_date.o: commands/date.c $(commands/date.c_DEPENDENCIES)
-	$(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(date_mod_CFLAGS) -MD -c -o $@ $<
--include date_mod-commands_date.d
-
-clean-module-date_mod-commands_date-extra.1:
-	rm -f cmd-date_mod-commands_date.lst fs-date_mod-commands_date.lst partmap-date_mod-commands_date.lst handler-date_mod-commands_date.lst parttool-date_mod-commands_date.lst video-date_mod-commands_date.lst terminal-date_mod-commands_date.lst
-
-CLEAN_MODULE_TARGETS += clean-module-date_mod-commands_date-extra.1
-
-COMMANDFILES += cmd-date_mod-commands_date.lst
-FSFILES += fs-date_mod-commands_date.lst
-PARTTOOLFILES += parttool-date_mod-commands_date.lst
-PARTMAPFILES += partmap-date_mod-commands_date.lst
-HANDLERFILES += handler-date_mod-commands_date.lst
-TERMINALFILES += terminal-date_mod-commands_date.lst
-VIDEOFILES += video-date_mod-commands_date.lst
-
-cmd-date_mod-commands_date.lst: commands/date.c $(commands/date.c_DEPENDENCIES) gencmdlist.sh
-	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(date_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh date > $@ || (rm -f $@; exit 1)
-
-fs-date_mod-commands_date.lst: commands/date.c $(commands/date.c_DEPENDENCIES) genfslist.sh
-	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(date_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh date > $@ || (rm -f $@; exit 1)
-
-parttool-date_mod-commands_date.lst: commands/date.c $(commands/date.c_DEPENDENCIES) genparttoollist.sh
-	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(date_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genparttoollist.sh date > $@ || (rm -f $@; exit 1)
-
-partmap-date_mod-commands_date.lst: commands/date.c $(commands/date.c_DEPENDENCIES) genpartmaplist.sh
-	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(date_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh date > $@ || (rm -f $@; exit 1)
-
-handler-date_mod-commands_date.lst: commands/date.c $(commands/date.c_DEPENDENCIES) genhandlerlist.sh
-	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(date_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genhandlerlist.sh date > $@ || (rm -f $@; exit 1)
-
-terminal-date_mod-commands_date.lst: commands/date.c $(commands/date.c_DEPENDENCIES) genterminallist.sh
-	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(date_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genterminallist.sh date > $@ || (rm -f $@; exit 1)
-
-video-date_mod-commands_date.lst: commands/date.c $(commands/date.c_DEPENDENCIES) genvideolist.sh
-	set -e; 	  $(TARGET_CC) -Icommands -I$(srcdir)/commands $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(date_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh date > $@ || (rm -f $@; exit 1)
-
-date_mod_CFLAGS = $(COMMON_CFLAGS)
-date_mod_LDFLAGS = $(COMMON_LDFLAGS)
-
-# For datehook.mod
-pkglib_MODULES += datehook.mod
-datehook_mod_SOURCES = hook/datehook.c
-
-clean-module-datehook.mod.1:
-	rm -f datehook.mod mod-datehook.o mod-datehook.c pre-datehook.o datehook_mod-hook_datehook.o und-datehook.lst
-
-CLEAN_MODULE_TARGETS += clean-module-datehook.mod.1
-
-clean-module-datehook.mod-symbol.1:
-	rm -f def-datehook.lst
-
-CLEAN_MODULE_TARGETS += clean-module-datehook.mod-symbol.1
-DEFSYMFILES += def-datehook.lst
-mostlyclean-module-datehook.mod.1:
-	rm -f datehook_mod-hook_datehook.d
-
-MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-datehook.mod.1
-UNDSYMFILES += und-datehook.lst
-
-ifneq ($(TARGET_APPLE_CC),1)
-datehook.mod: pre-datehook.o mod-datehook.o $(TARGET_OBJ2ELF)
-	-rm -f $@
-	$(TARGET_CC) $(datehook_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-datehook.o mod-datehook.o
-	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
-else
-datehook.mod: pre-datehook.o mod-datehook.o $(TARGET_OBJ2ELF)
-	-rm -f $@
-	-rm -f $@.bin
-	$(TARGET_CC) $(datehook_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-datehook.o mod-datehook.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
-	-rm -f $@.bin
-endif
-
-pre-datehook.o: $(datehook_mod_DEPENDENCIES) datehook_mod-hook_datehook.o
-	-rm -f $@
-	$(TARGET_CC) $(datehook_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ datehook_mod-hook_datehook.o
-
-mod-datehook.o: mod-datehook.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(datehook_mod_CFLAGS) -c -o $@ $<
-
-mod-datehook.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
-	sh $(srcdir)/genmodsrc.sh 'datehook' $< > $@ || (rm -f $@; exit 1)
-
-ifneq ($(TARGET_APPLE_CC),1)
-def-datehook.lst: pre-datehook.o
-	$(NM) -g --defined-only -P -p $< | sed 's/^\([^ ]*\).*/\1 datehook/' > $@
-else
-def-datehook.lst: pre-datehook.o
-	$(NM) -g -P -p $< | grep -E '^[a-zA-Z0-9_]* [TDS]'  | sed 's/^\([^ ]*\).*/\1 datehook/' > $@
-endif
-
-und-datehook.lst: pre-datehook.o
-	echo 'datehook' > $@
-	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
-
-datehook_mod-hook_datehook.o: hook/datehook.c $(hook/datehook.c_DEPENDENCIES)
-	$(TARGET_CC) -Ihook -I$(srcdir)/hook $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(datehook_mod_CFLAGS) -MD -c -o $@ $<
--include datehook_mod-hook_datehook.d
-
-clean-module-datehook_mod-hook_datehook-extra.1:
-	rm -f cmd-datehook_mod-hook_datehook.lst fs-datehook_mod-hook_datehook.lst partmap-datehook_mod-hook_datehook.lst handler-datehook_mod-hook_datehook.lst parttool-datehook_mod-hook_datehook.lst video-datehook_mod-hook_datehook.lst terminal-datehook_mod-hook_datehook.lst
-
-CLEAN_MODULE_TARGETS += clean-module-datehook_mod-hook_datehook-extra.1
-
-COMMANDFILES += cmd-datehook_mod-hook_datehook.lst
-FSFILES += fs-datehook_mod-hook_datehook.lst
-PARTTOOLFILES += parttool-datehook_mod-hook_datehook.lst
-PARTMAPFILES += partmap-datehook_mod-hook_datehook.lst
-HANDLERFILES += handler-datehook_mod-hook_datehook.lst
-TERMINALFILES += terminal-datehook_mod-hook_datehook.lst
-VIDEOFILES += video-datehook_mod-hook_datehook.lst
-
-cmd-datehook_mod-hook_datehook.lst: hook/datehook.c $(hook/datehook.c_DEPENDENCIES) gencmdlist.sh
-	set -e; 	  $(TARGET_CC) -Ihook -I$(srcdir)/hook $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(datehook_mod_CFLAGS) -E $< 	  | sh $(srcdir)/gencmdlist.sh datehook > $@ || (rm -f $@; exit 1)
-
-fs-datehook_mod-hook_datehook.lst: hook/datehook.c $(hook/datehook.c_DEPENDENCIES) genfslist.sh
-	set -e; 	  $(TARGET_CC) -Ihook -I$(srcdir)/hook $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(datehook_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genfslist.sh datehook > $@ || (rm -f $@; exit 1)
-
-parttool-datehook_mod-hook_datehook.lst: hook/datehook.c $(hook/datehook.c_DEPENDENCIES) genparttoollist.sh
-	set -e; 	  $(TARGET_CC) -Ihook -I$(srcdir)/hook $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(datehook_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genparttoollist.sh datehook > $@ || (rm -f $@; exit 1)
-
-partmap-datehook_mod-hook_datehook.lst: hook/datehook.c $(hook/datehook.c_DEPENDENCIES) genpartmaplist.sh
-	set -e; 	  $(TARGET_CC) -Ihook -I$(srcdir)/hook $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(datehook_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genpartmaplist.sh datehook > $@ || (rm -f $@; exit 1)
-
-handler-datehook_mod-hook_datehook.lst: hook/datehook.c $(hook/datehook.c_DEPENDENCIES) genhandlerlist.sh
-	set -e; 	  $(TARGET_CC) -Ihook -I$(srcdir)/hook $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(datehook_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genhandlerlist.sh datehook > $@ || (rm -f $@; exit 1)
-
-terminal-datehook_mod-hook_datehook.lst: hook/datehook.c $(hook/datehook.c_DEPENDENCIES) genterminallist.sh
-	set -e; 	  $(TARGET_CC) -Ihook -I$(srcdir)/hook $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(datehook_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genterminallist.sh datehook > $@ || (rm -f $@; exit 1)
-
-video-datehook_mod-hook_datehook.lst: hook/datehook.c $(hook/datehook.c_DEPENDENCIES) genvideolist.sh
-	set -e; 	  $(TARGET_CC) -Ihook -I$(srcdir)/hook $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(datehook_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh datehook > $@ || (rm -f $@; exit 1)
-
-datehook_mod_CFLAGS = $(COMMON_CFLAGS)
-datehook_mod_LDFLAGS = $(COMMON_LDFLAGS)
-
 pkglib_MODULES += linux.mod
 linux_mod_SOURCES = loader/$(target_cpu)/linux.c
 
@@ -985,19 +893,27 @@ mostlyclean-module-linux.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-linux.mod.1
 UNDSYMFILES += und-linux.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+linux.mod: pre-linux.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(linux_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-linux.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 linux.mod: pre-linux.o mod-linux.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(linux_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-linux.o mod-linux.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 linux.mod: pre-linux.o mod-linux.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(linux_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-linux.o mod-linux.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-linux.o: $(linux_mod_DEPENDENCIES) linux_mod-loader___target_cpu__linux.o
@@ -1005,7 +921,7 @@ pre-linux.o: $(linux_mod_DEPENDENCIES) linux_mod-loader___target_cpu__linux.o
 	$(TARGET_CC) $(linux_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ linux_mod-loader___target_cpu__linux.o
 
 mod-linux.o: mod-linux.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(linux_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(linux_mod_CFLAGS) -DGRUB_FILE=\"mod-linux.c\" -c -o $@ $<
 
 mod-linux.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'linux' $< > $@ || (rm -f $@; exit 1)
@@ -1023,7 +939,7 @@ und-linux.lst: pre-linux.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 linux_mod-loader___target_cpu__linux.o: loader/$(target_cpu)/linux.c $(loader/$(target_cpu)/linux.c_DEPENDENCIES)
-	$(TARGET_CC) -Iloader/$(target_cpu) -I$(srcdir)/loader/$(target_cpu) $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(linux_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Iloader/$(target_cpu) -I$(srcdir)/loader/$(target_cpu) $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(linux_mod_CFLAGS) -DGRUB_FILE=\"loader/$(target_cpu)/linux.c\" -MD -c -o $@ $<
 -include linux_mod-loader___target_cpu__linux.d
 
 clean-module-linux_mod-loader___target_cpu__linux-extra.1:
@@ -1072,4 +988,14 @@ grub-install: util/grub-install.in $(util/grub-install.in_DEPENDENCIES) config.s
 	./config.status --file=-:util/grub-install.in | sed -e 's,@pkglib_DATA@,$(pkglib_DATA),g' > $@
 	chmod +x $@
 
+CLEANFILES += kernel.img $(kernel_img_OBJECTS)
+ifeq ($(kernel_img_RELOCATABLE),yes)
+kernel.img: $(kernel_img_DEPENDENCIES) $(kernel_img_OBJECTS)
+	$(TARGET_CC) -Wl,-r,-d -o $@ $(kernel_img_OBJECTS) $(TARGET_LDFLAGS) $(kernel_img_LDFLAGS)
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K start -R .note -R .comment $@; fi
+else
+kernel.img: $(kernel_img_DEPENDENCIES) $(kernel_img_OBJECTS)
+	$(TARGET_CC) -o $@ $(kernel_img_OBJECTS) $(TARGET_LDFLAGS) $(kernel_img_LDFLAGS)
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) -R .rel.dyn -R .reginfo -R .note -R .comment $@; fi
+endif
 

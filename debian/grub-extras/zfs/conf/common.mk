@@ -22,19 +22,27 @@ mostlyclean-module-zfs.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-zfs.mod.1
 UNDSYMFILES += und-zfs.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+zfs.mod: pre-zfs.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(zfs_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-zfs.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 zfs.mod: pre-zfs.o mod-zfs.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(zfs_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-zfs.o mod-zfs.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 zfs.mod: pre-zfs.o mod-zfs.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(zfs_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-zfs.o mod-zfs.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-zfs.o: $(zfs_mod_DEPENDENCIES) zfs_mod-__GRUB_CONTRIB__zfs_zfs.o zfs_mod-__GRUB_CONTRIB__zfs_zfs_lzjb.o zfs_mod-__GRUB_CONTRIB__zfs_zfs_sha256.o zfs_mod-__GRUB_CONTRIB__zfs_zfs_fletcher.o
@@ -42,7 +50,7 @@ pre-zfs.o: $(zfs_mod_DEPENDENCIES) zfs_mod-__GRUB_CONTRIB__zfs_zfs.o zfs_mod-__G
 	$(TARGET_CC) $(zfs_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ zfs_mod-__GRUB_CONTRIB__zfs_zfs.o zfs_mod-__GRUB_CONTRIB__zfs_zfs_lzjb.o zfs_mod-__GRUB_CONTRIB__zfs_zfs_sha256.o zfs_mod-__GRUB_CONTRIB__zfs_zfs_fletcher.o
 
 mod-zfs.o: mod-zfs.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(zfs_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(zfs_mod_CFLAGS) -DGRUB_FILE=\"mod-zfs.c\" -c -o $@ $<
 
 mod-zfs.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'zfs' $< > $@ || (rm -f $@; exit 1)
@@ -60,7 +68,7 @@ und-zfs.lst: pre-zfs.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 zfs_mod-__GRUB_CONTRIB__zfs_zfs.o: $(GRUB_CONTRIB)/zfs/zfs.c $($(GRUB_CONTRIB)/zfs/zfs.c_DEPENDENCIES)
-	$(TARGET_CC) -I$(GRUB_CONTRIB)/zfs -I$(srcdir)/$(GRUB_CONTRIB)/zfs $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(zfs_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -I$(GRUB_CONTRIB)/zfs -I$(srcdir)/$(GRUB_CONTRIB)/zfs $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(zfs_mod_CFLAGS) -DGRUB_FILE=\"$(GRUB_CONTRIB)/zfs/zfs.c\" -MD -c -o $@ $<
 -include zfs_mod-__GRUB_CONTRIB__zfs_zfs.d
 
 clean-module-zfs_mod-__GRUB_CONTRIB__zfs_zfs-extra.1:
@@ -98,7 +106,7 @@ video-zfs_mod-__GRUB_CONTRIB__zfs_zfs.lst: $(GRUB_CONTRIB)/zfs/zfs.c $($(GRUB_CO
 	set -e; 	  $(TARGET_CC) -I$(GRUB_CONTRIB)/zfs -I$(srcdir)/$(GRUB_CONTRIB)/zfs $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(zfs_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh zfs > $@ || (rm -f $@; exit 1)
 
 zfs_mod-__GRUB_CONTRIB__zfs_zfs_lzjb.o: $(GRUB_CONTRIB)/zfs/zfs_lzjb.c $($(GRUB_CONTRIB)/zfs/zfs_lzjb.c_DEPENDENCIES)
-	$(TARGET_CC) -I$(GRUB_CONTRIB)/zfs -I$(srcdir)/$(GRUB_CONTRIB)/zfs $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(zfs_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -I$(GRUB_CONTRIB)/zfs -I$(srcdir)/$(GRUB_CONTRIB)/zfs $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(zfs_mod_CFLAGS) -DGRUB_FILE=\"$(GRUB_CONTRIB)/zfs/zfs_lzjb.c\" -MD -c -o $@ $<
 -include zfs_mod-__GRUB_CONTRIB__zfs_zfs_lzjb.d
 
 clean-module-zfs_mod-__GRUB_CONTRIB__zfs_zfs_lzjb-extra.1:
@@ -136,7 +144,7 @@ video-zfs_mod-__GRUB_CONTRIB__zfs_zfs_lzjb.lst: $(GRUB_CONTRIB)/zfs/zfs_lzjb.c $
 	set -e; 	  $(TARGET_CC) -I$(GRUB_CONTRIB)/zfs -I$(srcdir)/$(GRUB_CONTRIB)/zfs $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(zfs_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh zfs > $@ || (rm -f $@; exit 1)
 
 zfs_mod-__GRUB_CONTRIB__zfs_zfs_sha256.o: $(GRUB_CONTRIB)/zfs/zfs_sha256.c $($(GRUB_CONTRIB)/zfs/zfs_sha256.c_DEPENDENCIES)
-	$(TARGET_CC) -I$(GRUB_CONTRIB)/zfs -I$(srcdir)/$(GRUB_CONTRIB)/zfs $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(zfs_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -I$(GRUB_CONTRIB)/zfs -I$(srcdir)/$(GRUB_CONTRIB)/zfs $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(zfs_mod_CFLAGS) -DGRUB_FILE=\"$(GRUB_CONTRIB)/zfs/zfs_sha256.c\" -MD -c -o $@ $<
 -include zfs_mod-__GRUB_CONTRIB__zfs_zfs_sha256.d
 
 clean-module-zfs_mod-__GRUB_CONTRIB__zfs_zfs_sha256-extra.1:
@@ -174,7 +182,7 @@ video-zfs_mod-__GRUB_CONTRIB__zfs_zfs_sha256.lst: $(GRUB_CONTRIB)/zfs/zfs_sha256
 	set -e; 	  $(TARGET_CC) -I$(GRUB_CONTRIB)/zfs -I$(srcdir)/$(GRUB_CONTRIB)/zfs $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(zfs_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh zfs > $@ || (rm -f $@; exit 1)
 
 zfs_mod-__GRUB_CONTRIB__zfs_zfs_fletcher.o: $(GRUB_CONTRIB)/zfs/zfs_fletcher.c $($(GRUB_CONTRIB)/zfs/zfs_fletcher.c_DEPENDENCIES)
-	$(TARGET_CC) -I$(GRUB_CONTRIB)/zfs -I$(srcdir)/$(GRUB_CONTRIB)/zfs $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(zfs_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -I$(GRUB_CONTRIB)/zfs -I$(srcdir)/$(GRUB_CONTRIB)/zfs $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(zfs_mod_CFLAGS) -DGRUB_FILE=\"$(GRUB_CONTRIB)/zfs/zfs_fletcher.c\" -MD -c -o $@ $<
 -include zfs_mod-__GRUB_CONTRIB__zfs_zfs_fletcher.d
 
 clean-module-zfs_mod-__GRUB_CONTRIB__zfs_zfs_fletcher-extra.1:
@@ -233,19 +241,27 @@ mostlyclean-module-zfsinfo.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-zfsinfo.mod.1
 UNDSYMFILES += und-zfsinfo.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+zfsinfo.mod: pre-zfsinfo.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(zfsinfo_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-zfsinfo.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 zfsinfo.mod: pre-zfsinfo.o mod-zfsinfo.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(zfsinfo_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-zfsinfo.o mod-zfsinfo.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 zfsinfo.mod: pre-zfsinfo.o mod-zfsinfo.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(zfsinfo_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-zfsinfo.o mod-zfsinfo.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-zfsinfo.o: $(zfsinfo_mod_DEPENDENCIES) zfsinfo_mod-__GRUB_CONTRIB__zfs_zfsinfo.o
@@ -253,7 +269,7 @@ pre-zfsinfo.o: $(zfsinfo_mod_DEPENDENCIES) zfsinfo_mod-__GRUB_CONTRIB__zfs_zfsin
 	$(TARGET_CC) $(zfsinfo_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ zfsinfo_mod-__GRUB_CONTRIB__zfs_zfsinfo.o
 
 mod-zfsinfo.o: mod-zfsinfo.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(zfsinfo_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(zfsinfo_mod_CFLAGS) -DGRUB_FILE=\"mod-zfsinfo.c\" -c -o $@ $<
 
 mod-zfsinfo.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'zfsinfo' $< > $@ || (rm -f $@; exit 1)
@@ -271,7 +287,7 @@ und-zfsinfo.lst: pre-zfsinfo.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 zfsinfo_mod-__GRUB_CONTRIB__zfs_zfsinfo.o: $(GRUB_CONTRIB)/zfs/zfsinfo.c $($(GRUB_CONTRIB)/zfs/zfsinfo.c_DEPENDENCIES)
-	$(TARGET_CC) -I$(GRUB_CONTRIB)/zfs -I$(srcdir)/$(GRUB_CONTRIB)/zfs $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(zfsinfo_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -I$(GRUB_CONTRIB)/zfs -I$(srcdir)/$(GRUB_CONTRIB)/zfs $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(zfsinfo_mod_CFLAGS) -DGRUB_FILE=\"$(GRUB_CONTRIB)/zfs/zfsinfo.c\" -MD -c -o $@ $<
 -include zfsinfo_mod-__GRUB_CONTRIB__zfs_zfsinfo.d
 
 clean-module-zfsinfo_mod-__GRUB_CONTRIB__zfs_zfsinfo-extra.1:

@@ -8,10 +8,10 @@ package		:= grub2
 
 DEB_HOST_ARCH_CPU ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_CPU 2>/dev/null)
 
-DEB_STRIP_EXCLUDE := /usr/sbin/grub-emu
+DEB_STRIP_EXCLUDE := /usr/bin/grub-emu
 
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/simple-patchsys.mk
+include /usr/share/cdbs/1/rules/patchsys-quilt.mk
 
 CFLAGS := -g -Wall
 
@@ -38,10 +38,10 @@ CONFIGURE = ../../configure CC=$(CC) TARGET_CC=$(CC) \
 	--libexecdir="\$${prefix}/lib/$(package)" --srcdir=$(CURDIR) \
 	--enable-grub-mkfont --disable-grub-fstest 
 
-AUTOGEN_FILES = configure config.h.in conf/*.mk
+AUTOGEN_FILES = configure config.h.in conf/*.mk debian/grub-extras/*/conf/*.mk
 AUTOGEN_DEB_FILES = docs examples manpages config templates postinst postrm dirs install
 
-$(AUTOGEN_FILES): autogen.sh configure.ac conf/*.rmk
+$(AUTOGEN_FILES): autogen.sh configure.ac conf/*.rmk debian/grub-extras/*/conf/*.rmk
 	sed -i configure.ac -e "s/^AC_INIT.*/AC_INIT(\[GRUB\],\[$(deb_version)\],\[bug-grub@gnu.org\])/"
 	./autogen.sh
 
@@ -78,10 +78,12 @@ build/grub-firmware-qemu::
 	$(MAKE) -C $@
 	grub_dir=`mktemp -d` ; \
 	grub_memdisk=`mktemp` ; \
+	trap "rm -rf $${grub_dir} $${grub_memdisk}" EXIT HUP INT QUIT TERM ; \
 	mkdir -p $${grub_dir}/boot/grub ; \
 	cp debian/grub-firmware-qemu_grub.cfg $${grub_dir}/boot/grub/grub.cfg ; \
 	tar -cf - -C $${grub_dir} boot > $${grub_memdisk} ; \
 	$(CURDIR)/$@/grub-mkimage \
+		-O i386-qemu \
 		-d $(CURDIR)/$@ \
 		$(CURDIR)/$@/*.mod \
 		-m $${grub_memdisk} \
@@ -93,10 +95,14 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee12
 	# shipped with grub-common
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/etc/grub.d
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{grub-dumpbios,grub-probe,grub-mkconfig,grub-mkdevicemap,grub-ofpathname}{,.8}
-	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-bin2h,grub-mkelfimage,grub-mkfont,grub-editenv,grub-mkisofs,grub-mkrescue,grub-mkrelpath,grub-script-check,grub-mkpasswd-pbkdf2}{,.1}
+	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-bin2h,grub-mkelfimage,grub-mkfont,grub-mkimage,grub-editenv,grub-mkrescue,grub-mkrelpath,grub-script-check,grub-mkpasswd-pbkdf2}{,.1}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{grub-mkconfig_lib,update-grub_lib}
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/share/{grub,info,locale}/
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/include
+
+	if [ "$@" = "install/grub-emu" ] ; then \
+		rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{grub-reboot,grub-set-default}{,.8} ; \
+	fi
 
 	if [ "$@" != "install/grub-emu" ] ; then \
 		for i in $(AUTOGEN_DEB_FILES) ; do \
@@ -116,14 +122,18 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee12
 	mkdir -p $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides
 	echo "$(subst install/,,$@): unstripped-binary-or-object *.mod" \
 		>> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@)
-	if [ "$@" != "install/grub-pc" ] && [ "$(DEB_HOST_ARCH_CPU)" != "sparc" ] && [ "$(DEB_HOST_ARCH_CPU)" != "mipsel" ] ; then \
-		cd $(CURDIR)/debian/$(subst install/,,$@) && find ./usr/lib/grub -name kernel.img \
-			| sed -e "s%.*%$(subst install/,,$@): statically-linked-binary &%g" \
-		>> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@) ; \
-	fi
+	cd $(CURDIR)/debian/$(subst install/,,$@) && find ./usr/lib/grub -name kernel.img \
+		| sed -e "s%.*%$(subst install/,,$@): statically-linked-binary &%g" \
+	>> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@)
+	cd $(CURDIR)/debian/$(subst install/,,$@) && find ./usr/lib/grub -name kernel.img \
+		| sed -e "s%.*%$(subst install/,,$@): unstripped-binary-or-object &%g" \
+	>> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@)
 	if [ "$@" = "install/grub-efi-amd64" ] && [ "$(DEB_HOST_ARCH_CPU)" = "i386" ] ; then \
 		echo "$(subst install/,,$@): binary-from-other-architecture *.mod" \
 			>> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@) ; \
+		cd $(CURDIR)/debian/$(subst install/,,$@) && find ./usr/lib/grub -name kernel.img \
+			| sed -e "s%.*%$(subst install/,,$@): binary-from-other-architecture &%g" \
+		>> $(CURDIR)/debian/$(subst install/,,$@)/usr/share/lintian/overrides/$(subst install/,,$@) ; \
 	fi
 	if [ "$@" = "install/grub-pc" ] && [ "$(DEB_HOST_ARCH_CPU)" = "i386" ] ; then \
 		echo "$(subst install/,,$@): binary-from-other-architecture *efiemu64.o" \
@@ -134,7 +144,6 @@ install/grub-common::
 	$(MAKE) -C $(subst install/,build/,$@) install DESTDIR=$(CURDIR)/debian/$(subst install/,,$@)/
 	rm -rf $(CURDIR)/debian/$(subst install/,,$@)/usr/lib/grub/{i386,powerpc,sparc64,mipsel}-*
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{sbin,share/man/man8}/{update-grub,grub-install,grub-setup,grub-reboot,grub-set-default}{,.8}
-	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/{bin,share/man/man1}/{grub-mkimage,grub-mkfloppy}{,.1}
 	rm -f $(CURDIR)/debian/$(subst install/,,$@)/usr/share/info/dir*
 
 clean:: debian/legacy/update-grub debian/grub-extras

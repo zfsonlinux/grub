@@ -36,7 +36,7 @@ g2hdr.exec: g2hdr_bin-__GRUB_CONTRIB__ntldr_img_g2hdr.o
 	$(TARGET_CC) -o $@ $^ $(TARGET_LDFLAGS) $(g2hdr_bin_LDFLAGS)
 
 g2hdr_bin-__GRUB_CONTRIB__ntldr_img_g2hdr.o: $(GRUB_CONTRIB)/ntldr-img/g2hdr.S $($(GRUB_CONTRIB)/ntldr-img/g2hdr.S_DEPENDENCIES)
-	$(TARGET_CC) -I$(GRUB_CONTRIB)/ntldr-img -I$(srcdir)/$(GRUB_CONTRIB)/ntldr-img $(TARGET_CPPFLAGS) -DASM_FILE=1 $(TARGET_ASFLAGS) $(g2hdr_bin_ASFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -I$(GRUB_CONTRIB)/ntldr-img -I$(srcdir)/$(GRUB_CONTRIB)/ntldr-img $(TARGET_CPPFLAGS) -DASM_FILE=1 $(TARGET_ASFLAGS) $(g2hdr_bin_ASFLAGS) -DGRUB_FILE=\"$(GRUB_CONTRIB)/ntldr-img/g2hdr.S\" -MD -c -o $@ $<
 -include g2hdr_bin-__GRUB_CONTRIB__ntldr_img_g2hdr.d
 
 g2hdr_bin_ASFLAGS = $(COMMON_ASFLAGS)
@@ -72,11 +72,11 @@ grldr.exec: grldr_img-__GRUB_CONTRIB__ntldr_img_grldrstart.o grldr_img-__GRUB_CO
 	$(TARGET_CC) -o $@ $^ $(TARGET_LDFLAGS) $(grldr_img_LDFLAGS)
 
 grldr_img-__GRUB_CONTRIB__ntldr_img_grldrstart.o: $(GRUB_CONTRIB)/ntldr-img/grldrstart.S $($(GRUB_CONTRIB)/ntldr-img/grldrstart.S_DEPENDENCIES)
-	$(TARGET_CC) -I$(GRUB_CONTRIB)/ntldr-img -I$(srcdir)/$(GRUB_CONTRIB)/ntldr-img $(TARGET_CPPFLAGS) -DASM_FILE=1 $(TARGET_ASFLAGS) $(grldr_img_ASFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -I$(GRUB_CONTRIB)/ntldr-img -I$(srcdir)/$(GRUB_CONTRIB)/ntldr-img $(TARGET_CPPFLAGS) -DASM_FILE=1 $(TARGET_ASFLAGS) $(grldr_img_ASFLAGS) -DGRUB_FILE=\"$(GRUB_CONTRIB)/ntldr-img/grldrstart.S\" -MD -c -o $@ $<
 -include grldr_img-__GRUB_CONTRIB__ntldr_img_grldrstart.d
 
 grldr_img-__GRUB_CONTRIB__ntldr_img_ntfsbs.o: $(GRUB_CONTRIB)/ntldr-img/ntfsbs.S $($(GRUB_CONTRIB)/ntldr-img/ntfsbs.S_DEPENDENCIES)
-	$(TARGET_CC) -I$(GRUB_CONTRIB)/ntldr-img -I$(srcdir)/$(GRUB_CONTRIB)/ntldr-img $(TARGET_CPPFLAGS) -DASM_FILE=1 $(TARGET_ASFLAGS) $(grldr_img_ASFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -I$(GRUB_CONTRIB)/ntldr-img -I$(srcdir)/$(GRUB_CONTRIB)/ntldr-img $(TARGET_CPPFLAGS) -DASM_FILE=1 $(TARGET_ASFLAGS) $(grldr_img_ASFLAGS) -DGRUB_FILE=\"$(GRUB_CONTRIB)/ntldr-img/ntfsbs.S\" -MD -c -o $@ $<
 -include grldr_img-__GRUB_CONTRIB__ntldr_img_ntfsbs.d
 
 grldr_img_ASFLAGS = $(COMMON_ASFLAGS) -DGRLDR_MBR
