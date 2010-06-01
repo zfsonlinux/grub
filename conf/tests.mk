@@ -34,19 +34,27 @@ mostlyclean-module-functional_test.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-functional_test.mod.1
 UNDSYMFILES += und-functional_test.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+functional_test.mod: pre-functional_test.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(functional_test_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-functional_test.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 functional_test.mod: pre-functional_test.o mod-functional_test.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(functional_test_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-functional_test.o mod-functional_test.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 functional_test.mod: pre-functional_test.o mod-functional_test.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(functional_test_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-functional_test.o mod-functional_test.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-functional_test.o: $(functional_test_mod_DEPENDENCIES) functional_test_mod-tests_lib_functional_test.o functional_test_mod-tests_lib_test.o
@@ -54,7 +62,7 @@ pre-functional_test.o: $(functional_test_mod_DEPENDENCIES) functional_test_mod-t
 	$(TARGET_CC) $(functional_test_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ functional_test_mod-tests_lib_functional_test.o functional_test_mod-tests_lib_test.o
 
 mod-functional_test.o: mod-functional_test.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(functional_test_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(functional_test_mod_CFLAGS) -DGRUB_FILE=\"mod-functional_test.c\" -c -o $@ $<
 
 mod-functional_test.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'functional_test' $< > $@ || (rm -f $@; exit 1)
@@ -72,7 +80,7 @@ und-functional_test.lst: pre-functional_test.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 functional_test_mod-tests_lib_functional_test.o: tests/lib/functional_test.c $(tests/lib/functional_test.c_DEPENDENCIES)
-	$(TARGET_CC) -Itests/lib -I$(srcdir)/tests/lib $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(functional_test_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Itests/lib -I$(srcdir)/tests/lib $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(functional_test_mod_CFLAGS) -DGRUB_FILE=\"tests/lib/functional_test.c\" -MD -c -o $@ $<
 -include functional_test_mod-tests_lib_functional_test.d
 
 clean-module-functional_test_mod-tests_lib_functional_test-extra.1:
@@ -110,7 +118,7 @@ video-functional_test_mod-tests_lib_functional_test.lst: tests/lib/functional_te
 	set -e; 	  $(TARGET_CC) -Itests/lib -I$(srcdir)/tests/lib $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(functional_test_mod_CFLAGS) -E $< 	  | sh $(srcdir)/genvideolist.sh functional_test > $@ || (rm -f $@; exit 1)
 
 functional_test_mod-tests_lib_test.o: tests/lib/test.c $(tests/lib/test.c_DEPENDENCIES)
-	$(TARGET_CC) -Itests/lib -I$(srcdir)/tests/lib $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(functional_test_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Itests/lib -I$(srcdir)/tests/lib $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(functional_test_mod_CFLAGS) -DGRUB_FILE=\"tests/lib/test.c\" -MD -c -o $@ $<
 -include functional_test_mod-tests_lib_test.d
 
 clean-module-functional_test_mod-tests_lib_test-extra.1:
@@ -167,23 +175,23 @@ MOSTLYCLEAN_UTILITY_TARGETS += mostlyclean-utility-example_unit_test.1
 example_unit_test_OBJECTS += example_unit_test-tests_example_unit_test.o example_unit_test-kern_list.o example_unit_test-kern_misc.o example_unit_test-tests_lib_test.o example_unit_test-tests_lib_unit_test.o
 
 example_unit_test-tests_example_unit_test.o: tests/example_unit_test.c $(tests/example_unit_test.c_DEPENDENCIES)
-	$(CC) -Itests -I$(srcdir)/tests $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(example_unit_test_CFLAGS) -MD -c -o $@ $<
+	$(CC) -Itests -I$(srcdir)/tests $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(example_unit_test_CFLAGS) -DGRUB_FILE=\"tests/example_unit_test.c\" -MD -c -o $@ $<
 -include example_unit_test-tests_example_unit_test.d
 
 example_unit_test-kern_list.o: kern/list.c $(kern/list.c_DEPENDENCIES)
-	$(CC) -Ikern -I$(srcdir)/kern $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(example_unit_test_CFLAGS) -MD -c -o $@ $<
+	$(CC) -Ikern -I$(srcdir)/kern $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(example_unit_test_CFLAGS) -DGRUB_FILE=\"kern/list.c\" -MD -c -o $@ $<
 -include example_unit_test-kern_list.d
 
 example_unit_test-kern_misc.o: kern/misc.c $(kern/misc.c_DEPENDENCIES)
-	$(CC) -Ikern -I$(srcdir)/kern $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(example_unit_test_CFLAGS) -MD -c -o $@ $<
+	$(CC) -Ikern -I$(srcdir)/kern $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(example_unit_test_CFLAGS) -DGRUB_FILE=\"kern/misc.c\" -MD -c -o $@ $<
 -include example_unit_test-kern_misc.d
 
 example_unit_test-tests_lib_test.o: tests/lib/test.c $(tests/lib/test.c_DEPENDENCIES)
-	$(CC) -Itests/lib -I$(srcdir)/tests/lib $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(example_unit_test_CFLAGS) -MD -c -o $@ $<
+	$(CC) -Itests/lib -I$(srcdir)/tests/lib $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(example_unit_test_CFLAGS) -DGRUB_FILE=\"tests/lib/test.c\" -MD -c -o $@ $<
 -include example_unit_test-tests_lib_test.d
 
 example_unit_test-tests_lib_unit_test.o: tests/lib/unit_test.c $(tests/lib/unit_test.c_DEPENDENCIES)
-	$(CC) -Itests/lib -I$(srcdir)/tests/lib $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(example_unit_test_CFLAGS) -MD -c -o $@ $<
+	$(CC) -Itests/lib -I$(srcdir)/tests/lib $(CPPFLAGS) $(CFLAGS) -DGRUB_UTIL=1 $(example_unit_test_CFLAGS) -DGRUB_FILE=\"tests/lib/unit_test.c\" -MD -c -o $@ $<
 -include example_unit_test-tests_lib_unit_test.d
 
 example_unit_test_CFLAGS  = -Wno-format
@@ -208,19 +216,27 @@ mostlyclean-module-example_functional_test.mod.1:
 MOSTLYCLEAN_MODULE_TARGETS += mostlyclean-module-example_functional_test.mod.1
 UNDSYMFILES += und-example_functional_test.lst
 
+ifeq ($(TARGET_NO_MODULES), yes)
+example_functional_test.mod: pre-example_functional_test.o $(TARGET_OBJ2ELF)
+	-rm -f $@
+	$(TARGET_CC) $(example_functional_test_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-example_functional_test.o
+	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
+else
 ifneq ($(TARGET_APPLE_CC),1)
 example_functional_test.mod: pre-example_functional_test.o mod-example_functional_test.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	$(TARGET_CC) $(example_functional_test_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ pre-example_functional_test.o mod-example_functional_test.o
 	if test ! -z "$(TARGET_OBJ2ELF)"; then ./$(TARGET_OBJ2ELF) $@ || (rm -f $@; exit 1); fi
-	$(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@
+	if test x$(TARGET_NO_STRIP) != xyes ; then $(STRIP) --strip-unneeded -K grub_mod_init -K grub_mod_fini -K _grub_mod_init -K _grub_mod_fini -R .note -R .comment $@; fi
 else
 example_functional_test.mod: pre-example_functional_test.o mod-example_functional_test.o $(TARGET_OBJ2ELF)
 	-rm -f $@
 	-rm -f $@.bin
 	$(TARGET_CC) $(example_functional_test_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@.bin pre-example_functional_test.o mod-example_functional_test.o
-	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -nu -nd $@.bin $@
+	$(OBJCONV) -f$(TARGET_MODULE_FORMAT) -nr:_grub_mod_init:grub_mod_init -nr:_grub_mod_fini:grub_mod_fini -wd1106 -ew2030 -ew2050 -nu -nd $@.bin $@
 	-rm -f $@.bin
+endif
 endif
 
 pre-example_functional_test.o: $(example_functional_test_mod_DEPENDENCIES) example_functional_test_mod-tests_example_functional_test.o
@@ -228,7 +244,7 @@ pre-example_functional_test.o: $(example_functional_test_mod_DEPENDENCIES) examp
 	$(TARGET_CC) $(example_functional_test_mod_LDFLAGS) $(TARGET_LDFLAGS) -Wl,-r,-d -o $@ example_functional_test_mod-tests_example_functional_test.o
 
 mod-example_functional_test.o: mod-example_functional_test.c
-	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(example_functional_test_mod_CFLAGS) -c -o $@ $<
+	$(TARGET_CC) $(TARGET_CPPFLAGS) $(TARGET_CFLAGS) $(example_functional_test_mod_CFLAGS) -DGRUB_FILE=\"mod-example_functional_test.c\" -c -o $@ $<
 
 mod-example_functional_test.c: $(builddir)/moddep.lst $(srcdir)/genmodsrc.sh
 	sh $(srcdir)/genmodsrc.sh 'example_functional_test' $< > $@ || (rm -f $@; exit 1)
@@ -246,7 +262,7 @@ und-example_functional_test.lst: pre-example_functional_test.o
 	$(NM) -u -P -p $< | cut -f1 -d' ' >> $@
 
 example_functional_test_mod-tests_example_functional_test.o: tests/example_functional_test.c $(tests/example_functional_test.c_DEPENDENCIES)
-	$(TARGET_CC) -Itests -I$(srcdir)/tests $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(example_functional_test_mod_CFLAGS) -MD -c -o $@ $<
+	$(TARGET_CC) -Itests -I$(srcdir)/tests $(TARGET_CPPFLAGS)  $(TARGET_CFLAGS) $(example_functional_test_mod_CFLAGS) -DGRUB_FILE=\"tests/example_functional_test.c\" -MD -c -o $@ $<
 -include example_functional_test_mod-tests_example_functional_test.d
 
 clean-module-example_functional_test_mod-tests_example_functional_test-extra.1:
@@ -305,12 +321,116 @@ example_grub_script_test: tests/example_grub_script_test.in $(tests/example_grub
 	chmod +x $@
 
 
+#
+# Rules for real tests
+#
+
+check_SCRIPTS += grub_script_echo1
+grub_script_echo1_SOURCES = tests/grub_script_echo1.in
+CLEANFILES += grub_script_echo1
+
+grub_script_echo1: tests/grub_script_echo1.in $(tests/grub_script_echo1.in_DEPENDENCIES) config.status
+	./config.status --file=-:tests/grub_script_echo1.in | sed -e 's,@pkglib_DATA@,$(pkglib_DATA),g' > $@
+	chmod +x $@
+
+
+check_SCRIPTS += grub_script_echo_keywords
+grub_script_echo_keywords_SOURCES = tests/grub_script_echo_keywords.in
+CLEANFILES += grub_script_echo_keywords
+
+grub_script_echo_keywords: tests/grub_script_echo_keywords.in $(tests/grub_script_echo_keywords.in_DEPENDENCIES) config.status
+	./config.status --file=-:tests/grub_script_echo_keywords.in | sed -e 's,@pkglib_DATA@,$(pkglib_DATA),g' > $@
+	chmod +x $@
+
+
+check_SCRIPTS += grub_script_vars1
+grub_script_vars1_SOURCES = tests/grub_script_vars1.in
+CLEANFILES += grub_script_vars1
+
+grub_script_vars1: tests/grub_script_vars1.in $(tests/grub_script_vars1.in_DEPENDENCIES) config.status
+	./config.status --file=-:tests/grub_script_vars1.in | sed -e 's,@pkglib_DATA@,$(pkglib_DATA),g' > $@
+	chmod +x $@
+
+
+check_SCRIPTS += grub_script_for1
+grub_script_for1_SOURCES = tests/grub_script_for1.in
+CLEANFILES += grub_script_for1
+
+grub_script_for1: tests/grub_script_for1.in $(tests/grub_script_for1.in_DEPENDENCIES) config.status
+	./config.status --file=-:tests/grub_script_for1.in | sed -e 's,@pkglib_DATA@,$(pkglib_DATA),g' > $@
+	chmod +x $@
+
+
+check_SCRIPTS += grub_script_while1
+grub_script_while1_SOURCES = tests/grub_script_while1.in
+CLEANFILES += grub_script_while1
+
+grub_script_while1: tests/grub_script_while1.in $(tests/grub_script_while1.in_DEPENDENCIES) config.status
+	./config.status --file=-:tests/grub_script_while1.in | sed -e 's,@pkglib_DATA@,$(pkglib_DATA),g' > $@
+	chmod +x $@
+
+
+check_SCRIPTS += grub_script_if
+grub_script_if_SOURCES = tests/grub_script_if.in
+CLEANFILES += grub_script_if
+
+grub_script_if: tests/grub_script_if.in $(tests/grub_script_if.in_DEPENDENCIES) config.status
+	./config.status --file=-:tests/grub_script_if.in | sed -e 's,@pkglib_DATA@,$(pkglib_DATA),g' > $@
+	chmod +x $@
+
+
+check_SCRIPTS += grub_script_blanklines
+grub_script_blanklines_SOURCES = tests/grub_script_blanklines.in
+CLEANFILES += grub_script_blanklines
+
+grub_script_blanklines: tests/grub_script_blanklines.in $(tests/grub_script_blanklines.in_DEPENDENCIES) config.status
+	./config.status --file=-:tests/grub_script_blanklines.in | sed -e 's,@pkglib_DATA@,$(pkglib_DATA),g' > $@
+	chmod +x $@
+
+
+check_SCRIPTS += grub_script_final_semicolon
+grub_script_final_semicolon_SOURCES = tests/grub_script_final_semicolon.in
+CLEANFILES += grub_script_final_semicolon
+
+grub_script_final_semicolon: tests/grub_script_final_semicolon.in $(tests/grub_script_final_semicolon.in_DEPENDENCIES) config.status
+	./config.status --file=-:tests/grub_script_final_semicolon.in | sed -e 's,@pkglib_DATA@,$(pkglib_DATA),g' > $@
+	chmod +x $@
+
+
+check_SCRIPTS += grub_script_dollar
+grub_script_dollar_SOURCES = tests/grub_script_dollar.in
+CLEANFILES += grub_script_dollar
+
+grub_script_dollar: tests/grub_script_dollar.in $(tests/grub_script_dollar.in_DEPENDENCIES) config.status
+	./config.status --file=-:tests/grub_script_dollar.in | sed -e 's,@pkglib_DATA@,$(pkglib_DATA),g' > $@
+	chmod +x $@
+
+
+check_SCRIPTS += grub_script_comments
+grub_script_comments_SOURCES = tests/grub_script_comments.in
+CLEANFILES += grub_script_comments
+
+grub_script_comments: tests/grub_script_comments.in $(tests/grub_script_comments.in_DEPENDENCIES) config.status
+	./config.status --file=-:tests/grub_script_comments.in | sed -e 's,@pkglib_DATA@,$(pkglib_DATA),g' > $@
+	chmod +x $@
+
 
 # List of tests to execute on "make check"
-SCRIPTED_TESTS    = example_scripted_test
-SCRIPTED_TESTS   += example_grub_script_test
-UNIT_TESTS        = example_unit_test
-FUNCTIONAL_TESTS  = example_functional_test.mod
+# SCRIPTED_TESTS    = example_scripted_test
+# SCRIPTED_TESTS   += example_grub_script_test
+# UNIT_TESTS        = example_unit_test
+# FUNCTIONAL_TESTS  = example_functional_test.mod
+
+SCRIPTED_TESTS  = grub_script_echo1
+SCRIPTED_TESTS += grub_script_echo_keywords
+SCRIPTED_TESTS += grub_script_vars1
+SCRIPTED_TESTS += grub_script_for1
+SCRIPTED_TESTS += grub_script_while1
+SCRIPTED_TESTS += grub_script_if
+SCRIPTED_TESTS += grub_script_blanklines
+SCRIPTED_TESTS += grub_script_final_semicolon
+SCRIPTED_TESTS += grub_script_dollar
+SCRIPTED_TESTS += grub_script_comments
 
 # dependencies between tests and testing-tools
 $(SCRIPTED_TESTS): grub-shell grub-shell-tester
