@@ -1,3 +1,34 @@
+grub2 (1.98+20100614-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Make target-related error messages from grub-mkimage slightly more
+      helpful (closes: #584415).
+    - Fix underquoting that broke savedefault (thanks, Mario 'BitKoenig'
+      Holbe; closes: #584812).
+    - Expand 'info grub' substantially, including a new section on
+      configuring authentication (closes: #584822).
+    - Give all manual pages proper NAME sections (closes: #496706).
+
+  * Update 915resolution from grub-extras:
+    - Fix a hang with 945GME (thanks, Sergio Perticone; closes: #582142).
+
+  [ Colin Watson ]
+  * Disable grub-emu on sparc for the time being.  We're currently trying to
+    use TARGET_* flags to build it, which won't work.
+  * Don't build-depend on libsdl1.2-dev on hurd-i386.  Although
+    libsdl1.2-dev exists there, it's currently uninstallable due to missing
+    libpulse-dev, and we can happily live without it for now.
+  * kfreebsd-amd64 needs gcc-4.4-multilib too (closes: #585668).
+  * Warn and return without error from prepare_grub_to_access_device if
+    /boot is a dm-crypt device (thanks, Marc Haber; closes: #542165).
+  * Make /etc/grub.d/05_debian_theme usable by shells other than bash
+    (thanks, Alex Chiang; closes: #585561).
+  * Remove grub-mkisofs leftovers from debian/copyright.
+  * Fix reversed sense of DEB_BUILD_OPTIONS=nocheck handling.
+  * Build-depend on qemu-system for grub-pc tests.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 15 Jun 2010 12:45:35 +0100
+
 grub2 (1.98+20100602-2) unstable; urgency=low
 
   * Only build-depend on libdevmapper-dev on Linux architectures.

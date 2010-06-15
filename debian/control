@@ -17,7 +17,7 @@ Build-Depends: cdbs,
  po-debconf,
  help2man,
  texinfo,
- gcc-4.4-multilib [amd64 sparc],
+ gcc-4.4-multilib [amd64 kfreebsd-amd64 sparc],
  gcc-4.4,
  libncurses5-dev,
  xfonts-unifont,
@@ -25,8 +25,9 @@ Build-Depends: cdbs,
  gettext,
  libusb-dev [!hurd-i386],
  libdevmapper-dev [amd64 i386 powerpc mipsel sparc],
- libsdl1.2-dev,
+ libsdl1.2-dev [!hurd-i386],
  xorriso (>= 0.5.6.pl00),
+ qemu-system [i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64],
 Build-Conflicts: autoconf2.13 
 Standards-Version: 3.8.4
 Homepage: http://www.gnu.org/software/grub/grub-2.en.html
@@ -67,7 +68,7 @@ Description: GRand Unified Bootloader, version 2 (common files)
  This package contains common files shared by the distinct flavours of GRUB.
 
 Package: grub-emu
-Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64 powerpc sparc
+Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64 powerpc
 Depends: ${shlibs:Depends}, base-files (>= 4.0.1~), ${misc:Depends}
 Replaces: grub-common (<= 1.97~beta3-1)
 Description: GRand Unified Bootloader, version 2 (emulated version)
