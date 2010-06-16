@@ -10,6 +10,7 @@
 909_mkrescue_diet.diff
 910_usbms_format.diff
 913_mkconfig_skip_dmcrypt.diff
+914_mkconfig_non_options.diff
 950_ubuntu_grub_standards.diff
 951_crashkernel.diff
 952_quick_boot.diff
