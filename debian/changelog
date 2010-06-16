@@ -1,3 +1,218 @@
+grub2 (1.98+20100614-1ubuntu1) maverick; urgency=low
+
+  * Resynchronise with Debian:
+    - Add btrfs probing support, currently only in the single-device case
+      (LP: #450260).
+    - Insert partmap module in prepare_grub_to_access_device to handle
+      cross-partmap setups (LP: #451585).
+    - Fix verbose error output when device-mapper isn't supported by the
+      running kernel (LP: #526045).
+    Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script: title,
+      recovery mode, quiet option, tweak how memtest86+ is displayed, and
+      use UUIDs where appropriate.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel= options if kdump and makedumpfile are available.
+    - If other operating systems are installed, then automatically unhide
+      the menu. Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus
+      if available to check whether Shift is pressed. If it is, show the
+      menu, otherwise boot immediately. If keystatus is not available, then
+      fall back to a short delay interruptible with Escape.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Don't display introductory message about line editing unless we're
+      actually offering a shell prompt. Don't clear the screen just before
+      booting if we never drew the menu in the first place.
+    - Remove some verbose messages printed before reading the configuration
+      file.
+    - Suppress progress messages as the kernel and initrd load for
+      non-recovery kernel menu entries.
+    - Keep the loopback file open so that subsequent changes to the "root"
+      environment variable don't affect it.
+    - Change prepare_grub_to_access_device to handle filesystems
+      loop-mounted on file images.
+    - Ignore devices loop-mounted from files in 10_linux.
+    - Show the boot menu if the previous boot failed, that is if it failed
+      to get to the end of one of the normal runlevels.
+    - Handle RAID devices containing virtio components.
+    - Don't generate /boot/grub/device.map during grub-install or
+      grub-mkconfig by default.
+    - Store grub-pc/install_devices as persistent device names under
+      /dev/disk/by-id/.
+    - Change priority to optional to match the priority of grub.
+    - Don't display "GRUB loading" unless Shift is held down.
+    - Adjust versions of grub-doc and grub-legacy-doc conflicts to tolerate
+      our backport of the grub-doc split.
+    - Fix LVM/RAID probing in the absence of /boot/grub/device.map.
+    - Look for .mo files in /usr/share/locale-langpack as well, in
+      preference.
+    - Don't run /etc/grub.d/README, even if it somehow ended up being
+      executable.
+    - Make sure GRUB_TIMEOUT isn't quoted unnecessarily.
+    - Probe all devices in 'grub-probe --target=drive' if
+      /boot/grub/device.map is missing.
+    - Adjust hostdisk id for hard disks, allowing grub-setup to use its
+      standard workaround for broken BIOSes.
+  * grub-common Breaks: lupin-support (<< 0.30) due to a grub-mkimage syntax
+    change.
+  * Renumber Ubuntu patches to start from 950 with no gaps.
+  * Build-depend on qemu-kvm rather than qemu-system for grub-pc tests.
+  * Use qemu rather than qemu-system-i386 (see LP #594888).
+  * Fix quoting in failed_boot_menu and quick_boot patches.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 16 Jun 2010 12:13:14 +0100
+
+grub2 (1.98+20100614-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Make target-related error messages from grub-mkimage slightly more
+      helpful (closes: #584415).
+    - Fix underquoting that broke savedefault (thanks, Mario 'BitKoenig'
+      Holbe; closes: #584812).
+    - Expand 'info grub' substantially, including a new section on
+      configuring authentication (closes: #584822).
+    - Give all manual pages proper NAME sections (closes: #496706).
+
+  * Update 915resolution from grub-extras:
+    - Fix a hang with 945GME (thanks, Sergio Perticone; closes: #582142).
+
+  [ Colin Watson ]
+  * Disable grub-emu on sparc for the time being.  We're currently trying to
+    use TARGET_* flags to build it, which won't work.
+  * Don't build-depend on libsdl1.2-dev on hurd-i386.  Although
+    libsdl1.2-dev exists there, it's currently uninstallable due to missing
+    libpulse-dev, and we can happily live without it for now.
+  * kfreebsd-amd64 needs gcc-4.4-multilib too (closes: #585668).
+  * Warn and return without error from prepare_grub_to_access_device if
+    /boot is a dm-crypt device (thanks, Marc Haber; closes: #542165).
+  * Make /etc/grub.d/05_debian_theme usable by shells other than bash
+    (thanks, Alex Chiang; closes: #585561).
+  * Remove grub-mkisofs leftovers from debian/copyright.
+  * Fix reversed sense of DEB_BUILD_OPTIONS=nocheck handling.
+  * Build-depend on qemu-system for grub-pc tests.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 15 Jun 2010 12:45:35 +0100
+
+grub2 (1.98+20100602-2) unstable; urgency=low
+
+  * Only build-depend on libdevmapper-dev on Linux architectures.
+  * Don't build-depend on libusb-dev on hurd-i386, where it doesn't seem to
+    be available.
+  * Fix printf format mismatch in disk/usbms.c (closes: #584474).
+  * Fix verbose error output when device-mapper isn't supported by the
+    running kernel (closes: #584196).
+  * Prepend "part_" to partmap module names in grub-mkconfig, in line with
+    grub-install (closes: #584426).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 04 Jun 2010 14:01:58 +0100
+
+grub2 (1.98+20100602-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Add btrfs probing support, currently only in the single-device case
+      (closes: #540786).
+    - Fix grub-emu build on mips/powerpc/sparc.
+    - Add safety check to make sure that /boot/grub/locale exists before
+      trying to probe it (closes: #567211).
+    - Several 'info grub' improvements, including a new section on
+      configuration file generation using grub-mkconfig which documents the
+      available keys in /etc/default/grub (closes: #497085).
+    - Many USB fixes.
+
+  [ Colin Watson ]
+  * Reorganise configure and build targets in debian/rules to use stamp
+    files.  configure/* never existed and build/* was always a directory, so
+    make never considered either of them up to date (closes: #450505).
+  * Remove config.h.in from AUTOGEN_FILES, since autoheader doesn't
+    necessarily update it.
+  * Remove conf/gcry.mk from AUTOGEN_FILES, and conf/gcry.rmk from their
+    dependencies.  autogen.sh runs util/import_gcry.py after autoconf et al,
+    so conf/gcry.rmk's timestamp will be later than some of the
+    autogenerated outputs.
+  * Go back to shipping rescue images in the grub-rescue-pc .deb itself
+    rather than generating them in the postinst.  This means that (a) they
+    get removed when the package is removed (closes: #584176); (b) they are
+    listed in package metadata, as is proper for files in /usr (closes:
+    #584218); (c) grub-rescue-pc can potentially be used as a
+    build-dependency for other packages that need to build GRUB images into
+    installation media etc., without having to build-depend on grub-pc which
+    isn't coinstallable with other platform variants and does invasive
+    things in its postinst.
+  * Add grub-mkrescue patch from Thomas Schmitt to allow reducing the size
+    of xorriso-created images.  Use this to ensure that
+    grub-rescue-floppy.img fits well within size limits (closes: #548320).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 03 Jun 2010 11:24:41 +0100
+
+grub2 (1.98+20100527-2) unstable; urgency=low
+
+  * Always override statically-linked-binary Lintian tag for kernel.img;
+    dynamic linking makes no sense here.
+  * kernel.img is stripped upstream where it can be, but override Lintian's
+    error for the cases where it can't.
+  * Override binary-from-other-architecture for kernel.img as well as *.mod
+    when building grub-efi-amd64 on i386.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 01 Jun 2010 13:48:14 +0100
+
+grub2 (1.98+20100527-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Support multiple terminals in grub-mkconfig, e.g.
+      GRUB_TERMINAL='serial console' (closes: #506707).
+    - Speed up consecutive hostdisk operations on the same device (closes:
+      #508834, #574088).
+    - Fix grammar error in grub-setup warning (closes: #559005).
+    - Use xorriso for image creation rather than embedding a modified copy
+      of mkisofs (closes: #570156).
+    - Issue an error rather than segfaulting if only some LVM component
+      devices are in device.map (closes: #577808).
+    - Fix typo in make_device_name which caused grub-probe problems on
+      systems with BSD disk labels (closes: #578201).
+    - Add DM-RAID probe support (closes: #579919).
+    - Include all gnumach kernels on Hurd, not just gnumach and gnumach.gz
+      (closes: #581584).
+
+  [ Colin Watson ]
+  * Restore TEXTDOMAINDIR correction in grub.d files, lost by mistake in a
+    merge.  Noticed by Anthony Fok.
+  * Don't fail on purge if the ucf association has already been taken over
+    by a different grub package (closes: #574176).
+  * Add debian/grub-extras/*/conf/*.mk to AUTOGEN_FILES.
+  * Remove support for the lpia architecture, now removed from Ubuntu.
+  * Conflict with grub (<< 0.97-54) as well as grub-legacy.
+  * Build-depend on libdevmapper-dev for DM-RAID probe support.
+  * Switch to quilt.
+  * Suggest xorriso (>= 0.5.6.pl00) in grub-common, since grub-mkrescue now
+    needs it.  Depend on it in grub-rescue-pc.
+  * Move grub-mkimage to grub-common, now that it only has one
+    implementation.
+  * Clean up temporary files used while building grub-firmware-qemu.
+  * Make grub-probe work with symlinks under /dev/mapper (closes: #550704).
+  * When upgrading a system where GRUB 2 is chainloaded from GRUB Legacy and
+    upgrade-from-grub-legacy has not been run, upgrade the chainloaded image
+    rather than confusing the user by prompting them where they want to
+    install GRUB (closes: #546822).
+  * Build-depend on libsdl1.2-dev for SDL support in grub-emu.
+  * Don't leak debconf's file descriptor to update-grub, so that the LVM
+    tools called from os-prober don't complain about it (closes: #549976).
+    Other leaks are not this package's fault, may not be bugs at all, and in
+    any case os-prober 1.36 suppresses the warnings.
+  * Build-depend on flex (>= 2.5.35).
+  * Build-depend on gcc-4.4-multilib on amd64.
+
+  [ Updated translations ]
+  * Slovenian (sl.po) by Vanja Cvelbar (closes: #570110).
+  * Vietnamese (vi.po) by Clytie Siddall (closes: #574578).
+  * Tamil (ta.po) by Tirumurti Vasudevan (closes: #578282).
+  * Portuguese (pt.po) by Tiago Fernandes (closes: #580140).
+  * Romanian (ro.po) by Eddy Petrișor / Andrei Popescu (closes: #583185).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 01 Jun 2010 11:24:38 +0100
+
 grub2 (1.98-1ubuntu6) lucid-proposed; urgency=low
 
   * When migrating from the old grub-pc/install_devices scheme, check if the

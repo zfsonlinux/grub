@@ -1,1006 +1,1085 @@
-# Copyright (C) 2009  Free Software Foundation, Inc
-# This file is distributed under the same license as the GNU GRUB package.
+# Catalan translation for grub.
+# Copyright (C) 2010 Free Software Foundation, Inc.
+# This file is distributed under the same license as the grub package.
 # Robert Millan <rmh.grub@aybabtu.com>, 2009.
-#
+# Àngel Mompó <mecatxis@gmail.com>, 2010.
+# Àngel Mompó <mecatxis@gmail.com>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: GNU GRUB\n"
+"Project-Id-Version: grub-1.97+20100124\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-08 22:55+0000\n"
-"PO-Revision-Date: 2009-11-17 12:26+0100\n"
-"Last-Translator: Robert Millan <rmh.grub@aybabtu.com>\n"
-"Language-Team: None <no-team-yet@li.org>\n"
+"POT-Creation-Date: 2010-06-03 00:27+0100\n"
+"PO-Revision-Date: 2010-03-21 21:47+0100\n"
+"Last-Translator: Àngel Mompó <mecatxis@gmail.com>\n"
+"Language-Team: Catalan <ca@dodds.net>\n"
+"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: commands/acpi.c:40
 msgid "Don't load host tables specified by comma-separated list."
 msgstr ""
+"No carreguis les taules d'amfitrions especificades en llistes separades per "
+"comes."
 
 #: commands/acpi.c:43
 msgid "Load only tables specified by comma-separated list."
-msgstr ""
+msgstr "Carrega només les taules especificades en llistes separades per comes."
 
 #: commands/acpi.c:44
 msgid "Expose v1 tables."
-msgstr ""
+msgstr "Exposa les taules v1."
 
 #: commands/acpi.c:45
 msgid "Expose v2 and v3 tables."
-msgstr ""
+msgstr "Exposa les taules v2 i v3."
 
 #: commands/acpi.c:46
 msgid "Set OEMID of RSDP, XSDT and RSDT."
-msgstr ""
+msgstr "Aplica l'OEMID de l'RSDP, XSDT i l'RSDT."
 
 #: commands/acpi.c:48
 msgid "Set OEMTABLE ID of RSDP, XSDT and RSDT."
-msgstr ""
+msgstr "Aplica l'identificador de l'OEMTABLE de l'RSDP, XSDT i l'RSDT."
 
 #: commands/acpi.c:50
 msgid "Set OEMTABLE revision of RSDP, XSDT and RSDT."
-msgstr ""
+msgstr "Aplica la revisió de l'OEMTABLE de l'RSDP, XSDT i l'RSDT."
 
 #: commands/acpi.c:52
 msgid "Set creator field of RSDP, XSDT and RSDT."
-msgstr ""
+msgstr "Aplica el camp creador de l'RSDP, XSDT i l'RSDT."
 
 #: commands/acpi.c:54
 msgid "Set creator revision of RSDP, XSDT and RSDT."
-msgstr ""
+msgstr "Aplica la revisió del creador de l'RSDP, XSDT i l'RSDT."
 
 #: commands/acpi.c:55
 msgid ""
 "Don't update EBDA. May fix failures or hangs on some. BIOSes but makes it "
 "ineffective with OS not receiving RSDP from GRUB."
 msgstr ""
+"No actualitzis EBDA. Pot corregir defectes o penjades a algunes BIOS, però "
+"el fa ineficaç amb SO que no rebin RSDP del GRUB."
 
 #: commands/acpi.c:763
 msgid ""
 "[-1|-2] [--exclude=TABLE1,TABLE2|--load-only=table1,table2] FILE1 [FILE2] "
 "[...]"
 msgstr ""
+"[-1|-2] [--exclude=TAULA1,TAULA2|--load-only=taula1,taula2] FITXER1 "
+"[FITXER2] [...]"
 
 #: commands/acpi.c:766
 msgid "Load host ACPI tables and tables specified by arguments."
 msgstr ""
+"Carrega les taules d'amfitrions ACPI i les taules especificades per "
+"arguments."
 
-#: commands/blocklist.c:114 commands/cat.c:82 commands/configfile.c:57
+#: commands/blocklist.c:113 commands/cat.c:82 commands/configfile.c:57
 #: commands/configfile.c:60 commands/configfile.c:65 commands/crc.c:64
-#: commands/minicmd.c:357 loader/i386/bsd.c:1297 loader/i386/bsd.c:1301
-#: loader/i386/bsd.c:1305
+#: commands/minicmd.c:357 loader/i386/bsd.c:1287 loader/i386/bsd.c:1291
+#: loader/i386/bsd.c:1295
 msgid "FILE"
-msgstr ""
+msgstr "FITXER"
 
-#: commands/blocklist.c:114
+#: commands/blocklist.c:113
 msgid "Print a block list."
-msgstr ""
+msgstr "Mostra una llista de blocs."
 
 #: commands/boot.c:190
 msgid "Boot an operating system."
-msgstr ""
+msgstr "Arrenca un sistema operatiu."
 
 #: commands/cat.c:82 commands/minicmd.c:357
 msgid "Show the contents of a file."
-msgstr ""
+msgstr "Mostra el contingut d'un fitxer."
 
 #: commands/cmp.c:113
 msgid "FILE1 FILE2"
-msgstr ""
+msgstr "FITXER1 FITXER2"
 
 #: commands/cmp.c:113
 msgid "Compare two files."
-msgstr ""
+msgstr "Compara dos fitxers."
 
 #: commands/configfile.c:57
 msgid "Load another config file."
-msgstr ""
+msgstr "Carrega un altre fitxer de configuració."
 
 #: commands/configfile.c:61 commands/configfile.c:66
 msgid "Load another config file without changing context."
-msgstr ""
+msgstr "Carrega un altre fitxer de configuració sense canviar el context."
 
 #: commands/crc.c:65
 msgid "Calculate the crc32 checksum of a file."
-msgstr ""
+msgstr "Calcula la suma de verificació CRC32 d'un fitxer."
 
 #: commands/date.c:139
 msgid "[[year-]month-day] [hour:minute[:second]]"
-msgstr ""
+msgstr "[[any-]mes-dia] [hora:minut[:segon]]"
 
 #: commands/date.c:140
 msgid "Command to display/set current datetime."
-msgstr ""
+msgstr "Ordre per mostrar/modificar el dia i l'hora actuals."
 
 #: commands/echo.c:27
 msgid "Do not output the trailing newline."
-msgstr ""
+msgstr "No mostris els salts de línia."
 
 #: commands/echo.c:28
 msgid "Enable interpretation of backslash escapes."
-msgstr ""
+msgstr "Habilita la interpretació dels caràcters amb contrabarra."
 
 #: commands/echo.c:117
 msgid "[-e|-n] STRING"
-msgstr ""
+msgstr "[-e|-n] CADENA"
 
 #: commands/echo.c:117
 msgid "Display a line of text."
-msgstr ""
+msgstr "Mostra una línia de text."
 
 #: commands/efi/fixvideo.c:103
 msgid "Fix video problem."
-msgstr ""
+msgstr "Corregeix un problema de vídeo."
 
 #: commands/efi/loadbios.c:207
 msgid "Fake BIOS."
-msgstr ""
+msgstr "Falsa BIOS."
 
 #: commands/efi/loadbios.c:211
 msgid "Load BIOS dump."
-msgstr ""
+msgstr "Carrega l'abocament de memòria de la BIOS."
 
 #: commands/gptsync.c:244
 msgid "DEVICE [PARTITION[+/-[TYPE]]] ..."
-msgstr ""
+msgstr "DISPOSITIU [PARTICIÓ[+/-[TIPUS]]]"
 
 #: commands/gptsync.c:245
+#, fuzzy
 msgid ""
-"Fill hybrid MBR of GPT drive DEVICE. specified partitions will be a part of "
-"hybrid mbr. Up to 3 partitions are allowed. TYPE is an MBR type. + means "
+"Fill hybrid MBR of GPT drive DEVICE. Specified partitions will be a part of "
+"hybrid MBR. Up to 3 partitions are allowed. TYPE is an MBR type. + means "
 "that partition is active. Only one partition can be active."
 msgstr ""
+"Omple l'MBR híbrid del DISPOSITIU unitat GPT. Les particions especificades "
+"seran una part del MBR híbrid. Es permeten fins a 3 particions. TIPUS és un "
+"tipus de MBR. + significa que la partició és activa. Només es pot activar "
+"una partició."
 
 #: commands/halt.c:39
 msgid ""
 "Halts the computer.  This command does not work on all firmware "
 "implementations."
 msgstr ""
+"Atura l'ordinador. Aquesta ordre no funciona en totes les implementacions de "
+"microprogramari."
 
 #: commands/handler.c:94
 msgid "[class [handler]]"
-msgstr ""
+msgstr "[classe [gestor]]"
 
 #: commands/handler.c:95
 msgid "List or select a handler."
-msgstr ""
+msgstr "Llista o selecciona un gestor."
 
 #: commands/hdparm.c:30
 msgid ""
 "Set Advanced Power Management\n"
 "(1=low, ..., 254=high, 255=off)."
 msgstr ""
+"Configura el gestor avançat de consum\n"
+"(1=baix, ..., 254=alt, 255=apagat)."
 
 #: commands/hdparm.c:33
 msgid "Check power mode."
-msgstr ""
+msgstr "Comprova el mode de consum."
 
 #: commands/hdparm.c:34
 msgid "Freeze ATA security settings until reset."
-msgstr ""
+msgstr "Congela la configuració de seguretat ATA fins que es reinicïi."
 
 #: commands/hdparm.c:36
 msgid "Check SMART health status."
-msgstr ""
+msgstr "Comprova l'estat de salut SMART."
 
 #: commands/hdparm.c:37
 msgid ""
 "Set Automatic Acoustic Management\n"
 "(0=off, 128=quiet, ..., 254=fast)."
 msgstr ""
+"Configura el gestor acústic automàtic\n"
+"(0=apagat, 128=silenciós, ..., 254 ràpid)."
 
 #: commands/hdparm.c:40
 msgid ""
 "Set standby timeout\n"
 "(0=off, 1=5s, 2=10s, ..., 240=20m, 241=30m, ...)."
 msgstr ""
+"Configura el temps màxim d'espera\n"
+"(0=apagat, 1=5s, 2=10s, ..., 240=20m, 241=30m, ...)."
 
 #: commands/hdparm.c:43
 msgid "Set drive to standby mode."
-msgstr ""
+msgstr "Posa la unitat en mode d'espera."
 
 #: commands/hdparm.c:44
 msgid "Set drive to sleep mode."
-msgstr ""
+msgstr "Posa la unitat en mode descans."
 
 #: commands/hdparm.c:45
 msgid "Print drive identity and settings."
-msgstr ""
+msgstr "Mostra la identificació i la configuració de la unitat."
 
 #: commands/hdparm.c:47
 msgid "Dump contents of ATA IDENTIFY sector."
-msgstr ""
+msgstr "Bolca el contingut del sector IDENTIFY ATA."
 
 #: commands/hdparm.c:49
 msgid "Disable/enable SMART (0/1)."
-msgstr ""
+msgstr "Habilita/deshabilita SMART (1/0)."
 
 #: commands/hdparm.c:50
 msgid "Do not print messages."
-msgstr ""
+msgstr "No mostris missatges."
 
 #: commands/hdparm.c:414
 msgid "[OPTIONS] DISK"
-msgstr ""
+msgstr "[OPCIONS] DISC"
 
 #: commands/hdparm.c:415
 msgid "Get/set ATA disk parameters."
-msgstr ""
+msgstr "Llegeix/escriu els paràmetres del disc ATA."
 
 #: commands/help.c:103 lib/arg.c:110
 msgid "Usage:"
-msgstr ""
+msgstr "Ús:"
 
 #: commands/help.c:136
 msgid "[PATTERN ...]"
-msgstr ""
+msgstr "[PATRÓ...]"
 
 #: commands/help.c:137
 msgid "Show a help message."
-msgstr ""
+msgstr "Mostra un missatge de text."
 
 #: commands/hexdump.c:30
 msgid "Skip offset bytes from the beginning of file."
-msgstr ""
+msgstr "Salta els bytes d'òfset des del principi del fitxer."
 
 #: commands/hexdump.c:32
 msgid "Read only LENGTH bytes."
-msgstr ""
+msgstr "Llegeix només LONGITUD bytes."
 
 #: commands/hexdump.c:125
 msgid "[OPTIONS] FILE_OR_DEVICE"
-msgstr ""
+msgstr "[OPCIONS] FITXER_O_DISPOSITIU"
 
 #: commands/hexdump.c:126
 msgid "Dump the contents of a file or memory."
-msgstr ""
+msgstr "Bolca el contingut d'un fitxer o de la memòria."
 
 #: commands/i386/cpuid.c:37
 msgid "Check for long mode flag (default)."
-msgstr ""
+msgstr "Es comprova l'indicador de mode llarg (per defecte)."
 
 #: commands/i386/cpuid.c:92
 msgid "Check for CPU features."
-msgstr ""
+msgstr "Es comprova les característiques de la CPU."
 
 #: commands/i386/pc/drivemap.c:37
 msgid "Show the current mappings."
-msgstr ""
+msgstr "Mostra els mapatges actuals."
 
 #: commands/i386/pc/drivemap.c:38
 msgid "Reset all mappings to the default values."
-msgstr ""
+msgstr "Es reinicien tots els mapats als valors per defecte."
 
 #: commands/i386/pc/drivemap.c:39
 msgid "Perform both direct and reverse mappings."
-msgstr ""
+msgstr "Realitza ambdós mapats, el directe i l'invers."
+
+#: commands/i386/pc/drivemap.c:406
+msgid "-l | -r | [-s] grubdev osdisk."
+msgstr "-l | -r | [-s] grubdev osdisk."
 
 #: commands/i386/pc/drivemap.c:407
-msgid "-l | -r | [-s] grubdev osdisk."
-msgstr ""
-
-#: commands/i386/pc/drivemap.c:408
 msgid "Manage the BIOS drive mappings."
-msgstr ""
+msgstr "Gestiona els mapats d'unitats de la BIOS."
 
 #: commands/i386/pc/halt.c:27
 msgid "Do not use APM to halt the computer."
-msgstr ""
+msgstr "No utilitzis APM per aturar l'ordinador."
 
 #: commands/i386/pc/halt.c:51
 msgid "Halt the system, if possible using APM."
-msgstr ""
+msgstr "Atura el sistema, si pots, fent servir APM."
 
-#: commands/i386/pc/play.c:262
+#: commands/i386/pc/play.c:266
 msgid "FILE | TEMPO [PITCH1 DURATION1] [PITCH2 DURATION2] ... "
 msgstr ""
 
-#: commands/i386/pc/play.c:263
+#: commands/i386/pc/play.c:267
 msgid "Play a tune."
-msgstr ""
+msgstr "Reprodueix una melodia."
 
 #: commands/i386/pc/pxecmd.c:46
 msgid "Unload PXE environment."
-msgstr ""
+msgstr "Treu l'entorn PXE."
 
 #: commands/i386/pc/vbeinfo.c:179
 msgid "List compatible VESA BIOS extension video modes."
-msgstr ""
+msgstr "Llista les extensions de vídeo compatibles de VESA BIOS."
 
 #: commands/i386/pc/vbetest.c:173
 msgid "Test VESA BIOS Extension 2.0+ support."
-msgstr ""
+msgstr "Prova el suport per l'extensió 2.0+ de VESA BIOS."
 
 #: commands/ieee1275/suspend.c:43
 msgid "Return to Open Firmware prompt."
-msgstr ""
+msgstr "Torna a l'indicador Open Firmware."
 
 #: commands/keystatus.c:28
 msgid "Check Shift key."
-msgstr ""
+msgstr "Comprova la tecla de majúscules."
 
 #: commands/keystatus.c:29
 msgid "Check Control key."
-msgstr ""
+msgstr "Comprova la tecla de control."
 
 #: commands/keystatus.c:30
 msgid "Check Alt key."
-msgstr ""
+msgstr "Comprova la tecla d'alternativa."
 
 #: commands/keystatus.c:85
 msgid "[--shift] [--ctrl] [--alt]"
-msgstr ""
+msgstr "[--shift] [--ctrl] [--alt]"
 
 #: commands/keystatus.c:86
 msgid "Check key modifier status."
-msgstr ""
+msgstr "Comprova l'estat de la tecla modificadora."
 
 #: commands/loadenv.c:33
 msgid "Specify filename."
-msgstr ""
+msgstr "Especifica el nom del fitxer."
 
-#: commands/loadenv.c:383 commands/loadenv.c:389
+#: commands/loadenv.c:378 commands/loadenv.c:384
 msgid "[-f FILE]"
-msgstr ""
+msgstr "[-f FITXER]"
 
-#: commands/loadenv.c:384
+#: commands/loadenv.c:379
 msgid "Load variables from environment block file."
-msgstr ""
+msgstr "Carrega les variables del bloc del fitxer d'entorn."
+
+#: commands/loadenv.c:385
+msgid "List variables from environment block file."
+msgstr "Llista les variables del bloc del fitxer d'entorn."
 
 #: commands/loadenv.c:390
-msgid "List variables from environment block file."
-msgstr ""
-
-#: commands/loadenv.c:395
 msgid "[-f FILE] variable_name [...]"
-msgstr ""
+msgstr "[-f FITXER] nom_de_variable [...]"
 
-#: commands/loadenv.c:396
+#: commands/loadenv.c:391
 msgid "Save variables to environment block file."
-msgstr ""
+msgstr "Desa les variables al bloc del fitxer d'entorn."
 
 #: commands/ls.c:37
 msgid "Show a long list with more detailed information."
-msgstr ""
+msgstr "Mostra una llista llarga amb informació més detallada."
 
 #: commands/ls.c:38
 msgid "Print sizes in a human readable format."
-msgstr ""
+msgstr "Mostra les mides en un format llegible pels humans."
 
 #: commands/ls.c:39
 msgid "List all files."
-msgstr ""
+msgstr "Llista tots els fitxers."
 
 #: commands/ls.c:269
 msgid "[-l|-h|-a] [FILE]"
-msgstr ""
+msgstr "[-l|-h|-a] [FITXER]"
 
 #: commands/ls.c:270
 msgid "List devices and files."
-msgstr ""
+msgstr "Llista dispositius i fitxers."
 
-#: commands/lsmmap.c:47
+#: commands/lsmmap.c:51
 msgid "List memory map provided by firmware."
-msgstr ""
+msgstr "Llista el mapa de memòria proveït pel microprogramari."
 
 #: commands/lspci.c:228
 msgid "List PCI devices."
-msgstr ""
+msgstr "Llista els dispositius PCI."
 
 #: commands/memrw.c:31
 msgid "Save read value into variable VARNAME."
-msgstr ""
+msgstr "Desa el valor llegit a la variable NOMVARIABLE."
 
 #: commands/memrw.c:123 commands/memrw.c:126 commands/memrw.c:129
 #: commands/minicmd.c:366
 msgid "ADDR"
-msgstr ""
+msgstr "ADDR"
 
 #: commands/memrw.c:123
 msgid "Read byte from ADDR."
-msgstr ""
+msgstr "Llegeix un byte de ADDR."
 
 #: commands/memrw.c:126
 msgid "Read word from ADDR."
-msgstr ""
+msgstr "Llegeix una paraula de ADDR."
 
 #: commands/memrw.c:129
 msgid "Read dword from ADDR."
-msgstr ""
+msgstr "Llegeix una paraula doble de ADDR."
 
 #: commands/memrw.c:132 commands/memrw.c:135 commands/memrw.c:138
 msgid "ADDR VALUE [MASK]"
-msgstr ""
+msgstr "ADDR VALOR [MASCARA]"
 
 #: commands/memrw.c:132
 msgid "Write byte VALUE to ADDR."
-msgstr ""
+msgstr "Escriu un byte VALOR a ADDR."
 
 #: commands/memrw.c:135
 msgid "Write word VALUE to ADDR."
-msgstr ""
+msgstr "Escriu una paraula VALOR a ADDR."
 
 #: commands/memrw.c:138
 msgid "Write dword VALUE to ADDR."
-msgstr ""
+msgstr "Escriu una paraula doble VALOR a ADDR"
 
 #: commands/minicmd.c:360
 msgid "Show this message."
-msgstr ""
+msgstr "Mostra aquest missatge."
 
 #: commands/minicmd.c:363 commands/probe.c:154
 msgid "[DEVICE]"
-msgstr ""
+msgstr "[DISPOSITIU]"
 
 #: commands/minicmd.c:363
 msgid "Set the root device."
-msgstr ""
+msgstr "Estableix el dispositiu arrel."
 
 #: commands/minicmd.c:366
 msgid "Dump memory."
-msgstr ""
+msgstr "Bolca la memòria."
 
 #: commands/minicmd.c:369
 msgid "MODULE"
-msgstr ""
+msgstr "MÒDUL"
 
 #: commands/minicmd.c:369
 msgid "Remove a module."
-msgstr ""
+msgstr "Treu un mòdul."
 
 #: commands/minicmd.c:372
 msgid "Show loaded modules."
-msgstr ""
+msgstr "Mostra els mòduls carregats."
 
 #: commands/minicmd.c:375
 msgid "Exit from GRUB."
-msgstr ""
+msgstr "Surt de GRUB."
 
 #: commands/minicmd.c:378
 msgid "Clear the screen."
-msgstr ""
+msgstr "Neteja la pantalla."
 
 #: commands/parttool.c:325
 msgid "PARTITION COMMANDS"
-msgstr ""
+msgstr "COMANDES DE PARTICIONAT"
 
 #: commands/password.c:78
 msgid "USER PASSWORD"
-msgstr ""
+msgstr "CONTRASENYA D'USUARI"
 
 #: commands/password.c:79
 msgid "Set user password (plaintext). Unrecommended and insecure."
-msgstr ""
+msgstr "Estableix una contrasenya d'usuari (text pla). No recomanat i insegur."
 
 #: commands/probe.c:38
 msgid "Set a variable to return value."
-msgstr ""
+msgstr "Estableix una variable per retornar un valor."
 
 #: commands/probe.c:39
 msgid "Determine driver."
-msgstr ""
+msgstr "Determina el controlador."
 
 #: commands/probe.c:40
 msgid "Determine partition map type."
-msgstr ""
+msgstr "Determina el tipus de mapa de particions."
 
 #: commands/probe.c:41
 msgid "Determine filesystem type."
-msgstr ""
+msgstr "Determina el tipus de sistema de fitxers."
 
 #: commands/probe.c:42
 msgid "Determine filesystem UUID."
-msgstr ""
+msgstr "Determina el UUID del sistema de fitxers."
 
 #: commands/probe.c:43
 msgid "Determine filesystem label."
-msgstr ""
+msgstr "Determina l'etiqueta del sistema de fitxers."
 
 #: commands/probe.c:155
 msgid "Retrieve device info."
-msgstr ""
+msgstr "Recupera la informació del dispositiu."
 
 #: commands/read.c:83
 msgid "[ENVVAR]"
-msgstr ""
+msgstr "[ENVVAR]"
 
 #: commands/read.c:84
 msgid "Set variable with user input."
-msgstr ""
+msgstr "Estableix la variable amb una entrada d'usuari."
 
 #: commands/reboot.c:39
 msgid "Reboot the computer."
-msgstr ""
+msgstr "Reinicia l'ordinador."
 
 #: commands/search.c:161
 msgid "NAME [VARIABLE]"
-msgstr ""
+msgstr "NOM [VARIABLE]"
 
 #: commands/search_file.c:5
 msgid ""
 "Search devices by file. If VARIABLE is specified, the first device found is "
 "set to a variable."
 msgstr ""
+"Cerca dispositius pel fitxer. Si s'especifica VARIABLE, el nom del primer "
+"dispositiu trobat s'escriu a la variable."
 
 #: commands/search_label.c:5
 msgid ""
 "Search devices by label. If VARIABLE is specified, the first device found is "
 "set to a variable."
 msgstr ""
+"Cerca dispositius per l'etiqueta. Si s'especifica VARIABLE, el nom del "
+"primer dispositiu trobat s'escriu a la variable."
 
 #: commands/search_uuid.c:5
 msgid ""
 "Search devices by UUID. If VARIABLE is specified, the first device found is "
 "set to a variable."
 msgstr ""
+"Cerca dispositius per l'UUID. Si s'especifica VARIABLE, el nom del primer "
+"dispositiu trobat s'escriu a la variable."
+
+#: commands/sleep.c:30
+msgid "Verbose countdown."
+msgstr "Compte enrere detallat."
 
 #: commands/sleep.c:31
-msgid "Verbose countdown."
-msgstr ""
-
-#: commands/sleep.c:32
 msgid "Interruptible with ESC."
-msgstr ""
+msgstr "Es pot interrompre amb ESC."
+
+#: commands/sleep.c:105
+msgid "NUMBER_OF_SECONDS"
+msgstr "NOMBRE_DE_SEGONS"
 
 #: commands/sleep.c:106
-msgid "NUMBER_OF_SECONDS"
-msgstr ""
-
-#: commands/sleep.c:107
 msgid "Wait for a specified number of seconds."
-msgstr ""
+msgstr "Espera un nombre especificat de segons."
 
 #: commands/test.c:424
 msgid "EXPRESSION ]"
-msgstr ""
+msgstr "EXPRESSIÓ ]"
 
 #: commands/test.c:424 commands/test.c:426
 msgid "Evaluate an expression."
-msgstr ""
+msgstr "Avalua una expressió."
 
 #: commands/test.c:426
 msgid "EXPRESSION"
-msgstr ""
+msgstr "EXPRESSIÓ"
 
 #: commands/true.c:47
 msgid "Do nothing, successfully."
-msgstr ""
+msgstr "No facis res, amb èxit."
 
 #: commands/true.c:50
 msgid "Do nothing, unsuccessfully."
-msgstr ""
+msgstr "No facis res, sense èxit."
 
-#: commands/usbtest.c:199
+#: commands/usbtest.c:208
 msgid "Test USB support."
-msgstr ""
+msgstr "Prova el suport USB."
 
 #: commands/videotest.c:180
 msgid "Test video subsystem."
-msgstr ""
+msgstr "Prova el subsistema de video."
 
 #: commands/xnu_uuid.c:92
 msgid "GRUBUUID [VARNAME]"
-msgstr ""
+msgstr "GRUBUUID [VARNOM]"
 
 #: commands/xnu_uuid.c:93
 msgid "Transform 64-bit UUID to format suitable for XNU."
-msgstr ""
+msgstr "Transforma un UUID de 64 bits a un format adient per XNU"
 
 #: disk/loopback.c:40
 msgid "Delete the loopback device entry."
-msgstr ""
+msgstr "Esborra l'entrada de dispositiu de retrobucle."
 
 #: disk/loopback.c:41
 msgid "Simulate a hard drive with partitions."
-msgstr ""
+msgstr "Simula un disc dur amb particions."
 
 #: disk/loopback.c:249
 msgid "[-d|-p] DEVICENAME FILE."
-msgstr ""
+msgstr "[-d| -p] NOMDISPOSITIU FITXER."
 
 #: disk/loopback.c:250
 msgid "Make a device of a file."
-msgstr ""
+msgstr "Fes un dispositiu d'un fitxer."
 
 #: hello/hello.c:43
 msgid "Say \"Hello World\"."
-msgstr ""
+msgstr "Diu «Hola Mon»."
 
 #: lib/arg.c:34
 msgid "Display this help and exit."
-msgstr ""
+msgstr "Mostra aquesta ajuda i surt."
 
 #: lib/arg.c:36
 msgid "Display the usage of this command and exit."
-msgstr ""
+msgstr "Mostra l'ús d'aquesta comanda i surt."
 
 #: loader/efi/appleloader.c:325
 msgid "Boot legacy system."
-msgstr ""
+msgstr "Arrenca el sistema heretat."
 
-#: loader/efi/chainloader.c:340 loader/i386/pc/chainloader.c:153
+#: loader/efi/chainloader.c:340 loader/i386/pc/chainloader.c:166
 msgid "Load another boot loader."
-msgstr ""
+msgstr "Carrega un altre gestor d'engegada."
 
 #: loader/i386/bsd.c:65
 msgid "Display output on all consoles."
-msgstr ""
+msgstr "Mostra la sortida a totes les consoles."
 
 #: loader/i386/bsd.c:66
 msgid "Use serial console."
-msgstr ""
+msgstr "Usa una consola sèrie."
 
 #: loader/i386/bsd.c:67 loader/i386/bsd.c:93 loader/i386/bsd.c:114
 msgid "Ask for file name to reboot from."
-msgstr ""
+msgstr "Demana el nom del fitxer des d'on tornar a engegar."
 
 #: loader/i386/bsd.c:68
 msgid "Use CDROM as root."
-msgstr ""
+msgstr "Utilitza el CDROM com arrel."
 
 #: loader/i386/bsd.c:69
 msgid "Invoke user configuration routing."
-msgstr ""
+msgstr "Invoca el camí de la configuració d'usuari."
 
 #: loader/i386/bsd.c:70 loader/i386/bsd.c:97 loader/i386/bsd.c:117
 msgid "Enter in KDB on boot."
-msgstr ""
+msgstr "Entra en KDB al arrencar."
 
 #: loader/i386/bsd.c:71
 msgid "Use GDB remote debugger instead of DDB."
-msgstr ""
+msgstr "Fes servir el depuració remot GDB en comptes de DDB."
 
 #: loader/i386/bsd.c:72
 msgid "Disable all boot output."
-msgstr ""
+msgstr "Deshabilita totes les sortides d'arrencada."
 
 #: loader/i386/bsd.c:74
 msgid "Wait for keypress after every line of output."
-msgstr ""
+msgstr "Espera que es premi una tecla després de cada línia de sortida."
 
 #: loader/i386/bsd.c:76
 msgid "Use compiled-in rootdev."
-msgstr ""
+msgstr "Fes servir el rootdev compilat a dins."
 
 #: loader/i386/bsd.c:77 loader/i386/bsd.c:96 loader/i386/bsd.c:120
 msgid "Boot into single mode."
-msgstr ""
+msgstr "Arrenca en mode simple."
 
 #: loader/i386/bsd.c:78 loader/i386/bsd.c:121
 msgid "Boot with verbose messages."
-msgstr ""
+msgstr "Arrenca amb missatges detallats."
 
 #: loader/i386/bsd.c:94 loader/i386/bsd.c:115
 msgid "Don't reboot, just halt."
-msgstr ""
+msgstr "No reiniciïs, només apaga."
 
 #: loader/i386/bsd.c:95 loader/i386/bsd.c:116
 msgid "Change configured devices."
-msgstr ""
+msgstr "Canvia els dispositius configurats."
 
 #: loader/i386/bsd.c:98 loader/i386/bsd.c:124
 msgid "Set root device."
-msgstr ""
+msgstr "Indica el dispositiu arrel."
 
 #: loader/i386/bsd.c:112
 msgid "Disable SMP."
-msgstr ""
+msgstr "Deshabilita SMP."
 
 #: loader/i386/bsd.c:113
 msgid "Disable ACPI."
-msgstr ""
+msgstr "Deshabilita ACPI."
 
 #: loader/i386/bsd.c:119
 msgid "Don't display boot diagnostic messages."
-msgstr ""
+msgstr "No mostris els missatges de diagnòstics de l'arrencada."
 
 #: loader/i386/bsd.c:122
 msgid "Boot with debug messages."
-msgstr ""
+msgstr "Arrenca amb missatges de depuració."
 
 #: loader/i386/bsd.c:123
 msgid "Supress normal output (warnings remain)."
-msgstr ""
+msgstr "Suprimeix els missatges normals (conserva els avisos)."
 
 #: loader/i386/bsd.c:124
 msgid "DEVICE"
-msgstr ""
+msgstr "DISPOSITIU"
 
-#: loader/i386/bsd.c:1297
+#: loader/i386/bsd.c:1287
 msgid "Load kernel of FreeBSD."
-msgstr ""
+msgstr "Carrega el nucli de FreeBSD"
 
-#: loader/i386/bsd.c:1301
+#: loader/i386/bsd.c:1291
 msgid "Load kernel of OpenBSD."
-msgstr ""
+msgstr "Carrega el nucli de OpenBSD."
+
+#: loader/i386/bsd.c:1295
+msgid "Load kernel of NetBSD."
+msgstr "Carrega el nucli de NetBSD."
+
+#: loader/i386/bsd.c:1299
+msgid "Load FreeBSD env."
+msgstr "Carrega l'entorn FreeBSD."
+
+#: loader/i386/bsd.c:1302
+msgid "Load FreeBSD kernel module."
+msgstr "Carrega el mòdul del nucli FreeBSD."
 
 #: loader/i386/bsd.c:1305
-msgid "Load kernel of NetBSD."
-msgstr ""
-
-#: loader/i386/bsd.c:1309
-msgid "Load FreeBSD env."
-msgstr ""
-
-#: loader/i386/bsd.c:1312
-msgid "Load FreeBSD kernel module."
-msgstr ""
-
-#: loader/i386/bsd.c:1315
 msgid "Load FreeBSD kernel module (ELF)."
-msgstr ""
+msgstr "Carrega el mòdul del nucli FreeBSD (ELF)."
 
 #: loader/i386/efi/linux.c:1011 loader/i386/ieee1275/linux.c:301
 #: loader/i386/linux.c:1012 loader/i386/pc/linux.c:399
-#: loader/powerpc/ieee1275/linux.c:353 loader/sparc64/ieee1275/linux.c:514
+#: loader/powerpc/ieee1275/linux.c:353 loader/sparc64/ieee1275/linux.c:519
 msgid "Load Linux."
-msgstr ""
+msgstr "Carrega Linux."
 
 #: loader/i386/efi/linux.c:1013 loader/i386/ieee1275/linux.c:303
 #: loader/i386/linux.c:1014 loader/i386/pc/linux.c:402
-#: loader/powerpc/ieee1275/linux.c:355 loader/sparc64/ieee1275/linux.c:516
+#: loader/powerpc/ieee1275/linux.c:355 loader/sparc64/ieee1275/linux.c:521
 msgid "Load initrd."
-msgstr ""
+msgstr "Carrega initrd."
 
 #: loader/i386/xnu.c:1032
 msgid "Load device-properties dump."
-msgstr ""
+msgstr "Carrega el bolcat de les propietats del dispositiu."
 
-#: loader/multiboot_loader.c:133
+#: loader/multiboot.c:337
 msgid "Load a multiboot 2 kernel."
-msgstr ""
+msgstr "Carrega un nucli multiarranc 2."
 
-#: loader/multiboot_loader.c:136
+#: loader/multiboot.c:340
+#, fuzzy
+msgid "Load a multiboot 2 module."
+msgstr "Carrega un mòdul multiarranc."
+
+#: loader/multiboot.c:343
 msgid "Load a multiboot kernel."
-msgstr ""
+msgstr "Carrega un nucli multiarranc."
 
-#: loader/multiboot_loader.c:141
+#: loader/multiboot.c:346
 msgid "Load a multiboot module."
-msgstr ""
+msgstr "Carrega un mòdul multiarranc."
 
 #: loader/xnu.c:1428
 msgid "Load XNU image."
-msgstr ""
+msgstr "Carrega una imatge XNU."
 
 #: loader/xnu.c:1430
 msgid "Load 64-bit XNU image."
-msgstr ""
+msgstr "Carrega una imatge XNU de 64 bits."
 
 #: loader/xnu.c:1432
 msgid "Load XNU extension package."
-msgstr ""
+msgstr "Carrega un paquet d'extensió XNU."
 
 #: loader/xnu.c:1434
 msgid "Load XNU extension."
-msgstr ""
+msgstr "Carrega una extensió XNU."
 
 #: loader/xnu.c:1436
 msgid "DIRECTORY [OSBundleRequired]"
-msgstr ""
+msgstr "DIRECTORI [NecessitaOSBundle]"
 
 #: loader/xnu.c:1437
 msgid "Load XNU extension directory."
-msgstr ""
+msgstr "Carrega el directori de les extensions XNU."
 
 #: loader/xnu.c:1444
 msgid "Load a splash image for XNU."
-msgstr ""
+msgstr "Carrega una imatge de presentació per XNU."
 
 #: loader/xnu.c:1449
 msgid "Load XNU hibernate image."
-msgstr ""
+msgstr "Carrega una imatge hibernada de XNU."
 
 #: normal/auth.c:233
 msgid "Enter username: "
-msgstr ""
+msgstr "Introdueix el nom d'usuari: "
 
 #: normal/auth.c:238
 msgid "Enter password: "
-msgstr ""
+msgstr "Introdueix la contrasenya: "
 
 #: normal/color.c:80
 #, c-format
 msgid "Warning: syntax error (missing slash) in `%s'\n"
-msgstr ""
+msgstr "Avís: error de sintaxi (falta una barra) a «%s»\n"
 
 #: normal/color.c:89
 #, c-format
 msgid "Warning: invalid foreground color `%s'\n"
-msgstr ""
+msgstr "Avís: color de primer pla invàlid «%s»\n"
 
 #: normal/color.c:95
 #, c-format
 msgid "Warning: invalid background color `%s'\n"
-msgstr ""
+msgstr "Avís: color de fons invàlid «%s»\n"
 
-#: normal/dyncmd.c:147
+#: normal/dyncmd.c:144
 msgid "not loaded"
-msgstr ""
+msgstr "no s'ha carregat"
 
-#: normal/main.c:408
+#: normal/main.c:447
 #, c-format
 msgid "GNU GRUB  version %s"
-msgstr ""
+msgstr "Versió %s de GNU GRUB"
 
-#: normal/main.c:539
+#: normal/main.c:585
 #, c-format
 msgid ""
 "Minimal BASH-like line editing is supported. For the first word, TAB lists "
 "possible command completions. Anywhere else TAB lists possible device or "
 "file completions. %s"
 msgstr ""
+"Es suporta una línia d'edició mínima tipus BASH. Per la primera paraula, TAB "
+"mostra les possibles opcions per completar. A qualsevol altre lloc, TAB "
+"mostra possibles completats de dispositius o fitxers. %s"
 
-#: normal/main.c:542
+#: normal/main.c:588
 msgid "ESC at any time exits."
+msgstr "En qualsevol moment ESC surt."
+
+#: normal/main.c:708
+msgid "Enter normal mode."
+msgstr ""
+
+#: normal/main.c:710
+msgid "Exit from normal mode."
 msgstr ""
 
 #: normal/menu_entry.c:1060
 msgid "Possible commands are:"
-msgstr ""
+msgstr "Les possibles ordres són:"
 
 #: normal/menu_entry.c:1064
 msgid "Possible devices are:"
-msgstr ""
+msgstr "Els possibles dispositius són:"
 
 #: normal/menu_entry.c:1068
 msgid "Possible files are:"
-msgstr ""
+msgstr "Els possibles fitxers són:"
 
 #: normal/menu_entry.c:1072
 msgid "Possible partitions are:"
-msgstr ""
+msgstr "Les possibles particions són:"
 
 #: normal/menu_entry.c:1076
 msgid "Possible arguments are:"
-msgstr ""
+msgstr "Els possibles arguments són:"
 
 #: normal/menu_entry.c:1080
 msgid "Possible things are:"
-msgstr ""
+msgstr "Les possibilitats són:"
 
 #: normal/menu_entry.c:1184
 msgid "Booting a command list"
-msgstr ""
+msgstr "Arrencant una llista d'ordres"
 
 #: normal/menu_entry.c:1397
 msgid "Press any key to continue..."
-msgstr ""
+msgstr "Premeu una tecla per continuar..."
 
-#: normal/menu_text.c:179
+#: normal/menu_text.c:180
+#, fuzzy
 msgid ""
 "Minimum Emacs-like screen editing is supported. TAB lists completions. Press "
-"Ctrl-x to boot, Ctrl-c for a command-line or ESC to return menu."
+"F1 to boot, F2=Ctrl-a, F3=Ctrl-e, F4 for a command-line or ESC to discard "
+"edits and return to the GRUB menu."
 msgstr ""
+"Es suporta una pantalla d'edició mínima semblant a Emacs. TAB llista els "
+"completats. Premeu Ctrl+x per arrencar, Ctrl+c per una línia d'ordres o ESC "
+"per tornar al menú."
 
-#: normal/menu_text.c:186
+#: normal/menu_text.c:185
+#, fuzzy
+msgid ""
+"Minimum Emacs-like screen editing is supported. TAB lists completions. Press "
+"Ctrl-x to boot, Ctrl-c for a command-line or ESC to discard edits and return "
+"to the GRUB menu."
+msgstr ""
+"Es suporta una pantalla d'edició mínima semblant a Emacs. TAB llista els "
+"completats. Premeu Ctrl+x per arrencar, Ctrl+c per una línia d'ordres o ESC "
+"per tornar al menú."
+
+#: normal/menu_text.c:193
 #, c-format
 msgid "Use the %C and %C keys to select which entry is highlighted.\n"
 msgstr ""
+"Utilitzeu les tecles %C i %C per seleccionar quina entrada voleu realçar.\n"
 
-#: normal/menu_text.c:203
+#: normal/menu_text.c:210
 msgid ""
 "Press enter to boot the selected OS, 'e' to edit the commands before booting "
 "or 'c' for a command-line. ESC to return previous menu.\n"
 msgstr ""
+"Premeu enter per arrencar el SO seleccionat, «e» per editar les ordres abans "
+"d'arrencar o «c» per una línia de comandes. ESC torna al menú anterior.\n"
 
-#: normal/menu_text.c:211
+#: normal/menu_text.c:218
 msgid ""
 "Press enter to boot the selected OS, 'e' to edit the commands before booting "
 "or 'c' for a command-line.\n"
 msgstr ""
+"Premeu enter per arrencar el SO seleccionat, «e» per editar les ordres abans "
+"d'arrencar o «c» per una línia de comandes.\n"
 
-#: normal/menu_text.c:363
+#: normal/menu_text.c:370
 #, c-format
 msgid "The highlighted entry will be executed automatically in %ds."
-msgstr ""
+msgstr "L'entrada realçada s'executarà automàticament en %ds."
 
 #: normal/misc.c:41
 #, c-format
 msgid "Partition %s:"
-msgstr ""
+msgstr "Partició %s:"
 
 #: normal/misc.c:46
 #, c-format
 msgid "Device %s:"
-msgstr ""
+msgstr "Dispositiu %s:"
 
 #: normal/misc.c:52
 msgid "Filesystem cannot be accessed"
-msgstr ""
+msgstr "No es pot accedir al sistema de fitxers."
 
 #: normal/misc.c:63
 #, c-format
 msgid "Filesystem type %s"
-msgstr ""
+msgstr "Tipus de sistema de fitxers %s"
 
 #: normal/misc.c:73
 #, c-format
 msgid "- Label \"%s\""
-msgstr ""
+msgstr "- Etiqueta «%s»"
 
 #: normal/misc.c:88
 #, c-format
 msgid "- Last modification time %d-%02d-%02d %02d:%02d:%02d %s"
-msgstr ""
+msgstr "- Hora de la darrera modificació %d-%02d-%02d %02d:%02d:%02d %s"
 
 #: normal/misc.c:111
 msgid "Unknown filesystem"
-msgstr ""
+msgstr "Sistema de fitxers desconegut"
 
 #: normal/misc.c:113
 msgid "Partition table"
-msgstr ""
+msgstr "Taula de particions"
 
 #: term/serial.c:46
 msgid "Set the serial unit."
-msgstr ""
+msgstr "Indica la unitat sèrie."
 
 #: term/serial.c:47
 msgid "Set the serial port address."
-msgstr ""
+msgstr "Indica l'adreça del port sèrie."
 
 #: term/serial.c:48
 msgid "Set the serial port speed."
-msgstr ""
+msgstr "Indica la velocitat del port sèrie."
 
 #: term/serial.c:49
 msgid "Set the serial port word length."
-msgstr ""
+msgstr "Indica la longitud de paraula del port sèrie."
 
 #: term/serial.c:50
 msgid "Set the serial port parity."
-msgstr ""
+msgstr "Indica la paritat del port sèrie."
 
 #: term/serial.c:51
 msgid "Set the serial port stop bits."
+msgstr "Indica el nombre de bits d'aturada del port sèrie."
+
+#: term/serial.c:619
+#, fuzzy
+msgid "[OPTIONS...]"
+msgstr "[OPCIONS] DISC"
+
+#: term/serial.c:620
+msgid "Configure serial port."
 msgstr ""
 
-#: util/grub-mkrawimage.c:69
+#: util/grub-mkimage.c:440
 msgid "the core image is too small"
-msgstr ""
+msgstr "la imatge del nucli és massa petita"
 
-#: util/grub-mkrawimage.c:81
+#: util/grub-mkimage.c:451
 msgid "cannot compress the kernel image"
-msgstr ""
+msgstr "no es pot comprimir la imatge del nucli"
 
-#: util/grub-mkrawimage.c:156
+#: util/grub-mkimage.c:548
 msgid "prefix is too long"
-msgstr ""
+msgstr "el prefix és massa llarg"
 
-#: util/grub-mkrawimage.c:242
-msgid "the core image is too big"
-msgstr ""
-
-#: util/grub-mkrawimage.c:247
-#, c-format
-msgid "diskboot.img size must be %u bytes"
-msgstr ""
-
-#: util/grub-mkrawimage.c:330
+#: util/grub-mkimage.c:672
 #, c-format
 msgid "core image is too big (%p > %p)"
-msgstr ""
+msgstr "la imatge del nucli és massa gran (%p > %p)"
 
-#: util/grub-mkrawimage.c:434 util/i386/pc/grub-setup.c:602
-#, fuzzy, c-format
+#: util/grub-mkimage.c:678
+msgid "the core image is too big"
+msgstr "la imatge del nucli és massa gran"
+
+#: util/grub-mkimage.c:683
+#, c-format
+msgid "diskboot.img size must be %u bytes"
+msgstr "la mida de diskboot.img ha de ser de %u bytes"
+
+#: util/grub-mkimage.c:1168 util/i386/pc/grub-setup.c:607
+#, c-format
 msgid "Try `%s --help' for more information.\n"
 msgstr "Proveu «%s --help» per a obtenir més informació.\n"
 
-#: util/grub-mkrawimage.c:436
-#, c-format
+#: util/grub-mkimage.c:1187
+#, fuzzy, c-format
 msgid ""
 "Usage: %s [OPTION]... [MODULES]\n"
 "\n"
 "Make a bootable image of GRUB.\n"
 "\n"
-"  -d, --directory=DIR     use images and modules under DIR [default=%s]\n"
+"  -d, --directory=DIR     use images and modules under DIR [default=%s/"
+"@platform@]\n"
 "  -p, --prefix=DIR        set grub_prefix directory [default=%s]\n"
 "  -m, --memdisk=FILE      embed FILE as a memdisk image\n"
 "  -f, --font=FILE         embed FILE as a boot font\n"
 "  -c, --config=FILE       embed FILE as boot config\n"
+"  -n, --note              add NOTE segment for CHRP Open Firmware\n"
 "  -o, --output=FILE       output a generated image to FILE [default=stdout]\n"
-"  -O, --format=FORMAT     generate an image in format [default=%s]\n"
+"  -O, --format=FORMAT     generate an image in format\n"
 "                          available formats: %s\n"
 "  -h, --help              display this message and exit\n"
 "  -V, --version           print version information and exit\n"
@@ -1008,45 +1087,61 @@ msgid ""
 "\n"
 "Report bugs to <%s>.\n"
 msgstr ""
+"Ús: %s [OPCIÓ]... [MÒDULS]\n"
+"\n"
+"Fa una imatge que pot arrencar de GRUB\n"
+"\n"
+"  -d, --directory=DIR     utilitza les imatges i els mòduls de DIR [per "
+"defecte=%s]\n"
+"  -p, --prefix=DIR        utilitza el directori grub_prefix [per defecte="
+"%s]\n"
+"  -m, --memdisk=FITXER      incrusta el FITXER com una imatge memdisk\n"
+"  -f, --font=FITXER         incrusta el FITXER com a font d'arranc\n"
+"  -c, --config=FITXER       incrusa el FITXER com a configuració d'arranc\n"
+"  -o, --outut=FITXER       posa una imatge generada al FITXER [per "
+"defecte=stdout]\n"
+"  -O, --format=FORMAT     genera una imatge amb el format [defecte="
 
-#: util/grub-mkrawimage.c:580
+#: util/grub-mkimage.c:1333
 #, c-format
 msgid "cannot open %s"
-msgstr ""
+msgstr "no es pot obrir %s"
 
-#: util/i386/pc/grub-setup.c:160
+#: util/i386/pc/grub-setup.c:166
 msgid "the first sector of the core file is not sector-aligned"
-msgstr ""
+msgstr "el primer sector del fitxer del nucli no està alineat amb el sector"
 
-#: util/i386/pc/grub-setup.c:174
+#: util/i386/pc/grub-setup.c:180
 msgid "non-sector-aligned data is found in the core file"
-msgstr ""
+msgstr "s'han trobat dades no alineades amb el sector al fitxer del nucli"
 
-#: util/i386/pc/grub-setup.c:188
+#: util/i386/pc/grub-setup.c:194
 msgid "the sectors of the core file are too fragmented"
-msgstr ""
+msgstr "els sectors del fitxer del nucli estan massa fragmentats"
 
-#: util/i386/pc/grub-setup.c:199
+#: util/i386/pc/grub-setup.c:205
 #, c-format
 msgid "the size of `%s' is not %u"
-msgstr ""
+msgstr "la mida de «%s» no és %u"
 
-#: util/i386/pc/grub-setup.c:216
+#: util/i386/pc/grub-setup.c:222
 #, c-format
 msgid "the size of `%s' is too small"
-msgstr ""
+msgstr "la mida de «%s» és massa petita"
 
-#: util/i386/pc/grub-setup.c:218
+#: util/i386/pc/grub-setup.c:224
 #, c-format
 msgid "the size of `%s' is too large"
-msgstr ""
+msgstr "la mida de «%s» és massa gran"
 
-#: util/i386/pc/grub-setup.c:255
+#: util/i386/pc/grub-setup.c:261
 #, c-format
 msgid "unable to identify a filesystem in %s; safety check can't be performed"
 msgstr ""
+"No s'ha pogut identificar el sistema de fitxers de %s; no es pot comprovar "
+"la seguretat"
 
-#: util/i386/pc/grub-setup.c:259
+#: util/i386/pc/grub-setup.c:265
 #, c-format
 msgid ""
 "%s appears to contain a %s filesystem which isn't known to reserve space for "
@@ -1054,96 +1149,111 @@ msgid ""
 "DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe "
 "disables this check, use at your own risk)"
 msgstr ""
+"%s sembla contenir un sistema de fitxers %s que no sé si pot reservar espai "
+"pel sistema d'arrencada de l'estil de DOS. Instal·lar GRUB pot DESTRUIR EL "
+"SISTEMA DE FITXERS si el grub-setup sobreescriu dades importants (--skip-fs-"
+"probe deshabilita la comprovació. Feu-la servir sota la vostra "
+"responsabilitat)"
 
-#: util/i386/pc/grub-setup.c:308
-msgid "no DOS-style partitions found"
-msgstr ""
-
-#: util/i386/pc/grub-setup.c:324 util/i386/pc/grub-setup.c:349
+#: util/i386/pc/grub-setup.c:327 util/i386/pc/grub-setup.c:354
 msgid ""
 "Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
 msgstr ""
+"Esteu intentant instal·lar GRUB a un disc sense particions. És una MALA idea."
 
-#: util/i386/pc/grub-setup.c:330
+#: util/i386/pc/grub-setup.c:333
 msgid ""
 "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD "
 "idea."
 msgstr ""
-
-#: util/i386/pc/grub-setup.c:358
-msgid "No DOS-style partitions found"
-msgstr ""
+"Esteu intentant instal·lar GRUB a una partició en lloc de al MBR. És una "
+"MALA idea."
 
 #: util/i386/pc/grub-setup.c:363
+msgid "No DOS-style partitions found"
+msgstr "No s'ha trobat cap partició d'estil DOS"
+
+#: util/i386/pc/grub-setup.c:368
 msgid ""
 "This msdos-style partition label has no post-MBR gap; embedding won't be "
 "possible!"
 msgstr ""
+"Aquesta etiqueta de partició d'estil msdos no té espai després del MBR; no "
+"es podrà incrustar!"
 
-#: util/i386/pc/grub-setup.c:365
+#: util/i386/pc/grub-setup.c:370
 msgid ""
 "This GPT partition label has no BIOS Boot Partition; embedding won't be "
 "possible!"
 msgstr ""
+"Aquesta etiqueta de partició GPT no té una partició d'arranc per a la BIOS; "
+"no es podrà incrustar!"
 
-#: util/i386/pc/grub-setup.c:372
+#: util/i386/pc/grub-setup.c:377
 msgid "Your core.img is unusually large.  It won't fit in the embedding area."
-msgstr ""
+msgstr "El vostre core.img és massa gran. No cabrà a l'àrea d'incrustació."
 
-#: util/i386/pc/grub-setup.c:374
+#: util/i386/pc/grub-setup.c:379
 msgid "Your embedding area is unusually small.  core.img won't fit in it."
 msgstr ""
+"La vostra àrea d'incrustació és petita. El fitxer core.img no hi cabrà."
 
-#: util/i386/pc/grub-setup.c:419
+#: util/i386/pc/grub-setup.c:424
 msgid ""
 "embedding is not possible, but this is required when the root device is on a "
 "RAID array or LVM volume"
 msgstr ""
+"No s'ha pogut incrustar, però és imprescindible quan el dispositiu arrel és "
+"a una matriu RAID o a un volum LVM."
 
-#: util/i386/pc/grub-setup.c:422
+#: util/i386/pc/grub-setup.c:427
+#, fuzzy
 msgid ""
 "Embedding is not possible.  GRUB can only be installed in this setup by "
-"using blocklists.  However, blocklists are UNRELIABLE and its use is "
+"using blocklists.  However, blocklists are UNRELIABLE and their use is "
 "discouraged."
 msgstr ""
+"No s'ha pogut incrustar. El GRUB només es pot instal·lar d'aquesta manera "
+"fent servir llistes de blocs. De tota manera, les llistes de blocs NO SÓN "
+"FIABLES i es desaconsella el seu ús."
 
-#: util/i386/pc/grub-setup.c:426
+#: util/i386/pc/grub-setup.c:431
 msgid "if you really want blocklists, use --force"
-msgstr ""
+msgstr "Si realment voleu fer servir llistes de blocs, empreu --force."
 
-#: util/i386/pc/grub-setup.c:445
+#: util/i386/pc/grub-setup.c:450
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB"
-msgstr ""
+msgstr "s'intenta llegir la imatge del nucli «%s» des del GRUB"
 
-#: util/i386/pc/grub-setup.c:446
+#: util/i386/pc/grub-setup.c:451
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB again"
-msgstr ""
+msgstr "s'intenta llegir la imatge del nucli «%s» des del GRUB un altre cop"
 
-#: util/i386/pc/grub-setup.c:513
+#: util/i386/pc/grub-setup.c:518
 #, c-format
 msgid "cannot read `%s' correctly"
-msgstr ""
+msgstr "no es pot llegir «%s» correctament"
 
-#: util/i386/pc/grub-setup.c:526
+#: util/i386/pc/grub-setup.c:531
 msgid "no terminator in the core image"
-msgstr ""
+msgstr "no hi ha terminació a la imatge del nucli"
 
-#: util/i386/pc/grub-setup.c:537
+#: util/i386/pc/grub-setup.c:542
 msgid "failed to read the first sector of the core image"
-msgstr ""
+msgstr "no s'ha pogut llegir el primer sector de la imatge del nucli"
 
-#: util/i386/pc/grub-setup.c:543
+#: util/i386/pc/grub-setup.c:548
 msgid "failed to read the rest sectors of the core image"
-msgstr ""
+msgstr "no s'ha pogut llegir la resta de sectors de la imatge del nucli"
 
-#: util/i386/pc/grub-setup.c:562
+#: util/i386/pc/grub-setup.c:567
 #, c-format
 msgid "cannot open `%s'"
-msgstr ""
+msgstr "no es pot obrir %s"
 
-#: util/i386/pc/grub-setup.c:604
+#: util/i386/pc/grub-setup.c:609
 #, c-format
 msgid ""
 "Usage: %s [OPTION]... DEVICE\n"
@@ -1164,51 +1274,72 @@ msgid ""
 "\n"
 "Report bugs to <%s>.\n"
 msgstr ""
+"Sintaxi: %s [OPCIÓ]... DISPOSITIU\n"
+"\n"
+"Configura imatges per arrencar des del DISPOSITIU.\n"
+"DISPOSITIU ha de ser un dispositiu GRUB (p.e. «(hd0,1)»).\n"
+"\n"
+"  -b, --boot-image=FITXER usa FITXER com a imatge d'arranc [per defecte=%s]\n"
+"  -c, --core-image=FITXER usa FITXER com a imatge del nucli [per defecte="
+"%s]\n"
+"  -d, --directory=DIR     usa els fitxers del GRUB del directori DIR [def="
+"%s]\n"
+"  -m, --device-map=FITXER  usa el FITXER com a mapa del dispositiu [def=%s]\n"
+"  -r, --root-device=DISP  usa DISP com a dispositiu arrel [per "
+"defecte=dedueix]\n"
+"  -f, --force             instal·la encara que es detectin problemes\n"
+"  -s, --skip-fs-probe     no comprovis els sistemes de fitxers a DISPOSITIU\n"
+"  -h, --help              mostra aquest missatge i surt\n"
+"  -V, --version           mostra informació sobre la versió i surt\n"
+"  -v, --verbose           mostra els missatges detallats\n"
+"\n"
+"Informeu dels errors a <%s>.\n"
 
-#: util/i386/pc/grub-setup.c:734
+#: util/i386/pc/grub-setup.c:739
 #, c-format
 msgid "No device is specified.\n"
-msgstr ""
+msgstr "No s'ha especificat cap dispositiu.\n"
 
-#: util/i386/pc/grub-setup.c:740
+#: util/i386/pc/grub-setup.c:745
 #, c-format
 msgid "Unknown extra argument `%s'.\n"
-msgstr ""
+msgstr "Argument extra desconegut «%s».\n"
 
-#: util/i386/pc/grub-setup.c:757
+#: util/i386/pc/grub-setup.c:762
 #, c-format
 msgid "Invalid device `%s'.\n"
-msgstr ""
+msgstr "Dispositiu «%s» invàlid.\n"
 
-#: util/i386/pc/grub-setup.c:770
+#: util/i386/pc/grub-setup.c:775
 #, c-format
 msgid "invalid root device `%s'"
-msgstr ""
+msgstr "dispositiu arrel «%s» invàlid"
 
-#: util/i386/pc/grub-setup.c:783
+#: util/i386/pc/grub-setup.c:788
 msgid "cannot guess the root device. Specify the option `--root-device'"
 msgstr ""
+"No es pot deduir el dispositiu arrel. Especifiqueu la opció «--root-device»"
 
-#: util/grub.d/10_kfreebsd.in:47
-msgid "%s, with kFreeBSD %s"
-msgstr ""
+#~ msgid "Load XNU ramdisk. It will be seen as md0."
+#~ msgstr "Carrega un disc ram XNU. Es veurà com md0."
 
-#: util/grub.d/10_kfreebsd.in:55
-msgid "Loading kernel of FreeBSD %s ..."
-msgstr ""
+#~ msgid "no DOS-style partitions found"
+#~ msgstr "no s'ha trobat cap partició d'estil DOS"
 
-#: util/grub.d/10_linux.in:60
-msgid "%s, with Linux %s (recovery mode)"
-msgstr ""
+#~ msgid "%s, with kFreeBSD %s"
+#~ msgstr "%s, amb kFreeBSD %s"
 
-#: util/grub.d/10_linux.in:62
-msgid "%s, with Linux %s"
-msgstr ""
+#~ msgid "Loading kernel of FreeBSD %s ..."
+#~ msgstr "Es carrega el nucli de FreeBSD %s ..."
 
-#: util/grub.d/10_linux.in:87
-msgid "Loading Linux %s ..."
-msgstr ""
+#~ msgid "%s, with Linux %s (recovery mode)"
+#~ msgstr "%s, amb Linux %s (mode de restabliment)"
 
-#: util/grub.d/10_linux.in:92
-msgid "Loading initial ramdisk ..."
-msgstr ""
+#~ msgid "%s, with Linux %s"
+#~ msgstr "%s, amb Linux %s"
+
+#~ msgid "Loading Linux %s ..."
+#~ msgstr "Carregant Linux %s ..."
+
+#~ msgid "Loading initial ramdisk ..."
+#~ msgstr "S'està carregant la ramdisk inicial ..."
