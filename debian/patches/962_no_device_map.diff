@@ -1,17 +1,18 @@
 Ubuntu: Don't generate a device map by default.
 
-diff -Nur -x '*.orig' -x '*~' grub2/util/grub-install.in grub2.new/util/grub-install.in
---- grub2/util/grub-install.in	2010-03-22 14:11:42.000000000 +0000
-+++ grub2.new/util/grub-install.in	2010-03-22 16:23:14.000000000 +0000
-@@ -39,7 +39,6 @@
- else
-     grub_mkimage=${bindir}/`echo grub-mkelfimage | sed ${transform}`
- fi
+Index: b/util/grub-install.in
+===================================================================
+--- a/util/grub-install.in
++++ b/util/grub-install.in
+@@ -38,7 +38,6 @@
+ 
+ grub_setup=${sbindir}/`echo grub-setup | sed ${transform}`
+ grub_mkimage=${bindir}/`echo grub-mkimage | sed ${transform}`
 -grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
  grub_probe=${sbindir}/`echo grub-probe | sed ${transform}`
  grub_editenv=${bindir}/`echo grub-editenv | sed ${transform}`
  rootdir=
-@@ -74,7 +73,6 @@
+@@ -73,7 +72,6 @@
                            instead of the root directory
    --grub-setup=FILE       use FILE as grub-setup
    --grub-mkimage=FILE     use FILE as grub-mkimage
@@ -19,16 +20,19 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/grub-install.in grub2.new/util/grub-ins
    --grub-probe=FILE       use FILE as grub-probe
    --no-floppy             do not probe any floppy drive
    --recheck               probe a device map even if it already exists
-@@ -124,7 +122,7 @@
-     --grub-mkimage=*)
+@@ -154,9 +152,9 @@
  	grub_mkimage=`echo "$option" | sed 's/--grub-mkimage=//'` ;;
+ 
+     --grub-mkdevicemap)
+-	grub_mkdevicemap=`argument $option "$@"`; shift;;
++	: ;; # compatibility only
      --grub-mkdevicemap=*)
 -	grub_mkdevicemap=`echo "$option" | sed 's/--grub-mkdevicemap=//'` ;;
 +	: ;; # compatibility only
-     --grub-probe=*)
- 	grub_probe=`echo "$option" | sed 's/--grub-probe=//'` ;;
-     --no-floppy)
-@@ -209,14 +207,6 @@
+ 
+     --grub-probe)
+ 	grub_probe=`argument $option "$@"`; shift;;
+@@ -252,14 +250,6 @@
      exit 1
  fi
  
@@ -41,9 +45,9 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/grub-install.in grub2.new/util/grub-ins
 -fi
 -
  # Create the GRUB directory if it is not present.
- test -d "$bootdir" || mkdir "$bootdir" || exit 1
- test -d "$grubdir" || mkdir "$grubdir" || exit 1
-@@ -226,22 +216,14 @@
+ mkdir -p "$grubdir" || exit 1
+ 
+@@ -268,22 +258,14 @@
      rm -f $device_map
  fi
  
@@ -73,18 +77,19 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/grub-install.in grub2.new/util/grub-ins
  fi
  
  # Copy the GRUB images to the GRUB directory.
-diff -Nur -x '*.orig' -x '*~' grub2/util/grub-mkconfig.in grub2.new/util/grub-mkconfig.in
---- grub2/util/grub-mkconfig.in	2010-03-22 16:23:13.000000000 +0000
-+++ grub2.new/util/grub-mkconfig.in	2010-03-22 16:23:57.000000000 +0000
-@@ -31,7 +31,6 @@
- grub_cfg=""
- grub_mkconfig_dir=${sysconfdir}/grub.d
+Index: b/util/grub-mkconfig.in
+===================================================================
+--- a/util/grub-mkconfig.in
++++ b/util/grub-mkconfig.in
+@@ -34,7 +34,6 @@
+ 
+ self=`basename $0`
  
 -grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
  grub_probe=${sbindir}/`echo grub-probe | sed ${transform}`
  
  # Usage: usage
-@@ -96,14 +95,6 @@
+@@ -128,14 +127,6 @@
    fi
  fi
  
@@ -99,7 +104,7 @@ diff -Nur -x '*.orig' -x '*~' grub2/util/grub-mkconfig.in grub2.new/util/grub-mk
  set $grub_probe dummy
  if test -f "$1"; then
      :
-@@ -114,10 +105,6 @@
+@@ -146,10 +137,6 @@
  
  mkdir -p ${grub_prefix}
  

@@ -1,0 +1,43 @@
+Index: b/util/grub.d/00_header.in
+===================================================================
+--- a/util/grub.d/00_header.in
++++ b/util/grub.d/00_header.in
+@@ -75,6 +75,11 @@
+     save_env saved_entry
+   fi
+ }
++
++function recordfail {
++  set recordfail=1
++  if [ -n "\${have_grubenv}" ]; then if [ -z "\${boot_once}" ]; then save_env recordfail; fi; fi
++}
+ EOF
+ 
+ serial=0;
+@@ -207,7 +212,11 @@
+ make_timeout ()
+ {
+     cat << EOF
+-set timeout=${2}
++if [ "\${recordfail}" = 1 ]; then
++  set timeout=-1
++else
++  set timeout=${2}
++fi
+ EOF
+ }
+ 
+Index: b/util/grub.d/10_linux.in
+===================================================================
+--- a/util/grub.d/10_linux.in
++++ b/util/grub.d/10_linux.in
+@@ -72,6 +72,9 @@
+     title="$(gettext_quoted "%s, with Linux %s")"
+   fi
+   printf "menuentry '${title}' ${CLASS} {\n" "${os}" "${version}"
++  cat << EOF
++	recordfail
++EOF
+   save_default_entry | sed -e "s/^/\t/"
+ 
+   if [ "x$GRUB_GFXPAYLOAD_LINUX" != x ]; then

@@ -13,6 +13,7 @@ msgstr ""
 "PO-Revision-Date: 2009-09-02 18:12+0200\n"
 "Last-Translator: Juan Andrés Gimeno Crespo <juagicre@gmail.com>\n"
 "Language-Team: catalan <debian-l10n-catalan@lists.debian.org>\n"
+"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -145,8 +146,8 @@ msgid ""
 "correct, and modify it if necessary."
 msgstr ""
 "La següent línia d'ordres de Linux ha sigut extreta de /etc/default/grub o "
-"del paràmetre «kopt» del fitxer menu.lst del GRUB Legacy. Per favor verifique "
-"que és correcta, i modifiqueu-la si és necessari."
+"del paràmetre «kopt» del fitxer menu.lst del GRUB Legacy. Per favor "
+"verifique que és correcta, i modifiqueu-la si és necessari."
 
 #. Type: string
 #. Description

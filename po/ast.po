@@ -1,17 +1,17 @@
 # Mensaxes n'asturianu pa Grub
 # Copyright (C) 2009 Free Software Foundation, Inc.
 # This file is distributed under the same license as the grub package.
-# Marcos Alvarez Costales <marcos.alvarez.costales@gmail.com>, 2010.
+# Marquinos <maacub@gmail.com>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: grub-1.97+20100124\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-08 22:55+0000\n"
-"PO-Revision-Date: 2010-02-15 14:15+0100\n"
-"Last-Translator: Marcos Alvarez Costales <marcos.alvarez.costales@gmail."
-"com>\n"
+"POT-Creation-Date: 2010-06-03 00:27+0100\n"
+"PO-Revision-Date: 2010-04-05 16:04+0100\n"
+"Last-Translator: Marquinos <maacub@gmail.com>\n"
 "Language-Team: Asturian <ubuntu-l10n-ast@lists.ubuntu.com>\n"
+"Language: ast\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -74,14 +74,14 @@ msgstr ""
 msgid "Load host ACPI tables and tables specified by arguments."
 msgstr "Cargar tables ACPI del anfitrión y tables especificaes por argumentos."
 
-#: commands/blocklist.c:114 commands/cat.c:82 commands/configfile.c:57
+#: commands/blocklist.c:113 commands/cat.c:82 commands/configfile.c:57
 #: commands/configfile.c:60 commands/configfile.c:65 commands/crc.c:64
-#: commands/minicmd.c:357 loader/i386/bsd.c:1297 loader/i386/bsd.c:1301
-#: loader/i386/bsd.c:1305
+#: commands/minicmd.c:357 loader/i386/bsd.c:1287 loader/i386/bsd.c:1291
+#: loader/i386/bsd.c:1295
 msgid "FILE"
 msgstr "FICHERU"
 
-#: commands/blocklist.c:114
+#: commands/blocklist.c:113
 msgid "Print a block list."
 msgstr "Imprentar una llista de bloques."
 
@@ -154,9 +154,10 @@ msgid "DEVICE [PARTITION[+/-[TYPE]]] ..."
 msgstr "PRESÉU [PARTICIÓN[+/-[TIPU]]] ..."
 
 #: commands/gptsync.c:245
+#, fuzzy
 msgid ""
-"Fill hybrid MBR of GPT drive DEVICE. specified partitions will be a part of "
-"hybrid mbr. Up to 3 partitions are allowed. TYPE is an MBR type. + means "
+"Fill hybrid MBR of GPT drive DEVICE. Specified partitions will be a part of "
+"hybrid MBR. Up to 3 partitions are allowed. TYPE is an MBR type. + means "
 "that partition is active. Only one partition can be active."
 msgstr ""
 "Relleno MBR híbridu de la unidá de GPT DEVICE. Les particiones especificaes "
@@ -295,11 +296,11 @@ msgstr "Reaniciar toles asignaciones a valores predeterminados."
 msgid "Perform both direct and reverse mappings."
 msgstr "Realizar asignaciones direutes ya inverses"
 
-#: commands/i386/pc/drivemap.c:407
+#: commands/i386/pc/drivemap.c:406
 msgid "-l | -r | [-s] grubdev osdisk."
 msgstr "-l | -r | [-s] grubdev osdisk."
 
-#: commands/i386/pc/drivemap.c:408
+#: commands/i386/pc/drivemap.c:407
 msgid "Manage the BIOS drive mappings."
 msgstr "Xestiona les asignaciones del controlador de la BIOS."
 
@@ -311,11 +312,11 @@ msgstr "Nun usar APM pa parar l'equipu."
 msgid "Halt the system, if possible using APM."
 msgstr "Parar el sistema, si ye dable usar APM."
 
-#: commands/i386/pc/play.c:262
+#: commands/i386/pc/play.c:266
 msgid "FILE | TEMPO [PITCH1 DURATION1] [PITCH2 DURATION2] ... "
 msgstr ""
 
-#: commands/i386/pc/play.c:263
+#: commands/i386/pc/play.c:267
 msgid "Play a tune."
 msgstr "Afinar."
 
@@ -359,23 +360,23 @@ msgstr "Comprobar l'estáu del modificador de tecla."
 msgid "Specify filename."
 msgstr "Especificar nome del ficheru."
 
-#: commands/loadenv.c:383 commands/loadenv.c:389
+#: commands/loadenv.c:378 commands/loadenv.c:384
 msgid "[-f FILE]"
 msgstr "[-f FICHERU]"
 
-#: commands/loadenv.c:384
+#: commands/loadenv.c:379
 msgid "Load variables from environment block file."
-msgstr "Cargar variables dende l'ficheru de bloque d'entornu."
+msgstr "Cargar variables dende'l ficheru de bloque d'entornu."
+
+#: commands/loadenv.c:385
+msgid "List variables from environment block file."
+msgstr "Llista de variables dende'l ficheru de bloque d'entornu."
 
 #: commands/loadenv.c:390
-msgid "List variables from environment block file."
-msgstr "Llista de variables dende l'ficheru de bloque d'entornu."
-
-#: commands/loadenv.c:395
 msgid "[-f FILE] variable_name [...]"
 msgstr "[-f FICHERU] nome_variable [...]"
 
-#: commands/loadenv.c:396
+#: commands/loadenv.c:391
 msgid "Save variables to environment block file."
 msgstr "Guardar variables nel ficheru de bloque d'entornu."
 
@@ -399,7 +400,7 @@ msgstr "[-l|-h|-a] [Ficheru]"
 msgid "List devices and files."
 msgstr "Llista de preseos y ficheros"
 
-#: commands/lsmmap.c:47
+#: commands/lsmmap.c:51
 msgid "List memory map provided by firmware."
 msgstr "Llistar el mapa de memoria apurríu pol firmware."
 
@@ -486,7 +487,7 @@ msgstr "ÓRDENES DE PARTICIÓN"
 
 #: commands/password.c:78
 msgid "USER PASSWORD"
-msgstr "CONTRASEÑA D'USUARIu"
+msgstr "CONTRASEÑA D'USUARIU"
 
 #: commands/password.c:79
 msgid "Set user password (plaintext). Unrecommended and insecure."
@@ -561,19 +562,19 @@ msgstr ""
 "Guetar preseos por UUID. Si s'especificó VARIABLE, el primer preséu "
 "alcontráu guárdase nuna variable."
 
-#: commands/sleep.c:31
+#: commands/sleep.c:30
 msgid "Verbose countdown."
 msgstr "Cunta regresiva detallada."
 
-#: commands/sleep.c:32
+#: commands/sleep.c:31
 msgid "Interruptible with ESC."
 msgstr "Interrumpible con ESC."
 
-#: commands/sleep.c:106
+#: commands/sleep.c:105
 msgid "NUMBER_OF_SECONDS"
 msgstr "NÚMBERU_DE_SEGUNDOS"
 
-#: commands/sleep.c:107
+#: commands/sleep.c:106
 msgid "Wait for a specified number of seconds."
 msgstr "Esperar un númberu específicu de segundos."
 
@@ -597,7 +598,7 @@ msgstr "Nun faer res, con ésitu."
 msgid "Do nothing, unsuccessfully."
 msgstr "Nun faer res, ensin ésitu."
 
-#: commands/usbtest.c:199
+#: commands/usbtest.c:208
 msgid "Test USB support."
 msgstr "Comprobar sofitu USB."
 
@@ -645,7 +646,7 @@ msgstr "Amosar l'usu d'esta orde y colar."
 msgid "Boot legacy system."
 msgstr "Antiguu sistema d'arranque."
 
-#: loader/efi/chainloader.c:340 loader/i386/pc/chainloader.c:153
+#: loader/efi/chainloader.c:340 loader/i386/pc/chainloader.c:166
 msgid "Load another boot loader."
 msgstr "Cargar otru cargador d'arranque."
 
@@ -733,39 +734,39 @@ msgstr "Suprimir salida normal (permanecen avisos)."
 msgid "DEVICE"
 msgstr "PRESÉU"
 
-#: loader/i386/bsd.c:1297
+#: loader/i386/bsd.c:1287
 msgid "Load kernel of FreeBSD."
 msgstr "Cargar núcleu de FreeBSD."
 
-#: loader/i386/bsd.c:1301
+#: loader/i386/bsd.c:1291
 msgid "Load kernel of OpenBSD."
 msgstr "Cargar núcleu de OpenBSD."
 
-#: loader/i386/bsd.c:1305
+#: loader/i386/bsd.c:1295
 msgid "Load kernel of NetBSD."
 msgstr "Cargar núcleu de NetBSD."
 
-#: loader/i386/bsd.c:1309
+#: loader/i386/bsd.c:1299
 msgid "Load FreeBSD env."
 msgstr "Cargar entornu FreeBSD."
 
-#: loader/i386/bsd.c:1312
+#: loader/i386/bsd.c:1302
 msgid "Load FreeBSD kernel module."
 msgstr "Cargar módulu del núcleu FreeBSD."
 
-#: loader/i386/bsd.c:1315
+#: loader/i386/bsd.c:1305
 msgid "Load FreeBSD kernel module (ELF)."
 msgstr "Cargar módulu (ELF) del núcleu FreeBSD."
 
 #: loader/i386/efi/linux.c:1011 loader/i386/ieee1275/linux.c:301
 #: loader/i386/linux.c:1012 loader/i386/pc/linux.c:399
-#: loader/powerpc/ieee1275/linux.c:353 loader/sparc64/ieee1275/linux.c:514
+#: loader/powerpc/ieee1275/linux.c:353 loader/sparc64/ieee1275/linux.c:519
 msgid "Load Linux."
 msgstr "Cargar Linux."
 
 #: loader/i386/efi/linux.c:1013 loader/i386/ieee1275/linux.c:303
 #: loader/i386/linux.c:1014 loader/i386/pc/linux.c:402
-#: loader/powerpc/ieee1275/linux.c:355 loader/sparc64/ieee1275/linux.c:516
+#: loader/powerpc/ieee1275/linux.c:355 loader/sparc64/ieee1275/linux.c:521
 msgid "Load initrd."
 msgstr "Cargar initrd."
 
@@ -773,15 +774,20 @@ msgstr "Cargar initrd."
 msgid "Load device-properties dump."
 msgstr "Cargar volcáu de preséu-propiedaes."
 
-#: loader/multiboot_loader.c:133
+#: loader/multiboot.c:337
 msgid "Load a multiboot 2 kernel."
 msgstr "Cargar núcleu de multiarranque 2."
 
-#: loader/multiboot_loader.c:136
+#: loader/multiboot.c:340
+#, fuzzy
+msgid "Load a multiboot 2 module."
+msgstr "Cargar un módulu d'arranque múltiple."
+
+#: loader/multiboot.c:343
 msgid "Load a multiboot kernel."
 msgstr "Cargar un núcleu d'arranque múltiple."
 
-#: loader/multiboot_loader.c:141
+#: loader/multiboot.c:346
 msgid "Load a multiboot module."
 msgstr "Cargar un módulu d'arranque múltiple."
 
@@ -840,16 +846,16 @@ msgstr "Avisu: color de primer planu nun válidu `%s'\n"
 msgid "Warning: invalid background color `%s'\n"
 msgstr "Avisu: color de fondu nun válidu `%s'\n"
 
-#: normal/dyncmd.c:147
+#: normal/dyncmd.c:144
 msgid "not loaded"
 msgstr "non cargáu"
 
-#: normal/main.c:408
+#: normal/main.c:447
 #, c-format
 msgid "GNU GRUB  version %s"
 msgstr "GNU GRUB  version %s"
 
-#: normal/main.c:539
+#: normal/main.c:585
 #, c-format
 msgid ""
 "Minimal BASH-like line editing is supported. For the first word, TAB lists "
@@ -861,9 +867,17 @@ msgstr ""
 "cualesquier otru sitiu, TAB amuesa les posibles formes de completar preseos "
 "o ficheros. %s"
 
-#: normal/main.c:542
+#: normal/main.c:588
 msgid "ESC at any time exits."
 msgstr "Calcar ESC en cualisquier momentu pa colar."
+
+#: normal/main.c:708
+msgid "Enter normal mode."
+msgstr ""
+
+#: normal/main.c:710
+msgid "Exit from normal mode."
+msgstr ""
 
 #: normal/menu_entry.c:1060
 msgid "Possible commands are:"
@@ -897,37 +911,51 @@ msgstr "Arrancar una llista d'órdenes"
 msgid "Press any key to continue..."
 msgstr "Calca una tecla pa siguir..."
 
-#: normal/menu_text.c:179
+#: normal/menu_text.c:180
+#, fuzzy
 msgid ""
 "Minimum Emacs-like screen editing is supported. TAB lists completions. Press "
-"Ctrl-x to boot, Ctrl-c for a command-line or ESC to return menu."
+"F1 to boot, F2=Ctrl-a, F3=Ctrl-e, F4 for a command-line or ESC to discard "
+"edits and return to the GRUB menu."
 msgstr ""
 "Permítese la edición mínima en pantalla tipu Emacs. TAB llista completaos. "
 "Calca Ctrl-x pa empecipiar, Ctrl-c pa una llinia d'ordes o ESC pa tornar al "
 "menú."
 
-#: normal/menu_text.c:186
+#: normal/menu_text.c:185
+#, fuzzy
+msgid ""
+"Minimum Emacs-like screen editing is supported. TAB lists completions. Press "
+"Ctrl-x to boot, Ctrl-c for a command-line or ESC to discard edits and return "
+"to the GRUB menu."
+msgstr ""
+"Permítese la edición mínima en pantalla tipu Emacs. TAB llista completaos. "
+"Calca Ctrl-x pa empecipiar, Ctrl-c pa una llinia d'ordes o ESC pa tornar al "
+"menú."
+
+#: normal/menu_text.c:193
 #, c-format
 msgid "Use the %C and %C keys to select which entry is highlighted.\n"
 msgstr "Usa les tecles %C y %C pa esbillar qué entrada prefieres.\n"
 
-#: normal/menu_text.c:203
+#: normal/menu_text.c:210
 msgid ""
 "Press enter to boot the selected OS, 'e' to edit the commands before booting "
 "or 'c' for a command-line. ESC to return previous menu.\n"
 msgstr ""
-"Calca intro p'arrancar el Sistema Operativu escoyíu, «e» pa editar les ordes "
-"enantes d'arrancar o «c» pa una llinia d'ordes. ESC pa volver menú anterior.\n"
+"Calca intro p'arrancar el Sistema Operativu escoyíu, «e» pa editar los "
+"comandos enantes d'arrancar o «c» pa una llinia d'ordes. ESC pa volver al "
+"menú anterior.\n"
 
-#: normal/menu_text.c:211
+#: normal/menu_text.c:218
 msgid ""
 "Press enter to boot the selected OS, 'e' to edit the commands before booting "
 "or 'c' for a command-line.\n"
 msgstr ""
-"Calca enter p'arrancar el SO esbilláu, 'e' pa editar los comandos enantes "
-"d'arrancar, o 'c' pa una llinia de comandos.\n"
+"Calca intro p'arrancar el Sistema Operativu escoyíu, «e» pa editar los "
+"comandos ordes enantes d'arrancar o «c» pa una llinia d'ordes.\n"
 
-#: normal/menu_text.c:363
+#: normal/menu_text.c:370
 #, c-format
 msgid "The highlighted entry will be executed automatically in %ds."
 msgstr "La entrada resaltada va executase automáticamente en %ds."
@@ -993,51 +1021,62 @@ msgstr "Afitar la paridá del puertu serie."
 msgid "Set the serial port stop bits."
 msgstr "Afitar el bit de posa del puertu serie."
 
-#: util/grub-mkrawimage.c:69
+#: term/serial.c:619
+#, fuzzy
+msgid "[OPTIONS...]"
+msgstr "[OPCIONES] DISCU"
+
+#: term/serial.c:620
+msgid "Configure serial port."
+msgstr ""
+
+#: util/grub-mkimage.c:440
 msgid "the core image is too small"
 msgstr "la imaxe del nucleu ye enforma pequeña"
 
-#: util/grub-mkrawimage.c:81
+#: util/grub-mkimage.c:451
 msgid "cannot compress the kernel image"
 msgstr "nun puede comprimise la imaxe kernel"
 
-#: util/grub-mkrawimage.c:156
+#: util/grub-mkimage.c:548
 msgid "prefix is too long"
 msgstr "el prefixu ye enforma llargu"
 
-#: util/grub-mkrawimage.c:242
-msgid "the core image is too big"
-msgstr "la imaxe del nucleu ye enforma grande"
-
-#: util/grub-mkrawimage.c:247
-#, c-format
-msgid "diskboot.img size must be %u bytes"
-msgstr "el tamañu de diskboot.img tien de ser de %u bytes"
-
-#: util/grub-mkrawimage.c:330
+#: util/grub-mkimage.c:672
 #, c-format
 msgid "core image is too big (%p > %p)"
 msgstr "la imaxe del núcleu ye enforma grande (%p > %p)"
 
-#: util/grub-mkrawimage.c:434 util/i386/pc/grub-setup.c:602
+#: util/grub-mkimage.c:678
+msgid "the core image is too big"
+msgstr "la imaxe del nucleu ye enforma grande"
+
+#: util/grub-mkimage.c:683
+#, c-format
+msgid "diskboot.img size must be %u bytes"
+msgstr "el tamañu de diskboot.img tien de ser de %u bytes"
+
+#: util/grub-mkimage.c:1168 util/i386/pc/grub-setup.c:607
 #, c-format
 msgid "Try `%s --help' for more information.\n"
 msgstr "Executa `%s --help' pa más información.\n"
 
-#: util/grub-mkrawimage.c:436
+#: util/grub-mkimage.c:1187
 #, fuzzy, c-format
 msgid ""
 "Usage: %s [OPTION]... [MODULES]\n"
 "\n"
 "Make a bootable image of GRUB.\n"
 "\n"
-"  -d, --directory=DIR     use images and modules under DIR [default=%s]\n"
+"  -d, --directory=DIR     use images and modules under DIR [default=%s/"
+"@platform@]\n"
 "  -p, --prefix=DIR        set grub_prefix directory [default=%s]\n"
 "  -m, --memdisk=FILE      embed FILE as a memdisk image\n"
 "  -f, --font=FILE         embed FILE as a boot font\n"
 "  -c, --config=FILE       embed FILE as boot config\n"
+"  -n, --note              add NOTE segment for CHRP Open Firmware\n"
 "  -o, --output=FILE       output a generated image to FILE [default=stdout]\n"
-"  -O, --format=FORMAT     generate an image in format [default=%s]\n"
+"  -O, --format=FORMAT     generate an image in format\n"
 "                          available formats: %s\n"
 "  -h, --help              display this message and exit\n"
 "  -V, --version           print version information and exit\n"
@@ -1045,7 +1084,7 @@ msgid ""
 "\n"
 "Report bugs to <%s>.\n"
 msgstr ""
-"Mou d'usu:% s [OPCIÓN] ... [MÓDULOS]\n"
+"Usu:% s [OPCIÓN] ... [MÓDULOS]\n"
 "\n"
 "Crea una imaxe d'arranque de GRUB.\n"
 "  -d, - directory=DIR usa les imaxes y módulos asitiaos en DIR [por omisión ="
@@ -1058,46 +1097,46 @@ msgstr ""
 "stdout]\n"
 "  -O, - format=FORMATU xenera una imaxe en FORMATU [por omisión ="
 
-#: util/grub-mkrawimage.c:580
+#: util/grub-mkimage.c:1333
 #, c-format
 msgid "cannot open %s"
 msgstr "nun puede abrise %s"
 
-#: util/i386/pc/grub-setup.c:160
+#: util/i386/pc/grub-setup.c:166
 msgid "the first sector of the core file is not sector-aligned"
 msgstr "el primer sector del ficheru principal nun ta alliniáu col sector"
 
-#: util/i386/pc/grub-setup.c:174
+#: util/i386/pc/grub-setup.c:180
 msgid "non-sector-aligned data is found in the core file"
 msgstr "atopáronse datos non alliniaos con un sector nel ficheru principal"
 
-#: util/i386/pc/grub-setup.c:188
+#: util/i386/pc/grub-setup.c:194
 msgid "the sectors of the core file are too fragmented"
 msgstr "los sectores del ficheru núcleu tán enforma estrizaos."
 
-#: util/i386/pc/grub-setup.c:199
+#: util/i386/pc/grub-setup.c:205
 #, c-format
 msgid "the size of `%s' is not %u"
 msgstr "el tamañu de «%s» nun ye %u"
 
-#: util/i386/pc/grub-setup.c:216
+#: util/i386/pc/grub-setup.c:222
 #, c-format
 msgid "the size of `%s' is too small"
 msgstr "el tamañu de «%s» ye enforma pequeñu"
 
-#: util/i386/pc/grub-setup.c:218
+#: util/i386/pc/grub-setup.c:224
 #, c-format
 msgid "the size of `%s' is too large"
 msgstr "el tamañu de «%s» ye enforma grande"
 
-#: util/i386/pc/grub-setup.c:255
+#: util/i386/pc/grub-setup.c:261
 #, c-format
 msgid "unable to identify a filesystem in %s; safety check can't be performed"
 msgstr ""
 "nun ye dable identificar un sistema d'ficheros en %s; nun puede llevase a "
 "cabu una comprobación de seguridá"
 
-#: util/i386/pc/grub-setup.c:259
+#: util/i386/pc/grub-setup.c:265
 #, c-format
 msgid ""
 "%s appears to contain a %s filesystem which isn't known to reserve space for "
@@ -1111,17 +1150,13 @@ msgstr ""
 "grub-setup (--skip-fs-probe desactiva esta comprobación; úsalu baxo la to "
 "responsabilidá)"
 
-#: util/i386/pc/grub-setup.c:308
-msgid "no DOS-style partitions found"
-msgstr "nun s'atopó denguna partición tipu DOS"
-
-#: util/i386/pc/grub-setup.c:324 util/i386/pc/grub-setup.c:349
+#: util/i386/pc/grub-setup.c:327 util/i386/pc/grub-setup.c:354
 msgid ""
 "Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
 msgstr ""
 "Intentando instalar GRUB a un discu ensin partición. Esto ye una MALA idega."
 
-#: util/i386/pc/grub-setup.c:330
+#: util/i386/pc/grub-setup.c:333
 msgid ""
 "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD "
 "idea."
@@ -1129,11 +1164,11 @@ msgstr ""
 "Intentado instalar GRUB a una partición en llugar del MBR.  Esto ye una MALA "
 "idega."
 
-#: util/i386/pc/grub-setup.c:358
+#: util/i386/pc/grub-setup.c:363
 msgid "No DOS-style partitions found"
 msgstr "Nun s'alcontraron particiones DOS-style"
 
-#: util/i386/pc/grub-setup.c:363
+#: util/i386/pc/grub-setup.c:368
 msgid ""
 "This msdos-style partition label has no post-MBR gap; embedding won't be "
 "possible!"
@@ -1141,7 +1176,7 @@ msgstr ""
 "Esta etiqueta de partición tipu MS-DOS nun tien un buecu darrera del MBR; "
 "nun ye dable incrustar"
 
-#: util/i386/pc/grub-setup.c:365
+#: util/i386/pc/grub-setup.c:370
 msgid ""
 "This GPT partition label has no BIOS Boot Partition; embedding won't be "
 "possible!"
@@ -1149,17 +1184,17 @@ msgstr ""
 "La etiqueta de partición GPT nun tien una Partición BIOS Boot; l'embebíu nun "
 "ye posible!"
 
-#: util/i386/pc/grub-setup.c:372
+#: util/i386/pc/grub-setup.c:377
 msgid "Your core.img is unusually large.  It won't fit in the embedding area."
 msgstr ""
 "El core.img ye enforma grande.  Nun va poder contenese nel area d'embebíu"
 
-#: util/i386/pc/grub-setup.c:374
+#: util/i386/pc/grub-setup.c:379
 msgid "Your embedding area is unusually small.  core.img won't fit in it."
 msgstr ""
 "La so área d'empotráu ye inusualmente pequeña. core.img nun va caber nella."
 
-#: util/i386/pc/grub-setup.c:419
+#: util/i386/pc/grub-setup.c:424
 msgid ""
 "embedding is not possible, but this is required when the root device is on a "
 "RAID array or LVM volume"
@@ -1167,53 +1202,54 @@ msgstr ""
 "nun ye posible incrusta, pero esto ye necesariu cuando'l preséu raigañu ta "
 "nún array RAID o nún volume LVM."
 
-#: util/i386/pc/grub-setup.c:422
+#: util/i386/pc/grub-setup.c:427
+#, fuzzy
 msgid ""
 "Embedding is not possible.  GRUB can only be installed in this setup by "
-"using blocklists.  However, blocklists are UNRELIABLE and its use is "
+"using blocklists.  However, blocklists are UNRELIABLE and their use is "
 "discouraged."
 msgstr ""
 "Nun ye dable incrustar. GRUB namái puede instalase nesta configuración "
 "usando llistes de bloques. Sicasí, éstes NUN SON FIABLES y el so usu "
 "desaconséyase."
 
-#: util/i386/pc/grub-setup.c:426
+#: util/i386/pc/grub-setup.c:431
 msgid "if you really want blocklists, use --force"
 msgstr "Si daveres quies usar llistes de bloques, usa --force"
 
-#: util/i386/pc/grub-setup.c:445
+#: util/i386/pc/grub-setup.c:450
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB"
 msgstr "intentando lleer la imaxe del nucleu `%s' dende'l GRUB"
 
-#: util/i386/pc/grub-setup.c:446
+#: util/i386/pc/grub-setup.c:451
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB again"
 msgstr "intentando lleer la imaxe del nucleu `%s' dende'l GRUB otra vegada"
 
-#: util/i386/pc/grub-setup.c:513
+#: util/i386/pc/grub-setup.c:518
 #, c-format
 msgid "cannot read `%s' correctly"
 msgstr "nun puede lleese «%s» correchamente"
 
-#: util/i386/pc/grub-setup.c:526
+#: util/i386/pc/grub-setup.c:531
 msgid "no terminator in the core image"
 msgstr "nun hai terminador na imaxe principal"
 
-#: util/i386/pc/grub-setup.c:537
+#: util/i386/pc/grub-setup.c:542
 msgid "failed to read the first sector of the core image"
 msgstr "fallu al lleer el primer sector de la imaxe principal"
 
-#: util/i386/pc/grub-setup.c:543
+#: util/i386/pc/grub-setup.c:548
 msgid "failed to read the rest sectors of the core image"
 msgstr "fallu al lleer los restantes sectores de la imaxe principal"
 
-#: util/i386/pc/grub-setup.c:562
+#: util/i386/pc/grub-setup.c:567
 #, c-format
 msgid "cannot open `%s'"
 msgstr "nun puede abrise «%s»"
 
-#: util/i386/pc/grub-setup.c:604
+#: util/i386/pc/grub-setup.c:609
 #, c-format
 msgid ""
 "Usage: %s [OPTION]... DEVICE\n"
@@ -1245,8 +1281,8 @@ msgstr ""
 "[predetermináu=%s]\n"
 "  -d, --directory=DIR usu de los ficheros de GRUB nel direutoriu DIR "
 "[predetermináu=%s]\n"
-"  -m, --device-map=FICHERU usa FICHERU como'l mapa de preséu [predetermináu=%"
-"s]\n"
+"  -m, --device-map=FICHERU usa FICHERU como'l mapa de preséu [predetermináu="
+"%s]\n"
 "  -r, --root-device=DIS usa DIS como preséu raigañu "
 "[predetermináu=aldovináu]\n"
 "  -f, --force fuercia la instalación anque se deteuten problemes\n"
@@ -1257,57 +1293,54 @@ msgstr ""
 "\n"
 "Informe de fallos a <%s>.\n"
 
-#: util/i386/pc/grub-setup.c:734
+#: util/i386/pc/grub-setup.c:739
 #, c-format
 msgid "No device is specified.\n"
 msgstr "Nun s'especificó dengún preséu.\n"
 
-#: util/i386/pc/grub-setup.c:740
+#: util/i386/pc/grub-setup.c:745
 #, c-format
 msgid "Unknown extra argument `%s'.\n"
 msgstr "Argumentu estra desconocíu `%s'.\n"
 
-#: util/i386/pc/grub-setup.c:757
+#: util/i386/pc/grub-setup.c:762
 #, c-format
 msgid "Invalid device `%s'.\n"
 msgstr "Preséu inválidu `%s'.\n"
 
-#: util/i386/pc/grub-setup.c:770
+#: util/i386/pc/grub-setup.c:775
 #, c-format
 msgid "invalid root device `%s'"
 msgstr "Preséu root invalidu «%s»"
 
-#: util/i386/pc/grub-setup.c:783
+#: util/i386/pc/grub-setup.c:788
 msgid "cannot guess the root device. Specify the option `--root-device'"
 msgstr ""
 "nun puede determinase'l preséu raigañu. Especifique la opción `--root-device'"
 
-#: util/grub.d/10_kfreebsd.in:47
-msgid "%s, with kFreeBSD %s"
-msgstr "%s, con kFreeBSD %s"
-
-#: util/grub.d/10_kfreebsd.in:55
-msgid "Loading kernel of FreeBSD %s ..."
-msgstr "Cargando núcleu de FreeBSD %s ..."
-
-#: util/grub.d/10_linux.in:60
-msgid "%s, with Linux %s (recovery mode)"
-msgstr "%s, con Linux %s (mou recuperación)"
-
-#: util/grub.d/10_linux.in:62
-msgid "%s, with Linux %s"
-msgstr "%s, con Linux %s"
-
-#: util/grub.d/10_linux.in:87
-msgid "Loading Linux %s ..."
-msgstr "Cargando Linux %s ..."
-
-#: util/grub.d/10_linux.in:92
-msgid "Loading initial ramdisk ..."
-msgstr "Cargando'l discu RAM inicial..."
-
 #~ msgid "Load XNU ramdisk. It will be seen as md0."
 #~ msgstr "Carga XNU ramdisk. Va vese como md0"
+
+#~ msgid "no DOS-style partitions found"
+#~ msgstr "nun s'atopó denguna partición tipu DOS"
+
+#~ msgid "%s, with kFreeBSD %s"
+#~ msgstr "%s, con kFreeBSD %s"
+
+#~ msgid "Loading kernel of FreeBSD %s ..."
+#~ msgstr "Cargando núcleu de FreeBSD %s ..."
+
+#~ msgid "%s, with Linux %s (recovery mode)"
+#~ msgstr "%s, con Linux %s (mou recuperación)"
+
+#~ msgid "%s, with Linux %s"
+#~ msgstr "%s, con Linux %s"
+
+#~ msgid "Loading Linux %s ..."
+#~ msgstr "Cargando Linux %s ..."
+
+#~ msgid "Loading initial ramdisk ..."
+#~ msgstr "Cargando discu RAM inicial..."
 
 #~ msgid "Please check the following file: %s.\n"
 #~ msgstr "Por favor, comprueba'l siguiente ficheru: %s.\n"

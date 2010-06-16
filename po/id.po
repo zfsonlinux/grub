@@ -7,10 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub 1.97+20100124\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-08 22:55+0000\n"
+"POT-Creation-Date: 2010-06-03 00:27+0100\n"
 "PO-Revision-Date: 2010-01-25 16:30+0700\n"
 "Last-Translator: Arif E. Nugroho <arif_endro@yahoo.com>\n"
 "Language-Team: Indonesian <translation-team-id@lists.sourceforge.net>\n"
+"Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -76,14 +77,14 @@ msgstr ""
 msgid "Load host ACPI tables and tables specified by arguments."
 msgstr "Muat tabel ACPI komputer dan tabel yang dispesifikasikan oleh argumen."
 
-#: commands/blocklist.c:114 commands/cat.c:82 commands/configfile.c:57
+#: commands/blocklist.c:113 commands/cat.c:82 commands/configfile.c:57
 #: commands/configfile.c:60 commands/configfile.c:65 commands/crc.c:64
-#: commands/minicmd.c:357 loader/i386/bsd.c:1297 loader/i386/bsd.c:1301
-#: loader/i386/bsd.c:1305
+#: commands/minicmd.c:357 loader/i386/bsd.c:1287 loader/i386/bsd.c:1291
+#: loader/i386/bsd.c:1295
 msgid "FILE"
 msgstr "BERKAS"
 
-#: commands/blocklist.c:114
+#: commands/blocklist.c:113
 msgid "Print a block list."
 msgstr "Tampilkan daftar blok."
 
@@ -156,9 +157,10 @@ msgid "DEVICE [PARTITION[+/-[TYPE]]] ..."
 msgstr "PERANGKAT [PARTISI[+/-[TIPE]]] ..."
 
 #: commands/gptsync.c:245
+#, fuzzy
 msgid ""
-"Fill hybrid MBR of GPT drive DEVICE. specified partitions will be a part of "
-"hybrid mbr. Up to 3 partitions are allowed. TYPE is an MBR type. + means "
+"Fill hybrid MBR of GPT drive DEVICE. Specified partitions will be a part of "
+"hybrid MBR. Up to 3 partitions are allowed. TYPE is an MBR type. + means "
 "that partition is active. Only one partition can be active."
 msgstr ""
 "Isi hybrid MBR dari GPT drive PERANGKAT. partisi yang dispesifikasikan akan "
@@ -298,11 +300,11 @@ msgstr "Reset seluruh pemetaan ke nilai baku."
 msgid "Perform both direct and reverse mappings."
 msgstr "Lakukan baik pemetaan secara langsung dan terbalik."
 
-#: commands/i386/pc/drivemap.c:407
+#: commands/i386/pc/drivemap.c:406
 msgid "-l | -r | [-s] grubdev osdisk."
 msgstr "-l | -r | [-s] grubdev osdisk."
 
-#: commands/i386/pc/drivemap.c:408
+#: commands/i386/pc/drivemap.c:407
 msgid "Manage the BIOS drive mappings."
 msgstr "Pelihara pemetaan drive BIOS."
 
@@ -314,11 +316,11 @@ msgstr "Jangan gunakan APM untuk menghentikan komputer."
 msgid "Halt the system, if possible using APM."
 msgstr "Hentikan sistem, jika memungkinkan gunakan APM."
 
-#: commands/i386/pc/play.c:262
+#: commands/i386/pc/play.c:266
 msgid "FILE | TEMPO [PITCH1 DURATION1] [PITCH2 DURATION2] ... "
 msgstr ""
 
-#: commands/i386/pc/play.c:263
+#: commands/i386/pc/play.c:267
 msgid "Play a tune."
 msgstr "Mainkan sebuah nada."
 
@@ -362,23 +364,23 @@ msgstr "Periksa keadaan tombol pemodifikasi."
 msgid "Specify filename."
 msgstr "Spesifikasikan nama berkas."
 
-#: commands/loadenv.c:383 commands/loadenv.c:389
+#: commands/loadenv.c:378 commands/loadenv.c:384
 msgid "[-f FILE]"
 msgstr "[-f BERKAS]"
 
-#: commands/loadenv.c:384
+#: commands/loadenv.c:379
 msgid "Load variables from environment block file."
 msgstr "Muat variabel dari berkas blok lingkungan."
 
-#: commands/loadenv.c:390
+#: commands/loadenv.c:385
 msgid "List variables from environment block file."
 msgstr "Tampilkan variabel dari berkas blok lingkungan."
 
-#: commands/loadenv.c:395
+#: commands/loadenv.c:390
 msgid "[-f FILE] variable_name [...]"
 msgstr "[-f BERKAS] nama_variabel [...]"
 
-#: commands/loadenv.c:396
+#: commands/loadenv.c:391
 msgid "Save variables to environment block file."
 msgstr "Simpan variabel ke berkas blok lingkungan."
 
@@ -402,7 +404,7 @@ msgstr "[-l|-h|-a] [BERKAS]"
 msgid "List devices and files."
 msgstr "Tampilkan perangkat dan berkas."
 
-#: commands/lsmmap.c:47
+#: commands/lsmmap.c:51
 msgid "List memory map provided by firmware."
 msgstr "Tampilkan peta memori yang disediakan oleh firmware."
 
@@ -565,19 +567,19 @@ msgstr ""
 "Cari perangkat dengan UUID. Jika VARIABEL dispesifikasikan, perangkat "
 "pertama yang ditemukan diset ke sebuah variabel."
 
-#: commands/sleep.c:31
+#: commands/sleep.c:30
 msgid "Verbose countdown."
 msgstr "Hitung mundur secara detail."
 
-#: commands/sleep.c:32
+#: commands/sleep.c:31
 msgid "Interruptible with ESC."
 msgstr "Dapat diinterupsi dengan ESC."
 
-#: commands/sleep.c:106
+#: commands/sleep.c:105
 msgid "NUMBER_OF_SECONDS"
 msgstr "JUMLAH_DARI_DETIK"
 
-#: commands/sleep.c:107
+#: commands/sleep.c:106
 msgid "Wait for a specified number of seconds."
 msgstr "Tunggu selama jumlah dari detik yang dispesifikasikan."
 
@@ -601,7 +603,7 @@ msgstr "Tidak melakukan apapun, sukses."
 msgid "Do nothing, unsuccessfully."
 msgstr "Tidak melakukan apapun, tidak sukses."
 
-#: commands/usbtest.c:199
+#: commands/usbtest.c:208
 msgid "Test USB support."
 msgstr "Coba dukungan USB."
 
@@ -649,7 +651,7 @@ msgstr "Tampilkan penggunaan dari perintah ini dan keluar."
 msgid "Boot legacy system."
 msgstr "Boot sistem sesungguhnya."
 
-#: loader/efi/chainloader.c:340 loader/i386/pc/chainloader.c:153
+#: loader/efi/chainloader.c:340 loader/i386/pc/chainloader.c:166
 msgid "Load another boot loader."
 msgstr "Muat 'boot loader' lain."
 
@@ -737,39 +739,39 @@ msgstr "Tekan keluaran normal (peringatan tetap)."
 msgid "DEVICE"
 msgstr "PERANGKAT"
 
-#: loader/i386/bsd.c:1297
+#: loader/i386/bsd.c:1287
 msgid "Load kernel of FreeBSD."
 msgstr "Muat kernel dari FreeBSD."
 
-#: loader/i386/bsd.c:1301
+#: loader/i386/bsd.c:1291
 msgid "Load kernel of OpenBSD."
 msgstr "Muat kernal dari OpenBSD."
 
-#: loader/i386/bsd.c:1305
+#: loader/i386/bsd.c:1295
 msgid "Load kernel of NetBSD."
 msgstr "Muat kernel dari NetBSD."
 
-#: loader/i386/bsd.c:1309
+#: loader/i386/bsd.c:1299
 msgid "Load FreeBSD env."
 msgstr "Muat lingkungan FreeBSD."
 
-#: loader/i386/bsd.c:1312
+#: loader/i386/bsd.c:1302
 msgid "Load FreeBSD kernel module."
 msgstr "Muat modul kernel FreeBSD."
 
-#: loader/i386/bsd.c:1315
+#: loader/i386/bsd.c:1305
 msgid "Load FreeBSD kernel module (ELF)."
 msgstr "Muat modul kernel (ELF) FreeBSD."
 
 #: loader/i386/efi/linux.c:1011 loader/i386/ieee1275/linux.c:301
 #: loader/i386/linux.c:1012 loader/i386/pc/linux.c:399
-#: loader/powerpc/ieee1275/linux.c:353 loader/sparc64/ieee1275/linux.c:514
+#: loader/powerpc/ieee1275/linux.c:353 loader/sparc64/ieee1275/linux.c:519
 msgid "Load Linux."
 msgstr "Muat Linux."
 
 #: loader/i386/efi/linux.c:1013 loader/i386/ieee1275/linux.c:303
 #: loader/i386/linux.c:1014 loader/i386/pc/linux.c:402
-#: loader/powerpc/ieee1275/linux.c:355 loader/sparc64/ieee1275/linux.c:516
+#: loader/powerpc/ieee1275/linux.c:355 loader/sparc64/ieee1275/linux.c:521
 msgid "Load initrd."
 msgstr "Muat initrd."
 
@@ -777,15 +779,20 @@ msgstr "Muat initrd."
 msgid "Load device-properties dump."
 msgstr "Muat properti-perangkat dump."
 
-#: loader/multiboot_loader.c:133
+#: loader/multiboot.c:337
 msgid "Load a multiboot 2 kernel."
 msgstr "Muat sebuah kernel multiboot 2."
 
-#: loader/multiboot_loader.c:136
+#: loader/multiboot.c:340
+#, fuzzy
+msgid "Load a multiboot 2 module."
+msgstr "Muat sebuah modul multiboot."
+
+#: loader/multiboot.c:343
 msgid "Load a multiboot kernel."
 msgstr "Muat sebuah kernel multiboot."
 
-#: loader/multiboot_loader.c:141
+#: loader/multiboot.c:346
 msgid "Load a multiboot module."
 msgstr "Muat sebuah modul multiboot."
 
@@ -844,16 +851,16 @@ msgstr "Peringatan: warna depan tidak valid `%s'\n"
 msgid "Warning: invalid background color `%s'\n"
 msgstr "Peringatan: nama belakang tidak valid `%s'\n"
 
-#: normal/dyncmd.c:147
+#: normal/dyncmd.c:144
 msgid "not loaded"
 msgstr "tidak termuat"
 
-#: normal/main.c:408
+#: normal/main.c:447
 #, c-format
 msgid "GNU GRUB  version %s"
 msgstr "GNU GRUB  versi %s"
 
-#: normal/main.c:539
+#: normal/main.c:585
 #, c-format
 msgid ""
 "Minimal BASH-like line editing is supported. For the first word, TAB lists "
@@ -864,9 +871,17 @@ msgstr ""
 "menampilkan pelengkapan perintah yang memungkin. Dimanapun TAB menampilkan "
 "perangkat yang memungkinkan atau pelengkapan berkas. %s"
 
-#: normal/main.c:542
+#: normal/main.c:588
 msgid "ESC at any time exits."
 msgstr "ESC di waktu apapun keluar."
+
+#: normal/main.c:708
+msgid "Enter normal mode."
+msgstr ""
+
+#: normal/main.c:710
+msgid "Exit from normal mode."
+msgstr ""
 
 #: normal/menu_entry.c:1060
 msgid "Possible commands are:"
@@ -900,22 +915,35 @@ msgstr "Mem-boot dari sebuah daftar perintah"
 msgid "Press any key to continue..."
 msgstr "Tekan tombol apapun untuk melanjutkan..."
 
-#: normal/menu_text.c:179
+#: normal/menu_text.c:180
+#, fuzzy
 msgid ""
 "Minimum Emacs-like screen editing is supported. TAB lists completions. Press "
-"Ctrl-x to boot, Ctrl-c for a command-line or ESC to return menu."
+"F1 to boot, F2=Ctrl-a, F3=Ctrl-e, F4 for a command-line or ESC to discard "
+"edits and return to the GRUB menu."
 msgstr ""
 "Penyuntingan layar minimum bergaya Emacs didukung. TAB menampilkan "
 "pelengkapan. Tekan Ctrl-x untuk boot, Ctrl-c untuk baris perintah atau ESC "
 "untuk kembali ke menu."
 
-#: normal/menu_text.c:186
+#: normal/menu_text.c:185
+#, fuzzy
+msgid ""
+"Minimum Emacs-like screen editing is supported. TAB lists completions. Press "
+"Ctrl-x to boot, Ctrl-c for a command-line or ESC to discard edits and return "
+"to the GRUB menu."
+msgstr ""
+"Penyuntingan layar minimum bergaya Emacs didukung. TAB menampilkan "
+"pelengkapan. Tekan Ctrl-x untuk boot, Ctrl-c untuk baris perintah atau ESC "
+"untuk kembali ke menu."
+
+#: normal/menu_text.c:193
 #, c-format
 msgid "Use the %C and %C keys to select which entry is highlighted.\n"
 msgstr ""
 "Gunakan tombol-tombol %C dan %C untuk memiliki masukan mana yang disoroti.\n"
 
-#: normal/menu_text.c:203
+#: normal/menu_text.c:210
 msgid ""
 "Press enter to boot the selected OS, 'e' to edit the commands before booting "
 "or 'c' for a command-line. ESC to return previous menu.\n"
@@ -924,7 +952,7 @@ msgstr ""
 "sebelum booting atau 'c' untuk sebuah baris perintah. ESC kembali ke menu "
 "sebelumnya.\n"
 
-#: normal/menu_text.c:211
+#: normal/menu_text.c:218
 msgid ""
 "Press enter to boot the selected OS, 'e' to edit the commands before booting "
 "or 'c' for a command-line.\n"
@@ -932,7 +960,7 @@ msgstr ""
 "Tekan enter untuk mem-boot OS yang dipilih, 'e' untuk mengubah perintah "
 "sebelum booting atau 'c' untuk sebuah baris perintah.\n"
 
-#: normal/menu_text.c:363
+#: normal/menu_text.c:370
 #, c-format
 msgid "The highlighted entry will be executed automatically in %ds."
 msgstr "Masukan yang disoroti akan diboot secara otomatis dalam %ds."
@@ -998,51 +1026,62 @@ msgstr "Set pariti dari port serial."
 msgid "Set the serial port stop bits."
 msgstr "Set stop bit dari port serial."
 
-#: util/grub-mkrawimage.c:69
+#: term/serial.c:619
+#, fuzzy
+msgid "[OPTIONS...]"
+msgstr "[PILIHAN] DISK"
+
+#: term/serial.c:620
+msgid "Configure serial port."
+msgstr ""
+
+#: util/grub-mkimage.c:440
 msgid "the core image is too small"
 msgstr "image core terlalu kecil"
 
-#: util/grub-mkrawimage.c:81
+#: util/grub-mkimage.c:451
 msgid "cannot compress the kernel image"
 msgstr "tidak dapat mengkompress image kernel"
 
-#: util/grub-mkrawimage.c:156
+#: util/grub-mkimage.c:548
 msgid "prefix is too long"
 msgstr "awalan terlalu panjang"
 
-#: util/grub-mkrawimage.c:242
-msgid "the core image is too big"
-msgstr "image core terlalu besar"
-
-#: util/grub-mkrawimage.c:247
-#, c-format
-msgid "diskboot.img size must be %u bytes"
-msgstr "besar diskboot.img seharusnya %u bytes"
-
-#: util/grub-mkrawimage.c:330
+#: util/grub-mkimage.c:672
 #, c-format
 msgid "core image is too big (%p > %p)"
 msgstr "Image core terlalu besar (%p >%p)"
 
-#: util/grub-mkrawimage.c:434 util/i386/pc/grub-setup.c:602
+#: util/grub-mkimage.c:678
+msgid "the core image is too big"
+msgstr "image core terlalu besar"
+
+#: util/grub-mkimage.c:683
+#, c-format
+msgid "diskboot.img size must be %u bytes"
+msgstr "besar diskboot.img seharusnya %u bytes"
+
+#: util/grub-mkimage.c:1168 util/i386/pc/grub-setup.c:607
 #, c-format
 msgid "Try `%s --help' for more information.\n"
 msgstr "Coba `%s --help' untuk informasi lebih lanjut.\n"
 
-#: util/grub-mkrawimage.c:436
+#: util/grub-mkimage.c:1187
 #, fuzzy, c-format
 msgid ""
 "Usage: %s [OPTION]... [MODULES]\n"
 "\n"
 "Make a bootable image of GRUB.\n"
 "\n"
-"  -d, --directory=DIR     use images and modules under DIR [default=%s]\n"
+"  -d, --directory=DIR     use images and modules under DIR [default=%s/"
+"@platform@]\n"
 "  -p, --prefix=DIR        set grub_prefix directory [default=%s]\n"
 "  -m, --memdisk=FILE      embed FILE as a memdisk image\n"
 "  -f, --font=FILE         embed FILE as a boot font\n"
 "  -c, --config=FILE       embed FILE as boot config\n"
+"  -n, --note              add NOTE segment for CHRP Open Firmware\n"
 "  -o, --output=FILE       output a generated image to FILE [default=stdout]\n"
-"  -O, --format=FORMAT     generate an image in format [default=%s]\n"
+"  -O, --format=FORMAT     generate an image in format\n"
 "                          available formats: %s\n"
 "  -h, --help              display this message and exit\n"
 "  -V, --version           print version information and exit\n"
@@ -1063,46 +1102,46 @@ msgstr ""
 "[baku=stdout]\n"
 "  -O, --format=FORMAT     hasilkan sebuah image dalam format [baku="
 
-#: util/grub-mkrawimage.c:580
+#: util/grub-mkimage.c:1333
 #, c-format
 msgid "cannot open %s"
 msgstr "tidak dapat membuka %s"
 
-#: util/i386/pc/grub-setup.c:160
+#: util/i386/pc/grub-setup.c:166
 msgid "the first sector of the core file is not sector-aligned"
 msgstr "sektor pertama dari berkas core tidak selaras secara sektor"
 
-#: util/i386/pc/grub-setup.c:174
+#: util/i386/pc/grub-setup.c:180
 msgid "non-sector-aligned data is found in the core file"
 msgstr "sektor-tidak-selaras data ditemukan dalam berkas core"
 
-#: util/i386/pc/grub-setup.c:188
+#: util/i386/pc/grub-setup.c:194
 msgid "the sectors of the core file are too fragmented"
 msgstr "sektor dari berkas core terlalu terpotong potong"
 
-#: util/i386/pc/grub-setup.c:199
+#: util/i386/pc/grub-setup.c:205
 #, c-format
 msgid "the size of `%s' is not %u"
 msgstr "ukuran dari `%s' bukan %u"
 
-#: util/i386/pc/grub-setup.c:216
+#: util/i386/pc/grub-setup.c:222
 #, c-format
 msgid "the size of `%s' is too small"
 msgstr "ukuran dari `%s' terlalu kecil"
 
-#: util/i386/pc/grub-setup.c:218
+#: util/i386/pc/grub-setup.c:224
 #, c-format
 msgid "the size of `%s' is too large"
 msgstr "ukuran dari `%s' terlalu besar"
 
-#: util/i386/pc/grub-setup.c:255
+#: util/i386/pc/grub-setup.c:261
 #, c-format
 msgid "unable to identify a filesystem in %s; safety check can't be performed"
 msgstr ""
 "tidak dapat mengidentifikasikan sebuah sistem berkas dalam %s; pemeriksaan "
 "keamanan tidak dapat dilakukan"
 
-#: util/i386/pc/grub-setup.c:259
+#: util/i386/pc/grub-setup.c:265
 #, c-format
 msgid ""
 "%s appears to contain a %s filesystem which isn't known to reserve space for "
@@ -1115,18 +1154,14 @@ msgstr ""
 "KERUSAKAN SISTEM BERKAS jika data berharga dipaksa tulis oleh grub-setup (--"
 "skip-fs-probe menonaktifkan pemeriksaan ini, gunakan sesuai resiko anda)"
 
-#: util/i386/pc/grub-setup.c:308
-msgid "no DOS-style partitions found"
-msgstr "tidak ditemukan gaya partisi DOS"
-
-#: util/i386/pc/grub-setup.c:324 util/i386/pc/grub-setup.c:349
+#: util/i386/pc/grub-setup.c:327 util/i386/pc/grub-setup.c:354
 msgid ""
 "Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
 msgstr ""
 "Mencoba memasang GRUB ke sebuah disk yang tidak berpartisi. Ini mungkin "
 "bukan ide baik."
 
-#: util/i386/pc/grub-setup.c:330
+#: util/i386/pc/grub-setup.c:333
 msgid ""
 "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD "
 "idea."
@@ -1134,11 +1169,11 @@ msgstr ""
 "Mencoba memasang GRUB ke sebuah partisi daripada MBR. Ini mungkin bukan ide "
 "baik."
 
-#: util/i386/pc/grub-setup.c:358
+#: util/i386/pc/grub-setup.c:363
 msgid "No DOS-style partitions found"
 msgstr "Tidak ditemukan gaya partisi DOS"
 
-#: util/i386/pc/grub-setup.c:363
+#: util/i386/pc/grub-setup.c:368
 msgid ""
 "This msdos-style partition label has no post-MBR gap; embedding won't be "
 "possible!"
@@ -1146,7 +1181,7 @@ msgstr ""
 "Label partisi gaya msdos ini tidak memiliki post-MBR gap; penempatan tidak "
 "memungkinkan!"
 
-#: util/i386/pc/grub-setup.c:365
+#: util/i386/pc/grub-setup.c:370
 msgid ""
 "This GPT partition label has no BIOS Boot Partition; embedding won't be "
 "possible!"
@@ -1154,16 +1189,16 @@ msgstr ""
 "Label partisi GPT ini tidak memiliki partisi boot BIOS; penempatan tidak "
 "memungkinkan!"
 
-#: util/i386/pc/grub-setup.c:372
+#: util/i386/pc/grub-setup.c:377
 msgid "Your core.img is unusually large.  It won't fit in the embedding area."
 msgstr ""
 "Besar core.img anda sangat besar. Ini tidak akan masuk dalam area penempatan."
 
-#: util/i386/pc/grub-setup.c:374
+#: util/i386/pc/grub-setup.c:379
 msgid "Your embedding area is unusually small.  core.img won't fit in it."
 msgstr "Penempatan anda sangat kecil. core.img tidak akan masuk disana."
 
-#: util/i386/pc/grub-setup.c:419
+#: util/i386/pc/grub-setup.c:424
 msgid ""
 "embedding is not possible, but this is required when the root device is on a "
 "RAID array or LVM volume"
@@ -1171,53 +1206,54 @@ msgstr ""
 "penempatan tidak memungkinkan, tetapi ini dibutuhkan ketika perangkat root "
 "berada di sebuah array RAID atau volume LVM."
 
-#: util/i386/pc/grub-setup.c:422
+#: util/i386/pc/grub-setup.c:427
+#, fuzzy
 msgid ""
 "Embedding is not possible.  GRUB can only be installed in this setup by "
-"using blocklists.  However, blocklists are UNRELIABLE and its use is "
+"using blocklists.  However, blocklists are UNRELIABLE and their use is "
 "discouraged."
 msgstr ""
 "Penempatan tidak memungkinkan. GRUB hanya dapat dipasang di konfigurasi ini "
 "dengan menggunakan blocklists. Akan tetapi, blocklists TIDAK DAPAT DIJAGAKAN "
 "dan penggunaan ini tidak disarankan."
 
-#: util/i386/pc/grub-setup.c:426
+#: util/i386/pc/grub-setup.c:431
 msgid "if you really want blocklists, use --force"
 msgstr "jika anda benar benar menginginkan blocklists, gunakan --force."
 
-#: util/i386/pc/grub-setup.c:445
+#: util/i386/pc/grub-setup.c:450
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB"
 msgstr "mencoba untuk membaca image core `%s' dari GRUB"
 
-#: util/i386/pc/grub-setup.c:446
+#: util/i386/pc/grub-setup.c:451
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB again"
 msgstr "mencoba untuk membaca image core `%s' dari GRUB lagi"
 
-#: util/i386/pc/grub-setup.c:513
+#: util/i386/pc/grub-setup.c:518
 #, c-format
 msgid "cannot read `%s' correctly"
 msgstr "tidak dapat membaca `%s' secara benar"
 
-#: util/i386/pc/grub-setup.c:526
+#: util/i386/pc/grub-setup.c:531
 msgid "no terminator in the core image"
 msgstr "tidak ada pengakhir dalam image core"
 
-#: util/i386/pc/grub-setup.c:537
+#: util/i386/pc/grub-setup.c:542
 msgid "failed to read the first sector of the core image"
 msgstr "gagal untuk membaca sektor pertama dari core image"
 
-#: util/i386/pc/grub-setup.c:543
+#: util/i386/pc/grub-setup.c:548
 msgid "failed to read the rest sectors of the core image"
 msgstr "gagal untuk membaca sektor selanjutnya dari image core"
 
-#: util/i386/pc/grub-setup.c:562
+#: util/i386/pc/grub-setup.c:567
 #, c-format
 msgid "cannot open `%s'"
 msgstr "tidak dapat membuka `%s'"
 
-#: util/i386/pc/grub-setup.c:604
+#: util/i386/pc/grub-setup.c:609
 #, c-format
 msgid ""
 "Usage: %s [OPTION]... DEVICE\n"
@@ -1257,57 +1293,54 @@ msgstr ""
 "\n"
 "Laporkan bugs ke <%s>.\n"
 
-#: util/i386/pc/grub-setup.c:734
+#: util/i386/pc/grub-setup.c:739
 #, c-format
 msgid "No device is specified.\n"
 msgstr "Perangkat tidak dispesifikasikan.\n"
 
-#: util/i386/pc/grub-setup.c:740
+#: util/i386/pc/grub-setup.c:745
 #, c-format
 msgid "Unknown extra argument `%s'.\n"
 msgstr "Argumen ekstra `%s' tidak diketahui.\n"
 
-#: util/i386/pc/grub-setup.c:757
+#: util/i386/pc/grub-setup.c:762
 #, c-format
 msgid "Invalid device `%s'.\n"
 msgstr "Perangkat `%s' tidak valid.\n"
 
-#: util/i386/pc/grub-setup.c:770
+#: util/i386/pc/grub-setup.c:775
 #, c-format
 msgid "invalid root device `%s'"
 msgstr "perangkat root `%s' tidak valid"
 
-#: util/i386/pc/grub-setup.c:783
+#: util/i386/pc/grub-setup.c:788
 msgid "cannot guess the root device. Specify the option `--root-device'"
 msgstr ""
 "tidak dapat menebak perangkat root. Spesifikasikan pilihan ``--root-device''."
 
-#: util/grub.d/10_kfreebsd.in:47
-msgid "%s, with kFreeBSD %s"
-msgstr "%s, dengan kFreeBSD %s"
-
-#: util/grub.d/10_kfreebsd.in:55
-msgid "Loading kernel of FreeBSD %s ..."
-msgstr "Memuat kernel dari FreeBSD %s ..."
-
-#: util/grub.d/10_linux.in:60
-msgid "%s, with Linux %s (recovery mode)"
-msgstr "%s, dengan Linux %s (mode penyembuhan)"
-
-#: util/grub.d/10_linux.in:62
-msgid "%s, with Linux %s"
-msgstr "%s, dengan Linux %s"
-
-#: util/grub.d/10_linux.in:87
-msgid "Loading Linux %s ..."
-msgstr "Memuat Linux %s ..."
-
-#: util/grub.d/10_linux.in:92
-msgid "Loading initial ramdisk ..."
-msgstr "Memuat inisial ramdisk ..."
-
 #~ msgid "Load XNU ramdisk. It will be seen as md0."
 #~ msgstr "Muat XNU ramdisk. Ini akan kelihatan seperti md0."
+
+#~ msgid "no DOS-style partitions found"
+#~ msgstr "tidak ditemukan gaya partisi DOS"
+
+#~ msgid "%s, with kFreeBSD %s"
+#~ msgstr "%s, dengan kFreeBSD %s"
+
+#~ msgid "Loading kernel of FreeBSD %s ..."
+#~ msgstr "Memuat kernel dari FreeBSD %s ..."
+
+#~ msgid "%s, with Linux %s (recovery mode)"
+#~ msgstr "%s, dengan Linux %s (mode penyembuhan)"
+
+#~ msgid "%s, with Linux %s"
+#~ msgstr "%s, dengan Linux %s"
+
+#~ msgid "Loading Linux %s ..."
+#~ msgstr "Memuat Linux %s ..."
+
+#~ msgid "Loading initial ramdisk ..."
+#~ msgstr "Memuat inisial ramdisk ..."
 
 #~ msgid "A boot catalog exists and appears corrupted.\n"
 #~ msgstr "Sebuah katalog boot ada dan mungkin terkorupsi.\n"
