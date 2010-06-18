@@ -2,7 +2,15 @@ Index: b/util/grub.d/00_header.in
 ===================================================================
 --- a/util/grub.d/00_header.in
 +++ b/util/grub.d/00_header.in
-@@ -75,6 +75,11 @@
+@@ -44,6 +44,7 @@
+ 
+ cat << EOF
+ if [ -s \$prefix/grubenv ]; then
++  set have_grubenv=true
+   load_env
+ fi
+ EOF
+@@ -75,6 +76,11 @@
      save_env saved_entry
    fi
  }
@@ -14,7 +22,7 @@ Index: b/util/grub.d/00_header.in
  EOF
  
  serial=0;
-@@ -207,7 +212,11 @@
+@@ -207,7 +213,11 @@
  make_timeout ()
  {
      cat << EOF

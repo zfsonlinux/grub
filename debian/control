@@ -132,10 +132,10 @@ Description: GRand Unified Bootloader, version 2 (Coreboot version)
 
 Package: grub-efi-ia32
 Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64
-Depends: ${shlibs:Depends}, grub-common (= ${binary:Version}), ${misc:Depends}, ucf
+Depends: ${shlibs:Depends}, grub-common (= ${binary:Version}), ${misc:Depends}, ucf, efibootmgr
 Replaces: grub, grub-legacy, grub2 (<< ${source:Version}), grub-common (<< 1.97~beta1-1ubuntu4), grub-efi, grub-efi-amd64, grub-pc, grub-coreboot, grub-ieee1275
 Conflicts: grub (<< 0.97-54), grub-legacy, grub-efi-amd64, grub-pc, grub-coreboot, grub-ieee1275
-Suggests: os-prober, efibootmgr
+Suggests: os-prober
 Description: GRand Unified Bootloader, version 2 (EFI-IA32 version)
  GRUB is a portable, powerful bootloader.  This version of GRUB is based on a
  cleaner design than its predecessors, and provides the following new features:
@@ -152,10 +152,10 @@ Description: GRand Unified Bootloader, version 2 (EFI-IA32 version)
 
 Package: grub-efi-amd64
 Architecture: i386 kopensolaris-i386 amd64 kfreebsd-amd64
-Depends: ${shlibs:Depends}, grub-common (= ${binary:Version}), ${misc:Depends}, ucf
+Depends: ${shlibs:Depends}, grub-common (= ${binary:Version}), ${misc:Depends}, ucf, efibootmgr
 Replaces: grub, grub-legacy, grub2 (<< ${source:Version}), grub-common (<< 1.97~beta1-1ubuntu4), grub-pc, grub-efi-ia32, grub-coreboot, grub-ieee1275
 Conflicts: grub, grub-legacy, grub-efi-ia32, grub-coreboot, grub-ieee1275
-Suggests: os-prober, efibootmgr
+Suggests: os-prober
 Description: GRand Unified Bootloader, version 2 (EFI-AMD64 version)
  GRUB is a portable, powerful bootloader.  This version of GRUB is based on a
  cleaner design than its predecessors, and provides the following new features:

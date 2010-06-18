@@ -31,3 +31,4 @@
 967_drive_probe.diff
 968_hostdisk_hd.diff
 969_qemu.diff
+970_efi_install.diff

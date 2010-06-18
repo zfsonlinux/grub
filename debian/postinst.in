@@ -379,6 +379,12 @@ case "$1" in
         fi
 
       ;;
+
+      grub-efi-ia32|grub-efi-amd64)
+        if [ -d /boot/efi/EFI/ubuntu ]; then
+          grub-install
+        fi
+      ;;
     esac
 
     # If grub.cfg has been generated, update it.
