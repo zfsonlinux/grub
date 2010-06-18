@@ -1,3 +1,17 @@
+grub2 (1.98+20100614-2ubuntu2) maverick; urgency=low
+
+  * Set have_grubenv=true when $prefix/grubenv exists, which should fix
+    recordfail.  This was lost as part of the savedefault upstream merge.
+  * Extend the EFI version of grub-install to be able to install into an EFI
+    System Partition mounted on /boot/efi in a location that complies with
+    the EFI specification.
+  * Upgrade the installed core image when upgrading grub-efi-ia32 or
+    grub-efi-amd64, although only if /boot/efi/EFI/ubuntu already exists.
+  * Make grub-efi-ia32 and grub-efi-amd64 depend on efibootmgr so that
+    grub-install works properly.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 18 Jun 2010 15:19:03 +0100
+
 grub2 (1.98+20100614-2ubuntu1) maverick; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:
