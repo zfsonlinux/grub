@@ -1,3 +1,28 @@
+grub2 (1.98+20100617-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Fix i386-pc prefix handling with nested partitions (closes: #585068).
+
+  * When running grub-pc.postinst from upgrade-from-grub-legacy, tell it to
+    disregard the fact that /boot/grub/stage2 and /boot/grub/menu.lst still
+    exist (closes: #550477).
+  * Touch a marker file when grub-install is run but GRUB Legacy files are
+    still around.  If that marker file is present, pretend that GRUB Legacy
+    files are missing when upgrading.
+  * If GRUB Legacy files are present when upgrading, scan boot sectors of
+    all disks for GRUB 2.  If we find GRUB 2 installed anywhere, then ask
+    the user if they want to finish conversion to GRUB 2, and warn them that
+    not doing so may render the system unbootable (closes: #586143).
+  * Leaving grub-pc/install_devices empty makes sense in some situations,
+    but more often than not is a mistake.  On the other hand, automatically
+    selecting all disk devices would upset some people too.  Compromise by
+    simply asking for explicit confirmation if grub-pc/install_devices is
+    left empty, defaulting to false so that simply selecting all the
+    defaults in debconf can't leave you with an unbootable system (closes:
+    #547944, #557425).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 19 Jun 2010 01:31:40 +0100
+
 grub2 (1.98+20100614-2) unstable; urgency=low
 
   * Build-depend on gcc-4.4-multilib on i386 and kopensolaris-i386 too, in
