@@ -56,7 +56,13 @@ Index: b/util/i386/efi/grub-install.in
      *)
  	echo "Unrecognized option \`$option'" 1>&2
  	usage
-@@ -141,6 +152,7 @@
+@@ -138,9 +149,13 @@
+     esac
+ done
+ 
++# for make_system_path_relative_to_its_root()
++. ${libdir}/grub/grub-mkconfig_lib
++
  # If the debugging feature is enabled, print commands.
  if test $debug = yes; then
      set -x
@@ -64,7 +70,7 @@ Index: b/util/i386/efi/grub-install.in
  fi
  
  # Initialize these directories here, since ROOTDIR was initialized.
-@@ -177,6 +189,106 @@
+@@ -177,6 +192,106 @@
      exit 1
  fi
  
@@ -171,7 +177,7 @@ Index: b/util/i386/efi/grub-install.in
  # Create the GRUB directory if it is not present.
  mkdir -p "$grubdir" || exit 1
  
-@@ -221,13 +333,16 @@
+@@ -221,13 +336,16 @@
      fi
  done
  
@@ -190,7 +196,7 @@ Index: b/util/i386/efi/grub-install.in
      echo "${grubdir} doesn't look like an EFI partition." 1>&2
      exit 1
  fi
-@@ -236,17 +351,86 @@
+@@ -236,17 +354,86 @@
  # this command is allowed to fail (--target=fs already grants us that the
  # filesystem will be accessible).
  partmap_module=
@@ -251,7 +257,7 @@ Index: b/util/i386/efi/grub-install.in
 +    # On Linux, we need the efivars kernel modules.
 +    case "$host_os" in
 +    linux*)
-+	modprobe -q efivars || true
++	modprobe -q efivars 2>/dev/null || true
 +	;;
 +    esac
 +
