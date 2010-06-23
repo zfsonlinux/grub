@@ -1,3 +1,11 @@
+grub2 (1.98+20100614-2ubuntu3) maverick; urgency=low
+
+  * Hide errors from grub-install if efivars is built-in.
+  * Source /usr/lib/grub/grub-mkconfig_lib in EFI grub-install, for
+    make_system_path_relative_to_its_root.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 23 Jun 2010 08:53:25 +0100
+
 grub2 (1.98+20100614-2ubuntu2) maverick; urgency=low
 
   * Set have_grubenv=true when $prefix/grubenv exists, which should fix
