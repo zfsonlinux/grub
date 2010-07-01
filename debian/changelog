@@ -1,3 +1,16 @@
+grub2 (1.98+20100614-2ubuntu4) maverick; urgency=low
+
+  * Rearrange postinst install_devices logic so that preparatory code is run
+    only once and the while loop only encloses actual asking of questions,
+    and so that the question being asked is always marked for redisplay when
+    going round the while loop again (LP: #580408).
+  * Only offer partitions containing /, /boot, or /boot/grub for
+    grub-install; installing to other partitions may have harmful effects
+    such as making Windows unbootable, and installing GRUB to every single
+    partition is likely to result in confusion anyway (LP: #576724).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 01 Jul 2010 18:26:37 +0100
+
 grub2 (1.98+20100614-2ubuntu3) maverick; urgency=low
 
   * Hide errors from grub-install if efivars is built-in.

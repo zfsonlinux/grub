@@ -37,9 +37,10 @@ Description: GRUB install devices:
  If you're unsure which drive is designated as boot drive by your BIOS, it is
  often a good idea to install GRUB to all of them.
  .
- Note: It is possible to install GRUB to partition boot records as well.
- However, this forces GRUB to use the blocklist mechanism, which makes it
- less reliable, and therefore is not recommended.
+ Note: It is possible to install GRUB to partition boot records as well, and
+ some appropriate partitions are offered here.  However, this forces GRUB to
+ use the blocklist mechanism, which makes it less reliable, and therefore is
+ not recommended.
 
 Template: grub-pc/install_devices_disks_changed
 Type: multiselect
@@ -57,9 +58,10 @@ Description: GRUB install devices:
  If you're unsure which drive is designated as boot drive by your BIOS, it is
  often a good idea to install GRUB to all of them.
  .
- Note: It is possible to install GRUB to partition boot records as well.
- However, this forces GRUB to use the blocklist mechanism, which makes it
- less reliable, and therefore is not recommended.
+ Note: It is possible to install GRUB to partition boot records as well, and
+ some appropriate partitions are offered here.  However, this forces GRUB to
+ use the blocklist mechanism, which makes it less reliable, and therefore is
+ not recommended.
 
 Template: grub-pc/disk_description
 Type: text
@@ -70,7 +72,7 @@ _Description: ${DEVICE} (${SIZE} MB, ${MODEL})
 Template: grub-pc/partition_description
 Type: text
 # The "-" is used to indicate indentation. Leading spaces may not work.
-Description: - ${DEVICE} (${SIZE} MB)
+Description: - ${DEVICE} (${SIZE} MB, ${PATH})
 
 Template: grub-pc/install_devices_failed
 Type: boolean
