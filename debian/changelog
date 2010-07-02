@@ -1,3 +1,66 @@
+grub2 (1.98+20100702-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Use video functions in Linux loader rather than hardcoding UGA; load
+      all available video backends (closes: #565576, probably).
+    - Add support for initrd images on Fedora 13.
+    - Output grub.cfg stanzas for Xen (closes: #505517).
+    - Add 'cat --dos' option to treat DOS-style "\r\n" line endings as
+      simple newlines (closes: #586358).
+    - Change grub-mkdevicemap to emit /dev/disk/by-id/ names where possible
+      on Linux.
+    - Return CF correctly in mmap e820/e801 int15 hook (closes: #584846).
+    - The info documentation now has no broken references, although of
+      course it could still use more work (closes: #553460).
+    - Support GRUB_BADRAM in grub-mkconfig.
+    - Skip LVM snapshots (closes: #574863).
+
+  [ Colin Watson ]
+  * Mention grub-rescue-usb.img in grub-rescue-pc description (closes:
+    #586462).
+  * Add instructions for using grub-rescue-usb.img (closes: #586463).
+  * Remove /usr/lib/grub/mips-* from grub-common rather than the incorrect
+    /usr/lib/grub/mipsel-*, so that it stops clashing with grub-yeeloong;
+    add a versioned Replaces to grub-yeeloong just in case (closes:
+    #586526).
+  * Remove qemu-system build-dependency on hurd-i386, where it doesn't seem
+    to exist.  Disable tests if qemu-system-i386 isn't available.
+  * Mark "upgrade-from-grub-legacy" paragraph in
+    grub-pc/chainload_from_menu.lst as untranslatable.
+  * Update Homepage field (thanks, Sedat Dilek).
+  * On Linux, if /boot/grub/device.map exists on upgrade to this version,
+    regenerate it to use stable device names in /dev/disk/by-id/.  If it had
+    more than one entry, then display a critical-priority debconf note
+    (sorry, but it's better than silently breaking boot menu entries)
+    advising people to check custom boot menu entries and update them if
+    necessary (closes: #583271).
+  * Use 'set -e' rather than '#! /bin/sh -e' or '#! /bin/bash -e', to avoid
+    accidents when debugging with 'sh -x'.
+  * Store grub-pc/install_devices as persistent device names under
+    /dev/disk/by-id/ (closes: #554790).  Migrate previous device names to
+    that, with explicit confirmation in non-trivial cases to make sure we
+    got the right ones.  If the devices we were told to install to ever go
+    away, ask again.  (This is based on the implementation in Ubuntu.)
+  * If grub-install fails during upgrade-from-grub-legacy, allow the user to
+    try again with a different device, but failing that cancel the upgrade
+    (closes: #587790).
+  * Remove numbering from patch files.  The order is now explicit in a quilt
+    series file, and renumbering from time to time is tedious.
+
+  [ Updated translations ]
+  * Ukrainian (uk.po) by Yatsenko Alexandr / Borys Yanovych (closes:
+    #586611).
+  * Indonesian (id.po) by Arief S Fitrianto (closes: #586799).
+  * Swedish (sv.po) by Martin Bagge (closes: #586827).
+  * Persian (fa.po) by Behrad Eslamifar (closes: #587085).
+  * French (fr.po) by Christian Perrier (closes: #587383).
+  * Galician (gl.po) by Jorge Barreiro (closes: #587796).
+
+  [ Robert Millan ]
+  * Add commented GRUB_BADRAM example in debian/default/grub.
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 02 Jul 2010 17:42:56 +0100
+
 grub2 (1.98+20100617-1) unstable; urgency=low
 
   * New Bazaar snapshot.
@@ -12,7 +75,8 @@ grub2 (1.98+20100617-1) unstable; urgency=low
   * If GRUB Legacy files are present when upgrading, scan boot sectors of
     all disks for GRUB 2.  If we find GRUB 2 installed anywhere, then ask
     the user if they want to finish conversion to GRUB 2, and warn them that
-    not doing so may render the system unbootable (closes: #586143).
+    not doing so may render the system unbootable (closes: #586143).  Thanks
+    to Sedat Dilek for helping to narrow down this bug.
   * Leaving grub-pc/install_devices empty makes sense in some situations,
     but more often than not is a mistake.  On the other hand, automatically
     selecting all disk devices would upset some people too.  Compromise by
