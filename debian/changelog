@@ -1,3 +1,172 @@
+grub2 (1.98+20100705-1ubuntu1) maverick; urgency=low
+
+  * Resynchronise with Debian.  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script: title,
+      recovery mode, quiet option, tweak how memtest86+ is displayed, and
+      use UUIDs where appropriate.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel= options if kdump and makedumpfile are available.
+    - If other operating systems are installed, then automatically unhide
+      the menu.  Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus
+      if available to check whether Shift is pressed.  If it is, show the
+      menu, otherwise boot immediately.  If keystatus is not available, then
+      fall back to a short delay interruptible with Escape.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Don't display introductory message about line editing unless we're
+      actually offering a shell prompt.  Don't clear the screen just before
+      booting if we never drew the menu in the first place.
+    - Remove some verbose messages printed before reading the configuration
+      file.
+    - Suppress progress messages as the kernel and initrd load for
+      non-recovery kernel menu entries.
+    - Keep the loopback file open so that subsequent changes to the "root"
+      environment variable don't affect it.
+    - Change prepare_grub_to_access_device to handle filesystems
+      loop-mounted on file images.
+    - Ignore devices loop-mounted from files in 10_linux.
+    - Show the boot menu if the previous boot failed, that is if it failed
+      to get to the end of one of the normal runlevels.
+    - Handle RAID devices containing virtio components.
+    - Don't generate /boot/grub/device.map during grub-install or
+      grub-mkconfig by default.
+    - Adjust upgrade version checks for Ubuntu.
+    - Change priority to optional to match the priority of grub.
+    - Don't display "GRUB loading" unless Shift is held down.
+    - Adjust versions of grub-doc and grub-legacy-doc conflicts to tolerate
+      our backport of the grub-doc split.
+    - Fix LVM/RAID probing in the absence of /boot/grub/device.map.
+    - Look for .mo files in /usr/share/locale-langpack as well, in
+      preference.
+    - Make sure GRUB_TIMEOUT isn't quoted unnecessarily.
+    - Probe all devices in 'grub-probe --target=drive' if
+      /boot/grub/device.map is missing.
+    - Adjust hostdisk id for hard disks, allowing grub-setup to use its
+      standard workaround for broken BIOSes.
+    - grub-common Breaks: lupin-support (<< 0.30) due to a grub-mkimage
+      syntax change.
+    - Build-depend on qemu-kvm rather than qemu-system for grub-pc tests.
+    - Use qemu rather than qemu-system-i386.
+    - Extend the EFI version of grub-install to be able to install into an
+      EFI System Partition mounted on /boot/efi in a location that complies
+      with the EFI specification.
+    - Upgrade the installed core image when upgrading grub-efi-ia32 or
+      grub-efi-amd64, although only if /boot/efi/EFI/ubuntu already exists.
+    - Make grub-efi-ia32 and grub-efi-amd64 depend on efibootmgr so that
+      grub-install works properly.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 05 Jul 2010 10:28:07 +0100
+
+grub2 (1.98+20100705-1) unstable; urgency=medium
+
+  * New Bazaar snapshot.
+    - Bidi and diacritics support.
+      + Use terminfo for ieee1275 terminals (closes: #586953).
+    - Don't use empty grub_device in EFI grub-install (closes: #587838).
+    - Fix grub-setup core.img comparison when not embedding (thanks, Matt
+      Kraai and M. Vefa Bicakci; closes: #586621).
+
+  * Update Source: in debian/copyright (thanks, Jörg Sommer).
+  * Convert by-id disk device names from device.map to traditional device
+    names for display (closes: #587951).
+  * Set urgency=medium.  We've cleared out most of the apparent regressions
+    at this point, and #550704 is getting more and more urgent to fix in
+    testing.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 05 Jul 2010 02:09:58 +0100
+
+grub2 (1.98+20100702-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Use video functions in Linux loader rather than hardcoding UGA; load
+      all available video backends (closes: #565576, probably).
+    - Add support for initrd images on Fedora 13.
+    - Output grub.cfg stanzas for Xen (closes: #505517).
+    - Add 'cat --dos' option to treat DOS-style "\r\n" line endings as
+      simple newlines (closes: #586358).
+    - Change grub-mkdevicemap to emit /dev/disk/by-id/ names where possible
+      on Linux.
+    - Return CF correctly in mmap e820/e801 int15 hook (closes: #584846).
+    - The info documentation now has no broken references, although of
+      course it could still use more work (closes: #553460).
+    - Support GRUB_BADRAM in grub-mkconfig.
+    - Skip LVM snapshots (closes: #574863).
+
+  [ Colin Watson ]
+  * Mention grub-rescue-usb.img in grub-rescue-pc description (closes:
+    #586462).
+  * Add instructions for using grub-rescue-usb.img (closes: #586463).
+  * Remove /usr/lib/grub/mips-* from grub-common rather than the incorrect
+    /usr/lib/grub/mipsel-*, so that it stops clashing with grub-yeeloong;
+    add a versioned Replaces to grub-yeeloong just in case (closes:
+    #586526).
+  * Remove qemu-system build-dependency on hurd-i386, where it doesn't seem
+    to exist.  Disable tests if qemu-system-i386 isn't available.
+  * Mark "upgrade-from-grub-legacy" paragraph in
+    grub-pc/chainload_from_menu.lst as untranslatable.
+  * Update Homepage field (thanks, Sedat Dilek).
+  * On Linux, if /boot/grub/device.map exists on upgrade to this version,
+    regenerate it to use stable device names in /dev/disk/by-id/.  If it had
+    more than one entry, then display a critical-priority debconf note
+    (sorry, but it's better than silently breaking boot menu entries)
+    advising people to check custom boot menu entries and update them if
+    necessary (closes: #583271).
+  * Use 'set -e' rather than '#! /bin/sh -e' or '#! /bin/bash -e', to avoid
+    accidents when debugging with 'sh -x'.
+  * Store grub-pc/install_devices as persistent device names under
+    /dev/disk/by-id/ (closes: #554790).  Migrate previous device names to
+    that, with explicit confirmation in non-trivial cases to make sure we
+    got the right ones.  If the devices we were told to install to ever go
+    away, ask again.  (This is based on the implementation in Ubuntu.)
+  * If grub-install fails during upgrade-from-grub-legacy, allow the user to
+    try again with a different device, but failing that cancel the upgrade
+    (closes: #587790).
+  * Remove numbering from patch files.  The order is now explicit in a quilt
+    series file, and renumbering from time to time is tedious.
+
+  [ Updated translations ]
+  * Ukrainian (uk.po) by Yatsenko Alexandr / Borys Yanovych (closes:
+    #586611).
+  * Indonesian (id.po) by Arief S Fitrianto (closes: #586799).
+  * Swedish (sv.po) by Martin Bagge (closes: #586827).
+  * Persian (fa.po) by Behrad Eslamifar (closes: #587085).
+  * French (fr.po) by Christian Perrier (closes: #587383).
+  * Galician (gl.po) by Jorge Barreiro (closes: #587796).
+
+  [ Robert Millan ]
+  * Add commented GRUB_BADRAM example in debian/default/grub.
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 02 Jul 2010 17:42:56 +0100
+
+grub2 (1.98+20100617-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Fix i386-pc prefix handling with nested partitions (closes: #585068).
+
+  * When running grub-pc.postinst from upgrade-from-grub-legacy, tell it to
+    disregard the fact that /boot/grub/stage2 and /boot/grub/menu.lst still
+    exist (closes: #550477).
+  * Touch a marker file when grub-install is run but GRUB Legacy files are
+    still around.  If that marker file is present, pretend that GRUB Legacy
+    files are missing when upgrading.
+  * If GRUB Legacy files are present when upgrading, scan boot sectors of
+    all disks for GRUB 2.  If we find GRUB 2 installed anywhere, then ask
+    the user if they want to finish conversion to GRUB 2, and warn them that
+    not doing so may render the system unbootable (closes: #586143).  Thanks
+    to Sedat Dilek for helping to narrow down this bug.
+  * Leaving grub-pc/install_devices empty makes sense in some situations,
+    but more often than not is a mistake.  On the other hand, automatically
+    selecting all disk devices would upset some people too.  Compromise by
+    simply asking for explicit confirmation if grub-pc/install_devices is
+    left empty, defaulting to false so that simply selecting all the
+    defaults in debconf can't leave you with an unbootable system (closes:
+    #547944, #557425).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 19 Jun 2010 01:31:40 +0100
+
 grub2 (1.98+20100614-2ubuntu4) maverick; urgency=low
 
   * Rearrange postinst install_devices logic so that preparatory code is run
