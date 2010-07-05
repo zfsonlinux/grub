@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub-1.97+20100124\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-03 00:27+0100\n"
+"POT-Creation-Date: 2010-06-19 01:35+0100\n"
 "PO-Revision-Date: 2010-04-04 11:28+0100\n"
 "Last-Translator: Jakub Bogusz <qboosh@pld-linux.org>\n"
 "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
@@ -79,7 +79,7 @@ msgstr "Wczytuje tablice ACPI komputera i tablice podane w parametrach."
 
 #: commands/blocklist.c:113 commands/cat.c:82 commands/configfile.c:57
 #: commands/configfile.c:60 commands/configfile.c:65 commands/crc.c:64
-#: commands/minicmd.c:357 loader/i386/bsd.c:1287 loader/i386/bsd.c:1291
+#: commands/minicmd.c:353 loader/i386/bsd.c:1287 loader/i386/bsd.c:1291
 #: loader/i386/bsd.c:1295
 msgid "FILE"
 msgstr "PLIK"
@@ -92,7 +92,7 @@ msgstr "Wyświetla listę bloków."
 msgid "Boot an operating system."
 msgstr "Uruchamia system operacyjny."
 
-#: commands/cat.c:82 commands/minicmd.c:357
+#: commands/cat.c:82 commands/minicmd.c:353
 msgid "Show the contents of a file."
 msgstr "Wyświetla zawartość pliku."
 
@@ -175,14 +175,6 @@ msgstr ""
 "Wyłącza komputer. To polecenie nie działa ze wszystkimi implementacjami "
 "oprogramowania sprzętu."
 
-#: commands/handler.c:94
-msgid "[class [handler]]"
-msgstr "[klasa [program obsługujący]]"
-
-#: commands/handler.c:95
-msgid "List or select a handler."
-msgstr "Wyświetla listę programów obsługujących lub wybiera jeden."
-
 #: commands/hdparm.c:30
 msgid ""
 "Set Advanced Power Management\n"
@@ -251,15 +243,15 @@ msgstr "[OPCJE] DYSK"
 msgid "Get/set ATA disk parameters."
 msgstr "Uzyskuje/ustawia parametry dysku ATA."
 
-#: commands/help.c:103 lib/arg.c:110
+#: commands/help.c:112 lib/arg.c:110
 msgid "Usage:"
 msgstr "Użycie:"
 
-#: commands/help.c:136
+#: commands/help.c:129
 msgid "[PATTERN ...]"
 msgstr "[WZORZEC...]"
 
-#: commands/help.c:137
+#: commands/help.c:130
 msgid "Show a help message."
 msgstr "Wyświetla komunikat pomocy."
 
@@ -417,7 +409,7 @@ msgid "Save read value into variable VARNAME."
 msgstr "Zapisuje odczytaną wartość do zmiennej NAZWA_ZMIENNEJ."
 
 #: commands/memrw.c:123 commands/memrw.c:126 commands/memrw.c:129
-#: commands/minicmd.c:366
+#: commands/minicmd.c:362
 msgid "ADDR"
 msgstr "ADRES"
 
@@ -449,39 +441,39 @@ msgstr "Zapisuje WARTOŚĆ słowa do adresu."
 msgid "Write dword VALUE to ADDR."
 msgstr "Zapisuje WARTOŚĆ słowa podwójnego do ADRESU."
 
-#: commands/minicmd.c:360
+#: commands/minicmd.c:356
 msgid "Show this message."
 msgstr "Wyświetla ten komunikat."
 
-#: commands/minicmd.c:363 commands/probe.c:154
+#: commands/minicmd.c:359 commands/probe.c:154
 msgid "[DEVICE]"
 msgstr "[URZĄDZENIE]"
 
-#: commands/minicmd.c:363
+#: commands/minicmd.c:359
 msgid "Set the root device."
 msgstr "Ustawia urządzenie główne."
 
-#: commands/minicmd.c:366
+#: commands/minicmd.c:362
 msgid "Dump memory."
 msgstr "Zrzuca pamięć."
 
-#: commands/minicmd.c:369
+#: commands/minicmd.c:365
 msgid "MODULE"
 msgstr "MODUŁ"
 
-#: commands/minicmd.c:369
+#: commands/minicmd.c:365
 msgid "Remove a module."
 msgstr "Usuwa moduł."
 
-#: commands/minicmd.c:372
+#: commands/minicmd.c:368
 msgid "Show loaded modules."
 msgstr "Wyświetla wczytane moduły."
 
-#: commands/minicmd.c:375
+#: commands/minicmd.c:371
 msgid "Exit from GRUB."
 msgstr "Kończy działanie programu GRUB."
 
-#: commands/minicmd.c:378
+#: commands/minicmd.c:374
 msgid "Clear the screen."
 msgstr "Czyści ekran."
 
@@ -828,11 +820,11 @@ msgstr "Wczytuje obraz powitalny dla systemu XNU."
 msgid "Load XNU hibernate image."
 msgstr "Wczytuje obraz hibernacji systemu XNU."
 
-#: normal/auth.c:233
+#: normal/auth.c:217
 msgid "Enter username: "
 msgstr "Nazwa użytkownika: "
 
-#: normal/auth.c:238
+#: normal/auth.c:222
 msgid "Enter password: "
 msgstr "Hasło: "
 
@@ -855,12 +847,12 @@ msgstr "Ostrzeżenie: nieprawidłowy kolor tła \"%s\"\n"
 msgid "not loaded"
 msgstr "nie wczytano"
 
-#: normal/main.c:447
+#: normal/main.c:415
 #, c-format
 msgid "GNU GRUB  version %s"
 msgstr "GNU GRUB  wersja %s"
 
-#: normal/main.c:585
+#: normal/main.c:552
 #, c-format
 msgid ""
 "Minimal BASH-like line editing is supported. For the first word, TAB lists "
@@ -872,47 +864,47 @@ msgstr ""
 "wpisaniu pierwszego słowa. W innych miejscach naciśnięcie klawisza Tab "
 "wyświetla listę możliwych uzupełnień urządzeń lub plików. %s"
 
-#: normal/main.c:588
+#: normal/main.c:555
 msgid "ESC at any time exits."
 msgstr "Wciśnięcie klawisza Esc w każdej chwili powoduje zakończenie."
 
-#: normal/main.c:708
+#: normal/main.c:670
 msgid "Enter normal mode."
 msgstr ""
 
-#: normal/main.c:710
+#: normal/main.c:672
 msgid "Exit from normal mode."
 msgstr ""
 
-#: normal/menu_entry.c:1060
+#: normal/menu_entry.c:1061
 msgid "Possible commands are:"
 msgstr "Możliwe polecenia:"
 
-#: normal/menu_entry.c:1064
+#: normal/menu_entry.c:1065
 msgid "Possible devices are:"
 msgstr "Możliwe urządzenia:"
 
-#: normal/menu_entry.c:1068
+#: normal/menu_entry.c:1069
 msgid "Possible files are:"
 msgstr "Możliwe pliki:"
 
-#: normal/menu_entry.c:1072
+#: normal/menu_entry.c:1073
 msgid "Possible partitions are:"
 msgstr "Możliwe partycje:"
 
-#: normal/menu_entry.c:1076
+#: normal/menu_entry.c:1077
 msgid "Possible arguments are:"
 msgstr "Możliwe parametry:"
 
-#: normal/menu_entry.c:1080
+#: normal/menu_entry.c:1081
 msgid "Possible things are:"
 msgstr "Możliwe są:"
 
-#: normal/menu_entry.c:1184
+#: normal/menu_entry.c:1185
 msgid "Booting a command list"
 msgstr "Uruchamianie listy poleceń"
 
-#: normal/menu_entry.c:1397
+#: normal/menu_entry.c:1398
 msgid "Press any key to continue..."
 msgstr "Naciśnięcie dowolnego klawisza kontynuuje..."
 
@@ -1064,7 +1056,7 @@ msgstr "obraz core jest za duży"
 msgid "diskboot.img size must be %u bytes"
 msgstr "rozmiar pliku diskboot.img musi wynosić %u bajtów"
 
-#: util/grub-mkimage.c:1168 util/i386/pc/grub-setup.c:607
+#: util/grub-mkimage.c:1168 util/i386/pc/grub-setup.c:619
 #, c-format
 msgid "Try `%s --help' for more information.\n"
 msgstr "\"%s --help\" wyświetla więcej informacji.\n"
@@ -1110,29 +1102,29 @@ msgstr ""
 msgid "cannot open %s"
 msgstr "nie można otworzyć %s"
 
-#: util/i386/pc/grub-setup.c:166
+#: util/i386/pc/grub-setup.c:164
 msgid "the first sector of the core file is not sector-aligned"
 msgstr "pierwszy sektor pliku core nie jest wyrównany do sektora"
 
-#: util/i386/pc/grub-setup.c:180
+#: util/i386/pc/grub-setup.c:178
 msgid "non-sector-aligned data is found in the core file"
 msgstr "odnaleziono dane nie wyrównane do sektora w pliku core"
 
-#: util/i386/pc/grub-setup.c:194
+#: util/i386/pc/grub-setup.c:192
 msgid "the sectors of the core file are too fragmented"
 msgstr "sektory pliku core są zbyt pofragmentowane"
 
-#: util/i386/pc/grub-setup.c:205
+#: util/i386/pc/grub-setup.c:203
 #, c-format
 msgid "the size of `%s' is not %u"
 msgstr "rozmiar \"%s\" nie wynosi %u"
 
-#: util/i386/pc/grub-setup.c:222
+#: util/i386/pc/grub-setup.c:220
 #, c-format
 msgid "the size of `%s' is too small"
 msgstr "rozmiar \"%s\" jest za mały"
 
-#: util/i386/pc/grub-setup.c:224
+#: util/i386/pc/grub-setup.c:222
 #, c-format
 msgid "the size of `%s' is too large"
 msgstr "rozmiar \"%s\" jest za duży"
@@ -1158,13 +1150,13 @@ msgstr ""
 "program grub-setup (parametr --skip-fs-probe wyłącza to sprawdzanie, co "
 "należy używać na własne ryzyko)"
 
-#: util/i386/pc/grub-setup.c:327 util/i386/pc/grub-setup.c:354
+#: util/i386/pc/grub-setup.c:339 util/i386/pc/grub-setup.c:366
 msgid ""
 "Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
 msgstr ""
 "Próba zainstalowania programu GRUB na dysku bez partycji. To jest ZŁY pomysł."
 
-#: util/i386/pc/grub-setup.c:333
+#: util/i386/pc/grub-setup.c:345
 msgid ""
 "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD "
 "idea."
@@ -1172,11 +1164,11 @@ msgstr ""
 "Próba zainstalowania programu GRUB na partycji zamiast MBR. To jest ZŁY "
 "pomysł."
 
-#: util/i386/pc/grub-setup.c:363
+#: util/i386/pc/grub-setup.c:375
 msgid "No DOS-style partitions found"
 msgstr "Nie odnaleziono partycji w stylu systemu DOS"
 
-#: util/i386/pc/grub-setup.c:368
+#: util/i386/pc/grub-setup.c:380
 msgid ""
 "This msdos-style partition label has no post-MBR gap; embedding won't be "
 "possible!"
@@ -1184,7 +1176,7 @@ msgstr ""
 "Ta etykieta partycji w stylu systemu MS-DOS nie posiada odstępu po MBR; "
 "osadzanie nie będzie możliwe."
 
-#: util/i386/pc/grub-setup.c:370
+#: util/i386/pc/grub-setup.c:382
 msgid ""
 "This GPT partition label has no BIOS Boot Partition; embedding won't be "
 "possible!"
@@ -1192,17 +1184,17 @@ msgstr ""
 "Ta etykieta partycji GPT nie posiada partycji startowej BIOS-u; osadzanie "
 "nie będzie możliwe."
 
-#: util/i386/pc/grub-setup.c:377
+#: util/i386/pc/grub-setup.c:389
 msgid "Your core.img is unusually large.  It won't fit in the embedding area."
 msgstr ""
 "Plik core.img jest niezwykle duży. Nie zmieści się w obszarze osadzania."
 
-#: util/i386/pc/grub-setup.c:379
+#: util/i386/pc/grub-setup.c:391
 msgid "Your embedding area is unusually small.  core.img won't fit in it."
 msgstr ""
 "Obszar osadzania jest niezwykle mały. Plik core.img nie zmieści się w nim."
 
-#: util/i386/pc/grub-setup.c:424
+#: util/i386/pc/grub-setup.c:436
 msgid ""
 "embedding is not possible, but this is required when the root device is on a "
 "RAID array or LVM volume"
@@ -1210,7 +1202,7 @@ msgstr ""
 "osadzanie nie jest możliwe, ale jest wymagane, kiedy urządzenie główne "
 "znajduje się w macierzy RAID lub woluminie LVM"
 
-#: util/i386/pc/grub-setup.c:427
+#: util/i386/pc/grub-setup.c:439
 #, fuzzy
 msgid ""
 "Embedding is not possible.  GRUB can only be installed in this setup by "
@@ -1221,50 +1213,52 @@ msgstr ""
 "ustawieniami tylko używając list blokowania. Jednakże, listy blokowania są "
 "NIEPEWNE, a ich używanie jest niezalecane."
 
-#: util/i386/pc/grub-setup.c:431
+#: util/i386/pc/grub-setup.c:443
 msgid "if you really want blocklists, use --force"
 msgstr ""
 "jeśli na pewno wymagane są listy blokowania, należy użyć parametru --force"
 
-#: util/i386/pc/grub-setup.c:450
+#: util/i386/pc/grub-setup.c:462
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB"
 msgstr "próba odczytania obrazu core \"%s\" z programu GRUB"
 
-#: util/i386/pc/grub-setup.c:451
+#: util/i386/pc/grub-setup.c:463
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB again"
 msgstr "ponowna próba odczytania obrazu core \"%s\" z programu GRUB"
 
-#: util/i386/pc/grub-setup.c:518
+#: util/i386/pc/grub-setup.c:530
 #, c-format
 msgid "cannot read `%s' correctly"
 msgstr "nie można poprawnie odczytać \"%s\""
 
-#: util/i386/pc/grub-setup.c:531
+#: util/i386/pc/grub-setup.c:543
 msgid "no terminator in the core image"
 msgstr "brak odstępu w obrazie core"
 
-#: util/i386/pc/grub-setup.c:542
+#: util/i386/pc/grub-setup.c:554
 msgid "failed to read the first sector of the core image"
 msgstr "odczytanie pierwszego sektora obrazu core się nie powiodło"
 
-#: util/i386/pc/grub-setup.c:548
+#: util/i386/pc/grub-setup.c:560
 msgid "failed to read the rest sectors of the core image"
 msgstr "odczytanie pozostałych sektorów obrazu core się nie powiodło"
 
-#: util/i386/pc/grub-setup.c:567
+#: util/i386/pc/grub-setup.c:579
 #, c-format
 msgid "cannot open `%s'"
 msgstr "nie można otworzyć \"%s\""
 
-#: util/i386/pc/grub-setup.c:609
-#, c-format
+#: util/i386/pc/grub-setup.c:621
+#, fuzzy, c-format
 msgid ""
 "Usage: %s [OPTION]... DEVICE\n"
 "\n"
 "Set up images to boot from DEVICE.\n"
 "DEVICE must be a GRUB device (e.g. `(hd0,1)').\n"
+"\n"
+"You should not normally run %s directly.  Use grub-install instead.\n"
 "\n"
 "  -b, --boot-image=FILE   use FILE as the boot image [default=%s]\n"
 "  -c, --core-image=FILE   use FILE as the core image [default=%s]\n"
@@ -1300,30 +1294,36 @@ msgstr ""
 "\n"
 "Proszę zgłaszać błędy na adres <%s>.\n"
 
-#: util/i386/pc/grub-setup.c:739
+#: util/i386/pc/grub-setup.c:753
 #, c-format
 msgid "No device is specified.\n"
 msgstr "Nie podano urządzenia.\n"
 
-#: util/i386/pc/grub-setup.c:745
+#: util/i386/pc/grub-setup.c:759
 #, c-format
 msgid "Unknown extra argument `%s'.\n"
 msgstr "Nieznany dodatkowy parametr \"%s\".\n"
 
-#: util/i386/pc/grub-setup.c:762
+#: util/i386/pc/grub-setup.c:776
 #, c-format
 msgid "Invalid device `%s'.\n"
 msgstr "Nieprawidłowe urządzenie \"%s\".\n"
 
-#: util/i386/pc/grub-setup.c:775
+#: util/i386/pc/grub-setup.c:789
 #, c-format
 msgid "invalid root device `%s'"
 msgstr "nieprawidłowe urządzenie startowe \"%s\""
 
-#: util/i386/pc/grub-setup.c:788
+#: util/i386/pc/grub-setup.c:802
 msgid "cannot guess the root device. Specify the option `--root-device'"
 msgstr ""
 "nie można odgadnąć urządzenia głównego. Proszę podać opcję \"--root-device\""
+
+#~ msgid "[class [handler]]"
+#~ msgstr "[klasa [program obsługujący]]"
+
+#~ msgid "List or select a handler."
+#~ msgstr "Wyświetla listę programów obsługujących lub wybiera jeden."
 
 #~ msgid "Load XNU ramdisk. It will be seen as md0."
 #~ msgstr "Wczytuje dysk RAM systemu XNU. Będzie widziany jako urządzenie md0."

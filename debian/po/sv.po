@@ -1,24 +1,27 @@
 # translation of grub2_sv.po to Swedish
 # Swedish translation for grub2.
-# Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc.
+# Copyright (C) 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the grub2 package.
 #
 # Daniel Nylander <po@danielnylander.se>, 2007.
 # Martin Ågren <martin.agren@gmail.com>, 2008, 2009.
+# Martin Bagge <brother@bsnet.se>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: grub2_sv\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2010-02-02 22:17-0800\n"
-"PO-Revision-Date: 2009-09-02 20:53+0200\n"
-"Last-Translator: Martin Ågren <martin.agren@gmail.com>\n"
+"POT-Creation-Date: 2010-07-02 12:55+0100\n"
+"PO-Revision-Date: 2010-06-22 22:32+0100\n"
+"Last-Translator: Martin Bagge <brother@bsnet.se>\n"
 "Language-Team: Swedish <debian-l10n-swedish@lists.debian.org>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: Sweden\n"
 
 #. Type: boolean
 #. Description
@@ -69,12 +72,6 @@ msgstr ""
 "När GRUB 2 ska laddas direkt från huvudstartsektorn, kan detta åstadkommas "
 "genom att (som root) köra följande kommando:"
 
-#. Type: boolean
-#. Description
-#: ../grub-pc.templates.in:2001
-msgid "upgrade-from-grub-legacy"
-msgstr "upgrade-from-grub-legacy"
-
 #. Type: text
 #. Description
 #. Disk sizes are in decimal megabytes, to match how disk manufacturers
@@ -91,7 +88,9 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../grub-pc.templates.in:7001
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:7001 ../grub-pc.templates.in:8001
 msgid "GRUB failed to install to the following devices:"
 msgstr ""
 
@@ -106,12 +105,27 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:8001
-msgid "Continue without installing GRUB?"
+msgid "GRUB installation failed.  Try again?"
 msgstr ""
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:8001
+msgid ""
+"You may be able to install GRUB to some other device, although you should "
+"check that your system will boot from that device.  Otherwise, the upgrade "
+"from GRUB Legacy will be cancelled."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:9001
+msgid "Continue without installing GRUB?"
+msgstr "Fortsätt utan att installera GRUB?"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:9001
 msgid ""
 "You chose not to install GRUB to any devices.  If you continue, the boot "
 "loader may not be properly configured, and when your computer next starts up "
@@ -119,16 +133,68 @@ msgid ""
 "earlier version of GRUB 2 in the boot sector, it may be unable to load "
 "modules or handle the current configuration file."
 msgstr ""
+"Du valde att inte installera GRUB på några enheter. Om du fortsätter kommer "
+"uppstartshanteraren kanske inte att få korrekta inställningar och när ditt "
+"system startar nästa gång kommer det att använda vad som tidigare fanns i "
+"boot-sektorn. Om en tidigare version av GRUB 2 används i boot-sektorn finns "
+"risk att vissa moduler inte kan laddas och hantera de aktuella "
+"inställningsfilerna."
 
 #. Type: boolean
 #. Description
-#: ../grub-pc.templates.in:8001
+#: ../grub-pc.templates.in:9001
 msgid ""
 "If you are already running a different boot loader and want to carry on "
 "doing so, or if this is a special environment where you do not need a boot "
 "loader, then you should continue anyway.  Otherwise, you should install GRUB "
 "somewhere."
 msgstr ""
+"Om du redan kör en annan uppstartshanterare och vill fortsätta med det eller "
+"om detta är en specialmiljö som inte behöver en uppstartshanterare kan du "
+"tryggt fortsätta. I annat fall ska du installera GRUB någonstans."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:11001
+msgid "Finish conversion to GRUB 2 now?"
+msgstr "Avsluta konverteringen till GRUB 2 nu?"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:11001
+msgid ""
+"This system still has files from the GRUB Legacy boot loader installed, but "
+"it now also has GRUB 2 boot records installed on these disks:"
+msgstr ""
+"Detta system har fortfarande filer från den äldre GRUB-uppstartshanteraren "
+"installerade men nu finns det dessutom GRUB 2 uppstartsinformation på "
+"följande enheter:"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:11001
+msgid ""
+"It seems likely that GRUB Legacy is no longer in use, and that you should "
+"instead upgrade the GRUB 2 images on these disks and finish the conversion "
+"to GRUB 2 by removing old GRUB Legacy files.  If you do not upgrade these "
+"GRUB 2 images, then they may be incompatible with the new packages and cause "
+"your system to stop booting properly."
+msgstr ""
+"Det är troligt att den äldre GRUB-versionen inte längre används och du bör "
+"istället uppgradera till GRUB 2-avbildningar på dessa enheter och avsluta "
+"konverteringen till GRUB 2 genom att ta bort äldre GRUB-filer. Om du inte "
+"vill uppgradera dessa GRUB 2-avbildningar kan de bli oanvändbara tillsammans "
+"med det nya paketet och systemet sluta att fungera korrekt."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:11001
+msgid ""
+"You should generally finish the conversion to GRUB 2 unless these boot "
+"records were created by a GRUB 2 installation on some other operating system."
+msgstr ""
+"Det generella rådet är att avsluta konverteringen till GRUB 2 om dessa filer "
+"inte skapats av en GRUB 2-installation på ett annat opertivsystem."
 
 #. Type: string
 #. Description
@@ -197,3 +263,36 @@ msgid ""
 msgstr ""
 "Följande sträng kommer användas som Linux-parametrar för standardmenyvalet "
 "men inte för återhämtningsläge (eng. recovery)."
+
+#. Type: note
+#. Description
+#: ../templates.in:5001
+msgid "/boot/grub/device.map has been regenerated"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../templates.in:5001
+msgid ""
+"The file /boot/grub/device.map has been rewritten to use stable device "
+"names.  In most cases, this should significantly reduce the need to change "
+"it in future, and boot menu entries generated by GRUB should not be affected."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../templates.in:5001
+msgid ""
+"However, since you have more than one disk in your system, it is possible "
+"that you were depending on the old device map.  Please check whether you "
+"have any custom boot menu entries that rely on GRUB's (hdN) drive numbering, "
+"and update them if necessary."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../templates.in:5001
+msgid ""
+"If you do not understand this message, or if you do not have any custom boot "
+"menu entries, you can ignore this message."
+msgstr ""

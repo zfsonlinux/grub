@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub 1.97+20100124\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-03 00:27+0100\n"
+"POT-Creation-Date: 2010-06-19 01:35+0100\n"
 "PO-Revision-Date: 2010-01-25 21:51+0200\n"
 "Last-Translator: Jorma Karvonen <karvonen.jorma@gmail.com>\n"
 "Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
@@ -78,7 +78,7 @@ msgstr "Lataa verkkoaseman ACPI-taulut ja argumenttien määrittelemät taulut."
 #  Parametri pitkille valitsimelle, esim.: --abstract=FILE Aseta abstrakti tiedostonimi
 #: commands/blocklist.c:113 commands/cat.c:82 commands/configfile.c:57
 #: commands/configfile.c:60 commands/configfile.c:65 commands/crc.c:64
-#: commands/minicmd.c:357 loader/i386/bsd.c:1287 loader/i386/bsd.c:1291
+#: commands/minicmd.c:353 loader/i386/bsd.c:1287 loader/i386/bsd.c:1291
 #: loader/i386/bsd.c:1295
 msgid "FILE"
 msgstr "TIEDOSTO"
@@ -91,7 +91,7 @@ msgstr "Tulosta lohkoluettelo."
 msgid "Boot an operating system."
 msgstr "Alkulataa käyttöjärjestelmä."
 
-#: commands/cat.c:82 commands/minicmd.c:357
+#: commands/cat.c:82 commands/minicmd.c:353
 msgid "Show the contents of a file."
 msgstr "Näytä tiedoston sisältö."
 
@@ -175,14 +175,6 @@ msgstr ""
 "Pysäyttää tietokoneen.  Tämä komento ei toimi kaikissa mikro-"
 "ohjelmistototeutuksissa."
 
-#: commands/handler.c:94
-msgid "[class [handler]]"
-msgstr "[luokka [käsittelijä]]"
-
-#: commands/handler.c:95
-msgid "List or select a handler."
-msgstr "Luettele tai valitse käsittelijä."
-
 #: commands/hdparm.c:30
 msgid ""
 "Set Advanced Power Management\n"
@@ -251,15 +243,15 @@ msgstr "[VALITSIMET] LEVY"
 msgid "Get/set ATA disk parameters."
 msgstr "Hae/aseta ATA-levyparametrit."
 
-#: commands/help.c:103 lib/arg.c:110
+#: commands/help.c:112 lib/arg.c:110
 msgid "Usage:"
 msgstr "Käyttö:"
 
-#: commands/help.c:136
+#: commands/help.c:129
 msgid "[PATTERN ...]"
 msgstr "[MALLI ...]"
 
-#: commands/help.c:137
+#: commands/help.c:130
 msgid "Show a help message."
 msgstr "Näytä opasteviesti."
 
@@ -416,7 +408,7 @@ msgid "Save read value into variable VARNAME."
 msgstr "Tallenna luettu arvo muuttujaan VARNAME."
 
 #: commands/memrw.c:123 commands/memrw.c:126 commands/memrw.c:129
-#: commands/minicmd.c:366
+#: commands/minicmd.c:362
 msgid "ADDR"
 msgstr "OSOITE"
 
@@ -448,39 +440,39 @@ msgstr "Kirjoita word-data ARVO OSOITTEESEEN."
 msgid "Write dword VALUE to ADDR."
 msgstr "kirjoita dword-data ARVO OSOITTEESEEN."
 
-#: commands/minicmd.c:360
+#: commands/minicmd.c:356
 msgid "Show this message."
 msgstr "Näytä tämä viesti."
 
-#: commands/minicmd.c:363 commands/probe.c:154
+#: commands/minicmd.c:359 commands/probe.c:154
 msgid "[DEVICE]"
 msgstr "[LAITE]"
 
-#: commands/minicmd.c:363
+#: commands/minicmd.c:359
 msgid "Set the root device."
 msgstr "Aseta juurilaite."
 
-#: commands/minicmd.c:366
+#: commands/minicmd.c:362
 msgid "Dump memory."
 msgstr "Vedosta muisti."
 
-#: commands/minicmd.c:369
+#: commands/minicmd.c:365
 msgid "MODULE"
 msgstr "MODUULI"
 
-#: commands/minicmd.c:369
+#: commands/minicmd.c:365
 msgid "Remove a module."
 msgstr "Poista moduuli."
 
-#: commands/minicmd.c:372
+#: commands/minicmd.c:368
 msgid "Show loaded modules."
 msgstr "Näytä ladatut moduulit."
 
-#: commands/minicmd.c:375
+#: commands/minicmd.c:371
 msgid "Exit from GRUB."
 msgstr "Poistu GRUB:sta."
 
-#: commands/minicmd.c:378
+#: commands/minicmd.c:374
 msgid "Clear the screen."
 msgstr "Tyhjennä näyttö."
 
@@ -826,11 +818,11 @@ msgstr "Lataa tervetulokuva XNU:lle."
 msgid "Load XNU hibernate image."
 msgstr "Lataa XNU-lepotilavedos."
 
-#: normal/auth.c:233
+#: normal/auth.c:217
 msgid "Enter username: "
 msgstr "Kirjoita käyttäjänimi: "
 
-#: normal/auth.c:238
+#: normal/auth.c:222
 msgid "Enter password: "
 msgstr "Kirjoita salasana: "
 
@@ -854,12 +846,12 @@ msgstr "Varoitus: virheellinen taustaväri ”%s”\n"
 msgid "not loaded"
 msgstr "ei ladattu"
 
-#: normal/main.c:447
+#: normal/main.c:415
 #, c-format
 msgid "GNU GRUB  version %s"
 msgstr "GNU GRUB -versio %s"
 
-#: normal/main.c:585
+#: normal/main.c:552
 #, c-format
 msgid ""
 "Minimal BASH-like line editing is supported. For the first word, TAB lists "
@@ -871,47 +863,47 @@ msgstr ""
 "täydennyksistä. Kaikkialla muualla SARKAIN-painike luettelee mahdolliset "
 "laite- tai tiedostotäydennykset. %s"
 
-#: normal/main.c:588
+#: normal/main.c:555
 msgid "ESC at any time exits."
 msgstr "Poistuu aina ESC-painikkeella."
 
-#: normal/main.c:708
+#: normal/main.c:670
 msgid "Enter normal mode."
 msgstr ""
 
-#: normal/main.c:710
+#: normal/main.c:672
 msgid "Exit from normal mode."
 msgstr ""
 
-#: normal/menu_entry.c:1060
+#: normal/menu_entry.c:1061
 msgid "Possible commands are:"
 msgstr "Mahdollisia komentoja ovat:"
 
-#: normal/menu_entry.c:1064
+#: normal/menu_entry.c:1065
 msgid "Possible devices are:"
 msgstr "Mahdollisia laitteita ovat:"
 
-#: normal/menu_entry.c:1068
+#: normal/menu_entry.c:1069
 msgid "Possible files are:"
 msgstr "Mahdollisia tiedostoja ovat:"
 
-#: normal/menu_entry.c:1072
+#: normal/menu_entry.c:1073
 msgid "Possible partitions are:"
 msgstr "Mahdollisia osioita ovat:"
 
-#: normal/menu_entry.c:1076
+#: normal/menu_entry.c:1077
 msgid "Possible arguments are:"
 msgstr "Mahdollisia argumentteja ovat:"
 
-#: normal/menu_entry.c:1080
+#: normal/menu_entry.c:1081
 msgid "Possible things are:"
 msgstr "Mahdollisia asioita ovat:"
 
-#: normal/menu_entry.c:1184
+#: normal/menu_entry.c:1185
 msgid "Booting a command list"
 msgstr "Alkuladataan komentoluettelo"
 
-#: normal/menu_entry.c:1397
+#: normal/menu_entry.c:1398
 msgid "Press any key to continue..."
 msgstr "Jatka painamalla mitä tahansa painiketta..."
 
@@ -1061,7 +1053,7 @@ msgstr "ydinvedos on liian iso"
 msgid "diskboot.img size must be %u bytes"
 msgstr "diskboot.img:n koon on oltava %u tavua"
 
-#: util/grub-mkimage.c:1168 util/i386/pc/grub-setup.c:607
+#: util/grub-mkimage.c:1168 util/i386/pc/grub-setup.c:619
 #, c-format
 msgid "Try `%s --help' for more information.\n"
 msgstr "Lisätietoja komennolla ”%s --help”.\n"
@@ -1110,32 +1102,32 @@ msgid "cannot open %s"
 msgstr "ei voi avata tulostekohdetta %s"
 
 #  Tämä oli ilmeisesti merkitty fuzzyksi, koska sektoritasattu-sanasta puuttui väliviiva :(
-#: util/i386/pc/grub-setup.c:166
+#: util/i386/pc/grub-setup.c:164
 msgid "the first sector of the core file is not sector-aligned"
 msgstr "ydintiedoston ensimmäinen sektori ei ole sektoritasattu"
 
-#: util/i386/pc/grub-setup.c:180
+#: util/i386/pc/grub-setup.c:178
 msgid "non-sector-aligned data is found in the core file"
 msgstr "ei-sektoritasattua dataa löytyi ydintiedostosta"
 
-#: util/i386/pc/grub-setup.c:194
+#: util/i386/pc/grub-setup.c:192
 msgid "the sectors of the core file are too fragmented"
 msgstr "ydintiedoston sektorit ovat liian hajallaan"
 
 #  paikankorvaajasta tulee "boot_path"
-#: util/i386/pc/grub-setup.c:205
+#: util/i386/pc/grub-setup.c:203
 #, c-format
 msgid "the size of `%s' is not %u"
 msgstr "alkulatauspolun ”%s” koko ei ole %u"
 
 #  paikankorvaajasta tulee "core_path"
-#: util/i386/pc/grub-setup.c:222
+#: util/i386/pc/grub-setup.c:220
 #, c-format
 msgid "the size of `%s' is too small"
 msgstr "ydinpolun ”%s” koko on liian pieni"
 
 #  paikankorvaajasta tulee "core_path"
-#: util/i386/pc/grub-setup.c:224
+#: util/i386/pc/grub-setup.c:222
 #, c-format
 msgid "the size of `%s' is too large"
 msgstr "ydinpolun ”%s” koko on liian suuri"
@@ -1162,23 +1154,23 @@ msgstr ""
 "tietoa (valitsin --skip-fs-probe ottaa pois käytöstä tämän tarkistuksen, "
 "käytä sitä omalla vastuullasi)"
 
-#: util/i386/pc/grub-setup.c:327 util/i386/pc/grub-setup.c:354
+#: util/i386/pc/grub-setup.c:339 util/i386/pc/grub-setup.c:366
 msgid ""
 "Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
 msgstr ""
 "Yritetään asentaa GRUB osioimattomalle levyasemalle. Tämä on HUONO ajatus."
 
-#: util/i386/pc/grub-setup.c:333
+#: util/i386/pc/grub-setup.c:345
 msgid ""
 "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD "
 "idea."
 msgstr "Yritetään asentaa GRUB osioon eikä MBR:ään. Tämä on HUONO ajatus."
 
-#: util/i386/pc/grub-setup.c:363
+#: util/i386/pc/grub-setup.c:375
 msgid "No DOS-style partitions found"
 msgstr "DOS-tyylisiä osioita ei löytynyt"
 
-#: util/i386/pc/grub-setup.c:368
+#: util/i386/pc/grub-setup.c:380
 msgid ""
 "This msdos-style partition label has no post-MBR gap; embedding won't be "
 "possible!"
@@ -1186,7 +1178,7 @@ msgstr ""
 "Tässä msdos-tyylisessä osionimiössä ei ole MBR:n jälkeistä aukkoa; "
 "upottaminen ei ole mahdollista!"
 
-#: util/i386/pc/grub-setup.c:370
+#: util/i386/pc/grub-setup.c:382
 msgid ""
 "This GPT partition label has no BIOS Boot Partition; embedding won't be "
 "possible!"
@@ -1194,17 +1186,17 @@ msgstr ""
 "Tässä GPT-osionimiössä ei ole BIOS alkulatausosiota; upottaminen ei ole "
 "mahdollista!"
 
-#: util/i386/pc/grub-setup.c:377
+#: util/i386/pc/grub-setup.c:389
 msgid "Your core.img is unusually large.  It won't fit in the embedding area."
 msgstr "Tiedostosi core.img on epätavallisen iso. Se ei sovi upotusalueelle."
 
-#: util/i386/pc/grub-setup.c:379
+#: util/i386/pc/grub-setup.c:391
 msgid "Your embedding area is unusually small.  core.img won't fit in it."
 msgstr ""
 "Upotettava alueesi on epätavallisen pieni.  Tiedosto core.img ei mahdu "
 "siihen."
 
-#: util/i386/pc/grub-setup.c:424
+#: util/i386/pc/grub-setup.c:436
 msgid ""
 "embedding is not possible, but this is required when the root device is on a "
 "RAID array or LVM volume"
@@ -1212,7 +1204,7 @@ msgstr ""
 "upottaminen ei ole mahdollista, mutta sitä vaaditaan kun juurilaite on RAID-"
 "taulukko tai LVM-taltio"
 
-#: util/i386/pc/grub-setup.c:427
+#: util/i386/pc/grub-setup.c:439
 #, fuzzy
 msgid ""
 "Embedding is not possible.  GRUB can only be installed in this setup by "
@@ -1223,51 +1215,53 @@ msgstr ""
 "käyttäen lohkoluetteloja.  Lohkoluettelot ovat kuitenkin EPÄLUOTETTAVIA ja "
 "niiden käyttöä ei suositella."
 
-#: util/i386/pc/grub-setup.c:431
+#: util/i386/pc/grub-setup.c:443
 msgid "if you really want blocklists, use --force"
 msgstr "jos todella haluat käyttää lohkoluetteloja, käytä valitsinta --force."
 
-#: util/i386/pc/grub-setup.c:450
+#: util/i386/pc/grub-setup.c:462
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB"
 msgstr "yritetään lukea ydinvedosta ”%s” GRUB:sta"
 
-#: util/i386/pc/grub-setup.c:451
+#: util/i386/pc/grub-setup.c:463
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB again"
 msgstr "yritetään lukea ydinvedosta ”%s” GRUB:sta uudelleen"
 
 #  Ydinvedoksen luku GRUBista epäonnistui maksimiyrityskertojen määrän
-#: util/i386/pc/grub-setup.c:518
+#: util/i386/pc/grub-setup.c:530
 #, c-format
 msgid "cannot read `%s' correctly"
 msgstr "ei voida lukea ydinvedosta ”%s” oikein"
 
-#: util/i386/pc/grub-setup.c:531
+#: util/i386/pc/grub-setup.c:543
 msgid "no terminator in the core image"
 msgstr "ei päätöslohkoa ydinvedoksessa"
 
-#: util/i386/pc/grub-setup.c:542
+#: util/i386/pc/grub-setup.c:554
 msgid "failed to read the first sector of the core image"
 msgstr "ydinvedoksen ensimmäisen sektorin lukeminen epäonnistui"
 
-#: util/i386/pc/grub-setup.c:548
+#: util/i386/pc/grub-setup.c:560
 msgid "failed to read the rest sectors of the core image"
 msgstr "ydinvedoksen loppujen sektoreiden lukeminen epäonnistui"
 
 #  avattava kohde on "core_path"
-#: util/i386/pc/grub-setup.c:567
+#: util/i386/pc/grub-setup.c:579
 #, c-format
 msgid "cannot open `%s'"
 msgstr "ei voi avata ydintä ”%s”"
 
-#: util/i386/pc/grub-setup.c:609
-#, c-format
+#: util/i386/pc/grub-setup.c:621
+#, fuzzy, c-format
 msgid ""
 "Usage: %s [OPTION]... DEVICE\n"
 "\n"
 "Set up images to boot from DEVICE.\n"
 "DEVICE must be a GRUB device (e.g. `(hd0,1)').\n"
+"\n"
+"You should not normally run %s directly.  Use grub-install instead.\n"
 "\n"
 "  -b, --boot-image=FILE   use FILE as the boot image [default=%s]\n"
 "  -c, --core-image=FILE   use FILE as the core image [default=%s]\n"
@@ -1304,29 +1298,35 @@ msgstr ""
 "Ilmoita käännösvirheistä osoitteeseen <translation-team-fi@lists.sourceforge."
 "net>.\n"
 
-#: util/i386/pc/grub-setup.c:739
+#: util/i386/pc/grub-setup.c:753
 #, c-format
 msgid "No device is specified.\n"
 msgstr "Laitetta ei ole annettu.\n"
 
-#: util/i386/pc/grub-setup.c:745
+#: util/i386/pc/grub-setup.c:759
 #, c-format
 msgid "Unknown extra argument `%s'.\n"
 msgstr "Tuntematon ylimääräinen argumentti ”%s”.\n"
 
-#: util/i386/pc/grub-setup.c:762
+#: util/i386/pc/grub-setup.c:776
 #, c-format
 msgid "Invalid device `%s'.\n"
 msgstr "Virheellinen laite ”%s”.\n"
 
-#: util/i386/pc/grub-setup.c:775
+#: util/i386/pc/grub-setup.c:789
 #, c-format
 msgid "invalid root device `%s'"
 msgstr "virheellinen juurilaite ”%s”."
 
-#: util/i386/pc/grub-setup.c:788
+#: util/i386/pc/grub-setup.c:802
 msgid "cannot guess the root device. Specify the option `--root-device'"
 msgstr "ei kyetä arvaamaan juurilaitetta. Anna valitsin ”--root-device”."
+
+#~ msgid "[class [handler]]"
+#~ msgstr "[luokka [käsittelijä]]"
+
+#~ msgid "List or select a handler."
+#~ msgstr "Luettele tai valitse käsittelijä."
 
 #~ msgid "Load XNU ramdisk. It will be seen as md0."
 #~ msgstr "Lataa XNU-ramlevy. Se nähdään nimellä md0."

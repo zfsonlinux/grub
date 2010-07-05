@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub 1.97+20100124\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-03 00:27+0100\n"
+"POT-Creation-Date: 2010-06-19 01:35+0100\n"
 "PO-Revision-Date: 2010-04-13 13:15+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
@@ -75,7 +75,7 @@ msgstr "Gazda ACPI-táblák és a paraméterben megadott táblák betöltése."
 
 #: commands/blocklist.c:113 commands/cat.c:82 commands/configfile.c:57
 #: commands/configfile.c:60 commands/configfile.c:65 commands/crc.c:64
-#: commands/minicmd.c:357 loader/i386/bsd.c:1287 loader/i386/bsd.c:1291
+#: commands/minicmd.c:353 loader/i386/bsd.c:1287 loader/i386/bsd.c:1291
 #: loader/i386/bsd.c:1295
 msgid "FILE"
 msgstr "FÁJL"
@@ -88,7 +88,7 @@ msgstr "Blokklista kiírása."
 msgid "Boot an operating system."
 msgstr "Operációs rendszer elindítása."
 
-#: commands/cat.c:82 commands/minicmd.c:357
+#: commands/cat.c:82 commands/minicmd.c:353
 msgid "Show the contents of a file."
 msgstr "Fájl tartalmának megjelenítése."
 
@@ -171,14 +171,6 @@ msgstr ""
 "A számítógép leállítása. Ez a parancs nem működik minden firmware-"
 "megvalósításon."
 
-#: commands/handler.c:94
-msgid "[class [handler]]"
-msgstr "[osztály [kezelő]]"
-
-#: commands/handler.c:95
-msgid "List or select a handler."
-msgstr "Kezelő felsorolása vagy kiválasztása."
-
 #: commands/hdparm.c:30
 msgid ""
 "Set Advanced Power Management\n"
@@ -247,15 +239,15 @@ msgstr "[KAPCSOLÓK] LEMEZ"
 msgid "Get/set ATA disk parameters."
 msgstr "ATA lemezparaméterek lekérése/beállítása."
 
-#: commands/help.c:103 lib/arg.c:110
+#: commands/help.c:112 lib/arg.c:110
 msgid "Usage:"
 msgstr "Használat:"
 
-#: commands/help.c:136
+#: commands/help.c:129
 msgid "[PATTERN ...]"
 msgstr "[MINTA…]"
 
-#: commands/help.c:137
+#: commands/help.c:130
 msgid "Show a help message."
 msgstr "Súgóüzenet megjelenítése."
 
@@ -412,7 +404,7 @@ msgid "Save read value into variable VARNAME."
 msgstr "Beolvasott érték mentése a VÁLTOZÓNÉV változóba,"
 
 #: commands/memrw.c:123 commands/memrw.c:126 commands/memrw.c:129
-#: commands/minicmd.c:366
+#: commands/minicmd.c:362
 msgid "ADDR"
 msgstr "CÍM"
 
@@ -444,39 +436,39 @@ msgstr "A szó ÉRTÉK kiírása a CÍMRE."
 msgid "Write dword VALUE to ADDR."
 msgstr "A duplaszó ÉRTÉK kiírása a CÍMRE."
 
-#: commands/minicmd.c:360
+#: commands/minicmd.c:356
 msgid "Show this message."
 msgstr "Ezen üzenet kiírása."
 
-#: commands/minicmd.c:363 commands/probe.c:154
+#: commands/minicmd.c:359 commands/probe.c:154
 msgid "[DEVICE]"
 msgstr "[ESZKÖZ]"
 
-#: commands/minicmd.c:363
+#: commands/minicmd.c:359
 msgid "Set the root device."
 msgstr "A gyökéreszköz beállítása."
 
-#: commands/minicmd.c:366
+#: commands/minicmd.c:362
 msgid "Dump memory."
 msgstr "Memória kiíratása."
 
-#: commands/minicmd.c:369
+#: commands/minicmd.c:365
 msgid "MODULE"
 msgstr "MODUL"
 
-#: commands/minicmd.c:369
+#: commands/minicmd.c:365
 msgid "Remove a module."
 msgstr "Modul eltávolítása."
 
-#: commands/minicmd.c:372
+#: commands/minicmd.c:368
 msgid "Show loaded modules."
 msgstr "Betöltött modulok megjelenítése."
 
-#: commands/minicmd.c:375
+#: commands/minicmd.c:371
 msgid "Exit from GRUB."
 msgstr "Kilépés a GRUB-ból."
 
-#: commands/minicmd.c:378
+#: commands/minicmd.c:374
 msgid "Clear the screen."
 msgstr "A képernyő törlése."
 
@@ -823,11 +815,11 @@ msgstr "Indítókép betöltése az XNU-hoz."
 msgid "Load XNU hibernate image."
 msgstr "XNU hibernálási rendszerkép betöltése."
 
-#: normal/auth.c:233
+#: normal/auth.c:217
 msgid "Enter username: "
 msgstr "Adja meg a felhasználónevet: "
 
-#: normal/auth.c:238
+#: normal/auth.c:222
 msgid "Enter password: "
 msgstr "Adja meg a jelszót: "
 
@@ -850,12 +842,12 @@ msgstr "Figyelmeztetés: érvénytelen háttérszín: „%s”\n"
 msgid "not loaded"
 msgstr "nincs betöltve"
 
-#: normal/main.c:447
+#: normal/main.c:415
 #, c-format
 msgid "GNU GRUB  version %s"
 msgstr "GNU GRUB  %s verzió"
 
-#: normal/main.c:585
+#: normal/main.c:552
 #, c-format
 msgid ""
 "Minimal BASH-like line editing is supported. For the first word, TAB lists "
@@ -866,47 +858,47 @@ msgstr ""
 "a lehetséges parancskiegészítéseket. Bárhol máshol a TAB felsorolja a "
 "lehetséges eszköz- vagy fájlkiegészítéseket. %s"
 
-#: normal/main.c:588
+#: normal/main.c:555
 msgid "ESC at any time exits."
 msgstr "Az ESC mindig kilép."
 
-#: normal/main.c:708
+#: normal/main.c:670
 msgid "Enter normal mode."
 msgstr ""
 
-#: normal/main.c:710
+#: normal/main.c:672
 msgid "Exit from normal mode."
 msgstr ""
 
-#: normal/menu_entry.c:1060
+#: normal/menu_entry.c:1061
 msgid "Possible commands are:"
 msgstr "A lehetséges parancsok:"
 
-#: normal/menu_entry.c:1064
+#: normal/menu_entry.c:1065
 msgid "Possible devices are:"
 msgstr "A lehetséges eszközök:"
 
-#: normal/menu_entry.c:1068
+#: normal/menu_entry.c:1069
 msgid "Possible files are:"
 msgstr "A lehetséges fájlok:"
 
-#: normal/menu_entry.c:1072
+#: normal/menu_entry.c:1073
 msgid "Possible partitions are:"
 msgstr "A lehetséges partíciók:"
 
-#: normal/menu_entry.c:1076
+#: normal/menu_entry.c:1077
 msgid "Possible arguments are:"
 msgstr "A lehetséges paraméterek:"
 
-#: normal/menu_entry.c:1080
+#: normal/menu_entry.c:1081
 msgid "Possible things are:"
 msgstr "A lehetséges dolgok:"
 
-#: normal/menu_entry.c:1184
+#: normal/menu_entry.c:1185
 msgid "Booting a command list"
 msgstr "Parancslista indítása"
 
-#: normal/menu_entry.c:1397
+#: normal/menu_entry.c:1398
 msgid "Press any key to continue..."
 msgstr "Nyomjon meg egy billentyűt a folytatáshoz…"
 
@@ -1056,7 +1048,7 @@ msgstr "a magkép túl nagy"
 msgid "diskboot.img size must be %u bytes"
 msgstr "a diskboot.img mérete %u bájt kell legyen"
 
-#: util/grub-mkimage.c:1168 util/i386/pc/grub-setup.c:607
+#: util/grub-mkimage.c:1168 util/i386/pc/grub-setup.c:619
 #, c-format
 msgid "Try `%s --help' for more information.\n"
 msgstr "További információkért adja ki a „%s --help” parancsot.\n"
@@ -1107,29 +1099,29 @@ msgstr ""
 msgid "cannot open %s"
 msgstr "%s nem nyitható meg"
 
-#: util/i386/pc/grub-setup.c:166
+#: util/i386/pc/grub-setup.c:164
 msgid "the first sector of the core file is not sector-aligned"
 msgstr "a magfájl első szektora nincs szektorokhoz igazítva"
 
-#: util/i386/pc/grub-setup.c:180
+#: util/i386/pc/grub-setup.c:178
 msgid "non-sector-aligned data is found in the core file"
 msgstr "a magfájlban nem szektorokhoz igazított adatok találhatók"
 
-#: util/i386/pc/grub-setup.c:194
+#: util/i386/pc/grub-setup.c:192
 msgid "the sectors of the core file are too fragmented"
 msgstr "a magfájl szektorai túlzottan töredezettek"
 
-#: util/i386/pc/grub-setup.c:205
+#: util/i386/pc/grub-setup.c:203
 #, c-format
 msgid "the size of `%s' is not %u"
 msgstr "„%s” mérete nem %u"
 
-#: util/i386/pc/grub-setup.c:222
+#: util/i386/pc/grub-setup.c:220
 #, c-format
 msgid "the size of `%s' is too small"
 msgstr "„%s” mérete túl kicsi"
 
-#: util/i386/pc/grub-setup.c:224
+#: util/i386/pc/grub-setup.c:222
 #, c-format
 msgid "the size of `%s' is too large"
 msgstr "„%s” mérete túl nagy"
@@ -1154,24 +1146,24 @@ msgstr ""
 "MEGSEMMISÜLÉSÉT okozhatja, ha a grub-setup értékes adatokat ír felül (a --"
 "skip-fs-probe kihagyja ezt az ellenőrzést, saját felelősségre használja)."
 
-#: util/i386/pc/grub-setup.c:327 util/i386/pc/grub-setup.c:354
+#: util/i386/pc/grub-setup.c:339 util/i386/pc/grub-setup.c:366
 msgid ""
 "Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
 msgstr ""
 "Kísérlet a GRUB telepítésére partíciók nélküli lemezre. Ez egy ROSSZ ötlet."
 
-#: util/i386/pc/grub-setup.c:333
+#: util/i386/pc/grub-setup.c:345
 msgid ""
 "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD "
 "idea."
 msgstr ""
 "Kísérlet a GRUB telepítésére partícióra az MBR helyett. Ez egy ROSSZ ötlet."
 
-#: util/i386/pc/grub-setup.c:363
+#: util/i386/pc/grub-setup.c:375
 msgid "No DOS-style partitions found"
 msgstr "Nem találhatók DOS-stílusú partíciók"
 
-#: util/i386/pc/grub-setup.c:368
+#: util/i386/pc/grub-setup.c:380
 msgid ""
 "This msdos-style partition label has no post-MBR gap; embedding won't be "
 "possible!"
@@ -1179,7 +1171,7 @@ msgstr ""
 "Az msdos-stílusú partíciócímke nem tartalmaz MBR utáni rést, a beágyazás nem "
 "lesz lehetséges"
 
-#: util/i386/pc/grub-setup.c:370
+#: util/i386/pc/grub-setup.c:382
 msgid ""
 "This GPT partition label has no BIOS Boot Partition; embedding won't be "
 "possible!"
@@ -1187,16 +1179,16 @@ msgstr ""
 "A GPT partíciócímke nem tartalmaz BIOS indítópartíciót, a beágyazás nem lesz "
 "lehetséges"
 
-#: util/i386/pc/grub-setup.c:377
+#: util/i386/pc/grub-setup.c:389
 msgid "Your core.img is unusually large.  It won't fit in the embedding area."
 msgstr "A core.img szokatlanul nagy. Nem fog elférni a beágyazási területen."
 
-#: util/i386/pc/grub-setup.c:379
+#: util/i386/pc/grub-setup.c:391
 msgid "Your embedding area is unusually small.  core.img won't fit in it."
 msgstr ""
 "A beágyazási terület szokatlanul kicsi. A core.img nem fog elférni rajta."
 
-#: util/i386/pc/grub-setup.c:424
+#: util/i386/pc/grub-setup.c:436
 msgid ""
 "embedding is not possible, but this is required when the root device is on a "
 "RAID array or LVM volume"
@@ -1204,7 +1196,7 @@ msgstr ""
 "A beágyazás nem lehetséges, noha ez szükséges, ha a gyökéreszköz RAID tömbön "
 "vagy LVM köteten van."
 
-#: util/i386/pc/grub-setup.c:427
+#: util/i386/pc/grub-setup.c:439
 #, fuzzy
 msgid ""
 "Embedding is not possible.  GRUB can only be installed in this setup by "
@@ -1215,50 +1207,52 @@ msgstr ""
 "telepíthető erre az eszközre. A blokklisták azonban NEM MEGBÍZHATÓK, és "
 "használatuk nem ajánlott."
 
-#: util/i386/pc/grub-setup.c:431
+#: util/i386/pc/grub-setup.c:443
 msgid "if you really want blocklists, use --force"
 msgstr ""
 "Ha valóban blokklistákat szeretne használni, a --force kapcsolóval megteheti"
 
-#: util/i386/pc/grub-setup.c:450
+#: util/i386/pc/grub-setup.c:462
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB"
 msgstr "kísérlet a(z) „%s” magkép beolvasására a GRUB-ból"
 
-#: util/i386/pc/grub-setup.c:451
+#: util/i386/pc/grub-setup.c:463
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB again"
 msgstr "kísérlet a(z) „%s” magkép beolvasására a GRUB-ból újra"
 
-#: util/i386/pc/grub-setup.c:518
+#: util/i386/pc/grub-setup.c:530
 #, c-format
 msgid "cannot read `%s' correctly"
 msgstr "„%s” nem olvasható be megfelelően"
 
-#: util/i386/pc/grub-setup.c:531
+#: util/i386/pc/grub-setup.c:543
 msgid "no terminator in the core image"
 msgstr "nincs befejező a magképben"
 
-#: util/i386/pc/grub-setup.c:542
+#: util/i386/pc/grub-setup.c:554
 msgid "failed to read the first sector of the core image"
 msgstr "a magkép első szektorának beolvasása meghiúsult"
 
-#: util/i386/pc/grub-setup.c:548
+#: util/i386/pc/grub-setup.c:560
 msgid "failed to read the rest sectors of the core image"
 msgstr "a magkép további szektorainak beolvasása meghiúsult"
 
-#: util/i386/pc/grub-setup.c:567
+#: util/i386/pc/grub-setup.c:579
 #, c-format
 msgid "cannot open `%s'"
 msgstr "„%s” nem nyitható meg"
 
-#: util/i386/pc/grub-setup.c:609
-#, c-format
+#: util/i386/pc/grub-setup.c:621
+#, fuzzy, c-format
 msgid ""
 "Usage: %s [OPTION]... DEVICE\n"
 "\n"
 "Set up images to boot from DEVICE.\n"
 "DEVICE must be a GRUB device (e.g. `(hd0,1)').\n"
+"\n"
+"You should not normally run %s directly.  Use grub-install instead.\n"
 "\n"
 "  -b, --boot-image=FILE   use FILE as the boot image [default=%s]\n"
 "  -c, --core-image=FILE   use FILE as the core image [default=%s]\n"
@@ -1296,30 +1290,36 @@ msgstr ""
 "\n"
 "A hibákat itt jelentheti: <%s>.\n"
 
-#: util/i386/pc/grub-setup.c:739
+#: util/i386/pc/grub-setup.c:753
 #, c-format
 msgid "No device is specified.\n"
 msgstr "Nincs megadva eszköz.\n"
 
-#: util/i386/pc/grub-setup.c:745
+#: util/i386/pc/grub-setup.c:759
 #, c-format
 msgid "Unknown extra argument `%s'.\n"
 msgstr "Ismeretlen extra paraméter: „%s”.\n"
 
-#: util/i386/pc/grub-setup.c:762
+#: util/i386/pc/grub-setup.c:776
 #, c-format
 msgid "Invalid device `%s'.\n"
 msgstr "Érvénytelen eszköz: „%s”.\n"
 
-#: util/i386/pc/grub-setup.c:775
+#: util/i386/pc/grub-setup.c:789
 #, c-format
 msgid "invalid root device `%s'"
 msgstr "Érvénytelen gyökéreszköz: „%s”"
 
-#: util/i386/pc/grub-setup.c:788
+#: util/i386/pc/grub-setup.c:802
 msgid "cannot guess the root device. Specify the option `--root-device'"
 msgstr ""
 "A gyökéreszköz nem határozható meg. Adja meg a „--root-device” kapcsolót."
+
+#~ msgid "[class [handler]]"
+#~ msgstr "[osztály [kezelő]]"
+
+#~ msgid "List or select a handler."
+#~ msgstr "Kezelő felsorolása vagy kiválasztása."
 
 #~ msgid "Load XNU ramdisk. It will be seen as md0."
 #~ msgstr "XNU ramlemez betöltése. Ez md0 néven fog megjelenni."
