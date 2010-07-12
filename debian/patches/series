@@ -9,6 +9,7 @@ gfxpayload_keep_default.patch
 mkrescue_diet.patch
 mkconfig_skip_dmcrypt.patch
 install_stage2_confusion.patch
+better_device_map_ordering.patch
 ubuntu_grub_standards.patch
 ubuntu_crashkernel.patch
 ubuntu_quick_boot.patch
@@ -29,3 +30,4 @@ ubuntu_drive_probe.patch
 ubuntu_hostdisk_hd.patch
 ubuntu_qemu.patch
 ubuntu_efi_install.patch
+ubuntu_vesafb.patch
