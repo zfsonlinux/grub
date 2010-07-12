@@ -83,7 +83,7 @@ Index: b/kern/emu/hostdisk.c
 ===================================================================
 --- a/kern/emu/hostdisk.c
 +++ b/kern/emu/hostdisk.c
-@@ -1373,6 +1373,48 @@
+@@ -1373,6 +1373,55 @@
    return i;
  }
  
@@ -116,15 +116,22 @@ Index: b/kern/emu/hostdisk.c
 +int
 +grub_util_biosdisk_probe_device (const char *name, int is_floppy)
 +{
++  char *real_name;
 +  char *grub_disk;
++
++  real_name = canonicalize_file_name (name);
++  if (! real_name)
++    return 0;
 +
 +  if (is_floppy)
 +    grub_disk = xasprintf ("fd%d", num_fd++);
 +  else
 +    grub_disk = xasprintf ("hd%d", num_hd++);
 +
-+  store_grub_dev (grub_disk, name);
++  store_grub_dev (grub_disk, real_name);
++
 +  free (grub_disk);
++  free (real_name);
 +
 +  return 0;
 +}

@@ -1,11 +1,11 @@
 Description: Probe all devices if we've been asked for a drive name
  This allows --target=drive to work properly even without a device.map.
  .
- Depends on 969_lvm_raid_probe.diff.
+ Depends on ubuntu_lvm_raid_probe.patch.
 Author: Colin Watson <cjwatson@ubuntu.com>
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/549980
 Forwarded: no
-Last-Update: 2010-04-08
+Last-Update: 2010-07-05
 
 Index: b/util/grub-probe.c
 ===================================================================
