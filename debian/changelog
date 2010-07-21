@@ -1,3 +1,105 @@
+grub2 (1.98+20100720-1ubuntu1) maverick; urgency=low
+
+  * Resynchronise with Debian.  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script: title,
+      recovery mode, quiet option, tweak how memtest86+ is displayed, and
+      use UUIDs where appropriate.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel= options if kdump and makedumpfile are available.
+    - If other operating systems are installed, then automatically unhide
+      the menu.  Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus
+      if available to check whether Shift is pressed.  If it is, show the
+      menu, otherwise boot immediately.  If keystatus is not available, then
+      fall back to a short delay interruptible with Escape.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Don't display introductory message about line editing unless we're
+      actually offering a shell prompt.  Don't clear the screen just before
+      booting if we never drew the menu in the first place.
+    - Remove some verbose messages printed before reading the configuration
+      file.
+    - Suppress progress messages as the kernel and initrd load for
+      non-recovery kernel menu entries.
+    - Change prepare_grub_to_access_device to handle filesystems
+      loop-mounted on file images.
+    - Ignore devices loop-mounted from files in 10_linux.
+    - Show the boot menu if the previous boot failed, that is if it failed
+      to get to the end of one of the normal runlevels.
+    - Handle RAID devices containing virtio components.
+    - Don't generate /boot/grub/device.map during grub-install or
+      grub-mkconfig by default.
+    - Adjust upgrade version checks for Ubuntu.
+    - Don't display "GRUB loading" unless Shift is held down.
+    - Adjust versions of grub-doc and grub-legacy-doc conflicts to tolerate
+      our backport of the grub-doc split.
+    - Fix LVM/RAID probing in the absence of /boot/grub/device.map.
+    - Look for .mo files in /usr/share/locale-langpack as well, in
+      preference.
+    - Make sure GRUB_TIMEOUT isn't quoted unnecessarily.
+    - Probe all devices in 'grub-probe --target=drive' if
+      /boot/grub/device.map is missing.
+    - Adjust hostdisk id for hard disks, allowing grub-setup to use its
+      standard workaround for broken BIOSes.
+    - grub-common Breaks: lupin-support (<< 0.30) due to a grub-mkimage
+      syntax change.
+    - Build-depend on qemu-kvm rather than qemu-system for grub-pc tests.
+    - Use qemu rather than qemu-system-i386.
+    - Extend the EFI version of grub-install to be able to install into an
+      EFI System Partition mounted on /boot/efi in a location that complies
+      with the EFI specification.
+    - Upgrade the installed core image when upgrading grub-efi-ia32 or
+      grub-efi-amd64, although only if /boot/efi/EFI/ubuntu already exists.
+    - Make grub-efi-ia32 and grub-efi-amd64 depend on efibootmgr so that
+      grub-install works properly.
+    - Program vesafb on BIOS systems rather than efifb, and return to
+      enabling gfxpayload=keep by default if the kernel has the necessary
+      support built-in.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 21 Jul 2010 10:10:21 +0100
+
+grub2 (1.98+20100720-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Link to Info documentation on changes from GRUB Legacy in README
+      (closes: #502623).
+    - Add support for mdadm metadata formats 1.x (closes: #492897).
+
+  [ Aaron M. Ucko ]
+  * Compare -trunk kernels earlier than numeric ABIs (closes: #568160).
+
+  [ Colin Watson ]
+  * Remove /boot/grub/device.map, /boot/grub/grubenv,
+    /boot/grub/installed-version, and /boot/grub/locale/ on purge, if
+    permitted (closes: #547679).
+  * Convert from CDBS to dh.
+  * Use exact-version dependencies in grub2 and grub-efi, to reduce
+    potential confusion.
+  * Raise priority of grub-common and grub-pc to optional (also done in
+    archive overrides).
+  * Copy-edit debian/presubj.
+  * Use 'mktemp -t' rather than hardcoding /tmp (closes: #589537).
+
+  [ Mario 'BitKoenig' Holbe ]
+  * Update /etc/grub.d/05_debian_theme to handle multiple entries in
+    GRUB_TERMINAL_OUTPUT (closes: #589322).
+
+  [ Updated translations ]
+  * Simplified Chinese (zh_CN.po) by YunQiang Su (closes: #589013).
+  * Russian (ru.po) by Yuri Kozlov (closes: #589244).
+  * Swedish (sv.po) by Martin Bagge / brother (closes: #589259).
+  * Bulgarian (bg.po) by Damyan Ivanov (closes: #589272).
+  * Indonesian (id.po) by Arief S Fitrianto (closes: #589318).
+  * Arabic (ar.po) by Ossama M. Khayat.
+  * Basque (eu.po) by Iñaki Larrañaga Murgoitio (closes: #589489).
+  * Persian (fa.po) by Bersam Karbasion (closes: #589544).
+  * Czech (cs.po) by Miroslav Kure (closes: #589568).
+  * Belarusian (be.po) by Viktar Siarheichyk (closes: #589634).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 21 Jul 2010 09:11:14 +0100
+
 grub2 (1.98+20100710-1ubuntu1) maverick; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:
