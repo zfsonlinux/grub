@@ -9,7 +9,6 @@ gfxpayload_keep_default.patch
 mkrescue_diet.patch
 mkconfig_skip_dmcrypt.patch
 install_stage2_confusion.patch
-better_device_map_ordering.patch
 ubuntu_grub_standards.patch
 ubuntu_crashkernel.patch
 ubuntu_quick_boot.patch
@@ -17,7 +16,6 @@ ubuntu_sleep_shift.patch
 ubuntu_normal_quiet.patch
 ubuntu_really_quiet.patch
 ubuntu_linux_quiet.patch
-ubuntu_loopback_root.patch
 ubuntu_handle_loopback.patch
 ubuntu_linux_no_loopmount.patch
 ubuntu_failed_boot_menu.patch

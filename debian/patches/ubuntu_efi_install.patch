@@ -212,7 +212,7 @@ Index: b/util/i386/efi/grub-install.in
  # The order in this list is critical.  Be careful when modifying it.
  modules="$modules $fs_module $partmap_module $devabstraction_module"
  
--$grub_mkimage -O ${target_cpu}-efi --output=${grubdir}/grub.efi $modules || exit 1
+-$grub_mkimage -p "" -O ${target_cpu}-efi --output=${grubdir}/grub.efi $modules || exit 1
 +relative_grubdir=`make_system_path_relative_to_its_root ${grubdir}` || exit 1
 +if [ "x${relative_grubdir}" = "x" ] ; then
 +    relative_grubdir=/
@@ -249,7 +249,7 @@ Index: b/util/i386/efi/grub-install.in
 +    prefix_drive=`$grub_probe --target=drive --device ${grub_device}` || exit 1
 +fi
 +
-+$grub_mkimage ${config_opt} -O ${target_cpu}-efi --output=${efidir}/${efi_file} --prefix=${prefix_drive}${relative_grubdir} $modules || exit 1
++$grub_mkimage -p "" ${config_opt} -O ${target_cpu}-efi --output=${efidir}/${efi_file} --prefix=${prefix_drive}${relative_grubdir} $modules || exit 1
 +
 +# Try to make this image bootable using the EFI Boot Manager, if available.
 +if test "$removable" = no && test -n "$efi_distributor" && \
