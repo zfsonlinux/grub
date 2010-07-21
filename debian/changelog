@@ -1,3 +1,43 @@
+grub2 (1.98+20100720-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Link to Info documentation on changes from GRUB Legacy in README
+      (closes: #502623).
+    - Add support for mdadm metadata formats 1.x (closes: #492897).
+
+  [ Aaron M. Ucko ]
+  * Compare -trunk kernels earlier than numeric ABIs (closes: #568160).
+
+  [ Colin Watson ]
+  * Remove /boot/grub/device.map, /boot/grub/grubenv,
+    /boot/grub/installed-version, and /boot/grub/locale/ on purge, if
+    permitted (closes: #547679).
+  * Convert from CDBS to dh.
+  * Use exact-version dependencies in grub2 and grub-efi, to reduce
+    potential confusion.
+  * Raise priority of grub-common and grub-pc to optional (also done in
+    archive overrides).
+  * Copy-edit debian/presubj.
+  * Use 'mktemp -t' rather than hardcoding /tmp (closes: #589537).
+
+  [ Mario 'BitKoenig' Holbe ]
+  * Update /etc/grub.d/05_debian_theme to handle multiple entries in
+    GRUB_TERMINAL_OUTPUT (closes: #589322).
+
+  [ Updated translations ]
+  * Simplified Chinese (zh_CN.po) by YunQiang Su (closes: #589013).
+  * Russian (ru.po) by Yuri Kozlov (closes: #589244).
+  * Swedish (sv.po) by Martin Bagge / brother (closes: #589259).
+  * Bulgarian (bg.po) by Damyan Ivanov (closes: #589272).
+  * Indonesian (id.po) by Arief S Fitrianto (closes: #589318).
+  * Arabic (ar.po) by Ossama M. Khayat.
+  * Basque (eu.po) by Iñaki Larrañaga Murgoitio (closes: #589489).
+  * Persian (fa.po) by Bersam Karbasion (closes: #589544).
+  * Czech (cs.po) by Miroslav Kure (closes: #589568).
+  * Belarusian (be.po) by Viktar Siarheichyk (closes: #589634).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 21 Jul 2010 09:11:14 +0100
+
 grub2 (1.98+20100710-1) unstable; urgency=low
 
   * New Bazaar snapshot.
