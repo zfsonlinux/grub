@@ -1,40 +1,33 @@
-# translation of grub2 debconf messages to Swedish
-# Swedish translation for grub2.
-# Copyright (C) 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
-# This file is distributed under the same license as the grub2 package.
+# Chinese translations for grub2 po-debconf
+# PACKAGE 软件包的简体中文翻译.
+# Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# YunQiang Su <wzssyqa@gmail.com>, 2010.
 #
-# Daniel Nylander <po@danielnylander.se>, 2007.
-# Martin Ågren <martin.agren@gmail.com>, 2008, 2009.
-# Martin Bagge <brother@bsnet.se>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: grub2_sv\n"
+"Project-Id-Version: grub2-po-debconf master\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
 "POT-Creation-Date: 2010-07-02 12:55+0100\n"
-"PO-Revision-Date: 2010-07-16 09:40+0100\n"
-"Last-Translator: Martin Bagge / brother <brother@bsnet.se>\n"
-"Language-Team: Swedish <debian-l10n-swedish@lists.debian.org>\n"
-"Language: sv\n"
+"PO-Revision-Date: 2010-07-14 15:53+0800\n"
+"Last-Translator: YunQiang Su <wzssyqa@gmail.com>\n"
+"Language-Team: Chinese (simplified) <>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-Language: Swedish\n"
-"X-Poedit-Country: Sweden\n"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:2001
 msgid "Chainload from menu.lst?"
-msgstr "Kedjeladda från menu.lst?"
+msgstr "从 menu.lst 进行 chainload？"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:2001
 msgid "GRUB upgrade scripts have detected a GRUB Legacy setup in /boot/grub."
-msgstr ""
-"GRUB:s uppgraderingsskript har upptäckt en gammal GRUB-inställning i /boot/"
-"grub."
+msgstr "GRUB 升级脚本在 /boot/grub 探测到了已安装的  GRUB Legacy。"
 
 #. Type: boolean
 #. Description
@@ -45,9 +38,8 @@ msgid ""
 "your existing GRUB Legacy setup.  This step may be automaticaly performed "
 "now."
 msgstr ""
-"Om du vill ersätta den gamla versionen av GRUB i systemet, rekommenderas "
-"att /boot/grub/menu.lst justeras till att kedjeladda GRUB 2 från din "
-"existerande, gamla GRUB-inställning.  Detta steg kan nu utföras automatiskt."
+"为了取代您系统上的 GRUB Legacy，推荐调整 /boot/grub/menu.lst 为从现有的 GRUB "
+"Legacy 设置中 chainload GRUB 2。这个步骤现在可以自动执行。"
 
 #. Type: boolean
 #. Description
@@ -57,9 +49,8 @@ msgid ""
 "verify that your new GRUB 2 setup is functional for you, before you install "
 "it directly to your MBR (Master Boot Record)."
 msgstr ""
-"Det rekommenderas att GRUB 2 kedjeladdas från menu.lst så att det kan "
-"säkerställas att den nya GRUB 2-inställningen fungerar innan den installeras "
-"direkt till huvudstartsektorn."
+"推荐您接受从 menu.lst 中 chainload GRUB 2，并且在将 GRUB 2 直接安装到 MBR (主"
+"引导记录，Master Boot Record) 之前确定新的 GRUB 2 设置可以工作。"
 
 #. Type: boolean
 #. Description
@@ -68,8 +59,8 @@ msgid ""
 "In either case, whenever you want GRUB 2 to be loaded directly from MBR, you "
 "can do so by issuing (as root) the following command:"
 msgstr ""
-"När GRUB 2 ska laddas direkt från huvudstartsektorn, kan detta åstadkommas "
-"genom att (som root) köra följande kommando:"
+"无论何种情况，当您想直接从 MBR 加载 GRUB 2 时，您可以通过以 root 身份执行如下"
+"命令来实现："
 
 #. Type: text
 #. Description
@@ -83,7 +74,7 @@ msgstr "${DEVICE} (${SIZE} MB, ${MODEL})"
 #. Description
 #: ../grub-pc.templates.in:7001
 msgid "GRUB installation failed.  Continue?"
-msgstr "Installationen av GRUB misslyckades. Fortsätta?"
+msgstr "GRUB 安装失败。仍然继续？"
 
 #. Type: boolean
 #. Description
@@ -91,7 +82,7 @@ msgstr "Installationen av GRUB misslyckades. Fortsätta?"
 #. Description
 #: ../grub-pc.templates.in:7001 ../grub-pc.templates.in:8001
 msgid "GRUB failed to install to the following devices:"
-msgstr "GRUB kunde inte installeras på följande enheter:"
+msgstr "GRUB 安装到如下设备时失败。"
 
 #. Type: boolean
 #. Description
@@ -99,15 +90,13 @@ msgstr "GRUB kunde inte installeras på följande enheter:"
 msgid ""
 "Do you want to continue anyway?  If you do, your computer may not start up "
 "properly."
-msgstr ""
-"Vill du fortsätta i alla fall? Det kan innebära att systemet inte kan starta "
-"korrekt."
+msgstr "仍然想要继续？如果这样，您的计算机可能不能正常启动。"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:8001
 msgid "GRUB installation failed.  Try again?"
-msgstr "Installationen av GRUB misslyckades. Försöka igen?"
+msgstr "GRUB 安装失败。再次尝试？"
 
 #. Type: boolean
 #. Description
@@ -117,15 +106,14 @@ msgid ""
 "check that your system will boot from that device.  Otherwise, the upgrade "
 "from GRUB Legacy will be cancelled."
 msgstr ""
-"Du kan kanske installera GRUB till någon annan enhet, du bör dock "
-"kontrollera att systemet kommer att starta från den enheten. I annat fall "
-"kommer uppgraderingen från äldre GRUB-version att avbrytas."
+"您可能可以安装 GRUB 到其它设备，尽管您需要明确，您的系统将从那个设备启动。否"
+"则，从 GRUB Legacy 的升级将被取消。"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:9001
 msgid "Continue without installing GRUB?"
-msgstr "Fortsätt utan att installera GRUB?"
+msgstr "不安装 GRUB 并且继续？"
 
 #. Type: boolean
 #. Description
@@ -137,12 +125,9 @@ msgid ""
 "earlier version of GRUB 2 in the boot sector, it may be unable to load "
 "modules or handle the current configuration file."
 msgstr ""
-"Du valde att inte installera GRUB på några enheter. Om du fortsätter kommer "
-"uppstartshanteraren kanske inte att få korrekta inställningar och när ditt "
-"system startar nästa gång kommer det att använda vad som tidigare fanns i "
-"boot-sektorn. Om en tidigare version av GRUB 2 används i boot-sektorn finns "
-"risk att vissa moduler inte kan laddas och hantera de aktuella "
-"inställningsfilerna."
+"您选择了不向任何设备安装 GRUB。如果继续，引导器可能不能正确配置，当您的计算机"
+"下次启动时，它将使用引导扇区中先前的内容。如果引导扇区中有早期版本的 GRUB 2，"
+"其可能不能加载模块或者处理当前配置文件。"
 
 #. Type: boolean
 #. Description
@@ -153,15 +138,14 @@ msgid ""
 "loader, then you should continue anyway.  Otherwise, you should install GRUB "
 "somewhere."
 msgstr ""
-"Om du redan kör en annan uppstartshanterare och vill fortsätta med det eller "
-"om detta är en specialmiljö som inte behöver en uppstartshanterare kan du "
-"tryggt fortsätta. I annat fall ska du installera GRUB någonstans."
+"如果您已经使用了另外一个引导器并且想继续这样做，或者如果这是一个特殊的不需要"
+"引导器的环境，这样您可以仍然继续。否则，您应该在某处安装 GRUB。"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:11001
 msgid "Finish conversion to GRUB 2 now?"
-msgstr "Avsluta konverteringen till GRUB 2 nu?"
+msgstr "现在完成到 GRUB 2 的转换？"
 
 #. Type: boolean
 #. Description
@@ -170,9 +154,8 @@ msgid ""
 "This system still has files from the GRUB Legacy boot loader installed, but "
 "it now also has GRUB 2 boot records installed on these disks:"
 msgstr ""
-"Detta system har fortfarande filer från den äldre GRUB-uppstartshanteraren "
-"installerade men nu finns det dessutom GRUB 2 uppstartsinformation på "
-"följande enheter:"
+"此系统仍然有 GRUB Legacy 引导器安装的文件，但是现在也在磁盘上安装了 GRUB 2 引"
+"导记录："
 
 #. Type: boolean
 #. Description
@@ -184,11 +167,9 @@ msgid ""
 "GRUB 2 images, then they may be incompatible with the new packages and cause "
 "your system to stop booting properly."
 msgstr ""
-"Det är troligt att den äldre GRUB-versionen inte längre används och du bör "
-"istället uppgradera till GRUB 2-avbildningar på dessa enheter och avsluta "
-"konverteringen till GRUB 2 genom att ta bort äldre GRUB-filer. Om du inte "
-"vill uppgradera dessa GRUB 2-avbildningar kan de bli oanvändbara tillsammans "
-"med det nya paketet och systemet sluta att fungera korrekt."
+"好像 GRUB Legacy 已经不再使用了，并且您应该在这些磁盘上转而升级到 GRUB 2 映"
+"像，并且通过删除旧的 GRUB Legacy 文件来完成到 GRUB 2 的转换。如果不升级这些 "
+"GRUB 2 映像，他们将可能不能与新包兼容而造成您的系统不能正常引导。"
 
 #. Type: boolean
 #. Description
@@ -197,14 +178,14 @@ msgid ""
 "You should generally finish the conversion to GRUB 2 unless these boot "
 "records were created by a GRUB 2 installation on some other operating system."
 msgstr ""
-"Det generella rådet är att avsluta konverteringen till GRUB 2 om dessa filer "
-"inte skapats av en GRUB 2-installation på ett annat opertivsystem."
+"您通常应该完成到 GRUB 2 的转换，除非这些引导记录是由安装到其它操作系统上的 "
+"GRUB 2 创建的。"
 
 #. Type: string
 #. Description
 #: ../templates.in:1001
 msgid "Linux command line:"
-msgstr "Kommandorad för Linux:"
+msgstr "Linux 命令行："
 
 #. Type: string
 #. Description
@@ -214,15 +195,14 @@ msgid ""
 "`kopt' parameter in GRUB Legacy's menu.lst.  Please verify that it is "
 "correct, and modify it if necessary."
 msgstr ""
-"Följande Linux-kommandorad hämtades från /etc/default/grub eller 'kopt'-"
-"parametern i gamla GRUB:s menu.lst. Verifiera att den är korrekt och "
-"modifiera den om nödvändigt."
+"如下 Linux 命令行已被从 /etc/default/grub 或 GRUB Legacy 的 menu.lst 中的 "
+"`kopt' 参数中提取。请确定那是正确的，并且根据需要修改它。"
 
 #. Type: string
 #. Description
 #: ../templates.in:2001
 msgid "Linux default command line:"
-msgstr "Standardkommandorad för Linux:"
+msgstr "Linux 默认命令行："
 
 #. Type: string
 #. Description
@@ -230,15 +210,13 @@ msgstr "Standardkommandorad för Linux:"
 msgid ""
 "The following string will be used as Linux parameters for the default menu "
 "entry but not for the recovery mode."
-msgstr ""
-"Följande sträng kommer användas som Linux-parametrar för standardmenyvalet "
-"men inte för återhämtningsläge (eng. recovery)."
+msgstr "如下字符串将被用于默认菜单项的 Linux 参数，但是不会用于恢复模式。"
 
 #. Type: string
 #. Description
 #: ../templates.in:3001
 msgid "kFreeBSD command line:"
-msgstr "Kommandorad för kFreeBSD:"
+msgstr "kFreeBSD 参数："
 
 #. Type: string
 #. Description
@@ -248,15 +226,14 @@ msgid ""
 "the `kopt' parameter in GRUB Legacy's menu.lst.  Please verify that it is "
 "correct, and modify it if necessary."
 msgstr ""
-"Följande kFreeBSD-kommandorad hämtades från /etc/default/grub eller 'kopt'-"
-"parametern i gamla GRUB:s menu.lst. Verifiera att den är korrekt och "
-"modifiera den om nödvändigt."
+"如下 kFreeBSD 命令行参数已经从 /etc/default/grub 或者 GRUB Legacy 的 menu."
+"lst 中的 `kopt' 参数中提取。请确定那是正确的，并且根据需要修改它。"
 
 #. Type: string
 #. Description
 #: ../templates.in:4001
 msgid "kFreeBSD default command line:"
-msgstr "Standardkommandorad för kFreeBSD:"
+msgstr "kFreeBSD 默认命令行："
 
 #. Type: string
 #. Description
@@ -264,15 +241,13 @@ msgstr "Standardkommandorad för kFreeBSD:"
 msgid ""
 "The following string will be used as kFreeBSD parameters for the default "
 "menu entry but not for the recovery mode."
-msgstr ""
-"Följande sträng kommer användas som Linux-parametrar för standardmenyvalet "
-"men inte för återhämtningsläge (eng. recovery)."
+msgstr "如下字符串将用于默认菜单项的 kFreeBSD 参数，但不会用于恢复模式。"
 
 #. Type: note
 #. Description
 #: ../templates.in:5001
 msgid "/boot/grub/device.map has been regenerated"
-msgstr "/boot/grub/device.map har skapats på nytt"
+msgstr "/boot/grub/device.map 已经生成"
 
 #. Type: note
 #. Description
@@ -282,10 +257,8 @@ msgid ""
 "names.  In most cases, this should significantly reduce the need to change "
 "it in future, and boot menu entries generated by GRUB should not be affected."
 msgstr ""
-"Filen /boot/grub/device.map har skrivits om för att använda stabila "
-"enhetsnamn. I de allra flesta fall kommer detta innebära att anledningarna "
-"att byta namn i framtiden minskar drastiskt. Posterna i uppstartsmenyn som "
-"skapas av GRUB ska inte påverkas."
+"文件 /boot/grub/device.map 已经重写以使用稳定的设备名。多数情况下，这应该显著"
+"地减少以后修改它的需要，并且 GRUB 产生的引导菜单项不会受影响。"
 
 #. Type: note
 #. Description
@@ -296,10 +269,8 @@ msgid ""
 "have any custom boot menu entries that rely on GRUB's (hdN) drive numbering, "
 "and update them if necessary."
 msgstr ""
-"Dock, eftersom du har mer än en disk i systemet kan det innebära att det är "
-"beroende av den gamla enhetskopplingen. Kontrollera om det finns poster i "
-"uppstartsmenyn som är beroende av GRUB:s enhetsnumrering (hdN) och uppdatera "
-"dessa om nödvändigt."
+"然而，因为您的系统上可能有多个磁盘，可能您依赖旧的设备映射。请检查您是否有任"
+"何自定义的依赖 GRUB 的 (hdN) 驱动器号的引导菜单项，如果需要请更新它们。"
 
 #. Type: note
 #. Description
@@ -308,5 +279,4 @@ msgid ""
 "If you do not understand this message, or if you do not have any custom boot "
 "menu entries, you can ignore this message."
 msgstr ""
-"Om du inte förstår detta meddelande eller om du inte har några alterantiva "
-"menyposter kan du ignorera detta meddelande."
+"如果您不理解此消息，或者您没有任何自定义的引导菜单项，您可以忽略此消息。"
