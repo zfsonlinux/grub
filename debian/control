@@ -2,7 +2,7 @@ Source: grub2
 Section: admin
 Priority: extra
 Maintainer: GRUB Maintainers <pkg-grub-devel@lists.alioth.debian.org>
-Uploaders: Robert Millan <rmh.debian@aybabtu.com>, Felix Zielcke <fzielcke@z-51.de>, Jordi Mallach <jordi@debian.org>, Colin Watson <cjwatson@debian.org>
+Uploaders: Robert Millan <rmh@gnu.org>, Felix Zielcke <fzielcke@z-51.de>, Jordi Mallach <jordi@debian.org>, Colin Watson <cjwatson@debian.org>
 DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 7.0.50~),
  quilt (>= 0.46-7),
@@ -24,6 +24,8 @@ Build-Depends: debhelper (>= 7.0.50~),
  gettext,
  libusb-dev [!hurd-i386],
  libdevmapper-dev [amd64 i386 powerpc mipsel sparc],
+ libzfs-dev [kfreebsd-i386 kfreebsd-amd64],
+ libnvpair-dev [kfreebsd-i386 kfreebsd-amd64],
  libsdl1.2-dev [!hurd-i386],
  xorriso (>= 0.5.6.pl00),
  qemu-system [i386 kfreebsd-i386 kopensolaris-i386 amd64 kfreebsd-amd64],

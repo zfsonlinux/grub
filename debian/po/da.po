@@ -1,35 +1,47 @@
-# translation of grub2.pot to Dutch
-# Copyright (C) 2008-2009 THE PACKAGE'S COPYRIGHT HOLDER
+# Danish translation grub2.
+# Copyright (C) 2010 grub2 & nedenstående oversættere.
 # This file is distributed under the same license as the grub2 package.
+# Joe Hansen <joedalton2@yahoo.dk>, 2010.
+# Korrekturlæst Kenneth Nielsen.
 #
-# Paul Gevers <paul@climbing.nl>, 2008-2009.
+# Chain loading -> Chain loading is a method used by computer programs 
+# to replace the currently executing program with a new program, 
+# using a common data area (a so-called core common area) to pass 
+# information from the current program to the new program. It occurs 
+# in several areas of computing. Et dansk navn?
+#  man kunne måske med nogen rimelighed kalde det for kædeindlæsning, men
+#  egentlig er det her jo et af de ord som jeg ikke mener at behøver at
+#  oversætte. Dem der har brug for at vide hvad det er, kender kun det
+#  engelsk ord og det danske vil måske endda forvirre mere end det vil
+#  gøre gavn. I hvert fald, hvis du vil oversætte vil jeg anbefale at
+#  sætte chainloade i parentes der hvor du kan. Beholdt uoversat.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: grub2_1.96+20099829_nl\n"
+"Project-Id-Version: grub2\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
 "POT-Creation-Date: 2010-07-02 12:55+0100\n"
-"PO-Revision-Date: 2010-07-19 23:04+0100\n"
-"Last-Translator: Paul Gevers <paul@climbing.nl>\n"
-"Language-Team: Dutch <debian-l10n-dutch@lists.debian.org>\n"
-"Language: nl\n"
+"PO-Revision-Date: 2010-08-01 17:30+01:00\n"
+"Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
+"Language-Team: Danish <debian-l10n-danish@lists.debian.org> \n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:2001
 msgid "Chainload from menu.lst?"
-msgstr "Doorschakelen vanuit menu.lst?"
+msgstr "Chainload fra menu.lst?"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:2001
 msgid "GRUB upgrade scripts have detected a GRUB Legacy setup in /boot/grub."
 msgstr ""
-"GRUB's opwaardeerscripts hebben een oude-stijl GRUB opstelling in /boot/grub "
-"gedetecteerd."
+"Opgraderingsskripterne til GRUB har fundet en GRUB Legacy-opsætning i /boot/"
+"grub."
 
 #. Type: boolean
 #. Description
@@ -40,10 +52,9 @@ msgid ""
 "your existing GRUB Legacy setup.  This step may be automaticaly performed "
 "now."
 msgstr ""
-"Om de oude-stijl versie van GRUB op uw systeem te vervangen wordt het "
-"aangeraden om het /boot/grub/menu.lst bestand zo te laten aanpassen dat er "
-"naar GRUB2 wordt doorgeschakeld (chainloading) vanuit uw bestaande oude-"
-"stijl GRUB opstelling. Deze stap kan nu automatisch worden uitgevoerd."
+"For at erstatte GRUB-versionen Legacy på dit system, anbefales det at /boot/"
+"grub/menu.lst justeres til at chainloade GRUB 2 fra din eksisterende GRUB "
+"Legacy-opsætning. Dette trin kan udføres automatisk nu."
 
 #. Type: boolean
 #. Description
@@ -53,9 +64,9 @@ msgid ""
 "verify that your new GRUB 2 setup is functional for you, before you install "
 "it directly to your MBR (Master Boot Record)."
 msgstr ""
-"U wordt aangeraden om het doorschakelen van GRUB2 vanuit menu.lst te "
-"accepteren, en daarna te verifi??ren dat uw nieuwe GRUB2 opstelling werkt "
-"voordat u het in de MBR (Master Boot Record) installeert."
+"Det anbefales, at du accepter at chainloade GRUB 2 fra menu.lst, og "
+"verificerer at din nye GRUB 2-opsætning virker for dig, før du installerer "
+"den direkte til din MBR (Master Boot Record)."
 
 #. Type: boolean
 #. Description
@@ -64,8 +75,8 @@ msgid ""
 "In either case, whenever you want GRUB 2 to be loaded directly from MBR, you "
 "can do so by issuing (as root) the following command:"
 msgstr ""
-"Waar u ook voor kiest, als u GRUB2 direct in de MBR wilt laden kunt u dat "
-"doen door het volgende commando uit te voeren (met beheerdersrechten (root)):"
+"Uanset hvad, når du ønsker at GRUB 2 skal indlæses direkte fra MBR, kan du "
+"gøre det ved at udstede (som root) den følgende kommando:"
 
 #. Type: text
 #. Description
@@ -79,7 +90,7 @@ msgstr "${DEVICE} (${SIZE} MB, ${MODEL})"
 #. Description
 #: ../grub-pc.templates.in:7001
 msgid "GRUB installation failed.  Continue?"
-msgstr "GRUB installatie mislukt. Verder gaan?"
+msgstr "GRUB-installation mislykkedes. Fortsæt?"
 
 #. Type: boolean
 #. Description
@@ -87,7 +98,7 @@ msgstr "GRUB installatie mislukt. Verder gaan?"
 #. Description
 #: ../grub-pc.templates.in:7001 ../grub-pc.templates.in:8001
 msgid "GRUB failed to install to the following devices:"
-msgstr "Het installeren van de volgende apparaten is mislukt: "
+msgstr "Kunne ikke installere GRUB til de følgende enheder:"
 
 #. Type: boolean
 #. Description
@@ -96,14 +107,14 @@ msgid ""
 "Do you want to continue anyway?  If you do, your computer may not start up "
 "properly."
 msgstr ""
-"Wilt u desondanks verder gaan? Verder gaan kan ervoor zorgen dat uw computer "
-"niet meer goed opstart."
+"Ønsker du at fortsætte alligevel? Hvis du fortsætter, kan din computer måske "
+"ikke starte korrekt op."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:8001
 msgid "GRUB installation failed.  Try again?"
-msgstr "GRUB installatie mislukt. Opnieuw proberen?"
+msgstr "GRUB-installation mislykkedes. Forsøg igen?"
 
 #. Type: boolean
 #. Description
@@ -113,16 +124,15 @@ msgid ""
 "check that your system will boot from that device.  Otherwise, the upgrade "
 "from GRUB Legacy will be cancelled."
 msgstr ""
-"U kunt proberen om GRUB te installeren op een andere apparaat, maar het "
-"wordt aangeraden om eerst te controleren of u kunt opstarten vanaf dat "
-"apparaat. Als u dit niet probeert, zal het nu opwaarderen van de oude-stijl "
-"GRUB geannuleerd worden."
+"Du kan måske installere GRUB til en anden enhed, selvom du skal tjekke at "
+"dit system kan/vil opstarte fra denne enhed. Ellers vil opgraderingen fra "
+"GRUB Legacy blive afbrudt."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:9001
 msgid "Continue without installing GRUB?"
-msgstr "Verder gaan zonder GRUB te installeren?"
+msgstr "Fortsæt uden at installere GRUB?"
 
 #. Type: boolean
 #. Description
@@ -134,12 +144,12 @@ msgid ""
 "earlier version of GRUB 2 in the boot sector, it may be unable to load "
 "modules or handle the current configuration file."
 msgstr ""
-"U heeft ervoor gekozen om GRUB niet te installeren. Als u nu doorgaat zou "
-"het kunnen dat de bootlader niet correct geconfigureerd is en dat uw "
-"computer bij de volgende start de informatie gebruikt die vroeger in de "
-"bootsector stond. Indien daar een eerdere versie van GRUB2 staat, kan het "
-"zijn dat modules niet geladen kunnen worden of dat het huidige "
-"configuratiebestand niet verwerkt kan worden."
+"Du har valgt ikke at installere GRUB på nogen enhed. Hvis du fortsætter, vil "
+"opstarteren (boot loader) måske ikke være korrekt konfigureret, og når din "
+"computer starter op næste gang, vil den bruge det tidligere indhold i din "
+"opstartssektor (boot sector). Hvis der er en tidligere version af GRUB 2 i "
+"opstartsektoren, vil den måske ikke være i stand til at indlæse moduler "
+"eller håndtere den aktuelle konfigurationsfil."
 
 #. Type: boolean
 #. Description
@@ -150,15 +160,16 @@ msgid ""
 "loader, then you should continue anyway.  Otherwise, you should install GRUB "
 "somewhere."
 msgstr ""
-"U kunt verder gaan als u al een andere bootlader gebruikt en deze wilt "
-"blijven gebruiken, of als dit een speciale omgeving is waar u geen bootlader "
-"nodig heeft. In de overige gevallen wilt u waarschijnlijk GRUB installeren."
+"Hvis du allerede kører en anden opstarter (boot loader) og ønsker at "
+"fortsætte med dette, eller hvis dette er et specielt miljø, hvor du ikke har "
+"brug for en opstarter, så skal du fortsætte alligevel. Ellers skal du "
+"installere GRUB et eller andet sted."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:11001
 msgid "Finish conversion to GRUB 2 now?"
-msgstr "Wilt u de conversie naar GRUB 2 nu afronden?"
+msgstr "Afslut konvertering til GRUB 2 nu?"
 
 #. Type: boolean
 #. Description
@@ -167,9 +178,8 @@ msgid ""
 "This system still has files from the GRUB Legacy boot loader installed, but "
 "it now also has GRUB 2 boot records installed on these disks:"
 msgstr ""
-"Dit systeem heeft nog steeds bestanden van de oude-stijl GRUB bootlader ge??"
-"nstalleerd, maar er zijn nu ook GRUB2 bootopnamens ge??nstalleerd op de "
-"volgende schijven:"
+"Dette system har stadig filer fra GRUB Legacy-opstarteren installeret, men "
+"systemet har nu også GRUB 2 opstartsposter installeret på disse diske:"
 
 #. Type: boolean
 #. Description
@@ -181,12 +191,11 @@ msgid ""
 "GRUB 2 images, then they may be incompatible with the new packages and cause "
 "your system to stop booting properly."
 msgstr ""
-"Het lijkt erop dat de oude-stijl GRUB niet langer gebruikt wordt en het "
-"wordt aanbevolen dat u de conversie naar GRUB2 afrond door de GRUB 2 images "
-"op deze schijven op te waarderen en de oude-stijl GRUB bestanden te "
-"verwijderen. Indien u de GRUB2 images niet opwaardeert, is het mogelijk dat "
-"ze incompatibel zijn met de nieuwe pakketten en kunnen ze uw systeem "
-"verhinderen correct op te starten."
+"Det virker sandsynligt at GRUB Legacy ikke længere er i brug, og at du i "
+"steden fir skal opgradere GRUB 2-billederne på disse diske og afslutte "
+"konverteringen til GRUB 2 ved af fjerne ældre GRUB Legacy-filer. Hvis du "
+"ikke opgraderer disse GRUB 2-billeder, så er de måske ikke kompatible med de "
+"nye pakker og får dit system til at holde op med at starte korrekt op."
 
 #. Type: boolean
 #. Description
@@ -195,14 +204,15 @@ msgid ""
 "You should generally finish the conversion to GRUB 2 unless these boot "
 "records were created by a GRUB 2 installation on some other operating system."
 msgstr ""
-"In het algemeen zult u de conversie naar GRUB2 willen afmaken, tenzij deze "
-"bootopnames gemaakt zijn door een GRUB2 op een ander besturingssysteem."
+"Du bør generelt afslutte konverteringen til GRUB 2 medmindre disse "
+"opstartsposter blev oprettet af en GRUB 2-installation på et andet "
+"operativsystem."
 
 #. Type: string
 #. Description
 #: ../templates.in:1001
 msgid "Linux command line:"
-msgstr "Linux-commandoregel:"
+msgstr "Kommandolinje til Linux:"
 
 #. Type: string
 #. Description
@@ -212,15 +222,15 @@ msgid ""
 "`kopt' parameter in GRUB Legacy's menu.lst.  Please verify that it is "
 "correct, and modify it if necessary."
 msgstr ""
-"De volgende Linux-commandoregel is gebaseerd op /etc/default/grub of op de "
-"'kopt'-parameter gevonden in het menu.lst bestand van de oude-stijl GRUB. "
-"Wilt u deze op correctheid controleren en indien nodig aanpassen?"
+"Den følgende kommandolinje i Linux blev udtrukket fra /etc/default/grub "
+"eller parameteren `kopt' i GRUB Legacys menu.lst. Verificer venligst at den "
+"er korrekt, og ændre den om nødvendigt."
 
 #. Type: string
 #. Description
 #: ../templates.in:2001
 msgid "Linux default command line:"
-msgstr "Standaard Linux-commandoregel:"
+msgstr "Standardkommandolinje i Linux:"
 
 #. Type: string
 #. Description
@@ -229,14 +239,14 @@ msgid ""
 "The following string will be used as Linux parameters for the default menu "
 "entry but not for the recovery mode."
 msgstr ""
-"De volgende regel zal, behalve in de herstelmodus, gebruikt worden voor de "
-"Linux parameters in de standaard menuoptie."
+"Den følgende streng vil blive brugt som Linuxparametre for "
+"standardmenupunktet men ikke for gendannelsestilstanden."
 
 #. Type: string
 #. Description
 #: ../templates.in:3001
 msgid "kFreeBSD command line:"
-msgstr "kFreeBSD-commandoregel:"
+msgstr "Kommandolinje for kFreeBSD:"
 
 #. Type: string
 #. Description
@@ -246,15 +256,15 @@ msgid ""
 "the `kopt' parameter in GRUB Legacy's menu.lst.  Please verify that it is "
 "correct, and modify it if necessary."
 msgstr ""
-"De volgende kFreeBSD-commandoregel is gebaseerd /etc/default/grub of op de "
-"'kopt'-parameter gevonden in het menu.lst bestand van de oude-stijl GRUB. "
-"Wilt u deze op correctheid controleren en indien nodig aanpassen?"
+"Den følgende kommandolinje i kFreeBSD blev udtrukket fra /etc/default/grub "
+"eller fra parameteren `kopt' i GRUB Legacys menu.lst. Verificer venligst at "
+"den er korrekt, og ændre den om nødvendigt."
 
 #. Type: string
 #. Description
 #: ../templates.in:4001
 msgid "kFreeBSD default command line:"
-msgstr "Standaard kFreeBSD-commandoregel:"
+msgstr "Standardkommandolinje i kFreeBSD:"
 
 #. Type: string
 #. Description
@@ -263,14 +273,14 @@ msgid ""
 "The following string will be used as kFreeBSD parameters for the default "
 "menu entry but not for the recovery mode."
 msgstr ""
-"De volgende regel zal, behalve in de herstelmodus, gebruikt worden voor de "
-"kFreeBSD parameters in de standaard menuoptie."
+"Den følgende streng vil blive brugt som kFreeBSD-parametre for "
+"standardmenupunktet men ikke for gendannelsestilstanden."
 
 #. Type: note
 #. Description
 #: ../templates.in:5001
 msgid "/boot/grub/device.map has been regenerated"
-msgstr "/boot/grub/device.map is gegenereerd"
+msgstr "/boot/grub/device.map er blevet gendannet"
 
 #. Type: note
 #. Description
@@ -280,10 +290,10 @@ msgid ""
 "names.  In most cases, this should significantly reduce the need to change "
 "it in future, and boot menu entries generated by GRUB should not be affected."
 msgstr ""
-"Het bestand /boot/grub/device.map is zo herschreven dat het stabiele "
-"apparaatnamen gebruikt. In de meeste gevallen zal dit de noodzaak van "
-"toekomstige veranderingen verlagen en zullen door GRUB gegenereerde bootmenu-"
-"items ongewijzigd moeten zijn."
+"Filen /boot/grub/device.map er blevet genskrevet til at bruge stabile "
+"enhedsnavne. I de fleste tilfælde vil dette markant reducere behovet for at "
+"ændre filen fremover, og opstartsmenupunkter oprettet af GRUB vil ikke blive "
+"påvirket."
 
 #. Type: note
 #. Description
@@ -294,10 +304,10 @@ msgid ""
 "have any custom boot menu entries that rely on GRUB's (hdN) drive numbering, "
 "and update them if necessary."
 msgstr ""
-"Het is mogelijk dat u afhankelijk was van de oude apparatenlijst, aangezien "
-"u meer dan ????n schijf in uw systeem heeft. Het wordt aanbevolen dat u de "
-"bootmenu-items controleert op het gebruik van GRUB's schijfbenummering (hdN) "
-"en deze zo nodig aanpast."
+"Da du har mere end en disk i dit sytem, er det dog muligt, at du har en "
+"afhængighed af det gamle enhedskort. Tjek venligst om du har nogle "
+"tilpassede opstartsmenupunkter som afhænger af GRUB's (hdn) drevnummerering, "
+"og opdater dem om nødvendigt."
 
 #. Type: note
 #. Description
@@ -306,5 +316,5 @@ msgid ""
 "If you do not understand this message, or if you do not have any custom boot "
 "menu entries, you can ignore this message."
 msgstr ""
-"U kunt deze melding negeren indien u deze melding niet begrijpt, of als u "
-"geen zelfgemaakte menu-items heeft."
+"Hvis du ikke forstår denne besked, eller du ikke har nogen tilpasset "
+"opstartsmenupunkter, kan du ignorere denne besked."

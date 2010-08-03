@@ -1,3 +1,37 @@
+grub2 (1.98+20100802-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Remove compatibility with terminal.mod prior to
+      terminal_input/terminal_output separation (LP: #519358).
+    - Enable `grub-probe -t device' resolution on ZFS.
+    - Don't use UUID for LVM root when generating Xen entries (closes:
+      #591093).
+    - Restore missing whitespace to commands' --help output (closes:
+      #590874).
+    - Select unique numbers for named RAID arrays, for use as keys in the
+      disk cache.
+
+  [ Updated translations ]
+  * German (Martin Eberhard Schauer).  Closes: #590108
+  * Spanish (Francisco Javier Cuadrado).  Closes: #590448
+  * Traditional Chinese (Tetralet).  Closes: #591191
+  * Danish (Joe Hansen).  Closes: #591223
+  * Dutch (Paul Gevers).  Closes: #590864
+  * Japanese (Hideki Yamane).  Closes: #591058
+
+  [ Robert Millan ]
+  * postinst.in: Fill in device size and model information on GNU/kFreeBSD,
+    using camcontrol.
+  * patches/enable_zfs.patch: New patch. Link ZFS from grub-extras into
+    grub-probe and grub-setup.
+  * control: Build-Depend on libzfs-dev and libnvpair-dev on kfreebsd-*.
+
+  [ Colin Watson ]
+  * Offer RAID devices as GRUB installation targets if they contain /,
+    /boot, or /boot/grub.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 03 Aug 2010 02:13:07 +0100
+
 grub2 (1.98+20100722-1) unstable; urgency=low
 
   * New Bazaar snapshot.
