@@ -1,3 +1,17 @@
+grub2 (1.98+20100804-4) unstable; urgency=low
+
+  [ Updated translations ]
+  * Italian (it.po) by Luca Monducci (closes: #593685).
+  * Finnish (fi.po) by Esko Arajärvi (closes: #593921).
+
+  [ Colin Watson ]
+  * Run update-grub from kernel hooks if DEB_MAINT_PARAMS is unset, for
+    compatibility with old kernel packages.  This may produce duplicate runs
+    of update-grub, but that's better than not running it at all (closes:
+    #594037).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 23 Aug 2010 12:11:55 +0100
+
 grub2 (1.98+20100804-3) unstable; urgency=low
 
   [ Updated translations ]
