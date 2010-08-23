@@ -22,7 +22,7 @@ Index: b/kern/emu/getroot.c
 ===================================================================
 --- a/kern/emu/getroot.c
 +++ b/kern/emu/getroot.c
-@@ -168,8 +168,8 @@
+@@ -233,8 +233,8 @@
  
  #ifdef __MINGW32__
  
@@ -33,7 +33,7 @@ Index: b/kern/emu/getroot.c
                    dev_t dev __attribute__ ((unused)))
  {
    return 0;
-@@ -177,13 +177,22 @@
+@@ -242,13 +242,22 @@
  
  #elif ! defined(__CYGWIN__)
  
@@ -58,7 +58,7 @@ Index: b/kern/emu/getroot.c
    dp = opendir (dir);
    if (! dp)
      return 0;
-@@ -232,7 +241,7 @@
+@@ -297,7 +306,7 @@
  	  /* Find it recursively.  */
  	  char *res;
  
@@ -67,7 +67,7 @@ Index: b/kern/emu/getroot.c
  
  	  if (res)
  	    {
-@@ -342,8 +351,8 @@
+@@ -407,8 +416,8 @@
    return serial;
  }
  
@@ -78,7 +78,7 @@ Index: b/kern/emu/getroot.c
  {
    /* No root device for /cygdrive.  */
    if (dev == (DEV_CYGDRIVE_MAJOR << 16))
-@@ -364,7 +373,7 @@
+@@ -429,7 +438,7 @@
  
    /* Cygwin returns the partition serial number in stat.st_dev.
       This is never identical to the device number of the emulated
@@ -87,7 +87,7 @@ Index: b/kern/emu/getroot.c
       Search the partition with the same serial in boot sector instead.  */
    char devpath[sizeof ("/dev/sda15") + 13]; /* Size + Paranoia.  */
    int d;
-@@ -463,12 +472,12 @@
+@@ -534,12 +543,12 @@
  
  #ifdef __CYGWIN__
    /* Cygwin specific function.  */

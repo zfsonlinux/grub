@@ -1,3 +1,165 @@
+grub2 (1.98+20100804-4ubuntu1) maverick; urgency=low
+
+  * Resynchronise with Debian.  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script: title,
+      recovery mode, quiet option, tweak how memtest86+ is displayed, and
+      use UUIDs where appropriate.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel= options if kdump and makedumpfile are available.
+    - If other operating systems are installed, then automatically unhide
+      the menu.  Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus
+      if available to check whether Shift is pressed.  If it is, show the
+      menu, otherwise boot immediately.  If keystatus is not available, then
+      fall back to a short delay interruptible with Escape.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Don't display introductory message about line editing unless we're
+      actually offering a shell prompt.  Don't clear the screen just before
+      booting if we never drew the menu in the first place.
+    - Remove some verbose messages printed before reading the configuration
+      file.
+    - Suppress progress messages as the kernel and initrd load for
+      non-recovery kernel menu entries.
+    - Change prepare_grub_to_access_device to handle filesystems
+      loop-mounted on file images.
+    - Ignore devices loop-mounted from files in 10_linux.
+    - Show the boot menu if the previous boot failed, that is if it failed
+      to get to the end of one of the normal runlevels.
+    - Handle RAID devices containing virtio components.
+    - Don't generate /boot/grub/device.map during grub-install or
+      grub-mkconfig by default.
+    - Adjust upgrade version checks for Ubuntu.
+    - Don't display "GRUB loading" unless Shift is held down.
+    - Adjust versions of grub-doc and grub-legacy-doc conflicts to tolerate
+      our backport of the grub-doc split.
+    - Fix LVM/RAID probing in the absence of /boot/grub/device.map.
+    - Look for .mo files in /usr/share/locale-langpack as well, in
+      preference.
+    - Make sure GRUB_TIMEOUT isn't quoted unnecessarily.
+    - Probe all devices in 'grub-probe --target=drive' if
+      /boot/grub/device.map is missing.
+    - Adjust hostdisk id for hard disks, allowing grub-setup to use its
+      standard workaround for broken BIOSes.
+    - Build-depend on qemu-kvm rather than qemu-system for grub-pc tests.
+    - Use qemu rather than qemu-system-i386.
+    - Extend the EFI version of grub-install to be able to install into an
+      EFI System Partition mounted on /boot/efi in a location that complies
+      with the EFI specification.
+    - Upgrade the installed core image when upgrading grub-efi-ia32 or
+      grub-efi-amd64, although only if /boot/efi/EFI/ubuntu already exists.
+    - Make grub-efi-ia32 and grub-efi-amd64 depend on efibootmgr so that
+      grub-install works properly.
+    - Program vesafb on BIOS systems rather than efifb.
+  * Go back to gfxpayload=text by default for Ubuntu 10.10, as the kernel
+    needs more work to avoid lockups with some video cards
+    (LP: #605614, #608429, #612626).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 23 Aug 2010 13:11:28 +0100
+
+grub2 (1.98+20100804-4) unstable; urgency=low
+
+  [ Updated translations ]
+  * Italian (it.po) by Luca Monducci (closes: #593685).
+  * Finnish (fi.po) by Esko Arajärvi (closes: #593921).
+
+  [ Colin Watson ]
+  * Run update-grub from kernel hooks if DEB_MAINT_PARAMS is unset, for
+    compatibility with old kernel packages.  This may produce duplicate runs
+    of update-grub, but that's better than not running it at all (closes:
+    #594037).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 23 Aug 2010 12:11:55 +0100
+
+grub2 (1.98+20100804-3) unstable; urgency=low
+
+  [ Updated translations ]
+  * Brazilian Portuguese (pt_BR.po) by Flamarion Jorge (closes: #592156).
+  * Asturian (ast.po) by Maacub (closes: #592313).
+  * Galician (gl.po) by Jorge Barreiro (closes: #592816).
+
+  [ Robert Millan ]
+  * Backport ZFS bugfixes from upstream Bazaar:
+    - zfs_fix_chroot.patch: Fix breakage when running grub-probe inside chroot.
+    - zfs_fix_label_arg.patch: Fix grub-probe fs_label argument.
+    - zfs_fix_pathname.patch: Fix pathname for non-root ZFS filesystems.
+    - zfs_fix_segfault.patch: Fix segfault when /dev is not mounted.
+
+  [ Colin Watson ]
+  * Escape single quotes when removing them from $mode in zz-update-grub, so
+    that this works when /bin/sh is bash (thanks, Will Dyson; closes:
+    #593242).
+  * Add support for ext2 root on GNU/kFreeBSD (thanks, Aurelien Jarno;
+    closes: #593467).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 19 Aug 2010 18:21:45 +0100
+
+grub2 (1.98+20100804-2) unstable; urgency=low
+
+  [ Colin Watson ]
+  * Make /etc/kernel/postrm.d/zz-update-grub a real file rather than a
+    symlink (closes: #592076).
+
+  [ Updated translations ]
+  * Norwegian Bokmål (nb.po) by Hans Nordhaug (closes: #591569).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 07 Aug 2010 17:53:34 +0100
+
+grub2 (1.98+20100804-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Fix grub-emu build on GNU/kFreeBSD (closes: #591490).
+
+  [ Colin Watson ]
+  * Add kernel hook scripts and remove any uses of update-grub as a
+    postinst_hook or postrm_hook in /etc/kernel-img.conf (closes: #554175).
+    Thanks to Ben Hutchings for advice and to Harald Braumann for an early
+    implementation.
+  * Extend the existing GRUB_LEGACY_0_BASED_PARTITIONS handling to avoid
+    new-style partition naming when generating output for GRUB Legacy
+    (closes: #590554).
+
+  [ Updated translations ]
+  * Slovak (sk.po) by Slavko (closes: #591458).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 04 Aug 2010 04:48:11 +0100
+
+grub2 (1.98+20100802-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Remove compatibility with terminal.mod prior to
+      terminal_input/terminal_output separation (LP: #519358).
+    - Enable `grub-probe -t device' resolution on ZFS.
+    - Don't use UUID for LVM root when generating Xen entries (closes:
+      #591093).
+    - Restore missing whitespace to commands' --help output (closes:
+      #590874).
+    - Select unique numbers for named RAID arrays, for use as keys in the
+      disk cache.
+
+  [ Updated translations ]
+  * German (Martin Eberhard Schauer).  Closes: #590108
+  * Spanish (Francisco Javier Cuadrado).  Closes: #590448
+  * Traditional Chinese (Tetralet).  Closes: #591191
+  * Danish (Joe Hansen).  Closes: #591223
+  * Dutch (Paul Gevers).  Closes: #590864
+  * Japanese (Hideki Yamane).  Closes: #591058
+
+  [ Robert Millan ]
+  * postinst.in: Fill in device size and model information on GNU/kFreeBSD,
+    using camcontrol.
+  * patches/enable_zfs.patch: New patch. Link ZFS from grub-extras into
+    grub-probe and grub-setup.
+  * control: Build-Depend on libzfs-dev and libnvpair-dev on kfreebsd-*.
+
+  [ Colin Watson ]
+  * Offer RAID devices as GRUB installation targets if they contain /,
+    /boot, or /boot/grub.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 03 Aug 2010 02:13:07 +0100
+
 grub2 (1.98+20100722-1ubuntu1) maverick; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:

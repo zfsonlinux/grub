@@ -113,7 +113,7 @@ Index: b/kern/emu/hostdisk.c
  
    return grub_errno;
  }
-@@ -1611,5 +1613,5 @@
+@@ -1634,5 +1636,5 @@
  const char *
  grub_util_biosdisk_get_osdev (grub_disk_t disk)
  {
