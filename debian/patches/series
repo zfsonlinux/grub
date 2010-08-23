@@ -9,6 +9,12 @@ gfxpayload_keep_default.patch
 mkrescue_diet.patch
 mkconfig_skip_dmcrypt.patch
 install_stage2_confusion.patch
+enable_zfs.patch
+zfs_fix_chroot.patch
+zfs_fix_segfault.patch
+zfs_fix_pathname.patch
+zfs_fix_label_arg.patch
+kfreebsd_ext2.patch
 ubuntu_grub_standards.patch
 ubuntu_crashkernel.patch
 ubuntu_quick_boot.patch

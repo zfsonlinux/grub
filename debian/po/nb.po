@@ -1,16 +1,20 @@
-# Italian (it) translation of debconf templates for grub2
+# Norwegian Bokmål translation for grub2.
+# Copyright (C) 2010 grub2
 # This file is distributed under the same license as the grub2 package.
-# Luca Monducci <luca.mo@tiscali.it>, 2007-2010.
+# Hans Nordhaug <hans@nordhaug.priv.no>, 2010.
 #
+# Currently "Chainload" is kept untranslated (as in the Danish translation).
+# If a good Norwegian word for "Chainload" is discovered, please update the
+# translation.
 msgid ""
 msgstr ""
-"Project-Id-Version: grub2 1.98+20100710-2 italian debconf templates\n"
+"Project-Id-Version: grub2\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
 "POT-Creation-Date: 2010-07-02 12:55+0100\n"
-"PO-Revision-Date: 2010-08-22 14:32+0200\n"
-"Last-Translator: Luca Monducci <luca.mo@tiscali.it>\n"
-"Language-Team: Italian <debian-l10n-italian@lists.debian.org>\n"
-"Language: it\n"
+"PO-Revision-Date: 2010-08-04 00:39+0200\n"
+"Last-Translator: Hans Nordhaug <hans@nordhaug.priv.no>\n"
+"Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
+"Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,15 +23,15 @@ msgstr ""
 #. Description
 #: ../grub-pc.templates.in:2001
 msgid "Chainload from menu.lst?"
-msgstr "Effettuare il caricamento in cascata da menu.lst?"
+msgstr "Chainload fra menu.lst?"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:2001
 msgid "GRUB upgrade scripts have detected a GRUB Legacy setup in /boot/grub."
 msgstr ""
-"Gli script di aggiornamento hanno rilevato la configurazione di GRUB Legacy "
-"in /boot/grub."
+"Oppgraderingsskriptene til GRUB har funnet et GRUB Legacy-oppsett i /boot/"
+"grub."
 
 #. Type: boolean
 #. Description
@@ -38,10 +42,9 @@ msgid ""
 "your existing GRUB Legacy setup.  This step may be automaticaly performed "
 "now."
 msgstr ""
-"Per sostituire la versione Legacy di GRUB sul proprio sistema, si raccomanda "
-"di correggere il file /boot/grub/menu.lst in modo da caricare GRUB 2 in "
-"cascata dalla versione di GRUB esistente. Questa modifica può essere "
-"effettuata automaticamente adesso."
+"For å erstatte Legacy versjonen av GRUB på ditt system anbefales det at /"
+"boot/grub/menu.lst justeres til å chainloade GRUB 2 fra ditt eksisterende "
+"GRUB Legacy-oppsett. Dette steget kan utføres automatisk nå."
 
 #. Type: boolean
 #. Description
@@ -51,10 +54,9 @@ msgid ""
 "verify that your new GRUB 2 setup is functional for you, before you install "
 "it directly to your MBR (Master Boot Record)."
 msgstr ""
-"Si raccomanda di accettare il caricamento in cascata di GRUB 2 da menu.lst e "
-"di verificare che la nuova configurazione di GRUB 2 sia adatta alle proprie "
-"necessità prima di procedere con l'installazione diretta sul MBR (Master "
-"Boot Record)."
+"Det anbefales at du aksepter å chainloade GRUB 2 fra menu.lst og verifiserer "
+"at ditt nye GRUB 2-oppsett virker for deg, før du installerer den direkte på "
+"din MBR (Master Boot Record)."
 
 #. Type: boolean
 #. Description
@@ -63,8 +65,8 @@ msgid ""
 "In either case, whenever you want GRUB 2 to be loaded directly from MBR, you "
 "can do so by issuing (as root) the following command:"
 msgstr ""
-"In ogni caso, per caricare GRUB 2 direttamente dal MBR, è necessario "
-"eseguire (da root) il seguente comando:"
+"Uansett hva, når du ønsker at GRUB 2 skal lastes inn direkte fra MBR, kan du "
+"gjøre ved å utføre følgende kommando (som root):"
 
 #. Type: text
 #. Description
@@ -78,7 +80,7 @@ msgstr "${DEVICE} (${SIZE} MB, ${MODEL})"
 #. Description
 #: ../grub-pc.templates.in:7001
 msgid "GRUB installation failed.  Continue?"
-msgstr "Installazione di GRUB non riuscita. Continuare?"
+msgstr "Klarte ikke installere GRUB. Fortsett?"
 
 #. Type: boolean
 #. Description
@@ -86,7 +88,7 @@ msgstr "Installazione di GRUB non riuscita. Continuare?"
 #. Description
 #: ../grub-pc.templates.in:7001 ../grub-pc.templates.in:8001
 msgid "GRUB failed to install to the following devices:"
-msgstr "L'installazione di GRUB sui seguenti device non è riuscita:"
+msgstr "Klarte ikke installere GRUB på følgende enheter:"
 
 #. Type: boolean
 #. Description
@@ -95,14 +97,14 @@ msgid ""
 "Do you want to continue anyway?  If you do, your computer may not start up "
 "properly."
 msgstr ""
-"Si vuole continuare? Continuando, il computer potrebbe non avviarsi più "
-"correttamente."
+"Ønsker du å fortsette likevel? Hvis du fortsetter, vil kanskje ikke din "
+"datamaskin starte opp skikkelig."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:8001
 msgid "GRUB installation failed.  Try again?"
-msgstr "Installazione di GRUB non riuscita. Riprovare?"
+msgstr "Klarte ikke installere GRUB. prøv igjen?"
 
 #. Type: boolean
 #. Description
@@ -112,15 +114,15 @@ msgid ""
 "check that your system will boot from that device.  Otherwise, the upgrade "
 "from GRUB Legacy will be cancelled."
 msgstr ""
-"È possibile installare GRUB su un altro device però è necessario verificare "
-"che il propio sistema si possa avviare da quel device. Altrimenti, "
-"l'aggiornamento da GRUB Legacy verrà annullato."
+"Du kan klare å installere GRUB på en annen enhet, selvom du bør sjekke at "
+"systemet ditt kan/vil starte opp fra den enheten. Ellers vil oppgraderingen "
+"fra GRUB Legacy bli avbrutt."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:9001
 msgid "Continue without installing GRUB?"
-msgstr "Continuare senza installare GRUB?"
+msgstr "Fortsett uten å installere GRUB?"
 
 #. Type: boolean
 #. Description
@@ -132,12 +134,12 @@ msgid ""
 "earlier version of GRUB 2 in the boot sector, it may be unable to load "
 "modules or handle the current configuration file."
 msgstr ""
-"Si è scelto di non installare GRUB su alcun device. Continuando, il boot "
-"loader potrebbe non essere configurato correttamente e al prossimo avvio del "
-"computer verrà usato il vecchio contenuto del settore di boot. Se nel "
-"settore di boot è presente una versione precedente di GRUB 2, questa "
-"potrebbe non essere in grado di caricare i moduli o di gestire l'attuale "
-"file di configurazione."
+"Du har valgt å ikke installere GRUB på noen enhet. Hvis du fortsetter, vil "
+"oppstartslasteren kanskje ikke være skikkelig satt opp, og når din "
+"datamaskin starter opp neste gang vil den bruke det tidligere innholdet i "
+"din oppstartssektor. Hvis det er en tidligere versjon av GRUB 2 i "
+"oppstartsektoren, vil den kanskje ikke være i stand til å laste inn moduler "
+"eller håndtere den aktuelle konfigurasjonsfilen."
 
 #. Type: boolean
 #. Description
@@ -148,15 +150,16 @@ msgid ""
 "loader, then you should continue anyway.  Otherwise, you should install GRUB "
 "somewhere."
 msgstr ""
-"Se già si usa un altro boot loader e si vuole continuare a farlo oppure se "
-"non si ha necessità di usare un boot loader allora è possibile continuare. "
-"Altrimenti è necessario installare GRUB da qualche parte."
+"Hvis du allerede kjører en annen oppstartslaster og ønsker å fortsætte med "
+"det, eller hvis dette er et spesielt miljø hvor du ikke har bruk for en "
+"oppstartslaster, så skal du fortsette likevel. Ellers, bør du installere "
+"GRUB et eller annet sted."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:11001
 msgid "Finish conversion to GRUB 2 now?"
-msgstr "Completare la conversione a GRUB 2 adesso?"
+msgstr "Avslutt konvertering til GRUB 2 nå?"
 
 #. Type: boolean
 #. Description
@@ -165,8 +168,9 @@ msgid ""
 "This system still has files from the GRUB Legacy boot loader installed, but "
 "it now also has GRUB 2 boot records installed on these disks:"
 msgstr ""
-"Su questo sistema sono ancora presenti i file del boot loader GRUB Legacy ma "
-"adesso sui seguenti dischi sono installati anche i boot record di GRUB 2:"
+"Dette systemet har fremdeles installert filer fra GRUB Legacy-"
+"oppstartslasteren, men systemet har nå også GRUB 2 oppstartsposter "
+"installert på disse diskene:"
 
 #. Type: boolean
 #. Description
@@ -178,11 +182,11 @@ msgid ""
 "GRUB 2 images, then they may be incompatible with the new packages and cause "
 "your system to stop booting properly."
 msgstr ""
-"Sembra che GRUB Legacy non sia più usato quindi si dovrebbero aggiornare le "
-"immagini sui dischi con GRUB 2 e completare la conversione a GRUB 2 "
-"eliminando i vecchi file di GRUB Legacy. Se non si aggiornano le immagini "
-"con GRUB 2, in futuro potrebbero non essere più compatibili con i nuovi "
-"pacchetti e potrebbero impedire il corretto avvio del sistema."
+"Det virker sannsynlig at GRUB Legacy ikke lenger er i bruk, og at du i "
+"steden for skal oppgradere GRUB 2-bildene på disse diskene og avslutte "
+"konverteringen til GRUB 2 ved å fjerne eldre GRUB Legacy-filer. Hvis du ikke "
+"oppgraderer disse GRUB 2-bildene, så er de kanskje ikke kompatible med de "
+"nye pakkene og kan få ditt system til å stoppe å starte opp skikkelig."
 
 #. Type: boolean
 #. Description
@@ -191,15 +195,15 @@ msgid ""
 "You should generally finish the conversion to GRUB 2 unless these boot "
 "records were created by a GRUB 2 installation on some other operating system."
 msgstr ""
-"Si dovrebbe completare la conversione a GRUB 2 a meno che i boot record non "
-"siano stati creati da un'altra installazione di GRUB 2 su un altro sistema "
-"operativo."
+"Du bør generelt avslutte konverteringen til GRUB 2 med mindre disse "
+"oppstartspostene ble opprettet av en GRUB 2-installasjon på et annet "
+"operativsystem."
 
 #. Type: string
 #. Description
 #: ../templates.in:1001
 msgid "Linux command line:"
-msgstr "Riga di comando Linux:"
+msgstr "Kommandolinje i Linux:"
 
 #. Type: string
 #. Description
@@ -209,15 +213,15 @@ msgid ""
 "`kopt' parameter in GRUB Legacy's menu.lst.  Please verify that it is "
 "correct, and modify it if necessary."
 msgstr ""
-"La seguente riga di comando Linux è stata estratta da /etc/default/grub "
-"oppure dal parametro \"kopt\" presente nel file menu.lst del vecchio GRUB. "
-"Controllare che sia corretta e modificarla se necessario."
+"Den følgende Linux-kommandolinjen ble trukket ut fra /etc/default/grub eller "
+"parameteren `kopt' i GRUB Legacys menu.lst. Verifiser at den er korrekt og "
+"endre den om nødvendig."
 
 #. Type: string
 #. Description
 #: ../templates.in:2001
 msgid "Linux default command line:"
-msgstr "Riga di comando Linux predefinita:"
+msgstr "Standardkommandolinje i Linux:"
 
 #. Type: string
 #. Description
@@ -226,14 +230,14 @@ msgid ""
 "The following string will be used as Linux parameters for the default menu "
 "entry but not for the recovery mode."
 msgstr ""
-"Questa stringa verrà usata come parametri per Linux nella voce di menu "
-"predefinita ma non nella modalità di ripristino."
+"Den følgende teksten vil bli brukt som Linux-parametre for "
+"standardmenupunktet, men ikke for gjenopprettelsesmodus."
 
 #. Type: string
 #. Description
 #: ../templates.in:3001
 msgid "kFreeBSD command line:"
-msgstr "Riga di comando kFreeBSD:"
+msgstr "Kommandolinje i kFreeBSD:"
 
 #. Type: string
 #. Description
@@ -243,15 +247,15 @@ msgid ""
 "the `kopt' parameter in GRUB Legacy's menu.lst.  Please verify that it is "
 "correct, and modify it if necessary."
 msgstr ""
-"La seguente riga di comando kFreeBSD è stata estratta da /etc/default/grub "
-"oppure dal parametro \"kopt\" presente nel file menu.lst del vecchio GRUB. "
-"Controllare che sia corretta e modificarla se necessario."
+"Den følgende kFreeBSD-kommandolinjen ble trukket ut fra /etc/default/grub "
+"eller fra parameteren `kopt' i GRUB Legacys menu.lst. Verifiser at den er "
+"korrekt, og endre den om nødvendig."
 
 #. Type: string
 #. Description
 #: ../templates.in:4001
 msgid "kFreeBSD default command line:"
-msgstr "Riga di comando kFreeBSD predefinita:"
+msgstr "Standardkommandolinje i kFreeBSD:"
 
 #. Type: string
 #. Description
@@ -260,14 +264,14 @@ msgid ""
 "The following string will be used as kFreeBSD parameters for the default "
 "menu entry but not for the recovery mode."
 msgstr ""
-"Questa stringa verrà usata come parametri per kFreeBSD nella voce di menu "
-"predefinita ma non nella modalità di ripristino."
+"Den følgende teksten vil bli brukt som kFreeBSD-parametre for "
+"standardmenupunktet men ikke for gjenopprettelsesmodus."
 
 #. Type: note
 #. Description
 #: ../templates.in:5001
 msgid "/boot/grub/device.map has been regenerated"
-msgstr "/boot/grub/device.map è stato rigenerato"
+msgstr "/boot/grub/device.map er regenerert"
 
 #. Type: note
 #. Description
@@ -277,10 +281,9 @@ msgid ""
 "names.  In most cases, this should significantly reduce the need to change "
 "it in future, and boot menu entries generated by GRUB should not be affected."
 msgstr ""
-"Il file /boot/grub/device.map è stato riscritto in modo da usare i nomi "
-"stabili dei device. In molti casi questo dovrebbe ridurre in modo "
-"significativo la necessità di cambiarli in futuro e le voci nel menu di GRUB "
-"non dovrebbero essere influenzate."
+"Filen /boot/grub/device.map er oppdatert til å bruke stabile enhetsnavn. I "
+"de fleste tilfeller vil dette markant redusere behovet for å endre filen "
+"fremover, og oppstartsmenupunkter opprettet av GRUB skal ikke bli påvirket."
 
 #. Type: note
 #. Description
@@ -291,10 +294,10 @@ msgid ""
 "have any custom boot menu entries that rely on GRUB's (hdN) drive numbering, "
 "and update them if necessary."
 msgstr ""
-"Comunque, visto che sul sistema ci sono più dischi, è possibile che si fosse "
-"dipendenti dalla vecchia mappa dei device. Controllare se nel menu di GRUB "
-"ci sono delle voci personalizzate che usano la numerazione dei device di "
-"GRUB (hdN) e, se necessario, aggiornarle."
+"Da du har mer enn en disk i ditt sytem, er det mulig at du er avhengig av "
+"det gamle enhetskartet. Sjekk om du har noen tilpassede oppstartsmenupunkter "
+"som er avhengig av GRUB's (hdn) disknummerering, og oppdater dem om "
+"nødvendig."
 
 #. Type: note
 #. Description
@@ -303,5 +306,5 @@ msgid ""
 "If you do not understand this message, or if you do not have any custom boot "
 "menu entries, you can ignore this message."
 msgstr ""
-"Se non si capisce questo messaggio o non si hanno voci di menu "
-"personalizzate, ignorare questo messaggio."
+"Hvis du ikke forstår denne beskjeden, eller du ikke har noen tilpassede "
+"oppstartsmenupunkter, kan du ignorere denne beskjeden."

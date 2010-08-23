@@ -151,7 +151,7 @@ Index: b/util/grub-probe.c
  #include <grub/term.h>
  #include <grub/env.h>
  #include <grub/raid.h>
-@@ -109,13 +110,14 @@
+@@ -110,13 +111,14 @@
  }
  
  static void
@@ -167,7 +167,7 @@ Index: b/util/grub-probe.c
  
    if (path == NULL)
      {
-@@ -139,6 +141,22 @@
+@@ -140,6 +142,22 @@
        goto end;
      }
  
@@ -190,7 +190,7 @@ Index: b/util/grub-probe.c
    drive_name = grub_util_get_grub_dev (device_name);
    if (! drive_name)
      grub_util_error ("cannot find a GRUB drive for %s.  Check your device.map", device_name);
-@@ -431,9 +449,9 @@
+@@ -444,9 +462,9 @@
  
    /* Do it.  */
    if (argument_is_device)
