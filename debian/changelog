@@ -1,3 +1,11 @@
+grub2 (1.98+20100804-4ubuntu3) maverick; urgency=low
+
+  * Build-depend on mtools for grub-rescue-efi-amd64 build.
+  * Only build grub-rescue-efi-amd64 on architectures where we build
+    grub-efi-amd64.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 25 Aug 2010 15:23:31 +0100
+
 grub2 (1.98+20100804-4ubuntu2) maverick; urgency=low
 
   * Add a grub-rescue-efi-amd64 package containing a rescue CD-ROM image for
