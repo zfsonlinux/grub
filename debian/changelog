@@ -1,3 +1,12 @@
+grub2 (1.98+20100804-4ubuntu4) maverick; urgency=low
+
+  * Adjust the EFI-AMD64 rescue CD image to find itself at boot time by
+    looking for /.disk/info, rather than by UUID.  This is a temporary
+    measure to allow parts of this image to be incorporated into other CD
+    images.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 25 Aug 2010 22:58:53 +0100
+
 grub2 (1.98+20100804-4ubuntu3) maverick; urgency=low
 
   * Build-depend on mtools for grub-rescue-efi-amd64 build.

@@ -144,6 +144,12 @@ build/stamps/build-grub-rescue-efi-amd64: build/stamps/build-grub-efi-amd64
 	cp docs/grub.cfg build/grub-rescue-efi-amd64/rescue-disk/boot/grub/
 	sed -i 's,^prefix=.*,prefix=$(CURDIR)/build/grub-rescue-efi-amd64,' \
 		build/grub-rescue-efi-amd64/grub-mkrescue
+	# temporary, to allow this to be part of other CD images
+	sed -i 's,^search --fs-uuid.*,search --file --set /.disk/info,' \
+		build/grub-rescue-efi-amd64/grub-mkrescue
+	mkdir -p build/grub-rescue-efi-amd64/rescue-disk/.disk
+	echo 'GRUB EFI-AMD64 rescue CD $(deb_version)' \
+		>build/grub-rescue-efi-amd64/rescue-disk/.disk/info
 	mkdir -p build/grub-rescue-efi-amd64/lib/grub
 	rm -rf build/grub-rescue-efi-amd64/lib/grub/x86_64-efi
 	cp -a build/grub-efi-amd64 build/grub-rescue-efi-amd64/lib/grub/x86_64-efi
