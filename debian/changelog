@@ -1,3 +1,11 @@
+grub2 (1.98+20100804-4ubuntu2) maverick; urgency=low
+
+  * Add a grub-rescue-efi-amd64 package containing a rescue CD-ROM image for
+    EFI-AMD64.  For the moment, the purpose of this is mainly to deliver
+    files to debian-installer.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 25 Aug 2010 13:45:56 +0100
+
 grub2 (1.98+20100804-4ubuntu1) maverick; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:

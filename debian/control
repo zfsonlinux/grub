@@ -174,6 +174,17 @@ Description: GRand Unified Bootloader, version 2 (EFI-AMD64 version)
  EFI-AMD64 architecture, such as the one provided by Intel Macs (that is, unless
  a BIOS interface has been activated).
 
+Package: grub-rescue-efi-amd64
+Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64
+Depends: ${misc:Depends}
+Description: GRUB bootable rescue images, version 2 (EFI-AMD64 version)
+ This package contains two GRUB rescue images that have been built for use
+ with the EFI-AMD64 architecture, such as the one provided by Intel Macs
+ (that is, unless a BIOS interface has been activated):
+ .
+  - grub-rescue-cdrom.iso: El Torito CDROM image.
+  - grub-rescue-usb.img: USB image.
+
 Package: grub-ieee1275
 Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64 powerpc sparc
 Depends: ${shlibs:Depends}, grub-common (= ${binary:Version}),
