@@ -196,7 +196,7 @@ Index: b/util/i386/efi/grub-install.in
      echo "${grubdir} doesn't look like an EFI partition." 1>&2
      exit 1
  fi
-@@ -236,17 +354,86 @@
+@@ -236,17 +354,91 @@
  # this command is allowed to fail (--target=fs already grants us that the
  # filesystem will be accessible).
  partmap_module=
@@ -233,6 +233,7 @@ Index: b/util/i386/efi/grub-install.in
 +    grub_drive="`$grub_probe --target=drive --device-map=${device_map} --device ${grub_device}`" || exit 1
 +
 +    # Strip partition number
++    grub_partition="`echo ${grub_drive} | sed -e 's/^[^,]*,//; s/)$//'`"
 +    grub_drive="`echo ${grub_drive} | sed -e s/,[a-z0-9,]*//g`"
 +    if [ "x${grub_drive}" != "x${install_drive}" ] ; then
 +        uuid="`$grub_probe --target=fs_uuid --device ${grub_device}`"
@@ -244,12 +245,16 @@ Index: b/util/i386/efi/grub-install.in
 +	echo 'set prefix=($root)'"${relative_grubdir}" >> ${grubdir}/load.cfg
 +	config_opt="-c ${grubdir}/load.cfg "
 +        modules="$modules search_fs_uuid"
++    else
++        # No grub-setup, so we need to hardcode the partition number in the
++        # core image's prefix.
++        prefix_drive="(,$grub_partition)"
 +    fi
 +else
 +    prefix_drive=`$grub_probe --target=drive --device ${grub_device}` || exit 1
 +fi
 +
-+$grub_mkimage -p "" ${config_opt} -O ${target_cpu}-efi --output=${efidir}/${efi_file} --prefix=${prefix_drive}${relative_grubdir} $modules || exit 1
++$grub_mkimage ${config_opt} -O ${target_cpu}-efi --output=${efidir}/${efi_file} --prefix=${prefix_drive}${relative_grubdir} $modules || exit 1
 +
 +# Try to make this image bootable using the EFI Boot Manager, if available.
 +if test "$removable" = no && test -n "$efi_distributor" && \
@@ -263,7 +268,7 @@ Index: b/util/i386/efi/grub-install.in
 +
 +    # Delete old entries from the same distributor.
 +    for bootnum in `efibootmgr | grep '^Boot[0-9]' | \
-+		    fgrep " $efi_distributor" | cut -b5-8`; do
++		    fgrep -i " $efi_distributor" | cut -b5-8`; do
 +	efibootmgr $efi_quiet -b "$bootnum" -B
 +    done
 +
@@ -286,3 +291,44 @@ Index: b/util/i386/efi/grub-install.in
  
  # Prompt the user to check if the device map is correct.
  echo "Installation finished. No error reported."
+Index: b/kern/efi/init.c
+===================================================================
+--- a/kern/efi/init.c
++++ b/kern/efi/init.c
+@@ -66,10 +66,33 @@
+       path = grub_strdup (pptr);
+   }
+ 
+-  if (!device || !path)
++  if ((!device || device[0] == ',' || !device[0]) || !path)
+     image = grub_efi_get_loaded_image (grub_efi_image_handle);
+-  if (image && !device)
+-    device = grub_efidisk_get_device_name (image->device_handle);
++  if (image)
++    {
++      if (!device)
++	device = grub_efidisk_get_device_name (image->device_handle);
++      else if (device[0] == ',' || !device[0])
++	{
++	  /* We have a partition, but still need to fill in the drive.  */
++	  char *image_device, *comma, *new_device;
++
++	  image_device = grub_efidisk_get_device_name (image->device_handle);
++	  comma = grub_strchr (image_device, ',');
++	  if (comma)
++	    {
++	      char *drive = grub_strndup (image_device, comma - image_device);
++	      new_device = grub_xasprintf ("%s%s", drive, device);
++	      grub_free (drive);
++	    }
++	  else
++	    new_device = grub_xasprintf ("%s%s", image_device, device);
++
++	  grub_free (image_device);
++	  grub_free (device);
++	  device = new_device;
++	}
++    }
+ 
+   if (image && !path)
+     {
