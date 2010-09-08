@@ -1,3 +1,20 @@
+grub2 (1.98+20100804-4ubuntu5) maverick; urgency=low
+
+  [ Colin Watson ]
+  * Make grub-efi-amd64 conflict with grub-pc as well as the other way round
+    (LP: #632642).
+  * Extend EFI initialisation code to understand (,$partition)-style
+    prefixes.  If the EFI System Partition is on the same disk as
+    /boot/grub, use this rather than allowing GRUB to set the prefix to the
+    EFI System Partition by default (LP: #632775).  (If they're on different
+    disks, grub-install already used a UUID to find /boot/grub.)
+
+  [ Mario Limonciello ]
+  * Modify ubuntu_efi_install to check for case-insensitive EFI distributor.
+    (LP: #632706)
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 08 Sep 2010 13:41:18 +0100
+
 grub2 (1.98+20100804-4ubuntu4) maverick; urgency=low
 
   * Adjust the EFI-AMD64 rescue CD image to find itself at boot time by
