@@ -35,3 +35,4 @@ ubuntu_hostdisk_hd.patch
 ubuntu_qemu.patch
 ubuntu_efi_install.patch
 ubuntu_vesafb.patch
+ubuntu_diskless_partitions.patch
