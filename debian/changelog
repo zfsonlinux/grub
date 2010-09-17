@@ -1,3 +1,23 @@
+grub2 (1.98+20100804-5) unstable; urgency=low
+
+  [ Updated translations ]
+  * Hebrew (he.po) by Omer Zak and Lior Kaplan (closes: #593855).
+  * Romanian (ro.po) by ioan-eugen STAN (closes: #595727).
+  * Esperanto (eo.po) by Felipe Castro (closes: #596171).
+
+  [ Colin Watson ]
+  * Make grub-efi-amd64 conflict with grub-pc as well as the other way
+    round.
+  * Backport upstream patches to fix DM-RAID support (closes: #594221,
+    LP: #634840).
+
+  [ Robert Millan ]
+  * enable_zfs.patch: Fix grub-fstest build problem.
+  * zfs_fix_label_arg.patch: Fix kfreebsd_device initialization on ZFS
+    for non-main filesystems.
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 17 Sep 2010 23:45:10 +0100
+
 grub2 (1.98+20100804-4) unstable; urgency=low
 
   [ Updated translations ]
