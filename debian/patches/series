@@ -15,6 +15,8 @@ zfs_fix_segfault.patch
 zfs_fix_pathname.patch
 zfs_fix_label_arg.patch
 kfreebsd_ext2.patch
+dmraid_mapper_paths.patch
+dmraid_pool_leak.patch
 ubuntu_grub_standards.patch
 ubuntu_crashkernel.patch
 ubuntu_quick_boot.patch

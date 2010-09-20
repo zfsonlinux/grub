@@ -1,3 +1,10 @@
+Description: Support RAID on virtio devices, and others
+Author: Colin Watson <cjwatson@ubuntu.com>
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/457687
+Forwarded: yes
+Applied-Upstream: http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/2777
+Last-Update: 2010-09-19
+
 Index: b/include/grub/emu/getroot.h
 ===================================================================
 --- a/include/grub/emu/getroot.h
