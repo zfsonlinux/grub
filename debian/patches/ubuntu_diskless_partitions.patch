@@ -11,7 +11,8 @@ Description: Handle partition devices without corresponding disk devices
 Author: Colin Watson <cjwatson@ubuntu.com>
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/623609
 Forwarded: yes
-Last-Update: 2010-09-10
+Applied-Upstream: http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/2832
+Last-Update: 2010-09-21
 
 Index: b/kern/emu/hostdisk.c
 ===================================================================
