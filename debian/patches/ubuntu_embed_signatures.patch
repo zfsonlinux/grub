@@ -1,0 +1,166 @@
+Description: Detect other software using embedding area
+ When embedding the core image in a post-MBR gap, check for and avoid
+ sectors matching any of the signatures in embed_signatures.
+Author: Colin Watson <cjwatson@ubuntu.com>
+Forwarded: http://lists.gnu.org/archive/html/grub-devel/2010-08/msg00137.html
+Last-Update: 2010-09-17
+
+Index: b/util/i386/pc/grub-setup.c
+===================================================================
+--- a/util/i386/pc/grub-setup.c
++++ b/util/i386/pc/grub-setup.c
+@@ -66,6 +66,46 @@
+ #define grub_host_to_target32(x)	grub_cpu_to_le32(x)
+ #define grub_host_to_target64(x)	grub_cpu_to_le64(x)
+ 
++struct embed_signature
++{
++  const char *name;
++  const char *signature;
++  int signature_len;
++};
++
++/* Signatures of other software that may be using sectors in the embedding
++   area.  */
++struct embed_signature embed_signatures[] =
++  {
++    {
++      .name = "ZISD",
++      .signature = "ZISD",
++      .signature_len = 4
++    },
++    {
++      .name = "FlexNet",
++      .signature = "\xd4\x41\xa0\xf5\x03\x00\x03\x00",
++      .signature_len = 8
++    },
++    {
++      .name = "FlexNet",
++      .signature = "\xd8\x41\xa0\xf5\x02\x00\x02\x00",
++      .signature_len = 8
++    },
++    {
++      /* from Ryan Perkins */
++      .name = "HP Backup and Recovery Manager (?)",
++      .signature = "\x70\x8a\x5d\x46\x35\xc5\x1b\x93"
++		   "\xae\x3d\x86\xfd\xb1\x55\x3e\xe0",
++      .signature_len = 16
++    },
++    {
++      .name = "Dell DataSafe Local Backup",
++      .signature = "\xf6\x14\x84\xb4\xc1\x13\x01\xf5",
++      .signature_len = 8
++    }
++  };
++
+ void 
+ grub_xputs_real (const char *str)
+ {
+@@ -108,7 +148,7 @@
+   char *prefix = NULL;
+   char *tmp_img;
+   int i;
+-  grub_disk_addr_t first_sector;
++  grub_disk_addr_t first_sector, es;
+   grub_uint16_t current_segment
+     = GRUB_BOOT_MACHINE_KERNEL_SEG + (GRUB_DISK_SECTOR_SIZE >> 4);
+   grub_uint16_t last_length = GRUB_DISK_SECTOR_SIZE;
+@@ -423,15 +463,96 @@
+   assert (first_block->segment == grub_host_to_target16 (GRUB_BOOT_MACHINE_KERNEL_SEG
+ 						    + (GRUB_DISK_SECTOR_SIZE >> 4)));
+ 
+-  /* Make sure that the second blocklist is a terminator.  */
+   block = first_block - 1;
++
++  if (strcmp (dest_partmap, "msdos") == 0)
++    {
++      /* Check for software that is already using parts of the MBR gap.  */
++      char *embed_signature_check = xmalloc (GRUB_DISK_SECTOR_SIZE);
++      grub_uint16_t extra_sectors = 0;
++
++      for (es = embed_region.start + 1; es < embed_region.start + core_sectors;
++	   es++)
++	{
++	  struct grub_boot_blocklist *prev_block;
++	  grub_uint64_t prev_start;
++	  grub_uint16_t prev_len;
++	  grub_uint16_t prev_segment;
++
++	  if (grub_disk_read (dest_dev->disk, es, 0, GRUB_DISK_SECTOR_SIZE,
++			      embed_signature_check))
++	    continue;
++
++	  for (i = 0; i < ARRAY_SIZE (embed_signatures); i++)
++	    if (! memcmp (embed_signatures[i].signature, embed_signature_check,
++			  embed_signatures[i].signature_len))
++	      break;
++	  if (i == ARRAY_SIZE (embed_signatures))
++	    continue;
++	  grub_util_warn ("sector %llu is already in use by %s; avoiding it",
++			  es, embed_signatures[i].name);
++	  extra_sectors++;
++
++	  /* Adjust the last blocklist, splitting it in two if necessary, to
++	     avoid this sector.  */
++	  prev_block = block + 1;
++	  prev_start = grub_target_to_host64 (prev_block->start);
++	  prev_len = grub_target_to_host16 (prev_block->len);
++	  prev_segment = grub_target_to_host16 (prev_block->segment);
++
++	  if (es == prev_start)
++	    prev_block->start = grub_host_to_target64 (prev_start + 1);
++	  else
++	    {
++	      prev_block->len = grub_host_to_target16 (es - prev_start);
++
++	      block->start = grub_host_to_target64 (es + 1);
++	      block->len = grub_host_to_target16
++		(prev_len - (es - prev_start));
++	      block->segment = grub_host_to_target16
++		(prev_segment +
++		 (GRUB_DISK_SECTOR_SIZE >> 4) * (es - prev_start));
++
++	      block--;
++	      if (block->len)
++		grub_util_error (_("the post-MBR gap is too fragmented by sectors used by other software"));
++	    }
++	}
++      free (embed_signature_check);
++
++      if ((unsigned long) (core_sectors + extra_sectors)
++	  > embed_region.end - embed_region.start)
++	{
++	  grub_util_warn (_("Your embedding area is unusually small.  core.img won't fit in it."));
++	  goto unable_to_embed;
++	}
++    }
++
++  /* Make sure that the last blocklist is a terminator.  */
+   block->start = 0;
+   block->len = 0;
+   block->segment = 0;
+ 
+   /* Write the core image onto the disk.  */
+-  if (grub_disk_write (dest_dev->disk, embed_region.start, 0, core_size, core_img))
++  if (grub_disk_write (dest_dev->disk, embed_region.start, 0,
++		       GRUB_DISK_SECTOR_SIZE, core_img))
+     grub_util_error ("%s", grub_errmsg);
++  tmp_img = core_img + GRUB_DISK_SECTOR_SIZE;
++  for (block = first_block; block->start; block--)
++    {
++      grub_uint64_t start;
++      size_t size;
++
++      start = grub_target_to_host64 (block->start);
++      size = grub_target_to_host16 (block->len) << GRUB_DISK_SECTOR_BITS;
++      /* The last sector may be incomplete.  */
++      if (! (block + 1)->start && (core_size % GRUB_DISK_SECTOR_SIZE))
++	size -= GRUB_DISK_SECTOR_SIZE - (core_size % GRUB_DISK_SECTOR_SIZE);
++
++      if (grub_disk_write (dest_dev->disk, start, 0, size, tmp_img))
++	grub_util_error ("%s", grub_errmsg);
++      tmp_img += size;
++    }
+ 
+   /* FIXME: can this be skipped?  */
+   *boot_drive = 0xFF;

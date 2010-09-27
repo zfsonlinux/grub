@@ -1,3 +1,11 @@
+grub2 (1.98+20100804-5ubuntu2) maverick; urgency=low
+
+  * When embedding the core image in a post-MBR gap, check for and avoid
+    sectors matching any of a list of known signatures (mitigates LP
+    #441941; more work may be required).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 27 Sep 2010 18:42:42 +0100
+
 grub2 (1.98+20100804-5ubuntu1) maverick; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:

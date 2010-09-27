@@ -38,3 +38,4 @@ ubuntu_qemu.patch
 ubuntu_efi_install.patch
 ubuntu_vesafb.patch
 ubuntu_diskless_partitions.patch
+ubuntu_embed_signatures.patch
