@@ -1,3 +1,15 @@
+grub2 (1.98+20100804-5ubuntu3) maverick; urgency=low
+
+  * Improve message if too many embedding area sectors need to be avoided
+    (thanks, Vladimir Serbinenko).
+  * Expand on "sector already in use" message to note that the software in
+    question may cause other problems and suggest reporting a bug (thanks,
+    Vladimir Serbinenko).
+  * Disable video_bochs and video_cirrus on PC BIOS systems, as probing PCI
+    space seems to break on some systems (LP: #641259).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 06 Oct 2010 11:55:58 +0100
+
 grub2 (1.98+20100804-5ubuntu2) maverick; urgency=low
 
   * When embedding the core image in a post-MBR gap, check for and avoid
