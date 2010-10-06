@@ -96,7 +96,7 @@ Index: b/util/i386/pc/grub-setup.c
 +	      break;
 +	  if (i == ARRAY_SIZE (embed_signatures))
 +	    continue;
-+	  grub_util_warn ("sector %llu is already in use by %s; avoiding it",
++	  grub_util_warn ("Sector %llu is already in use by %s; avoiding it.  This software may cause boot or other problems in future.  Please ask its authors not to store data in the boot track.",
 +			  es, embed_signatures[i].name);
 +	  extra_sectors++;
 +
@@ -130,7 +130,7 @@ Index: b/util/i386/pc/grub-setup.c
 +      if ((unsigned long) (core_sectors + extra_sectors)
 +	  > embed_region.end - embed_region.start)
 +	{
-+	  grub_util_warn (_("Your embedding area is unusually small.  core.img won't fit in it."));
++	  grub_util_warn (_("Other software is using the embedding area, and there is not enough room for core.img.  Such software is often trying to store data in a way that avoids detection.  We recommend you investigate."));
 +	  goto unable_to_embed;
 +	}
 +    }
