@@ -1,3 +1,91 @@
+grub2 (1.98+20100804-6ubuntu1) natty; urgency=low
+
+  * Resynchronise with Debian.  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script: title,
+      recovery mode, quiet option, tweak how memtest86+ is displayed, and
+      use UUIDs where appropriate.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel= options if kdump and makedumpfile are available.
+    - If other operating systems are installed, then automatically unhide
+      the menu.  Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus
+      if available to check whether Shift is pressed.  If it is, show the
+      menu, otherwise boot immediately.  If keystatus is not available, then
+      fall back to a short delay interruptible with Escape.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Don't display introductory message about line editing unless we're
+      actually offering a shell prompt.  Don't clear the screen just before
+      booting if we never drew the menu in the first place.
+    - Remove some verbose messages printed before reading the configuration
+      file.
+    - Suppress progress messages as the kernel and initrd load for
+      non-recovery kernel menu entries.
+    - Change prepare_grub_to_access_device to handle filesystems
+      loop-mounted on file images.
+    - Ignore devices loop-mounted from files in 10_linux.
+    - Show the boot menu if the previous boot failed, that is if it failed
+      to get to the end of one of the normal runlevels.
+    - Handle RAID devices containing virtio components.
+    - Don't generate /boot/grub/device.map during grub-install or
+      grub-mkconfig by default.
+    - Adjust upgrade version checks for Ubuntu.
+    - Don't display "GRUB loading" unless Shift is held down.
+    - Adjust versions of grub-doc and grub-legacy-doc conflicts to tolerate
+      our backport of the grub-doc split.
+    - Fix LVM/RAID probing in the absence of /boot/grub/device.map.
+    - Look for .mo files in /usr/share/locale-langpack as well, in
+      preference.
+    - Make sure GRUB_TIMEOUT isn't quoted unnecessarily.
+    - Probe all devices in 'grub-probe --target=drive' if
+      /boot/grub/device.map is missing.
+    - Adjust hostdisk id for hard disks, allowing grub-setup to use its
+      standard workaround for broken BIOSes.
+    - Build-depend on qemu-kvm rather than qemu-system for grub-pc tests.
+    - Use qemu rather than qemu-system-i386.
+    - Extend the EFI version of grub-install to be able to install into an
+      EFI System Partition mounted on /boot/efi in a location that complies
+      with the EFI specification.
+    - Upgrade the installed core image when upgrading grub-efi-ia32 or
+      grub-efi-amd64, although only if /boot/efi/EFI/ubuntu already exists.
+    - Make grub-efi-ia32 and grub-efi-amd64 depend on efibootmgr so that
+      grub-install works properly.
+    - Program vesafb on BIOS systems rather than efifb.
+    - Add a grub-rescue-efi-amd64 package containing a rescue CD-ROM image
+      for EFI-AMD64.
+    - Extend EFI initialisation code to understand (,$partition)-style
+      prefixes.  If the EFI System Partition is on the same disk as
+      /boot/grub, use this rather than allowing GRUB to set the prefix to
+      the EFI System Partition by default.
+    - Handle partition devices without corresponding disk devices.
+    - On Wubi, don't ask for an install device, but just update wubildr
+      using the diverted grub-install.
+    - When embedding the core image in a post-MBR gap, check for and avoid
+      sectors matching any of a list of known signatures.
+    - Disable video_bochs and video_cirrus on PC BIOS systems, as probing
+      PCI space seems to break on some systems.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 22 Oct 2010 12:50:13 +0100
+
+grub2 (1.98+20100804-6) unstable; urgency=low
+
+  [ Robert Millan ]
+  * zfs_v23.patch: Accept ZFS up to v23 (no changes required).
+  * fix_usb_boot.patch: Fix boot on USB devices, for BIOSes that
+    expose them as floppies.  (Closes: #600580)
+  * zfs_fix_mkrelpath.patch: Fix grub-mkrelpath for non-root ZFS.
+    (Closes: #600578)
+
+  [ Updated translations ]
+  * Kazakh (kk.po) by Baurzhan Muftakhidinov via Timur Birsh (closes:
+    #598188).
+  * Portuguese (pt.po) by Tiago Fernandes via Rui Branco (closes: #599767).
+  * Catalan (ca.po) by Jordi Mallach.
+
+ -- Robert Millan <rmh@debian.org>  Thu, 21 Oct 2010 23:45:23 +0200
+
 grub2 (1.98+20100804-5ubuntu3) maverick; urgency=low
 
   * Improve message if too many embedding area sectors need to be avoided
