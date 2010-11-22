@@ -5,19 +5,21 @@
 # This file is distributed under the same license as the grub package.
 #
 # Eddy Petrișor <eddy.petrisor@gmail.com>, 2007,2008.
+# ioan-eugen STAN <stan.ieugen@gmail.com>, 2010.
+# Lucian Adrian Grijincu <lucian.grijincu@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: ro\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2009-08-30 17:54+0200\n"
-"PO-Revision-Date: 2008-11-13 10:41+0200\n"
-"Last-Translator: Eddy Petrișor <eddy.petrisor@gmail.com>\n"
+"POT-Creation-Date: 2010-07-02 12:55+0100\n"
+"PO-Revision-Date: 2010-08-31 20:58+0300\n"
+"Last-Translator: ioan-eugen STAN <stan.ieugen@gmail.com>\n"
 "Language-Team: Romanian <debian-l10n-romanian@lists.debian.org>\n"
+"Language: ro\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
-"20)) ? 1 : 2;\n"
+"Plural-Forms: 2\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #. Type: boolean
@@ -43,9 +45,10 @@ msgid ""
 "your existing GRUB Legacy setup.  This step may be automaticaly performed "
 "now."
 msgstr ""
-"Pentru a înlocui vechea versiune a lui GRUB, se recomandă modificarea lui /"
-"boot/grub/menu.lst astfel încât GRUB 2 sa fie încărcat prin înlănțuire din "
-"vechea configurare. Acest pas poate fi făcut chiar acum în mod automat."
+"Pentru a înlocui vechea versiune a lui GRUB, se recomandă modificarea "
+"fișierului /boot/grub/menu.lst astfel încât GRUB 2 sa fie încărcat prin "
+"înlănțuire din vechea configurație. Acest pas poate fi făcut chiar acum în "
+"mod automat."
 
 #. Type: boolean
 #. Description
@@ -57,7 +60,7 @@ msgid ""
 msgstr ""
 "Este recomandat să acceptați înlănțuirea lui GRUB 2 din menu.lst și să "
 "verificați că noua configurație pentru GRUB 2 funcționează, înainte de a o "
-"instala în înregistrarea „Master Boot” (MBR)."
+"instala în înregistrarea principală de boot (MBR)."
 
 #. Type: boolean
 #. Description
@@ -66,14 +69,136 @@ msgid ""
 "In either case, whenever you want GRUB 2 to be loaded directly from MBR, you "
 "can do so by issuing (as root) the following command:"
 msgstr ""
-"Oricum, atunci când veți dori ca GRUB 2 sa fie încărcat direct din MBR, "
-"puteți rula (ca root) comanda următoare:"
+"În orice caz, atunci când veți dori ca GRUB 2 sa fie încărcat direct din "
+"MBR, puteți rula (ca root) comanda următoare:"
+
+#. Type: text
+#. Description
+#. Disk sizes are in decimal megabytes, to match how disk manufacturers
+#. usually describe them.
+#: ../grub-pc.templates.in:5001
+msgid "${DEVICE} (${SIZE} MB, ${MODEL})"
+msgstr "${DEVICE} (${SIZE} MO, ${MODEL})"
 
 #. Type: boolean
 #. Description
-#: ../grub-pc.templates.in:2001
-msgid "upgrade-from-grub-legacy"
-msgstr "upgrade-from-grub-legacy"
+#: ../grub-pc.templates.in:7001
+msgid "GRUB installation failed.  Continue?"
+msgstr "Instalarea GRUB a eșuat. Continuați?"
+
+#. Type: boolean
+#. Description
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:7001 ../grub-pc.templates.in:8001
+msgid "GRUB failed to install to the following devices:"
+msgstr "A eșuat instalarea GRUB pe următoarele dispozitive:"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:7001
+msgid ""
+"Do you want to continue anyway?  If you do, your computer may not start up "
+"properly."
+msgstr ""
+"Doriți să continuați?  Dacă da, este posibil ca sistemul să nu pornească "
+"corespunzător."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:8001
+msgid "GRUB installation failed.  Try again?"
+msgstr "A eșuat instalarea GRUB. Reîncercați?"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:8001
+msgid ""
+"You may be able to install GRUB to some other device, although you should "
+"check that your system will boot from that device.  Otherwise, the upgrade "
+"from GRUB Legacy will be cancelled."
+msgstr ""
+"Puteți instala GRUB pe alt dispozitiv, însă ar trebui să verificați dacă "
+"sistemul va porni de pe acel dispozitiv. Altfel, înnoirea de la GRUB Legacy "
+"va fi anulată."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:9001
+msgid "Continue without installing GRUB?"
+msgstr "Continuați fără să instalați GRUB?"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:9001
+msgid ""
+"You chose not to install GRUB to any devices.  If you continue, the boot "
+"loader may not be properly configured, and when your computer next starts up "
+"it will use whatever was previously in the boot sector.  If there is an "
+"earlier version of GRUB 2 in the boot sector, it may be unable to load "
+"modules or handle the current configuration file."
+msgstr ""
+"Ați ales să nu instalați GRUB pe niciun dispozitiv. Dacă veți continua, este "
+"posibil ca încărcătorul de sistem să nu fie configurat corespunzător, iar la "
+"pornirea calculatorului acesta va folosi ce se afla deja în sectorul de "
+"pornire. Dacă există o versiune mai veche de GRUB 2 în sectorul de pornire "
+"este posibil ca aceasta să nu poată încărca modulele sau fișierul curent de "
+"configurare. "
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:9001
+msgid ""
+"If you are already running a different boot loader and want to carry on "
+"doing so, or if this is a special environment where you do not need a boot "
+"loader, then you should continue anyway.  Otherwise, you should install GRUB "
+"somewhere."
+msgstr ""
+"Dacă rulați deja un alt încărcător de sistem și doriți să continuați, sau "
+"dacă acesta este un mediu special în care nu aveți nevoie de încărcător de "
+"sistem, atunci ar trebui să continuați. Altfel, instalați GRUB undeva."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:11001
+msgid "Finish conversion to GRUB 2 now?"
+msgstr "Terminați acum conversia la GRUB 2?"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:11001
+msgid ""
+"This system still has files from the GRUB Legacy boot loader installed, but "
+"it now also has GRUB 2 boot records installed on these disks:"
+msgstr ""
+"Acest sistem mai are instalate fișiere din GRUB Legacy, dar acum are "
+"instalat și GRUB 2 pe aceste discuri:"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:11001
+msgid ""
+"It seems likely that GRUB Legacy is no longer in use, and that you should "
+"instead upgrade the GRUB 2 images on these disks and finish the conversion "
+"to GRUB 2 by removing old GRUB Legacy files.  If you do not upgrade these "
+"GRUB 2 images, then they may be incompatible with the new packages and cause "
+"your system to stop booting properly."
+msgstr ""
+"Este foarte probabil ca GRUB Legacy să nu mai fie folosit și ar trebui să "
+"folosiți GRUB 2 pe aceste discuri și să definitivați trecerea la GRUB 2 "
+"îndepărtând fișierele GRUB Legacy vechi. Dacă nu actualizați aceste imagini "
+"GRUB 2, ele ar putea fi incompatibile cu noile pachete și ar putea împiedica "
+"sistemul să pornească corespunzător."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:11001
+msgid ""
+"You should generally finish the conversion to GRUB 2 unless these boot "
+"records were created by a GRUB 2 installation on some other operating system."
+msgstr ""
+"În general este bine să încheiați trecerea la GRUB 2, lăsând acele fișiere "
+"doar dacă au fost create de o instalare GRUB 2 a altui sistem de operare."
 
 #. Type: string
 #. Description
@@ -84,27 +209,20 @@ msgstr "Linia de comandă Linux:"
 #. Type: string
 #. Description
 #: ../templates.in:1001
-#, fuzzy
-#| msgid ""
-#| "The following Linux command line was extracted from the `kopt' parameter "
-#| "in GRUB Legacy's menu.lst.  Please verify that it is correct, and modify "
-#| "it if necessary."
 msgid ""
 "The following Linux command line was extracted from /etc/default/grub or the "
 "`kopt' parameter in GRUB Legacy's menu.lst.  Please verify that it is "
 "correct, and modify it if necessary."
 msgstr ""
-"Această linie de comandă Linux a fost extrasă din parametrul „kopt” din "
-"fișierul menu.lst al vechiului GRUB. Verificați corectitudinea acesteia și "
-"corectați-o, dacă este nevoie."
+"Această linie de comandă Linux a fost extrasă din /etc/default/grub sau "
+"parametrul „kopt” din fișierul menu.lst al vechiului GRUB. Verificați "
+"corectitudinea acesteia și corectați-o, dacă este nevoie."
 
 #. Type: string
 #. Description
 #: ../templates.in:2001
-#, fuzzy
-#| msgid "Linux command line:"
 msgid "Linux default command line:"
-msgstr "Linia de comandă Linux:"
+msgstr "Linia de comandă implicită Linux:"
 
 #. Type: string
 #. Description
@@ -113,39 +231,32 @@ msgid ""
 "The following string will be used as Linux parameters for the default menu "
 "entry but not for the recovery mode."
 msgstr ""
+"Următorul șir va fi folosit ca parametru pentru Linux pentru poziția "
+"implicită din meniu, dar nu și pentru cea de recuperare."
 
 #. Type: string
 #. Description
 #: ../templates.in:3001
-#, fuzzy
-#| msgid "Linux command line:"
 msgid "kFreeBSD command line:"
-msgstr "Linia de comandă Linux:"
+msgstr "Linia de comandă kFreeBSD:"
 
 #. Type: string
 #. Description
 #: ../templates.in:3001
-#, fuzzy
-#| msgid ""
-#| "The following Linux command line was extracted from the `kopt' parameter "
-#| "in GRUB Legacy's menu.lst.  Please verify that it is correct, and modify "
-#| "it if necessary."
 msgid ""
 "The following kFreeBSD command line was extracted from /etc/default/grub or "
 "the `kopt' parameter in GRUB Legacy's menu.lst.  Please verify that it is "
 "correct, and modify it if necessary."
 msgstr ""
-"Această linie de comandă Linux a fost extrasă din parametrul „kopt” din "
-"fișierul menu.lst al vechiului GRUB. Verificați corectitudinea acesteia și "
-"corectați-o, dacă este nevoie."
+"Această linie de comandă kFreeBSD a fost extrasă din /etc/default/grub sau "
+"parametrul „kopt” din fișierul menu.lst al vechiului GRUB. Verificați "
+"corectitudinea acesteia și corectați-o, dacă este nevoie."
 
 #. Type: string
 #. Description
 #: ../templates.in:4001
-#, fuzzy
-#| msgid "Linux command line:"
 msgid "kFreeBSD default command line:"
-msgstr "Linia de comandă Linux:"
+msgstr "Linia de comandă implicită kFreeBSD:"
 
 #. Type: string
 #. Description
@@ -154,6 +265,51 @@ msgid ""
 "The following string will be used as kFreeBSD parameters for the default "
 "menu entry but not for the recovery mode."
 msgstr ""
+"Următorul șir va fi folosit ca parametru pentru kFreeBSD pentru poziția "
+"implicită din meniu, dar nu și pentru cea de recuperare."
+
+#. Type: note
+#. Description
+#: ../templates.in:5001
+msgid "/boot/grub/device.map has been regenerated"
+msgstr "/boot/grub/device.map a fost regenerat"
+
+#. Type: note
+#. Description
+#: ../templates.in:5001
+msgid ""
+"The file /boot/grub/device.map has been rewritten to use stable device "
+"names.  In most cases, this should significantly reduce the need to change "
+"it in future, and boot menu entries generated by GRUB should not be affected."
+msgstr ""
+"Fișierul /boot/grub/device.map a fost rescris să folosească nume stabile de "
+"dispozitive. În majoritatea cazurilor, acest lucru va reduce semnificativ "
+"nevoia de a le modifica ulterior și intrările în meniu generate de grub ar "
+"trebui să fie neafectate. "
+
+#. Type: note
+#. Description
+#: ../templates.in:5001
+msgid ""
+"However, since you have more than one disk in your system, it is possible "
+"that you were depending on the old device map.  Please check whether you "
+"have any custom boot menu entries that rely on GRUB's (hdN) drive numbering, "
+"and update them if necessary."
+msgstr ""
+"Totuși, deoarece există mai mult de un disc în sistem, este posibil să fi "
+"depins de vechea hartă de dispozitive. Verificați dacă aveți intrări "
+"personalizate în meniu care depind de numerotarea GRUB (hdN) și actualizați-"
+"le dacă este cazul."
+
+#. Type: note
+#. Description
+#: ../templates.in:5001
+msgid ""
+"If you do not understand this message, or if you do not have any custom boot "
+"menu entries, you can ignore this message."
+msgstr ""
+"Dacă nu înțelegeți acest mesaj sau nu aveți intrări personalizate în meniu, "
+"îl puteți ignora."
 
 #~ msgid "GRUB 1.95 numbering scheme transition"
 #~ msgstr "Tranziția la schema de numerotare pentru GRUB 1.95"

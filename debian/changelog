@@ -1,195 +1,826 @@
-grub2 (1.98~experimental.20100120-1) experimental; urgency=low
+grub2 (1.99~20101122-1) experimental; urgency=low
 
-  * New Bazaar snapshot.
-    - Linux loader is more careful about video mode transition now.
-      (Closes: #565160)
+  [ Colin Watson ]
+  * New Bazaar snapshot.  Too many changes to list in full, but some of the
+    more user-visible ones are as follows:
+    - GRUB script:
+      + Function parameters, "break", "continue", "shift", "setparams",
+        "return", and "!".
+      + "export" command supports multiple variable names.
+      + Multi-line quoted strings support.
+      + Wildcard expansion.
+    - sendkey support.
+    - USB hotunplugging and USB serial support.
+    - Rename CD-ROM to cd on BIOS.
+    - Add new --boot-directory option to grub-install, grub-reboot, and
+      grub-set-default; the old --root-directory option is still accepted
+      but was often confusing.
+    - Basic btrfs detection/UUID support (but no file reading yet).
+    - bash-completion for utilities.
+    - If a device is listed in device.map, always assume that it is
+      BIOS-visible rather than using extra layers such as LVM or RAID.
+    - Add grub-mknetdir script (closes: #550658).
+    - Remove deprecated "root" command.
+    - Handle RAID devices containing virtio components.
+    - GRUB Legacy configuration file support (via grub-menulst2cfg).
+    - Keyboard layout support (via grub-mklayout and grub-kbdcomp).
+    - Check generated grub.cfg for syntax errors before saving.
+    - Pause execution for at most ten seconds if any errors are displayed,
+      so that the user has a chance to see them.
+    - Support submenus.
+    - Write embedding zone using Reed-Solomon, so that it's robust against
+      being partially overwritten (closes: #550702, #591416, #593347).
+    - GRUB_DISABLE_LINUX_RECOVERY and GRUB_DISABLE_NETBSD_RECOVERY merged
+      into a single GRUB_DISABLE_RECOVERY variable.
+    - Fix loader memory allocation failure (closes: #551627).
+    - Don't call savedefault on recovery entries (closes: #589325).
+    - Support triple-indirect blocks on ext2 (closes: #543924).
+    - Recognise DDF1 fake RAID (closes: #603354).
 
   [ Robert Millan ]
-  * Fix handling of separate /boot in gfxmenu code.  (Closes: #565375)
-    - debian/debian-theme/theme.txt: Turn absolute path into relative.
-    - debian/grub.d/05_debian_theme: Fix handling of /boot/grub path.
+  * Use dpkg architecture wildcards.
 
- -- Robert Millan <rmh.debian@aybabtu.com>  Wed, 20 Jan 2010 20:20:02 +0100
+  [ Updated translations ]
+  * Slovenian (Vanja Cvelbar).  Closes: #604003
+  * Dzongkha (dawa pemo via Tenzin Dendup).  Closes: #604102
 
-grub2 (1.98~experimental.20100111.1-1) experimental; urgency=low
+ -- Colin Watson <cjwatson@debian.org>  Mon, 22 Nov 2010 12:24:56 +0000
 
-  * New Bazaar snapshot.
+grub2 (1.98+20100804-8) unstable; urgency=low
 
   [ Robert Millan ]
-  * Add Debian gfxmenu theme from http://www2.apebox.org/wordpress/linux/228/.
-    Many thanks, mr Shields!
+  * increase_disk_limit.patch: Increase SCSI/IDE disk limits to cope with
+    Sun Fire X4500.
+  * linux_mdraid_1x.patch: Support for Linux MD RAID v1.x.  (Closes: #593652)
+  * yeeloong_boot_info.patch: On Yeeloong, pass machine type information
+    to Linux.
 
- -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 11 Jan 2010 19:42:51 +0100
+  [ Updated translations ]
+  * Portuguese fixed by Christian Perrier (variable names
+    were translated)
 
-grub2 (1.98~experimental.20100111-1) experimental; urgency=low
+ -- Robert Millan <rmh@debian.org>  Fri, 05 Nov 2010 23:43:15 +0100
+
+grub2 (1.98+20100804-7) unstable; urgency=low
+
+  [ Robert Millan ]
+  * zfs_fix_mkrelpath.patch: Replace with proper fix from upstream Bazaar.
+    (Closes: #601087)
+
+  [ Updated translations ]
+  * Vietnamese (Clytie Siddall). Closes: #598327
+  * Icelandic (Sveinn í Felli).  Closes: #600126
+
+ -- Robert Millan <rmh@debian.org>  Sun, 24 Oct 2010 16:35:37 +0200
+
+grub2 (1.98+20100804-6) unstable; urgency=low
+
+  [ Robert Millan ]
+  * zfs_v23.patch: Accept ZFS up to v23 (no changes required).
+  * fix_usb_boot.patch: Fix boot on USB devices, for BIOSes that
+    expose them as floppies.  (Closes: #600580)
+  * zfs_fix_mkrelpath.patch: Fix grub-mkrelpath for non-root ZFS.
+    (Closes: #600578)
+
+  [ Updated translations ]
+  * Kazakh (kk.po) by Baurzhan Muftakhidinov via Timur Birsh (closes:
+    #598188).
+  * Portuguese (pt.po) by Tiago Fernandes via Rui Branco (closes: #599767).
+  * Catalan (ca.po) by Jordi Mallach.
+
+ -- Robert Millan <rmh@debian.org>  Thu, 21 Oct 2010 23:45:23 +0200
+
+grub2 (1.98+20100804-5) unstable; urgency=low
+
+  [ Updated translations ]
+  * Hebrew (he.po) by Omer Zak and Lior Kaplan (closes: #593855).
+  * Romanian (ro.po) by ioan-eugen STAN (closes: #595727).
+  * Esperanto (eo.po) by Felipe Castro (closes: #596171).
+
+  [ Colin Watson ]
+  * Make grub-efi-amd64 conflict with grub-pc as well as the other way
+    round.
+  * Backport upstream patches to fix DM-RAID support (closes: #594221,
+    LP: #634840).
+
+  [ Robert Millan ]
+  * enable_zfs.patch: Fix grub-fstest build problem.
+  * zfs_fix_label_arg.patch: Fix kfreebsd_device initialization on ZFS
+    for non-main filesystems.
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 17 Sep 2010 23:45:10 +0100
+
+grub2 (1.98+20100804-4) unstable; urgency=low
+
+  [ Updated translations ]
+  * Italian (it.po) by Luca Monducci (closes: #593685).
+  * Finnish (fi.po) by Esko Arajärvi (closes: #593921).
+
+  [ Colin Watson ]
+  * Run update-grub from kernel hooks if DEB_MAINT_PARAMS is unset, for
+    compatibility with old kernel packages.  This may produce duplicate runs
+    of update-grub, but that's better than not running it at all (closes:
+    #594037).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 23 Aug 2010 12:11:55 +0100
+
+grub2 (1.98+20100804-3) unstable; urgency=low
+
+  [ Updated translations ]
+  * Brazilian Portuguese (pt_BR.po) by Flamarion Jorge (closes: #592156).
+  * Asturian (ast.po) by Maacub (closes: #592313).
+  * Galician (gl.po) by Jorge Barreiro (closes: #592816).
+
+  [ Robert Millan ]
+  * Backport ZFS bugfixes from upstream Bazaar:
+    - zfs_fix_chroot.patch: Fix breakage when running grub-probe inside chroot.
+    - zfs_fix_label_arg.patch: Fix grub-probe fs_label argument.
+    - zfs_fix_pathname.patch: Fix pathname for non-root ZFS filesystems.
+    - zfs_fix_segfault.patch: Fix segfault when /dev is not mounted.
+
+  [ Colin Watson ]
+  * Escape single quotes when removing them from $mode in zz-update-grub, so
+    that this works when /bin/sh is bash (thanks, Will Dyson; closes:
+    #593242).
+  * Add support for ext2 root on GNU/kFreeBSD (thanks, Aurelien Jarno;
+    closes: #593467).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 19 Aug 2010 18:21:45 +0100
+
+grub2 (1.98+20100804-2) unstable; urgency=low
+
+  [ Colin Watson ]
+  * Make /etc/kernel/postrm.d/zz-update-grub a real file rather than a
+    symlink (closes: #592076).
+
+  [ Updated translations ]
+  * Norwegian Bokmål (nb.po) by Hans Nordhaug (closes: #591569).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 07 Aug 2010 17:53:34 +0100
+
+grub2 (1.98+20100804-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Fix grub-emu build on GNU/kFreeBSD (closes: #591490).
+
+  [ Colin Watson ]
+  * Add kernel hook scripts and remove any uses of update-grub as a
+    postinst_hook or postrm_hook in /etc/kernel-img.conf (closes: #554175).
+    Thanks to Ben Hutchings for advice and to Harald Braumann for an early
+    implementation.
+  * Extend the existing GRUB_LEGACY_0_BASED_PARTITIONS handling to avoid
+    new-style partition naming when generating output for GRUB Legacy
+    (closes: #590554).
+
+  [ Updated translations ]
+  * Slovak (sk.po) by Slavko (closes: #591458).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 04 Aug 2010 04:48:11 +0100
+
+grub2 (1.98+20100802-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Remove compatibility with terminal.mod prior to
+      terminal_input/terminal_output separation (LP: #519358).
+    - Enable `grub-probe -t device' resolution on ZFS.
+    - Don't use UUID for LVM root when generating Xen entries (closes:
+      #591093).
+    - Restore missing whitespace to commands' --help output (closes:
+      #590874).
+    - Select unique numbers for named RAID arrays, for use as keys in the
+      disk cache.
+
+  [ Updated translations ]
+  * German (Martin Eberhard Schauer).  Closes: #590108
+  * Spanish (Francisco Javier Cuadrado).  Closes: #590448
+  * Traditional Chinese (Tetralet).  Closes: #591191
+  * Danish (Joe Hansen).  Closes: #591223
+  * Dutch (Paul Gevers).  Closes: #590864
+  * Japanese (Hideki Yamane).  Closes: #591058
+
+  [ Robert Millan ]
+  * postinst.in: Fill in device size and model information on GNU/kFreeBSD,
+    using camcontrol.
+  * patches/enable_zfs.patch: New patch. Link ZFS from grub-extras into
+    grub-probe and grub-setup.
+  * control: Build-Depend on libzfs-dev and libnvpair-dev on kfreebsd-*.
+
+  [ Colin Watson ]
+  * Offer RAID devices as GRUB installation targets if they contain /,
+    /boot, or /boot/grub.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 03 Aug 2010 02:13:07 +0100
+
+grub2 (1.98+20100722-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Don't count named RAID arrays when looking for unused array numbers.
+
+  [ Colin Watson ]
+  * Merge from Ubuntu:
+    - grub-common Breaks: lupin-support (<< 0.30) due to a grub-mkimage
+      syntax change (lupin-support isn't in Debian, but this is harmless
+      anyway).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 22 Jul 2010 14:33:34 +0100
+
+grub2 (1.98+20100720-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Link to Info documentation on changes from GRUB Legacy in README
+      (closes: #502623).
+    - Add support for mdadm metadata formats 1.x (closes: #492897).
+
+  [ Aaron M. Ucko ]
+  * Compare -trunk kernels earlier than numeric ABIs (closes: #568160).
+
+  [ Colin Watson ]
+  * Remove /boot/grub/device.map, /boot/grub/grubenv,
+    /boot/grub/installed-version, and /boot/grub/locale/ on purge, if
+    permitted (closes: #547679).
+  * Convert from CDBS to dh.
+  * Use exact-version dependencies in grub2 and grub-efi, to reduce
+    potential confusion.
+  * Raise priority of grub-common and grub-pc to optional (also done in
+    archive overrides).
+  * Copy-edit debian/presubj.
+  * Use 'mktemp -t' rather than hardcoding /tmp (closes: #589537).
+
+  [ Mario 'BitKoenig' Holbe ]
+  * Update /etc/grub.d/05_debian_theme to handle multiple entries in
+    GRUB_TERMINAL_OUTPUT (closes: #589322).
+
+  [ Updated translations ]
+  * Simplified Chinese (zh_CN.po) by YunQiang Su (closes: #589013).
+  * Russian (ru.po) by Yuri Kozlov (closes: #589244).
+  * Swedish (sv.po) by Martin Bagge / brother (closes: #589259).
+  * Bulgarian (bg.po) by Damyan Ivanov (closes: #589272).
+  * Indonesian (id.po) by Arief S Fitrianto (closes: #589318).
+  * Arabic (ar.po) by Ossama M. Khayat.
+  * Basque (eu.po) by Iñaki Larrañaga Murgoitio (closes: #589489).
+  * Persian (fa.po) by Bersam Karbasion (closes: #589544).
+  * Czech (cs.po) by Miroslav Kure (closes: #589568).
+  * Belarusian (be.po) by Viktar Siarheichyk (closes: #589634).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 21 Jul 2010 09:11:14 +0100
+
+grub2 (1.98+20100710-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Handle degraded RAID arrays in grub-probe and grub-setup.
+    - Fix gfxterm pager handling.
+
+  [ Fabian Greffrath ]
+  * Get value of correct debconf question when deciding whether to purge
+    /boot/grub (closes: #588331).
+
+  [ Colin Watson ]
+  * Generate device.map in something closer to the old ordering (thanks,
+    Vadim Solomin).
+
+  [ Updated translations ]
+  * Croatian (hr.po) by Josip Rodin, closes: #588350.
+  * French (fr.po) by Christian Perrier (closes: #588695).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 12 Jul 2010 11:46:53 +0100
+
+grub2 (1.98+20100706-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - USB hub support.
+    - Fix GRUB_BACKGROUND configuration ordering.
+    - Fix corruption of first entry name in a reiserfs directory.
+    - Don't include MD devices when generating device.map (if you're using
+      RAID and upgraded through 1.98+20100702-1 or 1.98+20100705-1, you may
+      need to fix this up manually).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 06 Jul 2010 18:06:40 +0100
+
+grub2 (1.98+20100705-1) unstable; urgency=medium
+
+  * New Bazaar snapshot.
+    - Bidi and diacritics support.
+      + Use terminfo for ieee1275 terminals (closes: #586953).
+    - Don't use empty grub_device in EFI grub-install (closes: #587838).
+    - Fix grub-setup core.img comparison when not embedding (thanks, Matt
+      Kraai and M. Vefa Bicakci; closes: #586621).
+
+  * Update Source: in debian/copyright (thanks, Jörg Sommer).
+  * Convert by-id disk device names from device.map to traditional device
+    names for display (closes: #587951).
+  * Set urgency=medium.  We've cleared out most of the apparent regressions
+    at this point, and #550704 is getting more and more urgent to fix in
+    testing.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 05 Jul 2010 02:09:58 +0100
+
+grub2 (1.98+20100702-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Use video functions in Linux loader rather than hardcoding UGA; load
+      all available video backends (closes: #565576, probably).
+    - Add support for initrd images on Fedora 13.
+    - Output grub.cfg stanzas for Xen (closes: #505517).
+    - Add 'cat --dos' option to treat DOS-style "\r\n" line endings as
+      simple newlines (closes: #586358).
+    - Change grub-mkdevicemap to emit /dev/disk/by-id/ names where possible
+      on Linux.
+    - Return CF correctly in mmap e820/e801 int15 hook (closes: #584846).
+    - The info documentation now has no broken references, although of
+      course it could still use more work (closes: #553460).
+    - Support GRUB_BADRAM in grub-mkconfig.
+    - Skip LVM snapshots (closes: #574863).
+
+  [ Colin Watson ]
+  * Mention grub-rescue-usb.img in grub-rescue-pc description (closes:
+    #586462).
+  * Add instructions for using grub-rescue-usb.img (closes: #586463).
+  * Remove /usr/lib/grub/mips-* from grub-common rather than the incorrect
+    /usr/lib/grub/mipsel-*, so that it stops clashing with grub-yeeloong;
+    add a versioned Replaces to grub-yeeloong just in case (closes:
+    #586526).
+  * Remove qemu-system build-dependency on hurd-i386, where it doesn't seem
+    to exist.  Disable tests if qemu-system-i386 isn't available.
+  * Mark "upgrade-from-grub-legacy" paragraph in
+    grub-pc/chainload_from_menu.lst as untranslatable.
+  * Update Homepage field (thanks, Sedat Dilek).
+  * On Linux, if /boot/grub/device.map exists on upgrade to this version,
+    regenerate it to use stable device names in /dev/disk/by-id/.  If it had
+    more than one entry, then display a critical-priority debconf note
+    (sorry, but it's better than silently breaking boot menu entries)
+    advising people to check custom boot menu entries and update them if
+    necessary (closes: #583271).
+  * Use 'set -e' rather than '#! /bin/sh -e' or '#! /bin/bash -e', to avoid
+    accidents when debugging with 'sh -x'.
+  * Store grub-pc/install_devices as persistent device names under
+    /dev/disk/by-id/ (closes: #554790).  Migrate previous device names to
+    that, with explicit confirmation in non-trivial cases to make sure we
+    got the right ones.  If the devices we were told to install to ever go
+    away, ask again.  (This is based on the implementation in Ubuntu.)
+  * If grub-install fails during upgrade-from-grub-legacy, allow the user to
+    try again with a different device, but failing that cancel the upgrade
+    (closes: #587790).
+  * Remove numbering from patch files.  The order is now explicit in a quilt
+    series file, and renumbering from time to time is tedious.
+
+  [ Updated translations ]
+  * Ukrainian (uk.po) by Yatsenko Alexandr / Borys Yanovych (closes:
+    #586611).
+  * Indonesian (id.po) by Arief S Fitrianto (closes: #586799).
+  * Swedish (sv.po) by Martin Bagge (closes: #586827).
+  * Persian (fa.po) by Behrad Eslamifar (closes: #587085).
+  * French (fr.po) by Christian Perrier (closes: #587383).
+  * Galician (gl.po) by Jorge Barreiro (closes: #587796).
+
+  [ Robert Millan ]
+  * Add commented GRUB_BADRAM example in debian/default/grub.
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 02 Jul 2010 17:42:56 +0100
+
+grub2 (1.98+20100617-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Fix i386-pc prefix handling with nested partitions (closes: #585068).
+
+  * When running grub-pc.postinst from upgrade-from-grub-legacy, tell it to
+    disregard the fact that /boot/grub/stage2 and /boot/grub/menu.lst still
+    exist (closes: #550477).
+  * Touch a marker file when grub-install is run but GRUB Legacy files are
+    still around.  If that marker file is present, pretend that GRUB Legacy
+    files are missing when upgrading.
+  * If GRUB Legacy files are present when upgrading, scan boot sectors of
+    all disks for GRUB 2.  If we find GRUB 2 installed anywhere, then ask
+    the user if they want to finish conversion to GRUB 2, and warn them that
+    not doing so may render the system unbootable (closes: #586143).  Thanks
+    to Sedat Dilek for helping to narrow down this bug.
+  * Leaving grub-pc/install_devices empty makes sense in some situations,
+    but more often than not is a mistake.  On the other hand, automatically
+    selecting all disk devices would upset some people too.  Compromise by
+    simply asking for explicit confirmation if grub-pc/install_devices is
+    left empty, defaulting to false so that simply selecting all the
+    defaults in debconf can't leave you with an unbootable system (closes:
+    #547944, #557425).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 19 Jun 2010 01:31:40 +0100
+
+grub2 (1.98+20100614-2) unstable; urgency=low
+
+  * Build-depend on gcc-4.4-multilib on i386 and kopensolaris-i386 too, in
+    order to build grub-efi-amd64.
+  * Ignore non-option arguments in grub-mkconfig (closes: #586056).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 16 Jun 2010 17:58:48 +0100
+
+grub2 (1.98+20100614-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Make target-related error messages from grub-mkimage slightly more
+      helpful (closes: #584415).
+    - Fix underquoting that broke savedefault (thanks, Mario 'BitKoenig'
+      Holbe; closes: #584812).
+    - Expand 'info grub' substantially, including a new section on
+      configuring authentication (closes: #584822).
+    - Give all manual pages proper NAME sections (closes: #496706).
+
+  * Update 915resolution from grub-extras:
+    - Fix a hang with 945GME (thanks, Sergio Perticone; closes: #582142).
+
+  [ Colin Watson ]
+  * Disable grub-emu on sparc for the time being.  We're currently trying to
+    use TARGET_* flags to build it, which won't work.
+  * Don't build-depend on libsdl1.2-dev on hurd-i386.  Although
+    libsdl1.2-dev exists there, it's currently uninstallable due to missing
+    libpulse-dev, and we can happily live without it for now.
+  * kfreebsd-amd64 needs gcc-4.4-multilib too (closes: #585668).
+  * Warn and return without error from prepare_grub_to_access_device if
+    /boot is a dm-crypt device (thanks, Marc Haber; closes: #542165).
+  * Make /etc/grub.d/05_debian_theme usable by shells other than bash
+    (thanks, Alex Chiang; closes: #585561).
+  * Remove grub-mkisofs leftovers from debian/copyright.
+  * Fix reversed sense of DEB_BUILD_OPTIONS=nocheck handling.
+  * Build-depend on qemu-system for grub-pc tests.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 15 Jun 2010 12:45:35 +0100
+
+grub2 (1.98+20100602-2) unstable; urgency=low
+
+  * Only build-depend on libdevmapper-dev on Linux architectures.
+  * Don't build-depend on libusb-dev on hurd-i386, where it doesn't seem to
+    be available.
+  * Fix printf format mismatch in disk/usbms.c (closes: #584474).
+  * Fix verbose error output when device-mapper isn't supported by the
+    running kernel (closes: #584196).
+  * Prepend "part_" to partmap module names in grub-mkconfig, in line with
+    grub-install (closes: #584426).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 04 Jun 2010 14:01:58 +0100
+
+grub2 (1.98+20100602-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Add btrfs probing support, currently only in the single-device case
+      (closes: #540786).
+    - Fix grub-emu build on mips/powerpc/sparc.
+    - Add safety check to make sure that /boot/grub/locale exists before
+      trying to probe it (closes: #567211).
+    - Several 'info grub' improvements, including a new section on
+      configuration file generation using grub-mkconfig which documents the
+      available keys in /etc/default/grub (closes: #497085).
+    - Many USB fixes.
+
+  [ Colin Watson ]
+  * Reorganise configure and build targets in debian/rules to use stamp
+    files.  configure/* never existed and build/* was always a directory, so
+    make never considered either of them up to date (closes: #450505).
+  * Remove config.h.in from AUTOGEN_FILES, since autoheader doesn't
+    necessarily update it.
+  * Remove conf/gcry.mk from AUTOGEN_FILES, and conf/gcry.rmk from their
+    dependencies.  autogen.sh runs util/import_gcry.py after autoconf et al,
+    so conf/gcry.rmk's timestamp will be later than some of the
+    autogenerated outputs.
+  * Go back to shipping rescue images in the grub-rescue-pc .deb itself
+    rather than generating them in the postinst.  This means that (a) they
+    get removed when the package is removed (closes: #584176); (b) they are
+    listed in package metadata, as is proper for files in /usr (closes:
+    #584218); (c) grub-rescue-pc can potentially be used as a
+    build-dependency for other packages that need to build GRUB images into
+    installation media etc., without having to build-depend on grub-pc which
+    isn't coinstallable with other platform variants and does invasive
+    things in its postinst.
+  * Add grub-mkrescue patch from Thomas Schmitt to allow reducing the size
+    of xorriso-created images.  Use this to ensure that
+    grub-rescue-floppy.img fits well within size limits (closes: #548320).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 03 Jun 2010 11:24:41 +0100
+
+grub2 (1.98+20100527-2) unstable; urgency=low
+
+  * Always override statically-linked-binary Lintian tag for kernel.img;
+    dynamic linking makes no sense here.
+  * kernel.img is stripped upstream where it can be, but override Lintian's
+    error for the cases where it can't.
+  * Override binary-from-other-architecture for kernel.img as well as *.mod
+    when building grub-efi-amd64 on i386.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 01 Jun 2010 13:48:14 +0100
+
+grub2 (1.98+20100527-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Support multiple terminals in grub-mkconfig, e.g.
+      GRUB_TERMINAL='serial console' (closes: #506707).
+    - Speed up consecutive hostdisk operations on the same device (closes:
+      #508834, #574088).
+    - Fix grammar error in grub-setup warning (closes: #559005).
+    - Use xorriso for image creation rather than embedding a modified copy
+      of mkisofs (closes: #570156).
+    - Issue an error rather than segfaulting if only some LVM component
+      devices are in device.map (closes: #577808).
+    - Fix typo in make_device_name which caused grub-probe problems on
+      systems with BSD disk labels (closes: #578201).
+    - Add DM-RAID probe support (closes: #579919).
+    - Include all gnumach kernels on Hurd, not just gnumach and gnumach.gz
+      (closes: #581584).
+
+  [ Colin Watson ]
+  * Restore TEXTDOMAINDIR correction in grub.d files, lost by mistake in a
+    merge.  Noticed by Anthony Fok.
+  * Don't fail on purge if the ucf association has already been taken over
+    by a different grub package (closes: #574176).
+  * Add debian/grub-extras/*/conf/*.mk to AUTOGEN_FILES.
+  * Remove support for the lpia architecture, now removed from Ubuntu.
+  * Conflict with grub (<< 0.97-54) as well as grub-legacy.
+  * Build-depend on libdevmapper-dev for DM-RAID probe support.
+  * Switch to quilt.
+  * Suggest xorriso (>= 0.5.6.pl00) in grub-common, since grub-mkrescue now
+    needs it.  Depend on it in grub-rescue-pc.
+  * Move grub-mkimage to grub-common, now that it only has one
+    implementation.
+  * Clean up temporary files used while building grub-firmware-qemu.
+  * Make grub-probe work with symlinks under /dev/mapper (closes: #550704).
+  * When upgrading a system where GRUB 2 is chainloaded from GRUB Legacy and
+    upgrade-from-grub-legacy has not been run, upgrade the chainloaded image
+    rather than confusing the user by prompting them where they want to
+    install GRUB (closes: #546822).
+  * Build-depend on libsdl1.2-dev for SDL support in grub-emu.
+  * Don't leak debconf's file descriptor to update-grub, so that the LVM
+    tools called from os-prober don't complain about it (closes: #549976).
+    Other leaks are not this package's fault, may not be bugs at all, and in
+    any case os-prober 1.36 suppresses the warnings.
+  * Build-depend on flex (>= 2.5.35).
+  * Build-depend on gcc-4.4-multilib on amd64.
+
+  [ Updated translations ]
+  * Slovenian (sl.po) by Vanja Cvelbar (closes: #570110).
+  * Vietnamese (vi.po) by Clytie Siddall (closes: #574578).
+  * Tamil (ta.po) by Tirumurti Vasudevan (closes: #578282).
+  * Portuguese (pt.po) by Tiago Fernandes (closes: #580140).
+  * Romanian (ro.po) by Eddy Petrișor / Andrei Popescu (closes: #583185).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 01 Jun 2010 11:24:38 +0100
+
+grub2 (1.98-1) unstable; urgency=low
+
+  * New upstream release (closes: #572898).
+    - Fix grub-script-check to handle empty lines (closes: #572302).
+    - Fix offset computation when reading last sectors.  Partition reads and
+      writes within and outside a partition (closes: #567469, #567884).
+    - Fix script execution error handling bug that meant that an error in a
+      menuentry's last statement caused the whole menuentry to fail (closes:
+      #566538, LP: #464743).
+    - Support GRUB_GFXPAYLOAD_LINUX (closes: #536453, LP: #416772).
+
+  [ Samuel Thibault ]
+  * Add GRUB_INIT_TUNE example to /etc/default/grub (closes: #570340).
+
+  [ Colin Watson ]
+  * Build-depend on libusb-dev so that grub-emu is reliably built with USB
+    support (closes: #572854).
+  * Update directions in debian/rules on exporting grub-extras to account
+    for it being maintained in Bazaar nowadays.
+  * Add myself to Uploaders.
+  * Acknowledge NMUs, thanks to Torsten Landschoff and Julien Cristau.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 09 Mar 2010 13:25:35 +0000
+
+grub2 (1.98~20100128-1.2) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Stop setting gfxpayload=keep (closes: #567245).
+
+ -- Julien Cristau <jcristau@debian.org>  Sun, 14 Feb 2010 20:37:51 +0100
+
+grub2 (1.98~20100128-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Apply trivial patch (already merged upstream) fixing the offset
+    computation for non-cached reads (closes: #567637).
+
+ -- Torsten Landschoff <torsten@debian.org>  Mon, 08 Feb 2010 22:15:01 +0100
+
+grub2 (1.98~20100128-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Fix corruption problem when reading files from CDROM.  (Closes: #567219)
+
+  [ Felix Zielcke ]
+  * Never strip kernel.img in rules. Upstream already does it when it
+    can be done. (Closes: #561933)
+  * Bump Standards-Version to 3.8.4.
+
+  [ Robert Millan ]
+  * rules: Run the testsuite (make check) when building grub-pc.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Thu, 28 Jan 2010 16:28:45 +0100
+
+grub2 (1.98~20100126-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Includes mipsel-yeeloong port.
+
+  [ Robert Millan ]
+  * config.in: Lower priority of grub2/linux_cmdline_default.
+
+  [ Felix Zielcke ]
+  * Drop `CFLAGS=-O0' workaround on powerpc. Should be fixed correctly now.
+  * Ship grub-bin2h and grub-script-check in grub-common.
+  * Terminate NEWS.Debian with a blank line like lintian would suggest
+    if that check would be working correctly.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 26 Jan 2010 19:26:25 +0100
+
+grub2 (1.98~20100115-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Includes savedefault / grub-reboot branch.
+    - Includes Multiboot video support (from latest 1.x draft).
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Fri, 15 Jan 2010 18:15:26 +0100
+
+grub2 (1.98~20100110-1) unstable; urgency=low
 
   * New Bazaar snapshot.
 
   [ Robert Millan ]
   * grub-rescue-pc.postinst: Fix image generation during upgrades.
     (Closes: #564261)
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Sun, 10 Jan 2010 02:45:52 +0100
+
+grub2 (1.98~20100107-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+
+  [ Robert Millan ]
   * grub-rescue-pc.postinst: Use grub-mkrescue for floppy as well.
+
+  [ Updated translations ]
+  * Chinese (zh_TW.po) by Tetralet. (Closes: #564044)
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Thu, 07 Jan 2010 17:56:10 +0100
+
+grub2 (1.98~20100101-1) unstable; urgency=high
+
+  * New Bazaar snapshot.
+    - Fix FTBS on sparc.
+
+  [ Robert Millan ]
   * rules: Auto-update version from debian/changelog.
 
   [ Felix Zielcke ]
   * Add -O0 to CFLAGS on powerpc to avoid the `_restgpr_31_x in boot is
     not defined' FTBFS.
-  * patches/02_fix_zfs_FTBFS.diff: New patch to let zfs.mod compile.
 
-  [ Updated translations ]
-  * Chinese (zh_TW.po) by Tetralet. (Closes: #564044)
+ -- Felix Zielcke <fzielcke@z-51.de>  Fri, 01 Jan 2010 00:31:37 +0100
 
- -- Felix Zielcke <fzielcke@z-51.de>  Mon, 11 Jan 2010 11:38:04 +0100
+grub2 (1.98~20091229-1) unstable; urgency=high
 
-grub2 (1.98~experimental.20091229-1) experimental; urgency=high
-
-  * New Baazar snapshot.
+  * New Bazaar snapshot.
+    - Fix slowness when $prefix uses an UUID.
+      (Closes: #541145, LP: #420933)
     - Correctly set TARGET_CFLAGS. (Closes: #562953)
-
-  [ Felix Zielcke ]
-  * Urgency=high due to RC bug fix.
-  * patches/05_insmod_in_rescue_disks.diff: Remove. No longer needed.
-  * Add Replaces:/Conflicts: grub-linuxbios to grub-coreboot. (Closes: #561811)
-  * Fix version comparison in grub-common.preinst for handling obsolete
-    /etc/grub.d/10_freebsd. (Closes: #562921)
 
   [ Robert Millan ]
   * grub-rescue-pc.postinst: Build USB rescue image.
-  * rules: Invoke configure with relative path.  This makes binaries
-    smaller, since dprintf strings are constructed using this path.
-
- -- Felix Zielcke <fzielcke@z-51.de>  Tue, 29 Dec 2009 18:59:24 +0100
-
-grub2 (1.98~experimental.20091216-1) experimental; urgency=low
-
-  * New Bazaar snapshot.
-  * Upload again to experimental.
-
- -- Felix Zielcke <fzielcke@z-51.de>  Wed, 16 Dec 2009 21:00:03 +0100
-
-grub2 (1.97+experimental.20091213-1) unstable; urgency=low
-
-  * New Bazaar snapshot.
-    - Fix search command failing on some broken BIOSes (Closes: #530357)
-
-  [ Robert Millan ]
-  * grub-extras moved to Bazaar.
+  * rules: Invoke configure with relative path.  This makes binaries smaller,
+    since dprintf strings are constructed using this path.
 
   [ Felix Zielcke ]
-  * Ship grub-mkpasswd-* only in grub-common.
+  * Urgency=high due to RC bug fix.
+  * Fix version comparison in grub-common.preinst for handling obsolete
+    /etc/grub.d/10_freebsd. (Closes: #562921)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 29 Dec 2009 16:05:00 +0100
+
+grub2 (1.98~20091222-1) unstable; urgency=low
+
+  * New Baazar snapshot.
+    - Make 30_os-prober again dash compatible. (Closes: #562034) 
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 22 Dec 2009 12:50:57 +0100
+
+grub2 (1.98~20091221-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+    - Fix search command failing on some broken BIOSes. (Closes: #530357)
+
+  [ Felix Zielcke ]
+  * Add Replaces:/Conflicts: grub-linuxbios to grub-coreboot. (Closes: #561811)
   * Delete obsolete /etc/grub.d/10_freebsd if it has not been modified,
-    else disable it. (Closes: 560346)
+    else disable it. (Closes: #560346)
 
- -- Felix Zielcke <fzielcke@z-51.de>  Sun, 13 Dec 2009 21:36:03 +0100
+ -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 21 Dec 2009 22:04:17 +0100
 
-grub2 (1.97+experimental.20091205-1) experimental; urgency=low
+grub2 (1.98~20091210-1) unstable; urgency=low
 
-  * New Bazaar snapshot.
-    - Includes mipsel port.
-  * Add grub-yeeloong package.
+  * Version bump.
 
- -- Robert Millan <rmh.debian@aybabtu.com>  Sat, 05 Dec 2009 20:51:18 +0100
+ -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 14 Dec 2009 14:52:59 +0100
 
-grub2 (1.97+experimental.20091127-1) experimental; urgency=low
+grub2 (1.97+20091210-1) unstable; urgency=low
 
   * New Bazaar snapshot.
-    - Same grub-mkrescue for grub-pc and grub-coreboot, used by
-      grub-rescue-pc during postinst now. (Closes: #501867)
+    - patches/02_fix_mountpoints_in_mkrelpath.diff: Remove (merged). 
+    - Fixes FTBFS on powerpc (again) and sparc.
+    - patches/903_grub_legacy_0_based_partitions.diff: Resync (merged into
+      debian branch).
+
+  * Fix dpkg dependency for lenny compatibility.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Thu, 10 Dec 2009 00:35:20 +0100
+
+grub2 (1.97+20091130-1) unstable; urgency=low
+
+  * New Bazaar snapshot.
+  * Enable ntldr-img from grub-extras.
+
+ -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 30 Nov 2009 02:33:03 +0100
+
+grub2 (1.97+20091125-2) unstable; urgency=low
+
+  [ Updated translations ]
+  * Bulgarian (bg.po) by Damyan Ivanovi (Closes: #558039)
+
+  [ Robert Millan ]
+  * control: Remove genisoimage from Build-Depends/Suggests (no longer
+    used).
+  * grub.d/05_debian_theme: Make output string distro-agnostic.
+
+  [ Felix Zielcke ]
+  * patches/02_fix_mountpoints_in_mkrelpath.diff: New patch to handle
+    mount points like the old shell function did. (Closes: #558042)
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Sun, 29 Nov 2009 21:38:00 +0100
+
+grub2 (1.97+20091125-1) unstable; urgency=low
+
+  [ Robert Millan ]
+  * New upstream snapshot.
+    - Fixes script parser load error.
+
+  * Add gettext to Build-Depends and gettext-base to grub-common's
+    Depends.
+
+ -- Felix Zielcke <fzielcke@z-51.de>  Wed, 25 Nov 2009 19:22:51 +0100
+
+grub2 (1.97+20091124-1) unstable; urgency=low
+
+  * New upstream snapshot.
     - Fix grub-mkisofs related FTBFS on powerpc. (Closes: #557704)
     - Create fake GRUB devices for devices not listed in device.map.
       This also makes dmraid and multipath work as long as
       search --fs-uuid works. (Closes: #442382, #540549, LP: #392136)
-    - Fix slowness when $prefix uses the (UUID=) hack.
-      (Closes: #541145, LP: #420933)
-
-  [ Robert Millan ]
-  * Add gettext to Build-Depends and gettext-base to grub-common's
-    Depends.
+    - rules: grub-emu is now built as a port.
 
   [ Felix Zielcke ]
-  * Update info how to get debian/legacy/update-grub from Bazaar.
+  * Change the bt-utf-source build dependency to xfonts-unifont. It's
+    more complete, better maintained and grub-mkfont supports actually
+    more then BDF fonts as input, thanks to libfreetype.
   * Use grub-probe to get the GRUB device of /boot/grub instead of
     passing (hd0) to grub-install when creating the core.img with
     chainloading. This avoids the (UUID=) hack slowness in case
     /boot/grub is on a different disk then (hd0) in device.map.
-  * Change the bt-utf-source build dependency to xfonts-unifont. It's
-    more complete, better maintained and grub-mkfont supports actually
-    more then BDF fonts as input, thanks to libfreetype.
-  * Revert the Replaces: grub-common to (<= 1.96+20080413-1) on the
-    grub-pc package. It was wrongly modified long ago.
   * patches/903_grub_legacy_0_based_partitions.diff: Update.
   * Add a build dependency on automake and python.
   * Set TARGET_CC=$(CC) to really use gcc-4.4 everywhere. Also pass it
     and CC as arguments to ./configure instead of env vars so they get
     preserved.
-  * Ship the locale files and grub-mkrescue in grub-common.
+  * Ship grub-mkrelpath in grub-common.
+  * Ship the locale files in grub-common.
+  * Add a dependency on 'dpkg (>= 1.15.4) | install-info' for grub-common
+    as recommended by Policy and lintian.
 
-  [ Updated translations ]
-  * Bulgarian (bg.po) by Damyan Ivanovi (Closes: #558039)
 
- -- Robert Millan <rmh.debian@aybabtu.com>  Fri, 27 Nov 2009 01:38:39 +0100
+ -- Felix Zielcke <fzielcke@z-51.de>  Tue, 24 Nov 2009 21:20:00 +0100
 
-grub2 (1.97+experimental.20091114-1) experimental; urgency=low
+grub2 (1.97+20091115-1) unstable; urgency=low
 
-  * New Bazaar snapshot.
-    - Revert faulty patch which breaks normal mode. (Closes: #555842)
-
-  * Ship grub-mkrelpath only in grub-common. (Closes: #554454)
-  * Don't strip debug symbols from grub-emu. It's meant for debugging
-    and with them it's much more useful.
-
- -- Felix Zielcke <fzielcke@z-51.de>  Sat, 14 Nov 2009 10:49:58 +0100
-
-grub2 (1.97+experimental.20091111-1) experimental; urgency=low
-
-  * New Bazaar snapshot.
-
-  * Remove conflicting files from grub-emu package. 
-  * Switch back to source format 1.0.  Buildds don't cope yet
-    well with it.
-  * Remove SVN rules from debian/rules and update where to get grub-
-    legacy/update-grub from.
-
- -- Felix Zielcke <fzielcke@z-51.de>  Wed, 11 Nov 2009 15:41:02 +0100
-
-grub2 (1.97+experimental.20091110-1) experimental; urgency=high
-
-  [ Robert Millan ]
-  * New Bazaar snapshot.
+  * New upstream snapshot.
     - Fix security problem with password checking.  (Closes: #555195)
-    - rules: grub-emu is now built as a port.
     - Fix the generated GNU/Hurd menu entries and also add support for
       it in 30_os-prober. (Closes: #555188)
+    - Same grub-mkrescue for grub-pc and grub-coreboot, used by
+      grub-rescue-pc during postinst now. (Closes: #501867)
 
-  * grub.d/05_debian_theme: Set "gfxpayload=keep".  This superceeds
-    -DGRUB_ASSUME_LINUX_HAS_FB_SUPPORT=1 setting which was disabled in
-    July.
-  * copyright: Document mkisofs.
-  * control: Update Vcs- fields (moved to Bazaar).
+  [ Felix Zielcke ]
+  * Ship grub-mkisofs in grub-common.
+  * patches/002_grub.d_freebsd.in.diff: Remove (merged upstream).
   * patches/906_grub_extras.diff: Remove. Superseded by GRUB_CONTRIB variable
     in recent upstream trunk.
   * rules: Export GRUB_CONTRIB to enable grub-extras add-ons.
-
-  [ Felix Zielcke ]
-  * Urgency high to due to security fix.
-  * Ship grub-reboot and grub-set-default only in the GRUB flavour
-    packages and not also grub-common.
-  * Switch to source format 3.0 (quilt).
-    - Make grub-extras a component orig tarball.
-    - keep CDBS simple-patchsys for now.
-  * Ship grub-mkisofs in grub-common.
-  * Add a dependency on 'dpkg (>= 1.15.4) | install-info' for grub-common
-    as recommended by Policy and lintian.
   * Pass --force to grub-install in the postinst. (Closes: #553415) 
+  * Don't strip debug symbols from grub-emu. It's meant for debugging
+    and with them it's much more useful.
+  * Ship grub-mkfloppy in grub-pc.
+  * Revert the Replaces: grub-common to (<= 1.96+20080413-1) on the
+    grub-pc package. It was wrongly modified long ago.
 
- -- Felix Zielcke <fzielcke@z-51.de>  Tue, 10 Nov 2009 17:57:46 +0100
+  [ Robert Millan ]
+  * copyright: Document mkisofs.
+  * control: Update Vcs- fields (moved to Bazaar).
+  * rules: Update debian/legacy/update-grub rule to Bazaar.
 
-grub2 (1.97+experimental.20091026-1) experimental; urgency=low
-
-   * New Bazaar snapshot.
-   * patches/002_grub.d_freebsd.in.diff: Remove (merged upstream).
-
- -- Robert Millan <rmh.debian@aybabtu.com>  Mon, 26 Oct 2009 02:06:20 +0100 
+ -- Felix Zielcke <fzielcke@z-51.de>  Sun, 15 Nov 2009 19:13:31 +0100
 
 grub2 (1.97-1) unstable; urgency=low
 

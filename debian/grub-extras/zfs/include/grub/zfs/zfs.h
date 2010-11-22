@@ -1,7 +1,6 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
  *  Copyright (C) 1999,2000,2001,2002,2003,2004  Free Software Foundation, Inc.
- *  Copyright 2008  Sun Microsystems, Inc.
  *  Copyright (C) 2009  Vladimir Serbinenko <phcoder@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -18,9 +17,9 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-/*
- * Use is subject to license terms.
- */
+ /*
+  * Copyright (c) 2007, 2010, Oracle and/or its affiliates. All rights reserved.
+  */
 
 #ifndef	GRUB_ZFS_HEADER
 #define	GRUB_ZFS_HEADER 1
@@ -31,7 +30,7 @@
 /*
  * On-disk version number.
  */
-#define	SPA_VERSION			14ULL
+#define	SPA_VERSION			28ULL
 
 /*
  * The following are configuration names used in the nvlist describing a pool's
@@ -65,6 +64,12 @@
 #define	ZPOOL_CONFIG_NPARITY		"nparity"
 #define	ZPOOL_CONFIG_PHYS_PATH		"phys_path"
 #define	ZPOOL_CONFIG_L2CACHE		"l2cache"
+#define	ZPOOL_CONFIG_HOLE_ARRAY		"hole_array"
+#define	ZPOOL_CONFIG_VDEV_CHILDREN	"vdev_children"
+#define	ZPOOL_CONFIG_IS_HOLE		"is_hole"
+#define	ZPOOL_CONFIG_DDT_HISTOGRAM	"ddt_histogram"
+#define	ZPOOL_CONFIG_DDT_OBJ_STATS	"ddt_object_stats"
+#define	ZPOOL_CONFIG_DDT_STATS		"ddt_stats"
 /*
  * The persistent vdev state is stored as separate values rather than a single
  * 'vdev_state' entry.  This is because a device can be in multiple states, such
@@ -82,6 +87,7 @@
 #define	VDEV_TYPE_DISK			"disk"
 #define	VDEV_TYPE_FILE			"file"
 #define	VDEV_TYPE_MISSING		"missing"
+#define	VDEV_TYPE_HOLE			"hole"
 #define	VDEV_TYPE_SPARE			"spare"
 #define	VDEV_TYPE_L2CACHE		"l2cache"
 

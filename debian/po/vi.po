@@ -1,0 +1,304 @@
+# Vietnamese translation for Grub2_Debian.
+# Copyright © 2010 Free Software Foundation, Inc.
+# Clytie Siddall <clytie@riverland.net.au>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: grub2\n"
+"Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
+"POT-Creation-Date: 2010-07-02 12:55+0100\n"
+"PO-Revision-Date: 2010-09-28 19:02+0930\n"
+"Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
+"Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
+"Language: vi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: LocFactoryEditor 1.8\n"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:2001
+msgid "Chainload from menu.lst?"
+msgstr "Nạp dãy từ menu.lst ?"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:2001
+msgid "GRUB upgrade scripts have detected a GRUB Legacy setup in /boot/grub."
+msgstr ""
+"Văn lệnh nâng cấp GRUB phát hiện được một thiết lập GRUB Thừa Tự (GRUB "
+"Legacy) trong « /boot/grub »."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:2001
+msgid ""
+"In order to replace the Legacy version of GRUB in your system, it is "
+"recommended that /boot/grub/menu.lst is adjusted to chainload GRUB 2 from "
+"your existing GRUB Legacy setup.  This step may be automaticaly performed "
+"now."
+msgstr ""
+"Để thay thế phiên bản Thừ Tự của GRUB trong hệ thống này, khuyến khích điều "
+"chỉnh « /boot/grub/menu.lst » để nạp dãy (chainload) GRUB 2 từ thiết lập "
+"GRUB Thừa Tự đã có. Bước này có thể được tự động thực hiện ngay bây giờ."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:2001
+msgid ""
+"It's recommended that you accept chainloading GRUB 2 from menu.lst, and "
+"verify that your new GRUB 2 setup is functional for you, before you install "
+"it directly to your MBR (Master Boot Record)."
+msgstr ""
+"Khuyên bạn đồng ý với nạp dãy GRUB 2 từ menu.lst, và thẩm tra thiết lập GRUB "
+"2 mới có chức năng, trước khi ghi nó trực tiếp vào MBR (mục ghi khởi động "
+"chủ)."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:2001
+msgid ""
+"In either case, whenever you want GRUB 2 to be loaded directly from MBR, you "
+"can do so by issuing (as root) the following command:"
+msgstr ""
+"Trong cả hai trường hợp, khi nào bạn muốn nạp GRUB2 một cách trực tiếp từ "
+"MBR, chỉ cần chạy (dưới người chủ) câu lệnh theo đây:"
+
+# Variable: don't translate; Biến: đừng dịch
+#. Type: text
+#. Description
+#. Disk sizes are in decimal megabytes, to match how disk manufacturers
+#. usually describe them.
+#: ../grub-pc.templates.in:5001
+msgid "${DEVICE} (${SIZE} MB, ${MODEL})"
+msgstr "${DEVICE} (${SIZE} MB, ${MODEL})"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:7001
+msgid "GRUB installation failed.  Continue?"
+msgstr "Lỗi cài đặt GRUB. Tiếp tục ?"
+
+#. Type: boolean
+#. Description
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:7001 ../grub-pc.templates.in:8001
+msgid "GRUB failed to install to the following devices:"
+msgstr "GRUB không cài đặt được vào những thiết bị theo đây:"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:7001
+msgid ""
+"Do you want to continue anyway?  If you do, your computer may not start up "
+"properly."
+msgstr ""
+"Bạn vẫn muốn tiếp tục không? Có thì máy tính có thể không khởi động đúng."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:8001
+msgid "GRUB installation failed.  Try again?"
+msgstr "Lỗi cài đặt GRUB. Thử lại ?"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:8001
+msgid ""
+"You may be able to install GRUB to some other device, although you should "
+"check that your system will boot from that device.  Otherwise, the upgrade "
+"from GRUB Legacy will be cancelled."
+msgstr ""
+"Có thể là bạn cài đặt được GRUB vào một thiết bị khác (trước tiên nên kiểm "
+"tra nếu hệ thống sẽ khởi động từ thiết bị đó). Không thì tiến trình nâng cấp "
+"từ GRUB Cũ (Legacy) sẽ bị thôi."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:9001
+msgid "Continue without installing GRUB?"
+msgstr "Tiếp tục lại mà không cài đặt GRUB ?"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:9001
+msgid ""
+"You chose not to install GRUB to any devices.  If you continue, the boot "
+"loader may not be properly configured, and when your computer next starts up "
+"it will use whatever was previously in the boot sector.  If there is an "
+"earlier version of GRUB 2 in the boot sector, it may be unable to load "
+"modules or handle the current configuration file."
+msgstr ""
+"Bạn đã chọn không cài đặt GRUB vào thiết bị nào. Tiếp tục thì có thể là bộ "
+"nạp khởi động bị sai cấu hình, và máy tính khởi động lại sẽ sử dụng dữ liệu "
+"nào đã có trong phân vùng khởi động. Nếu phiên bản khởi động chứa một phiên "
+"bản GRUB2 cũ, có thể là nó không nạp được mô-đun hoặc không xử lý được tập "
+"tin cấu hình hiện thời."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:9001
+msgid ""
+"If you are already running a different boot loader and want to carry on "
+"doing so, or if this is a special environment where you do not need a boot "
+"loader, then you should continue anyway.  Otherwise, you should install GRUB "
+"somewhere."
+msgstr ""
+"Nếu bạn muốn tiếp tục chạy một bộ nạp khởi động đã có, hoặc nếu đây là một "
+"môi trường đặc biệt mà không cần thiết bộ nạp khởi động, thì bạn nên tiếp "
+"tục. Khác thì bạn nên cài đặt GRUB vào một vị trí nào đó."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:11001
+msgid "Finish conversion to GRUB 2 now?"
+msgstr "Kết thúc chuyển đổi sang GRUB2 ngay bây giờ ?"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:11001
+msgid ""
+"This system still has files from the GRUB Legacy boot loader installed, but "
+"it now also has GRUB 2 boot records installed on these disks:"
+msgstr ""
+"Hệ thống này vẫn còn có tập tin được cài đặt bởi bộ nạp khởi động GRUB Cũ "
+"(Legacy), nhưng mà cũng có mục ghi GRUB2 được cài đặt vào những đĩa này:"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:11001
+msgid ""
+"It seems likely that GRUB Legacy is no longer in use, and that you should "
+"instead upgrade the GRUB 2 images on these disks and finish the conversion "
+"to GRUB 2 by removing old GRUB Legacy files.  If you do not upgrade these "
+"GRUB 2 images, then they may be incompatible with the new packages and cause "
+"your system to stop booting properly."
+msgstr ""
+"Rất có thể là GRUB Cũ (Legacy) không còn được sử dụng, vì thế bạn nên nâng "
+"cấp các ảnh GRUB2 trên những đĩa này và kết thúc chuyển đổi sang GRUB2 bằng "
+"cách gỡ bỏ tất cả các tập tin GRUB Cũ. Không nâng cấp các ảnh GRUB2 thì "
+"chúng có thể không tương thích với gói mới và gây ra hệ thống này không khởi "
+"động đúng."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:11001
+msgid ""
+"You should generally finish the conversion to GRUB 2 unless these boot "
+"records were created by a GRUB 2 installation on some other operating system."
+msgstr ""
+"Nói chung bạn nên kết thúc chuyển đổi sang GRUB2 nếu các mục ghi khởi động "
+"này không được tạo bởi một bản cài đặt GRUB2 trên một hệ điều hành khác."
+
+#. Type: string
+#. Description
+#: ../templates.in:1001
+msgid "Linux command line:"
+msgstr "Dòng lệnh Linux:"
+
+#. Type: string
+#. Description
+#: ../templates.in:1001
+msgid ""
+"The following Linux command line was extracted from /etc/default/grub or the "
+"`kopt' parameter in GRUB Legacy's menu.lst.  Please verify that it is "
+"correct, and modify it if necessary."
+msgstr ""
+"Dòng lệnh Linux theo đây đã được trích ra « /etc/default/grub » hoặc từ tham "
+"số « kopt » trong menu.lst của GRUB Thừa Tự. Hãy thẩm tra nó vẫn đúng, không "
+"thích hợp thì cũng sửa đổi."
+
+#. Type: string
+#. Description
+#: ../templates.in:2001
+msgid "Linux default command line:"
+msgstr "Dòng lệnh Linux mặc định:"
+
+#. Type: string
+#. Description
+#: ../templates.in:2001
+msgid ""
+"The following string will be used as Linux parameters for the default menu "
+"entry but not for the recovery mode."
+msgstr ""
+"Chuỗi theo đây sẽ được sử dụng làm các tham số Linux cho mục nhập trình đơn "
+"mặc định, mà không phải cho chế độ phục hồi."
+
+#. Type: string
+#. Description
+#: ../templates.in:3001
+msgid "kFreeBSD command line:"
+msgstr "Dòng lệnh kFreeBSD:"
+
+#. Type: string
+#. Description
+#: ../templates.in:3001
+msgid ""
+"The following kFreeBSD command line was extracted from /etc/default/grub or "
+"the `kopt' parameter in GRUB Legacy's menu.lst.  Please verify that it is "
+"correct, and modify it if necessary."
+msgstr ""
+"Dòng lệnh kFreeBSD theo đây đã được trích ra « /etc/default/grub » hoặc từ "
+"tham số « kopt » trong menu.lst của GRUB Thừa Tự. Hãy thẩm tra nó vẫn đúng, "
+"không thích hợp thì cũng sửa đổi."
+
+#. Type: string
+#. Description
+#: ../templates.in:4001
+msgid "kFreeBSD default command line:"
+msgstr "Dòng lệnh kFreeBSD mặc định:"
+
+#. Type: string
+#. Description
+#: ../templates.in:4001
+msgid ""
+"The following string will be used as kFreeBSD parameters for the default "
+"menu entry but not for the recovery mode."
+msgstr ""
+"Chuỗi theo đây sẽ được sử dụng làm các tham số kFreeBSD cho mục nhập trình "
+"đơn mặc định, mà không phải cho chế độ phục hồi."
+
+#. Type: note
+#. Description
+#: ../templates.in:5001
+msgid "/boot/grub/device.map has been regenerated"
+msgstr "Tập tin « /boot/grub/device.map » đã được tạo lại."
+
+#. Type: note
+#. Description
+#: ../templates.in:5001
+msgid ""
+"The file /boot/grub/device.map has been rewritten to use stable device "
+"names.  In most cases, this should significantly reduce the need to change "
+"it in future, and boot menu entries generated by GRUB should not be affected."
+msgstr ""
+"Tập tin « /boot/grub/device.map » đã được ghi nhớ lại để sử dụng tên thiết "
+"bị kiểu ổn định. Trong phần lớn các trường hợp, bản cập nhật này nên giảm "
+"một cách đáng kể sự cần sửa đổi về sau, và không nên tác động trình đơn khởi "
+"động được GRUB tạo."
+
+#. Type: note
+#. Description
+#: ../templates.in:5001
+msgid ""
+"However, since you have more than one disk in your system, it is possible "
+"that you were depending on the old device map.  Please check whether you "
+"have any custom boot menu entries that rely on GRUB's (hdN) drive numbering, "
+"and update them if necessary."
+msgstr ""
+"Tuy nhiên, vì bạn có nhiều đĩa trong hệ thống, có thể là bạn vẫn còn phụ "
+"thuộc vào sơ đồ thiết bị cũ. Hãy kiểm tra nếu bạn có mục trình đơn khởi động "
+"riêng mà dựa vào số thứ tự ổ đĩa của GRUB (hdN) và cập nhật nếu thích hợp."
+
+#. Type: note
+#. Description
+#: ../templates.in:5001
+msgid ""
+"If you do not understand this message, or if you do not have any custom boot "
+"menu entries, you can ignore this message."
+msgstr ""
+"Nếu bạn không hiểu thông điệp này, hoặc nếu bạn không có mục trình đơn khởi "
+"động riêng nào, thì bạn có thể bỏ qua thông điệp này."

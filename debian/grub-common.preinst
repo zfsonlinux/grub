@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e
 
 # Taken from http://wiki.debian.org/DpkgConffileHandling
 # Remove a no-longer used conffile
@@ -23,7 +24,7 @@ rm_conffile() {
 
 case "$1" in
   install|upgrade)
-    if dpkg --compare-versions "$2" lt "1.98~experimental.20091229-1" ; then
+    if dpkg --compare-versions "$2" lt "1.98~20091229-1" ; then
 	rm_conffile "/etc/grub.d/10_freebsd"
     fi
     if dpkg --compare-versions "$2" lt "1.96+20090521-1" ; then

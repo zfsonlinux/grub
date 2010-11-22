@@ -1,0 +1,308 @@
+# Grub2 translation to Bahasa Indonesia.
+# Copyright (C) Grub2 Developer
+# This file is distributed under the same license as the Grub2 package.
+# Arief S Fitrianto <arief@gurame.fisika.ui.ac.id>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: grub2\n"
+"Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
+"POT-Creation-Date: 2010-07-02 12:55+0100\n"
+"PO-Revision-Date: 2010-07-16 23:14+0700\n"
+"Last-Translator: Arief S Fitrianto <arief@gurame.fisika.ui.ac.id>\n"
+"Language-Team: Debian Indonesian Translation Team <debian-l10n-id@gurame."
+"fisika.ui.ac.id>\n"
+"Language: id\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Indonesian\n"
+"X-Poedit-Country: INDONESIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:2001
+msgid "Chainload from menu.lst?"
+msgstr "Chainload dari menu.lst?"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:2001
+msgid "GRUB upgrade scripts have detected a GRUB Legacy setup in /boot/grub."
+msgstr ""
+"Script pemutakhiran GRUB menemukan konfigurasi GRUB jadul di /boot/grub."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:2001
+msgid ""
+"In order to replace the Legacy version of GRUB in your system, it is "
+"recommended that /boot/grub/menu.lst is adjusted to chainload GRUB 2 from "
+"your existing GRUB Legacy setup.  This step may be automaticaly performed "
+"now."
+msgstr ""
+"Untuk mengganti GRUB jadul pada sistem Anda, sangat disarankan menyesuaikan /"
+"boot/grub/menu.lst dengan chainload GRUB 2. Langkah ini mungkin akan "
+"dilakukan otomatis sekarang."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:2001
+msgid ""
+"It's recommended that you accept chainloading GRUB 2 from menu.lst, and "
+"verify that your new GRUB 2 setup is functional for you, before you install "
+"it directly to your MBR (Master Boot Record)."
+msgstr ""
+"Sangat disarankan Anda menerima hasil penyesuaian GRUB 2 dari menu.lst dan "
+"memastikan bahwa konfigurasi GRUB 2 berfungsi sebelum Anda memasangnya pada "
+"MBR (Master Boot Record)."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:2001
+msgid ""
+"In either case, whenever you want GRUB 2 to be loaded directly from MBR, you "
+"can do so by issuing (as root) the following command:"
+msgstr ""
+"Di semua kasus, ketika Anda ingin agar GRUB 2 dimuatkan langsung dari MBR, "
+"Anda dapat melakukan (sebagai root) perintah berikut:"
+
+#. Type: text
+#. Description
+#. Disk sizes are in decimal megabytes, to match how disk manufacturers
+#. usually describe them.
+#: ../grub-pc.templates.in:5001
+msgid "${DEVICE} (${SIZE} MB, ${MODEL})"
+msgstr "${DEVICE} (${SIZE} MB, ${MODEL})"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:7001
+msgid "GRUB installation failed.  Continue?"
+msgstr "Gagal memasang GRUB. Lanjutkan?"
+
+#. Type: boolean
+#. Description
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:7001 ../grub-pc.templates.in:8001
+msgid "GRUB failed to install to the following devices:"
+msgstr "Gagal memasang GRUB pada piranti berikut ini:"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:7001
+msgid ""
+"Do you want to continue anyway?  If you do, your computer may not start up "
+"properly."
+msgstr ""
+"Anda yakin akan lanjut terus? Jika ya, komputer Anda mungkin tidak dapat "
+"beroperasi."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:8001
+msgid "GRUB installation failed.  Try again?"
+msgstr "Gagal memasang GRUB. Coba lagi?"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:8001
+msgid ""
+"You may be able to install GRUB to some other device, although you should "
+"check that your system will boot from that device.  Otherwise, the upgrade "
+"from GRUB Legacy will be cancelled."
+msgstr ""
+"Anda dapat memasang GRUB pada piranti lainnya. Tetapi, Anda harus memastikan "
+"komputer dapat boot dari piranti tersebut. Jika tidak, pemutakhiran dari "
+"GRUB jadul akan dibatalkan."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:9001
+msgid "Continue without installing GRUB?"
+msgstr "Lanjutkan tanpa memasang GRUB?"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:9001
+msgid ""
+"You chose not to install GRUB to any devices.  If you continue, the boot "
+"loader may not be properly configured, and when your computer next starts up "
+"it will use whatever was previously in the boot sector.  If there is an "
+"earlier version of GRUB 2 in the boot sector, it may be unable to load "
+"modules or handle the current configuration file."
+msgstr ""
+"Anda memilih untuk tidak memasang GRUB di piranti apapun. Jika Anda "
+"lanjutkan, pemuat boot mungkin tidak terkonfigurasi dengan benar. Jika "
+"komputer Anda dinyalakan kembali, maka apapun yang sebelumnya ada di "
+"bootsector akan digunakan. Jika ada versi awal GRUB2 di bootsector, mungkin "
+"tidak dapat memuat modul-modul atau menangani berkas konfigurasi mutakhir."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:9001
+msgid ""
+"If you are already running a different boot loader and want to carry on "
+"doing so, or if this is a special environment where you do not need a boot "
+"loader, then you should continue anyway.  Otherwise, you should install GRUB "
+"somewhere."
+msgstr ""
+"Jika Anda telah menjalankan pemuat boot yang berbeda dan ingin tetap seperti "
+"itu, atau ada kebutuhan khusus yang membuat Anda tidak memerlukan pemuat "
+"boot, maka Anda bisa melanjutkan terus. Jika tidak, Anda harus memasang GRUB "
+"di tempat lain."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:11001
+msgid "Finish conversion to GRUB 2 now?"
+msgstr "Selesaikan proses konversi ke GRUB2 sekarang?"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:11001
+msgid ""
+"This system still has files from the GRUB Legacy boot loader installed, but "
+"it now also has GRUB 2 boot records installed on these disks:"
+msgstr ""
+"Sistem ini masih memiliki berkas-berkas dari pemuat boot GRUB Jadul, tapi "
+"sekarang juga memiliki rekam boot GRUB2 di piranti berikut:"
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:11001
+msgid ""
+"It seems likely that GRUB Legacy is no longer in use, and that you should "
+"instead upgrade the GRUB 2 images on these disks and finish the conversion "
+"to GRUB 2 by removing old GRUB Legacy files.  If you do not upgrade these "
+"GRUB 2 images, then they may be incompatible with the new packages and cause "
+"your system to stop booting properly."
+msgstr ""
+"Tampaknya GRUB Jadul sudah tidak terpakai, dan Anda sebaiknya memasang citra "
+"GRUB2 pada harddisk ini, lalu menyelesaikan proses konversi ke GRUB2 dengan "
+"menghapus berkas-berkas GRUB Jadul. Jika Anda tidak memutakhirkan citra "
+"GRUB2, maka mungkin akan ada masalah inkompatibilitas dengan paket-paket "
+"baru dan membuat sistem Anda tidak dapat booting dengan benar."
+
+#. Type: boolean
+#. Description
+#: ../grub-pc.templates.in:11001
+msgid ""
+"You should generally finish the conversion to GRUB 2 unless these boot "
+"records were created by a GRUB 2 installation on some other operating system."
+msgstr ""
+"Anda sebaiknya menyelesaikan konversi ke GRUB2 kecuali jika rekam boot ini "
+"dibuat melalui pemasangan GRUB2 pada sistem operasi lain."
+
+#. Type: string
+#. Description
+#: ../templates.in:1001
+msgid "Linux command line:"
+msgstr "Baris perintah Linux:"
+
+#. Type: string
+#. Description
+#: ../templates.in:1001
+msgid ""
+"The following Linux command line was extracted from /etc/default/grub or the "
+"`kopt' parameter in GRUB Legacy's menu.lst.  Please verify that it is "
+"correct, and modify it if necessary."
+msgstr ""
+"Baris perintah Linux berikut ini disadur dari /etc/default/grub atau "
+"parameter 'kopt' di menu.lst pada GRUB jadul. Pastikan kebenarannya dan "
+"suntinglah bila perlu."
+
+#. Type: string
+#. Description
+#: ../templates.in:2001
+msgid "Linux default command line:"
+msgstr "Baris perintah standar Linux:"
+
+#. Type: string
+#. Description
+#: ../templates.in:2001
+msgid ""
+"The following string will be used as Linux parameters for the default menu "
+"entry but not for the recovery mode."
+msgstr ""
+"String berikut ini akan digunakan sebagai parameter Linux untuk menu standar "
+"tetapi tidak digunakan untuk modus darurat."
+
+#. Type: string
+#. Description
+#: ../templates.in:3001
+msgid "kFreeBSD command line:"
+msgstr "Baris perintah kFreeBSD:"
+
+#. Type: string
+#. Description
+#: ../templates.in:3001
+msgid ""
+"The following kFreeBSD command line was extracted from /etc/default/grub or "
+"the `kopt' parameter in GRUB Legacy's menu.lst.  Please verify that it is "
+"correct, and modify it if necessary."
+msgstr ""
+"Baris perintah kFreeBSD berikut ini disadur dari /etc/default/grub atau "
+"parameter 'kopt' di menu.lst pada GRUB jadul. Pastikan kebenarannya dan "
+"suntinglah bila perlu."
+
+#. Type: string
+#. Description
+#: ../templates.in:4001
+msgid "kFreeBSD default command line:"
+msgstr "Baris perintah standar kFreeBSD:"
+
+#. Type: string
+#. Description
+#: ../templates.in:4001
+msgid ""
+"The following string will be used as kFreeBSD parameters for the default "
+"menu entry but not for the recovery mode."
+msgstr ""
+"String berikut ini digunakan sebagai parameter kFreeBSD untuk menu standar, "
+"tetapi tidak digunakan untuk modus darurat."
+
+#. Type: note
+#. Description
+#: ../templates.in:5001
+msgid "/boot/grub/device.map has been regenerated"
+msgstr "/boot/grub/device.map telah dibuat ulang."
+
+#. Type: note
+#. Description
+#: ../templates.in:5001
+msgid ""
+"The file /boot/grub/device.map has been rewritten to use stable device "
+"names.  In most cases, this should significantly reduce the need to change "
+"it in future, and boot menu entries generated by GRUB should not be affected."
+msgstr ""
+"Berkas /boot/grub/device.map telah ditulis ulang agar menggunakan nama "
+"piranti yang stabil. Dalam kebanyakan kasus, hal ini berarti mengurangi "
+"kemungkinan perubahan di masa datang, dan isian menu boot yang dibuat oleh "
+"GRUB tidak akan terpengaruh."
+
+#. Type: note
+#. Description
+#: ../templates.in:5001
+msgid ""
+"However, since you have more than one disk in your system, it is possible "
+"that you were depending on the old device map.  Please check whether you "
+"have any custom boot menu entries that rely on GRUB's (hdN) drive numbering, "
+"and update them if necessary."
+msgstr ""
+"Akan tetapi, karena Anda memiliki lebih dari satu harddisk pada sistem ini, "
+"sangat mungkin bahwa Anda bergantung pada peta piranti yang lama. Mohon "
+"periksa apakah Anda memiliki isian menu boot GRUB secara manual yang "
+"menggunakan penomoran harddisk (hdN). Jika ya, perbaiki yang diperlukan. "
+
+#. Type: note
+#. Description
+#: ../templates.in:5001
+msgid ""
+"If you do not understand this message, or if you do not have any custom boot "
+"menu entries, you can ignore this message."
+msgstr ""
+"Jika Anda tidak mengerti pesan ini atau jika Anda tidak memiliki isian menu "
+"boot secara manual, Anda bisa mengabaikan pesan ini."
