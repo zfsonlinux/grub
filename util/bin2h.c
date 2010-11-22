@@ -41,6 +41,8 @@ usage (int status)
     printf ("\
 Usage: %s [OPTIONS] SYMBOL-NAME\n\
 \n\
+Convert a binary file to a C header.\n\
+\n\
   -h, --help                display this message and exit\n\
   -V, --version             print version information and exit\n\
 \n\
@@ -94,7 +96,7 @@ main (int argc, char *argv[])
   if (b == EOF)
     goto abort;
 
-  printf ("/* THIS CHUNK OF BYTES IS AUTOMATICALY GENERATED */\n"
+  printf ("/* THIS CHUNK OF BYTES IS AUTOMATICALLY GENERATED */\n"
 	  "unsigned char %s[] =\n{\n", sym);
 
   while (1)

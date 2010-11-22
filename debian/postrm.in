@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e
 
 case "$1" in
   purge)
@@ -8,7 +9,7 @@ case "$1" in
 	ucf --purge /etc/default/grub
     fi
     if which ucfr >/dev/null ; then
-	ucfr --purge @PACKAGE@ /etc/default/grub
+	ucfr --purge @PACKAGE@ /etc/default/grub || true
     fi
 
     case @PACKAGE@ in
@@ -20,9 +21,10 @@ case "$1" in
 
         db_input high grub-pc/postrm_purge_boot_grub || true
         db_go || true
-        db_get grub-pc/purge_boot_grub || true
+        db_get grub-pc/postrm_purge_boot_grub || true
         if [ "$RET" = "true" ] ; then
-          rm -f /boot/grub/{grub.cfg,ascii.pf2,unicode.pf2,moreblue-orbit-grub.png,*.mod,*.lst,*.img,efiemu32.o,efiemu64.o} || true
+          rm -f /boot/grub/{grub.cfg,ascii.pf2,unicode.pf2,moreblue-orbit-grub.png,*.mod,*.lst,*.img,efiemu32.o,efiemu64.o,device.map,grubenv,installed-version} || true
+          rm -rf /boot/grub/locale
           rmdir --ignore-fail-on-non-empty /boot/grub || true
         fi
       ;;

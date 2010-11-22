@@ -28,32 +28,18 @@
 # define NULL	((void *) 0)
 #endif
 
-void grub_mm_init_region (void *addr, grub_size_t size, grub_size_t *policies);
+void grub_mm_init_region (void *addr, grub_size_t size);
 void *EXPORT_FUNC(grub_malloc) (grub_size_t size);
 void *EXPORT_FUNC(grub_zalloc) (grub_size_t size);
 void EXPORT_FUNC(grub_free) (void *ptr);
 void *EXPORT_FUNC(grub_realloc) (void *ptr, grub_size_t size);
 void *EXPORT_FUNC(grub_memalign) (grub_size_t align, grub_size_t size);
 
-void *EXPORT_FUNC(grub_memalign_policy) (grub_size_t align, grub_size_t size,
-					 int policy);
-
-void *EXPORT_FUNC(grub_rememalign_policy) (void *ptr, grub_size_t align,
-					   grub_size_t size, int policy);
-
-#define GRUB_MM_ALLOCATOR_SKIP     0
-#define GRUB_MM_ALLOCATOR_FIRST  1
-#define GRUB_MM_ALLOCATOR_SECOND 2
-#define GRUB_MM_ALLOCATOR_LAST 3
-
-#define GRUB_MM_MALLOC_DEFAULT     0
-#define GRUB_MM_MALLOC_KERNEL     1
-
-/* Number of policies. For alignment reasons must be a multiple of 4.  */
-#define GRUB_MM_NPOLICIES 4
+void grub_mm_check_real (char *file, int line);
+#define GRUB_MM_CHECK grub_mm_check_real (__FILE__, __LINE__);
 
 /* For debugging.  */
-#if defined(MM_DEBUG) && !defined(GRUB_UTIL)
+#if defined(MM_DEBUG) && !defined(GRUB_UTIL) && !defined (GRUB_MACHINE_EMU)
 /* Set this variable to 1 when you want to trace all memory function calls.  */
 extern int EXPORT_VAR(grub_mm_debug);
 
@@ -61,19 +47,19 @@ void grub_mm_dump_free (void);
 void grub_mm_dump (unsigned lineno);
 
 #define grub_malloc(size)	\
-  grub_debug_malloc (__FILE__, __LINE__, size)
+  grub_debug_malloc (GRUB_FILE, __LINE__, size)
 
 #define grub_zalloc(size)	\
-  grub_debug_zalloc (__FILE__, __LINE__, size)
+  grub_debug_zalloc (GRUB_FILE, __LINE__, size)
 
 #define grub_realloc(ptr,size)	\
-  grub_debug_realloc (__FILE__, __LINE__, ptr, size)
+  grub_debug_realloc (GRUB_FILE, __LINE__, ptr, size)
 
 #define grub_memalign(align,size)	\
-  grub_debug_memalign (__FILE__, __LINE__, align, size)
+  grub_debug_memalign (GRUB_FILE, __LINE__, align, size)
 
 #define grub_free(ptr)	\
-  grub_debug_free (__FILE__, __LINE__, ptr)
+  grub_debug_free (GRUB_FILE, __LINE__, ptr)
 
 void *EXPORT_FUNC(grub_debug_malloc) (const char *file, int line,
 				      grub_size_t size);

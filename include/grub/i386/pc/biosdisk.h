@@ -106,16 +106,4 @@ struct grub_biosdisk_dap
   grub_uint64_t block;
 } __attribute__ ((packed));
 
-int grub_biosdisk_rw_int13_extensions (int ah, int drive, void *dap);
-int grub_biosdisk_rw_standard (int ah, int drive, int coff, int hoff,
-			       int soff, int nsec, int segment);
-int grub_biosdisk_check_int13_extensions (int drive);
-int grub_biosdisk_get_diskinfo_int13_extensions (int drive, void *drp);
-int grub_biosdisk_get_cdinfo_int13_extensions (int drive, void *cdrp);
-int grub_biosdisk_get_diskinfo_standard (int drive,
-					 unsigned long *cylinders,
-					 unsigned long *heads,
-					 unsigned long *sectors);
-int grub_biosdisk_get_num_floppies (void);
-
 #endif /* ! GRUB_BIOSDISK_MACHINE_HEADER */

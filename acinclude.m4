@@ -14,7 +14,7 @@ $2
 
 
 dnl Check whether target compiler is working
-AC_DEFUN(grub_PROG_TARGET_CC,
+AC_DEFUN([grub_PROG_TARGET_CC],
 [AC_MSG_CHECKING([whether target compiler is working])
 AC_CACHE_VAL(grub_cv_prog_target_cc,
 [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
@@ -36,8 +36,9 @@ dnl grub_ASM_USCORE checks if C symbols get an underscore after
 dnl compiling to assembler.
 dnl Written by Pavel Roskin. Based on grub_ASM_EXT_C written by
 dnl Erich Boleyn and modified by Yoshinori K. Okuji.
-AC_DEFUN(grub_ASM_USCORE,
+AC_DEFUN([grub_ASM_USCORE],
 [AC_REQUIRE([AC_PROG_CC])
+AC_REQUIRE([AC_PROG_EGREP])
 AC_MSG_CHECKING([if C symbols get an underscore after compilation])
 AC_CACHE_VAL(grub_cv_asm_uscore,
 [cat > conftest.c <<\EOF
@@ -56,18 +57,15 @@ else
   AC_MSG_ERROR([${CC-cc} failed to produce assembly code])
 fi
 
-if grep _func conftest.s >/dev/null 2>&1; then
+if $EGREP '(^|[^_[:alnum]])_func' conftest.s >/dev/null 2>&1; then
+  HAVE_ASM_USCORE=1
   grub_cv_asm_uscore=yes
 else
+  HAVE_ASM_USCORE=0
   grub_cv_asm_uscore=no
 fi
 
 rm -f conftest*])
-
-if test "x$grub_cv_asm_uscore" = xyes; then
-  AC_DEFINE_UNQUOTED([HAVE_ASM_USCORE], $grub_cv_asm_uscore,
-    [Define if C symbols get an underscore after compilation])
-fi
 
 AC_MSG_RESULT([$grub_cv_asm_uscore])
 ])
@@ -75,7 +73,7 @@ AC_MSG_RESULT([$grub_cv_asm_uscore])
 
 dnl Some versions of `objcopy -O binary' vary their output depending
 dnl on the link address.
-AC_DEFUN(grub_PROG_OBJCOPY_ABSOLUTE,
+AC_DEFUN([grub_PROG_OBJCOPY_ABSOLUTE],
 [AC_MSG_CHECKING([whether ${OBJCOPY} works for absolute addresses])
 AC_CACHE_VAL(grub_cv_prog_objcopy_absolute,
 [cat > conftest.c <<\EOF
@@ -93,7 +91,7 @@ else
 fi
 grub_cv_prog_objcopy_absolute=yes
 for link_addr in 0x2000 0x8000 0x7C00; do
-  if AC_TRY_COMMAND([${CC-cc} ${CFLAGS} -nostdlib ${TARGET_IMG_LDFLAGS_AC} -Wl,-Ttext -Wl,$link_addr conftest.o -o conftest.exec]); then :
+  if AC_TRY_COMMAND([${CC-cc} ${CFLAGS} -nostdlib ${TARGET_IMG_LDFLAGS_AC} ${TARGET_IMG_BASE_LDOPT},$link_addr conftest.o -o conftest.exec]); then :
   else
     AC_MSG_ERROR([${CC-cc} cannot link at address $link_addr])
   fi
@@ -119,7 +117,7 @@ fi
 
 dnl Supply --build-id=none to ld if building modules.
 dnl This suppresses warnings from ld on some systems
-AC_DEFUN(grub_PROG_LD_BUILD_ID_NONE,
+AC_DEFUN([grub_PROG_LD_BUILD_ID_NONE],
 [AC_MSG_CHECKING([whether linker accepts --build-id=none])
 AC_CACHE_VAL(grub_cv_prog_ld_build_id_none,
 [save_LDFLAGS="$LDFLAGS"
@@ -150,7 +148,7 @@ dnl
 dnl We only support the newer versions, because the old versions cause
 dnl major pain, by requiring manual assembly to get 16-bit instructions into
 dnl asm files.
-AC_DEFUN(grub_I386_ASM_ADDR32,
+AC_DEFUN([grub_I386_ASM_ADDR32],
 [AC_REQUIRE([AC_PROG_CC])
 AC_REQUIRE([grub_I386_ASM_PREFIX_REQUIREMENT])
 AC_MSG_CHECKING([for .code16 addr32 assembler support])
@@ -178,7 +176,7 @@ AC_MSG_RESULT([$grub_cv_i386_asm_addr32])])
 
 dnl check if our compiler is apple cc
 dnl because it requires numerous workarounds
-AC_DEFUN(grub_apple_cc,
+AC_DEFUN([grub_apple_cc],
 [AC_REQUIRE([AC_PROG_CC])
 AC_MSG_CHECKING([whether our compiler is apple cc])
 AC_CACHE_VAL(grub_cv_apple_cc,
@@ -193,7 +191,7 @@ AC_MSG_RESULT([$grub_cv_apple_cc])])
 
 dnl check if our target compiler is apple cc
 dnl because it requires numerous workarounds
-AC_DEFUN(grub_apple_target_cc,
+AC_DEFUN([grub_apple_target_cc],
 [AC_REQUIRE([AC_PROG_CC])
 AC_MSG_CHECKING([whether our target compiler is apple cc])
 AC_CACHE_VAL(grub_cv_apple_target_cc,
@@ -210,7 +208,7 @@ AC_MSG_RESULT([$grub_cv_apple_target_cc])])
 dnl Later versions of GAS requires that addr32 and data32 prefixes
 dnl appear in the same lines as the instructions they modify, while
 dnl earlier versions requires that they appear in separate lines.
-AC_DEFUN(grub_I386_ASM_PREFIX_REQUIREMENT,
+AC_DEFUN([grub_I386_ASM_PREFIX_REQUIREMENT],
 [AC_REQUIRE([AC_PROG_CC])
 AC_MSG_CHECKING(dnl
 [whether addr32 must be in the same line as the instruction])
@@ -236,47 +234,15 @@ else
   grub_tmp_data32="data32;"
 fi
 
-AC_DEFINE_UNQUOTED([ADDR32], $grub_tmp_addr32,
-  [Define it to \"addr32\" or \"addr32;\" to make GAS happy])
-AC_DEFINE_UNQUOTED([DATA32], $grub_tmp_data32,
-  [Define it to \"data32\" or \"data32;\" to make GAS happy])
+ADDR32=$grub_tmp_addr32
+DATA32=$grub_tmp_data32
 
 AC_MSG_RESULT([$grub_cv_i386_asm_prefix_requirement])])
 
 
-dnl Older versions of GAS require that absolute indirect calls/jumps are
-dnl not prefixed with `*', while later versions warn if not prefixed.
-AC_DEFUN(grub_I386_ASM_ABSOLUTE_WITHOUT_ASTERISK,
-[AC_REQUIRE([AC_PROG_CC])
-AC_MSG_CHECKING(dnl
-[whether an absolute indirect call/jump must not be prefixed with an asterisk])
-AC_CACHE_VAL(grub_cv_i386_asm_absolute_without_asterisk,
-[cat > conftest.s <<\EOF
-	lcall	*(offset)
-offset:
-	.long	0
-	.word	0
-EOF
-
-if AC_TRY_COMMAND([${CC-cc} ${CFLAGS} -c conftest.s]) && test -s conftest.o; then
-  grub_cv_i386_asm_absolute_without_asterisk=no
-else
-  grub_cv_i386_asm_absolute_without_asterisk=yes
-fi
-
-rm -f conftest*])
-
-if test "x$grub_cv_i386_asm_absolute_without_asterisk" = xyes; then
-  AC_DEFINE([ABSOLUTE_WITHOUT_ASTERISK], 1,
-	    [Define it if GAS requires that absolute indirect calls/jumps are not prefixed with an asterisk])
-fi
-
-AC_MSG_RESULT([$grub_cv_i386_asm_absolute_without_asterisk])])
-
-
 dnl Check what symbol is defined as a bss start symbol.
 dnl Written by Michael Hohmoth and Yoshinori K. Okuji.
-AC_DEFUN(grub_CHECK_BSS_START_SYMBOL,
+AC_DEFUN([grub_CHECK_BSS_START_SYMBOL],
 [AC_REQUIRE([AC_PROG_CC])
 AC_MSG_CHECKING([if __bss_start is defined by the compiler])
 AC_CACHE_VAL(grub_cv_check_uscore_uscore_bss_start_symbol,
@@ -305,14 +271,12 @@ AC_CACHE_VAL(grub_cv_check_uscore_edata_symbol,
 
 AC_MSG_RESULT([$grub_cv_check_uscore_edata_symbol])
 
-AH_TEMPLATE([BSS_START_SYMBOL], [Define it to one of __bss_start, edata and _edata])
-
 if test "x$grub_cv_check_uscore_uscore_bss_start_symbol" = xyes; then
-  AC_DEFINE([BSS_START_SYMBOL], [__bss_start])
+  BSS_START_SYMBOL=__bss_start
 elif test "x$grub_cv_check_edata_symbol" = xyes; then
-  AC_DEFINE([BSS_START_SYMBOL], [edata])
+  BSS_START_SYMBOL=edata
 elif test "x$grub_cv_check_uscore_edata_symbol" = xyes; then
-  AC_DEFINE([BSS_START_SYMBOL], [_edata])
+  BSS_START_SYMBOL=_edata
 else
   AC_MSG_ERROR([none of __bss_start, edata or _edata is defined])
 fi
@@ -320,7 +284,7 @@ fi
 
 dnl Check what symbol is defined as an end symbol.
 dnl Written by Yoshinori K. Okuji.
-AC_DEFUN(grub_CHECK_END_SYMBOL,
+AC_DEFUN([grub_CHECK_END_SYMBOL],
 [AC_REQUIRE([AC_PROG_CC])
 AC_MSG_CHECKING([if end is defined by the compiler])
 AC_CACHE_VAL(grub_cv_check_end_symbol,
@@ -340,19 +304,17 @@ AC_CACHE_VAL(grub_cv_check_uscore_end_symbol,
 
 AC_MSG_RESULT([$grub_cv_check_uscore_end_symbol])
 
-AH_TEMPLATE([END_SYMBOL], [Define it to either end or _end])
-
 if test "x$grub_cv_check_end_symbol" = xyes; then
-  AC_DEFINE([END_SYMBOL], [end])
+  END_SYMBOL=end
 elif test "x$grub_cv_check_uscore_end_symbol" = xyes; then
-  AC_DEFINE([END_SYMBOL], [_end])
+  END_SYMBOL=_end
 else
   AC_MSG_ERROR([neither end nor _end is defined])
 fi
 ])
 
 dnl Check if the C compiler generates calls to `__enable_execute_stack()'.
-AC_DEFUN(grub_CHECK_ENABLE_EXECUTE_STACK,[
+AC_DEFUN([grub_CHECK_ENABLE_EXECUTE_STACK],[
 AC_MSG_CHECKING([whether `$CC' generates calls to `__enable_execute_stack()'])
 AC_LANG_CONFTEST([[
 void f (int (*p) (void));
@@ -368,10 +330,10 @@ else
   AC_MSG_ERROR([${CC-cc} failed to produce assembly code])
 fi
 if grep __enable_execute_stack conftest.s >/dev/null 2>&1; then
-  AC_DEFINE([NEED_ENABLE_EXECUTE_STACK], 1,
-	    [Define to 1 if GCC generates calls to __enable_execute_stack()])
+  NEED_ENABLE_EXECUTE_STACK=1
   AC_MSG_RESULT([yes])
 else
+  NEED_ENABLE_EXECUTE_STACK=0
   AC_MSG_RESULT([no])
 fi
 rm -f conftest*
@@ -379,7 +341,7 @@ rm -f conftest*
 
 
 dnl Check if the C compiler supports `-fstack-protector'.
-AC_DEFUN(grub_CHECK_STACK_PROTECTOR,[
+AC_DEFUN([grub_CHECK_STACK_PROTECTOR],[
 [# Smashing stack protector.
 ssp_possible=yes]
 AC_MSG_CHECKING([whether `$CC' accepts `-fstack-protector'])
@@ -398,7 +360,7 @@ else
 ])
 
 dnl Check if the C compiler supports `-mstack-arg-probe' (Cygwin).
-AC_DEFUN(grub_CHECK_STACK_ARG_PROBE,[
+AC_DEFUN([grub_CHECK_STACK_ARG_PROBE],[
 [# Smashing stack arg probe.
 sap_possible=yes]
 AC_MSG_CHECKING([whether `$CC' accepts `-mstack-arg-probe'])
@@ -414,7 +376,7 @@ else
 ])
 
 dnl Check if ln can handle directories properly (mingw).
-AC_DEFUN(grub_CHECK_LINK_DIR,[
+AC_DEFUN([grub_CHECK_LINK_DIR],[
 AC_MSG_CHECKING([whether ln can handle directories properly])
 [mkdir testdir 2>/dev/null
 case $srcdir in
@@ -432,7 +394,7 @@ rm -rf testdir]
 ])
 
 dnl Check if the C compiler supports `-fPIE'.
-AC_DEFUN(grub_CHECK_PIE,[
+AC_DEFUN([grub_CHECK_PIE],[
 [# Position independent executable.
 pie_possible=yes]
 AC_MSG_CHECKING([whether `$CC' has `-fPIE' as default])
