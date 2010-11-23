@@ -1,3 +1,20 @@
+grub2 (1.99~20101123-1) experimental; urgency=low
+
+  * New Bazaar snapshot (build fixes).
+  * Build-depend on qemu-utils and parted on non-Hurd architectures.
+  * qemu_img_exists.patch: Skip partmap test if qemu-img doesn't exist (as
+    is the case on the Hurd).
+  * Make grub-efi-ia32 and grub-efi-amd64 depend on efibootmgr so that
+    grub-install works properly.
+  * Upgrade the installed core image when upgrading grub-efi-ia32 or
+    grub-efi-amd64, although only if /boot/efi/EFI/<id> (where <id> is an
+    identifier based on GRUB_DISTRIBUTOR, e.g. 'debian') already exists.
+  * Re-expand a couple of dpkg architecture wildcards to exclude certain
+    special cases: gcc-4.4-multilib is not available on kfreebsd-i386 or
+    hurd-i386, and qemu-system is not available on hurd-i386.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 23 Nov 2010 10:51:23 +0000
+
 grub2 (1.99~20101122-1) experimental; urgency=low
 
   [ Colin Watson ]
