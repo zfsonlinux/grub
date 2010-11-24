@@ -9,12 +9,12 @@ Index: b/tests/util/grub-shell.in
 ===================================================================
 --- a/tests/util/grub-shell.in
 +++ b/tests/util/grub-shell.in
-@@ -136,7 +136,7 @@
- cp ${isofile} ${fdafile}
+@@ -57,7 +57,7 @@
+ }
  
- outfile=`mktemp`
--qemu-system-i386 ${qemuopts} -nographic -hda ${hdafile} -fda ${fdafile} -cdrom ${isofile} -boot ${bootdev} | tr -d "\r" >${outfile}
-+qemu ${qemuopts} -nographic -hda ${hdafile} -fda ${fdafile} -cdrom ${isofile} -boot ${bootdev} | tr -d "\r" >${outfile}
+ boot=hd
+-qemu=qemu-system-i386
++qemu=qemu
  
- cat $outfile
- 
+ # Check the arguments.
+ for option in "$@"; do

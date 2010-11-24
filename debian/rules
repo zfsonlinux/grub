@@ -8,13 +8,16 @@ package		:= grub2
 
 DEB_HOST_ARCH_CPU ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_CPU 2>/dev/null)
 
-CFLAGS := -g -Wall
+HOST_CFLAGS := -g -Wall
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -O0
+	HOST_CFLAGS += -O0
 else
-	CFLAGS += -O2
+	HOST_CFLAGS += -O2
 endif
+
+unexport CFLAGS
+export HOST_CFLAGS
 
 ifeq (,$(shell which qemu-system-i386 2>/dev/null))
 with_check := no
@@ -27,14 +30,12 @@ CC := gcc-4.4
 # Enable external modules from grub-extras.
 export GRUB_CONTRIB := $(CURDIR)/debian/grub-extras
 
-confflags = CC=$(CC) TARGET_CC=$(CC) --enable-grub-mkfont --disable-grub-fstest
+confflags = CC=$(CC) TARGET_CC=$(CC) --enable-grub-mkfont
 
-# autogen.sh runs util/import_gcry.py after autoconf et al, so
-# conf/gcry.rmk's timestamp will be later and we need to disregard it.
-AUTOGEN_FILES = configure $(filter-out conf/gcry.mk,$(wildcard conf/*.mk)) debian/grub-extras/*/conf/*.mk
+AUTOGEN_FILES = configure Makefile.tpl Makefile.util.am grub-core/Makefile.core.am
 AUTOGEN_DEB_FILES = examples manpages config templates preinst postinst postrm dirs install
 
-$(AUTOGEN_FILES): autogen.sh configure.ac $(filter-out conf/gcry.rmk,$(wildcard conf/*.rmk)) debian/grub-extras/*/conf/*.rmk
+$(AUTOGEN_FILES): autogen.sh configure.ac Makefile.util.def grub-core/Makefile.core.def
 	sed -i configure.ac -e "s/^AC_INIT.*/AC_INIT(\[GRUB\],\[$(deb_version)\],\[bug-grub@gnu.org\])/"
 	./autogen.sh
 
@@ -108,8 +109,8 @@ build/stamps/build-grub-firmware-qemu: build/stamps/configure-grub-firmware-qemu
 	tar -cf - -C $${grub_dir} boot > $${grub_memdisk} ; \
 	$(CURDIR)/build/$(package)/grub-mkimage \
 		-O i386-qemu \
-		-d $(CURDIR)/build/$(package) \
-		$(CURDIR)/build/$(package)/*.mod \
+		-d $(CURDIR)/build/$(package)/grub-core \
+		$(CURDIR)/build/$(package)/grub-core/*.mod \
 		-m $${grub_memdisk} \
 		-o $(CURDIR)/build/$(package)/grub.bin
 	touch $@
@@ -123,7 +124,7 @@ build/stamps/build-grub-rescue-pc: build/stamps/build-grub-pc
 		build/grub-rescue-pc/grub-mkrescue
 	mkdir -p build/grub-rescue-pc/lib/grub
 	rm -rf build/grub-rescue-pc/lib/grub/i386-pc
-	cp -a build/grub-pc build/grub-rescue-pc/lib/grub/i386-pc
+	cp -a build/grub-pc/grub-core build/grub-rescue-pc/lib/grub/i386-pc
 	$(CURDIR)/build/grub-rescue-pc/grub-mkrescue \
 		--grub-mkimage=$(CURDIR)/build/grub-pc/grub-mkimage \
 		--output=$(CURDIR)/build/grub-rescue-pc/grub-rescue-cdrom.iso \
@@ -152,7 +153,7 @@ build/stamps/build-grub-rescue-efi-amd64: build/stamps/build-grub-efi-amd64
 		>build/grub-rescue-efi-amd64/rescue-disk/.disk/info
 	mkdir -p build/grub-rescue-efi-amd64/lib/grub
 	rm -rf build/grub-rescue-efi-amd64/lib/grub/x86_64-efi
-	cp -a build/grub-efi-amd64 build/grub-rescue-efi-amd64/lib/grub/x86_64-efi
+	cp -a build/grub-efi-amd64/grub-core build/grub-rescue-efi-amd64/lib/grub/x86_64-efi
 	# save space
 	rm -rf build/grub-rescue-efi-amd64/lib/grub/x86_64-efi/po
 	$(CURDIR)/build/grub-rescue-efi-amd64/grub-mkrescue \
@@ -166,8 +167,9 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee12
 
 	# shipped with grub-common
 	rm -rf $(CURDIR)/debian/$(package)/etc/grub.d
+	rm -rf $(CURDIR)/debian/$(package)/etc/bash_completion.d
 	rm -f $(CURDIR)/debian/$(package)/usr/{sbin,share/man/man8}/{grub-dumpbios,grub-probe,grub-mkconfig,grub-mkdevicemap,grub-ofpathname}{,.8}
-	rm -f $(CURDIR)/debian/$(package)/usr/{bin,share/man/man1}/{grub-bin2h,grub-mkelfimage,grub-mkfont,grub-mkimage,grub-editenv,grub-mkrescue,grub-mkrelpath,grub-script-check,grub-mkpasswd-pbkdf2}{,.1}
+	rm -f $(CURDIR)/debian/$(package)/usr/{bin,share/man/man1}/{grub-bin2h,grub-mkelfimage,grub-mkfont,grub-mkimage,grub-editenv,grub-mkrescue,grub-mkrelpath,grub-script-check,grub-mkpasswd-pbkdf2,grub-menulst2cfg,grub-mklayout,grub-kbdcomp,grub-fstest}{,.1}
 	rm -f $(CURDIR)/debian/$(package)/usr/lib/grub/{grub-mkconfig_lib,update-grub_lib}
 	rm -rf $(CURDIR)/debian/$(package)/usr/share/{grub,info,locale}/
 	rm -rf $(CURDIR)/debian/$(package)/usr/include
@@ -207,7 +209,11 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee12
 			| sed -e "s%.*%$(package): binary-from-other-architecture &%g" \
 		>> $(CURDIR)/debian/$(package)/usr/share/lintian/overrides/$(package) ; \
 	fi
-	if [ "$@" = "install/grub-pc" ] && [ "$(DEB_HOST_ARCH_CPU)" = "i386" ] ; then \
+	if ([ "$@" = "install/grub-pc" ] || \
+	    [ "$@" = "install/grub-ieee1275" ] || \
+	    [ "$@" = "install/grub-coreboot" ] || \
+	    [ "$@" = "install/grub-emu" ]) && \
+	   [ "$(DEB_HOST_ARCH_CPU)" = "i386" ] ; then \
 		echo "$(package): binary-from-other-architecture *efiemu64.o" \
 			>> $(CURDIR)/debian/$(package)/usr/share/lintian/overrides/$(package) ; \
 	fi
@@ -215,7 +221,7 @@ install/grub-pc install/grub-efi-ia32 install/grub-efi-amd64 install/grub-ieee12
 install/grub-common:
 	dh_auto_install --destdir=debian/$(package)
 	rm -rf $(CURDIR)/debian/$(package)/usr/lib/grub/{i386,powerpc,sparc64,mips}-*
-	rm -f $(CURDIR)/debian/$(package)/usr/{sbin,share/man/man8}/{update-grub,grub-install,grub-setup,grub-reboot,grub-set-default}{,.8}
+	rm -f $(CURDIR)/debian/$(package)/usr/{sbin,share/man/man8}/{update-grub,grub-install,grub-setup,grub-reboot,grub-set-default,grub-mknetdir}{,.8}
 	rm -f $(CURDIR)/debian/$(package)/usr/share/info/dir*
 	install -m 0755 debian/grub-common.pm-sleep $(CURDIR)/debian/$(package)/etc/pm/sleep.d/10_grub-common
 
@@ -230,6 +236,7 @@ override_dh_strip:
 
 override_dh_auto_clean:
 	-rm -rf build
+	-rm -f contrib grub-core/contrib
 	sed -i configure.ac -e "s/^AC_INIT.*/AC_INIT(\[GRUB\],\[0\],\[bug-grub@gnu.org\]) dnl version is filled by debian\/rules/"
 
 override_dh_clean: debian/legacy/update-grub debian/grub-extras
@@ -249,7 +256,7 @@ debian/legacy/update-grub:
 	exit 1
 
 debian/grub-extras:
-	@echo "Missing $@.  Try: \"mkdir -p $@; for extra in 915resolution ntldr-img zfs; do bzr export $@/\$$extra http://bzr.savannah.nongnu.org/r/grub-extras/\$$extra; done\""
+	@echo "Missing $@.  Try: \"mkdir -p $@; for extra in 915resolution ntldr-img lua zfs; do bzr export $@/\$$extra http://bzr.savannah.nongnu.org/r/grub-extras/\$$extra; done\""
 	exit 1
 
 .PHONY: $(patsubst %,configure/%,$(BUILD_PACKAGES)) $(patsubst %,build/%,$(BUILD_PACKAGES)) $(patsubst %,install/%,$(BUILD_PACKAGES))

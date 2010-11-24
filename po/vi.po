@@ -7,11 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub 1.97+20100124\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-19 01:35+0100\n"
+"POT-Creation-Date: 2010-01-24 19:29+0000\n"
 "PO-Revision-Date: 2010-03-20 00:25+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
-"Language: vi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -55,34 +54,25 @@ msgid "Set creator revision of RSDP, XSDT and RSDT."
 msgstr "Lập bản sửa đổi trình tạo của RSDP, XSDT và RSDT."
 
 #: commands/acpi.c:55
-msgid ""
-"Don't update EBDA. May fix failures or hangs on some. BIOSes but makes it "
-"ineffective with OS not receiving RSDP from GRUB."
-msgstr ""
-"Đừng cập nhật EBDA. Có thể sửa chữa trường hợp thất bại hoặc bị treo trên "
-"một số BIOS nào đó, nhưng mà làm cho không có kết quả khi HĐH không nhận "
-"RDSP từ GRUB."
+msgid "Don't update EBDA. May fix failures or hangs on some. BIOSes but makes it ineffective with OS not receiving RSDP from GRUB."
+msgstr "Đừng cập nhật EBDA. Có thể sửa chữa trường hợp thất bại hoặc bị treo trên một số BIOS nào đó, nhưng mà làm cho không có kết quả khi HĐH không nhận RDSP từ GRUB."
 
 #: commands/acpi.c:763
-msgid ""
-"[-1|-2] [--exclude=TABLE1,TABLE2|--load-only=table1,table2] FILE1 [FILE2] "
-"[...]"
-msgstr ""
-"[-1|-2] [--exclude=BẢNG1,BẢNG2|--load-only=bảng1,bảng2] TẬP_TIN1 [TẬP_TIN2] "
-"[...]"
+msgid "[-1|-2] [--exclude=TABLE1,TABLE2|--load-only=table1,table2] FILE1 [FILE2] [...]"
+msgstr "[-1|-2] [--exclude=BẢNG1,BẢNG2|--load-only=bảng1,bảng2] TẬP_TIN1 [TẬP_TIN2] [...]"
 
 #: commands/acpi.c:766
 msgid "Load host ACPI tables and tables specified by arguments."
 msgstr "Nạp các bảng ACPI chủ và các bảng được đối số chỉ rõ."
 
-#: commands/blocklist.c:113 commands/cat.c:82 commands/configfile.c:57
+#: commands/blocklist.c:114 commands/cat.c:82 commands/configfile.c:57
 #: commands/configfile.c:60 commands/configfile.c:65 commands/crc.c:64
-#: commands/minicmd.c:353 loader/i386/bsd.c:1287 loader/i386/bsd.c:1291
-#: loader/i386/bsd.c:1295
+#: commands/i386/pc/play.c:211 commands/minicmd.c:358 loader/i386/bsd.c:1296
+#: loader/i386/bsd.c:1300 loader/i386/bsd.c:1304
 msgid "FILE"
 msgstr "TỆP"
 
-#: commands/blocklist.c:113
+#: commands/blocklist.c:114
 msgid "Print a block list."
 msgstr "In ra một danh sách cấm."
 
@@ -90,7 +80,7 @@ msgstr "In ra một danh sách cấm."
 msgid "Boot an operating system."
 msgstr "Khởi động một hệ điều hành."
 
-#: commands/cat.c:82 commands/minicmd.c:353
+#: commands/cat.c:82 commands/minicmd.c:358
 msgid "Show the contents of a file."
 msgstr "Hiển thị nội dung của một tập tin."
 
@@ -155,24 +145,20 @@ msgid "DEVICE [PARTITION[+/-[TYPE]]] ..."
 msgstr "THIẾT_BỊ [PHÂN_VÙNG[+/-[KIỂU]]] ..."
 
 #: commands/gptsync.c:245
-#, fuzzy
-msgid ""
-"Fill hybrid MBR of GPT drive DEVICE. Specified partitions will be a part of "
-"hybrid MBR. Up to 3 partitions are allowed. TYPE is an MBR type. + means "
-"that partition is active. Only one partition can be active."
-msgstr ""
-"Tô đầy MBR pha giống của ổ đĩa GPT « THIẾT_BỊ ». Các phân vùng chỉ rõ sẽ "
-"thuộc về MBR pha giống. Cho phép đến 3 phân vùng. « KIỂU » là một kiểu MBR. "
-"« + » có nghĩa là phân vùng đó vẫn hoạt động. Chỉ một phân vùng có thể hoạt "
-"động."
+msgid "Fill hybrid MBR of GPT drive DEVICE. specified partitions will be a part of hybrid mbr. Up to 3 partitions are allowed. TYPE is an MBR type. + means that partition is active. Only one partition can be active."
+msgstr "Tô đầy MBR pha giống của ổ đĩa GPT « THIẾT_BỊ ». Các phân vùng chỉ rõ sẽ thuộc về MBR pha giống. Cho phép đến 3 phân vùng. « KIỂU » là một kiểu MBR. « + » có nghĩa là phân vùng đó vẫn hoạt động. Chỉ một phân vùng có thể hoạt động."
 
 #: commands/halt.c:39
-msgid ""
-"Halts the computer.  This command does not work on all firmware "
-"implementations."
-msgstr ""
-"Tạm dừng lại chạy máy tính. Câu lệnh này không có tác động trên mọi bản thực "
-"hiện phần vững."
+msgid "Halts the computer.  This command does not work on all firmware implementations."
+msgstr "Tạm dừng lại chạy máy tính. Câu lệnh này không có tác động trên mọi bản thực hiện phần vững."
+
+#: commands/handler.c:94
+msgid "[class [handler]]"
+msgstr "[hạng [bộ_quản_lý]]"
+
+#: commands/handler.c:95
+msgid "List or select a handler."
+msgstr "Liệt kê hoặc chọn một bộ quản lý."
 
 #: commands/hdparm.c:30
 msgid ""
@@ -242,15 +228,15 @@ msgstr "[TÙY_CHỌN ...] ĐĨA"
 msgid "Get/set ATA disk parameters."
 msgstr "Lấy/lập các tham số đĩa ATA."
 
-#: commands/help.c:112 lib/arg.c:110
+#: commands/help.c:103 lib/arg.c:110
 msgid "Usage:"
 msgstr "Sử dụng:"
 
-#: commands/help.c:129
+#: commands/help.c:136
 msgid "[PATTERN ...]"
 msgstr "[MẪU ...]"
 
-#: commands/help.c:130
+#: commands/help.c:137
 msgid "Show a help message."
 msgstr "Hiển thị một thông điệp trợ giúp."
 
@@ -290,11 +276,11 @@ msgstr "Đặt lại mỗi sự ánh xạ thành giá trị mặc định."
 msgid "Perform both direct and reverse mappings."
 msgstr "Ánh xạ bằng cả hai cách trực tiếp và ngược lại."
 
-#: commands/i386/pc/drivemap.c:406
+#: commands/i386/pc/drivemap.c:407
 msgid "-l | -r | [-s] grubdev osdisk."
 msgstr "-l | -r | [-s] grubdev đĩa_chứa_HĐH."
 
-#: commands/i386/pc/drivemap.c:407
+#: commands/i386/pc/drivemap.c:408
 msgid "Manage the BIOS drive mappings."
 msgstr "Quản lý các sự ánh xạ ổ đĩa BIOS."
 
@@ -306,11 +292,7 @@ msgstr "Đừng dùng APM để tạm dừng lại chạy máy tính."
 msgid "Halt the system, if possible using APM."
 msgstr "Tạm dừng lại chạy máy tính, nếu có thể, dùng APM."
 
-#: commands/i386/pc/play.c:266
-msgid "FILE | TEMPO [PITCH1 DURATION1] [PITCH2 DURATION2] ... "
-msgstr ""
-
-#: commands/i386/pc/play.c:267
+#: commands/i386/pc/play.c:211
 msgid "Play a tune."
 msgstr "Phát một giai điệu."
 
@@ -322,7 +304,7 @@ msgstr "Bỏ nạp môi trường PXE."
 msgid "List compatible VESA BIOS extension video modes."
 msgstr "Liệt kê các chế độ ảnh động mở rộng BIOS VESA tương thích."
 
-#: commands/i386/pc/vbetest.c:173
+#: commands/i386/pc/vbetest.c:172
 msgid "Test VESA BIOS Extension 2.0+ support."
 msgstr "Thử khả năng hỗ trợ phần mở rộng VESA BIOS Extension 2.0+."
 
@@ -355,23 +337,23 @@ msgstr "Kiểm tra trạng thái về phím bổ trợ."
 msgid "Specify filename."
 msgstr "Ghi rõ tên tập tin."
 
-#: commands/loadenv.c:378 commands/loadenv.c:384
+#: commands/loadenv.c:383 commands/loadenv.c:389
 msgid "[-f FILE]"
 msgstr "[-f TỆP]"
 
-#: commands/loadenv.c:379
+#: commands/loadenv.c:384
 msgid "Load variables from environment block file."
 msgstr "Nạp các biến từ tập tin khối môi trường."
 
-#: commands/loadenv.c:385
+#: commands/loadenv.c:390
 msgid "List variables from environment block file."
 msgstr "Liệt kê các biến từ tập tin khối môi trường."
 
-#: commands/loadenv.c:390
+#: commands/loadenv.c:395
 msgid "[-f FILE] variable_name [...]"
 msgstr "[-f TỆP] tên_biến [...]"
 
-#: commands/loadenv.c:391
+#: commands/loadenv.c:396
 msgid "Save variables to environment block file."
 msgstr "Lưu các biến vào tập tin khối môi trường."
 
@@ -387,15 +369,15 @@ msgstr "In kích cỡ theo một định dạng cho người đọc được."
 msgid "List all files."
 msgstr "Liệt kê tất cả các tập tin."
 
-#: commands/ls.c:269
+#: commands/ls.c:268
 msgid "[-l|-h|-a] [FILE]"
 msgstr "[-l|-h|-a] [TỆP]"
 
-#: commands/ls.c:270
+#: commands/ls.c:269
 msgid "List devices and files."
 msgstr "Liệt kê các thiết bị và tập tin."
 
-#: commands/lsmmap.c:51
+#: commands/lsmmap.c:47
 msgid "List memory map provided by firmware."
 msgstr "Liệt kê các sơ đồ vùng nhớ được phần vững cung cấp."
 
@@ -408,7 +390,7 @@ msgid "Save read value into variable VARNAME."
 msgstr "Lưu giá trị đọc vào biến TÊN_BIẾN."
 
 #: commands/memrw.c:123 commands/memrw.c:126 commands/memrw.c:129
-#: commands/minicmd.c:362
+#: commands/minicmd.c:367
 msgid "ADDR"
 msgstr "ĐỊA_CHỈ"
 
@@ -440,39 +422,39 @@ msgstr "Ghi GIÁ_TRỊ từ vào ĐỊA_CHỈ."
 msgid "Write dword VALUE to ADDR."
 msgstr "Ghi GIÁ_TRỊ dword vào ĐỊA_CHỈ."
 
-#: commands/minicmd.c:356
+#: commands/minicmd.c:361
 msgid "Show this message."
 msgstr "Hiển thị thông điệp này."
 
-#: commands/minicmd.c:359 commands/probe.c:154
+#: commands/minicmd.c:364 commands/probe.c:154
 msgid "[DEVICE]"
 msgstr "[THIẾT_BỊ]"
 
-#: commands/minicmd.c:359
+#: commands/minicmd.c:364
 msgid "Set the root device."
 msgstr "Lập thiết bị gốc."
 
-#: commands/minicmd.c:362
+#: commands/minicmd.c:367
 msgid "Dump memory."
 msgstr "Đổ vùng nhớ."
 
-#: commands/minicmd.c:365
+#: commands/minicmd.c:370
 msgid "MODULE"
 msgstr "MÔ-ĐUN"
 
-#: commands/minicmd.c:365
+#: commands/minicmd.c:370
 msgid "Remove a module."
 msgstr "Gỡ bỏ một mô-đun nào đó."
 
-#: commands/minicmd.c:368
+#: commands/minicmd.c:373
 msgid "Show loaded modules."
 msgstr "Hiển thị các mô-đun được nạp."
 
-#: commands/minicmd.c:371
+#: commands/minicmd.c:376
 msgid "Exit from GRUB."
 msgstr "Thoát khỏi GRUB."
 
-#: commands/minicmd.c:374
+#: commands/minicmd.c:379
 msgid "Clear the screen."
 msgstr "Xoá màn hình."
 
@@ -533,42 +515,30 @@ msgid "NAME [VARIABLE]"
 msgstr "TÊN [BIẾN]"
 
 #: commands/search_file.c:5
-msgid ""
-"Search devices by file. If VARIABLE is specified, the first device found is "
-"set to a variable."
-msgstr ""
-"Quét các thiết bị theo tập tin. Chỉ rõ BIẾN thì thiết bị được tìm thứ nhất "
-"được lập thành một biến."
+msgid "Search devices by file. If VARIABLE is specified, the first device found is set to a variable."
+msgstr "Quét các thiết bị theo tập tin. Chỉ rõ BIẾN thì thiết bị được tìm thứ nhất được lập thành một biến."
 
 #: commands/search_label.c:5
-msgid ""
-"Search devices by label. If VARIABLE is specified, the first device found is "
-"set to a variable."
-msgstr ""
-"Quét các thiết bị theo nhãn. Chỉ rõ BIẾN thì thiết bị được tìm thứ nhất được "
-"lập thành một biến."
+msgid "Search devices by label. If VARIABLE is specified, the first device found is set to a variable."
+msgstr "Quét các thiết bị theo nhãn. Chỉ rõ BIẾN thì thiết bị được tìm thứ nhất được lập thành một biến."
 
 #: commands/search_uuid.c:5
-msgid ""
-"Search devices by UUID. If VARIABLE is specified, the first device found is "
-"set to a variable."
-msgstr ""
-"Quét các thiết bị theo UUID (mã nhận diện duy nhất). Chỉ rõ BIẾN thì thiết "
-"bị được tìm thứ nhất được lập thành một biến."
+msgid "Search devices by UUID. If VARIABLE is specified, the first device found is set to a variable."
+msgstr "Quét các thiết bị theo UUID (mã nhận diện duy nhất). Chỉ rõ BIẾN thì thiết bị được tìm thứ nhất được lập thành một biến."
 
-#: commands/sleep.c:30
+#: commands/sleep.c:31
 msgid "Verbose countdown."
 msgstr "Đếm ngược với chi tiết."
 
-#: commands/sleep.c:31
+#: commands/sleep.c:32
 msgid "Interruptible with ESC."
 msgstr "Gián đoạn được với phím ESC."
 
-#: commands/sleep.c:105
+#: commands/sleep.c:106
 msgid "NUMBER_OF_SECONDS"
 msgstr "SỐ_CÁC_GIÂY"
 
-#: commands/sleep.c:106
+#: commands/sleep.c:107
 msgid "Wait for a specified number of seconds."
 msgstr "Đợi trong vòng một số các giây được ghi rõ."
 
@@ -592,11 +562,11 @@ msgstr "Không làm gì, một cách thành công."
 msgid "Do nothing, unsuccessfully."
 msgstr "Không làm gì, một cách không thành công."
 
-#: commands/usbtest.c:208
+#: commands/usbtest.c:199
 msgid "Test USB support."
 msgstr "Thử khả năng hỗ trợ USB."
 
-#: commands/videotest.c:180
+#: commands/videotest.c:185
 msgid "Test video subsystem."
 msgstr "Thử hệ thống phụ ảnh động."
 
@@ -640,7 +610,7 @@ msgstr "Hiển thị cách sử dụng lệnh này, sau đó thoát."
 msgid "Boot legacy system."
 msgstr "Khởi động hệ thống thừa tự."
 
-#: loader/efi/chainloader.c:340 loader/i386/pc/chainloader.c:166
+#: loader/efi/chainloader.c:340 loader/i386/pc/chainloader.c:153
 msgid "Load another boot loader."
 msgstr "Nạp một bộ nạp khởi động khác."
 
@@ -728,39 +698,39 @@ msgstr "Thu hồi kết xuất thông thường (vẫn còn hiển thị cảnh 
 msgid "DEVICE"
 msgstr "THIẾT_BỊ"
 
-#: loader/i386/bsd.c:1287
+#: loader/i386/bsd.c:1296
 msgid "Load kernel of FreeBSD."
 msgstr "Nạp hạt nhân FreeBSD."
 
-#: loader/i386/bsd.c:1291
+#: loader/i386/bsd.c:1300
 msgid "Load kernel of OpenBSD."
 msgstr "Nạp hạt nhân OpenBSD."
 
-#: loader/i386/bsd.c:1295
+#: loader/i386/bsd.c:1304
 msgid "Load kernel of NetBSD."
 msgstr "Nạp hạt nhân NetBSD."
 
-#: loader/i386/bsd.c:1299
+#: loader/i386/bsd.c:1308
 msgid "Load FreeBSD env."
 msgstr "Nạp env. (môi trường?) FreeBSD."
 
-#: loader/i386/bsd.c:1302
+#: loader/i386/bsd.c:1311
 msgid "Load FreeBSD kernel module."
 msgstr "Nạp mô-đun hạt nhân FreeBSD."
 
-#: loader/i386/bsd.c:1305
+#: loader/i386/bsd.c:1314
 msgid "Load FreeBSD kernel module (ELF)."
 msgstr "Nạp mô-đun hạt nhân FreeBSD (ELF)."
 
 #: loader/i386/efi/linux.c:1011 loader/i386/ieee1275/linux.c:301
-#: loader/i386/linux.c:1012 loader/i386/pc/linux.c:399
-#: loader/powerpc/ieee1275/linux.c:353 loader/sparc64/ieee1275/linux.c:519
+#: loader/i386/linux.c:1007 loader/i386/pc/linux.c:399
+#: loader/powerpc/ieee1275/linux.c:353 loader/sparc64/ieee1275/linux.c:520
 msgid "Load Linux."
 msgstr "Nạp Linux."
 
 #: loader/i386/efi/linux.c:1013 loader/i386/ieee1275/linux.c:303
-#: loader/i386/linux.c:1014 loader/i386/pc/linux.c:402
-#: loader/powerpc/ieee1275/linux.c:355 loader/sparc64/ieee1275/linux.c:521
+#: loader/i386/linux.c:1009 loader/i386/pc/linux.c:402
+#: loader/powerpc/ieee1275/linux.c:355 loader/sparc64/ieee1275/linux.c:522
 msgid "Load initrd."
 msgstr "Nạp initrd."
 
@@ -768,60 +738,59 @@ msgstr "Nạp initrd."
 msgid "Load device-properties dump."
 msgstr "Nạp bản đổ các thuộc tính thiết bị (device-properties)."
 
-#: loader/multiboot.c:337
+#: loader/multiboot_loader.c:133
 msgid "Load a multiboot 2 kernel."
 msgstr "Nạp một hạt nhân đa khởi động (multiboot) 2."
 
-#: loader/multiboot.c:340
-#, fuzzy
-msgid "Load a multiboot 2 module."
-msgstr "Nạp một mô-đun đa khởi động (multiboot)."
-
-#: loader/multiboot.c:343
+#: loader/multiboot_loader.c:136
 msgid "Load a multiboot kernel."
 msgstr "Nạp một hạt nhân đa khởi động (multiboot)."
 
-#: loader/multiboot.c:346
+#: loader/multiboot_loader.c:141
 msgid "Load a multiboot module."
 msgstr "Nạp một mô-đun đa khởi động (multiboot)."
 
-#: loader/xnu.c:1428
+#: loader/xnu.c:1407
 msgid "Load XNU image."
 msgstr "Nạp ảnh XNU."
 
-#: loader/xnu.c:1430
+#: loader/xnu.c:1409
 msgid "Load 64-bit XNU image."
 msgstr "Nạp ảnh XNU 64-bit."
 
-#: loader/xnu.c:1432
+#: loader/xnu.c:1411
 msgid "Load XNU extension package."
 msgstr "Nạp gói mở rộng XNU."
 
-#: loader/xnu.c:1434
+#: loader/xnu.c:1413
 msgid "Load XNU extension."
 msgstr "Nạp phần mở rộng XNU."
 
-#: loader/xnu.c:1436
+#: loader/xnu.c:1415
 msgid "DIRECTORY [OSBundleRequired]"
 msgstr "THƯ_MỤC [bó_HĐH_yêu_cầu]"
 
-#: loader/xnu.c:1437
+#: loader/xnu.c:1416
 msgid "Load XNU extension directory."
 msgstr "Nạp thư mục phần mở rộng XNU."
 
-#: loader/xnu.c:1444
+#: loader/xnu.c:1418
+msgid "Load XNU ramdisk. It will be seen as md0."
+msgstr "Nạp đĩa RAM XNU. Nó sẽ được thấy là « md0 »."
+
+#: loader/xnu.c:1421
 msgid "Load a splash image for XNU."
 msgstr "Nạp một ảnh giật gân cho XNU."
 
-#: loader/xnu.c:1449
+#: loader/xnu.c:1425
 msgid "Load XNU hibernate image."
 msgstr "Nạp ảnh ngủ đông XNU."
 
-#: normal/auth.c:217
+#: normal/auth.c:233
 msgid "Enter username: "
 msgstr "Gõ tên người dùng:"
 
-#: normal/auth.c:222
+#: normal/auth.c:238
 msgid "Enter password: "
 msgstr "Gõ mật khẩu :"
 
@@ -840,115 +809,74 @@ msgstr "Cảnh báo : gặp màu cảnh gần không đúng « %s »\n"
 msgid "Warning: invalid background color `%s'\n"
 msgstr "Cảnh báo : gặp màu nền không đúng « %s »\n"
 
-#: normal/dyncmd.c:144
+#: normal/dyncmd.c:147
 msgid "not loaded"
 msgstr "chưa nạp"
 
-#: normal/main.c:415
+#: normal/main.c:408
 #, c-format
 msgid "GNU GRUB  version %s"
 msgstr "GNU GRUB phiên bản %s"
 
-#: normal/main.c:552
+#: normal/main.c:538
 #, c-format
-msgid ""
-"Minimal BASH-like line editing is supported. For the first word, TAB lists "
-"possible command completions. Anywhere else TAB lists possible device or "
-"file completions. %s"
-msgstr ""
-"Cũng hỗ trợ chức năng chỉnh sửa dòng kiểu BASH cực tiểu. Đối với từ đầu tiên "
-"thì phím TAB liệt kê các sự điền nốt lệnh có thể làm. Ở bất cứ nơi khác nào, "
-"phím TAB liệt kê các sự điền nốt thiết bị hay tập tin có thể làm. %s"
+msgid "Minimal BASH-like line editing is supported. For the first word, TAB lists possible command completions. Anywhere else TAB lists possible device or file completions. %s"
+msgstr "Cũng hỗ trợ chức năng chỉnh sửa dòng kiểu BASH cực tiểu. Đối với từ đầu tiên thì phím TAB liệt kê các sự điền nốt lệnh có thể làm. Ở bất cứ nơi khác nào, phím TAB liệt kê các sự điền nốt thiết bị hay tập tin có thể làm. %s"
 
-#: normal/main.c:555
+#: normal/main.c:541
 msgid "ESC at any time exits."
 msgstr "Phím ESC lúc nào cũng thoát."
 
-#: normal/main.c:670
-msgid "Enter normal mode."
-msgstr ""
-
-#: normal/main.c:672
-msgid "Exit from normal mode."
-msgstr ""
-
-#: normal/menu_entry.c:1061
+#: normal/menu_entry.c:1060
 msgid "Possible commands are:"
 msgstr "Các câu lệnh có thể chạy:"
 
-#: normal/menu_entry.c:1065
+#: normal/menu_entry.c:1064
 msgid "Possible devices are:"
 msgstr "Các thiết bị có thể dùng:"
 
-#: normal/menu_entry.c:1069
+#: normal/menu_entry.c:1068
 msgid "Possible files are:"
 msgstr "Các tập tin có thể dùng:"
 
-#: normal/menu_entry.c:1073
+#: normal/menu_entry.c:1072
 msgid "Possible partitions are:"
 msgstr "Các phân vùng có thể dùng:"
 
-#: normal/menu_entry.c:1077
+#: normal/menu_entry.c:1076
 msgid "Possible arguments are:"
 msgstr "Các đối số có thể dùng:"
 
-#: normal/menu_entry.c:1081
+#: normal/menu_entry.c:1080
 msgid "Possible things are:"
 msgstr "Các điều có thể dùng:"
 
-#: normal/menu_entry.c:1185
+#: normal/menu_entry.c:1184
 msgid "Booting a command list"
 msgstr "Đang khởi động một danh sách câu lệnh"
 
-#: normal/menu_entry.c:1398
+#: normal/menu_entry.c:1397
 msgid "Press any key to continue..."
 msgstr "Bấm bất cứ phím nào để tiếp tục..."
 
-#: normal/menu_text.c:180
-#, fuzzy
-msgid ""
-"Minimum Emacs-like screen editing is supported. TAB lists completions. Press "
-"F1 to boot, F2=Ctrl-a, F3=Ctrl-e, F4 for a command-line or ESC to discard "
-"edits and return to the GRUB menu."
-msgstr ""
-"Cũng hỗ trợ chức năng chỉnh sửa màn hình kiểu Emacs cực tiểu. Phím TAB liệt "
-"kê các sự điền nốt. Bấm tổ hợp phím Ctrl-x đổ khởi động, Ctrl-c để truy cập "
-"đến dòng lệnh, hoặc phím ESC để trở về trình đơn."
+#: normal/menu_text.c:179
+msgid "Minimum Emacs-like screen editing is supported. TAB lists completions. Press Ctrl-x to boot, Ctrl-c for a command-line or ESC to return menu."
+msgstr "Cũng hỗ trợ chức năng chỉnh sửa màn hình kiểu Emacs cực tiểu. Phím TAB liệt kê các sự điền nốt. Bấm tổ hợp phím Ctrl-x đổ khởi động, Ctrl-c để truy cập đến dòng lệnh, hoặc phím ESC để trở về trình đơn."
 
-#: normal/menu_text.c:185
-#, fuzzy
-msgid ""
-"Minimum Emacs-like screen editing is supported. TAB lists completions. Press "
-"Ctrl-x to boot, Ctrl-c for a command-line or ESC to discard edits and return "
-"to the GRUB menu."
-msgstr ""
-"Cũng hỗ trợ chức năng chỉnh sửa màn hình kiểu Emacs cực tiểu. Phím TAB liệt "
-"kê các sự điền nốt. Bấm tổ hợp phím Ctrl-x đổ khởi động, Ctrl-c để truy cập "
-"đến dòng lệnh, hoặc phím ESC để trở về trình đơn."
-
-#: normal/menu_text.c:193
+#: normal/menu_text.c:186
 #, c-format
 msgid "Use the %C and %C keys to select which entry is highlighted.\n"
 msgstr "Dùng phím %C và %C để chọn mục nhập nào cần tô sáng.\n"
 
-#: normal/menu_text.c:210
-msgid ""
-"Press enter to boot the selected OS, 'e' to edit the commands before booting "
-"or 'c' for a command-line. ESC to return previous menu.\n"
-msgstr ""
-"Bấm phím Enter để khởi động HĐH được chọn, phím « e » để chỉnh sửa câu lệnh "
-"trước khi khởi động, phím « c » để truy cập đến dòng lệnh, hoặc phím ESC để "
-"trở về trình đơn trước.\n"
+#: normal/menu_text.c:203
+msgid "Press enter to boot the selected OS, 'e' to edit the commands before booting or 'c' for a command-line. ESC to return previous menu.\n"
+msgstr "Bấm phím Enter để khởi động HĐH được chọn, phím « e » để chỉnh sửa câu lệnh trước khi khởi động, phím « c » để truy cập đến dòng lệnh, hoặc phím ESC để trở về trình đơn trước.\n"
 
-#: normal/menu_text.c:218
-msgid ""
-"Press enter to boot the selected OS, 'e' to edit the commands before booting "
-"or 'c' for a command-line.\n"
-msgstr ""
-"Bấm phím Enter để khởi động HĐH được chọn, phím « e » để chỉnh sửa câu lệnh "
-"trước khi khởi động, hoặc phím « c » để truy cập đến dòng lệnh.\n"
+#: normal/menu_text.c:211
+msgid "Press enter to boot the selected OS, 'e' to edit the commands before booting or 'c' for a command-line.\n"
+msgstr "Bấm phím Enter để khởi động HĐH được chọn, phím « e » để chỉnh sửa câu lệnh trước khi khởi động, hoặc phím « c » để truy cập đến dòng lệnh.\n"
 
-#: normal/menu_text.c:370
+#: normal/menu_text.c:363
 #, c-format
 msgid "The highlighted entry will be executed automatically in %ds."
 msgstr "Mục nhập được tô sáng sẽ được tự động thực hiện trong %d giây."
@@ -1014,243 +942,189 @@ msgstr "Lập tính chẵn lẻ của cổng nối tiếp."
 msgid "Set the serial port stop bits."
 msgstr "Lập các bit dừng của của cổng nối tiếp."
 
-#: term/serial.c:619
-#, fuzzy
-msgid "[OPTIONS...]"
-msgstr "[TÙY_CHỌN ...] ĐĨA"
-
-#: term/serial.c:620
-msgid "Configure serial port."
-msgstr ""
-
-#: util/grub-mkimage.c:440
+#: util/grub-mkrawimage.c:67
 msgid "the core image is too small"
 msgstr "ảnh lõi quá nhỏ"
 
-#: util/grub-mkimage.c:451
+#: util/grub-mkrawimage.c:79
 msgid "cannot compress the kernel image"
 msgstr "không thể nén ảnh hạt nhân"
 
-#: util/grub-mkimage.c:548
+#: util/grub-mkrawimage.c:154
 msgid "prefix is too long"
 msgstr "tiền tố quá dài"
 
-#: util/grub-mkimage.c:672
-#, c-format
-msgid "core image is too big (%p > %p)"
-msgstr "ảnh lõi quá lớn (%p > %p)"
-
-#: util/grub-mkimage.c:678
+#: util/grub-mkrawimage.c:240
 msgid "the core image is too big"
 msgstr "ảnh lõi quá lớn"
 
-#: util/grub-mkimage.c:683
+#: util/grub-mkrawimage.c:245
 #, c-format
 msgid "diskboot.img size must be %u bytes"
 msgstr "Kích cỡ diskboot.img phải là %u byte."
 
-#: util/grub-mkimage.c:1168 util/i386/pc/grub-setup.c:619
+#: util/grub-mkrawimage.c:328
+#, c-format
+msgid "core image is too big (%p > %p)"
+msgstr "ảnh lõi quá lớn (%p > %p)"
+
+#: util/grub-mkrawimage.c:432 util/i386/pc/grub-setup.c:587
 #, c-format
 msgid "Try `%s --help' for more information.\n"
 msgstr "Hãy thử chạy câu lệnh trợ giúp « %s --help » để tìm thêm thông tin.\n"
 
-#: util/grub-mkimage.c:1187
-#, fuzzy, c-format
+#: util/grub-mkrawimage.c:434
+#, c-format
 msgid ""
 "Usage: %s [OPTION]... [MODULES]\n"
 "\n"
 "Make a bootable image of GRUB.\n"
 "\n"
-"  -d, --directory=DIR     use images and modules under DIR [default=%s/"
-"@platform@]\n"
+"  -d, --directory=DIR     use images and modules under DIR [default=%s]\n"
 "  -p, --prefix=DIR        set grub_prefix directory [default=%s]\n"
 "  -m, --memdisk=FILE      embed FILE as a memdisk image\n"
 "  -f, --font=FILE         embed FILE as a boot font\n"
 "  -c, --config=FILE       embed FILE as boot config\n"
-"  -n, --note              add NOTE segment for CHRP Open Firmware\n"
 "  -o, --output=FILE       output a generated image to FILE [default=stdout]\n"
-"  -O, --format=FORMAT     generate an image in format\n"
-"                          available formats: %s\n"
-"  -h, --help              display this message and exit\n"
-"  -V, --version           print version information and exit\n"
-"  -v, --verbose           print verbose messages\n"
-"\n"
-"Report bugs to <%s>.\n"
+"  -O, --format=FORMAT     generate an image in format [default="
 msgstr ""
 "Sử dụng: %s [TÙY_CHỌN]... [MÔ-ĐUN ...]\n"
 "\n"
 "Tạo một ảnh GRUB có khả năng khởi động.\n"
 "\n"
-"  -d, --directory=TMỤC     dùng các ảnh và mô-đun nằm dưới thư mục này [mặc "
-"định=%s]\n"
+"  -d, --directory=TMỤC     dùng các ảnh và mô-đun nằm dưới thư mục này [mặc định=%s]\n"
 "  -p, --prefix=TMỤC        lập thư mục grub_prefix [mặc định=%s]\n"
 "  -m, --memdisk=TỆP      nhúng tập tin này làm một ảnh memdisk\n"
 "  -f, --font=TỆP         nhúng tập tin này làm một phông chữ khởi động\n"
 "  -c, --config=TỆP       nhúng tập tin này làm cấu hình khởi động\n"
-"  -o, --output=TỆP       xuất vào tập tin này một ảnh đã tạo [mặc "
-"định=stdout]\n"
+"  -o, --output=TỆP       xuất vào tập tin này một ảnh đã tạo [mặc định=stdout]\n"
 "  -O, --format=DẠNG     tạo một ảnh theo định dạng này [mặc định="
 
-#: util/grub-mkimage.c:1333
+#: util/grub-mkrawimage.c:573
 #, c-format
 msgid "cannot open %s"
 msgstr "không mở được %s"
 
-#: util/i386/pc/grub-setup.c:164
+#: util/i386/pc/grub-setup.c:159
 msgid "the first sector of the core file is not sector-aligned"
-msgstr ""
-"rãnh ghi thứ nhất của tập tin lõi không phải được sắp hàng theo rãnh ghi"
+msgstr "rãnh ghi thứ nhất của tập tin lõi không phải được sắp hàng theo rãnh ghi"
 
-#: util/i386/pc/grub-setup.c:178
+#: util/i386/pc/grub-setup.c:173
 msgid "non-sector-aligned data is found in the core file"
-msgstr ""
-"trong tập tin lõi tìm được dữ liệu không phải được sắp hàng theo rãnh ghi"
+msgstr "trong tập tin lõi tìm được dữ liệu không phải được sắp hàng theo rãnh ghi"
 
-#: util/i386/pc/grub-setup.c:192
+#: util/i386/pc/grub-setup.c:187
 msgid "the sectors of the core file are too fragmented"
 msgstr "trong tập tin lõi, các rãnh ghi bị phân mảnh quá"
 
-#: util/i386/pc/grub-setup.c:203
+#: util/i386/pc/grub-setup.c:198
 #, c-format
 msgid "the size of `%s' is not %u"
 msgstr "« %s » không có kích cỡ %u"
 
-#: util/i386/pc/grub-setup.c:220
+#: util/i386/pc/grub-setup.c:215
 #, c-format
 msgid "the size of `%s' is too small"
 msgstr "« %s » có kích cỡ quá nhỏ"
 
-#: util/i386/pc/grub-setup.c:222
+#: util/i386/pc/grub-setup.c:217
 #, c-format
 msgid "the size of `%s' is too large"
 msgstr "« %s » có kích cỡ quá lớn"
 
-#: util/i386/pc/grub-setup.c:261
+#: util/i386/pc/grub-setup.c:254
 #, c-format
 msgid "unable to identify a filesystem in %s; safety check can't be performed"
-msgstr ""
-"không nhận ra được một hệ thống tập tin trong %s nên không thực hiện tiến "
-"trình kiểm tra tính an toàn"
+msgstr "không nhận ra được một hệ thống tập tin trong %s nên không thực hiện tiến trình kiểm tra tính an toàn"
 
-#: util/i386/pc/grub-setup.c:265
+#: util/i386/pc/grub-setup.c:258
 #, c-format
-msgid ""
-"%s appears to contain a %s filesystem which isn't known to reserve space for "
-"DOS-style boot.  Installing GRUB there could result in FILESYSTEM "
-"DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe "
-"disables this check, use at your own risk)"
-msgstr ""
-"Có vẻ là %s chứa một hệ thống tập tin %s mà (theo thông tin hiện thời) không "
-"dành riêng sức chứa cho sự khởi động kiểu DOS. Vì thế việc cài đặt GRUB vào "
-"đó có thể gây ra HỆ THỐNG TẬP TIN BỊ HỦY nếu dữ liệu quan trọng bị ghi đè "
-"bởi tiến trình thiết lập GRUB (grub-setup). Tuỳ chọn « --skip-fs-probe » tắt "
-"hàm kiểm tra này: hãy tự chịu trách nhiệm khi sử dụng nó."
+msgid "%s appears to contain a %s filesystem which isn't known to reserve space for DOS-style boot.  Installing GRUB there could result in FILESYSTEM DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe disables this check, use at your own risk)"
+msgstr "Có vẻ là %s chứa một hệ thống tập tin %s mà (theo thông tin hiện thời) không dành riêng sức chứa cho sự khởi động kiểu DOS. Vì thế việc cài đặt GRUB vào đó có thể gây ra HỆ THỐNG TẬP TIN BỊ HỦY nếu dữ liệu quan trọng bị ghi đè bởi tiến trình thiết lập GRUB (grub-setup). Tuỳ chọn « --skip-fs-probe » tắt hàm kiểm tra này: hãy tự chịu trách nhiệm khi sử dụng nó."
 
-#: util/i386/pc/grub-setup.c:339 util/i386/pc/grub-setup.c:366
-msgid ""
-"Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
-msgstr ""
-"Đang thử cài đặt GRUB vào một đĩa không có phân vùng. Đây là một ý kiến XẤU."
+#: util/i386/pc/grub-setup.c:307
+msgid "no DOS-style partitions found"
+msgstr "không tìm thấy phân vùng nào kiểu DOS"
 
-#: util/i386/pc/grub-setup.c:345
-msgid ""
-"Attempting to install GRUB to a partition instead of the MBR.  This is a BAD "
-"idea."
-msgstr ""
-"Đang thử cài đặt GRUB vào một phân vùng thay cho MBR. Đây là một ý kiến XẤU."
+#: util/i386/pc/grub-setup.c:323 util/i386/pc/grub-setup.c:348
+msgid "Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
+msgstr "Đang thử cài đặt GRUB vào một đĩa không có phân vùng. Đây là một ý kiến XẤU."
 
-#: util/i386/pc/grub-setup.c:375
+#: util/i386/pc/grub-setup.c:329
+msgid "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD idea."
+msgstr "Đang thử cài đặt GRUB vào một phân vùng thay cho MBR. Đây là một ý kiến XẤU."
+
+#: util/i386/pc/grub-setup.c:357
 msgid "No DOS-style partitions found"
 msgstr "Không tìm thấy phân vùng nào kiểu DOS"
 
-#: util/i386/pc/grub-setup.c:380
-msgid ""
-"This msdos-style partition label has no post-MBR gap; embedding won't be "
-"possible!"
-msgstr ""
-"Nhãn phân vùng kiểu MSDOS (msdos-style) không có chỗ trống nằm sau MBR nên "
-"không nhúng được !"
+#: util/i386/pc/grub-setup.c:362
+msgid "This msdos-style partition label has no post-MBR gap; embedding won't be possible!"
+msgstr "Nhãn phân vùng kiểu MSDOS (msdos-style) không có chỗ trống nằm sau MBR nên không nhúng được !"
 
-#: util/i386/pc/grub-setup.c:382
-msgid ""
-"This GPT partition label has no BIOS Boot Partition; embedding won't be "
-"possible!"
-msgstr ""
-"Nhãn phân vùng GPT này không có phân vùng khởi động BIOS nên không nhúng "
-"được !"
+#: util/i386/pc/grub-setup.c:364
+msgid "This GPT partition label has no BIOS Boot Partition; embedding won't be possible!"
+msgstr "Nhãn phân vùng GPT này không có phân vùng khởi động BIOS nên không nhúng được !"
 
-#: util/i386/pc/grub-setup.c:389
+#: util/i386/pc/grub-setup.c:371
 msgid "Your core.img is unusually large.  It won't fit in the embedding area."
 msgstr "Bạn có một core.img quá lớn mà không vừa trong vùng nhúng."
 
-#: util/i386/pc/grub-setup.c:391
+#: util/i386/pc/grub-setup.c:373
 msgid "Your embedding area is unusually small.  core.img won't fit in it."
 msgstr "Bạn có một core.img quá nhỏ mà không chứa được core.img."
 
-#: util/i386/pc/grub-setup.c:436
-msgid ""
-"embedding is not possible, but this is required when the root device is on a "
-"RAID array or LVM volume"
-msgstr ""
-"không thể nhúng được, nhưng mà chức năng này cần thiết khi thiết bị gốc nằm "
-"trên một mảng RAID hay khối tin LVM"
+#: util/i386/pc/grub-setup.c:416
+msgid "embedding is not possible, but this is required when the root device is on a RAID array or LVM volume"
+msgstr "không thể nhúng được, nhưng mà chức năng này cần thiết khi thiết bị gốc nằm trên một mảng RAID hay khối tin LVM"
 
-#: util/i386/pc/grub-setup.c:439
-#, fuzzy
-msgid ""
-"Embedding is not possible.  GRUB can only be installed in this setup by "
-"using blocklists.  However, blocklists are UNRELIABLE and their use is "
-"discouraged."
-msgstr ""
-"Không thể nhúng được. GRUB chỉ cài đặt được vào thiết lập này bằng cách sử "
-"dụng danh sách cấm. Tuy nhiên, danh sách cấm vẫn không đáng tin thì không "
-"nên sử dụng."
+#: util/i386/pc/grub-setup.c:419
+msgid "Embedding is not possible.  GRUB can only be installed in this setup by using blocklists.  However, blocklists are UNRELIABLE and its use is discouraged."
+msgstr "Không thể nhúng được. GRUB chỉ cài đặt được vào thiết lập này bằng cách sử dụng danh sách cấm. Tuy nhiên, danh sách cấm vẫn không đáng tin thì không nên sử dụng."
 
-#: util/i386/pc/grub-setup.c:443
+#: util/i386/pc/grub-setup.c:423
 msgid "if you really want blocklists, use --force"
 msgstr "Nếu bạn thực sự muốn sử dụng danh sách cấm, dùng « --force » (ép buộc)"
 
-#: util/i386/pc/grub-setup.c:462
+#: util/i386/pc/grub-setup.c:439
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB"
 msgstr "đang thử đọc ảnh lõi « %s » từ GRUB"
 
-#: util/i386/pc/grub-setup.c:463
+#: util/i386/pc/grub-setup.c:440
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB again"
 msgstr "đang thử đọc ảnh lõi « %s » từ GRUB lần nữa"
 
-#: util/i386/pc/grub-setup.c:530
+#: util/i386/pc/grub-setup.c:498
 #, c-format
 msgid "cannot read `%s' correctly"
 msgstr "không thể đọc « %s » cho đúng"
 
-#: util/i386/pc/grub-setup.c:543
+#: util/i386/pc/grub-setup.c:511
 msgid "no terminator in the core image"
 msgstr "ảnh lõi không chứa dấu chấm dứt"
 
-#: util/i386/pc/grub-setup.c:554
+#: util/i386/pc/grub-setup.c:522
 msgid "failed to read the first sector of the core image"
 msgstr "lỗi đọc rãnh ghi thứ nhất của ảnh lõi"
 
-#: util/i386/pc/grub-setup.c:560
+#: util/i386/pc/grub-setup.c:528
 msgid "failed to read the rest sectors of the core image"
 msgstr "lỗi đọc các rãnh ghi còn lại của ảnh lõi"
 
-#: util/i386/pc/grub-setup.c:579
+#: util/i386/pc/grub-setup.c:547
 #, c-format
 msgid "cannot open `%s'"
 msgstr "không thể mở « %s »"
 
-#: util/i386/pc/grub-setup.c:621
-#, fuzzy, c-format
+#: util/i386/pc/grub-setup.c:589
+#, c-format
 msgid ""
 "Usage: %s [OPTION]... DEVICE\n"
 "\n"
 "Set up images to boot from DEVICE.\n"
 "DEVICE must be a GRUB device (e.g. `(hd0,1)').\n"
-"\n"
-"You should not normally run %s directly.  Use grub-install instead.\n"
 "\n"
 "  -b, --boot-image=FILE   use FILE as the boot image [default=%s]\n"
 "  -c, --core-image=FILE   use FILE as the core image [default=%s]\n"
@@ -1272,11 +1146,9 @@ msgstr ""
 "\n"
 "  -b, --boot-image=TỆP   dùng tập tin này làm ảnh khởi động [mặc định=%s]\n"
 "  -c, --core-image=TỆP   dùng tập tin này làm ảnh lõi [mặc định=%s]\n"
-"  -d, --directory=TMỤC     dùng các tập tin GRUB nằm trong thư mục này [mặc "
-"định=%s]\n"
+"  -d, --directory=TMỤC     dùng các tập tin GRUB nằm trong thư mục này [mặc định=%s]\n"
 "  -m, --device-map=TỆP   dùng tập tin này làm sơ đồ thiết bị [mặc định=%s]\n"
-"  -r, --root-device=TBỊ   dùng thiết bị này làm thiết bị gốc [mặc "
-"định=guessed]\n"
+"  -r, --root-device=TBỊ   dùng thiết bị này làm thiết bị gốc [mặc định=guessed]\n"
 "  -f, --force             vẫn cài đặt ngay cả khi gặp vấn đề\n"
 "  -s, --skip-fs-probe     đừng thăm dò hệ thống tập tin trong THIẾT_BỊ\n"
 "  -h, --help              hiển thị trợ giúp này, sau đó thoát\n"
@@ -1285,58 +1157,50 @@ msgstr ""
 "\n"
 "Thông báo lỗi nào cho <%s>.\n"
 
-#: util/i386/pc/grub-setup.c:753
+#: util/i386/pc/grub-setup.c:719
 #, c-format
 msgid "No device is specified.\n"
 msgstr "Chưa ghi rõ thiết bị.\n"
 
-#: util/i386/pc/grub-setup.c:759
+#: util/i386/pc/grub-setup.c:725
 #, c-format
 msgid "Unknown extra argument `%s'.\n"
 msgstr "Không nhân ra đối số bổ sung « %s ».\n"
 
-#: util/i386/pc/grub-setup.c:776
+#: util/i386/pc/grub-setup.c:742
 #, c-format
 msgid "Invalid device `%s'.\n"
 msgstr "Thiết bị không đúng « %s ».\n"
 
-#: util/i386/pc/grub-setup.c:789
+#: util/i386/pc/grub-setup.c:755
 #, c-format
 msgid "invalid root device `%s'"
 msgstr "thiết bị gốc không đúng « %s »"
 
-#: util/i386/pc/grub-setup.c:802
+#: util/i386/pc/grub-setup.c:768
 msgid "cannot guess the root device. Specify the option `--root-device'"
-msgstr ""
-"không chẩn đoán được thiết bị gốc. Hãy ghi rõ nó dùng tuỳ chọn « --root-"
-"device »"
+msgstr "không chẩn đoán được thiết bị gốc. Hãy ghi rõ nó dùng tuỳ chọn « --root-device »"
 
-#~ msgid "[class [handler]]"
-#~ msgstr "[hạng [bộ_quản_lý]]"
+#: util/grub.d/10_kfreebsd.in:40
+msgid "%s, with kFreeBSD %s"
+msgstr "%s, với kFreeBSD %s"
 
-#~ msgid "List or select a handler."
-#~ msgstr "Liệt kê hoặc chọn một bộ quản lý."
+#: util/grub.d/10_kfreebsd.in:48
+msgid "Loading kernel of FreeBSD %s ..."
+msgstr "Đang nạp hạt nhân của FreeBSD %s ..."
 
-#~ msgid "Load XNU ramdisk. It will be seen as md0."
-#~ msgstr "Nạp đĩa RAM XNU. Nó sẽ được thấy là « md0 »."
+#: util/grub.d/10_linux.in:57
+msgid "%s, with Linux %s (recovery mode)"
+msgstr "%s, với Linux %s (chế độ phục hồi)"
 
-#~ msgid "no DOS-style partitions found"
-#~ msgstr "không tìm thấy phân vùng nào kiểu DOS"
+#: util/grub.d/10_linux.in:59
+msgid "%s, with Linux %s"
+msgstr "%s, với Linux %s"
 
-#~ msgid "%s, with kFreeBSD %s"
-#~ msgstr "%s, với kFreeBSD %s"
+#: util/grub.d/10_linux.in:77
+msgid "Loading Linux %s ..."
+msgstr "Đang nạp Linux %s ..."
 
-#~ msgid "Loading kernel of FreeBSD %s ..."
-#~ msgstr "Đang nạp hạt nhân của FreeBSD %s ..."
-
-#~ msgid "%s, with Linux %s (recovery mode)"
-#~ msgstr "%s, với Linux %s (chế độ phục hồi)"
-
-#~ msgid "%s, with Linux %s"
-#~ msgstr "%s, với Linux %s"
-
-#~ msgid "Loading Linux %s ..."
-#~ msgstr "Đang nạp Linux %s ..."
-
-#~ msgid "Loading initial ramdisk ..."
-#~ msgstr "Đang nạp đĩa RAM đầu tiên ..."
+#: util/grub.d/10_linux.in:82
+msgid "Loading initial ramdisk ..."
+msgstr "Đang nạp đĩa RAM đầu tiên ..."

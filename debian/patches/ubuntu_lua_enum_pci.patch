@@ -1,0 +1,83 @@
+Description: Add enum_pci to grub module in lua grub-extra
+ grub.enum_pci takes a Lua callback function as an argument. This
+ function is called once for each enumerated PCI device with 6
+ arguments: PCI bus index, PCI device index, PCI function index, PCI
+ ID, Subsystem PCI ID, and PCI class code.
+Author: Evan Broder <evan@ebroder.net>
+Forwarded: yes
+Last-Update: 2010-11-08
+
+Index: b/debian/grub-extras/lua/grub_lib.c
+===================================================================
+--- a/debian/grub-extras/lua/grub_lib.c
++++ b/debian/grub-extras/lua/grub_lib.c
+@@ -27,6 +27,9 @@
+ #include <grub/normal.h>
+ #include <grub/file.h>
+ #include <grub/device.h>
++#ifndef GRUB_MACHINE_EMU
++#include <grub/pci.h>
++#endif
+ 
+ /* Updates the globals grub_errno and grub_msg, leaving their values on the 
+    top of the stack, and clears grub_errno. When grub_errno is zero, grub_msg
+@@ -250,6 +253,49 @@
+   return push_result (state);
+ }
+ 
++#ifndef GRUB_MACHINE_EMU
++static int
++grub_lua_enum_pci (lua_State *state)
++{
++  auto int NESTED_FUNC_ATTR enum_pci (grub_pci_device_t dev, grub_pci_id_t pciid);
++  int NESTED_FUNC_ATTR enum_pci (grub_pci_device_t dev, grub_pci_id_t pciid)
++  {
++    int result;
++    grub_pci_address_t addr;
++    grub_pci_id_t sub_pciid;
++    grub_uint32_t class;
++
++    lua_pushvalue (state, 1);
++    lua_pushinteger (state, grub_pci_get_bus (dev));
++    lua_pushinteger (state, grub_pci_get_device (dev));
++    lua_pushinteger (state, grub_pci_get_function (dev));
++
++    /* PCI ID */
++    lua_pushinteger (state, pciid);
++
++    /* Subsystem PCI ID */
++    addr = grub_pci_make_address (dev, GRUB_PCI_REG_SUBVENDOR);
++    sub_pciid = grub_pci_read (addr);
++    lua_pushinteger (state, sub_pciid);
++
++    /* Class code */
++    addr = grub_pci_make_address (dev, GRUB_PCI_REG_CLASS);
++    class = grub_pci_read (addr);
++    lua_pushinteger (state, class);
++
++    lua_call (state, 6, 1);
++    result = lua_tointeger (state, -1);
++    lua_pop (state, 1);
++
++    return result;
++  }
++
++  luaL_checktype (state, 1, LUA_TFUNCTION);
++  grub_pci_iterate (enum_pci);
++  return push_result (state);
++}
++#endif
++
+ static int
+ grub_lua_file_open (lua_State *state)
+ {
+@@ -446,6 +492,9 @@
+     {"setenv", grub_lua_setenv},
+     {"enum_device", grub_lua_enum_device},
+     {"enum_file", grub_lua_enum_file},
++#ifndef GRUB_MACHINE_EMU
++    {"enum_pci", grub_lua_enum_pci},
++#endif
+     {"file_open", grub_lua_file_open},
+     {"file_close", grub_lua_file_close},
+     {"file_seek", grub_lua_file_seek},

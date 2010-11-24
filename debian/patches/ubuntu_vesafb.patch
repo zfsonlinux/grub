@@ -8,19 +8,19 @@ Author: Colin Watson <cjwatson@ubuntu.com>
 Forwarded: http://lists.gnu.org/archive/html/grub-devel/2010-07/msg00036.html
 Last-Update: 2010-07-12
 
-Index: b/loader/i386/linux.c
+Index: b/grub-core/loader/i386/linux.c
 ===================================================================
---- a/loader/i386/linux.c
-+++ b/loader/i386/linux.c
-@@ -463,6 +463,7 @@
+--- a/grub-core/loader/i386/linux.c
++++ b/grub-core/loader/i386/linux.c
+@@ -375,6 +375,7 @@
    int e820_num;
    grub_err_t err = 0;
    char *modevar, *tmp;
 +  grub_video_driver_id_t driver_id;
+   struct grub_relocator32_state state;
  
    params = real_mode_mem;
- 
-@@ -538,13 +539,17 @@
+@@ -456,13 +457,17 @@
        grub_errno = GRUB_ERR_NONE;
      }
  

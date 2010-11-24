@@ -1,10 +1,10 @@
 Description: Suppress "GRUB loading" message unless Shift is held down.
 UbuntuSpecific: yes
 
-Index: b/boot/i386/pc/boot.S
+Index: b/grub-core/boot/i386/pc/boot.S
 ===================================================================
---- a/boot/i386/pc/boot.S
-+++ b/boot/i386/pc/boot.S
+--- a/grub-core/boot/i386/pc/boot.S
++++ b/grub-core/boot/i386/pc/boot.S
 @@ -19,6 +19,7 @@
  
  #include <grub/symbol.h>
@@ -13,7 +13,7 @@ Index: b/boot/i386/pc/boot.S
  #include <grub/machine/boot.h>
  
  /*
-@@ -147,9 +148,15 @@
+@@ -151,9 +152,15 @@
  	/* save drive reference first thing! */
  	pushw	%dx
  
@@ -29,10 +29,10 @@ Index: b/boot/i386/pc/boot.S
  	/* set %si to the disk address packet */
  	movw	$disk_address_packet, %si
  
-Index: b/boot/i386/pc/diskboot.S
+Index: b/grub-core/boot/i386/pc/diskboot.S
 ===================================================================
---- a/boot/i386/pc/diskboot.S
-+++ b/boot/i386/pc/diskboot.S
+--- a/grub-core/boot/i386/pc/diskboot.S
++++ b/grub-core/boot/i386/pc/diskboot.S
 @@ -17,6 +17,7 @@
   */
  

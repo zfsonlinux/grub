@@ -46,6 +46,6 @@ Index: b/util/grub.d/10_linux.in
 +  cat << EOF
 +	recordfail
 +EOF
-   save_default_entry | sed -e "s/^/\t/"
- 
-   # Use ELILO's generic "efifb" when it's known to be available.
+   if ! ${recovery} ; then
+       save_default_entry | sed -e "s/^/\t/"
+   fi
