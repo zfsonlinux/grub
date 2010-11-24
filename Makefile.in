@@ -5283,46 +5283,67 @@ am__DEPENDENCIES_1 =
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_FALSE@@COND_sparc64_ieee1275_FALSE@@COND_x86_64_efi_TRUE@example_unit_test_DEPENDENCIES = libgrubmods.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_FALSE@@COND_sparc64_ieee1275_FALSE@@COND_x86_64_efi_TRUE@	libgrubkern.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_FALSE@@COND_sparc64_ieee1275_FALSE@@COND_x86_64_efi_TRUE@	grub-core/gnulib/libgnu.a \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_FALSE@@COND_sparc64_ieee1275_FALSE@@COND_x86_64_efi_TRUE@	$(am__DEPENDENCIES_1) \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_FALSE@@COND_sparc64_ieee1275_FALSE@@COND_x86_64_efi_TRUE@	$(am__DEPENDENCIES_1) \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_FALSE@@COND_sparc64_ieee1275_FALSE@@COND_x86_64_efi_TRUE@	$(am__DEPENDENCIES_1)
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_FALSE@@COND_sparc64_ieee1275_TRUE@example_unit_test_DEPENDENCIES = libgrubmods.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_FALSE@@COND_sparc64_ieee1275_TRUE@	libgrubkern.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_FALSE@@COND_sparc64_ieee1275_TRUE@	grub-core/gnulib/libgnu.a \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_FALSE@@COND_sparc64_ieee1275_TRUE@	$(am__DEPENDENCIES_1) \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_FALSE@@COND_sparc64_ieee1275_TRUE@	$(am__DEPENDENCIES_1) \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_FALSE@@COND_sparc64_ieee1275_TRUE@	$(am__DEPENDENCIES_1)
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_TRUE@example_unit_test_DEPENDENCIES = libgrubmods.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_TRUE@	libgrubkern.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_TRUE@	grub-core/gnulib/libgnu.a \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_TRUE@	$(am__DEPENDENCIES_1) \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_TRUE@	$(am__DEPENDENCIES_1) \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_FALSE@@COND_powerpc_ieee1275_TRUE@	$(am__DEPENDENCIES_1)
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_TRUE@example_unit_test_DEPENDENCIES = libgrubmods.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_TRUE@	libgrubkern.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_TRUE@	grub-core/gnulib/libgnu.a \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_TRUE@	$(am__DEPENDENCIES_1) \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_TRUE@	$(am__DEPENDENCIES_1) \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_FALSE@@COND_mips_yeeloong_TRUE@	$(am__DEPENDENCIES_1)
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_TRUE@example_unit_test_DEPENDENCIES = libgrubmods.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_TRUE@	libgrubkern.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_TRUE@	grub-core/gnulib/libgnu.a \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_TRUE@	$(am__DEPENDENCIES_1) \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_TRUE@	$(am__DEPENDENCIES_1) \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_FALSE@@COND_i386_qemu_TRUE@	$(am__DEPENDENCIES_1)
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_TRUE@example_unit_test_DEPENDENCIES = libgrubmods.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_TRUE@	libgrubkern.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_TRUE@	grub-core/gnulib/libgnu.a \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_TRUE@	$(am__DEPENDENCIES_1) \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_TRUE@	$(am__DEPENDENCIES_1) \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_FALSE@@COND_i386_pc_TRUE@	$(am__DEPENDENCIES_1)
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_TRUE@example_unit_test_DEPENDENCIES = libgrubmods.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_TRUE@	libgrubkern.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_TRUE@	grub-core/gnulib/libgnu.a \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_TRUE@	$(am__DEPENDENCIES_1) \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_TRUE@	$(am__DEPENDENCIES_1) \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_FALSE@@COND_i386_multiboot_TRUE@	$(am__DEPENDENCIES_1)
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_TRUE@example_unit_test_DEPENDENCIES = libgrubmods.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_TRUE@	libgrubkern.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_TRUE@	grub-core/gnulib/libgnu.a \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_TRUE@	$(am__DEPENDENCIES_1) \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_TRUE@	$(am__DEPENDENCIES_1) \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_FALSE@@COND_i386_ieee1275_TRUE@	$(am__DEPENDENCIES_1)
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_TRUE@example_unit_test_DEPENDENCIES = libgrubmods.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_TRUE@	libgrubkern.a \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_TRUE@	grub-core/gnulib/libgnu.a \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_TRUE@	$(am__DEPENDENCIES_1) \
+@COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_TRUE@	$(am__DEPENDENCIES_1) \
 @COND_emu_FALSE@@COND_i386_coreboot_FALSE@@COND_i386_efi_TRUE@	$(am__DEPENDENCIES_1)
 @COND_emu_FALSE@@COND_i386_coreboot_TRUE@example_unit_test_DEPENDENCIES =  \
 @COND_emu_FALSE@@COND_i386_coreboot_TRUE@	libgrubmods.a \
 @COND_emu_FALSE@@COND_i386_coreboot_TRUE@	libgrubkern.a \
 @COND_emu_FALSE@@COND_i386_coreboot_TRUE@	grub-core/gnulib/libgnu.a \
+@COND_emu_FALSE@@COND_i386_coreboot_TRUE@	$(am__DEPENDENCIES_1) \
+@COND_emu_FALSE@@COND_i386_coreboot_TRUE@	$(am__DEPENDENCIES_1) \
 @COND_emu_FALSE@@COND_i386_coreboot_TRUE@	$(am__DEPENDENCIES_1)
 @COND_emu_TRUE@example_unit_test_DEPENDENCIES = libgrubmods.a \
 @COND_emu_TRUE@	libgrubkern.a grub-core/gnulib/libgnu.a \
+@COND_emu_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 @COND_emu_TRUE@	$(am__DEPENDENCIES_1)
 example_unit_test_LINK = $(CCLD) $(example_unit_test_CFLAGS) $(CFLAGS) \
 	$(example_unit_test_LDFLAGS) $(LDFLAGS) -o $@
@@ -9488,17 +9509,17 @@ libgrubmods_a_CCASFLAGS = $(am__append_113) $(am__append_122) \
 @COND_powerpc_ieee1275_TRUE@nodist_example_unit_test_SOURCES = 
 @COND_sparc64_ieee1275_TRUE@nodist_example_unit_test_SOURCES = 
 @COND_x86_64_efi_TRUE@nodist_example_unit_test_SOURCES = 
-@COND_emu_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) 
-@COND_i386_coreboot_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) 
-@COND_i386_efi_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) 
-@COND_i386_ieee1275_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) 
-@COND_i386_multiboot_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) 
-@COND_i386_pc_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) 
-@COND_i386_qemu_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) 
-@COND_mips_yeeloong_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) 
-@COND_powerpc_ieee1275_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) 
-@COND_sparc64_ieee1275_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) 
-@COND_x86_64_efi_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) 
+@COND_emu_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+@COND_i386_coreboot_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+@COND_i386_efi_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+@COND_i386_ieee1275_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+@COND_i386_multiboot_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+@COND_i386_pc_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+@COND_i386_qemu_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+@COND_mips_yeeloong_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+@COND_powerpc_ieee1275_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+@COND_sparc64_ieee1275_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+@COND_x86_64_efi_TRUE@example_unit_test_LDADD = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
 @COND_emu_TRUE@example_unit_test_CFLAGS = $(AM_CFLAGS) $(CFLAGS_PROGRAM) -Wno-format 
 @COND_i386_coreboot_TRUE@example_unit_test_CFLAGS = $(AM_CFLAGS) $(CFLAGS_PROGRAM) -Wno-format 
 @COND_i386_efi_TRUE@example_unit_test_CFLAGS = $(AM_CFLAGS) $(CFLAGS_PROGRAM) -Wno-format 

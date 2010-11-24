@@ -1,3 +1,12 @@
+grub2 (1.99~20101124-1) experimental; urgency=low
+
+  * New Bazaar snapshot (command priorities, build fixes, grub-mkdevicemap
+    segfault).
+  * Don't try to build grub-efi-amd64 on kfreebsd-i386 or hurd-i386
+    (requires gcc-4.4-multilib).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 24 Nov 2010 12:12:33 +0000
+
 grub2 (1.99~20101123-1) experimental; urgency=low
 
   * New Bazaar snapshot (build fixes).
