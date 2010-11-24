@@ -20,12 +20,12 @@ Index: b/util/grub.d/10_linux.in
  linux_entry ()
  {
    os="$1"
-@@ -125,7 +130,7 @@
+@@ -142,7 +147,7 @@
    fi
  
    linux_entry "${OS}" "${version}" false \
 -      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
 +      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}"
-   if [ "x${GRUB_DISABLE_LINUX_RECOVERY}" != "xtrue" ]; then
+   if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
      linux_entry "${OS}" "${version}" true \
  	"single ${GRUB_CMDLINE_LINUX}"

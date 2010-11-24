@@ -31,7 +31,7 @@ Index: b/util/grub-mkconfig_lib.in
        "$device is a crypto device, which GRUB cannot read directly.  Some" \
 @@ -130,6 +144,14 @@
    if fs_uuid="`${grub_probe} --device ${device} --target=fs_uuid 2> /dev/null`" ; then
-     echo "search --no-floppy --fs-uuid --set ${fs_uuid}"
+     echo "search --no-floppy --fs-uuid --set=root ${fs_uuid}"
    fi
 +
 +  if [ "x${loop_file}" != x ]; then

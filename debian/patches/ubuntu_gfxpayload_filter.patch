@@ -1,0 +1,81 @@
+Description: Set GRUB_GFXPAYLOAD_LINUX=keep unless it's known to be
+ unsupported on the current hardware. See
+ https://blueprints.launchpad.net/ubuntu/+spec/packageselection-foundations-n-grub2-boot-framebuffer.
+Author: Evan Broder <evan@ebroder.net>
+
+Index: b/util/grub.d/10_linux.in
+===================================================================
+--- a/util/grub.d/10_linux.in
++++ b/util/grub.d/10_linux.in
+@@ -80,18 +80,10 @@
+       save_default_entry | sed -e "s/^/\t/"
+   fi
+ 
+-  # Use ELILO's generic "efifb" when it's known to be available.
+-  # FIXME: We need an interface to select vesafb in case efifb can't be used.
+-  if [ "x$GRUB_GFXPAYLOAD_LINUX" != x ]; then
+-      if [ "x$GRUB_GFXPAYLOAD_LINUX" != xtext ]; then
+-	  cat << EOF
+-	load_video
+-EOF
+-      fi
+-	  cat << EOF
+-	set gfxpayload=$GRUB_GFXPAYLOAD_LINUX
++  cat << EOF
++	if [ "\$linux_gfx_mode" != text ]; then load_video; fi
++	set gfxpayload=\$linux_gfx_mode
+ EOF
+-  fi
+ 
+   if [ -z "${prepare_boot_cache}" ]; then
+     prepare_boot_cache="$(prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/")"
+@@ -125,6 +117,30 @@
+       done`
+ prepare_boot_cache=
+ 
++# Use ELILO's generic "efifb" when it's known to be available.
++# FIXME: We need an interface to select vesafb in case efifb can't be used.
++if [ "x$GRUB_GFXPAYLOAD_LINUX" != x ]; then
++  echo "set linux_gfx_mode=$GRUB_GFXPAYLOAD_LINUX"
++else
++  cat << EOF
++if [ \${recordfail} != 1 ]; then
++  set matches_file=\${prefix}/gfxblacklist.lst
++  set class_match=3
++  if lua \${prefix}/hwmatch.lua; then
++    if [ \${match} = 0 ]; then
++      set linux_gfx_mode=keep
++    else
++      set linux_gfx_mode=text
++    fi
++  else
++    set linux_gfx_mode=text
++  fi
++else
++  set linux_gfx_mode=text
++fi
++EOF
++fi
++
+ while [ "x$list" != "x" ] ; do
+   linux=`version_find_latest $list`
+   echo "Found linux image: $linux" >&2
+Index: b/util/grub-install.in
+===================================================================
+--- a/util/grub-install.in
++++ b/util/grub-install.in
+@@ -412,12 +412,12 @@
+ fi
+ 
+ # Copy the GRUB images to the GRUB directory.
+-for file in "${grubdir}"/*.mod "${grubdir}"/*.lst "${grubdir}"/*.img "${grubdir}"/efiemu??.o; do
++for file in "${grubdir}"/*.mod "${grubdir}"/*.lua "${grubdir}"/*.lst "${grubdir}"/*.img "${grubdir}"/efiemu??.o; do
+     if test -f "$file" && [ "`basename $file`" != menu.lst ]; then
+ 	rm -f "$file" || exit 1
+     fi
+ done
+-for file in "${pkglibdir}"/*.mod "${pkglibdir}"/*.lst; do
++for file in "${pkglibdir}"/*.mod "${pkglibdir}"/*.lua "${pkglibdir}"/*.lst; do
+     cp -f "$file" "${grubdir}" || exit 1
+ done
+ if [ "${target_cpu}-${platform}" = "i386-pc" ] || [ "${target_cpu}-${platform}" = "sparc64-ieee1275" ] ; then

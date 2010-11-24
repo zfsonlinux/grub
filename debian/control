@@ -10,27 +10,28 @@ Build-Depends: debhelper (>= 7.0.50~),
  patchutils,
  autoconf,
  automake,
+ autogen (>= 1:5.10),
  python,
- ruby,
  flex (>= 2.5.35),
  bison,
  po-debconf,
  help2man,
  texinfo,
- gcc-4.4-multilib [i386 kopensolaris-i386 amd64 kfreebsd-amd64 sparc],
+ gcc-4.4-multilib [i386 kopensolaris-i386 any-amd64 any-sparc],
  gcc-4.4,
  libncurses5-dev,
  xfonts-unifont,
  libfreetype6-dev,
  gettext,
- libusb-dev [!hurd-i386],
- libdevmapper-dev [amd64 i386 powerpc mipsel sparc],
- libzfs-dev [kfreebsd-i386 kfreebsd-amd64],
- libnvpair-dev [kfreebsd-i386 kfreebsd-amd64],
- libsdl1.2-dev [!hurd-i386],
+ libusb-dev [!hurd-any],
+ libdevmapper-dev (>= 2:1.02.34) [linux-any],
+ libzfs-dev [kfreebsd-any],
+ libnvpair-dev [kfreebsd-any],
+ libsdl1.2-dev [!hurd-any],
  xorriso (>= 0.5.6.pl00),
- qemu-kvm [i386 kfreebsd-i386 kopensolaris-i386 amd64 kfreebsd-amd64],
- mtools [i386 kopensolaris-i386 amd64 kfreebsd-amd64],
+ qemu-kvm [i386 kfreebsd-i386 kopensolaris-i386 any-amd64],
+ parted [!hurd-any],
+ mtools [any-i386 any-amd64],
 Build-Conflicts: autoconf2.13 
 Standards-Version: 3.8.4
 Homepage: http://www.gnu.org/software/grub/
@@ -40,21 +41,21 @@ Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-core-dev/ubuntu/maverick/grub2/mave
 
 
 Package: grub2
-Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64 powerpc sparc
-Depends: grub-pc (= ${binary:Version}) [i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64] | grub-ieee1275 (= ${binary:Version}) [powerpc sparc], ${misc:Depends}
+Architecture: any-i386 any-amd64 any-powerpc any-sparc
+Depends: grub-pc (= ${binary:Version}) [any-i386 any-amd64] | grub-ieee1275 (= ${binary:Version}) [any-powerpc any-sparc], ${misc:Depends}
 Description: GRand Unified Bootloader, version 2 (dummy package)
  This is a dummy transitional package to handle GRUB 2 upgrades.  It can be
  safely removed.
 
 Package: grub-linuxbios
-Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64
+Architecture: any-i386 any-amd64
 Depends: grub-coreboot (= ${binary:Version}), ${misc:Depends}
 Description: GRand Unified Bootloader, version 2 (dummy package)
  This is a dummy transitional package that depends on grub-coreboot.
 
 Package: grub-efi
-Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64
-Depends: ${misc:Depends}, grub-efi-ia32 (= ${binary:Version}) [i386 kfreebsd-i386 hurd-i386 kopensolaris-i386], grub-efi-amd64 (= ${binary:Version}) [amd64 kfreebsd-amd64]
+Architecture: any-i386 any-amd64
+Depends: ${misc:Depends}, grub-efi-ia32 (= ${binary:Version}) [any-i386], grub-efi-amd64 (= ${binary:Version}) [any-amd64]
 Description: GRand Unified Bootloader, version 2 (dummy package)
  This is a dummy transitional package that depends on either grub-efi-ia32 or
  grub-efi-amd64, depending on the architecture.
@@ -62,11 +63,11 @@ Description: GRand Unified Bootloader, version 2 (dummy package)
 
 Package: grub-common
 Priority: optional
-Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64 powerpc sparc mipsel
+Architecture: any-i386 any-amd64 any-powerpc any-sparc any-mipsel
 Depends: base-files (>= 4.0.1~), dpkg (>= 1.15.4) | install-info | dpkg (<= 1.14.25), lsb-base (>= 3.0-6), ${shlibs:Depends}, ${misc:Depends}, gettext-base
 Replaces: grub-pc (<< 1.98+20100527-1), grub-ieee1275 (<< 1.98+20100527-1), grub-efi (<< 1.96+20080831-1), grub-coreboot (<< 1.97+20091114-1), grub-linuxbios (<< 1.96+20080831-1), grub-efi-ia32 (<< 1.98+20100527-1), grub-efi-amd64 (<< 1.98+20100527-1), grub-yeeloong (<< 1.98+20100527-1)
 Recommends: os-prober (>= 1.33)
-Suggests: multiboot-doc [i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64], grub-emu, xorriso (>= 0.5.6.pl00)
+Suggests: multiboot-doc, grub-emu, xorriso (>= 0.5.6.pl00)
 # See bugs #435983 and #455746
 Conflicts: mdadm (<< 2.6.7-2), grub-doc (<< 0.97-29ubuntu60), grub-legacy-doc (<< 0.97-29ubuntu60)
 Breaks: lupin-support (<< 0.30)
@@ -74,7 +75,7 @@ Description: GRand Unified Bootloader, version 2 (common files)
  This package contains common files shared by the distinct flavours of GRUB.
 
 Package: grub-emu
-Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64 powerpc
+Architecture: any-i386 any-amd64 any-powerpc
 Depends: ${shlibs:Depends}, base-files (>= 4.0.1~), ${misc:Depends}
 Replaces: grub-common (<= 1.97~beta3-1)
 Description: GRand Unified Bootloader, version 2 (emulated version)
@@ -83,7 +84,7 @@ Description: GRand Unified Bootloader, version 2 (emulated version)
 
 Package: grub-pc
 Priority: optional
-Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64
+Architecture: any-i386 any-amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version}), ucf
 Replaces: grub, grub-legacy, grub2 (<< ${source:Version}), grub-common (<< 1.97~beta1-1ubuntu4), grub-efi-amd64, grub-efi-ia32, grub-coreboot, grub-ieee1275
 Conflicts: grub (<< 0.97-54), grub-legacy, desktop-base (= 4.0.5), grub-efi-amd64, grub-efi-ia32, grub-coreboot, grub-ieee1275
@@ -106,7 +107,7 @@ Description: GRand Unified Bootloader, version 2 (PC/BIOS version)
  traditional PC/BIOS architecture.
 
 Package: grub-rescue-pc
-Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64
+Architecture: any-i386 any-amd64
 Depends: ${misc:Depends}
 Description: GRUB bootable rescue images, version 2 (PC/BIOS version)
  This package contains three GRUB rescue images that have been built for use
@@ -117,7 +118,7 @@ Description: GRUB bootable rescue images, version 2 (PC/BIOS version)
   - grub-rescue-usb.img: USB image.
 
 Package: grub-coreboot
-Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64
+Architecture: any-i386 any-amd64
 Depends: ${shlibs:Depends}, grub-common (= ${binary:Version}), ${misc:Depends}, ucf
 Replaces: grub-legacy, grub2 (<< ${source:Version}), grub-common (<< 1.97~beta1-1ubuntu4), grub-linuxbios, grub-efi-amd64, grub-efi-ia32, grub-pc, grub-ieee1275
 Conflicts: grub (<< 0.97-54), grub-legacy, grub-linuxbios (<< ${source:Version}), grub-efi-amd64, grub-efi-ia32, grub-pc, grub-ieee1275
@@ -136,7 +137,7 @@ Description: GRand Unified Bootloader, version 2 (Coreboot version)
  platforms running the Coreboot firmware.
 
 Package: grub-efi-ia32
-Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64
+Architecture: any-i386 any-amd64
 Depends: ${shlibs:Depends}, grub-common (= ${binary:Version}), ${misc:Depends}, ucf, efibootmgr
 Replaces: grub, grub-legacy, grub2 (<< ${source:Version}), grub-common (<< 1.97~beta1-1ubuntu4), grub-efi, grub-efi-amd64, grub-pc, grub-coreboot, grub-ieee1275
 Conflicts: grub (<< 0.97-54), grub-legacy, grub-efi-amd64, grub-pc, grub-coreboot, grub-ieee1275
@@ -156,7 +157,7 @@ Description: GRand Unified Bootloader, version 2 (EFI-IA32 version)
  a BIOS interface has been activated).
 
 Package: grub-efi-amd64
-Architecture: i386 kopensolaris-i386 amd64 kfreebsd-amd64
+Architecture: i386 kopensolaris-i386 any-amd64
 Depends: ${shlibs:Depends}, grub-common (= ${binary:Version}), ${misc:Depends}, ucf, efibootmgr
 Replaces: grub, grub-legacy, grub2 (<< ${source:Version}), grub-common (<< 1.97~beta1-1ubuntu4), grub-pc, grub-efi-ia32, grub-coreboot, grub-ieee1275
 Conflicts: grub, grub-legacy, grub-efi-ia32, grub-pc, grub-coreboot, grub-ieee1275
@@ -187,12 +188,12 @@ Description: GRUB bootable rescue images, version 2 (EFI-AMD64 version)
   - grub-rescue-usb.img: USB image.
 
 Package: grub-ieee1275
-Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64 powerpc sparc
+Architecture: any-i386 any-amd64 any-powerpc any-sparc
 Depends: ${shlibs:Depends}, grub-common (= ${binary:Version}),
- powerpc-ibm-utils [powerpc], powerpc-utils [powerpc], bc [powerpc], ${misc:Depends}, ucf
+ powerpc-ibm-utils [any-powerpc], powerpc-utils [any-powerpc], bc [any-powerpc], ${misc:Depends}, ucf
 Replaces: grub-legacy, grub2 (<< ${source:Version}), grub-common (<< 1.97~beta1-1ubuntu4), grub-efi-amd64, grub-efi-ia32, grub-coreboot, grub-pc
 Conflicts: grub (<< 0.97-54), grub-legacy, grub-efi-amd64, grub-efi-ia32, grub-coreboot, grub-pc
-Suggests: os-prober, genisoimage [powerpc]
+Suggests: os-prober, genisoimage [any-powerpc]
 Description: GRand Unified Bootloader, version 2 (Open Firmware version)
  GRUB is a portable, powerful bootloader.  This version of GRUB is based on a
  cleaner design than its predecessors, and provides the following new features:
@@ -207,7 +208,7 @@ Description: GRand Unified Bootloader, version 2 (Open Firmware version)
  Open Firmware implementations.
 
 Package: grub-firmware-qemu
-Architecture: i386 kfreebsd-i386 hurd-i386 kopensolaris-i386 amd64 kfreebsd-amd64
+Architecture: any-i386 any-amd64
 Depends: base-files (>= 4.0.1~), ${misc:Depends}
 Recommends: qemu
 Enhances: qemu
@@ -225,7 +226,7 @@ Description: GRUB firmware image for QEMU
  grub-coreboot package, and manually combine that with coreboot.
 
 Package: grub-yeeloong
-Architecture: mipsel
+Architecture: any-mipsel
 Depends: ${shlibs:Depends}, grub-common (= ${binary:Version}), ${misc:Depends}, ucf
 Replaces: grub-common (<< 1.98+20100617-2)
 Suggests: os-prober

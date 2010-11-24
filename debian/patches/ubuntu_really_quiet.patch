@@ -6,10 +6,10 @@ Description: Remove some verbose messages printed before reading the
 UbuntuSpecific: Removes status messages that are arguably useful for
  debugging; we think it looks tidier, but upstream isn't interested.
 
-Index: b/kern/main.c
+Index: b/grub-core/kern/main.c
 ===================================================================
---- a/kern/main.c
-+++ b/kern/main.c
+--- a/grub-core/kern/main.c
++++ b/grub-core/kern/main.c
 @@ -173,11 +173,6 @@
    /* First of all, initialize the machine.  */
    grub_machine_init ();
@@ -22,10 +22,10 @@ Index: b/kern/main.c
    /* Load pre-loaded modules and free the space.  */
    grub_register_exported_symbols ();
  #ifdef GRUB_LINKER_HAVE_INIT
-Index: b/kern/rescue_reader.c
+Index: b/grub-core/kern/rescue_reader.c
 ===================================================================
---- a/kern/rescue_reader.c
-+++ b/kern/rescue_reader.c
+--- a/grub-core/kern/rescue_reader.c
++++ b/grub-core/kern/rescue_reader.c
 @@ -77,8 +77,6 @@
  void
  grub_rescue_run (void)
@@ -35,11 +35,11 @@ Index: b/kern/rescue_reader.c
    while (1)
      {
        char *line;
-Index: b/normal/menu.c
+Index: b/grub-core/normal/menu.c
 ===================================================================
---- a/normal/menu.c
-+++ b/normal/menu.c
-@@ -539,12 +539,9 @@
+--- a/grub-core/normal/menu.c
++++ b/grub-core/normal/menu.c
+@@ -544,12 +544,9 @@
  
  /* Callback invoked immediately before a menu entry is executed.  */
  static void

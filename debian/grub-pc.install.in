@@ -1,2 +1,3 @@
 debian/legacy/update-grub	usr/lib/grub-legacy
 debian/legacy/upgrade-from-grub-legacy	usr/sbin
+debian/hwmatch.lua	usr/lib/grub/i386-pc

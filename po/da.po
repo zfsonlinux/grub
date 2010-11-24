@@ -9,11 +9,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub-1.97+20100124\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-19 01:35+0100\n"
+"POT-Creation-Date: 2010-01-24 19:29+0000\n"
 "PO-Revision-Date: 2010-04-02 15:24+0200\n"
 "Last-Translator: Ask Hjorth Larsen <asklarsen@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
-"Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -55,33 +54,25 @@ msgid "Set creator revision of RSDP, XSDT and RSDT."
 msgstr "Indstil skaberrevision for RSDP, XSDT og RSDT."
 
 #: commands/acpi.c:55
-msgid ""
-"Don't update EBDA. May fix failures or hangs on some. BIOSes but makes it "
-"ineffective with OS not receiving RSDP from GRUB."
-msgstr ""
-"Opdatér ikke EBDA. Vil måske forhindre fejl eller nedbrud med visse BIOS'er, "
-"men forringer effektiviteten, da operativsystemet ikke modtager RSDP fra "
-"GRUB."
+msgid "Don't update EBDA. May fix failures or hangs on some. BIOSes but makes it ineffective with OS not receiving RSDP from GRUB."
+msgstr "Opdatér ikke EBDA. Vil måske forhindre fejl eller nedbrud med visse BIOS'er, men forringer effektiviteten, da operativsystemet ikke modtager RSDP fra GRUB."
 
 #: commands/acpi.c:763
-msgid ""
-"[-1|-2] [--exclude=TABLE1,TABLE2|--load-only=table1,table2] FILE1 [FILE2] "
-"[...]"
-msgstr ""
-"[-1|-2] [--exclude=TABEL1,TABEL2|--load-only=table1,table2] FIL1 [FIL2] [...]"
+msgid "[-1|-2] [--exclude=TABLE1,TABLE2|--load-only=table1,table2] FILE1 [FILE2] [...]"
+msgstr "[-1|-2] [--exclude=TABEL1,TABEL2|--load-only=table1,table2] FIL1 [FIL2] [...]"
 
 #: commands/acpi.c:766
 msgid "Load host ACPI tables and tables specified by arguments."
 msgstr "Indæs ACPI-værtstabeller og tabeller angivet ved argumenter."
 
-#: commands/blocklist.c:113 commands/cat.c:82 commands/configfile.c:57
+#: commands/blocklist.c:114 commands/cat.c:82 commands/configfile.c:57
 #: commands/configfile.c:60 commands/configfile.c:65 commands/crc.c:64
-#: commands/minicmd.c:353 loader/i386/bsd.c:1287 loader/i386/bsd.c:1291
-#: loader/i386/bsd.c:1295
+#: commands/i386/pc/play.c:211 commands/minicmd.c:358 loader/i386/bsd.c:1296
+#: loader/i386/bsd.c:1300 loader/i386/bsd.c:1304
 msgid "FILE"
 msgstr "FIL"
 
-#: commands/blocklist.c:113
+#: commands/blocklist.c:114
 msgid "Print a block list."
 msgstr "Udskriv en blokliste."
 
@@ -89,7 +80,7 @@ msgstr "Udskriv en blokliste."
 msgid "Boot an operating system."
 msgstr "Start et operativsystem."
 
-#: commands/cat.c:82 commands/minicmd.c:353
+#: commands/cat.c:82 commands/minicmd.c:358
 msgid "Show the contents of a file."
 msgstr "Vis indholdet af en fil."
 
@@ -154,23 +145,20 @@ msgid "DEVICE [PARTITION[+/-[TYPE]]] ..."
 msgstr "ENHED [PARTITION[+/-[TYPE]]] ..."
 
 #: commands/gptsync.c:245
-#, fuzzy
-msgid ""
-"Fill hybrid MBR of GPT drive DEVICE. Specified partitions will be a part of "
-"hybrid MBR. Up to 3 partitions are allowed. TYPE is an MBR type. + means "
-"that partition is active. Only one partition can be active."
-msgstr ""
-"Fyld hybrid-MBR for GPT-drevet ENHED. Angivne partitioner vil være en del af "
-"hybrid-MBR. Op til tre partitioner er tilladt. TYPE er en MBR-type. + "
-"betyder, at partitionen er aktiv. Kun én partition kan være aktiv."
+msgid "Fill hybrid MBR of GPT drive DEVICE. specified partitions will be a part of hybrid mbr. Up to 3 partitions are allowed. TYPE is an MBR type. + means that partition is active. Only one partition can be active."
+msgstr "Fyld hybrid-MBR for GPT-drevet ENHED. Angivne partitioner vil være en del af hybrid-MBR. Op til tre partitioner er tilladt. TYPE er en MBR-type. + betyder, at partitionen er aktiv. Kun én partition kan være aktiv."
 
 #: commands/halt.c:39
-msgid ""
-"Halts the computer.  This command does not work on all firmware "
-"implementations."
-msgstr ""
-"Standser computeren.  Denne kommando fungerer ikke på alle "
-"firmwareimplementationer."
+msgid "Halts the computer.  This command does not work on all firmware implementations."
+msgstr "Standser computeren.  Denne kommando fungerer ikke på alle firmwareimplementationer."
+
+#: commands/handler.c:94
+msgid "[class [handler]]"
+msgstr "[klasse [håndtering]]"
+
+#: commands/handler.c:95
+msgid "List or select a handler."
+msgstr "Udskriv eller vælg en håndtering."
 
 #: commands/hdparm.c:30
 msgid ""
@@ -241,15 +229,15 @@ msgstr "[TILVALG] DISK"
 msgid "Get/set ATA disk parameters."
 msgstr "Vis/angiv ATA-diskparametre."
 
-#: commands/help.c:112 lib/arg.c:110
+#: commands/help.c:103 lib/arg.c:110
 msgid "Usage:"
 msgstr "Brug:"
 
-#: commands/help.c:129
+#: commands/help.c:136
 msgid "[PATTERN ...]"
 msgstr "[MØNSTER ...]"
 
-#: commands/help.c:130
+#: commands/help.c:137
 msgid "Show a help message."
 msgstr "Vis en hjælpebesked."
 
@@ -290,11 +278,11 @@ msgstr "Nulstil alle afbildninger til standardværdierne."
 msgid "Perform both direct and reverse mappings."
 msgstr "Udfør både direkte og omvendte afbilninger."
 
-#: commands/i386/pc/drivemap.c:406
+#: commands/i386/pc/drivemap.c:407
 msgid "-l | -r | [-s] grubdev osdisk."
 msgstr "-l | -r | [-s] grubdev osdisk."
 
-#: commands/i386/pc/drivemap.c:407
+#: commands/i386/pc/drivemap.c:408
 msgid "Manage the BIOS drive mappings."
 msgstr "Håndtér BIOS-drevafbildinger."
 
@@ -306,11 +294,7 @@ msgstr "Brug ikke APM til at standse computeren."
 msgid "Halt the system, if possible using APM."
 msgstr "Stands systemet, med APM hvis muligt."
 
-#: commands/i386/pc/play.c:266
-msgid "FILE | TEMPO [PITCH1 DURATION1] [PITCH2 DURATION2] ... "
-msgstr ""
-
-#: commands/i386/pc/play.c:267
+#: commands/i386/pc/play.c:211
 msgid "Play a tune."
 msgstr "Afspil en melodi."
 
@@ -323,7 +307,7 @@ msgstr "Afindlæs PXE-miljøet."
 msgid "List compatible VESA BIOS extension video modes."
 msgstr "Vis liste af kompatible VESA BIOS Extension-videotilstande."
 
-#: commands/i386/pc/vbetest.c:173
+#: commands/i386/pc/vbetest.c:172
 msgid "Test VESA BIOS Extension 2.0+ support."
 msgstr "Test understøttelse af VESA BIOS Extension 2.0+."
 
@@ -355,23 +339,23 @@ msgstr "Kontrollér status af modifikationstaster."
 msgid "Specify filename."
 msgstr "Angiv filnavn."
 
-#: commands/loadenv.c:378 commands/loadenv.c:384
+#: commands/loadenv.c:383 commands/loadenv.c:389
 msgid "[-f FILE]"
 msgstr "[-f FIL]"
 
-#: commands/loadenv.c:379
+#: commands/loadenv.c:384
 msgid "Load variables from environment block file."
 msgstr "Indlæs variable fra miljøblokfil."
 
-#: commands/loadenv.c:385
+#: commands/loadenv.c:390
 msgid "List variables from environment block file."
 msgstr "Vis variabelliste fra miljøblokfil."
 
-#: commands/loadenv.c:390
+#: commands/loadenv.c:395
 msgid "[-f FILE] variable_name [...]"
 msgstr "[-f FIL] variabelnavn [...]"
 
-#: commands/loadenv.c:391
+#: commands/loadenv.c:396
 msgid "Save variables to environment block file."
 msgstr "Gem variable til miljøblokfil."
 
@@ -387,15 +371,15 @@ msgstr "Udskriv størrelser i læsevenligt format."
 msgid "List all files."
 msgstr "Vis liste af alle filer."
 
-#: commands/ls.c:269
+#: commands/ls.c:268
 msgid "[-l|-h|-a] [FILE]"
 msgstr "[-l|-h|-a] [FIL]"
 
-#: commands/ls.c:270
+#: commands/ls.c:269
 msgid "List devices and files."
 msgstr "Vis liste af enheder og filer."
 
-#: commands/lsmmap.c:51
+#: commands/lsmmap.c:47
 msgid "List memory map provided by firmware."
 msgstr "Vis hukommelsesafbildningen tilgængelig via firmware."
 
@@ -408,7 +392,7 @@ msgid "Save read value into variable VARNAME."
 msgstr "Gem den læste værdi i variablen VARNAVN."
 
 #: commands/memrw.c:123 commands/memrw.c:126 commands/memrw.c:129
-#: commands/minicmd.c:362
+#: commands/minicmd.c:367
 msgid "ADDR"
 msgstr "ADR"
 
@@ -441,39 +425,39 @@ msgstr "Skriv word-VÆRDI til ADR."
 msgid "Write dword VALUE to ADDR."
 msgstr "Skriv dword-VÆRDI til ADR."
 
-#: commands/minicmd.c:356
+#: commands/minicmd.c:361
 msgid "Show this message."
 msgstr "Vis denne meddelelse."
 
-#: commands/minicmd.c:359 commands/probe.c:154
+#: commands/minicmd.c:364 commands/probe.c:154
 msgid "[DEVICE]"
 msgstr "[ENHED]"
 
-#: commands/minicmd.c:359
+#: commands/minicmd.c:364
 msgid "Set the root device."
 msgstr "Indstil rodenheden."
 
-#: commands/minicmd.c:362
+#: commands/minicmd.c:367
 msgid "Dump memory."
 msgstr "Dump hukommelse."
 
-#: commands/minicmd.c:365
+#: commands/minicmd.c:370
 msgid "MODULE"
 msgstr "MODUL"
 
-#: commands/minicmd.c:365
+#: commands/minicmd.c:370
 msgid "Remove a module."
 msgstr "Fjern et modul."
 
-#: commands/minicmd.c:368
+#: commands/minicmd.c:373
 msgid "Show loaded modules."
 msgstr "Vis indlæste moduler."
 
-#: commands/minicmd.c:371
+#: commands/minicmd.c:376
 msgid "Exit from GRUB."
 msgstr "Gå ud af GRUB."
 
-#: commands/minicmd.c:374
+#: commands/minicmd.c:379
 msgid "Clear the screen."
 msgstr "Ryd skærmen."
 
@@ -536,42 +520,30 @@ msgid "NAME [VARIABLE]"
 msgstr "NAVN [VARIABEL]"
 
 #: commands/search_file.c:5
-msgid ""
-"Search devices by file. If VARIABLE is specified, the first device found is "
-"set to a variable."
-msgstr ""
-"Søg i enheder efter fil. Hvis VARIABEL er angivet, vil variablen blive sat "
-"til den først fundne enhed."
+msgid "Search devices by file. If VARIABLE is specified, the first device found is set to a variable."
+msgstr "Søg i enheder efter fil. Hvis VARIABEL er angivet, vil variablen blive sat til den først fundne enhed."
 
 #: commands/search_label.c:5
-msgid ""
-"Search devices by label. If VARIABLE is specified, the first device found is "
-"set to a variable."
-msgstr ""
-"Søg i enheder efter etiket. Hvis VARIABEL er angivet, vil variablen blive "
-"sat til den først fundne enhed."
+msgid "Search devices by label. If VARIABLE is specified, the first device found is set to a variable."
+msgstr "Søg i enheder efter etiket. Hvis VARIABEL er angivet, vil variablen blive sat til den først fundne enhed."
 
 #: commands/search_uuid.c:5
-msgid ""
-"Search devices by UUID. If VARIABLE is specified, the first device found is "
-"set to a variable."
-msgstr ""
-"Søg i enheder efter UUID. Hvis VARIABEL er angivet, vil variablen blive sat "
-"til den først fundne enhed."
+msgid "Search devices by UUID. If VARIABLE is specified, the first device found is set to a variable."
+msgstr "Søg i enheder efter UUID. Hvis VARIABEL er angivet, vil variablen blive sat til den først fundne enhed."
 
-#: commands/sleep.c:30
+#: commands/sleep.c:31
 msgid "Verbose countdown."
 msgstr "Ekstra udskrift ved nedtælling."
 
-#: commands/sleep.c:31
+#: commands/sleep.c:32
 msgid "Interruptible with ESC."
 msgstr "Kan ikke afbrydes med ESC."
 
-#: commands/sleep.c:105
+#: commands/sleep.c:106
 msgid "NUMBER_OF_SECONDS"
 msgstr "ANTAL_SEKUNDER"
 
-#: commands/sleep.c:106
+#: commands/sleep.c:107
 msgid "Wait for a specified number of seconds."
 msgstr "Vent et givet antal sekunder."
 
@@ -595,11 +567,11 @@ msgstr "Gør intet, med success."
 msgid "Do nothing, unsuccessfully."
 msgstr "Gør intet, fejlagtigt."
 
-#: commands/usbtest.c:208
+#: commands/usbtest.c:199
 msgid "Test USB support."
 msgstr "Test USB-understøttelse."
 
-#: commands/videotest.c:180
+#: commands/videotest.c:185
 msgid "Test video subsystem."
 msgstr "Test videoundersystem."
 
@@ -646,7 +618,7 @@ msgstr "Vis brugsinformation for denne kommando og afslut."
 msgid "Boot legacy system."
 msgstr "Start ældre system."
 
-#: loader/efi/chainloader.c:340 loader/i386/pc/chainloader.c:166
+#: loader/efi/chainloader.c:340 loader/i386/pc/chainloader.c:153
 msgid "Load another boot loader."
 msgstr "Indlæs en anden opstartsindlæser."
 
@@ -735,39 +707,39 @@ msgstr "Undertryk normal udskrift (advarsler vises stadig)."
 msgid "DEVICE"
 msgstr "ENHED"
 
-#: loader/i386/bsd.c:1287
+#: loader/i386/bsd.c:1296
 msgid "Load kernel of FreeBSD."
 msgstr "Indlæs FreeBSD-kerne."
 
-#: loader/i386/bsd.c:1291
+#: loader/i386/bsd.c:1300
 msgid "Load kernel of OpenBSD."
 msgstr "Indlæs OpenBSD-kerne."
 
-#: loader/i386/bsd.c:1295
+#: loader/i386/bsd.c:1304
 msgid "Load kernel of NetBSD."
 msgstr "Indlæs NetBSD-kerne."
 
-#: loader/i386/bsd.c:1299
+#: loader/i386/bsd.c:1308
 msgid "Load FreeBSD env."
 msgstr "Indlæs FreeBSD-miljø."
 
-#: loader/i386/bsd.c:1302
+#: loader/i386/bsd.c:1311
 msgid "Load FreeBSD kernel module."
 msgstr "Indlæs FreeBSD-kernemodul."
 
-#: loader/i386/bsd.c:1305
+#: loader/i386/bsd.c:1314
 msgid "Load FreeBSD kernel module (ELF)."
 msgstr "Indlæs FreeBSD-kernemodul (ELF)."
 
 #: loader/i386/efi/linux.c:1011 loader/i386/ieee1275/linux.c:301
-#: loader/i386/linux.c:1012 loader/i386/pc/linux.c:399
-#: loader/powerpc/ieee1275/linux.c:353 loader/sparc64/ieee1275/linux.c:519
+#: loader/i386/linux.c:1007 loader/i386/pc/linux.c:399
+#: loader/powerpc/ieee1275/linux.c:353 loader/sparc64/ieee1275/linux.c:520
 msgid "Load Linux."
 msgstr "Indlæs Linux."
 
 #: loader/i386/efi/linux.c:1013 loader/i386/ieee1275/linux.c:303
-#: loader/i386/linux.c:1014 loader/i386/pc/linux.c:402
-#: loader/powerpc/ieee1275/linux.c:355 loader/sparc64/ieee1275/linux.c:521
+#: loader/i386/linux.c:1009 loader/i386/pc/linux.c:402
+#: loader/powerpc/ieee1275/linux.c:355 loader/sparc64/ieee1275/linux.c:522
 msgid "Load initrd."
 msgstr "Indlæs initrd."
 
@@ -775,62 +747,61 @@ msgstr "Indlæs initrd."
 msgid "Load device-properties dump."
 msgstr "Indlæs dump af enhedsegenskaber."
 
-#: loader/multiboot.c:337
+#: loader/multiboot_loader.c:133
 msgid "Load a multiboot 2 kernel."
 msgstr "Indlæs en multiboot 2-kerne."
 
-#: loader/multiboot.c:340
-#, fuzzy
-msgid "Load a multiboot 2 module."
-msgstr "Indlæs et multiboot-modul."
-
-#: loader/multiboot.c:343
+#: loader/multiboot_loader.c:136
 msgid "Load a multiboot kernel."
 msgstr "Indlæs en multiboot-kerne."
 
-#: loader/multiboot.c:346
+#: loader/multiboot_loader.c:141
 msgid "Load a multiboot module."
 msgstr "Indlæs et multiboot-modul."
 
-#: loader/xnu.c:1428
+#: loader/xnu.c:1407
 msgid "Load XNU image."
 msgstr "Indlæs XNU-aftryk."
 
-#: loader/xnu.c:1430
+#: loader/xnu.c:1409
 msgid "Load 64-bit XNU image."
 msgstr "Indlæs 64-bit XNU-aftryk."
 
-#: loader/xnu.c:1432
+#: loader/xnu.c:1411
 msgid "Load XNU extension package."
 msgstr "Indlæs XNU-udvidelsespakke."
 
-#: loader/xnu.c:1434
+#: loader/xnu.c:1413
 msgid "Load XNU extension."
 msgstr "Indlæs XNU-udvidelse."
 
 # ?
-#: loader/xnu.c:1436
+#: loader/xnu.c:1415
 msgid "DIRECTORY [OSBundleRequired]"
 msgstr "KATALOG [OSBundleRequired]"
 
-#: loader/xnu.c:1437
+#: loader/xnu.c:1416
 msgid "Load XNU extension directory."
 msgstr "Indlæs XNU-udvidelseskatalog."
 
+#: loader/xnu.c:1418
+msgid "Load XNU ramdisk. It will be seen as md0."
+msgstr "Indlæs XNU-ramdisk. Den vil kunne ses som md0."
+
 # ??? splash image lige pludselig?  Det er vel så et billede og ikke et aftryk.  Så vidt jeg kan se i koden er dette eneste forekomst af dén slags.  -Ask
-#: loader/xnu.c:1444
+#: loader/xnu.c:1421
 msgid "Load a splash image for XNU."
 msgstr "Indlæs et startbillede for XNU."
 
-#: loader/xnu.c:1449
+#: loader/xnu.c:1425
 msgid "Load XNU hibernate image."
 msgstr "Indlæs XNU-dvaleaftryk."
 
-#: normal/auth.c:217
+#: normal/auth.c:233
 msgid "Enter username: "
 msgstr "Indtast brugernavn: "
 
-#: normal/auth.c:222
+#: normal/auth.c:238
 msgid "Enter password: "
 msgstr "Indtast adgangskode: "
 
@@ -849,116 +820,75 @@ msgstr "Advarsel: ugyldig forgrundsfarve \"%s\"\n"
 msgid "Warning: invalid background color `%s'\n"
 msgstr "Advarsel: ugyldig baggrundsfarve \"%s\"\n"
 
-#: normal/dyncmd.c:144
+#: normal/dyncmd.c:147
 msgid "not loaded"
 msgstr "ikke indlæst"
 
-#: normal/main.c:415
+#: normal/main.c:408
 #, c-format
 msgid "GNU GRUB  version %s"
 msgstr "GNU GRUB  version %s"
 
-#: normal/main.c:552
+#: normal/main.c:538
 #, c-format
-msgid ""
-"Minimal BASH-like line editing is supported. For the first word, TAB lists "
-"possible command completions. Anywhere else TAB lists possible device or "
-"file completions. %s"
-msgstr ""
-"Minimal BASH-agtig linjeredigering understøttes. For det første ord vil TAB "
-"vise de mulige kommandofuldførelser. Alle andre steder vil TAB vise de "
-"mulige fuldførelser af enheds- eller filnavne. %s"
+msgid "Minimal BASH-like line editing is supported. For the first word, TAB lists possible command completions. Anywhere else TAB lists possible device or file completions. %s"
+msgstr "Minimal BASH-agtig linjeredigering understøttes. For det første ord vil TAB vise de mulige kommandofuldførelser. Alle andre steder vil TAB vise de mulige fuldførelser af enheds- eller filnavne. %s"
 
-#: normal/main.c:555
+#: normal/main.c:541
 msgid "ESC at any time exits."
 msgstr "ESC på ethvert tidspunkt afslutter."
 
-#: normal/main.c:670
-msgid "Enter normal mode."
-msgstr ""
-
-#: normal/main.c:672
-msgid "Exit from normal mode."
-msgstr ""
-
-#: normal/menu_entry.c:1061
+#: normal/menu_entry.c:1060
 msgid "Possible commands are:"
 msgstr "Mulige kommandoer er:"
 
-#: normal/menu_entry.c:1065
+#: normal/menu_entry.c:1064
 msgid "Possible devices are:"
 msgstr "Mulige enheder er:"
 
-#: normal/menu_entry.c:1069
+#: normal/menu_entry.c:1068
 msgid "Possible files are:"
 msgstr "Mulige filer er:"
 
-#: normal/menu_entry.c:1073
+#: normal/menu_entry.c:1072
 msgid "Possible partitions are:"
 msgstr "Mulige partitioner er:"
 
-#: normal/menu_entry.c:1077
+#: normal/menu_entry.c:1076
 msgid "Possible arguments are:"
 msgstr "Mulige argumenter er:"
 
-#: normal/menu_entry.c:1081
+#: normal/menu_entry.c:1080
 msgid "Possible things are:"
 msgstr "Mulige ting er:"
 
 # ???
-#: normal/menu_entry.c:1185
+#: normal/menu_entry.c:1184
 msgid "Booting a command list"
 msgstr "Starter en kommandoliste"
 
-#: normal/menu_entry.c:1398
+#: normal/menu_entry.c:1397
 msgid "Press any key to continue..."
 msgstr "Tryk på en tast for at fortsætte..."
 
-#: normal/menu_text.c:180
-#, fuzzy
-msgid ""
-"Minimum Emacs-like screen editing is supported. TAB lists completions. Press "
-"F1 to boot, F2=Ctrl-a, F3=Ctrl-e, F4 for a command-line or ESC to discard "
-"edits and return to the GRUB menu."
-msgstr ""
-"Minimal Emacs-agtig skærmredigering understøttes. TAB viser fuldførelser. "
-"Tryk Ctrl-x for at starte, Ctrl-c for at få en kommandolinje, eller ESC for "
-"at vende tilbage til menuen."
+#: normal/menu_text.c:179
+msgid "Minimum Emacs-like screen editing is supported. TAB lists completions. Press Ctrl-x to boot, Ctrl-c for a command-line or ESC to return menu."
+msgstr "Minimal Emacs-agtig skærmredigering understøttes. TAB viser fuldførelser. Tryk Ctrl-x for at starte, Ctrl-c for at få en kommandolinje, eller ESC for at vende tilbage til menuen."
 
-#: normal/menu_text.c:185
-#, fuzzy
-msgid ""
-"Minimum Emacs-like screen editing is supported. TAB lists completions. Press "
-"Ctrl-x to boot, Ctrl-c for a command-line or ESC to discard edits and return "
-"to the GRUB menu."
-msgstr ""
-"Minimal Emacs-agtig skærmredigering understøttes. TAB viser fuldførelser. "
-"Tryk Ctrl-x for at starte, Ctrl-c for at få en kommandolinje, eller ESC for "
-"at vende tilbage til menuen."
-
-#: normal/menu_text.c:193
+#: normal/menu_text.c:186
 #, c-format
 msgid "Use the %C and %C keys to select which entry is highlighted.\n"
 msgstr "Brug tasterne %C og %C til at vælge fremhævet punkt.\n"
 
-#: normal/menu_text.c:210
-msgid ""
-"Press enter to boot the selected OS, 'e' to edit the commands before booting "
-"or 'c' for a command-line. ESC to return previous menu.\n"
-msgstr ""
-"Tryk retur for at starte det valgte operativsystem, \"e\" for at redigere "
-"kommandoerne før opstart, eller \"c\" for at få en kommandolinje. ESC vender "
-"tilbage til den forrige menu.\n"
+#: normal/menu_text.c:203
+msgid "Press enter to boot the selected OS, 'e' to edit the commands before booting or 'c' for a command-line. ESC to return previous menu.\n"
+msgstr "Tryk retur for at starte det valgte operativsystem, \"e\" for at redigere kommandoerne før opstart, eller \"c\" for at få en kommandolinje. ESC vender tilbage til den forrige menu.\n"
 
-#: normal/menu_text.c:218
-msgid ""
-"Press enter to boot the selected OS, 'e' to edit the commands before booting "
-"or 'c' for a command-line.\n"
-msgstr ""
-"Tryk retur for at starte det valgte operativsystem, \"e\" for at redigere "
-"kommandoerne før opstart, eller \"c\" for at få en kommandolinje.\n"
+#: normal/menu_text.c:211
+msgid "Press enter to boot the selected OS, 'e' to edit the commands before booting or 'c' for a command-line.\n"
+msgstr "Tryk retur for at starte det valgte operativsystem, \"e\" for at redigere kommandoerne før opstart, eller \"c\" for at få en kommandolinje.\n"
 
-#: normal/menu_text.c:370
+#: normal/menu_text.c:363
 #, c-format
 msgid "The highlighted entry will be executed automatically in %ds."
 msgstr "Det fremhævede punkt vil blive kørt automatisk om %ds."
@@ -1024,69 +954,52 @@ msgstr "Angiv pariteten for den serielle port."
 msgid "Set the serial port stop bits."
 msgstr "Angiv stop-bit for den serielle port."
 
-#: term/serial.c:619
-#, fuzzy
-msgid "[OPTIONS...]"
-msgstr "[TILVALG] DISK"
-
-#: term/serial.c:620
-msgid "Configure serial port."
-msgstr ""
-
-#: util/grub-mkimage.c:440
+#: util/grub-mkrawimage.c:67
 msgid "the core image is too small"
 msgstr "kerneaftrykket er for lille"
 
-#: util/grub-mkimage.c:451
+#: util/grub-mkrawimage.c:79
 msgid "cannot compress the kernel image"
 msgstr "kan ikke komprimere kerneaftryk"
 
-#: util/grub-mkimage.c:548
+#: util/grub-mkrawimage.c:154
 msgid "prefix is too long"
 msgstr "præfiks er for langt"
 
-#: util/grub-mkimage.c:672
-#, c-format
-msgid "core image is too big (%p > %p)"
-msgstr "kerneaftrykket er for stort (%p > %p)"
-
-#: util/grub-mkimage.c:678
+#: util/grub-mkrawimage.c:240
 msgid "the core image is too big"
 msgstr "kerneaftrykket er for stort"
 
 # bemærk: omkringstående linjer har småt begyndelsesbogstav
-#: util/grub-mkimage.c:683
+#: util/grub-mkrawimage.c:245
 #, c-format
 msgid "diskboot.img size must be %u bytes"
 msgstr "størrelsen af diskboot.img skal være %u byte"
 
-#: util/grub-mkimage.c:1168 util/i386/pc/grub-setup.c:619
+#: util/grub-mkrawimage.c:328
+#, c-format
+msgid "core image is too big (%p > %p)"
+msgstr "kerneaftrykket er for stort (%p > %p)"
+
+#: util/grub-mkrawimage.c:432 util/i386/pc/grub-setup.c:587
 #, c-format
 msgid "Try `%s --help' for more information.\n"
 msgstr "Kør \"%s --help\" for yderligere information.\n"
 
-#: util/grub-mkimage.c:1187
-#, fuzzy, c-format
+#: util/grub-mkrawimage.c:434
+#, c-format
 msgid ""
 "Usage: %s [OPTION]... [MODULES]\n"
 "\n"
 "Make a bootable image of GRUB.\n"
 "\n"
-"  -d, --directory=DIR     use images and modules under DIR [default=%s/"
-"@platform@]\n"
+"  -d, --directory=DIR     use images and modules under DIR [default=%s]\n"
 "  -p, --prefix=DIR        set grub_prefix directory [default=%s]\n"
 "  -m, --memdisk=FILE      embed FILE as a memdisk image\n"
 "  -f, --font=FILE         embed FILE as a boot font\n"
 "  -c, --config=FILE       embed FILE as boot config\n"
-"  -n, --note              add NOTE segment for CHRP Open Firmware\n"
 "  -o, --output=FILE       output a generated image to FILE [default=stdout]\n"
-"  -O, --format=FORMAT     generate an image in format\n"
-"                          available formats: %s\n"
-"  -h, --help              display this message and exit\n"
-"  -V, --version           print version information and exit\n"
-"  -v, --verbose           print verbose messages\n"
-"\n"
-"Report bugs to <%s>.\n"
+"  -O, --format=FORMAT     generate an image in format [default="
 msgstr ""
 "Brug: %s [TILVALG]... [MODULER]\n"
 "\n"
@@ -1097,171 +1010,134 @@ msgstr ""
 "  -m, --memdisk=FIL       indlejr FIL som memdisk-aftryk\n"
 "  -f, --font=FIL          indlejr FIL som opstartsskrifttype\n"
 "  -c, --config=FIL        indlejr FIL som opstartskonfiguration\n"
-"  -o, --output=FIL        udskriv genereret aftryk til FIL "
-"[standard=stdout]\n"
+"  -o, --output=FIL        udskriv genereret aftryk til FIL [standard=stdout]\n"
 "  -O, --format=FORMAT     generér et aftryk i FORMAT [standard="
 
-#: util/grub-mkimage.c:1333
+#: util/grub-mkrawimage.c:573
 #, c-format
 msgid "cannot open %s"
 msgstr "kan ikke åbne %s"
 
-#: util/i386/pc/grub-setup.c:164
+#: util/i386/pc/grub-setup.c:159
 msgid "the first sector of the core file is not sector-aligned"
 msgstr "første sektor af kernefilen er ikke sektorjusteret"
 
-#: util/i386/pc/grub-setup.c:178
+#: util/i386/pc/grub-setup.c:173
 msgid "non-sector-aligned data is found in the core file"
 msgstr "ikke-sektorjusterede data fundet i kernefilen"
 
-#: util/i386/pc/grub-setup.c:192
+#: util/i386/pc/grub-setup.c:187
 msgid "the sectors of the core file are too fragmented"
 msgstr "sektorerne i kernefilen er for fragmenterede"
 
-#: util/i386/pc/grub-setup.c:203
+#: util/i386/pc/grub-setup.c:198
 #, c-format
 msgid "the size of `%s' is not %u"
 msgstr "størrelsen af \"%s\" er ikke %u"
 
-#: util/i386/pc/grub-setup.c:220
+#: util/i386/pc/grub-setup.c:215
 #, c-format
 msgid "the size of `%s' is too small"
 msgstr "størrelsen af \"%s\" er for lille"
 
-#: util/i386/pc/grub-setup.c:222
+#: util/i386/pc/grub-setup.c:217
 #, c-format
 msgid "the size of `%s' is too large"
 msgstr "størrelsen af \"%s\" er for stor"
 
-#: util/i386/pc/grub-setup.c:261
+#: util/i386/pc/grub-setup.c:254
 #, c-format
 msgid "unable to identify a filesystem in %s; safety check can't be performed"
-msgstr ""
-"kan ikke identificere noget filsystem i %s; sikkerhedstjek kan ikke udføres"
+msgstr "kan ikke identificere noget filsystem i %s; sikkerhedstjek kan ikke udføres"
 
-#: util/i386/pc/grub-setup.c:265
+#: util/i386/pc/grub-setup.c:258
 #, c-format
-msgid ""
-"%s appears to contain a %s filesystem which isn't known to reserve space for "
-"DOS-style boot.  Installing GRUB there could result in FILESYSTEM "
-"DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe "
-"disables this check, use at your own risk)"
-msgstr ""
-"%s synes at indeholde et %s-filsystem, for hvilket det ikke vides om der er "
-"reserveret plads til DOS-agtig opstart.  Installation af GRUB der vil måske "
-"resultere i ØDELÆGGELSE AF FILSYSTEMET, hvis værdifulde data overskrives af "
-"grub-setup (--skip-fs-probe deaktiverer denne kontrol - bruges på eget "
-"ansvar)"
+msgid "%s appears to contain a %s filesystem which isn't known to reserve space for DOS-style boot.  Installing GRUB there could result in FILESYSTEM DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe disables this check, use at your own risk)"
+msgstr "%s synes at indeholde et %s-filsystem, for hvilket det ikke vides om der er reserveret plads til DOS-agtig opstart.  Installation af GRUB der vil måske resultere i ØDELÆGGELSE AF FILSYSTEMET, hvis værdifulde data overskrives af grub-setup (--skip-fs-probe deaktiverer denne kontrol - bruges på eget ansvar)"
 
-#: util/i386/pc/grub-setup.c:339 util/i386/pc/grub-setup.c:366
-msgid ""
-"Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
-msgstr ""
-"Forsøger at installere GRUB på en partitionsløs disk.  Dette er en DÅRLIG "
-"idé."
+#: util/i386/pc/grub-setup.c:307
+msgid "no DOS-style partitions found"
+msgstr "ingen DOS-agtige partitioner fundet"
 
-#: util/i386/pc/grub-setup.c:345
-msgid ""
-"Attempting to install GRUB to a partition instead of the MBR.  This is a BAD "
-"idea."
-msgstr ""
-"Forsøger at installere GRUB til en partition frem for MBR.  Dette er en "
-"DÅRLIG idé."
+#: util/i386/pc/grub-setup.c:323 util/i386/pc/grub-setup.c:348
+msgid "Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
+msgstr "Forsøger at installere GRUB på en partitionsløs disk.  Dette er en DÅRLIG idé."
 
-#: util/i386/pc/grub-setup.c:375
+#: util/i386/pc/grub-setup.c:329
+msgid "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD idea."
+msgstr "Forsøger at installere GRUB til en partition frem for MBR.  Dette er en DÅRLIG idé."
+
+#: util/i386/pc/grub-setup.c:357
 msgid "No DOS-style partitions found"
 msgstr "Ingen DOS-agtige partitioner fundet"
 
-#: util/i386/pc/grub-setup.c:380
-msgid ""
-"This msdos-style partition label has no post-MBR gap; embedding won't be "
-"possible!"
-msgstr ""
-"Denne msdos-agtige partitionsetiket har intet post-MBR-mellerum; indlejring "
-"vil ikke være muligt!"
+#: util/i386/pc/grub-setup.c:362
+msgid "This msdos-style partition label has no post-MBR gap; embedding won't be possible!"
+msgstr "Denne msdos-agtige partitionsetiket har intet post-MBR-mellerum; indlejring vil ikke være muligt!"
 
-#: util/i386/pc/grub-setup.c:382
-msgid ""
-"This GPT partition label has no BIOS Boot Partition; embedding won't be "
-"possible!"
-msgstr ""
-"Denne GPT-partitionsetiket har ingen BIOS-opstartspartition; indlejring vil "
-"være umulig!"
+#: util/i386/pc/grub-setup.c:364
+msgid "This GPT partition label has no BIOS Boot Partition; embedding won't be possible!"
+msgstr "Denne GPT-partitionsetiket har ingen BIOS-opstartspartition; indlejring vil være umulig!"
 
-#: util/i386/pc/grub-setup.c:389
+#: util/i386/pc/grub-setup.c:371
 msgid "Your core.img is unusually large.  It won't fit in the embedding area."
-msgstr ""
-"Din core.img er usædvanlig stor og vil ikke passe ind i indlejringsområdet."
+msgstr "Din core.img er usædvanlig stor og vil ikke passe ind i indlejringsområdet."
 
-#: util/i386/pc/grub-setup.c:391
+#: util/i386/pc/grub-setup.c:373
 msgid "Your embedding area is unusually small.  core.img won't fit in it."
-msgstr ""
-"Dit indlejringsområde er usædvanligt lille.  Der er ikke plads til core.img."
+msgstr "Dit indlejringsområde er usædvanligt lille.  Der er ikke plads til core.img."
 
-#: util/i386/pc/grub-setup.c:436
-msgid ""
-"embedding is not possible, but this is required when the root device is on a "
-"RAID array or LVM volume"
-msgstr ""
-"indlejring er ikke muligt, men dette kræves når rodenheden ligger på en RAID-"
-"række eller LVM-diskenhed"
+#: util/i386/pc/grub-setup.c:416
+msgid "embedding is not possible, but this is required when the root device is on a RAID array or LVM volume"
+msgstr "indlejring er ikke muligt, men dette kræves når rodenheden ligger på en RAID-række eller LVM-diskenhed"
 
-#: util/i386/pc/grub-setup.c:439
-#, fuzzy
-msgid ""
-"Embedding is not possible.  GRUB can only be installed in this setup by "
-"using blocklists.  However, blocklists are UNRELIABLE and their use is "
-"discouraged."
-msgstr ""
-"Indlejring er ikke muligt.  GRUB kan kun installeres i denne konfiguration "
-"ved brug af bloklister.  Dog er bloklister UTILREGNELIGE og deres brug "
-"frarådes."
+#: util/i386/pc/grub-setup.c:419
+msgid "Embedding is not possible.  GRUB can only be installed in this setup by using blocklists.  However, blocklists are UNRELIABLE and its use is discouraged."
+msgstr "Indlejring er ikke muligt.  GRUB kan kun installeres i denne konfiguration ved brug af bloklister.  Dog er bloklister UTILREGNELIGE og deres brug frarådes."
 
-#: util/i386/pc/grub-setup.c:443
+#: util/i386/pc/grub-setup.c:423
 msgid "if you really want blocklists, use --force"
 msgstr "hvis du virkelig vil have bloklister, så brug --force"
 
-#: util/i386/pc/grub-setup.c:462
+#: util/i386/pc/grub-setup.c:439
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB"
 msgstr "forsøger at læse kerneaftrykket \"%s\" fra GRUB"
 
-#: util/i386/pc/grub-setup.c:463
+#: util/i386/pc/grub-setup.c:440
 #, c-format
 msgid "attempting to read the core image `%s' from GRUB again"
 msgstr "forsøger at læse kerneaftrykket \"%s\" fra GRUB igen"
 
-#: util/i386/pc/grub-setup.c:530
+#: util/i386/pc/grub-setup.c:498
 #, c-format
 msgid "cannot read `%s' correctly"
 msgstr "kan ikke læse \"%s\" korrekt"
 
-#: util/i386/pc/grub-setup.c:543
+#: util/i386/pc/grub-setup.c:511
 msgid "no terminator in the core image"
 msgstr "ingen terminator i kerneaftrykket"
 
-#: util/i386/pc/grub-setup.c:554
+#: util/i386/pc/grub-setup.c:522
 msgid "failed to read the first sector of the core image"
 msgstr "kunne ikke læse første sektor af kerneaftrykket"
 
-#: util/i386/pc/grub-setup.c:560
+#: util/i386/pc/grub-setup.c:528
 msgid "failed to read the rest sectors of the core image"
 msgstr "kunne ikke læse restsektorerne i kerneaftrykket"
 
-#: util/i386/pc/grub-setup.c:579
+#: util/i386/pc/grub-setup.c:547
 #, c-format
 msgid "cannot open `%s'"
 msgstr "kan ikke åbne \"%s\""
 
-#: util/i386/pc/grub-setup.c:621
-#, fuzzy, c-format
+#: util/i386/pc/grub-setup.c:589
+#, c-format
 msgid ""
 "Usage: %s [OPTION]... DEVICE\n"
 "\n"
 "Set up images to boot from DEVICE.\n"
 "DEVICE must be a GRUB device (e.g. `(hd0,1)').\n"
-"\n"
-"You should not normally run %s directly.  Use grub-install instead.\n"
 "\n"
 "  -b, --boot-image=FILE   use FILE as the boot image [default=%s]\n"
 "  -c, --core-image=FILE   use FILE as the core image [default=%s]\n"
@@ -1294,56 +1170,50 @@ msgstr ""
 "\n"
 "Rapportér fejl til <%s>.\n"
 
-#: util/i386/pc/grub-setup.c:753
+#: util/i386/pc/grub-setup.c:719
 #, c-format
 msgid "No device is specified.\n"
 msgstr "Ingen enhed angivet.\n"
 
-#: util/i386/pc/grub-setup.c:759
+#: util/i386/pc/grub-setup.c:725
 #, c-format
 msgid "Unknown extra argument `%s'.\n"
 msgstr "Ukendt ekstra argument \"%s\".\n"
 
-#: util/i386/pc/grub-setup.c:776
+#: util/i386/pc/grub-setup.c:742
 #, c-format
 msgid "Invalid device `%s'.\n"
 msgstr "Ugyldig enhed \"%s\".\n"
 
-#: util/i386/pc/grub-setup.c:789
+#: util/i386/pc/grub-setup.c:755
 #, c-format
 msgid "invalid root device `%s'"
 msgstr "ugyldig rodenhed \"%s\""
 
-#: util/i386/pc/grub-setup.c:802
+#: util/i386/pc/grub-setup.c:768
 msgid "cannot guess the root device. Specify the option `--root-device'"
 msgstr "kan ikke gætte rodenheden. Brug tilvalget \"--root-device\""
 
-#~ msgid "[class [handler]]"
-#~ msgstr "[klasse [håndtering]]"
+#: util/grub.d/10_kfreebsd.in:40
+msgid "%s, with kFreeBSD %s"
+msgstr "%s, med kFreeBSD %s"
 
-#~ msgid "List or select a handler."
-#~ msgstr "Udskriv eller vælg en håndtering."
+#: util/grub.d/10_kfreebsd.in:48
+msgid "Loading kernel of FreeBSD %s ..."
+msgstr "Indlæser FreeBSD-kerne %s ..."
 
-#~ msgid "Load XNU ramdisk. It will be seen as md0."
-#~ msgstr "Indlæs XNU-ramdisk. Den vil kunne ses som md0."
+#: util/grub.d/10_linux.in:57
+msgid "%s, with Linux %s (recovery mode)"
+msgstr "%s, med Linux %s (genoprettelsestilstand)"
 
-#~ msgid "no DOS-style partitions found"
-#~ msgstr "ingen DOS-agtige partitioner fundet"
+#: util/grub.d/10_linux.in:59
+msgid "%s, with Linux %s"
+msgstr "%s, med Linux %s"
 
-#~ msgid "%s, with kFreeBSD %s"
-#~ msgstr "%s, med kFreeBSD %s"
+#: util/grub.d/10_linux.in:77
+msgid "Loading Linux %s ..."
+msgstr "Indlæser Linux %s ..."
 
-#~ msgid "Loading kernel of FreeBSD %s ..."
-#~ msgstr "Indlæser FreeBSD-kerne %s ..."
-
-#~ msgid "%s, with Linux %s (recovery mode)"
-#~ msgstr "%s, med Linux %s (genoprettelsestilstand)"
-
-#~ msgid "%s, with Linux %s"
-#~ msgstr "%s, med Linux %s"
-
-#~ msgid "Loading Linux %s ..."
-#~ msgstr "Indlæser Linux %s ..."
-
-#~ msgid "Loading initial ramdisk ..."
-#~ msgstr "Indlæser startramdisk ..."
+#: util/grub.d/10_linux.in:82
+msgid "Loading initial ramdisk ..."
+msgstr "Indlæser startramdisk ..."

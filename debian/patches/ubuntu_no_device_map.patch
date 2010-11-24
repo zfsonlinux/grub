@@ -6,37 +6,37 @@ Index: b/util/grub-install.in
 +++ b/util/grub-install.in
 @@ -38,7 +38,6 @@
  
- grub_setup=${sbindir}/`echo grub-setup | sed ${transform}`
- grub_mkimage=${bindir}/`echo grub-mkimage | sed ${transform}`
--grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
- grub_probe=${sbindir}/`echo grub-probe | sed ${transform}`
- grub_editenv=${bindir}/`echo grub-editenv | sed ${transform}`
- rootdir=
-@@ -74,7 +73,6 @@
-                           instead of the root directory
+ grub_setup="${sbindir}/`echo grub-setup | sed ${transform}`"
+ grub_mkimage="${bindir}/`echo grub-mkimage | sed ${transform}`"
+-grub_mkdevicemap="${sbindir}/`echo grub-mkdevicemap | sed ${transform}`"
+ grub_probe="${sbindir}/`echo grub-probe | sed ${transform}`"
+ grub_editenv="${bindir}/`echo grub-editenv | sed ${transform}`"
+ grub_mkrelpath="${bindir}/`echo grub-mkrelpath | sed ${transform}`"
+@@ -104,7 +103,6 @@
    --grub-setup=FILE       use FILE as grub-setup
    --grub-mkimage=FILE     use FILE as grub-mkimage
+   --grub-mkrelpath=FILE   use FILE as grub-mkrelpath
 -  --grub-mkdevicemap=FILE use FILE as grub-mkdevicemap
    --grub-probe=FILE       use FILE as grub-probe
    --no-floppy             do not probe any floppy drive
-   --recheck               probe a device map even if it already exists
-@@ -155,9 +153,9 @@
- 	grub_mkimage=`echo "$option" | sed 's/--grub-mkimage=//'` ;;
+   --allow-floppy          Make the drive also bootable as floppy 
+@@ -209,9 +207,9 @@
+ 	grub_mkrelpath="`echo "$option" | sed 's/--grub-mkrelpath=//'`" ;;
  
      --grub-mkdevicemap)
--	grub_mkdevicemap=`argument $option "$@"`; shift;;
+-	grub_mkdevicemap="`argument "$option" "$@"`"; shift;;
 +	: ;; # compatibility only
      --grub-mkdevicemap=*)
--	grub_mkdevicemap=`echo "$option" | sed 's/--grub-mkdevicemap=//'` ;;
+-	grub_mkdevicemap="`echo "$option" | sed 's/--grub-mkdevicemap=//'`" ;;
 +	: ;; # compatibility only
  
      --grub-probe)
- 	grub_probe=`argument $option "$@"`; shift;;
-@@ -258,14 +256,6 @@
+ 	    grub_probe="`argument "$option" "$@"`"; shift;;
+@@ -314,14 +312,6 @@
      exit 1
  fi
  
--set $grub_mkdevicemap dummy
+-set "$grub_mkdevicemap" dummy
 -if test -f "$1"; then
 -    :
 -else
@@ -44,11 +44,11 @@ Index: b/util/grub-install.in
 -    exit 1
 -fi
 -
- # Create the GRUB directory if it is not present.
- mkdir -p "$grubdir" || exit 1
- 
-@@ -274,22 +264,14 @@
-     rm -f $device_map
+ if [ x"$platform" = xefi ]; then
+     # Find the EFI System Partition.
+     efidir=
+@@ -411,22 +401,14 @@
+     rm -f "$device_map"
  fi
  
 -# Create the device map file if it is not present.
@@ -59,16 +59,16 @@ Index: b/util/grub-install.in
 -    # Create a safe temporary file.
 -    test -n "$mklog" && log_file=`$mklog`
 -
--    $grub_mkdevicemap --device-map=$device_map $no_floppy || exit 1
+-    "$grub_mkdevicemap" "--device-map=$device_map" $no_floppy || exit 1
 -fi
 -
 -# Make sure that there is no duplicated entry.
--tmp=`sed -n '/^([fh]d[0-9]*)/s/\(^(.*)\).*/\1/p' $device_map \
+-tmp=`sed -n '/^([fh]d[0-9]*)/s/\(^(.*)\).*/\1/p' "$device_map" \
 -    | sort | uniq -d | sed -n 1p`
 -if test -n "$tmp"; then
 -    echo "The drive $tmp is defined multiple times in the device map $device_map" 1>&2
 -    exit 1
-+    tmp=`sed -n '/^([fh]d[0-9]*)/s/\(^(.*)\).*/\1/p' $device_map \
++    tmp=`sed -n '/^([fh]d[0-9]*)/s/\(^(.*)\).*/\1/p' "$device_map" \
 +	| sort | uniq -d | sed -n 1p`
 +    if test -n "$tmp"; then
 +	echo "The drive $tmp is defined multiple times in the device map $device_map" 1>&2
@@ -81,15 +81,15 @@ Index: b/util/grub-mkconfig.in
 ===================================================================
 --- a/util/grub-mkconfig.in
 +++ b/util/grub-mkconfig.in
-@@ -35,7 +35,6 @@
+@@ -36,7 +36,6 @@
  
  self=`basename $0`
  
--grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
- grub_probe=${sbindir}/`echo grub-probe | sed ${transform}`
+-grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed "${transform}"`
+ grub_probe=${sbindir}/`echo grub-probe | sed "${transform}"`
+ grub_script_check="${bindir}/`echo grub-script-check | sed "${transform}"`"
  
- # Usage: usage
-@@ -126,14 +125,6 @@
+@@ -118,14 +117,6 @@
    fi
  fi
  
@@ -104,7 +104,7 @@ Index: b/util/grub-mkconfig.in
  set $grub_probe dummy
  if test -f "$1"; then
      :
-@@ -144,10 +135,6 @@
+@@ -136,10 +127,6 @@
  
  mkdir -p ${GRUB_PREFIX}
  

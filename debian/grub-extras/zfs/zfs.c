@@ -1,8 +1,9 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
  *  Copyright (C) 1999,2000,2001,2002,2003,2004  Free Software Foundation, Inc.
- *  Copyright 2008  Sun Microsystems, Inc.
+ *  Copyright 2010  Sun Microsystems, Inc.
  *  Copyright (C) 2009  Vladimir Serbinenko <phcoder@gmail.com>
+ *  Copyright (C) 2010  Robert Millan <rmh@gnu.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,6 +51,7 @@
 #include <grub/zfs/zfs_znode.h>
 #include <grub/zfs/dmu.h>
 #include <grub/zfs/dmu_objset.h>
+#include <grub/zfs/sa_impl.h>
 #include <grub/zfs/dsl_dir.h>
 #include <grub/zfs/dsl_dataset.h>
 
@@ -163,11 +165,12 @@ struct grub_zfs_data
 };
 
 decomp_entry_t decomp_table[ZIO_COMPRESS_FUNCTIONS] = {
-  {"inherit", 0},		/* ZIO_COMPRESS_INHERIT */
+  {"inherit", NULL},		/* ZIO_COMPRESS_INHERIT */
   {"on", lzjb_decompress},	/* ZIO_COMPRESS_ON */
-  {"off", 0},			/* ZIO_COMPRESS_OFF */
+  {"off", NULL},		/* ZIO_COMPRESS_OFF */
   {"lzjb", lzjb_decompress},	/* ZIO_COMPRESS_LZJB */
-  {"empty", 0}			/* ZIO_COMPRESS_EMPTY */
+  {"empty", NULL},		/* ZIO_COMPRESS_EMPTY */
+  {"gzip", NULL},		/* ZIO_COMPRESS_GZIP */
 };
 
 static grub_err_t zio_read_data (blkptr_t * bp, grub_zfs_endian_t endian,
@@ -207,10 +210,11 @@ zio_checksum_info_t zio_checksum_table[ZIO_CHECKSUM_FUNCTIONS] = {
   {zio_checksum_off, 0, 0, "off"},
   {zio_checksum_SHA256, 1, 1, "label"},
   {zio_checksum_SHA256, 1, 1, "gang_header"},
-  {fletcher_2, 0, 1, "zilog"},
+  {NULL, 0, 0, "zilog"},
   {fletcher_2, 0, 0, "fletcher2"},
   {fletcher_4, 1, 0, "fletcher4"},
   {zio_checksum_SHA256, 1, 0, "SHA256"},
+  {NULL, 0, 0, "zilog2"},
 };
 
 /*
@@ -223,7 +227,7 @@ static grub_err_t
 zio_checksum_verify (zio_cksum_t zc, grub_uint32_t checksum,
 		     grub_zfs_endian_t endian, char *buf, int size)
 {
-  zio_block_tail_t *zbt = (zio_block_tail_t *) (buf + size) - 1;
+  zio_eck_t *zec = (zio_eck_t *) (buf + size) - 1;
   zio_checksum_info_t *ci = &zio_checksum_table[checksum];
   zio_cksum_t actual_cksum, expected_cksum;
 
@@ -234,12 +238,12 @@ zio_checksum_verify (zio_cksum_t zc, grub_uint32_t checksum,
 			 "unknown checksum function %d", checksum);
     }
 
-  if (ci->ci_zbt)
+  if (ci->ci_eck)
     {
-      expected_cksum = zbt->zbt_cksum;
-      zbt->zbt_cksum = zc;
+      expected_cksum = zec->zec_cksum;  
+      zec->zec_cksum = zc;  
       ci->ci_func (buf, size, endian, &actual_cksum);
-      zbt->zbt_cksum = expected_cksum;
+      zec->zec_cksum = expected_cksum;
       zc = expected_cksum;
     }
   else
@@ -515,14 +519,16 @@ zio_read (blkptr_t * bp, grub_zfs_endian_t endian, void **buf,
 	  grub_size_t *size, struct grub_zfs_data *data)
 {
   grub_size_t lsize, psize;
-  int comp;
-  char *compbuf;
+  unsigned int comp;
+  char *compbuf = NULL;
   grub_err_t err;
   zio_cksum_t zc = bp->blk_cksum;
   grub_uint32_t checksum;
 
+  *buf = NULL;
+
   checksum = (grub_zfs_to_cpu64((bp)->blk_prop, endian) >> 40) & 0xff;
-  comp = (grub_zfs_to_cpu64((bp)->blk_prop, endian)>>32) & 0xff;
+  comp = (grub_zfs_to_cpu64((bp)->blk_prop, endian)>>32) & 0x7;
   lsize = (BP_IS_HOLE(bp) ? 0 :
 	   (((grub_zfs_to_cpu64 ((bp)->blk_prop, endian) & 0xffff) + 1)
 	    << SPA_MINBLOCKSHIFT));
@@ -531,13 +537,13 @@ zio_read (blkptr_t * bp, grub_zfs_endian_t endian, void **buf,
   if (size)
     *size = lsize;
 
-  if ((unsigned int) comp >= ZIO_COMPRESS_FUNCTIONS ||
-      (comp != ZIO_COMPRESS_OFF && decomp_table[comp].decomp_func == NULL))
-    {
-      grub_dprintf ("zfs", "comp=%d\n", comp);
-      return grub_error (GRUB_ERR_NOT_IMPLEMENTED_YET,
-			 "compression algorithm not supported\n");
-    }
+  if (comp >= ZIO_COMPRESS_FUNCTIONS)
+    return grub_error (GRUB_ERR_NOT_IMPLEMENTED_YET,
+		       "compression algorithm %u not supported\n", (unsigned int) comp);
+
+  if (comp != ZIO_COMPRESS_OFF && decomp_table[comp].decomp_func == NULL)
+    return grub_error (GRUB_ERR_NOT_IMPLEMENTED_YET,
+		       "compression algorithm %s not supported\n", decomp_table[comp].name);
 
   if (comp != ZIO_COMPRESS_OFF)
     {
@@ -553,6 +559,7 @@ zio_read (blkptr_t * bp, grub_zfs_endian_t endian, void **buf,
   if (err)
     {
       grub_free (compbuf);
+      *buf = NULL;
       return err;
     }
 
@@ -561,16 +568,27 @@ zio_read (blkptr_t * bp, grub_zfs_endian_t endian, void **buf,
     {
       grub_dprintf ("zfs", "incorrect checksum\n");
       grub_free (compbuf);
+      *buf = NULL;
       return err;
     }
 
   if (comp != ZIO_COMPRESS_OFF)
     {
       *buf = grub_malloc (lsize);
+      if (!*buf)
+	{
+	  grub_free (compbuf);
+	  return grub_errno;
+	}
+
       err = decomp_table[comp].decomp_func (compbuf, *buf, psize, lsize);
       grub_free (compbuf);
       if (err)
-	return err;
+	{
+	  grub_free (*buf);
+	  *buf = NULL;
+	  return err;
+	}
     }
 
   return GRUB_ERR_NONE;
@@ -839,6 +857,23 @@ zap_leaf_lookup (zap_leaf_phys_t * l, grub_zfs_endian_t endian,
   return grub_error (GRUB_ERR_FILE_NOT_FOUND, "couldn't find %s", name);
 }
 
+
+/* Verify if this is a fat zap header block */
+static grub_err_t
+zap_verify (zap_phys_t *zap)
+{
+  if (zap->zap_magic != (grub_uint64_t) ZAP_MAGIC)
+    return grub_error (GRUB_ERR_BAD_FS, "bad ZAP magic");
+
+  if (zap->zap_flags != 0)
+    return grub_error (GRUB_ERR_BAD_FS, "bad ZAP flags");
+
+  if (zap->zap_salt == 0)
+    return grub_error (GRUB_ERR_BAD_FS, "bad ZAP salt");
+
+  return GRUB_ERR_NONE;
+}
+
 /*
  * Fat ZAP lookup
  *
@@ -855,12 +890,10 @@ fzap_lookup (dnode_end_t * zap_dnode, zap_phys_t * zap,
   grub_err_t err;
   grub_zfs_endian_t leafendian;
 
-  /* Verify if this is a fat zap header block */
-  if (zap->zap_magic != (grub_uint64_t) ZAP_MAGIC)
-    return grub_error (GRUB_ERR_BAD_FS, "bad ZAP magic");
+  err = zap_verify (zap);
+  if (err)
+    return err;
 
-  if (zap->zap_salt == 0)
-    return grub_error (GRUB_ERR_BAD_FS, "bad ZAP salt");
   hash = zap_hash (zap->zap_salt, name);
 
   /* get block id from index */
@@ -897,12 +930,8 @@ fzap_iterate (dnode_end_t * zap_dnode, zap_phys_t * zap,
   grub_err_t err;
   grub_zfs_endian_t endian;
 
-  /* Verify if this is a fat zap header block */
-  if (zap->zap_magic != (grub_uint64_t) ZAP_MAGIC)
-    {
-      grub_error (GRUB_ERR_BAD_FS, "bad ZAP magic");
-      return 0;
-    }
+  if (zap_verify (zap))
+    return 0;
 
   /* get block id from index */
   if (zap->zap_ptrtbl.zt_numblks != 0)
@@ -1448,7 +1477,7 @@ make_mdn (dnode_end_t * mdn, struct grub_zfs_data *data)
   err = zio_read (bp, mdn->endian, (void **) &osp, &ospsize, data);
   if (err)
     return err;
-  if (ospsize < sizeof (objset_phys_t))
+  if (ospsize < OBJSET_PHYS_SIZE_V14)
     {
       grub_free (osp);
       return grub_error (GRUB_ERR_BAD_FS, "too small osp");
@@ -2020,7 +2049,7 @@ zfs_mount (grub_device_t dev)
 	  continue;
 	}
 
-      if (ospsize < sizeof (objset_phys_t))
+      if (ospsize < OBJSET_PHYS_SIZE_V14)
 	{
 	  grub_dprintf ("zfs", "osp too small\n"); 
 	  grub_free (osp);
@@ -2167,9 +2196,44 @@ grub_zfs_open (struct grub_file *file, const char *fsfilename)
     }
 
   /* get the file size and set the file position to 0 */
+
+  /*
+   * For DMU_OT_SA we will need to locate the SIZE attribute
+   * attribute, which could be either in the bonus buffer
+   * or the "spill" block.
+   */
+  if (data->dnode.dn.dn_bonustype == DMU_OT_SA)
+    {
+      sa_hdr_phys_t *sahdrp;
+      int hdrsize;
+
+      if (data->dnode.dn.dn_bonuslen != 0)
+	{
+	  sahdrp = (sa_hdr_phys_t *) DN_BONUS (&data->dnode.dn);
+	}
+      else if (data->dnode.dn.dn_flags & DNODE_FLAG_SPILL_BLKPTR)
+	{
+	  blkptr_t *bp = &data->dnode.dn.dn_spill;
+
+	  err = zio_read (bp, data->dnode.endian, (void **) &sahdrp, NULL, data);
+	  if (err)
+	    return err;
+	}
+      else
+	{
+	  return grub_error (GRUB_ERR_BAD_FS, "filesystem is corrupt");
+	}
+
+      hdrsize = SA_HDR_SIZE (sahdrp);
+      file->size = *(grub_uint64_t *) ((char *) sahdrp + hdrsize + SA_SIZE_OFFSET);
+    }
+  else
+    {
+      file->size = grub_zfs_to_cpu64 (((znode_phys_t *) DN_BONUS (&data->dnode.dn))->zp_size, data->dnode.endian);
+    }
+
   file->data = data;
   file->offset = 0;
-  file->size = grub_zfs_to_cpu64 (((znode_phys_t *) DN_BONUS (&data->dnode.dn))->zp_size, data->dnode.endian);
 
 #ifndef GRUB_UTIL
   grub_dl_ref (my_mod);
