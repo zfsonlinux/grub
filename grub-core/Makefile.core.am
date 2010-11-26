@@ -38252,7 +38252,7 @@ endif
 if COND_emu
 noinst_PROGRAMS += kernel.exec
 kernel_exec_SOURCES  = 
-kernel_exec_SOURCES += disk/host.c gnulib/progname.c gnulib/error.c kern/emu/console.c kern/emu/getroot.c kern/emu/hostdisk.c kern/emu/hostfs.c kern/emu/main.c kern/emu/misc.c kern/emu/mm.c kern/emu/time.c kern/command.c kern/corecmd.c kern/device.c kern/disk.c kern/dl.c kern/env.c kern/err.c kern/file.c kern/fs.c kern/list.c kern/main.c kern/misc.c kern/parser.c kern/partition.c kern/rescue_parser.c kern/rescue_reader.c kern/term.c 
+kernel_exec_SOURCES += disk/host.c gnulib/progname.c gnulib/error.c kern/emu/cache.S kern/emu/console.c kern/emu/getroot.c kern/emu/hostdisk.c kern/emu/hostfs.c kern/emu/main.c kern/emu/misc.c kern/emu/mm.c kern/emu/time.c kern/command.c kern/corecmd.c kern/device.c kern/disk.c kern/dl.c kern/env.c kern/err.c kern/file.c kern/fs.c kern/list.c kern/main.c kern/misc.c kern/parser.c kern/partition.c kern/rescue_parser.c kern/rescue_reader.c kern/term.c 
 nodist_kernel_exec_SOURCES  =  ## platform nodist sources
 kernel_exec_LDADD  = $(LDADD_KERNEL) 
 kernel_exec_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_KERNEL) $(CFLAGS_GNULIB) 
@@ -38652,9 +38652,9 @@ if COND_mips_yeeloong
 noinst_PROGRAMS += xz_decompress.image
 xz_decompress_image_SOURCES  = boot/mips/startup_raw.S boot/decompressor/minilib.c boot/decompressor/xz.c lib/xzembed/xz_dec_bcj.c lib/xzembed/xz_dec_lzma2.c lib/xzembed/xz_dec_stream.c 
 nodist_xz_decompress_image_SOURCES  = ## platform nodist sources
-xz_decompress_image_LDADD  = 
+xz_decompress_image_LDADD  = -lgcc 
 xz_decompress_image_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_IMAGE) -static-libgcc 
-xz_decompress_image_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_IMAGE) -lgcc -static-libgcc -Wl,-Ttext,0x80100000 
+xz_decompress_image_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_IMAGE) -static-libgcc -Wl,-Ttext,0x80100000 
 xz_decompress_image_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_IMAGE) -I$(srcdir)/lib/posix_wrap -I$(srcdir)/lib/xzembed -DGRUB_EMBED_DECOMPRESSOR=1 -DGRUB_MACHINE_LINK_ADDR=0x80200000 
 xz_decompress_image_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_IMAGE) 
 xz_decompress_image_OBJCOPYFLAGS  = $(OBJCOPYFLAGS_IMAGE) -O binary 
@@ -38673,9 +38673,9 @@ if COND_mips_yeeloong
 noinst_PROGRAMS += none_decompress.image
 none_decompress_image_SOURCES  = boot/mips/startup_raw.S boot/decompressor/none.c 
 nodist_none_decompress_image_SOURCES  = ## platform nodist sources
-none_decompress_image_LDADD  = 
+none_decompress_image_LDADD  = -lgcc 
 none_decompress_image_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_IMAGE) -static-libgcc 
-none_decompress_image_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_IMAGE) -lgcc -static-libgcc -Wl,-Ttext,0x80100000 
+none_decompress_image_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_IMAGE) -static-libgcc -Wl,-Ttext,0x80100000 
 none_decompress_image_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_IMAGE) -DGRUB_EMBED_DECOMPRESSOR=1 -DGRUB_MACHINE_LINK_ADDR=0x80200000 
 none_decompress_image_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_IMAGE) 
 none_decompress_image_OBJCOPYFLAGS  = $(OBJCOPYFLAGS_IMAGE) -O binary 
@@ -38916,7 +38916,7 @@ endif
 
 if COND_emu
 bin_PROGRAMS += grub-emu-lite
-grub_emu_lite_SOURCES  = kern/emu/lite.c kern/emu/cache.S 
+grub_emu_lite_SOURCES  = kern/emu/lite.c 
 nodist_grub_emu_lite_SOURCES  = symlist.c 
 grub_emu_lite_LDADD  = kernel.img$(EXEEXT) $(LIBUTIL) $(LIBCURSES) $(LIBSDL) $(LIBUSB) $(LIBPCIACCESS) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
 grub_emu_lite_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
