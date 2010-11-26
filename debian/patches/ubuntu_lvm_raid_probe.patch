@@ -3,26 +3,22 @@ Description: Fix LVM/RAID probing without device.map
  that we will know about the underlying physical volumes.
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/525085
 Forwarded: http://lists.gnu.org/archive/html/grub-devel/2010-03/msg00084.html
-Last-Update: 2010-03-22
+Last-Update: 2010-11-26
 
 Index: b/ChangeLog.lvm-raid-probe
 ===================================================================
 --- /dev/null
 +++ b/ChangeLog.lvm-raid-probe
-@@ -0,0 +1,15 @@
-+2010-11-22  Colin Watson  <cjwatson@ubuntu.com>
+@@ -0,0 +1,11 @@
++2010-11-26  Colin Watson  <cjwatson@ubuntu.com>
 +
 +	* grub-core/kern/emu/hostdisk.c (store_grub_dev): New function.
 +	(grub_util_biosdisk_probe_device): New function.
 +	* include/grub/emu/hostdisk.h (grub_util_biosdisk_probe_device):
 +	Add prototype.
-+	* util/grub-probe.c (probe): If we don't have a device map and the
-+	requested device has an abstraction, probe all devices and
-+	reinitialise abstraction modules.
-+	(main): Pass device map to probe.  Drop reinitialisation of
-+	abstraction modules since we will do that in probe if necessary.
-+	* util/grub-setup.c (main): If we don't have a device map, probe all
++	* util/grub-probe.c (main): If we don't have a device map, probe all
 +	devices.
++	* util/grub-setup.c (main): Likewise.
 +	* Makefile.util.def (grub-probe): Add util/deviceiter.c.
 +	(grub-setup): Likewise.
 Index: b/Makefile.util.def
@@ -122,70 +118,26 @@ Index: b/util/grub-probe.c
  #include <grub/term.h>
  #include <grub/env.h>
  #include <grub/raid.h>
-@@ -89,13 +90,14 @@
- }
- 
- static void
--probe (const char *path, char *device_name)
-+probe (const char *path, char *device_name, const char *dev_map)
+@@ -304,6 +305,7 @@
  {
-   char *drive_name = NULL;
-   char *grub_path = NULL;
-   char *filebuf_via_grub = NULL, *filebuf_via_sys = NULL;
-   grub_device_t dev = NULL;
-   grub_fs_t fs;
+   char *dev_map = 0;
+   char *argument;
 +  struct stat dev_map_stat;
  
-   if (path == NULL)
-     {
-@@ -119,6 +121,24 @@
-       goto end;
-     }
+   set_program_name (argv[0]);
  
-+  if (stat (dev_map, &dev_map_stat) == -1 &&
-+      grub_util_get_dev_abstraction (device_name) != GRUB_DEV_ABSTRACTION_NONE)
-+    {
-+      /* If we don't have a device map, then we won't yet know about the
-+         physical volumes underlying this device, so probe all devices.  */
-+      grub_util_iterate_devices (grub_util_biosdisk_probe_device, 0);
+@@ -388,6 +390,11 @@
+   /* Initialize the emulated biosdisk driver.  */
+   grub_util_biosdisk_init (dev_map ? : DEFAULT_DEVICE_MAP);
+ 
++  if (stat (dev_map ? : DEFAULT_DEVICE_MAP, &dev_map_stat) == -1)
++    /* If we don't have a device map, then we won't yet know about the
++       physical volumes underlying this device, so probe all devices.  */
++    grub_util_iterate_devices (grub_util_biosdisk_probe_device, 0);
 +
-+      /* Now reinitialise the higher layers.  */
-+      grub_lvm_fini ();
-+      grub_mdraid09_fini ();
-+      grub_mdraid1x_fini ();
-+      grub_raid_fini ();
-+      grub_raid_init ();
-+      grub_mdraid09_init ();
-+      grub_mdraid1x_init ();
-+      grub_lvm_init ();
-+    }
-+
-   drive_name = grub_util_get_grub_dev (device_name);
-   if (! drive_name)
-     grub_util_error ("cannot find a GRUB drive for %s.  Check your device.map", device_name);
-@@ -391,20 +411,11 @@
    /* Initialize all modules. */
    grub_init_all ();
  
--  grub_lvm_fini ();
--  grub_mdraid09_fini ();
--  grub_mdraid1x_fini ();
--  grub_raid_fini ();
--  grub_raid_init ();
--  grub_mdraid09_init ();
--  grub_mdraid1x_init ();
--  grub_lvm_init ();
--
-   /* Do it.  */
-   if (argument_is_device)
--    probe (NULL, argument);
-+    probe (NULL, argument, dev_map ? : DEFAULT_DEVICE_MAP);
-   else
--    probe (argument, NULL);
-+    probe (argument, NULL, dev_map ? : DEFAULT_DEVICE_MAP);
- 
-   /* Free resources.  */
-   grub_fini_all ();
 Index: b/util/grub-setup.c
 ===================================================================
 --- a/util/grub-setup.c

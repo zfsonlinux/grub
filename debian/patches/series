@@ -24,7 +24,6 @@ ubuntu_no_device_map.patch
 ubuntu_quiet_grub_loading.patch
 ubuntu_lvm_raid_probe.patch
 ubuntu_langpacks.patch
-ubuntu_drive_probe.patch
 ubuntu_qemu.patch
 ubuntu_vesafb.patch
 ubuntu_embed_signatures.patch
@@ -34,3 +33,4 @@ ubuntu_lua_enum_pci.patch
 ubuntu_gfxpayload_filter.patch
 ubuntu_debug_acpi_shutdown.patch
 ubuntu_fix_usb_efi_boot.patch
+ubuntu_linux_submenus.patch

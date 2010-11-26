@@ -1,0 +1,26 @@
+Index: b/util/grub.d/10_linux.in
+===================================================================
+--- a/util/grub.d/10_linux.in
++++ b/util/grub.d/10_linux.in
+@@ -141,6 +141,7 @@
+ EOF
+ fi
+ 
++in_submenu=false
+ while [ "x$list" != "x" ] ; do
+   linux=`version_find_latest $list`
+   echo "Found linux image: $linux" >&2
+@@ -187,4 +188,13 @@
+   fi
+ 
+   list=`echo $list | tr ' ' '\n' | grep -vx $linux | tr '\n' ' '`
++
++  if [ "$list" ] && ! $in_submenu; then
++    echo "submenu \"Previous Linux versions\" {"
++    in_submenu=:
++  fi
+ done
++
++if $in_submenu; then
++  echo "}"
++fi
