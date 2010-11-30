@@ -1,3 +1,10 @@
+grub2 (1.99~20101126-1ubuntu2) natty; urgency=low
+
+  * Simplify the auto-generated menu entries for Linux to avoid using
+    syntax not supported by older GRUB releases.
+
+ -- Evan Broder <evan@ebroder.net>  Tue, 30 Nov 2010 03:08:36 +0000
+
 grub2 (1.99~20101126-1ubuntu1) natty; urgency=low
 
   * Resynchronise with Debian experimental.  Remaining changes:
