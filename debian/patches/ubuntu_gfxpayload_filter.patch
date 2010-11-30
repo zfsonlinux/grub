@@ -7,7 +7,7 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -80,18 +80,10 @@
+@@ -80,18 +80,9 @@
        save_default_entry | sed -e "s/^/\t/"
    fi
  
@@ -22,14 +22,13 @@ Index: b/util/grub.d/10_linux.in
 -	  cat << EOF
 -	set gfxpayload=$GRUB_GFXPAYLOAD_LINUX
 +  cat << EOF
-+	if [ "\$linux_gfx_mode" != text ]; then load_video; fi
 +	set gfxpayload=\$linux_gfx_mode
  EOF
 -  fi
  
    if [ -z "${prepare_boot_cache}" ]; then
      prepare_boot_cache="$(prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/")"
-@@ -125,6 +117,30 @@
+@@ -125,6 +116,31 @@
        done`
  prepare_boot_cache=
  
@@ -56,6 +55,7 @@ Index: b/util/grub.d/10_linux.in
 +fi
 +EOF
 +fi
++echo 'if [ "$linux_gfx_mode" != "text" ]; then load_video; fi'
 +
  while [ "x$list" != "x" ] ; do
    linux=`version_find_latest $list`
