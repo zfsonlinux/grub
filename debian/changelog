@@ -1,3 +1,16 @@
+grub2 (1.99~20101210-1) experimental; urgency=low
+
+  * New Bazaar snapshot.
+    - ZFS moved into grub-core.
+    - Extend gettext to fall back from ll_CC to ll, and set lang to include
+      country part by default so that Chinese works (LP: #686788).
+  * Remove grub-mknetdir from grub-emu.
+  * Exit silently from zz-update-grub kernel hook if update-grub does not
+    exist (e.g. if grub-pc has been removed but not purged; closes:
+    #606184).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 11 Dec 2010 01:22:26 +0000
+
 grub2 (1.99~20101126-1) experimental; urgency=low
 
   * New Bazaar snapshot (mipsel build fix, LVM-on-RAID probing fix).

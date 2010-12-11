@@ -1,23 +1,20 @@
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2004  Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2004,2009,2010  Free Software Foundation, Inc.
  *  Copyright 2010  Sun Microsystems, Inc.
- *  Copyright (C) 2009  Vladimir Serbinenko <phcoder@gmail.com>
- *  Copyright (C) 2010  Robert Millan <rmh@gnu.org>
  *
- *  This program is free software; you can redistribute it and/or modify
+ *  GRUB is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  GRUB is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 /*
  * The zfs plug-in routines for GRUB are:
@@ -1290,7 +1287,8 @@ dnode_get_path (dnode_end_t * mdn, const char *path_in, dnode_end_t * dn,
       if (err)
 	break;
 
-      *path = ch;      
+      *path = ch;
+#if 0
       if (((grub_zfs_to_cpu64(((znode_phys_t *) DN_BONUS (&dnode_path->dn.dn))->zp_mode, dnode_path->dn.endian) >> 12) & 0xf) == 0xa && ch)
 	{
 	  char *oldpath = path, *oldpathbuf = path_buf;
@@ -1323,6 +1321,7 @@ dnode_get_path (dnode_end_t * mdn, const char *path_in, dnode_end_t * dn,
 	      grub_free (dn_new);
 	    }
 	}
+#endif
     }
 
   if (!err)
@@ -2002,9 +2001,7 @@ zfs_mount (grub_device_t dev)
   vdevnum = VDEV_LABELS;
 
   /* Don't check back labels on CDROM.  */
-  if (! data->disk->partition
-      && data->disk->dev->id == GRUB_DISK_DEVICE_BIOSDISK_ID
-      && data->disk->id >= 0xc0)
+  if (grub_disk_get_size (dev->disk) == GRUB_DISK_SIZE_UNKNOWN)
     vdevnum = VDEV_LABELS / 2;
 
   for (label = 0; ubbest == NULL && label < vdevnum; label++)
