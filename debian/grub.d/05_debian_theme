@@ -61,4 +61,10 @@ if ${use_bg} ; then
   echo "fi"
 else
   set_mono_theme
+  # aubergine background
+  cat << EOF
+if background_color 44,0,30; then
+  clear
+fi
+EOF
 fi

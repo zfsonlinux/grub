@@ -15,7 +15,7 @@ Index: b/debian/grub-extras/lua/grub_lib.c
  #include <grub/normal.h>
  #include <grub/file.h>
  #include <grub/device.h>
-+#ifndef GRUB_MACHINE_EMU
++#if !defined(GRUB_MACHINE_EMU) && !defined(GRUB_MACHINE_IEEE1275)
 +#include <grub/pci.h>
 +#endif
  
@@ -25,7 +25,7 @@ Index: b/debian/grub-extras/lua/grub_lib.c
    return push_result (state);
  }
  
-+#ifndef GRUB_MACHINE_EMU
++#if !defined(GRUB_MACHINE_EMU) && !defined(GRUB_MACHINE_IEEE1275)
 +static int
 +grub_lua_enum_pci (lua_State *state)
 +{
@@ -75,7 +75,7 @@ Index: b/debian/grub-extras/lua/grub_lib.c
      {"setenv", grub_lua_setenv},
      {"enum_device", grub_lua_enum_device},
      {"enum_file", grub_lua_enum_file},
-+#ifndef GRUB_MACHINE_EMU
++#if !defined(GRUB_MACHINE_EMU) && !defined(GRUB_MACHINE_IEEE1275)
 +    {"enum_pci", grub_lua_enum_pci},
 +#endif
      {"file_open", grub_lua_file_open},

@@ -146,7 +146,7 @@ build/stamps/build-grub-rescue-efi-amd64: build/stamps/build-grub-efi-amd64
 	sed -i 's,^prefix=.*,prefix=$(CURDIR)/build/grub-rescue-efi-amd64,' \
 		build/grub-rescue-efi-amd64/grub-mkrescue
 	# temporary, to allow this to be part of other CD images
-	sed -i 's,^search --fs-uuid.*,search --file --set /.disk/info,' \
+	sed -i 's,^search --fs-uuid.*,search --file --set=root /.disk/info,' \
 		build/grub-rescue-efi-amd64/grub-mkrescue
 	mkdir -p build/grub-rescue-efi-amd64/rescue-disk/.disk
 	echo 'GRUB EFI-AMD64 rescue CD $(deb_version)' \
@@ -256,7 +256,7 @@ debian/legacy/update-grub:
 	exit 1
 
 debian/grub-extras:
-	@echo "Missing $@.  Try: \"mkdir -p $@; for extra in 915resolution ntldr-img lua zfs; do bzr export $@/\$$extra http://bzr.savannah.nongnu.org/r/grub-extras/\$$extra; done\""
+	@echo "Missing $@.  Try: \"mkdir -p $@; for extra in 915resolution ntldr-img lua; do bzr export $@/\$$extra http://bzr.savannah.nongnu.org/r/grub-extras/\$$extra; done\""
 	exit 1
 
 .PHONY: $(patsubst %,configure/%,$(BUILD_PACKAGES)) $(patsubst %,build/%,$(BUILD_PACKAGES)) $(patsubst %,install/%,$(BUILD_PACKAGES))
