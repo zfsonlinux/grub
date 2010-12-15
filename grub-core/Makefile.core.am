@@ -21965,6 +21965,490 @@ xfs.marker: $(xfs_module_SOURCES) $(nodist_xfs_module_SOURCES)
 	grep 'MARKER' $@.new > $@; rm -f $@.new
 endif
 
+if COND_emu
+noinst_PROGRAMS += zfs.module
+MODULE_FILES += zfs.module$(EXEEXT)
+zfs_module_SOURCES  = fs/zfs/zfs.c fs/zfs/zfs_lzjb.c fs/zfs/zfs_sha256.c fs/zfs/zfs_fletcher.c  ## platform sources
+nodist_zfs_module_SOURCES  =  ## platform nodist sources
+zfs_module_LDADD  = 
+zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
+CLEANFILES += $(nodist_zfs_module_SOURCES)
+MOD_FILES += zfs.mod
+MARKER_FILES += zfs.marker
+CLEANFILES += zfs.marker
+
+zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_pc
+noinst_PROGRAMS += zfs.module
+MODULE_FILES += zfs.module$(EXEEXT)
+zfs_module_SOURCES  = fs/zfs/zfs.c fs/zfs/zfs_lzjb.c fs/zfs/zfs_sha256.c fs/zfs/zfs_fletcher.c  ## platform sources
+nodist_zfs_module_SOURCES  =  ## platform nodist sources
+zfs_module_LDADD  = 
+zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
+CLEANFILES += $(nodist_zfs_module_SOURCES)
+MOD_FILES += zfs.mod
+MARKER_FILES += zfs.marker
+CLEANFILES += zfs.marker
+
+zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_efi
+noinst_PROGRAMS += zfs.module
+MODULE_FILES += zfs.module$(EXEEXT)
+zfs_module_SOURCES  = fs/zfs/zfs.c fs/zfs/zfs_lzjb.c fs/zfs/zfs_sha256.c fs/zfs/zfs_fletcher.c  ## platform sources
+nodist_zfs_module_SOURCES  =  ## platform nodist sources
+zfs_module_LDADD  = 
+zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
+CLEANFILES += $(nodist_zfs_module_SOURCES)
+MOD_FILES += zfs.mod
+MARKER_FILES += zfs.marker
+CLEANFILES += zfs.marker
+
+zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_qemu
+noinst_PROGRAMS += zfs.module
+MODULE_FILES += zfs.module$(EXEEXT)
+zfs_module_SOURCES  = fs/zfs/zfs.c fs/zfs/zfs_lzjb.c fs/zfs/zfs_sha256.c fs/zfs/zfs_fletcher.c  ## platform sources
+nodist_zfs_module_SOURCES  =  ## platform nodist sources
+zfs_module_LDADD  = 
+zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
+CLEANFILES += $(nodist_zfs_module_SOURCES)
+MOD_FILES += zfs.mod
+MARKER_FILES += zfs.marker
+CLEANFILES += zfs.marker
+
+zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_coreboot
+noinst_PROGRAMS += zfs.module
+MODULE_FILES += zfs.module$(EXEEXT)
+zfs_module_SOURCES  = fs/zfs/zfs.c fs/zfs/zfs_lzjb.c fs/zfs/zfs_sha256.c fs/zfs/zfs_fletcher.c  ## platform sources
+nodist_zfs_module_SOURCES  =  ## platform nodist sources
+zfs_module_LDADD  = 
+zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
+CLEANFILES += $(nodist_zfs_module_SOURCES)
+MOD_FILES += zfs.mod
+MARKER_FILES += zfs.marker
+CLEANFILES += zfs.marker
+
+zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_multiboot
+noinst_PROGRAMS += zfs.module
+MODULE_FILES += zfs.module$(EXEEXT)
+zfs_module_SOURCES  = fs/zfs/zfs.c fs/zfs/zfs_lzjb.c fs/zfs/zfs_sha256.c fs/zfs/zfs_fletcher.c  ## platform sources
+nodist_zfs_module_SOURCES  =  ## platform nodist sources
+zfs_module_LDADD  = 
+zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
+CLEANFILES += $(nodist_zfs_module_SOURCES)
+MOD_FILES += zfs.mod
+MARKER_FILES += zfs.marker
+CLEANFILES += zfs.marker
+
+zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_ieee1275
+noinst_PROGRAMS += zfs.module
+MODULE_FILES += zfs.module$(EXEEXT)
+zfs_module_SOURCES  = fs/zfs/zfs.c fs/zfs/zfs_lzjb.c fs/zfs/zfs_sha256.c fs/zfs/zfs_fletcher.c  ## platform sources
+nodist_zfs_module_SOURCES  =  ## platform nodist sources
+zfs_module_LDADD  = 
+zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
+CLEANFILES += $(nodist_zfs_module_SOURCES)
+MOD_FILES += zfs.mod
+MARKER_FILES += zfs.marker
+CLEANFILES += zfs.marker
+
+zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_x86_64_efi
+noinst_PROGRAMS += zfs.module
+MODULE_FILES += zfs.module$(EXEEXT)
+zfs_module_SOURCES  = fs/zfs/zfs.c fs/zfs/zfs_lzjb.c fs/zfs/zfs_sha256.c fs/zfs/zfs_fletcher.c  ## platform sources
+nodist_zfs_module_SOURCES  =  ## platform nodist sources
+zfs_module_LDADD  = 
+zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
+CLEANFILES += $(nodist_zfs_module_SOURCES)
+MOD_FILES += zfs.mod
+MARKER_FILES += zfs.marker
+CLEANFILES += zfs.marker
+
+zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_mips_yeeloong
+noinst_PROGRAMS += zfs.module
+MODULE_FILES += zfs.module$(EXEEXT)
+zfs_module_SOURCES  = fs/zfs/zfs.c fs/zfs/zfs_lzjb.c fs/zfs/zfs_sha256.c fs/zfs/zfs_fletcher.c  ## platform sources
+nodist_zfs_module_SOURCES  =  ## platform nodist sources
+zfs_module_LDADD  = 
+zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
+CLEANFILES += $(nodist_zfs_module_SOURCES)
+MOD_FILES += zfs.mod
+MARKER_FILES += zfs.marker
+CLEANFILES += zfs.marker
+
+zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_sparc64_ieee1275
+noinst_PROGRAMS += zfs.module
+MODULE_FILES += zfs.module$(EXEEXT)
+zfs_module_SOURCES  = fs/zfs/zfs.c fs/zfs/zfs_lzjb.c fs/zfs/zfs_sha256.c fs/zfs/zfs_fletcher.c  ## platform sources
+nodist_zfs_module_SOURCES  =  ## platform nodist sources
+zfs_module_LDADD  = 
+zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
+CLEANFILES += $(nodist_zfs_module_SOURCES)
+MOD_FILES += zfs.mod
+MARKER_FILES += zfs.marker
+CLEANFILES += zfs.marker
+
+zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_powerpc_ieee1275
+noinst_PROGRAMS += zfs.module
+MODULE_FILES += zfs.module$(EXEEXT)
+zfs_module_SOURCES  = fs/zfs/zfs.c fs/zfs/zfs_lzjb.c fs/zfs/zfs_sha256.c fs/zfs/zfs_fletcher.c  ## platform sources
+nodist_zfs_module_SOURCES  =  ## platform nodist sources
+zfs_module_LDADD  = 
+zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
+CLEANFILES += $(nodist_zfs_module_SOURCES)
+MOD_FILES += zfs.mod
+MARKER_FILES += zfs.marker
+CLEANFILES += zfs.marker
+
+zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_emu
+noinst_PROGRAMS += zfsinfo.module
+MODULE_FILES += zfsinfo.module$(EXEEXT)
+zfsinfo_module_SOURCES  = fs/zfs/zfsinfo.c  ## platform sources
+nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
+zfsinfo_module_LDADD  = 
+zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
+CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
+MOD_FILES += zfsinfo.mod
+MARKER_FILES += zfsinfo.marker
+CLEANFILES += zfsinfo.marker
+
+zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_pc
+noinst_PROGRAMS += zfsinfo.module
+MODULE_FILES += zfsinfo.module$(EXEEXT)
+zfsinfo_module_SOURCES  = fs/zfs/zfsinfo.c  ## platform sources
+nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
+zfsinfo_module_LDADD  = 
+zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
+CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
+MOD_FILES += zfsinfo.mod
+MARKER_FILES += zfsinfo.marker
+CLEANFILES += zfsinfo.marker
+
+zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_efi
+noinst_PROGRAMS += zfsinfo.module
+MODULE_FILES += zfsinfo.module$(EXEEXT)
+zfsinfo_module_SOURCES  = fs/zfs/zfsinfo.c  ## platform sources
+nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
+zfsinfo_module_LDADD  = 
+zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
+CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
+MOD_FILES += zfsinfo.mod
+MARKER_FILES += zfsinfo.marker
+CLEANFILES += zfsinfo.marker
+
+zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_qemu
+noinst_PROGRAMS += zfsinfo.module
+MODULE_FILES += zfsinfo.module$(EXEEXT)
+zfsinfo_module_SOURCES  = fs/zfs/zfsinfo.c  ## platform sources
+nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
+zfsinfo_module_LDADD  = 
+zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
+CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
+MOD_FILES += zfsinfo.mod
+MARKER_FILES += zfsinfo.marker
+CLEANFILES += zfsinfo.marker
+
+zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_coreboot
+noinst_PROGRAMS += zfsinfo.module
+MODULE_FILES += zfsinfo.module$(EXEEXT)
+zfsinfo_module_SOURCES  = fs/zfs/zfsinfo.c  ## platform sources
+nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
+zfsinfo_module_LDADD  = 
+zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
+CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
+MOD_FILES += zfsinfo.mod
+MARKER_FILES += zfsinfo.marker
+CLEANFILES += zfsinfo.marker
+
+zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_multiboot
+noinst_PROGRAMS += zfsinfo.module
+MODULE_FILES += zfsinfo.module$(EXEEXT)
+zfsinfo_module_SOURCES  = fs/zfs/zfsinfo.c  ## platform sources
+nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
+zfsinfo_module_LDADD  = 
+zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
+CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
+MOD_FILES += zfsinfo.mod
+MARKER_FILES += zfsinfo.marker
+CLEANFILES += zfsinfo.marker
+
+zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_ieee1275
+noinst_PROGRAMS += zfsinfo.module
+MODULE_FILES += zfsinfo.module$(EXEEXT)
+zfsinfo_module_SOURCES  = fs/zfs/zfsinfo.c  ## platform sources
+nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
+zfsinfo_module_LDADD  = 
+zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
+CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
+MOD_FILES += zfsinfo.mod
+MARKER_FILES += zfsinfo.marker
+CLEANFILES += zfsinfo.marker
+
+zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_x86_64_efi
+noinst_PROGRAMS += zfsinfo.module
+MODULE_FILES += zfsinfo.module$(EXEEXT)
+zfsinfo_module_SOURCES  = fs/zfs/zfsinfo.c  ## platform sources
+nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
+zfsinfo_module_LDADD  = 
+zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
+CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
+MOD_FILES += zfsinfo.mod
+MARKER_FILES += zfsinfo.marker
+CLEANFILES += zfsinfo.marker
+
+zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_mips_yeeloong
+noinst_PROGRAMS += zfsinfo.module
+MODULE_FILES += zfsinfo.module$(EXEEXT)
+zfsinfo_module_SOURCES  = fs/zfs/zfsinfo.c  ## platform sources
+nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
+zfsinfo_module_LDADD  = 
+zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
+CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
+MOD_FILES += zfsinfo.mod
+MARKER_FILES += zfsinfo.marker
+CLEANFILES += zfsinfo.marker
+
+zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_sparc64_ieee1275
+noinst_PROGRAMS += zfsinfo.module
+MODULE_FILES += zfsinfo.module$(EXEEXT)
+zfsinfo_module_SOURCES  = fs/zfs/zfsinfo.c  ## platform sources
+nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
+zfsinfo_module_LDADD  = 
+zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
+CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
+MOD_FILES += zfsinfo.mod
+MARKER_FILES += zfsinfo.marker
+CLEANFILES += zfsinfo.marker
+
+zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_powerpc_ieee1275
+noinst_PROGRAMS += zfsinfo.module
+MODULE_FILES += zfsinfo.module$(EXEEXT)
+zfsinfo_module_SOURCES  = fs/zfs/zfsinfo.c  ## platform sources
+nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
+zfsinfo_module_LDADD  = 
+zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
+CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
+MOD_FILES += zfsinfo.mod
+MARKER_FILES += zfsinfo.marker
+CLEANFILES += zfsinfo.marker
+
+zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
 if COND_i386_pc
 noinst_PROGRAMS += pxe.module
 MODULE_FILES += pxe.module$(EXEEXT)
@@ -37766,490 +38250,6 @@ CLEANFILES += 915resolution.marker
 endif
 
 if COND_emu
-noinst_PROGRAMS += zfs.module
-MODULE_FILES += zfs.module$(EXEEXT)
-zfs_module_SOURCES  = contrib/zfs/zfs.c contrib/zfs/zfs_lzjb.c contrib/zfs/zfs_sha256.c contrib/zfs/zfs_fletcher.c  ## platform sources
-nodist_zfs_module_SOURCES  =  ## platform nodist sources
-zfs_module_LDADD  = 
-zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
-CLEANFILES += $(nodist_zfs_module_SOURCES)
-MOD_FILES += zfs.mod
-MARKER_FILES += zfs.marker
-CLEANFILES += zfs.marker
-
-zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_i386_pc
-noinst_PROGRAMS += zfs.module
-MODULE_FILES += zfs.module$(EXEEXT)
-zfs_module_SOURCES  = contrib/zfs/zfs.c contrib/zfs/zfs_lzjb.c contrib/zfs/zfs_sha256.c contrib/zfs/zfs_fletcher.c  ## platform sources
-nodist_zfs_module_SOURCES  =  ## platform nodist sources
-zfs_module_LDADD  = 
-zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
-CLEANFILES += $(nodist_zfs_module_SOURCES)
-MOD_FILES += zfs.mod
-MARKER_FILES += zfs.marker
-CLEANFILES += zfs.marker
-
-zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_i386_efi
-noinst_PROGRAMS += zfs.module
-MODULE_FILES += zfs.module$(EXEEXT)
-zfs_module_SOURCES  = contrib/zfs/zfs.c contrib/zfs/zfs_lzjb.c contrib/zfs/zfs_sha256.c contrib/zfs/zfs_fletcher.c  ## platform sources
-nodist_zfs_module_SOURCES  =  ## platform nodist sources
-zfs_module_LDADD  = 
-zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
-CLEANFILES += $(nodist_zfs_module_SOURCES)
-MOD_FILES += zfs.mod
-MARKER_FILES += zfs.marker
-CLEANFILES += zfs.marker
-
-zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_i386_qemu
-noinst_PROGRAMS += zfs.module
-MODULE_FILES += zfs.module$(EXEEXT)
-zfs_module_SOURCES  = contrib/zfs/zfs.c contrib/zfs/zfs_lzjb.c contrib/zfs/zfs_sha256.c contrib/zfs/zfs_fletcher.c  ## platform sources
-nodist_zfs_module_SOURCES  =  ## platform nodist sources
-zfs_module_LDADD  = 
-zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
-CLEANFILES += $(nodist_zfs_module_SOURCES)
-MOD_FILES += zfs.mod
-MARKER_FILES += zfs.marker
-CLEANFILES += zfs.marker
-
-zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_i386_coreboot
-noinst_PROGRAMS += zfs.module
-MODULE_FILES += zfs.module$(EXEEXT)
-zfs_module_SOURCES  = contrib/zfs/zfs.c contrib/zfs/zfs_lzjb.c contrib/zfs/zfs_sha256.c contrib/zfs/zfs_fletcher.c  ## platform sources
-nodist_zfs_module_SOURCES  =  ## platform nodist sources
-zfs_module_LDADD  = 
-zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
-CLEANFILES += $(nodist_zfs_module_SOURCES)
-MOD_FILES += zfs.mod
-MARKER_FILES += zfs.marker
-CLEANFILES += zfs.marker
-
-zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_i386_multiboot
-noinst_PROGRAMS += zfs.module
-MODULE_FILES += zfs.module$(EXEEXT)
-zfs_module_SOURCES  = contrib/zfs/zfs.c contrib/zfs/zfs_lzjb.c contrib/zfs/zfs_sha256.c contrib/zfs/zfs_fletcher.c  ## platform sources
-nodist_zfs_module_SOURCES  =  ## platform nodist sources
-zfs_module_LDADD  = 
-zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
-CLEANFILES += $(nodist_zfs_module_SOURCES)
-MOD_FILES += zfs.mod
-MARKER_FILES += zfs.marker
-CLEANFILES += zfs.marker
-
-zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_i386_ieee1275
-noinst_PROGRAMS += zfs.module
-MODULE_FILES += zfs.module$(EXEEXT)
-zfs_module_SOURCES  = contrib/zfs/zfs.c contrib/zfs/zfs_lzjb.c contrib/zfs/zfs_sha256.c contrib/zfs/zfs_fletcher.c  ## platform sources
-nodist_zfs_module_SOURCES  =  ## platform nodist sources
-zfs_module_LDADD  = 
-zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
-CLEANFILES += $(nodist_zfs_module_SOURCES)
-MOD_FILES += zfs.mod
-MARKER_FILES += zfs.marker
-CLEANFILES += zfs.marker
-
-zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_x86_64_efi
-noinst_PROGRAMS += zfs.module
-MODULE_FILES += zfs.module$(EXEEXT)
-zfs_module_SOURCES  = contrib/zfs/zfs.c contrib/zfs/zfs_lzjb.c contrib/zfs/zfs_sha256.c contrib/zfs/zfs_fletcher.c  ## platform sources
-nodist_zfs_module_SOURCES  =  ## platform nodist sources
-zfs_module_LDADD  = 
-zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
-CLEANFILES += $(nodist_zfs_module_SOURCES)
-MOD_FILES += zfs.mod
-MARKER_FILES += zfs.marker
-CLEANFILES += zfs.marker
-
-zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_mips_yeeloong
-noinst_PROGRAMS += zfs.module
-MODULE_FILES += zfs.module$(EXEEXT)
-zfs_module_SOURCES  = contrib/zfs/zfs.c contrib/zfs/zfs_lzjb.c contrib/zfs/zfs_sha256.c contrib/zfs/zfs_fletcher.c  ## platform sources
-nodist_zfs_module_SOURCES  =  ## platform nodist sources
-zfs_module_LDADD  = 
-zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
-CLEANFILES += $(nodist_zfs_module_SOURCES)
-MOD_FILES += zfs.mod
-MARKER_FILES += zfs.marker
-CLEANFILES += zfs.marker
-
-zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_sparc64_ieee1275
-noinst_PROGRAMS += zfs.module
-MODULE_FILES += zfs.module$(EXEEXT)
-zfs_module_SOURCES  = contrib/zfs/zfs.c contrib/zfs/zfs_lzjb.c contrib/zfs/zfs_sha256.c contrib/zfs/zfs_fletcher.c  ## platform sources
-nodist_zfs_module_SOURCES  =  ## platform nodist sources
-zfs_module_LDADD  = 
-zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
-CLEANFILES += $(nodist_zfs_module_SOURCES)
-MOD_FILES += zfs.mod
-MARKER_FILES += zfs.marker
-CLEANFILES += zfs.marker
-
-zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_powerpc_ieee1275
-noinst_PROGRAMS += zfs.module
-MODULE_FILES += zfs.module$(EXEEXT)
-zfs_module_SOURCES  = contrib/zfs/zfs.c contrib/zfs/zfs_lzjb.c contrib/zfs/zfs_sha256.c contrib/zfs/zfs_fletcher.c  ## platform sources
-nodist_zfs_module_SOURCES  =  ## platform nodist sources
-zfs_module_LDADD  = 
-zfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfs_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfs_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfs_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfs_module_SOURCES)
-CLEANFILES += $(nodist_zfs_module_SOURCES)
-MOD_FILES += zfs.mod
-MARKER_FILES += zfs.marker
-CLEANFILES += zfs.marker
-
-zfs.marker: $(zfs_module_SOURCES) $(nodist_zfs_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_emu
-noinst_PROGRAMS += zfsinfo.module
-MODULE_FILES += zfsinfo.module$(EXEEXT)
-zfsinfo_module_SOURCES  = contrib/zfs/zfsinfo.c  ## platform sources
-nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
-zfsinfo_module_LDADD  = 
-zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
-CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
-MOD_FILES += zfsinfo.mod
-MARKER_FILES += zfsinfo.marker
-CLEANFILES += zfsinfo.marker
-
-zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_i386_pc
-noinst_PROGRAMS += zfsinfo.module
-MODULE_FILES += zfsinfo.module$(EXEEXT)
-zfsinfo_module_SOURCES  = contrib/zfs/zfsinfo.c  ## platform sources
-nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
-zfsinfo_module_LDADD  = 
-zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
-CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
-MOD_FILES += zfsinfo.mod
-MARKER_FILES += zfsinfo.marker
-CLEANFILES += zfsinfo.marker
-
-zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_i386_efi
-noinst_PROGRAMS += zfsinfo.module
-MODULE_FILES += zfsinfo.module$(EXEEXT)
-zfsinfo_module_SOURCES  = contrib/zfs/zfsinfo.c  ## platform sources
-nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
-zfsinfo_module_LDADD  = 
-zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
-CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
-MOD_FILES += zfsinfo.mod
-MARKER_FILES += zfsinfo.marker
-CLEANFILES += zfsinfo.marker
-
-zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_i386_qemu
-noinst_PROGRAMS += zfsinfo.module
-MODULE_FILES += zfsinfo.module$(EXEEXT)
-zfsinfo_module_SOURCES  = contrib/zfs/zfsinfo.c  ## platform sources
-nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
-zfsinfo_module_LDADD  = 
-zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
-CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
-MOD_FILES += zfsinfo.mod
-MARKER_FILES += zfsinfo.marker
-CLEANFILES += zfsinfo.marker
-
-zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_i386_coreboot
-noinst_PROGRAMS += zfsinfo.module
-MODULE_FILES += zfsinfo.module$(EXEEXT)
-zfsinfo_module_SOURCES  = contrib/zfs/zfsinfo.c  ## platform sources
-nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
-zfsinfo_module_LDADD  = 
-zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
-CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
-MOD_FILES += zfsinfo.mod
-MARKER_FILES += zfsinfo.marker
-CLEANFILES += zfsinfo.marker
-
-zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_i386_multiboot
-noinst_PROGRAMS += zfsinfo.module
-MODULE_FILES += zfsinfo.module$(EXEEXT)
-zfsinfo_module_SOURCES  = contrib/zfs/zfsinfo.c  ## platform sources
-nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
-zfsinfo_module_LDADD  = 
-zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
-CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
-MOD_FILES += zfsinfo.mod
-MARKER_FILES += zfsinfo.marker
-CLEANFILES += zfsinfo.marker
-
-zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_i386_ieee1275
-noinst_PROGRAMS += zfsinfo.module
-MODULE_FILES += zfsinfo.module$(EXEEXT)
-zfsinfo_module_SOURCES  = contrib/zfs/zfsinfo.c  ## platform sources
-nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
-zfsinfo_module_LDADD  = 
-zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
-CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
-MOD_FILES += zfsinfo.mod
-MARKER_FILES += zfsinfo.marker
-CLEANFILES += zfsinfo.marker
-
-zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_x86_64_efi
-noinst_PROGRAMS += zfsinfo.module
-MODULE_FILES += zfsinfo.module$(EXEEXT)
-zfsinfo_module_SOURCES  = contrib/zfs/zfsinfo.c  ## platform sources
-nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
-zfsinfo_module_LDADD  = 
-zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
-CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
-MOD_FILES += zfsinfo.mod
-MARKER_FILES += zfsinfo.marker
-CLEANFILES += zfsinfo.marker
-
-zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_mips_yeeloong
-noinst_PROGRAMS += zfsinfo.module
-MODULE_FILES += zfsinfo.module$(EXEEXT)
-zfsinfo_module_SOURCES  = contrib/zfs/zfsinfo.c  ## platform sources
-nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
-zfsinfo_module_LDADD  = 
-zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
-CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
-MOD_FILES += zfsinfo.mod
-MARKER_FILES += zfsinfo.marker
-CLEANFILES += zfsinfo.marker
-
-zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_sparc64_ieee1275
-noinst_PROGRAMS += zfsinfo.module
-MODULE_FILES += zfsinfo.module$(EXEEXT)
-zfsinfo_module_SOURCES  = contrib/zfs/zfsinfo.c  ## platform sources
-nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
-zfsinfo_module_LDADD  = 
-zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
-CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
-MOD_FILES += zfsinfo.mod
-MARKER_FILES += zfsinfo.marker
-CLEANFILES += zfsinfo.marker
-
-zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_powerpc_ieee1275
-noinst_PROGRAMS += zfsinfo.module
-MODULE_FILES += zfsinfo.module$(EXEEXT)
-zfsinfo_module_SOURCES  = contrib/zfs/zfsinfo.c  ## platform sources
-nodist_zfsinfo_module_SOURCES  =  ## platform nodist sources
-zfsinfo_module_LDADD  = 
-zfsinfo_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
-zfsinfo_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
-zfsinfo_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) $(ZFS_CPPFLAGS) 
-zfsinfo_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
-EXTRA_DIST += 
-BUILT_SOURCES += $(nodist_zfsinfo_module_SOURCES)
-CLEANFILES += $(nodist_zfsinfo_module_SOURCES)
-MOD_FILES += zfsinfo.mod
-MARKER_FILES += zfsinfo.marker
-CLEANFILES += zfsinfo.marker
-
-zfsinfo.marker: $(zfsinfo_module_SOURCES) $(nodist_zfsinfo_module_SOURCES)
-	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(zfsinfo_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
-	grep 'MARKER' $@.new > $@; rm -f $@.new
-endif
-
-if COND_emu
 noinst_PROGRAMS += kernel.exec
 kernel_exec_SOURCES  = 
 kernel_exec_SOURCES += disk/host.c gnulib/progname.c gnulib/error.c kern/emu/cache.S kern/emu/console.c kern/emu/getroot.c kern/emu/hostdisk.c kern/emu/hostfs.c kern/emu/main.c kern/emu/misc.c kern/emu/mm.c kern/emu/time.c kern/command.c kern/corecmd.c kern/device.c kern/disk.c kern/dl.c kern/env.c kern/err.c kern/file.c kern/fs.c kern/list.c kern/main.c kern/misc.c kern/parser.c kern/partition.c kern/rescue_parser.c kern/rescue_reader.c kern/term.c 
@@ -39170,5 +39170,4 @@ CLEANFILES += genmod.sh
 dist_noinst_DATA += genmod.sh.in 
 endif
 
-include contrib/zfs/Makefile.common
 include contrib/ntldr-img/Makefile.core.common

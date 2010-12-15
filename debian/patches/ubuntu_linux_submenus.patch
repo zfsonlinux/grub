@@ -3,8 +3,8 @@ Index: b/util/grub.d/10_linux.in
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -141,6 +141,7 @@
- EOF
  fi
+ echo 'if [ "$linux_gfx_mode" != "text" ]; then load_video; fi'
  
 +in_submenu=false
  while [ "x$list" != "x" ] ; do

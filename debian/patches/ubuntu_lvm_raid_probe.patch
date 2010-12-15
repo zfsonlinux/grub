@@ -25,7 +25,7 @@ Index: b/Makefile.util.def
 ===================================================================
 --- a/Makefile.util.def
 +++ b/Makefile.util.def
-@@ -247,6 +247,7 @@
+@@ -251,6 +251,7 @@
    installdir = sbin;
    mansection = 8;
    common = util/grub-probe.c;
@@ -33,7 +33,7 @@ Index: b/Makefile.util.def
  
    ldadd = libgrubmods.a;
    ldadd = libgrubkern.a;
-@@ -261,6 +262,7 @@
+@@ -265,6 +266,7 @@
    common = util/grub-setup.c;
    common = util/raid.c;
    common = util/lvm.c;
@@ -118,7 +118,7 @@ Index: b/util/grub-probe.c
  #include <grub/term.h>
  #include <grub/env.h>
  #include <grub/raid.h>
-@@ -304,6 +305,7 @@
+@@ -307,6 +308,7 @@
  {
    char *dev_map = 0;
    char *argument;
@@ -126,7 +126,7 @@ Index: b/util/grub-probe.c
  
    set_program_name (argv[0]);
  
-@@ -388,6 +390,11 @@
+@@ -391,6 +393,11 @@
    /* Initialize the emulated biosdisk driver.  */
    grub_util_biosdisk_init (dev_map ? : DEFAULT_DEVICE_MAP);
  
