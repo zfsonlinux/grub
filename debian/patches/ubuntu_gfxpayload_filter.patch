@@ -39,7 +39,7 @@ Index: b/util/grub.d/10_linux.in
 +else
 +  cat << EOF
 +if [ \${recordfail} != 1 ]; then
-+  set matches_file=\${prefix}/gfxblacklist.lst
++  set matches_file=\${prefix}/gfxblacklist.txt
 +  set class_match=3
 +  if lua \${prefix}/hwmatch.lua; then
 +    if [ \${match} = 0 ]; then
