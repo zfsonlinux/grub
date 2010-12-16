@@ -1,3 +1,11 @@
+grub2 (1.99~20101210-1ubuntu2) natty; urgency=low
+
+  * Use /boot/grub/gfxblacklist.txt for gfxpayload=keep blacklisting rather
+    than /boot/grub/gfxblacklist.lst, since *.lst files are handled by
+    grub-install and this turns out to be inconvenient.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 16 Dec 2010 14:37:30 +0000
+
 grub2 (1.99~20101210-1ubuntu1) natty; urgency=low
 
   [ Colin Watson ]
