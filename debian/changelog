@@ -1,3 +1,40 @@
+grub2 (1.98+20100804-11) unstable; urgency=low
+
+  * Exit silently from zz-update-grub kernel hook if update-grub does not
+    exist (e.g. if grub-pc has been removed but not purged; closes:
+    #606184).
+  * Apply debconf template review by debian-l10n-english and mark several
+    more strings for translation, thanks to David Prévot and Justin B Rye
+    (closes: #605748).
+  * Unfuzzy some translations that were not updated in this round (thanks,
+    David Prévot; closes: #606921).
+  * Incorporate rewritten 05_debian_theme by Alexander Kurtz, which works
+    when /usr is inaccessible by GRUB (closes: #605705).
+  * Backport from upstream:
+    - Recognise DDF1 DM-RAID (closes: #603354).
+
+  [ Updated translations ]
+  * Chinese (YunQiang Su).  Closes: #606426
+  * Indonesian (Arief S Fitrianto).  Closes: #606431
+  * Slovenian (Vanja Cvelbar).  Closes: #606445
+  * Swedish (Martin Bagge / brother).  Closes: #606455
+  * Ukrainian (Yatsenko Alexandr).  Closes: #606538
+  * Basque (Iñaki Larrañaga Murgoitio).  Closes: #606644
+  * Slovak (Slavko).  Closes: #606663
+  * Catalan (Jordi Mallach).
+  * Bulgarian (Damyan Ivanov).  Closes: #606452
+  * Persian (Morteza Fakhraee).  Closes: #606672
+  * Russian (Yuri Kozlov).  Closes: #606753
+  * Dutch (Paul Gevers).  Closes: #606807
+  * Japanese (Hideki Yamane).  Closes: #606836
+  * French (Christian Perrier).  Closes: #606842
+  * Czech (Miroslav Kure).  Closes: #606854
+  * Spanish (Francisco Javier Cuadrado).  Closes: #606903
+  * Portuguese (Tiago Fernandes / Miguel Figueiredo).  Closes: #606908
+  * German (Martin Eberhard Schauer).  Closes: #606896
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 18 Dec 2010 17:20:09 +0000
+
 grub2 (1.98+20100804-10) unstable; urgency=low
 
   * fix_crash_condition_in_kfreebsd_loader.patch: Import from upstream.
