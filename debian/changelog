@@ -1,3 +1,9 @@
+grub2 (1.99~20101221-1ubuntu2) natty; urgency=low
+
+  * Refresh Ubuntu patches so that they actually apply.  Whoops.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 21 Dec 2010 19:43:19 +0000
+
 grub2 (1.99~20101221-1ubuntu1) natty; urgency=low
 
   * Resynchronise with Debian experimental.  Remaining changes:
