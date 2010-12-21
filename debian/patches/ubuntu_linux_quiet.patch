@@ -7,31 +7,35 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -89,13 +89,21 @@
+@@ -89,15 +89,23 @@
      prepare_boot_cache="$(prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/")"
    fi
    printf '%s\n' "${prepare_boot_cache}"
+-  message="$(gettext_printf "Loading Linux %s ..." ${version})"
 -  cat << EOF
 +  if [ "x$5" != "xquiet" ]; then
++    message="$(gettext_printf "Loading Linux %s ..." ${version})"
 +    cat << EOF
- 	echo	'$(printf "$(gettext_quoted "Loading Linux %s ...")" ${version})'
+ 	echo	'$message'
 +EOF
 +  fi
 +  cat << EOF
  	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args}
  EOF
--  if test -n "${initrd}" ; then
-+  if [ "x$5" != "xquiet" ]; then
-     cat << EOF
- 	echo	'$(gettext_quoted "Loading initial ramdisk ...")'
+   if test -n "${initrd}" ; then
+-    message="$(gettext_printf "Loading initial ramdisk ...")"
+-    cat << EOF
++    if [ "x$5" != "xquiet" ]; then
++      message="$(gettext_printf "Loading initial ramdisk ...")"
++      cat << EOF
+ 	echo	'$message'
 +EOF
-+  fi
-+  if test -n "${initrd}" ; then
++    fi
 +    cat << EOF
  	initrd	${rel_dirname}/${initrd}
  EOF
    fi
-@@ -147,7 +155,8 @@
+@@ -149,7 +157,8 @@
    fi
  
    linux_entry "${OS}" "${version}" false \

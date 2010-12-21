@@ -28,7 +28,7 @@ Index: b/util/grub.d/10_linux.in
  
    if [ -z "${prepare_boot_cache}" ]; then
      prepare_boot_cache="$(prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/")"
-@@ -125,6 +116,31 @@
+@@ -127,6 +118,31 @@
        done`
  prepare_boot_cache=
  
