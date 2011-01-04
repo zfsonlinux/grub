@@ -10,6 +10,9 @@ mkrescue_diet.patch
 mkconfig_skip_dmcrypt.patch
 install_stage2_confusion.patch
 qemu_img_exists.patch
+branch_butter.patch
+branch_devmapper.patch
+branch_squash.patch
 ubuntu_grub_standards.patch
 ubuntu_crashkernel.patch
 ubuntu_quick_boot.patch
@@ -27,11 +30,9 @@ ubuntu_langpacks.patch
 ubuntu_qemu.patch
 ubuntu_vesafb.patch
 ubuntu_embed_signatures.patch
-ubuntu_disable_bochs_cirrus.patch
 ubuntu_lua_bitop.patch
 ubuntu_lua_enum_pci.patch
 ubuntu_gfxpayload_filter.patch
-ubuntu_debug_acpi_shutdown.patch
 ubuntu_fix_usb_efi_boot.patch
 ubuntu_linux_submenus.patch
 ubuntu_parse_color.patch
