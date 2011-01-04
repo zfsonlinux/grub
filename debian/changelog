@@ -1,3 +1,86 @@
+grub2 (1.99~20110104-1ubuntu1) natty; urgency=low
+
+  * Resynchronise with Debian.  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme and an aubergine background for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script: title,
+      recovery mode, quiet option, tweak how memtest86+ is displayed, and
+      use UUIDs where appropriate.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel= options if kdump and makedumpfile are available.
+    - If other operating systems are installed, then automatically unhide
+      the menu.  Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus
+      if available to check whether Shift is pressed.  If it is, show the
+      menu, otherwise boot immediately.  If keystatus is not available, then
+      fall back to a short delay interruptible with Escape.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Don't display introductory message about line editing unless we're
+      actually offering a shell prompt.  Don't clear the screen just before
+      booting if we never drew the menu in the first place.
+    - Remove some verbose messages printed before reading the configuration
+      file.
+    - Suppress progress messages as the kernel and initrd load for
+      non-recovery kernel menu entries.
+    - Change prepare_grub_to_access_device to handle filesystems
+      loop-mounted on file images.
+    - Ignore devices loop-mounted from files in 10_linux.
+    - Show the boot menu if the previous boot failed, that is if it failed
+      to get to the end of one of the normal runlevels.
+    - Don't generate /boot/grub/device.map during grub-install or
+      grub-mkconfig by default.
+    - Adjust upgrade version checks for Ubuntu.
+    - Don't display "GRUB loading" unless Shift is held down.
+    - Adjust versions of grub-doc and grub-legacy-doc conflicts to tolerate
+      our backport of the grub-doc split.
+    - Fix LVM/RAID probing in the absence of /boot/grub/device.map.
+    - Look for .mo files in /usr/share/locale-langpack as well, in
+      preference.
+    - Make sure GRUB_TIMEOUT isn't quoted unnecessarily.
+    - Probe all devices in 'grub-probe --target=drive' if
+      /boot/grub/device.map is missing.
+    - Build-depend on qemu-kvm rather than qemu-system for grub-pc tests.
+    - Use qemu rather than qemu-system-i386.
+    - Program vesafb on BIOS systems rather than efifb.
+    - Add a grub-rescue-efi-amd64 package containing a rescue CD-ROM image
+      for EFI-AMD64.
+    - On Wubi, don't ask for an install device, but just update wubildr
+      using the diverted grub-install.
+    - When embedding the core image in a post-MBR gap, check for and avoid
+      sectors matching any of a list of known signatures.
+    - Put second and subsequent Linux menu entries in a submenu.
+    - Add a background_color command.
+    - Add preferred resolution detection for VBE.  GRUB_GFXMODE now defaults
+      to "auto".
+    - Set vt.handoff=7 for as smooth a handoff as possible to kernel
+      graphical mode.
+  * Drop patch to disable video_bochs and video_cirrus on PC BIOS systems;
+    PCI probing should be fixed now.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 04 Jan 2011 18:42:36 +0000
+
+grub2 (1.99~20110104-1) experimental; urgency=low
+
+  * New Bazaar snapshot.
+    - Don't emit drivemap directive for Windows Server 2008 (closes:
+      #607687).
+    - Don't add spurious RAID array members (closes: #605357).
+    - Improve presentation of Xen menu entries (closes: #607867).
+    - Fix PCI probing hangs by skipping remaining functions on devices that
+      do not implement function 0 (closes: #594967).
+    - Fix typo in descriptions of extract_legacy_entries_source and
+      extract_legacy_entries_configfile (LP: #696721).
+  * Merge 1.98+20100804-12:
+    - Use semicolons rather than commas to separate size from model in
+      debconf disk and partition descriptions.
+  * Add full btrfs support, from the upstream 'butter' branch.
+  * Support partitioned loop devices and improve devmapper support, from the
+    upstream 'devmapper' branch.
+  * Add squashfs 4 support, from the upstream 'squash' branch.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 04 Jan 2011 16:12:45 +0000
+
 grub2 (1.99~20101221-1ubuntu2) natty; urgency=low
 
   * Refresh Ubuntu patches so that they actually apply.  Whoops.
@@ -411,6 +494,25 @@ grub2 (1.99~20101122-1) experimental; urgency=low
   * Dzongkha (dawa pemo via Tenzin Dendup).  Closes: #604102
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 22 Nov 2010 12:24:56 +0000
+
+grub2 (1.98+20100804-12) unstable; urgency=low
+
+  * Backport from upstream:
+    - Support big ext2 files (closes: #543924).
+    - Fix gettext quoting to work with bash as /bin/sh, and make echo
+      UTF-8-clean so that (at least) Catalan boot messages are displayed
+      properly (closes: #605615).
+    - Initialise next pointer when creating multiboot module (closes:
+      #605567).
+    - Fix PCI probing hangs by skipping remaining functions on devices that
+      do not implement function 0 (closes: #594967).
+  * Use semicolons rather than commas to separate size from model in debconf
+    disk and partition descriptions; commas are too easily confused with the
+    multiselect choice separator, and in particular make it impossible to
+    answer questions properly in the editor frontend (closes: #608449).
+    Unfuzzy all translations where possible.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 04 Jan 2011 00:42:29 +0000
 
 grub2 (1.98+20100804-11) unstable; urgency=low
 

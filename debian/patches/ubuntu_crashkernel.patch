@@ -20,7 +20,7 @@ Index: b/util/grub.d/10_linux.in
  linux_entry ()
  {
    os="$1"
-@@ -142,7 +147,7 @@
+@@ -144,7 +149,7 @@
    fi
  
    linux_entry "${OS}" "${version}" false \
