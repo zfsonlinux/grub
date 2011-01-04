@@ -1,7 +1,7 @@
 This is ../../../docs/grub.info, produced by makeinfo version 4.13 from
 ../../../docs/grub.texi.
 
-This manual is for GNU GRUB (version 1.99~20101210-2, 16 November 2010).
+This manual is for GNU GRUB (version 1.99~20110104-1, 16 November 2010).
 
    Copyright (C) 1999,2000,2001,2002,2004,2006,2008,2009,2010 Free
 Software Foundation, Inc.
@@ -29,9 +29,9 @@ This is the documentation of GNU GRUB, the GRand Unified Bootloader, a
 flexible and powerful boot loader program for a wide range of
 architectures.
 
-   This edition documents version 1.99~20101210-2.
+   This edition documents version 1.99~20110104-1.
 
-   This manual is for GNU GRUB (version 1.99~20101210-2, 16 November
+   This manual is for GNU GRUB (version 1.99~20110104-1, 16 November
 2010).
 
    Copyright (C) 1999,2000,2001,2002,2004,2006,2008,2009,2010 Free
@@ -3682,21 +3682,21 @@ Appendix A How to obtain and build GRUB
 
    GRUB is available from the GNU alpha archive site
 `ftp://alpha.gnu.org/gnu/grub' or any of its mirrors. The file will be
-named grub-version.tar.gz. The current version is 1.99~20101210-2, so
+named grub-version.tar.gz. The current version is 1.99~20110104-1, so
 the file you should grab is:
 
-   `ftp://alpha.gnu.org/gnu/grub/grub-1.99~20101210-2.tar.gz'
+   `ftp://alpha.gnu.org/gnu/grub/grub-1.99~20110104-1.tar.gz'
 
    To unbundle GRUB use the instruction:
 
-     zcat grub-1.99~20101210-2.tar.gz | tar xvf -
+     zcat grub-1.99~20110104-1.tar.gz | tar xvf -
 
-   which will create a directory called `grub-1.99~20101210-2' with all
+   which will create a directory called `grub-1.99~20110104-1' with all
 the sources. You can look at the file `INSTALL' for detailed
 instructions on how to build and install GRUB, but you should be able to
 just do:
 
-     cd grub-1.99~20101210-2
+     cd grub-1.99~20110104-1
      ./configure
      make install
 
