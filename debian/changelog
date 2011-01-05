@@ -1,3 +1,16 @@
+grub2 (1.99~20110104-2) experimental; urgency=low
+
+  * Support long command lines as per the 2.06 Linux boot protocol, from the
+    upstream 'longlinuxcmd' branch.
+  * Add a background_color command, from the upstream 'parse-color' branch.
+  * Update branch_devmapper.patch, adding a #include to fix a build failure
+    on Ubuntu amd64.
+  * When embedding the core image in a post-MBR gap, check for and avoid
+    sectors matching any of a number of known signatures, from the upstream
+    'embed-sectors' branch.
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 05 Jan 2011 13:31:05 +0000
+
 grub2 (1.99~20110104-1) experimental; urgency=low
 
   * New Bazaar snapshot.
