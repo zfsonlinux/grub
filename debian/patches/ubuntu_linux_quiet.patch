@@ -1,7 +1,8 @@
-Ubuntu: https://bugs.launchpad.net/ubuntu/+source/grub2/+bug/386922
-Upstream: not yet, but probably can and should be
-Description: For non-recovery kernel menu entries, suppress progress
- messages as the kernel and initrd load.
+Description: Suppress kernel/initrd progress messages, except in recovery mode
+Author: Colin Watson <cjwatson@ubuntu.com>
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/386922
+Forwarded: no
+Last-Update: 2011-01-05
 
 Index: b/util/grub.d/10_linux.in
 ===================================================================

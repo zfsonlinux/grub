@@ -1,5 +1,8 @@
-Description: Remove GNU/Linux from default distributor string.
-UbuntuSpecific: We call it "Ubuntu", not "Ubuntu GNU/Linux".
+Description: Remove GNU/Linux from default distributor string
+ This is Ubuntu-specific (we call it "Ubuntu", not "Ubuntu GNU/Linux").
+Author: Mario Limonciello <Mario_Limonciello@dell.com>
+Forwarded: not-needed
+Last-Update: 2011-01-05
 
 Index: b/util/grub.d/10_linux.in
 ===================================================================

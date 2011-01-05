@@ -1,11 +1,16 @@
-Description: If other operating systems are installed, then automatically
- unhide the menu. Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus
- if available to check whether Shift is pressed. If it is, show the menu,
+Description: Bypass menu unless other OSes are installed or Shift is pressed
+ If other operating systems are installed, then automatically unhide the
+ menu. Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus if
+ available to check whether Shift is pressed. If it is, show the menu,
  otherwise boot immediately. If keystatus is not available, then fall back
  to a short delay interruptible with Escape.
-UbuntuSpecific: May or may not remain Ubuntu-specific, although this is not
- obviously wanted upstream. It implements a requirement of
+ .
+ This may or may not remain Ubuntu-specific, although it's not obviously
+ wanted upstream.  It implements a requirement of
  https://wiki.ubuntu.com/DesktopExperienceTeam/KarmicBootExperienceDesignSpec#Bootloader.
+Author: Colin Watson <cjwatson@ubuntu.com>
+Forwarded: no
+Last-Update: 2011-01-05
 
 Index: b/util/grub.d/00_header.in
 ===================================================================

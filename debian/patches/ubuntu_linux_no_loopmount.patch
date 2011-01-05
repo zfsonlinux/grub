@@ -1,7 +1,11 @@
-Ubuntu: needed for Wubi
-Description: Ignore devices loop-mounted from files in Linux grub.d scripts.
-UbuntuSpecific: Not inherently, but perhaps we should integrate 10_lupin
- properly instead.
+Description: Ignore devices loop-mounted from files in Linux grub.d scripts
+ This is needed for Wubi.
+ .
+ This patch isn't inherently Ubuntu-specific, although perhaps we should
+ integrate 10_lupin properly instead.
+Author: Colin Watson <cjwatson@ubuntu.com>
+Forwarded: no
+Last-Update: 2011-01-05
 
 Index: b/util/grub.d/10_linux.in
 ===================================================================

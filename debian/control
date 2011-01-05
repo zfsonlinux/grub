@@ -37,7 +37,7 @@ Standards-Version: 3.8.4
 Homepage: http://www.gnu.org/software/grub/
 XS-Debian-Vcs-Bzr: https://alioth.debian.org/anonscm/bzr/pkg-grub/trunk/grub/
 XS-Debian-Vcs-Browser: http://bzr.debian.org/loggerhead/pkg-grub/
-Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-core-dev/ubuntu/maverick/grub2/maverick
+Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-core-dev/ubuntu/natty/grub2/natty
 
 
 Package: grub2
