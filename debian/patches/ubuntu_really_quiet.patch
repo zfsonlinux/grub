@@ -1,10 +1,11 @@
-Ubuntu: https://bugs.launchpad.net/ubuntu/+source/grub2/+bug/386922
-Description: Remove some verbose messages printed before reading the
- configuration file. In some ways this is awkward because it makes debugging
- harder, but it's a requirement for a smooth-looking boot process; we may be
- able to do better in future.
-UbuntuSpecific: Removes status messages that are arguably useful for
- debugging; we think it looks tidier, but upstream isn't interested.
+Description: Remove verbose messages printed before reading configuration
+ In some ways this is awkward because it makes debugging harder, but it's a
+ requirement for a smooth-looking boot process; we may be able to do better in
+ future.  Upstream doesn't want this, though.
+Author: Colin Watson <cjwatson@ubuntu.com>
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/386922
+Forwarded: not-needed
+Last-Update: 2011-01-05
 
 Index: b/grub-core/kern/main.c
 ===================================================================

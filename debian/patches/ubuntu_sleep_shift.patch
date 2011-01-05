@@ -1,9 +1,10 @@
-Upstream: http://lists.gnu.org/archive/html/grub-devel/2009-08/msg00694.html
- (in part; see thread)
-Description: Allow Shift to interrupt 'sleep --interruptible'.
-UbuntuSpecific: Upstream would like to consider this at more length. See
+Description: Allow Shift to interrupt 'sleep --interruptible'
+ Upstream would like to consider this at more length. See
  http://lists.gnu.org/archive/html/grub-devel/2009-08/msg00718.html, and the
  rest of the thread for context.
+Author: Colin Watson <cjwatson@ubuntu.com>
+Forwarded: http://lists.gnu.org/archive/html/grub-devel/2009-08/msg00694.html
+Last-Update: 2011-01-05
 
 Index: b/grub-core/commands/sleep.c
 ===================================================================

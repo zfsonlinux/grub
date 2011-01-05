@@ -1,8 +1,11 @@
-Description: Add crashkernel= options if kdump and makedumpfile are
- available. See
+Description: Add crashkernel option
+ Add crashkernel= option if kdump and makedumpfile are available. See
  https://blueprints.launchpad.net/ubuntu/+spec/foundations-karmic-linux-kernel-crash-dump.
-UbuntuSpecific: Ubuntu kernel crash handling; requires several other fairly
- distribution-specific pieces to work properly.
+ .
+ This requires several fairly distribution-specific pieces to work properly.
+Author: Michael Vogt <michael.vogt@ubuntu.com>
+Forwarded: not-needed
+Last-Update: 2011-01-05
 
 Index: b/util/grub.d/10_linux.in
 ===================================================================

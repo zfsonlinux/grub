@@ -1,8 +1,12 @@
-Ubuntu: needed for Wubi
-Description: Change prepare_grub_to_access_device to handle filesystems
- loop-mounted on file images.
-UbuntuSpecific: Not inherently. losetup and /proc/mounts are Linux-specific,
- though, so we might need to refine this before sending it upstream.
+Description: Handle filesystems loop-mounted on file images
+ This is needed for Wubi.
+ .
+ This patch isn't inherently Ubuntu-specific.  losetup and /proc/mounts are
+ Linux-specific, though, so we might need to refine this before sending it
+ upstream.
+Author: Colin Watson <cjwatson@ubuntu.com>
+Forwarded: no
+Last-Update: 2011-01-05
 
 Index: b/util/grub-mkconfig_lib.in
 ===================================================================

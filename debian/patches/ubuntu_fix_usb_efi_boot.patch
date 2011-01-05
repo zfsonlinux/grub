@@ -1,3 +1,9 @@
+Description: Build part_msdos and vfat into EFI boot images
+Author: Mario Limonciello <Mario_Limonciello@dell.com>
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/677758
+Forwarded: no
+Last-Update: 2011-01-05
+
 Index: b/util/grub-mkrescue.in
 ===================================================================
 --- a/util/grub-mkrescue.in

@@ -1,5 +1,9 @@
-Description: Suppress "GRUB loading" message unless Shift is held down.
-UbuntuSpecific: yes
+Description: Suppress "GRUB loading" message unless Shift is held down
+ Upstream doesn't want this, as it makes debugging harder.  Ubuntu wants it
+ to provide a cleaner boot experience.
+Author: Colin Watson <cjwatson@ubuntu.com>
+Forwarded: not-needed
+Last-Update: 2011-01-05
 
 Index: b/grub-core/boot/i386/pc/boot.S
 ===================================================================

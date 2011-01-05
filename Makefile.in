@@ -332,9 +332,10 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_emu_TRUE@	grub-core/fs/minix2.c grub-core/fs/nilfs2.c \
 @COND_emu_TRUE@	grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c \
 @COND_emu_TRUE@	grub-core/fs/reiserfs.c grub-core/fs/sfs.c \
-@COND_emu_TRUE@	grub-core/fs/tar.c grub-core/fs/udf.c \
-@COND_emu_TRUE@	grub-core/fs/ufs2.c grub-core/fs/ufs.c \
-@COND_emu_TRUE@	grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c \
+@COND_emu_TRUE@	grub-core/fs/squash4.c grub-core/fs/tar.c \
+@COND_emu_TRUE@	grub-core/fs/udf.c grub-core/fs/ufs2.c \
+@COND_emu_TRUE@	grub-core/fs/ufs.c grub-core/fs/xfs.c \
+@COND_emu_TRUE@	grub-core/fs/zfs/zfs.c \
 @COND_emu_TRUE@	grub-core/fs/zfs/zfs_lzjb.c \
 @COND_emu_TRUE@	grub-core/fs/zfs/zfs_sha256.c \
 @COND_emu_TRUE@	grub-core/fs/zfs/zfs_fletcher.c \
@@ -343,7 +344,7 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_emu_TRUE@	grub-core/lib/libgcrypt-grub/cipher/sha512.c \
 @COND_emu_TRUE@	grub-core/lib/libgcrypt-grub/cipher/crc.c \
 @COND_emu_TRUE@	grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c \
-@COND_emu_TRUE@	grub-core/lib/pbkdf2.c \
+@COND_emu_TRUE@	grub-core/lib/pbkdf2.c grub-core/lib/crc.c \
 @COND_emu_TRUE@	grub-core/normal/datetime.c \
 @COND_emu_TRUE@	grub-core/normal/misc.c \
 @COND_emu_TRUE@	grub-core/partmap/acorn.c \
@@ -358,7 +359,7 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_emu_TRUE@	grub-core/script/lexer.c \
 @COND_emu_TRUE@	grub-core/script/main.c \
 @COND_emu_TRUE@	grub-core/script/script.c \
-@COND_emu_TRUE@	grub-core/script/argv.c
+@COND_emu_TRUE@	grub-core/script/argv.c grub-core/io/gzio.c
 @COND_emu_TRUE@am__append_110 = grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 @COND_emu_TRUE@am__append_111 = $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 @COND_emu_TRUE@am__append_112 = $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -389,9 +390,10 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_pc_TRUE@	grub-core/fs/nilfs2.c grub-core/fs/ntfs.c \
 @COND_i386_pc_TRUE@	grub-core/fs/ntfscomp.c \
 @COND_i386_pc_TRUE@	grub-core/fs/reiserfs.c grub-core/fs/sfs.c \
-@COND_i386_pc_TRUE@	grub-core/fs/tar.c grub-core/fs/udf.c \
-@COND_i386_pc_TRUE@	grub-core/fs/ufs2.c grub-core/fs/ufs.c \
-@COND_i386_pc_TRUE@	grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c \
+@COND_i386_pc_TRUE@	grub-core/fs/squash4.c grub-core/fs/tar.c \
+@COND_i386_pc_TRUE@	grub-core/fs/udf.c grub-core/fs/ufs2.c \
+@COND_i386_pc_TRUE@	grub-core/fs/ufs.c grub-core/fs/xfs.c \
+@COND_i386_pc_TRUE@	grub-core/fs/zfs/zfs.c \
 @COND_i386_pc_TRUE@	grub-core/fs/zfs/zfs_lzjb.c \
 @COND_i386_pc_TRUE@	grub-core/fs/zfs/zfs_sha256.c \
 @COND_i386_pc_TRUE@	grub-core/fs/zfs/zfs_fletcher.c \
@@ -402,7 +404,7 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_pc_TRUE@	grub-core/lib/libgcrypt-grub/cipher/crc.c \
 @COND_i386_pc_TRUE@	grub-core/lib/LzFind.c \
 @COND_i386_pc_TRUE@	grub-core/lib/LzmaEnc.c \
-@COND_i386_pc_TRUE@	grub-core/lib/pbkdf2.c \
+@COND_i386_pc_TRUE@	grub-core/lib/pbkdf2.c grub-core/lib/crc.c \
 @COND_i386_pc_TRUE@	grub-core/normal/datetime.c \
 @COND_i386_pc_TRUE@	grub-core/normal/misc.c \
 @COND_i386_pc_TRUE@	grub-core/partmap/acorn.c \
@@ -417,7 +419,7 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_pc_TRUE@	grub-core/script/lexer.c \
 @COND_i386_pc_TRUE@	grub-core/script/main.c \
 @COND_i386_pc_TRUE@	grub-core/script/script.c \
-@COND_i386_pc_TRUE@	grub-core/script/argv.c
+@COND_i386_pc_TRUE@	grub-core/script/argv.c grub-core/io/gzio.c
 @COND_i386_pc_TRUE@am__append_119 = grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 @COND_i386_pc_TRUE@am__append_120 = $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 @COND_i386_pc_TRUE@am__append_121 = $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -448,9 +450,10 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_efi_TRUE@	grub-core/fs/nilfs2.c grub-core/fs/ntfs.c \
 @COND_i386_efi_TRUE@	grub-core/fs/ntfscomp.c \
 @COND_i386_efi_TRUE@	grub-core/fs/reiserfs.c grub-core/fs/sfs.c \
-@COND_i386_efi_TRUE@	grub-core/fs/tar.c grub-core/fs/udf.c \
-@COND_i386_efi_TRUE@	grub-core/fs/ufs2.c grub-core/fs/ufs.c \
-@COND_i386_efi_TRUE@	grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c \
+@COND_i386_efi_TRUE@	grub-core/fs/squash4.c grub-core/fs/tar.c \
+@COND_i386_efi_TRUE@	grub-core/fs/udf.c grub-core/fs/ufs2.c \
+@COND_i386_efi_TRUE@	grub-core/fs/ufs.c grub-core/fs/xfs.c \
+@COND_i386_efi_TRUE@	grub-core/fs/zfs/zfs.c \
 @COND_i386_efi_TRUE@	grub-core/fs/zfs/zfs_lzjb.c \
 @COND_i386_efi_TRUE@	grub-core/fs/zfs/zfs_sha256.c \
 @COND_i386_efi_TRUE@	grub-core/fs/zfs/zfs_fletcher.c \
@@ -461,7 +464,7 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_efi_TRUE@	grub-core/lib/libgcrypt-grub/cipher/crc.c \
 @COND_i386_efi_TRUE@	grub-core/lib/LzFind.c \
 @COND_i386_efi_TRUE@	grub-core/lib/LzmaEnc.c \
-@COND_i386_efi_TRUE@	grub-core/lib/pbkdf2.c \
+@COND_i386_efi_TRUE@	grub-core/lib/pbkdf2.c grub-core/lib/crc.c \
 @COND_i386_efi_TRUE@	grub-core/normal/datetime.c \
 @COND_i386_efi_TRUE@	grub-core/normal/misc.c \
 @COND_i386_efi_TRUE@	grub-core/partmap/acorn.c \
@@ -476,7 +479,8 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_efi_TRUE@	grub-core/script/lexer.c \
 @COND_i386_efi_TRUE@	grub-core/script/main.c \
 @COND_i386_efi_TRUE@	grub-core/script/script.c \
-@COND_i386_efi_TRUE@	grub-core/script/argv.c
+@COND_i386_efi_TRUE@	grub-core/script/argv.c \
+@COND_i386_efi_TRUE@	grub-core/io/gzio.c
 @COND_i386_efi_TRUE@am__append_128 = grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 @COND_i386_efi_TRUE@am__append_129 = $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 @COND_i386_efi_TRUE@am__append_130 = $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -508,10 +512,10 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_qemu_TRUE@	grub-core/fs/nilfs2.c grub-core/fs/ntfs.c \
 @COND_i386_qemu_TRUE@	grub-core/fs/ntfscomp.c \
 @COND_i386_qemu_TRUE@	grub-core/fs/reiserfs.c \
-@COND_i386_qemu_TRUE@	grub-core/fs/sfs.c grub-core/fs/tar.c \
-@COND_i386_qemu_TRUE@	grub-core/fs/udf.c grub-core/fs/ufs2.c \
-@COND_i386_qemu_TRUE@	grub-core/fs/ufs.c grub-core/fs/xfs.c \
-@COND_i386_qemu_TRUE@	grub-core/fs/zfs/zfs.c \
+@COND_i386_qemu_TRUE@	grub-core/fs/sfs.c grub-core/fs/squash4.c \
+@COND_i386_qemu_TRUE@	grub-core/fs/tar.c grub-core/fs/udf.c \
+@COND_i386_qemu_TRUE@	grub-core/fs/ufs2.c grub-core/fs/ufs.c \
+@COND_i386_qemu_TRUE@	grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c \
 @COND_i386_qemu_TRUE@	grub-core/fs/zfs/zfs_lzjb.c \
 @COND_i386_qemu_TRUE@	grub-core/fs/zfs/zfs_sha256.c \
 @COND_i386_qemu_TRUE@	grub-core/fs/zfs/zfs_fletcher.c \
@@ -524,6 +528,7 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_qemu_TRUE@	grub-core/lib/LzFind.c \
 @COND_i386_qemu_TRUE@	grub-core/lib/LzmaEnc.c \
 @COND_i386_qemu_TRUE@	grub-core/lib/pbkdf2.c \
+@COND_i386_qemu_TRUE@	grub-core/lib/crc.c \
 @COND_i386_qemu_TRUE@	grub-core/normal/datetime.c \
 @COND_i386_qemu_TRUE@	grub-core/normal/misc.c \
 @COND_i386_qemu_TRUE@	grub-core/partmap/acorn.c \
@@ -538,7 +543,8 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_qemu_TRUE@	grub-core/script/lexer.c \
 @COND_i386_qemu_TRUE@	grub-core/script/main.c \
 @COND_i386_qemu_TRUE@	grub-core/script/script.c \
-@COND_i386_qemu_TRUE@	grub-core/script/argv.c
+@COND_i386_qemu_TRUE@	grub-core/script/argv.c \
+@COND_i386_qemu_TRUE@	grub-core/io/gzio.c
 @COND_i386_qemu_TRUE@am__append_137 = grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 @COND_i386_qemu_TRUE@am__append_138 = $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 @COND_i386_qemu_TRUE@am__append_139 = $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -579,8 +585,9 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_coreboot_TRUE@	grub-core/fs/ntfs.c \
 @COND_i386_coreboot_TRUE@	grub-core/fs/ntfscomp.c \
 @COND_i386_coreboot_TRUE@	grub-core/fs/reiserfs.c \
-@COND_i386_coreboot_TRUE@	grub-core/fs/sfs.c grub-core/fs/tar.c \
-@COND_i386_coreboot_TRUE@	grub-core/fs/udf.c \
+@COND_i386_coreboot_TRUE@	grub-core/fs/sfs.c \
+@COND_i386_coreboot_TRUE@	grub-core/fs/squash4.c \
+@COND_i386_coreboot_TRUE@	grub-core/fs/tar.c grub-core/fs/udf.c \
 @COND_i386_coreboot_TRUE@	grub-core/fs/ufs2.c \
 @COND_i386_coreboot_TRUE@	grub-core/fs/ufs.c grub-core/fs/xfs.c \
 @COND_i386_coreboot_TRUE@	grub-core/fs/zfs/zfs.c \
@@ -596,6 +603,7 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_coreboot_TRUE@	grub-core/lib/LzFind.c \
 @COND_i386_coreboot_TRUE@	grub-core/lib/LzmaEnc.c \
 @COND_i386_coreboot_TRUE@	grub-core/lib/pbkdf2.c \
+@COND_i386_coreboot_TRUE@	grub-core/lib/crc.c \
 @COND_i386_coreboot_TRUE@	grub-core/normal/datetime.c \
 @COND_i386_coreboot_TRUE@	grub-core/normal/misc.c \
 @COND_i386_coreboot_TRUE@	grub-core/partmap/acorn.c \
@@ -610,7 +618,8 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_coreboot_TRUE@	grub-core/script/lexer.c \
 @COND_i386_coreboot_TRUE@	grub-core/script/main.c \
 @COND_i386_coreboot_TRUE@	grub-core/script/script.c \
-@COND_i386_coreboot_TRUE@	grub-core/script/argv.c
+@COND_i386_coreboot_TRUE@	grub-core/script/argv.c \
+@COND_i386_coreboot_TRUE@	grub-core/io/gzio.c
 @COND_i386_coreboot_TRUE@am__append_146 = grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 @COND_i386_coreboot_TRUE@am__append_147 = $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 @COND_i386_coreboot_TRUE@am__append_148 = $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -652,6 +661,7 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_multiboot_TRUE@	grub-core/fs/ntfscomp.c \
 @COND_i386_multiboot_TRUE@	grub-core/fs/reiserfs.c \
 @COND_i386_multiboot_TRUE@	grub-core/fs/sfs.c \
+@COND_i386_multiboot_TRUE@	grub-core/fs/squash4.c \
 @COND_i386_multiboot_TRUE@	grub-core/fs/tar.c \
 @COND_i386_multiboot_TRUE@	grub-core/fs/udf.c \
 @COND_i386_multiboot_TRUE@	grub-core/fs/ufs2.c \
@@ -670,6 +680,7 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_multiboot_TRUE@	grub-core/lib/LzFind.c \
 @COND_i386_multiboot_TRUE@	grub-core/lib/LzmaEnc.c \
 @COND_i386_multiboot_TRUE@	grub-core/lib/pbkdf2.c \
+@COND_i386_multiboot_TRUE@	grub-core/lib/crc.c \
 @COND_i386_multiboot_TRUE@	grub-core/normal/datetime.c \
 @COND_i386_multiboot_TRUE@	grub-core/normal/misc.c \
 @COND_i386_multiboot_TRUE@	grub-core/partmap/acorn.c \
@@ -684,7 +695,8 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_multiboot_TRUE@	grub-core/script/lexer.c \
 @COND_i386_multiboot_TRUE@	grub-core/script/main.c \
 @COND_i386_multiboot_TRUE@	grub-core/script/script.c \
-@COND_i386_multiboot_TRUE@	grub-core/script/argv.c
+@COND_i386_multiboot_TRUE@	grub-core/script/argv.c \
+@COND_i386_multiboot_TRUE@	grub-core/io/gzio.c
 @COND_i386_multiboot_TRUE@am__append_155 = grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 @COND_i386_multiboot_TRUE@am__append_156 = $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 @COND_i386_multiboot_TRUE@am__append_157 = $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -725,8 +737,9 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_ieee1275_TRUE@	grub-core/fs/ntfs.c \
 @COND_i386_ieee1275_TRUE@	grub-core/fs/ntfscomp.c \
 @COND_i386_ieee1275_TRUE@	grub-core/fs/reiserfs.c \
-@COND_i386_ieee1275_TRUE@	grub-core/fs/sfs.c grub-core/fs/tar.c \
-@COND_i386_ieee1275_TRUE@	grub-core/fs/udf.c \
+@COND_i386_ieee1275_TRUE@	grub-core/fs/sfs.c \
+@COND_i386_ieee1275_TRUE@	grub-core/fs/squash4.c \
+@COND_i386_ieee1275_TRUE@	grub-core/fs/tar.c grub-core/fs/udf.c \
 @COND_i386_ieee1275_TRUE@	grub-core/fs/ufs2.c \
 @COND_i386_ieee1275_TRUE@	grub-core/fs/ufs.c grub-core/fs/xfs.c \
 @COND_i386_ieee1275_TRUE@	grub-core/fs/zfs/zfs.c \
@@ -742,6 +755,7 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_ieee1275_TRUE@	grub-core/lib/LzFind.c \
 @COND_i386_ieee1275_TRUE@	grub-core/lib/LzmaEnc.c \
 @COND_i386_ieee1275_TRUE@	grub-core/lib/pbkdf2.c \
+@COND_i386_ieee1275_TRUE@	grub-core/lib/crc.c \
 @COND_i386_ieee1275_TRUE@	grub-core/normal/datetime.c \
 @COND_i386_ieee1275_TRUE@	grub-core/normal/misc.c \
 @COND_i386_ieee1275_TRUE@	grub-core/partmap/acorn.c \
@@ -756,7 +770,8 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_i386_ieee1275_TRUE@	grub-core/script/lexer.c \
 @COND_i386_ieee1275_TRUE@	grub-core/script/main.c \
 @COND_i386_ieee1275_TRUE@	grub-core/script/script.c \
-@COND_i386_ieee1275_TRUE@	grub-core/script/argv.c
+@COND_i386_ieee1275_TRUE@	grub-core/script/argv.c \
+@COND_i386_ieee1275_TRUE@	grub-core/io/gzio.c
 @COND_i386_ieee1275_TRUE@am__append_164 = grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 @COND_i386_ieee1275_TRUE@am__append_165 = $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 @COND_i386_ieee1275_TRUE@am__append_166 = $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -791,9 +806,11 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_x86_64_efi_TRUE@	grub-core/fs/ntfs.c \
 @COND_x86_64_efi_TRUE@	grub-core/fs/ntfscomp.c \
 @COND_x86_64_efi_TRUE@	grub-core/fs/reiserfs.c \
-@COND_x86_64_efi_TRUE@	grub-core/fs/sfs.c grub-core/fs/tar.c \
-@COND_x86_64_efi_TRUE@	grub-core/fs/udf.c grub-core/fs/ufs2.c \
-@COND_x86_64_efi_TRUE@	grub-core/fs/ufs.c grub-core/fs/xfs.c \
+@COND_x86_64_efi_TRUE@	grub-core/fs/sfs.c \
+@COND_x86_64_efi_TRUE@	grub-core/fs/squash4.c \
+@COND_x86_64_efi_TRUE@	grub-core/fs/tar.c grub-core/fs/udf.c \
+@COND_x86_64_efi_TRUE@	grub-core/fs/ufs2.c grub-core/fs/ufs.c \
+@COND_x86_64_efi_TRUE@	grub-core/fs/xfs.c \
 @COND_x86_64_efi_TRUE@	grub-core/fs/zfs/zfs.c \
 @COND_x86_64_efi_TRUE@	grub-core/fs/zfs/zfs_lzjb.c \
 @COND_x86_64_efi_TRUE@	grub-core/fs/zfs/zfs_sha256.c \
@@ -807,6 +824,7 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_x86_64_efi_TRUE@	grub-core/lib/LzFind.c \
 @COND_x86_64_efi_TRUE@	grub-core/lib/LzmaEnc.c \
 @COND_x86_64_efi_TRUE@	grub-core/lib/pbkdf2.c \
+@COND_x86_64_efi_TRUE@	grub-core/lib/crc.c \
 @COND_x86_64_efi_TRUE@	grub-core/normal/datetime.c \
 @COND_x86_64_efi_TRUE@	grub-core/normal/misc.c \
 @COND_x86_64_efi_TRUE@	grub-core/partmap/acorn.c \
@@ -821,7 +839,8 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_x86_64_efi_TRUE@	grub-core/script/lexer.c \
 @COND_x86_64_efi_TRUE@	grub-core/script/main.c \
 @COND_x86_64_efi_TRUE@	grub-core/script/script.c \
-@COND_x86_64_efi_TRUE@	grub-core/script/argv.c
+@COND_x86_64_efi_TRUE@	grub-core/script/argv.c \
+@COND_x86_64_efi_TRUE@	grub-core/io/gzio.c
 @COND_x86_64_efi_TRUE@am__append_173 = grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 @COND_x86_64_efi_TRUE@am__append_174 = $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 @COND_x86_64_efi_TRUE@am__append_175 = $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -862,8 +881,9 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_mips_yeeloong_TRUE@	grub-core/fs/ntfs.c \
 @COND_mips_yeeloong_TRUE@	grub-core/fs/ntfscomp.c \
 @COND_mips_yeeloong_TRUE@	grub-core/fs/reiserfs.c \
-@COND_mips_yeeloong_TRUE@	grub-core/fs/sfs.c grub-core/fs/tar.c \
-@COND_mips_yeeloong_TRUE@	grub-core/fs/udf.c \
+@COND_mips_yeeloong_TRUE@	grub-core/fs/sfs.c \
+@COND_mips_yeeloong_TRUE@	grub-core/fs/squash4.c \
+@COND_mips_yeeloong_TRUE@	grub-core/fs/tar.c grub-core/fs/udf.c \
 @COND_mips_yeeloong_TRUE@	grub-core/fs/ufs2.c \
 @COND_mips_yeeloong_TRUE@	grub-core/fs/ufs.c grub-core/fs/xfs.c \
 @COND_mips_yeeloong_TRUE@	grub-core/fs/zfs/zfs.c \
@@ -879,6 +899,7 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_mips_yeeloong_TRUE@	grub-core/lib/LzFind.c \
 @COND_mips_yeeloong_TRUE@	grub-core/lib/LzmaEnc.c \
 @COND_mips_yeeloong_TRUE@	grub-core/lib/pbkdf2.c \
+@COND_mips_yeeloong_TRUE@	grub-core/lib/crc.c \
 @COND_mips_yeeloong_TRUE@	grub-core/normal/datetime.c \
 @COND_mips_yeeloong_TRUE@	grub-core/normal/misc.c \
 @COND_mips_yeeloong_TRUE@	grub-core/partmap/acorn.c \
@@ -893,7 +914,8 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_mips_yeeloong_TRUE@	grub-core/script/lexer.c \
 @COND_mips_yeeloong_TRUE@	grub-core/script/main.c \
 @COND_mips_yeeloong_TRUE@	grub-core/script/script.c \
-@COND_mips_yeeloong_TRUE@	grub-core/script/argv.c
+@COND_mips_yeeloong_TRUE@	grub-core/script/argv.c \
+@COND_mips_yeeloong_TRUE@	grub-core/io/gzio.c
 @COND_mips_yeeloong_TRUE@am__append_182 = grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 @COND_mips_yeeloong_TRUE@am__append_183 = $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 @COND_mips_yeeloong_TRUE@am__append_184 = $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -935,6 +957,7 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/fs/ntfscomp.c \
 @COND_sparc64_ieee1275_TRUE@	grub-core/fs/reiserfs.c \
 @COND_sparc64_ieee1275_TRUE@	grub-core/fs/sfs.c \
+@COND_sparc64_ieee1275_TRUE@	grub-core/fs/squash4.c \
 @COND_sparc64_ieee1275_TRUE@	grub-core/fs/tar.c \
 @COND_sparc64_ieee1275_TRUE@	grub-core/fs/udf.c \
 @COND_sparc64_ieee1275_TRUE@	grub-core/fs/ufs2.c \
@@ -953,6 +976,7 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/lib/LzFind.c \
 @COND_sparc64_ieee1275_TRUE@	grub-core/lib/LzmaEnc.c \
 @COND_sparc64_ieee1275_TRUE@	grub-core/lib/pbkdf2.c \
+@COND_sparc64_ieee1275_TRUE@	grub-core/lib/crc.c \
 @COND_sparc64_ieee1275_TRUE@	grub-core/normal/datetime.c \
 @COND_sparc64_ieee1275_TRUE@	grub-core/normal/misc.c \
 @COND_sparc64_ieee1275_TRUE@	grub-core/partmap/acorn.c \
@@ -967,7 +991,8 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/script/lexer.c \
 @COND_sparc64_ieee1275_TRUE@	grub-core/script/main.c \
 @COND_sparc64_ieee1275_TRUE@	grub-core/script/script.c \
-@COND_sparc64_ieee1275_TRUE@	grub-core/script/argv.c
+@COND_sparc64_ieee1275_TRUE@	grub-core/script/argv.c \
+@COND_sparc64_ieee1275_TRUE@	grub-core/io/gzio.c
 @COND_sparc64_ieee1275_TRUE@am__append_191 = grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 @COND_sparc64_ieee1275_TRUE@am__append_192 = $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 @COND_sparc64_ieee1275_TRUE@am__append_193 = $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -1009,6 +1034,7 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/fs/ntfscomp.c \
 @COND_powerpc_ieee1275_TRUE@	grub-core/fs/reiserfs.c \
 @COND_powerpc_ieee1275_TRUE@	grub-core/fs/sfs.c \
+@COND_powerpc_ieee1275_TRUE@	grub-core/fs/squash4.c \
 @COND_powerpc_ieee1275_TRUE@	grub-core/fs/tar.c \
 @COND_powerpc_ieee1275_TRUE@	grub-core/fs/udf.c \
 @COND_powerpc_ieee1275_TRUE@	grub-core/fs/ufs2.c \
@@ -1027,6 +1053,7 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/lib/LzFind.c \
 @COND_powerpc_ieee1275_TRUE@	grub-core/lib/LzmaEnc.c \
 @COND_powerpc_ieee1275_TRUE@	grub-core/lib/pbkdf2.c \
+@COND_powerpc_ieee1275_TRUE@	grub-core/lib/crc.c \
 @COND_powerpc_ieee1275_TRUE@	grub-core/normal/datetime.c \
 @COND_powerpc_ieee1275_TRUE@	grub-core/normal/misc.c \
 @COND_powerpc_ieee1275_TRUE@	grub-core/partmap/acorn.c \
@@ -1041,7 +1068,8 @@ TESTS = $(am__EXEEXT_133) $(am__EXEEXT_134) $(am__EXEEXT_135) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/script/lexer.c \
 @COND_powerpc_ieee1275_TRUE@	grub-core/script/main.c \
 @COND_powerpc_ieee1275_TRUE@	grub-core/script/script.c \
-@COND_powerpc_ieee1275_TRUE@	grub-core/script/argv.c
+@COND_powerpc_ieee1275_TRUE@	grub-core/script/argv.c \
+@COND_powerpc_ieee1275_TRUE@	grub-core/io/gzio.c
 @COND_powerpc_ieee1275_TRUE@am__append_200 = grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 @COND_powerpc_ieee1275_TRUE@am__append_201 = $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 @COND_powerpc_ieee1275_TRUE@am__append_202 = $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -4207,23 +4235,25 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 	grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c \
 	grub-core/fs/nilfs2.c grub-core/fs/ntfs.c \
 	grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c \
-	grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c \
-	grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c \
-	grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c \
-	grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c \
-	grub-core/lib/arg.c grub-core/lib/crypto.c \
-	grub-core/lib/envblk.c grub-core/lib/hexdump.c \
+	grub-core/fs/sfs.c grub-core/fs/squash4.c grub-core/fs/tar.c \
+	grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c \
+	grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c \
+	grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c \
+	grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c \
+	grub-core/lib/crypto.c grub-core/lib/envblk.c \
+	grub-core/lib/hexdump.c \
 	grub-core/lib/libgcrypt-grub/cipher/sha512.c \
 	grub-core/lib/libgcrypt-grub/cipher/crc.c \
 	grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c \
-	grub-core/lib/pbkdf2.c grub-core/normal/datetime.c \
-	grub-core/normal/misc.c grub-core/partmap/acorn.c \
-	grub-core/partmap/amiga.c grub-core/partmap/apple.c \
-	grub-core/partmap/gpt.c grub-core/partmap/msdos.c \
-	grub-core/partmap/sun.c grub-core/partmap/sunpc.c \
-	grub-core/partmap/bsdlabel.c grub-core/script/function.c \
-	grub-core/script/lexer.c grub-core/script/main.c \
-	grub-core/script/script.c grub-core/script/argv.c
+	grub-core/lib/pbkdf2.c grub-core/lib/crc.c \
+	grub-core/normal/datetime.c grub-core/normal/misc.c \
+	grub-core/partmap/acorn.c grub-core/partmap/amiga.c \
+	grub-core/partmap/apple.c grub-core/partmap/gpt.c \
+	grub-core/partmap/msdos.c grub-core/partmap/sun.c \
+	grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c \
+	grub-core/script/function.c grub-core/script/lexer.c \
+	grub-core/script/main.c grub-core/script/script.c \
+	grub-core/script/argv.c grub-core/io/gzio.c
 @COND_emu_TRUE@am__objects_13 = grub-core/commands/libgrubmods_a-blocklist.$(OBJEXT) \
 @COND_emu_TRUE@	grub-core/commands/libgrubmods_a-extcmd.$(OBJEXT) \
 @COND_emu_TRUE@	grub-core/commands/libgrubmods_a-ls.$(OBJEXT) \
@@ -4256,6 +4286,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_emu_TRUE@	grub-core/fs/libgrubmods_a-ntfscomp.$(OBJEXT) \
 @COND_emu_TRUE@	grub-core/fs/libgrubmods_a-reiserfs.$(OBJEXT) \
 @COND_emu_TRUE@	grub-core/fs/libgrubmods_a-sfs.$(OBJEXT) \
+@COND_emu_TRUE@	grub-core/fs/libgrubmods_a-squash4.$(OBJEXT) \
 @COND_emu_TRUE@	grub-core/fs/libgrubmods_a-tar.$(OBJEXT) \
 @COND_emu_TRUE@	grub-core/fs/libgrubmods_a-udf.$(OBJEXT) \
 @COND_emu_TRUE@	grub-core/fs/libgrubmods_a-ufs2.$(OBJEXT) \
@@ -4274,6 +4305,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_emu_TRUE@	grub-core/lib/libgrubmods_a-LzFind.$(OBJEXT) \
 @COND_emu_TRUE@	grub-core/lib/libgrubmods_a-LzmaEnc.$(OBJEXT) \
 @COND_emu_TRUE@	grub-core/lib/libgrubmods_a-pbkdf2.$(OBJEXT) \
+@COND_emu_TRUE@	grub-core/lib/libgrubmods_a-crc.$(OBJEXT) \
 @COND_emu_TRUE@	grub-core/normal/libgrubmods_a-datetime.$(OBJEXT) \
 @COND_emu_TRUE@	grub-core/normal/libgrubmods_a-misc.$(OBJEXT) \
 @COND_emu_TRUE@	grub-core/partmap/libgrubmods_a-acorn.$(OBJEXT) \
@@ -4288,7 +4320,8 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_emu_TRUE@	grub-core/script/libgrubmods_a-lexer.$(OBJEXT) \
 @COND_emu_TRUE@	grub-core/script/libgrubmods_a-main.$(OBJEXT) \
 @COND_emu_TRUE@	grub-core/script/libgrubmods_a-script.$(OBJEXT) \
-@COND_emu_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT)
+@COND_emu_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT) \
+@COND_emu_TRUE@	grub-core/io/libgrubmods_a-gzio.$(OBJEXT)
 @COND_i386_pc_TRUE@am__objects_14 = grub-core/commands/libgrubmods_a-blocklist.$(OBJEXT) \
 @COND_i386_pc_TRUE@	grub-core/commands/libgrubmods_a-extcmd.$(OBJEXT) \
 @COND_i386_pc_TRUE@	grub-core/commands/libgrubmods_a-ls.$(OBJEXT) \
@@ -4321,6 +4354,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_pc_TRUE@	grub-core/fs/libgrubmods_a-ntfscomp.$(OBJEXT) \
 @COND_i386_pc_TRUE@	grub-core/fs/libgrubmods_a-reiserfs.$(OBJEXT) \
 @COND_i386_pc_TRUE@	grub-core/fs/libgrubmods_a-sfs.$(OBJEXT) \
+@COND_i386_pc_TRUE@	grub-core/fs/libgrubmods_a-squash4.$(OBJEXT) \
 @COND_i386_pc_TRUE@	grub-core/fs/libgrubmods_a-tar.$(OBJEXT) \
 @COND_i386_pc_TRUE@	grub-core/fs/libgrubmods_a-udf.$(OBJEXT) \
 @COND_i386_pc_TRUE@	grub-core/fs/libgrubmods_a-ufs2.$(OBJEXT) \
@@ -4339,6 +4373,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_pc_TRUE@	grub-core/lib/libgrubmods_a-LzFind.$(OBJEXT) \
 @COND_i386_pc_TRUE@	grub-core/lib/libgrubmods_a-LzmaEnc.$(OBJEXT) \
 @COND_i386_pc_TRUE@	grub-core/lib/libgrubmods_a-pbkdf2.$(OBJEXT) \
+@COND_i386_pc_TRUE@	grub-core/lib/libgrubmods_a-crc.$(OBJEXT) \
 @COND_i386_pc_TRUE@	grub-core/normal/libgrubmods_a-datetime.$(OBJEXT) \
 @COND_i386_pc_TRUE@	grub-core/normal/libgrubmods_a-misc.$(OBJEXT) \
 @COND_i386_pc_TRUE@	grub-core/partmap/libgrubmods_a-acorn.$(OBJEXT) \
@@ -4353,7 +4388,8 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_pc_TRUE@	grub-core/script/libgrubmods_a-lexer.$(OBJEXT) \
 @COND_i386_pc_TRUE@	grub-core/script/libgrubmods_a-main.$(OBJEXT) \
 @COND_i386_pc_TRUE@	grub-core/script/libgrubmods_a-script.$(OBJEXT) \
-@COND_i386_pc_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT)
+@COND_i386_pc_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT) \
+@COND_i386_pc_TRUE@	grub-core/io/libgrubmods_a-gzio.$(OBJEXT)
 @COND_i386_efi_TRUE@am__objects_15 = grub-core/commands/libgrubmods_a-blocklist.$(OBJEXT) \
 @COND_i386_efi_TRUE@	grub-core/commands/libgrubmods_a-extcmd.$(OBJEXT) \
 @COND_i386_efi_TRUE@	grub-core/commands/libgrubmods_a-ls.$(OBJEXT) \
@@ -4386,6 +4422,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_efi_TRUE@	grub-core/fs/libgrubmods_a-ntfscomp.$(OBJEXT) \
 @COND_i386_efi_TRUE@	grub-core/fs/libgrubmods_a-reiserfs.$(OBJEXT) \
 @COND_i386_efi_TRUE@	grub-core/fs/libgrubmods_a-sfs.$(OBJEXT) \
+@COND_i386_efi_TRUE@	grub-core/fs/libgrubmods_a-squash4.$(OBJEXT) \
 @COND_i386_efi_TRUE@	grub-core/fs/libgrubmods_a-tar.$(OBJEXT) \
 @COND_i386_efi_TRUE@	grub-core/fs/libgrubmods_a-udf.$(OBJEXT) \
 @COND_i386_efi_TRUE@	grub-core/fs/libgrubmods_a-ufs2.$(OBJEXT) \
@@ -4404,6 +4441,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_efi_TRUE@	grub-core/lib/libgrubmods_a-LzFind.$(OBJEXT) \
 @COND_i386_efi_TRUE@	grub-core/lib/libgrubmods_a-LzmaEnc.$(OBJEXT) \
 @COND_i386_efi_TRUE@	grub-core/lib/libgrubmods_a-pbkdf2.$(OBJEXT) \
+@COND_i386_efi_TRUE@	grub-core/lib/libgrubmods_a-crc.$(OBJEXT) \
 @COND_i386_efi_TRUE@	grub-core/normal/libgrubmods_a-datetime.$(OBJEXT) \
 @COND_i386_efi_TRUE@	grub-core/normal/libgrubmods_a-misc.$(OBJEXT) \
 @COND_i386_efi_TRUE@	grub-core/partmap/libgrubmods_a-acorn.$(OBJEXT) \
@@ -4418,7 +4456,8 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_efi_TRUE@	grub-core/script/libgrubmods_a-lexer.$(OBJEXT) \
 @COND_i386_efi_TRUE@	grub-core/script/libgrubmods_a-main.$(OBJEXT) \
 @COND_i386_efi_TRUE@	grub-core/script/libgrubmods_a-script.$(OBJEXT) \
-@COND_i386_efi_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT)
+@COND_i386_efi_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT) \
+@COND_i386_efi_TRUE@	grub-core/io/libgrubmods_a-gzio.$(OBJEXT)
 @COND_i386_qemu_TRUE@am__objects_16 = grub-core/commands/libgrubmods_a-blocklist.$(OBJEXT) \
 @COND_i386_qemu_TRUE@	grub-core/commands/libgrubmods_a-extcmd.$(OBJEXT) \
 @COND_i386_qemu_TRUE@	grub-core/commands/libgrubmods_a-ls.$(OBJEXT) \
@@ -4451,6 +4490,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_qemu_TRUE@	grub-core/fs/libgrubmods_a-ntfscomp.$(OBJEXT) \
 @COND_i386_qemu_TRUE@	grub-core/fs/libgrubmods_a-reiserfs.$(OBJEXT) \
 @COND_i386_qemu_TRUE@	grub-core/fs/libgrubmods_a-sfs.$(OBJEXT) \
+@COND_i386_qemu_TRUE@	grub-core/fs/libgrubmods_a-squash4.$(OBJEXT) \
 @COND_i386_qemu_TRUE@	grub-core/fs/libgrubmods_a-tar.$(OBJEXT) \
 @COND_i386_qemu_TRUE@	grub-core/fs/libgrubmods_a-udf.$(OBJEXT) \
 @COND_i386_qemu_TRUE@	grub-core/fs/libgrubmods_a-ufs2.$(OBJEXT) \
@@ -4469,6 +4509,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_qemu_TRUE@	grub-core/lib/libgrubmods_a-LzFind.$(OBJEXT) \
 @COND_i386_qemu_TRUE@	grub-core/lib/libgrubmods_a-LzmaEnc.$(OBJEXT) \
 @COND_i386_qemu_TRUE@	grub-core/lib/libgrubmods_a-pbkdf2.$(OBJEXT) \
+@COND_i386_qemu_TRUE@	grub-core/lib/libgrubmods_a-crc.$(OBJEXT) \
 @COND_i386_qemu_TRUE@	grub-core/normal/libgrubmods_a-datetime.$(OBJEXT) \
 @COND_i386_qemu_TRUE@	grub-core/normal/libgrubmods_a-misc.$(OBJEXT) \
 @COND_i386_qemu_TRUE@	grub-core/partmap/libgrubmods_a-acorn.$(OBJEXT) \
@@ -4483,7 +4524,8 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_qemu_TRUE@	grub-core/script/libgrubmods_a-lexer.$(OBJEXT) \
 @COND_i386_qemu_TRUE@	grub-core/script/libgrubmods_a-main.$(OBJEXT) \
 @COND_i386_qemu_TRUE@	grub-core/script/libgrubmods_a-script.$(OBJEXT) \
-@COND_i386_qemu_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT)
+@COND_i386_qemu_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT) \
+@COND_i386_qemu_TRUE@	grub-core/io/libgrubmods_a-gzio.$(OBJEXT)
 @COND_i386_coreboot_TRUE@am__objects_17 = grub-core/commands/libgrubmods_a-blocklist.$(OBJEXT) \
 @COND_i386_coreboot_TRUE@	grub-core/commands/libgrubmods_a-extcmd.$(OBJEXT) \
 @COND_i386_coreboot_TRUE@	grub-core/commands/libgrubmods_a-ls.$(OBJEXT) \
@@ -4516,6 +4558,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_coreboot_TRUE@	grub-core/fs/libgrubmods_a-ntfscomp.$(OBJEXT) \
 @COND_i386_coreboot_TRUE@	grub-core/fs/libgrubmods_a-reiserfs.$(OBJEXT) \
 @COND_i386_coreboot_TRUE@	grub-core/fs/libgrubmods_a-sfs.$(OBJEXT) \
+@COND_i386_coreboot_TRUE@	grub-core/fs/libgrubmods_a-squash4.$(OBJEXT) \
 @COND_i386_coreboot_TRUE@	grub-core/fs/libgrubmods_a-tar.$(OBJEXT) \
 @COND_i386_coreboot_TRUE@	grub-core/fs/libgrubmods_a-udf.$(OBJEXT) \
 @COND_i386_coreboot_TRUE@	grub-core/fs/libgrubmods_a-ufs2.$(OBJEXT) \
@@ -4534,6 +4577,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_coreboot_TRUE@	grub-core/lib/libgrubmods_a-LzFind.$(OBJEXT) \
 @COND_i386_coreboot_TRUE@	grub-core/lib/libgrubmods_a-LzmaEnc.$(OBJEXT) \
 @COND_i386_coreboot_TRUE@	grub-core/lib/libgrubmods_a-pbkdf2.$(OBJEXT) \
+@COND_i386_coreboot_TRUE@	grub-core/lib/libgrubmods_a-crc.$(OBJEXT) \
 @COND_i386_coreboot_TRUE@	grub-core/normal/libgrubmods_a-datetime.$(OBJEXT) \
 @COND_i386_coreboot_TRUE@	grub-core/normal/libgrubmods_a-misc.$(OBJEXT) \
 @COND_i386_coreboot_TRUE@	grub-core/partmap/libgrubmods_a-acorn.$(OBJEXT) \
@@ -4548,7 +4592,8 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_coreboot_TRUE@	grub-core/script/libgrubmods_a-lexer.$(OBJEXT) \
 @COND_i386_coreboot_TRUE@	grub-core/script/libgrubmods_a-main.$(OBJEXT) \
 @COND_i386_coreboot_TRUE@	grub-core/script/libgrubmods_a-script.$(OBJEXT) \
-@COND_i386_coreboot_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT)
+@COND_i386_coreboot_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT) \
+@COND_i386_coreboot_TRUE@	grub-core/io/libgrubmods_a-gzio.$(OBJEXT)
 @COND_i386_multiboot_TRUE@am__objects_18 = grub-core/commands/libgrubmods_a-blocklist.$(OBJEXT) \
 @COND_i386_multiboot_TRUE@	grub-core/commands/libgrubmods_a-extcmd.$(OBJEXT) \
 @COND_i386_multiboot_TRUE@	grub-core/commands/libgrubmods_a-ls.$(OBJEXT) \
@@ -4581,6 +4626,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_multiboot_TRUE@	grub-core/fs/libgrubmods_a-ntfscomp.$(OBJEXT) \
 @COND_i386_multiboot_TRUE@	grub-core/fs/libgrubmods_a-reiserfs.$(OBJEXT) \
 @COND_i386_multiboot_TRUE@	grub-core/fs/libgrubmods_a-sfs.$(OBJEXT) \
+@COND_i386_multiboot_TRUE@	grub-core/fs/libgrubmods_a-squash4.$(OBJEXT) \
 @COND_i386_multiboot_TRUE@	grub-core/fs/libgrubmods_a-tar.$(OBJEXT) \
 @COND_i386_multiboot_TRUE@	grub-core/fs/libgrubmods_a-udf.$(OBJEXT) \
 @COND_i386_multiboot_TRUE@	grub-core/fs/libgrubmods_a-ufs2.$(OBJEXT) \
@@ -4599,6 +4645,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_multiboot_TRUE@	grub-core/lib/libgrubmods_a-LzFind.$(OBJEXT) \
 @COND_i386_multiboot_TRUE@	grub-core/lib/libgrubmods_a-LzmaEnc.$(OBJEXT) \
 @COND_i386_multiboot_TRUE@	grub-core/lib/libgrubmods_a-pbkdf2.$(OBJEXT) \
+@COND_i386_multiboot_TRUE@	grub-core/lib/libgrubmods_a-crc.$(OBJEXT) \
 @COND_i386_multiboot_TRUE@	grub-core/normal/libgrubmods_a-datetime.$(OBJEXT) \
 @COND_i386_multiboot_TRUE@	grub-core/normal/libgrubmods_a-misc.$(OBJEXT) \
 @COND_i386_multiboot_TRUE@	grub-core/partmap/libgrubmods_a-acorn.$(OBJEXT) \
@@ -4613,7 +4660,8 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_multiboot_TRUE@	grub-core/script/libgrubmods_a-lexer.$(OBJEXT) \
 @COND_i386_multiboot_TRUE@	grub-core/script/libgrubmods_a-main.$(OBJEXT) \
 @COND_i386_multiboot_TRUE@	grub-core/script/libgrubmods_a-script.$(OBJEXT) \
-@COND_i386_multiboot_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT)
+@COND_i386_multiboot_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT) \
+@COND_i386_multiboot_TRUE@	grub-core/io/libgrubmods_a-gzio.$(OBJEXT)
 @COND_i386_ieee1275_TRUE@am__objects_19 = grub-core/commands/libgrubmods_a-blocklist.$(OBJEXT) \
 @COND_i386_ieee1275_TRUE@	grub-core/commands/libgrubmods_a-extcmd.$(OBJEXT) \
 @COND_i386_ieee1275_TRUE@	grub-core/commands/libgrubmods_a-ls.$(OBJEXT) \
@@ -4646,6 +4694,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-ntfscomp.$(OBJEXT) \
 @COND_i386_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-reiserfs.$(OBJEXT) \
 @COND_i386_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-sfs.$(OBJEXT) \
+@COND_i386_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-squash4.$(OBJEXT) \
 @COND_i386_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-tar.$(OBJEXT) \
 @COND_i386_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-udf.$(OBJEXT) \
 @COND_i386_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-ufs2.$(OBJEXT) \
@@ -4664,6 +4713,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_ieee1275_TRUE@	grub-core/lib/libgrubmods_a-LzFind.$(OBJEXT) \
 @COND_i386_ieee1275_TRUE@	grub-core/lib/libgrubmods_a-LzmaEnc.$(OBJEXT) \
 @COND_i386_ieee1275_TRUE@	grub-core/lib/libgrubmods_a-pbkdf2.$(OBJEXT) \
+@COND_i386_ieee1275_TRUE@	grub-core/lib/libgrubmods_a-crc.$(OBJEXT) \
 @COND_i386_ieee1275_TRUE@	grub-core/normal/libgrubmods_a-datetime.$(OBJEXT) \
 @COND_i386_ieee1275_TRUE@	grub-core/normal/libgrubmods_a-misc.$(OBJEXT) \
 @COND_i386_ieee1275_TRUE@	grub-core/partmap/libgrubmods_a-acorn.$(OBJEXT) \
@@ -4678,7 +4728,8 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_i386_ieee1275_TRUE@	grub-core/script/libgrubmods_a-lexer.$(OBJEXT) \
 @COND_i386_ieee1275_TRUE@	grub-core/script/libgrubmods_a-main.$(OBJEXT) \
 @COND_i386_ieee1275_TRUE@	grub-core/script/libgrubmods_a-script.$(OBJEXT) \
-@COND_i386_ieee1275_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT)
+@COND_i386_ieee1275_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT) \
+@COND_i386_ieee1275_TRUE@	grub-core/io/libgrubmods_a-gzio.$(OBJEXT)
 @COND_x86_64_efi_TRUE@am__objects_20 = grub-core/commands/libgrubmods_a-blocklist.$(OBJEXT) \
 @COND_x86_64_efi_TRUE@	grub-core/commands/libgrubmods_a-extcmd.$(OBJEXT) \
 @COND_x86_64_efi_TRUE@	grub-core/commands/libgrubmods_a-ls.$(OBJEXT) \
@@ -4711,6 +4762,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_x86_64_efi_TRUE@	grub-core/fs/libgrubmods_a-ntfscomp.$(OBJEXT) \
 @COND_x86_64_efi_TRUE@	grub-core/fs/libgrubmods_a-reiserfs.$(OBJEXT) \
 @COND_x86_64_efi_TRUE@	grub-core/fs/libgrubmods_a-sfs.$(OBJEXT) \
+@COND_x86_64_efi_TRUE@	grub-core/fs/libgrubmods_a-squash4.$(OBJEXT) \
 @COND_x86_64_efi_TRUE@	grub-core/fs/libgrubmods_a-tar.$(OBJEXT) \
 @COND_x86_64_efi_TRUE@	grub-core/fs/libgrubmods_a-udf.$(OBJEXT) \
 @COND_x86_64_efi_TRUE@	grub-core/fs/libgrubmods_a-ufs2.$(OBJEXT) \
@@ -4729,6 +4781,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_x86_64_efi_TRUE@	grub-core/lib/libgrubmods_a-LzFind.$(OBJEXT) \
 @COND_x86_64_efi_TRUE@	grub-core/lib/libgrubmods_a-LzmaEnc.$(OBJEXT) \
 @COND_x86_64_efi_TRUE@	grub-core/lib/libgrubmods_a-pbkdf2.$(OBJEXT) \
+@COND_x86_64_efi_TRUE@	grub-core/lib/libgrubmods_a-crc.$(OBJEXT) \
 @COND_x86_64_efi_TRUE@	grub-core/normal/libgrubmods_a-datetime.$(OBJEXT) \
 @COND_x86_64_efi_TRUE@	grub-core/normal/libgrubmods_a-misc.$(OBJEXT) \
 @COND_x86_64_efi_TRUE@	grub-core/partmap/libgrubmods_a-acorn.$(OBJEXT) \
@@ -4743,7 +4796,8 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_x86_64_efi_TRUE@	grub-core/script/libgrubmods_a-lexer.$(OBJEXT) \
 @COND_x86_64_efi_TRUE@	grub-core/script/libgrubmods_a-main.$(OBJEXT) \
 @COND_x86_64_efi_TRUE@	grub-core/script/libgrubmods_a-script.$(OBJEXT) \
-@COND_x86_64_efi_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT)
+@COND_x86_64_efi_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT) \
+@COND_x86_64_efi_TRUE@	grub-core/io/libgrubmods_a-gzio.$(OBJEXT)
 @COND_mips_yeeloong_TRUE@am__objects_21 = grub-core/commands/libgrubmods_a-blocklist.$(OBJEXT) \
 @COND_mips_yeeloong_TRUE@	grub-core/commands/libgrubmods_a-extcmd.$(OBJEXT) \
 @COND_mips_yeeloong_TRUE@	grub-core/commands/libgrubmods_a-ls.$(OBJEXT) \
@@ -4776,6 +4830,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_mips_yeeloong_TRUE@	grub-core/fs/libgrubmods_a-ntfscomp.$(OBJEXT) \
 @COND_mips_yeeloong_TRUE@	grub-core/fs/libgrubmods_a-reiserfs.$(OBJEXT) \
 @COND_mips_yeeloong_TRUE@	grub-core/fs/libgrubmods_a-sfs.$(OBJEXT) \
+@COND_mips_yeeloong_TRUE@	grub-core/fs/libgrubmods_a-squash4.$(OBJEXT) \
 @COND_mips_yeeloong_TRUE@	grub-core/fs/libgrubmods_a-tar.$(OBJEXT) \
 @COND_mips_yeeloong_TRUE@	grub-core/fs/libgrubmods_a-udf.$(OBJEXT) \
 @COND_mips_yeeloong_TRUE@	grub-core/fs/libgrubmods_a-ufs2.$(OBJEXT) \
@@ -4794,6 +4849,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_mips_yeeloong_TRUE@	grub-core/lib/libgrubmods_a-LzFind.$(OBJEXT) \
 @COND_mips_yeeloong_TRUE@	grub-core/lib/libgrubmods_a-LzmaEnc.$(OBJEXT) \
 @COND_mips_yeeloong_TRUE@	grub-core/lib/libgrubmods_a-pbkdf2.$(OBJEXT) \
+@COND_mips_yeeloong_TRUE@	grub-core/lib/libgrubmods_a-crc.$(OBJEXT) \
 @COND_mips_yeeloong_TRUE@	grub-core/normal/libgrubmods_a-datetime.$(OBJEXT) \
 @COND_mips_yeeloong_TRUE@	grub-core/normal/libgrubmods_a-misc.$(OBJEXT) \
 @COND_mips_yeeloong_TRUE@	grub-core/partmap/libgrubmods_a-acorn.$(OBJEXT) \
@@ -4808,7 +4864,8 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_mips_yeeloong_TRUE@	grub-core/script/libgrubmods_a-lexer.$(OBJEXT) \
 @COND_mips_yeeloong_TRUE@	grub-core/script/libgrubmods_a-main.$(OBJEXT) \
 @COND_mips_yeeloong_TRUE@	grub-core/script/libgrubmods_a-script.$(OBJEXT) \
-@COND_mips_yeeloong_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT)
+@COND_mips_yeeloong_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT) \
+@COND_mips_yeeloong_TRUE@	grub-core/io/libgrubmods_a-gzio.$(OBJEXT)
 @COND_sparc64_ieee1275_TRUE@am__objects_22 = grub-core/commands/libgrubmods_a-blocklist.$(OBJEXT) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/commands/libgrubmods_a-extcmd.$(OBJEXT) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/commands/libgrubmods_a-ls.$(OBJEXT) \
@@ -4841,6 +4898,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_sparc64_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-ntfscomp.$(OBJEXT) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-reiserfs.$(OBJEXT) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-sfs.$(OBJEXT) \
+@COND_sparc64_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-squash4.$(OBJEXT) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-tar.$(OBJEXT) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-udf.$(OBJEXT) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-ufs2.$(OBJEXT) \
@@ -4859,6 +4917,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_sparc64_ieee1275_TRUE@	grub-core/lib/libgrubmods_a-LzFind.$(OBJEXT) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/lib/libgrubmods_a-LzmaEnc.$(OBJEXT) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/lib/libgrubmods_a-pbkdf2.$(OBJEXT) \
+@COND_sparc64_ieee1275_TRUE@	grub-core/lib/libgrubmods_a-crc.$(OBJEXT) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/normal/libgrubmods_a-datetime.$(OBJEXT) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/normal/libgrubmods_a-misc.$(OBJEXT) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/partmap/libgrubmods_a-acorn.$(OBJEXT) \
@@ -4873,7 +4932,8 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_sparc64_ieee1275_TRUE@	grub-core/script/libgrubmods_a-lexer.$(OBJEXT) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/script/libgrubmods_a-main.$(OBJEXT) \
 @COND_sparc64_ieee1275_TRUE@	grub-core/script/libgrubmods_a-script.$(OBJEXT) \
-@COND_sparc64_ieee1275_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT)
+@COND_sparc64_ieee1275_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT) \
+@COND_sparc64_ieee1275_TRUE@	grub-core/io/libgrubmods_a-gzio.$(OBJEXT)
 @COND_powerpc_ieee1275_TRUE@am__objects_23 = grub-core/commands/libgrubmods_a-blocklist.$(OBJEXT) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/commands/libgrubmods_a-extcmd.$(OBJEXT) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/commands/libgrubmods_a-ls.$(OBJEXT) \
@@ -4906,6 +4966,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_powerpc_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-ntfscomp.$(OBJEXT) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-reiserfs.$(OBJEXT) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-sfs.$(OBJEXT) \
+@COND_powerpc_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-squash4.$(OBJEXT) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-tar.$(OBJEXT) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-udf.$(OBJEXT) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/fs/libgrubmods_a-ufs2.$(OBJEXT) \
@@ -4924,6 +4985,7 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_powerpc_ieee1275_TRUE@	grub-core/lib/libgrubmods_a-LzFind.$(OBJEXT) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/lib/libgrubmods_a-LzmaEnc.$(OBJEXT) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/lib/libgrubmods_a-pbkdf2.$(OBJEXT) \
+@COND_powerpc_ieee1275_TRUE@	grub-core/lib/libgrubmods_a-crc.$(OBJEXT) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/normal/libgrubmods_a-datetime.$(OBJEXT) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/normal/libgrubmods_a-misc.$(OBJEXT) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/partmap/libgrubmods_a-acorn.$(OBJEXT) \
@@ -4938,7 +5000,8 @@ am__libgrubmods_a_SOURCES_DIST = grub-core/commands/blocklist.c \
 @COND_powerpc_ieee1275_TRUE@	grub-core/script/libgrubmods_a-lexer.$(OBJEXT) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/script/libgrubmods_a-main.$(OBJEXT) \
 @COND_powerpc_ieee1275_TRUE@	grub-core/script/libgrubmods_a-script.$(OBJEXT) \
-@COND_powerpc_ieee1275_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT)
+@COND_powerpc_ieee1275_TRUE@	grub-core/script/libgrubmods_a-argv.$(OBJEXT) \
+@COND_powerpc_ieee1275_TRUE@	grub-core/io/libgrubmods_a-gzio.$(OBJEXT)
 am_libgrubmods_a_OBJECTS = $(am__objects_13) $(am__objects_14) \
 	$(am__objects_15) $(am__objects_16) $(am__objects_17) \
 	$(am__objects_18) $(am__objects_19) $(am__objects_20) \
@@ -9895,6 +9958,9 @@ grub-core/fs/libgrubmods_a-reiserfs.$(OBJEXT):  \
 grub-core/fs/libgrubmods_a-sfs.$(OBJEXT):  \
 	grub-core/fs/$(am__dirstamp) \
 	grub-core/fs/$(DEPDIR)/$(am__dirstamp)
+grub-core/fs/libgrubmods_a-squash4.$(OBJEXT):  \
+	grub-core/fs/$(am__dirstamp) \
+	grub-core/fs/$(DEPDIR)/$(am__dirstamp)
 grub-core/fs/libgrubmods_a-tar.$(OBJEXT):  \
 	grub-core/fs/$(am__dirstamp) \
 	grub-core/fs/$(DEPDIR)/$(am__dirstamp)
@@ -9967,6 +10033,9 @@ grub-core/lib/libgrubmods_a-LzmaEnc.$(OBJEXT):  \
 grub-core/lib/libgrubmods_a-pbkdf2.$(OBJEXT):  \
 	grub-core/lib/$(am__dirstamp) \
 	grub-core/lib/$(DEPDIR)/$(am__dirstamp)
+grub-core/lib/libgrubmods_a-crc.$(OBJEXT):  \
+	grub-core/lib/$(am__dirstamp) \
+	grub-core/lib/$(DEPDIR)/$(am__dirstamp)
 grub-core/normal/$(am__dirstamp):
 	@$(MKDIR_P) grub-core/normal
 	@: > grub-core/normal/$(am__dirstamp)
@@ -10030,6 +10099,15 @@ grub-core/script/libgrubmods_a-script.$(OBJEXT):  \
 grub-core/script/libgrubmods_a-argv.$(OBJEXT):  \
 	grub-core/script/$(am__dirstamp) \
 	grub-core/script/$(DEPDIR)/$(am__dirstamp)
+grub-core/io/$(am__dirstamp):
+	@$(MKDIR_P) grub-core/io
+	@: > grub-core/io/$(am__dirstamp)
+grub-core/io/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) grub-core/io/$(DEPDIR)
+	@: > grub-core/io/$(DEPDIR)/$(am__dirstamp)
+grub-core/io/libgrubmods_a-gzio.$(OBJEXT):  \
+	grub-core/io/$(am__dirstamp) \
+	grub-core/io/$(DEPDIR)/$(am__dirstamp)
 libgrubmods.a: $(libgrubmods_a_OBJECTS) $(libgrubmods_a_DEPENDENCIES) 
 	-rm -f libgrubmods.a
 	$(libgrubmods_a_AR) libgrubmods.a $(libgrubmods_a_OBJECTS) $(libgrubmods_a_LIBADD)
@@ -10458,6 +10536,7 @@ mostlyclean-compile:
 	-rm -f grub-core/fs/libgrubmods_a-ntfscomp.$(OBJEXT)
 	-rm -f grub-core/fs/libgrubmods_a-reiserfs.$(OBJEXT)
 	-rm -f grub-core/fs/libgrubmods_a-sfs.$(OBJEXT)
+	-rm -f grub-core/fs/libgrubmods_a-squash4.$(OBJEXT)
 	-rm -f grub-core/fs/libgrubmods_a-tar.$(OBJEXT)
 	-rm -f grub-core/fs/libgrubmods_a-udf.$(OBJEXT)
 	-rm -f grub-core/fs/libgrubmods_a-ufs.$(OBJEXT)
@@ -10468,6 +10547,7 @@ mostlyclean-compile:
 	-rm -f grub-core/fs/zfs/libgrubmods_a-zfs_lzjb.$(OBJEXT)
 	-rm -f grub-core/fs/zfs/libgrubmods_a-zfs_sha256.$(OBJEXT)
 	-rm -f grub-core/grub_mkfont-unidata.$(OBJEXT)
+	-rm -f grub-core/io/libgrubmods_a-gzio.$(OBJEXT)
 	-rm -f grub-core/kern/emu/grub_fstest-hostfs.$(OBJEXT)
 	-rm -f grub-core/kern/emu/libgrubkern_a-getroot.$(OBJEXT)
 	-rm -f grub-core/kern/emu/libgrubkern_a-hostdisk.$(OBJEXT)
@@ -10493,6 +10573,7 @@ mostlyclean-compile:
 	-rm -f grub-core/lib/libgrubmods_a-LzFind.$(OBJEXT)
 	-rm -f grub-core/lib/libgrubmods_a-LzmaEnc.$(OBJEXT)
 	-rm -f grub-core/lib/libgrubmods_a-arg.$(OBJEXT)
+	-rm -f grub-core/lib/libgrubmods_a-crc.$(OBJEXT)
 	-rm -f grub-core/lib/libgrubmods_a-crypto.$(OBJEXT)
 	-rm -f grub-core/lib/libgrubmods_a-envblk.$(OBJEXT)
 	-rm -f grub-core/lib/libgrubmods_a-hexdump.$(OBJEXT)
@@ -10583,6 +10664,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/fs/$(DEPDIR)/libgrubmods_a-ntfscomp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/fs/$(DEPDIR)/libgrubmods_a-reiserfs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/fs/$(DEPDIR)/libgrubmods_a-sfs.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@grub-core/fs/$(DEPDIR)/libgrubmods_a-squash4.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/fs/$(DEPDIR)/libgrubmods_a-tar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/fs/$(DEPDIR)/libgrubmods_a-udf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/fs/$(DEPDIR)/libgrubmods_a-ufs.Po@am__quote@
@@ -10592,6 +10674,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/fs/zfs/$(DEPDIR)/libgrubmods_a-zfs_fletcher.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/fs/zfs/$(DEPDIR)/libgrubmods_a-zfs_lzjb.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/fs/zfs/$(DEPDIR)/libgrubmods_a-zfs_sha256.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@grub-core/io/$(DEPDIR)/libgrubmods_a-gzio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/kern/$(DEPDIR)/example_unit_test-list.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/kern/$(DEPDIR)/example_unit_test-misc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/kern/$(DEPDIR)/libgrubkern_a-command.Po@am__quote@
@@ -10614,6 +10697,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/lib/$(DEPDIR)/libgrubmods_a-LzFind.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/lib/$(DEPDIR)/libgrubmods_a-LzmaEnc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/lib/$(DEPDIR)/libgrubmods_a-arg.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@grub-core/lib/$(DEPDIR)/libgrubmods_a-crc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/lib/$(DEPDIR)/libgrubmods_a-crypto.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/lib/$(DEPDIR)/libgrubmods_a-envblk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@grub-core/lib/$(DEPDIR)/libgrubmods_a-hexdump.Po@am__quote@
@@ -11340,6 +11424,20 @@ grub-core/fs/libgrubmods_a-sfs.obj: grub-core/fs/sfs.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -c -o grub-core/fs/libgrubmods_a-sfs.obj `if test -f 'grub-core/fs/sfs.c'; then $(CYGPATH_W) 'grub-core/fs/sfs.c'; else $(CYGPATH_W) '$(srcdir)/grub-core/fs/sfs.c'; fi`
 
+grub-core/fs/libgrubmods_a-squash4.o: grub-core/fs/squash4.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -MT grub-core/fs/libgrubmods_a-squash4.o -MD -MP -MF grub-core/fs/$(DEPDIR)/libgrubmods_a-squash4.Tpo -c -o grub-core/fs/libgrubmods_a-squash4.o `test -f 'grub-core/fs/squash4.c' || echo '$(srcdir)/'`grub-core/fs/squash4.c
+@am__fastdepCC_TRUE@	$(am__mv) grub-core/fs/$(DEPDIR)/libgrubmods_a-squash4.Tpo grub-core/fs/$(DEPDIR)/libgrubmods_a-squash4.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='grub-core/fs/squash4.c' object='grub-core/fs/libgrubmods_a-squash4.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -c -o grub-core/fs/libgrubmods_a-squash4.o `test -f 'grub-core/fs/squash4.c' || echo '$(srcdir)/'`grub-core/fs/squash4.c
+
+grub-core/fs/libgrubmods_a-squash4.obj: grub-core/fs/squash4.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -MT grub-core/fs/libgrubmods_a-squash4.obj -MD -MP -MF grub-core/fs/$(DEPDIR)/libgrubmods_a-squash4.Tpo -c -o grub-core/fs/libgrubmods_a-squash4.obj `if test -f 'grub-core/fs/squash4.c'; then $(CYGPATH_W) 'grub-core/fs/squash4.c'; else $(CYGPATH_W) '$(srcdir)/grub-core/fs/squash4.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) grub-core/fs/$(DEPDIR)/libgrubmods_a-squash4.Tpo grub-core/fs/$(DEPDIR)/libgrubmods_a-squash4.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='grub-core/fs/squash4.c' object='grub-core/fs/libgrubmods_a-squash4.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -c -o grub-core/fs/libgrubmods_a-squash4.obj `if test -f 'grub-core/fs/squash4.c'; then $(CYGPATH_W) 'grub-core/fs/squash4.c'; else $(CYGPATH_W) '$(srcdir)/grub-core/fs/squash4.c'; fi`
+
 grub-core/fs/libgrubmods_a-tar.o: grub-core/fs/tar.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -MT grub-core/fs/libgrubmods_a-tar.o -MD -MP -MF grub-core/fs/$(DEPDIR)/libgrubmods_a-tar.Tpo -c -o grub-core/fs/libgrubmods_a-tar.o `test -f 'grub-core/fs/tar.c' || echo '$(srcdir)/'`grub-core/fs/tar.c
 @am__fastdepCC_TRUE@	$(am__mv) grub-core/fs/$(DEPDIR)/libgrubmods_a-tar.Tpo grub-core/fs/$(DEPDIR)/libgrubmods_a-tar.Po
@@ -11592,6 +11690,20 @@ grub-core/lib/libgrubmods_a-pbkdf2.obj: grub-core/lib/pbkdf2.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -c -o grub-core/lib/libgrubmods_a-pbkdf2.obj `if test -f 'grub-core/lib/pbkdf2.c'; then $(CYGPATH_W) 'grub-core/lib/pbkdf2.c'; else $(CYGPATH_W) '$(srcdir)/grub-core/lib/pbkdf2.c'; fi`
 
+grub-core/lib/libgrubmods_a-crc.o: grub-core/lib/crc.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -MT grub-core/lib/libgrubmods_a-crc.o -MD -MP -MF grub-core/lib/$(DEPDIR)/libgrubmods_a-crc.Tpo -c -o grub-core/lib/libgrubmods_a-crc.o `test -f 'grub-core/lib/crc.c' || echo '$(srcdir)/'`grub-core/lib/crc.c
+@am__fastdepCC_TRUE@	$(am__mv) grub-core/lib/$(DEPDIR)/libgrubmods_a-crc.Tpo grub-core/lib/$(DEPDIR)/libgrubmods_a-crc.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='grub-core/lib/crc.c' object='grub-core/lib/libgrubmods_a-crc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -c -o grub-core/lib/libgrubmods_a-crc.o `test -f 'grub-core/lib/crc.c' || echo '$(srcdir)/'`grub-core/lib/crc.c
+
+grub-core/lib/libgrubmods_a-crc.obj: grub-core/lib/crc.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -MT grub-core/lib/libgrubmods_a-crc.obj -MD -MP -MF grub-core/lib/$(DEPDIR)/libgrubmods_a-crc.Tpo -c -o grub-core/lib/libgrubmods_a-crc.obj `if test -f 'grub-core/lib/crc.c'; then $(CYGPATH_W) 'grub-core/lib/crc.c'; else $(CYGPATH_W) '$(srcdir)/grub-core/lib/crc.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) grub-core/lib/$(DEPDIR)/libgrubmods_a-crc.Tpo grub-core/lib/$(DEPDIR)/libgrubmods_a-crc.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='grub-core/lib/crc.c' object='grub-core/lib/libgrubmods_a-crc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -c -o grub-core/lib/libgrubmods_a-crc.obj `if test -f 'grub-core/lib/crc.c'; then $(CYGPATH_W) 'grub-core/lib/crc.c'; else $(CYGPATH_W) '$(srcdir)/grub-core/lib/crc.c'; fi`
+
 grub-core/normal/libgrubmods_a-datetime.o: grub-core/normal/datetime.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -MT grub-core/normal/libgrubmods_a-datetime.o -MD -MP -MF grub-core/normal/$(DEPDIR)/libgrubmods_a-datetime.Tpo -c -o grub-core/normal/libgrubmods_a-datetime.o `test -f 'grub-core/normal/datetime.c' || echo '$(srcdir)/'`grub-core/normal/datetime.c
 @am__fastdepCC_TRUE@	$(am__mv) grub-core/normal/$(DEPDIR)/libgrubmods_a-datetime.Tpo grub-core/normal/$(DEPDIR)/libgrubmods_a-datetime.Po
@@ -11801,6 +11913,20 @@ grub-core/script/libgrubmods_a-argv.obj: grub-core/script/argv.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='grub-core/script/argv.c' object='grub-core/script/libgrubmods_a-argv.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -c -o grub-core/script/libgrubmods_a-argv.obj `if test -f 'grub-core/script/argv.c'; then $(CYGPATH_W) 'grub-core/script/argv.c'; else $(CYGPATH_W) '$(srcdir)/grub-core/script/argv.c'; fi`
+
+grub-core/io/libgrubmods_a-gzio.o: grub-core/io/gzio.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -MT grub-core/io/libgrubmods_a-gzio.o -MD -MP -MF grub-core/io/$(DEPDIR)/libgrubmods_a-gzio.Tpo -c -o grub-core/io/libgrubmods_a-gzio.o `test -f 'grub-core/io/gzio.c' || echo '$(srcdir)/'`grub-core/io/gzio.c
+@am__fastdepCC_TRUE@	$(am__mv) grub-core/io/$(DEPDIR)/libgrubmods_a-gzio.Tpo grub-core/io/$(DEPDIR)/libgrubmods_a-gzio.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='grub-core/io/gzio.c' object='grub-core/io/libgrubmods_a-gzio.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -c -o grub-core/io/libgrubmods_a-gzio.o `test -f 'grub-core/io/gzio.c' || echo '$(srcdir)/'`grub-core/io/gzio.c
+
+grub-core/io/libgrubmods_a-gzio.obj: grub-core/io/gzio.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -MT grub-core/io/libgrubmods_a-gzio.obj -MD -MP -MF grub-core/io/$(DEPDIR)/libgrubmods_a-gzio.Tpo -c -o grub-core/io/libgrubmods_a-gzio.obj `if test -f 'grub-core/io/gzio.c'; then $(CYGPATH_W) 'grub-core/io/gzio.c'; else $(CYGPATH_W) '$(srcdir)/grub-core/io/gzio.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) grub-core/io/$(DEPDIR)/libgrubmods_a-gzio.Tpo grub-core/io/$(DEPDIR)/libgrubmods_a-gzio.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='grub-core/io/gzio.c' object='grub-core/io/libgrubmods_a-gzio.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -c -o grub-core/io/libgrubmods_a-gzio.obj `if test -f 'grub-core/io/gzio.c'; then $(CYGPATH_W) 'grub-core/io/gzio.c'; else $(CYGPATH_W) '$(srcdir)/grub-core/io/gzio.c'; fi`
 
 libgrubmods_a-grub_script.tab.o: grub_script.tab.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgrubmods_a_CPPFLAGS) $(CPPFLAGS) $(libgrubmods_a_CFLAGS) $(CFLAGS) -MT libgrubmods_a-grub_script.tab.o -MD -MP -MF $(DEPDIR)/libgrubmods_a-grub_script.tab.Tpo -c -o libgrubmods_a-grub_script.tab.o `test -f 'grub_script.tab.c' || echo '$(srcdir)/'`grub_script.tab.c
@@ -12998,6 +13124,8 @@ distclean-generic:
 	-rm -f grub-core/fs/$(am__dirstamp)
 	-rm -f grub-core/fs/zfs/$(DEPDIR)/$(am__dirstamp)
 	-rm -f grub-core/fs/zfs/$(am__dirstamp)
+	-rm -f grub-core/io/$(DEPDIR)/$(am__dirstamp)
+	-rm -f grub-core/io/$(am__dirstamp)
 	-rm -f grub-core/kern/$(DEPDIR)/$(am__dirstamp)
 	-rm -f grub-core/kern/$(am__dirstamp)
 	-rm -f grub-core/kern/emu/$(DEPDIR)/$(am__dirstamp)
@@ -13037,7 +13165,7 @@ clean-am: clean-binPROGRAMS clean-checkPROGRAMS clean-generic \
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-	-rm -rf ./$(DEPDIR) grub-core/$(DEPDIR) grub-core/commands/$(DEPDIR) grub-core/disk/$(DEPDIR) grub-core/fs/$(DEPDIR) grub-core/fs/zfs/$(DEPDIR) grub-core/kern/$(DEPDIR) grub-core/kern/emu/$(DEPDIR) grub-core/lib/$(DEPDIR) grub-core/lib/i386/pc/$(DEPDIR) grub-core/lib/libgcrypt-grub/cipher/$(DEPDIR) grub-core/normal/$(DEPDIR) grub-core/partmap/$(DEPDIR) grub-core/script/$(DEPDIR) grub-core/tests/lib/$(DEPDIR) tests/$(DEPDIR) tests/lib/$(DEPDIR) util/$(DEPDIR) util/ieee1275/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) grub-core/$(DEPDIR) grub-core/commands/$(DEPDIR) grub-core/disk/$(DEPDIR) grub-core/fs/$(DEPDIR) grub-core/fs/zfs/$(DEPDIR) grub-core/io/$(DEPDIR) grub-core/kern/$(DEPDIR) grub-core/kern/emu/$(DEPDIR) grub-core/lib/$(DEPDIR) grub-core/lib/i386/pc/$(DEPDIR) grub-core/lib/libgcrypt-grub/cipher/$(DEPDIR) grub-core/normal/$(DEPDIR) grub-core/partmap/$(DEPDIR) grub-core/script/$(DEPDIR) grub-core/tests/lib/$(DEPDIR) tests/$(DEPDIR) tests/lib/$(DEPDIR) util/$(DEPDIR) util/ieee1275/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-tags
@@ -13089,7 +13217,7 @@ installcheck-am:
 maintainer-clean: maintainer-clean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
-	-rm -rf ./$(DEPDIR) grub-core/$(DEPDIR) grub-core/commands/$(DEPDIR) grub-core/disk/$(DEPDIR) grub-core/fs/$(DEPDIR) grub-core/fs/zfs/$(DEPDIR) grub-core/kern/$(DEPDIR) grub-core/kern/emu/$(DEPDIR) grub-core/lib/$(DEPDIR) grub-core/lib/i386/pc/$(DEPDIR) grub-core/lib/libgcrypt-grub/cipher/$(DEPDIR) grub-core/normal/$(DEPDIR) grub-core/partmap/$(DEPDIR) grub-core/script/$(DEPDIR) grub-core/tests/lib/$(DEPDIR) tests/$(DEPDIR) tests/lib/$(DEPDIR) util/$(DEPDIR) util/ieee1275/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) grub-core/$(DEPDIR) grub-core/commands/$(DEPDIR) grub-core/disk/$(DEPDIR) grub-core/fs/$(DEPDIR) grub-core/fs/zfs/$(DEPDIR) grub-core/io/$(DEPDIR) grub-core/kern/$(DEPDIR) grub-core/kern/emu/$(DEPDIR) grub-core/lib/$(DEPDIR) grub-core/lib/i386/pc/$(DEPDIR) grub-core/lib/libgcrypt-grub/cipher/$(DEPDIR) grub-core/normal/$(DEPDIR) grub-core/partmap/$(DEPDIR) grub-core/script/$(DEPDIR) grub-core/tests/lib/$(DEPDIR) tests/$(DEPDIR) tests/lib/$(DEPDIR) util/$(DEPDIR) util/ieee1275/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

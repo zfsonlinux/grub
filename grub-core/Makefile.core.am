@@ -16886,7 +16886,7 @@ endif
 if COND_emu
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -16908,7 +16908,7 @@ endif
 if COND_i386_pc
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -16930,7 +16930,7 @@ endif
 if COND_i386_efi
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -16952,7 +16952,7 @@ endif
 if COND_i386_qemu
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -16974,7 +16974,7 @@ endif
 if COND_i386_coreboot
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -16996,7 +16996,7 @@ endif
 if COND_i386_multiboot
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -17018,7 +17018,7 @@ endif
 if COND_i386_ieee1275
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -17040,7 +17040,7 @@ endif
 if COND_x86_64_efi
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -17062,7 +17062,7 @@ endif
 if COND_mips_yeeloong
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -17084,7 +17084,7 @@ endif
 if COND_sparc64_ieee1275
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -17106,7 +17106,7 @@ endif
 if COND_powerpc_ieee1275
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -20752,6 +20752,248 @@ CLEANFILES += sfs.marker
 
 sfs.marker: $(sfs_module_SOURCES) $(nodist_sfs_module_SOURCES)
 	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(sfs_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_emu
+noinst_PROGRAMS += squash4.module
+MODULE_FILES += squash4.module$(EXEEXT)
+squash4_module_SOURCES  = fs/squash4.c  ## platform sources
+nodist_squash4_module_SOURCES  =  ## platform nodist sources
+squash4_module_LDADD  = 
+squash4_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+squash4_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+squash4_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+squash4_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_squash4_module_SOURCES)
+CLEANFILES += $(nodist_squash4_module_SOURCES)
+MOD_FILES += squash4.mod
+MARKER_FILES += squash4.marker
+CLEANFILES += squash4.marker
+
+squash4.marker: $(squash4_module_SOURCES) $(nodist_squash4_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(squash4_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_pc
+noinst_PROGRAMS += squash4.module
+MODULE_FILES += squash4.module$(EXEEXT)
+squash4_module_SOURCES  = fs/squash4.c  ## platform sources
+nodist_squash4_module_SOURCES  =  ## platform nodist sources
+squash4_module_LDADD  = 
+squash4_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+squash4_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+squash4_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+squash4_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_squash4_module_SOURCES)
+CLEANFILES += $(nodist_squash4_module_SOURCES)
+MOD_FILES += squash4.mod
+MARKER_FILES += squash4.marker
+CLEANFILES += squash4.marker
+
+squash4.marker: $(squash4_module_SOURCES) $(nodist_squash4_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(squash4_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_efi
+noinst_PROGRAMS += squash4.module
+MODULE_FILES += squash4.module$(EXEEXT)
+squash4_module_SOURCES  = fs/squash4.c  ## platform sources
+nodist_squash4_module_SOURCES  =  ## platform nodist sources
+squash4_module_LDADD  = 
+squash4_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+squash4_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+squash4_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+squash4_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_squash4_module_SOURCES)
+CLEANFILES += $(nodist_squash4_module_SOURCES)
+MOD_FILES += squash4.mod
+MARKER_FILES += squash4.marker
+CLEANFILES += squash4.marker
+
+squash4.marker: $(squash4_module_SOURCES) $(nodist_squash4_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(squash4_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_qemu
+noinst_PROGRAMS += squash4.module
+MODULE_FILES += squash4.module$(EXEEXT)
+squash4_module_SOURCES  = fs/squash4.c  ## platform sources
+nodist_squash4_module_SOURCES  =  ## platform nodist sources
+squash4_module_LDADD  = 
+squash4_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+squash4_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+squash4_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+squash4_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_squash4_module_SOURCES)
+CLEANFILES += $(nodist_squash4_module_SOURCES)
+MOD_FILES += squash4.mod
+MARKER_FILES += squash4.marker
+CLEANFILES += squash4.marker
+
+squash4.marker: $(squash4_module_SOURCES) $(nodist_squash4_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(squash4_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_coreboot
+noinst_PROGRAMS += squash4.module
+MODULE_FILES += squash4.module$(EXEEXT)
+squash4_module_SOURCES  = fs/squash4.c  ## platform sources
+nodist_squash4_module_SOURCES  =  ## platform nodist sources
+squash4_module_LDADD  = 
+squash4_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+squash4_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+squash4_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+squash4_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_squash4_module_SOURCES)
+CLEANFILES += $(nodist_squash4_module_SOURCES)
+MOD_FILES += squash4.mod
+MARKER_FILES += squash4.marker
+CLEANFILES += squash4.marker
+
+squash4.marker: $(squash4_module_SOURCES) $(nodist_squash4_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(squash4_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_multiboot
+noinst_PROGRAMS += squash4.module
+MODULE_FILES += squash4.module$(EXEEXT)
+squash4_module_SOURCES  = fs/squash4.c  ## platform sources
+nodist_squash4_module_SOURCES  =  ## platform nodist sources
+squash4_module_LDADD  = 
+squash4_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+squash4_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+squash4_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+squash4_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_squash4_module_SOURCES)
+CLEANFILES += $(nodist_squash4_module_SOURCES)
+MOD_FILES += squash4.mod
+MARKER_FILES += squash4.marker
+CLEANFILES += squash4.marker
+
+squash4.marker: $(squash4_module_SOURCES) $(nodist_squash4_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(squash4_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_i386_ieee1275
+noinst_PROGRAMS += squash4.module
+MODULE_FILES += squash4.module$(EXEEXT)
+squash4_module_SOURCES  = fs/squash4.c  ## platform sources
+nodist_squash4_module_SOURCES  =  ## platform nodist sources
+squash4_module_LDADD  = 
+squash4_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+squash4_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+squash4_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+squash4_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_squash4_module_SOURCES)
+CLEANFILES += $(nodist_squash4_module_SOURCES)
+MOD_FILES += squash4.mod
+MARKER_FILES += squash4.marker
+CLEANFILES += squash4.marker
+
+squash4.marker: $(squash4_module_SOURCES) $(nodist_squash4_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(squash4_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_x86_64_efi
+noinst_PROGRAMS += squash4.module
+MODULE_FILES += squash4.module$(EXEEXT)
+squash4_module_SOURCES  = fs/squash4.c  ## platform sources
+nodist_squash4_module_SOURCES  =  ## platform nodist sources
+squash4_module_LDADD  = 
+squash4_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+squash4_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+squash4_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+squash4_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_squash4_module_SOURCES)
+CLEANFILES += $(nodist_squash4_module_SOURCES)
+MOD_FILES += squash4.mod
+MARKER_FILES += squash4.marker
+CLEANFILES += squash4.marker
+
+squash4.marker: $(squash4_module_SOURCES) $(nodist_squash4_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(squash4_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_mips_yeeloong
+noinst_PROGRAMS += squash4.module
+MODULE_FILES += squash4.module$(EXEEXT)
+squash4_module_SOURCES  = fs/squash4.c  ## platform sources
+nodist_squash4_module_SOURCES  =  ## platform nodist sources
+squash4_module_LDADD  = 
+squash4_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+squash4_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+squash4_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+squash4_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_squash4_module_SOURCES)
+CLEANFILES += $(nodist_squash4_module_SOURCES)
+MOD_FILES += squash4.mod
+MARKER_FILES += squash4.marker
+CLEANFILES += squash4.marker
+
+squash4.marker: $(squash4_module_SOURCES) $(nodist_squash4_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(squash4_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_sparc64_ieee1275
+noinst_PROGRAMS += squash4.module
+MODULE_FILES += squash4.module$(EXEEXT)
+squash4_module_SOURCES  = fs/squash4.c  ## platform sources
+nodist_squash4_module_SOURCES  =  ## platform nodist sources
+squash4_module_LDADD  = 
+squash4_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+squash4_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+squash4_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+squash4_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_squash4_module_SOURCES)
+CLEANFILES += $(nodist_squash4_module_SOURCES)
+MOD_FILES += squash4.mod
+MARKER_FILES += squash4.marker
+CLEANFILES += squash4.marker
+
+squash4.marker: $(squash4_module_SOURCES) $(nodist_squash4_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(squash4_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
+	grep 'MARKER' $@.new > $@; rm -f $@.new
+endif
+
+if COND_powerpc_ieee1275
+noinst_PROGRAMS += squash4.module
+MODULE_FILES += squash4.module$(EXEEXT)
+squash4_module_SOURCES  = fs/squash4.c  ## platform sources
+nodist_squash4_module_SOURCES  =  ## platform nodist sources
+squash4_module_LDADD  = 
+squash4_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
+squash4_module_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_MODULE) 
+squash4_module_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_MODULE) 
+squash4_module_CCASFLAGS  = $(AM_CCASFLAGS) $(CCASFLAGS_MODULE) 
+EXTRA_DIST += 
+BUILT_SOURCES += $(nodist_squash4_module_SOURCES)
+CLEANFILES += $(nodist_squash4_module_SOURCES)
+MOD_FILES += squash4.mod
+MARKER_FILES += squash4.marker
+CLEANFILES += squash4.marker
+
+squash4.marker: $(squash4_module_SOURCES) $(nodist_squash4_module_SOURCES)
+	$(TARGET_CPP) -DGRUB_LST_GENERATOR $(CPPFLAGS_MARKER) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(squash4_module_CPPFLAGS) $(CPPFLAGS) $^ > $@.new || (rm -f $@; exit 1)
 	grep 'MARKER' $@.new > $@; rm -f $@.new
 endif
 
@@ -22716,7 +22958,7 @@ endif
 if COND_emu
 noinst_PROGRAMS += gfxmenu.module
 MODULE_FILES += gfxmenu.module$(EXEEXT)
-gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c gfxmenu/named_colors.c  ## platform sources
+gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c  ## platform sources
 nodist_gfxmenu_module_SOURCES  =  ## platform nodist sources
 gfxmenu_module_LDADD  = 
 gfxmenu_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -22738,7 +22980,7 @@ endif
 if COND_i386_pc
 noinst_PROGRAMS += gfxmenu.module
 MODULE_FILES += gfxmenu.module$(EXEEXT)
-gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c gfxmenu/named_colors.c  ## platform sources
+gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c  ## platform sources
 nodist_gfxmenu_module_SOURCES  =  ## platform nodist sources
 gfxmenu_module_LDADD  = 
 gfxmenu_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -22760,7 +23002,7 @@ endif
 if COND_i386_efi
 noinst_PROGRAMS += gfxmenu.module
 MODULE_FILES += gfxmenu.module$(EXEEXT)
-gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c gfxmenu/named_colors.c  ## platform sources
+gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c  ## platform sources
 nodist_gfxmenu_module_SOURCES  =  ## platform nodist sources
 gfxmenu_module_LDADD  = 
 gfxmenu_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -22782,7 +23024,7 @@ endif
 if COND_i386_qemu
 noinst_PROGRAMS += gfxmenu.module
 MODULE_FILES += gfxmenu.module$(EXEEXT)
-gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c gfxmenu/named_colors.c  ## platform sources
+gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c  ## platform sources
 nodist_gfxmenu_module_SOURCES  =  ## platform nodist sources
 gfxmenu_module_LDADD  = 
 gfxmenu_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -22804,7 +23046,7 @@ endif
 if COND_i386_coreboot
 noinst_PROGRAMS += gfxmenu.module
 MODULE_FILES += gfxmenu.module$(EXEEXT)
-gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c gfxmenu/named_colors.c  ## platform sources
+gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c  ## platform sources
 nodist_gfxmenu_module_SOURCES  =  ## platform nodist sources
 gfxmenu_module_LDADD  = 
 gfxmenu_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -22826,7 +23068,7 @@ endif
 if COND_i386_multiboot
 noinst_PROGRAMS += gfxmenu.module
 MODULE_FILES += gfxmenu.module$(EXEEXT)
-gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c gfxmenu/named_colors.c  ## platform sources
+gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c  ## platform sources
 nodist_gfxmenu_module_SOURCES  =  ## platform nodist sources
 gfxmenu_module_LDADD  = 
 gfxmenu_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -22848,7 +23090,7 @@ endif
 if COND_i386_ieee1275
 noinst_PROGRAMS += gfxmenu.module
 MODULE_FILES += gfxmenu.module$(EXEEXT)
-gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c gfxmenu/named_colors.c  ## platform sources
+gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c  ## platform sources
 nodist_gfxmenu_module_SOURCES  =  ## platform nodist sources
 gfxmenu_module_LDADD  = 
 gfxmenu_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -22870,7 +23112,7 @@ endif
 if COND_x86_64_efi
 noinst_PROGRAMS += gfxmenu.module
 MODULE_FILES += gfxmenu.module$(EXEEXT)
-gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c gfxmenu/named_colors.c  ## platform sources
+gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c  ## platform sources
 nodist_gfxmenu_module_SOURCES  =  ## platform nodist sources
 gfxmenu_module_LDADD  = 
 gfxmenu_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -22892,7 +23134,7 @@ endif
 if COND_mips_yeeloong
 noinst_PROGRAMS += gfxmenu.module
 MODULE_FILES += gfxmenu.module$(EXEEXT)
-gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c gfxmenu/named_colors.c  ## platform sources
+gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c  ## platform sources
 nodist_gfxmenu_module_SOURCES  =  ## platform nodist sources
 gfxmenu_module_LDADD  = 
 gfxmenu_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -22914,7 +23156,7 @@ endif
 if COND_sparc64_ieee1275
 noinst_PROGRAMS += gfxmenu.module
 MODULE_FILES += gfxmenu.module$(EXEEXT)
-gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c gfxmenu/named_colors.c  ## platform sources
+gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c  ## platform sources
 nodist_gfxmenu_module_SOURCES  =  ## platform nodist sources
 gfxmenu_module_LDADD  = 
 gfxmenu_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -22936,7 +23178,7 @@ endif
 if COND_powerpc_ieee1275
 noinst_PROGRAMS += gfxmenu.module
 MODULE_FILES += gfxmenu.module$(EXEEXT)
-gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c gfxmenu/named_colors.c  ## platform sources
+gfxmenu_module_SOURCES  = gfxmenu/gfxmenu.c gfxmenu/model.c gfxmenu/view.c gfxmenu/font.c gfxmenu/icon_manager.c gfxmenu/theme_loader.c gfxmenu/widget-box.c gfxmenu/gui_canvas.c gfxmenu/gui_circular_progress.c gfxmenu/gui_box.c gfxmenu/gui_label.c gfxmenu/gui_list.c gfxmenu/gui_image.c gfxmenu/gui_progress_bar.c gfxmenu/gui_util.c gfxmenu/gui_string_util.c  ## platform sources
 nodist_gfxmenu_module_SOURCES  =  ## platform nodist sources
 gfxmenu_module_LDADD  = 
 gfxmenu_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -32090,7 +32332,7 @@ endif
 if COND_emu
 noinst_PROGRAMS += video.module
 MODULE_FILES += video.module$(EXEEXT)
-video_module_SOURCES  = video/video.c  ## platform sources
+video_module_SOURCES  = video/video.c video/colors.c  ## platform sources
 nodist_video_module_SOURCES  =  ## platform nodist sources
 video_module_LDADD  = 
 video_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -32112,7 +32354,7 @@ endif
 if COND_i386_pc
 noinst_PROGRAMS += video.module
 MODULE_FILES += video.module$(EXEEXT)
-video_module_SOURCES  = video/video.c  ## platform sources
+video_module_SOURCES  = video/video.c video/colors.c  ## platform sources
 nodist_video_module_SOURCES  =  ## platform nodist sources
 video_module_LDADD  = 
 video_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -32134,7 +32376,7 @@ endif
 if COND_i386_efi
 noinst_PROGRAMS += video.module
 MODULE_FILES += video.module$(EXEEXT)
-video_module_SOURCES  = video/video.c  ## platform sources
+video_module_SOURCES  = video/video.c video/colors.c  ## platform sources
 nodist_video_module_SOURCES  =  ## platform nodist sources
 video_module_LDADD  = 
 video_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -32156,7 +32398,7 @@ endif
 if COND_i386_qemu
 noinst_PROGRAMS += video.module
 MODULE_FILES += video.module$(EXEEXT)
-video_module_SOURCES  = video/video.c  ## platform sources
+video_module_SOURCES  = video/video.c video/colors.c  ## platform sources
 nodist_video_module_SOURCES  =  ## platform nodist sources
 video_module_LDADD  = 
 video_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -32178,7 +32420,7 @@ endif
 if COND_i386_coreboot
 noinst_PROGRAMS += video.module
 MODULE_FILES += video.module$(EXEEXT)
-video_module_SOURCES  = video/video.c  ## platform sources
+video_module_SOURCES  = video/video.c video/colors.c  ## platform sources
 nodist_video_module_SOURCES  =  ## platform nodist sources
 video_module_LDADD  = 
 video_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -32200,7 +32442,7 @@ endif
 if COND_i386_multiboot
 noinst_PROGRAMS += video.module
 MODULE_FILES += video.module$(EXEEXT)
-video_module_SOURCES  = video/video.c  ## platform sources
+video_module_SOURCES  = video/video.c video/colors.c  ## platform sources
 nodist_video_module_SOURCES  =  ## platform nodist sources
 video_module_LDADD  = 
 video_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -32222,7 +32464,7 @@ endif
 if COND_i386_ieee1275
 noinst_PROGRAMS += video.module
 MODULE_FILES += video.module$(EXEEXT)
-video_module_SOURCES  = video/video.c  ## platform sources
+video_module_SOURCES  = video/video.c video/colors.c  ## platform sources
 nodist_video_module_SOURCES  =  ## platform nodist sources
 video_module_LDADD  = 
 video_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -32244,7 +32486,7 @@ endif
 if COND_x86_64_efi
 noinst_PROGRAMS += video.module
 MODULE_FILES += video.module$(EXEEXT)
-video_module_SOURCES  = video/video.c  ## platform sources
+video_module_SOURCES  = video/video.c video/colors.c  ## platform sources
 nodist_video_module_SOURCES  =  ## platform nodist sources
 video_module_LDADD  = 
 video_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -32266,7 +32508,7 @@ endif
 if COND_sparc64_ieee1275
 noinst_PROGRAMS += video.module
 MODULE_FILES += video.module$(EXEEXT)
-video_module_SOURCES  = video/video.c  ## platform sources
+video_module_SOURCES  = video/video.c video/colors.c  ## platform sources
 nodist_video_module_SOURCES  =  ## platform nodist sources
 video_module_LDADD  = 
 video_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -32288,7 +32530,7 @@ endif
 if COND_powerpc_ieee1275
 noinst_PROGRAMS += video.module
 MODULE_FILES += video.module$(EXEEXT)
-video_module_SOURCES  = video/video.c  ## platform sources
+video_module_SOURCES  = video/video.c video/colors.c  ## platform sources
 nodist_video_module_SOURCES  =  ## platform nodist sources
 video_module_LDADD  = 
 video_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -38420,7 +38662,7 @@ endif
 if COND_mips_yeeloong
 noinst_PROGRAMS += kernel.exec
 kernel_exec_SOURCES  = kern/mips/startup.S 
-kernel_exec_SOURCES += kern/generic/rtc_get_time_ms.c term/ns8250.c bus/bonito.c bus/cs5536.c bus/pci.c kern/mips/cache.S kern/mips/dl.c kern/mips/init.c kern/mips/yeeloong/init.c term/at_keyboard.c term/serial.c video/sm712.c commands/keylayouts.c term/gfxterm.c font/font.c font/font_cmd.c io/bufio.c video/bitmap.c video/bitmap_scale.c video/fb/fbblit.c video/fb/fbfill.c video/fb/fbutil.c video/fb/video_fb.c video/video.c commands/boot.c term/terminfo.c term/tparm.c commands/extcmd.c lib/arg.c kern/mm.c kern/time.c kern/generic/millisleep.c kern/command.c kern/corecmd.c kern/device.c kern/disk.c kern/dl.c kern/env.c kern/err.c kern/file.c kern/fs.c kern/list.c kern/main.c kern/misc.c kern/parser.c kern/partition.c kern/rescue_parser.c kern/rescue_reader.c kern/term.c 
+kernel_exec_SOURCES += kern/generic/rtc_get_time_ms.c term/ns8250.c bus/bonito.c bus/cs5536.c bus/pci.c kern/mips/cache.S kern/mips/dl.c kern/mips/init.c kern/mips/yeeloong/init.c term/at_keyboard.c term/serial.c video/sm712.c commands/keylayouts.c term/gfxterm.c font/font.c font/font_cmd.c io/bufio.c video/bitmap.c video/bitmap_scale.c video/colors.c video/fb/fbblit.c video/fb/fbfill.c video/fb/fbutil.c video/fb/video_fb.c video/video.c commands/boot.c term/terminfo.c term/tparm.c commands/extcmd.c lib/arg.c kern/mm.c kern/time.c kern/generic/millisleep.c kern/command.c kern/corecmd.c kern/device.c kern/disk.c kern/dl.c kern/env.c kern/err.c kern/file.c kern/fs.c kern/list.c kern/main.c kern/misc.c kern/parser.c kern/partition.c kern/rescue_parser.c kern/rescue_reader.c kern/term.c 
 nodist_kernel_exec_SOURCES  = symlist.c  ## platform nodist sources
 kernel_exec_LDADD  = $(LDADD_KERNEL) 
 kernel_exec_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_KERNEL) 

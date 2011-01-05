@@ -1,4 +1,7 @@
-Ubuntu: Don't generate a device map by default.
+Description: Don't generate a device map by default
+Author: Colin Watson <cjwatson@ubuntu.com>
+Forwarded: no
+Last-Update: 2011-01-05
 
 Index: b/util/grub-install.in
 ===================================================================

@@ -1,7 +1,10 @@
-Description: Set GRUB_GFXPAYLOAD_LINUX=keep unless it's known to be
- unsupported on the current hardware. See
+Description: Check hardware support before using gfxpayload=keep
+ Set GRUB_GFXPAYLOAD_LINUX=keep unless it's known to be unsupported on the
+ current hardware. See
  https://blueprints.launchpad.net/ubuntu/+spec/packageselection-foundations-n-grub2-boot-framebuffer.
 Author: Evan Broder <evan@ebroder.net>
+Forwarded: no
+Last-Update: 2011-01-05
 
 Index: b/util/grub.d/10_linux.in
 ===================================================================
