@@ -8,7 +8,7 @@ Index: b/util/grub-install.in
 ===================================================================
 --- a/util/grub-install.in
 +++ b/util/grub-install.in
-@@ -430,7 +430,7 @@
+@@ -427,7 +427,7 @@
  
  # Copy gettext files
  mkdir -p "${grubdir}"/locale/

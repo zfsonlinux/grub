@@ -67,7 +67,7 @@ Index: b/util/grub-install.in
 ===================================================================
 --- a/util/grub-install.in
 +++ b/util/grub-install.in
-@@ -412,12 +412,12 @@
+@@ -409,12 +409,12 @@
  fi
  
  # Copy the GRUB images to the GRUB directory.
