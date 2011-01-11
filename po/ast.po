@@ -7,159 +7,225 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub-1.97+20100124\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-24 19:29+0000\n"
+"POT-Creation-Date: 2010-11-16 17:13+0000\n"
 "PO-Revision-Date: 2010-04-05 16:04+0100\n"
 "Last-Translator: Marquinos <maacub@gmail.com>\n"
 "Language-Team: Asturian <ubuntu-l10n-ast@lists.ubuntu.com>\n"
+"Language: ast\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: asturian\n"
 
-#: commands/acpi.c:40
+#: grub-core/commands/acpi.c:38
 msgid "Don't load host tables specified by comma-separated list."
-msgstr "Nun carga tables d'anfitrión especificaes na llista separtada por comes."
+msgstr ""
+"Nun carga tables d'anfitrión especificaes na llista separtada por comes."
 
-#: commands/acpi.c:43
+#: grub-core/commands/acpi.c:41
 msgid "Load only tables specified by comma-separated list."
 msgstr "Cargar namái tables especificaes en llista dixebrada por comes."
 
-#: commands/acpi.c:44
+#: grub-core/commands/acpi.c:42
 msgid "Expose v1 tables."
 msgstr "Esponer tables v1"
 
-#: commands/acpi.c:45
+#: grub-core/commands/acpi.c:43
 msgid "Expose v2 and v3 tables."
 msgstr "Esponer tables v2 y v3"
 
-#: commands/acpi.c:46
+#: grub-core/commands/acpi.c:44
 msgid "Set OEMID of RSDP, XSDT and RSDT."
 msgstr "Afitar OEMID de RSDP, XSDT y RSDT."
 
-#: commands/acpi.c:48
+#: grub-core/commands/acpi.c:46
 msgid "Set OEMTABLE ID of RSDP, XSDT and RSDT."
 msgstr "Afitar OEMTABLE ID de RSDP, XSDT y RSDT."
 
-#: commands/acpi.c:50
+#: grub-core/commands/acpi.c:48
 msgid "Set OEMTABLE revision of RSDP, XSDT and RSDT."
 msgstr "Afitar revisión OEMTABLE de RSDP, XSDT y RSDT."
 
-#: commands/acpi.c:52
+#: grub-core/commands/acpi.c:50
 msgid "Set creator field of RSDP, XSDT and RSDT."
 msgstr "Afitar campu creador pa RSDP, CSDT y RSDT."
 
-#: commands/acpi.c:54
+#: grub-core/commands/acpi.c:52
 msgid "Set creator revision of RSDP, XSDT and RSDT."
 msgstr "Afitar revisión de creador de RSDP, CSDT y RSDT."
 
-#: commands/acpi.c:55
-msgid "Don't update EBDA. May fix failures or hangs on some. BIOSes but makes it ineffective with OS not receiving RSDP from GRUB."
-msgstr "Nun anovar EBDA. Podría correxir fallos o colingase en delles BIOS, pero vuélvese ineficiente si'l SO nun recibi RSDP del GRUB."
+#: grub-core/commands/acpi.c:53
+msgid ""
+"Don't update EBDA. May fix failures or hangs on some. BIOSes but makes it "
+"ineffective with OS not receiving RSDP from GRUB."
+msgstr ""
+"Nun anovar EBDA. Podría correxir fallos o colingase en delles BIOS, pero "
+"vuélvese ineficiente si'l SO nun recibi RSDP del GRUB."
 
-#: commands/acpi.c:763
-msgid "[-1|-2] [--exclude=TABLE1,TABLE2|--load-only=table1,table2] FILE1 [FILE2] [...]"
-msgstr "[-1|-2] [--exclude=TABLA1,TABLA2|--load-only=tabla1,tabla2] FICHERU1 [FICHERU2] [...]"
+#: grub-core/commands/acpi.c:761
+msgid ""
+"[-1|-2] [--exclude=TABLE1,TABLE2|--load-only=table1,table2] FILE1 [FILE2] "
+"[...]"
+msgstr ""
+"[-1|-2] [--exclude=TABLA1,TABLA2|--load-only=tabla1,tabla2] FICHERU1 "
+"[FICHERU2] [...]"
 
-#: commands/acpi.c:766
+#: grub-core/commands/acpi.c:764
 msgid "Load host ACPI tables and tables specified by arguments."
 msgstr "Cargar tables ACPI del anfitrión y tables especificaes por argumentos."
 
-#: commands/blocklist.c:114 commands/cat.c:82 commands/configfile.c:57
-#: commands/configfile.c:60 commands/configfile.c:65 commands/crc.c:64
-#: commands/i386/pc/play.c:211 commands/minicmd.c:358 loader/i386/bsd.c:1296
-#: loader/i386/bsd.c:1300 loader/i386/bsd.c:1304
+#: grub-core/commands/blocklist.c:114 grub-core/commands/cat.c:95
+#: grub-core/commands/configfile.c:63 grub-core/commands/configfile.c:66
+#: grub-core/commands/configfile.c:72 grub-core/commands/configfile.c:78
+#: grub-core/commands/configfile.c:84 grub-core/commands/hashsum.c:31
+#: grub-core/commands/legacycfg.c:753 grub-core/commands/legacycfg.c:758
+#: grub-core/commands/legacycfg.c:763 grub-core/commands/legacycfg.c:768
+#: grub-core/commands/minicmd.c:202 grub-core/commands/testload.c:148
+#: grub-core/efiemu/main.c:316 grub-core/loader/i386/bsd.c:1942
+#: grub-core/loader/i386/bsd.c:1945 grub-core/loader/i386/bsd.c:1948
+#: util/grub-setup.c:686 util/grub-setup.c:688 util/grub-setup.c:692
 msgid "FILE"
 msgstr "FICHERU"
 
-#: commands/blocklist.c:114
+#: grub-core/commands/blocklist.c:114
 msgid "Print a block list."
 msgstr "Imprentar una llista de bloques."
 
-#: commands/boot.c:190
+#: grub-core/commands/boot.c:190
 msgid "Boot an operating system."
 msgstr "Arrancar un sistema operativu."
 
-#: commands/cat.c:82 commands/minicmd.c:358
+#: grub-core/commands/cat.c:30
+msgid "Accept DOS-style CR/NL line endings."
+msgstr ""
+
+#: grub-core/commands/cat.c:95 grub-core/commands/minicmd.c:202
 msgid "Show the contents of a file."
 msgstr "Amosar el conteníu d'un ficheru."
 
-#: commands/cmp.c:113
+#: grub-core/commands/cmp.c:112
 msgid "FILE1 FILE2"
 msgstr "FICHERU1 FICHERU2"
 
-#: commands/cmp.c:113
+#: grub-core/commands/cmp.c:112
 msgid "Compare two files."
 msgstr "Comparar dos ficheros."
 
-#: commands/configfile.c:57
+#: grub-core/commands/configfile.c:63
 msgid "Load another config file."
 msgstr "Cargar otru ficheru de configuración."
 
-#: commands/configfile.c:61 commands/configfile.c:66
+#: grub-core/commands/configfile.c:67 grub-core/commands/configfile.c:85
 msgid "Load another config file without changing context."
 msgstr "Cargar otru ficheru de configuración ensin camudar de contestu."
 
-#: commands/crc.c:65
-msgid "Calculate the crc32 checksum of a file."
-msgstr "Calcular la suma de comprobación crc32 d'un ficheru."
+#: grub-core/commands/configfile.c:73 grub-core/commands/configfile.c:79
+#, fuzzy
+msgid ""
+"Load another config file without changing context but take only menuentries."
+msgstr "Cargar otru ficheru de configuración ensin camudar de contestu."
 
-#: commands/date.c:139
+#: grub-core/commands/date.c:139
 msgid "[[year-]month-day] [hour:minute[:second]]"
 msgstr "[[añu-]mes-día] [hora:minutu[:segundu]]"
 
-#: commands/date.c:140
+#: grub-core/commands/date.c:140
 msgid "Command to display/set current datetime."
 msgstr "Orde p'amosar/camudar la data y hora actual."
 
-#: commands/echo.c:27
+#: grub-core/commands/echo.c:27
 msgid "Do not output the trailing newline."
 msgstr "Nun amosar la llinia nueva al final."
 
-#: commands/echo.c:28
+#: grub-core/commands/echo.c:28
 msgid "Enable interpretation of backslash escapes."
 msgstr "Activar la interpretación de los escapes de barra invertida."
 
-#: commands/echo.c:117
+#: grub-core/commands/echo.c:119
 msgid "[-e|-n] STRING"
 msgstr "[-e|-n] CADENA"
 
-#: commands/echo.c:117
+#: grub-core/commands/echo.c:119
 msgid "Display a line of text."
 msgstr "Amosar una llinia de testu."
 
-#: commands/efi/fixvideo.c:103
+#: grub-core/commands/efi/fixvideo.c:103
 msgid "Fix video problem."
 msgstr "Correxir problema de vídeu."
 
-#: commands/efi/loadbios.c:207
+#: grub-core/commands/efi/loadbios.c:207
 msgid "Fake BIOS."
 msgstr "BIOS falsu."
 
-#: commands/efi/loadbios.c:211
+#: grub-core/commands/efi/loadbios.c:211
 msgid "Load BIOS dump."
 msgstr "Cargar volcáu de BIOS."
 
-#: commands/gptsync.c:244
+#: grub-core/commands/gptsync.c:244
 msgid "DEVICE [PARTITION[+/-[TYPE]]] ..."
 msgstr "PRESÉU [PARTICIÓN[+/-[TIPU]]] ..."
 
-#: commands/gptsync.c:245
-msgid "Fill hybrid MBR of GPT drive DEVICE. specified partitions will be a part of hybrid mbr. Up to 3 partitions are allowed. TYPE is an MBR type. + means that partition is active. Only one partition can be active."
-msgstr "Relleno MBR híbridu de la unidá de GPT DEVICE. Les particiones especificaes van formar parte d'un MBR híbridu. Déxense hasta trés particiones. TYPE ye un tipu de MBR. + significa qu'esa partición ta activa. Namái pue haber una partición activa."
+#: grub-core/commands/gptsync.c:245
+#, fuzzy
+msgid ""
+"Fill hybrid MBR of GPT drive DEVICE. Specified partitions will be a part of "
+"hybrid MBR. Up to 3 partitions are allowed. TYPE is an MBR type. + means "
+"that partition is active. Only one partition can be active."
+msgstr ""
+"Relleno MBR híbridu de la unidá de GPT DEVICE. Les particiones especificaes "
+"van formar parte d'un MBR híbridu. Déxense hasta trés particiones. TYPE ye "
+"un tipu de MBR. + significa qu'esa partición ta activa. Namái pue haber una "
+"partición activa."
 
-#: commands/halt.c:39
-msgid "Halts the computer.  This command does not work on all firmware implementations."
-msgstr "Pa l'equipu. Esta orde nun funciona en toles implementaciones de firmware."
+#: grub-core/commands/halt.c:39
+msgid ""
+"Halts the computer.  This command does not work on all firmware "
+"implementations."
+msgstr ""
+"Pa l'equipu. Esta orde nun funciona en toles implementaciones de firmware."
 
-#: commands/handler.c:94
-msgid "[class [handler]]"
-msgstr "[clase [manexador]]"
+#: grub-core/commands/hashsum.c:30
+msgid "Specify hash to use."
+msgstr ""
 
-#: commands/handler.c:95
-msgid "List or select a handler."
-msgstr "Llista o escueyi un manexador."
+#: grub-core/commands/hashsum.c:30
+msgid "HASH"
+msgstr ""
 
-#: commands/hdparm.c:30
+#: grub-core/commands/hashsum.c:31
+#, fuzzy
+msgid "Check hash list file."
+msgstr "Comprobar tecla Mayús"
+
+#: grub-core/commands/hashsum.c:32
+msgid "Base directory for hash list."
+msgstr ""
+
+#: grub-core/commands/hashsum.c:32
+msgid "DIRECTORY"
+msgstr ""
+
+#: grub-core/commands/hashsum.c:34
+msgid "Don't stop after first error."
+msgstr ""
+
+#: grub-core/commands/hashsum.c:35
+msgid "Uncompress file before checksumming."
+msgstr ""
+
+#: grub-core/commands/hashsum.c:260 grub-core/commands/hashsum.c:265
+#: grub-core/commands/hashsum.c:270 grub-core/commands/hashsum.c:275
+#: grub-core/commands/hashsum.c:280 grub-core/commands/hashsum.c:286
+msgid "Compute or check hash checksum."
+msgstr ""
+
+#: grub-core/commands/hashsum.c:263 grub-core/commands/hashsum.c:268
+#: grub-core/commands/hashsum.c:273 grub-core/commands/hashsum.c:278
+#: grub-core/commands/hashsum.c:284
+msgid "[-c FILE [-p PREFIX]] [FILE1 [FILE2 ...]]"
+msgstr ""
+
+#: grub-core/commands/hdparm.c:30
 msgid ""
 "Set Advanced Power Management\n"
 "(1=low, ..., 254=high, 255=off)."
@@ -167,19 +233,19 @@ msgstr ""
 "Afitar el xestor avanzáu d'enerxía\n"
 "(1=baxu, ..., 254=altu, 255=apagáu)."
 
-#: commands/hdparm.c:33
+#: grub-core/commands/hdparm.c:33
 msgid "Check power mode."
 msgstr "Comprobar el mou d'enerxía."
 
-#: commands/hdparm.c:34
+#: grub-core/commands/hdparm.c:34
 msgid "Freeze ATA security settings until reset."
 msgstr "Conxelar les configuraciones de seguridá ATA hasta reaniciar"
 
-#: commands/hdparm.c:36
+#: grub-core/commands/hdparm.c:36
 msgid "Check SMART health status."
 msgstr "Comprobar l'estáu de salú de SMART."
 
-#: commands/hdparm.c:37
+#: grub-core/commands/hdparm.c:37
 msgid ""
 "Set Automatic Acoustic Management\n"
 "(0=off, 128=quiet, ..., 254=fast)."
@@ -187,7 +253,7 @@ msgstr ""
 "Afitar el xestor automáticu d'acústica\n"
 "(0=apagáu, 128=silenciosu, ..., 254=rápidu)."
 
-#: commands/hdparm.c:40
+#: grub-core/commands/hdparm.c:40
 msgid ""
 "Set standby timeout\n"
 "(0=off, 1=5s, 2=10s, ..., 240=20m, 241=30m, ...)."
@@ -195,1018 +261,2031 @@ msgstr ""
 "Afitar tiempu d'espera\n"
 "(0=apagáu, 1=5s, 2=10s, ..., 240=20m, 241=30m, ...)."
 
-#: commands/hdparm.c:43
+#: grub-core/commands/hdparm.c:43
 msgid "Set drive to standby mode."
 msgstr "Afitar el controlador pal mou n'espera"
 
-#: commands/hdparm.c:44
+#: grub-core/commands/hdparm.c:44
 msgid "Set drive to sleep mode."
 msgstr "Afitar la unidá en mou dormir."
 
-#: commands/hdparm.c:45
+#: grub-core/commands/hdparm.c:45
 msgid "Print drive identity and settings."
 msgstr "Imprenta la identidá del controlador y configuraciones."
 
-#: commands/hdparm.c:47
+#: grub-core/commands/hdparm.c:47
 msgid "Dump contents of ATA IDENTIFY sector."
 msgstr "Volcar conteníos del seutor ATA IDENTIFY"
 
-#: commands/hdparm.c:49
+#: grub-core/commands/hdparm.c:49
 msgid "Disable/enable SMART (0/1)."
 msgstr "Desactivar/activar SMART (0/1)."
 
-#: commands/hdparm.c:50
+#: grub-core/commands/hdparm.c:50
 msgid "Do not print messages."
 msgstr "Nun imprentar mensaxes."
 
-#: commands/hdparm.c:414
+#: grub-core/commands/hdparm.c:413
 msgid "[OPTIONS] DISK"
 msgstr "[OPCIONES] DISCU"
 
-#: commands/hdparm.c:415
+#: grub-core/commands/hdparm.c:414
 msgid "Get/set ATA disk parameters."
 msgstr "Llograr/afitar parámetros ATA del discu"
 
-#: commands/help.c:103 lib/arg.c:110
+#: grub-core/commands/help.c:118 grub-core/lib/arg.c:110
 msgid "Usage:"
 msgstr "Usu:"
 
-#: commands/help.c:136
+#: grub-core/commands/help.c:134
 msgid "[PATTERN ...]"
 msgstr "[PATRÓN ...]"
 
-#: commands/help.c:137
+#: grub-core/commands/help.c:135
 msgid "Show a help message."
 msgstr "Amuesa un mensaxe d'aida."
 
-#: commands/hexdump.c:30
+#: grub-core/commands/hexdump.c:29
 msgid "Skip offset bytes from the beginning of file."
 msgstr "Saltar bytes de desplazamientu dende l'empiezu del ficheru."
 
-#: commands/hexdump.c:32
+#: grub-core/commands/hexdump.c:31
 msgid "Read only LENGTH bytes."
 msgstr "Lleer namái LENGTH bytes."
 
-#: commands/hexdump.c:125
+#: grub-core/commands/hexdump.c:123
 msgid "[OPTIONS] FILE_OR_DEVICE"
 msgstr "[OPCIONES] FICHERU_O_PRESÉU"
 
-#: commands/hexdump.c:126
+#: grub-core/commands/hexdump.c:124
 msgid "Dump the contents of a file or memory."
 msgstr "Volcar los conteníos d'un ficheru o memoria."
 
-#: commands/i386/cpuid.c:37
+#: grub-core/commands/i386/cpuid.c:37
 msgid "Check for long mode flag (default)."
 msgstr "Comprobar l'indicador de mou llargu (predetermináu)."
 
-#: commands/i386/cpuid.c:92
+#: grub-core/commands/i386/cpuid.c:92
 msgid "Check for CPU features."
 msgstr "Comprobar les carauterístiques de la CPU."
 
-#: commands/i386/pc/drivemap.c:37
+#: grub-core/commands/i386/pc/drivemap.c:38
 msgid "Show the current mappings."
 msgstr "Amosar asignaciones actuales."
 
-#: commands/i386/pc/drivemap.c:38
+#: grub-core/commands/i386/pc/drivemap.c:39
 msgid "Reset all mappings to the default values."
 msgstr "Reaniciar toles asignaciones a valores predeterminados."
 
-#: commands/i386/pc/drivemap.c:39
+#: grub-core/commands/i386/pc/drivemap.c:40
 msgid "Perform both direct and reverse mappings."
 msgstr "Realizar asignaciones direutes ya inverses"
 
-#: commands/i386/pc/drivemap.c:407
+#: grub-core/commands/i386/pc/drivemap.c:406
 msgid "-l | -r | [-s] grubdev osdisk."
 msgstr "-l | -r | [-s] grubdev osdisk."
 
-#: commands/i386/pc/drivemap.c:408
+#: grub-core/commands/i386/pc/drivemap.c:407
 msgid "Manage the BIOS drive mappings."
 msgstr "Xestiona les asignaciones del controlador de la BIOS."
 
-#: commands/i386/pc/halt.c:27
+#: grub-core/commands/i386/pc/halt.c:29
 msgid "Do not use APM to halt the computer."
 msgstr "Nun usar APM pa parar l'equipu."
 
-#: commands/i386/pc/halt.c:51
+#: grub-core/commands/i386/pc/halt.c:118
 msgid "Halt the system, if possible using APM."
 msgstr "Parar el sistema, si ye dable usar APM."
 
-#: commands/i386/pc/play.c:211
+#: grub-core/commands/i386/pc/lsapm.c:105
+msgid "Show APM information."
+msgstr ""
+
+#: grub-core/commands/i386/pc/play.c:266
+msgid "FILE | TEMPO [PITCH1 DURATION1] [PITCH2 DURATION2] ... "
+msgstr ""
+
+#: grub-core/commands/i386/pc/play.c:267
 msgid "Play a tune."
 msgstr "Afinar."
 
-#: commands/i386/pc/pxecmd.c:46
+#: grub-core/commands/i386/pc/pxecmd.c:46
 msgid "Unload PXE environment."
 msgstr "Descargar entornu PXE."
 
-#: commands/i386/pc/vbeinfo.c:179
-msgid "List compatible VESA BIOS extension video modes."
-msgstr "Listar moos de vídeu compatibles de la estensión VESA BIOS."
-
-#: commands/i386/pc/vbetest.c:172
-msgid "Test VESA BIOS Extension 2.0+ support."
-msgstr "Probar sofitu pa la estension VESA BIOS 2.0+."
-
-#: commands/ieee1275/suspend.c:43
+#: grub-core/commands/ieee1275/suspend.c:43
 msgid "Return to Open Firmware prompt."
 msgstr "Volver al cursor de Open Firmware."
 
-#: commands/keystatus.c:28
-msgid "Check Shift key."
-msgstr "Comprobar tecla Mayús"
-
-#: commands/keystatus.c:29
-msgid "Check Control key."
-msgstr "Comprobar tecla Ctrl"
-
-#: commands/keystatus.c:30
-msgid "Check Alt key."
-msgstr "Comprobar tecla Alt"
-
-#: commands/keystatus.c:85
-msgid "[--shift] [--ctrl] [--alt]"
-msgstr "[--shift] [--ctrl] [--alt]"
-
-#: commands/keystatus.c:86
-msgid "Check key modifier status."
-msgstr "Comprobar l'estáu del modificador de tecla."
-
-#: commands/loadenv.c:33
-msgid "Specify filename."
-msgstr "Especificar nome del ficheru."
-
-#: commands/loadenv.c:383 commands/loadenv.c:389
-msgid "[-f FILE]"
-msgstr "[-f FICHERU]"
-
-#: commands/loadenv.c:384
-msgid "Load variables from environment block file."
-msgstr "Cargar variables dende'l ficheru de bloque d'entornu."
-
-#: commands/loadenv.c:390
-msgid "List variables from environment block file."
-msgstr "Llista de variables dende'l ficheru de bloque d'entornu."
-
-#: commands/loadenv.c:395
-msgid "[-f FILE] variable_name [...]"
-msgstr "[-f FICHERU] nome_variable [...]"
-
-#: commands/loadenv.c:396
-msgid "Save variables to environment block file."
-msgstr "Guardar variables nel ficheru de bloque d'entornu."
-
-#: commands/ls.c:37
-msgid "Show a long list with more detailed information."
-msgstr "Amosar una llista llarga d'información con más detalles."
-
-#: commands/ls.c:38
-msgid "Print sizes in a human readable format."
-msgstr "Imprentar tamaños nún formatu lleíble por humanos."
-
-#: commands/ls.c:39
-msgid "List all files."
-msgstr "Llista de tolos ficheros."
-
-#: commands/ls.c:268
-msgid "[-l|-h|-a] [FILE]"
-msgstr "[-l|-h|-a] [Ficheru]"
-
-#: commands/ls.c:269
-msgid "List devices and files."
-msgstr "Llista de preseos y ficheros"
-
-#: commands/lsmmap.c:47
-msgid "List memory map provided by firmware."
-msgstr "Llistar el mapa de memoria apurríu pol firmware."
-
-#: commands/lspci.c:228
-msgid "List PCI devices."
-msgstr "Llista de preseos PCI."
-
-#: commands/memrw.c:31
+#: grub-core/commands/iorw.c:32 grub-core/commands/memrw.c:31
 msgid "Save read value into variable VARNAME."
 msgstr "Guardar el valor lleíu na variable VARNAME."
 
-#: commands/memrw.c:123 commands/memrw.c:126 commands/memrw.c:129
-#: commands/minicmd.c:367
-msgid "ADDR"
-msgstr "DIREICIÓN"
+#: grub-core/commands/iorw.c:33
+msgid "VARNAME"
+msgstr ""
 
-#: commands/memrw.c:123
-msgid "Read byte from ADDR."
+#: grub-core/commands/iorw.c:121 grub-core/commands/iorw.c:124
+#: grub-core/commands/iorw.c:127
+msgid "PORT"
+msgstr ""
+
+#: grub-core/commands/iorw.c:121
+#, fuzzy
+msgid "Read byte from PORT."
 msgstr "Lleer byte dende DIREICIÓN."
 
-#: commands/memrw.c:126
-msgid "Read word from ADDR."
+#: grub-core/commands/iorw.c:124
+#, fuzzy
+msgid "Read word from PORT."
 msgstr "Lleer pallabra dende ADDR."
 
-#: commands/memrw.c:129
-msgid "Read dword from ADDR."
+#: grub-core/commands/iorw.c:127
+#, fuzzy
+msgid "Read dword from PORT."
 msgstr "Lleer duble pallabra dende ADDR."
 
-#: commands/memrw.c:132 commands/memrw.c:135 commands/memrw.c:138
+#: grub-core/commands/iorw.c:130 grub-core/commands/iorw.c:134
+#, fuzzy
+msgid "PORT VALUE [MASK]"
+msgstr "ADDR VALOR [mázcara]"
+
+#: grub-core/commands/iorw.c:131
+#, fuzzy
+msgid "Write byte VALUE to PORT."
+msgstr "Escribir el byte en VALOR a ADDR"
+
+#: grub-core/commands/iorw.c:135
+#, fuzzy
+msgid "Write word VALUE to PORT."
+msgstr "Escribir la pallabra en VALOR a ADDR"
+
+#: grub-core/commands/iorw.c:138 grub-core/commands/memrw.c:132
+#: grub-core/commands/memrw.c:135 grub-core/commands/memrw.c:138
 msgid "ADDR VALUE [MASK]"
 msgstr "ADDR VALOR [mázcara]"
 
-#: commands/memrw.c:132
+#: grub-core/commands/iorw.c:139
+#, fuzzy
+msgid "Write dword VALUE to PORT."
+msgstr "Escribir el valor DWORD a ADDR"
+
+#: grub-core/commands/keylayouts.c:291
+msgid "Load a keyboard layout."
+msgstr ""
+
+#: grub-core/commands/keystatus.c:28
+msgid "Check Shift key."
+msgstr "Comprobar tecla Mayús"
+
+#: grub-core/commands/keystatus.c:29
+msgid "Check Control key."
+msgstr "Comprobar tecla Ctrl"
+
+#: grub-core/commands/keystatus.c:30
+msgid "Check Alt key."
+msgstr "Comprobar tecla Alt"
+
+#: grub-core/commands/keystatus.c:100
+msgid "[--shift] [--ctrl] [--alt]"
+msgstr "[--shift] [--ctrl] [--alt]"
+
+#: grub-core/commands/keystatus.c:101
+msgid "Check key modifier status."
+msgstr "Comprobar l'estáu del modificador de tecla."
+
+#: grub-core/commands/legacycfg.c:754
+msgid "Parse legacy config in same context"
+msgstr ""
+
+#: grub-core/commands/legacycfg.c:759
+msgid "Parse legacy config in new context"
+msgstr ""
+
+#: grub-core/commands/legacycfg.c:764
+msgid "Parse legacy config in same context taking onl entries"
+msgstr ""
+
+#: grub-core/commands/legacycfg.c:769
+msgid "Parse legacy config in new context taking onl entries"
+msgstr ""
+
+#: grub-core/commands/legacycfg.c:773
+msgid "[--no-mem-option] [--type=TYPE] FILE [ARG ...]"
+msgstr ""
+
+#: grub-core/commands/legacycfg.c:774
+msgid "Simulate grub-legacy kernel command"
+msgstr ""
+
+#: grub-core/commands/legacycfg.c:778 grub-core/commands/legacycfg.c:782
+msgid "FILE [ARG ...]"
+msgstr ""
+
+#: grub-core/commands/legacycfg.c:779
+msgid "Simulate grub-legacy initrd command"
+msgstr ""
+
+#: grub-core/commands/legacycfg.c:783
+msgid "Simulate grub-legacy modulenounzip command"
+msgstr ""
+
+#: grub-core/commands/legacycfg.c:787 grub-core/commands/legacycfg.c:792
+msgid "[--md5] PASSWD [FILE]"
+msgstr ""
+
+#: grub-core/commands/legacycfg.c:788
+msgid "Simulate grub-legacy password command"
+msgstr ""
+
+#: grub-core/commands/legacycfg.c:793
+msgid "Simulate grub-legacy password command in menuentry mode"
+msgstr ""
+
+#: grub-core/commands/loadenv.c:33
+msgid "Specify filename."
+msgstr "Especificar nome del ficheru."
+
+#: grub-core/commands/loadenv.c:378 grub-core/commands/loadenv.c:382
+msgid "[-f FILE]"
+msgstr "[-f FICHERU]"
+
+#: grub-core/commands/loadenv.c:379
+msgid "Load variables from environment block file."
+msgstr "Cargar variables dende'l ficheru de bloque d'entornu."
+
+#: grub-core/commands/loadenv.c:383
+msgid "List variables from environment block file."
+msgstr "Llista de variables dende'l ficheru de bloque d'entornu."
+
+#: grub-core/commands/loadenv.c:387
+msgid "[-f FILE] variable_name [...]"
+msgstr "[-f FICHERU] nome_variable [...]"
+
+#: grub-core/commands/loadenv.c:388
+msgid "Save variables to environment block file."
+msgstr "Guardar variables nel ficheru de bloque d'entornu."
+
+#: grub-core/commands/ls.c:37
+msgid "Show a long list with more detailed information."
+msgstr "Amosar una llista llarga d'información con más detalles."
+
+#: grub-core/commands/ls.c:38
+msgid "Print sizes in a human readable format."
+msgstr "Imprentar tamaños nún formatu lleíble por humanos."
+
+#: grub-core/commands/ls.c:39
+msgid "List all files."
+msgstr "Llista de tolos ficheros."
+
+#: grub-core/commands/ls.c:273
+#, fuzzy
+msgid "[-l|-h|-a] [FILE ...]"
+msgstr "[-l|-h|-a] [Ficheru]"
+
+#: grub-core/commands/ls.c:274
+msgid "List devices and files."
+msgstr "Llista de preseos y ficheros"
+
+#: grub-core/commands/lsacpi.c:194
+#, fuzzy
+msgid "Show v1 tables only."
+msgstr "Esponer tables v1"
+
+#: grub-core/commands/lsacpi.c:195
+#, fuzzy
+msgid "Show v2 and v3 tablesv only."
+msgstr "Esponer tables v2 y v3"
+
+#: grub-core/commands/lsacpi.c:241
+msgid "[-1|-2]"
+msgstr ""
+
+#: grub-core/commands/lsacpi.c:242
+msgid "Show ACPI information."
+msgstr ""
+
+#: grub-core/commands/lsmmap.c:66
+msgid "List memory map provided by firmware."
+msgstr "Llistar el mapa de memoria apurríu pol firmware."
+
+#: grub-core/commands/lspci.c:228
+msgid "List PCI devices."
+msgstr "Llista de preseos PCI."
+
+#: grub-core/commands/memrw.c:123 grub-core/commands/memrw.c:126
+#: grub-core/commands/memrw.c:129 grub-core/commands/minicmd.c:208
+msgid "ADDR"
+msgstr "DIREICIÓN"
+
+#: grub-core/commands/memrw.c:123
+msgid "Read byte from ADDR."
+msgstr "Lleer byte dende DIREICIÓN."
+
+#: grub-core/commands/memrw.c:126
+msgid "Read word from ADDR."
+msgstr "Lleer pallabra dende ADDR."
+
+#: grub-core/commands/memrw.c:129
+msgid "Read dword from ADDR."
+msgstr "Lleer duble pallabra dende ADDR."
+
+#: grub-core/commands/memrw.c:132
 msgid "Write byte VALUE to ADDR."
 msgstr "Escribir el byte en VALOR a ADDR"
 
-#: commands/memrw.c:135
+#: grub-core/commands/memrw.c:135
 msgid "Write word VALUE to ADDR."
 msgstr "Escribir la pallabra en VALOR a ADDR"
 
-#: commands/memrw.c:138
+#: grub-core/commands/memrw.c:138
 msgid "Write dword VALUE to ADDR."
 msgstr "Escribir el valor DWORD a ADDR"
 
-#: commands/minicmd.c:361
+#: grub-core/commands/menuentry.c:31
+msgid "Menu entry type."
+msgstr ""
+
+#: grub-core/commands/menuentry.c:33
+#, fuzzy
+msgid "Users allowed to boot this entry."
+msgstr "Fallu al aniciar entraes por defeutu.\n"
+
+#: grub-core/commands/menuentry.c:35
+msgid "Keyboard key for this entry."
+msgstr ""
+
+#: grub-core/commands/menuentry.c:37
+msgid "Menu entry definition as a string."
+msgstr ""
+
+#: grub-core/commands/menuentry.c:307 grub-core/commands/menuentry.c:311
+#: grub-core/tests/test_blockarg.c:44
+msgid "BLOCK"
+msgstr ""
+
+#: grub-core/commands/menuentry.c:307
+msgid "Define a menuentry."
+msgstr ""
+
+#: grub-core/commands/menuentry.c:311
+msgid "Define a submenu."
+msgstr ""
+
+#: grub-core/commands/minicmd.c:205
 msgid "Show this message."
 msgstr "Amosar esti mensax."
 
-#: commands/minicmd.c:364 commands/probe.c:154
-msgid "[DEVICE]"
-msgstr "[PRESÉU]"
-
-#: commands/minicmd.c:364
-msgid "Set the root device."
-msgstr "Afitar el preséu raigañu."
-
-#: commands/minicmd.c:367
+#: grub-core/commands/minicmd.c:208
 msgid "Dump memory."
 msgstr "Entornáu de memoria."
 
-#: commands/minicmd.c:370
+#: grub-core/commands/minicmd.c:211 grub-core/kern/corecmd.c:193
 msgid "MODULE"
 msgstr "MÓDULU"
 
-#: commands/minicmd.c:370
+#: grub-core/commands/minicmd.c:211
 msgid "Remove a module."
 msgstr "Desaniciar un módulu."
 
-#: commands/minicmd.c:373
+#: grub-core/commands/minicmd.c:214
 msgid "Show loaded modules."
 msgstr "Amosar módulos cargaos."
 
-#: commands/minicmd.c:376
+#: grub-core/commands/minicmd.c:217
 msgid "Exit from GRUB."
 msgstr "Colar del GRUB."
 
-#: commands/minicmd.c:379
-msgid "Clear the screen."
-msgstr "Llimpiar la pantalla."
-
-#: commands/parttool.c:325
+#: grub-core/commands/parttool.c:324
 msgid "PARTITION COMMANDS"
 msgstr "ÓRDENES DE PARTICIÓN"
 
-#: commands/password.c:78
+#: grub-core/commands/password.c:83
 msgid "USER PASSWORD"
 msgstr "CONTRASEÑA D'USUARIU"
 
-#: commands/password.c:79
+#: grub-core/commands/password.c:84
 msgid "Set user password (plaintext). Unrecommended and insecure."
-msgstr "Afitar la contraseña d'usuariu (testu planu). Non encamentáu ya inseguru."
+msgstr ""
+"Afitar la contraseña d'usuariu (testu planu). Non encamentáu ya inseguru."
 
-#: commands/probe.c:38
+#: grub-core/commands/password_pbkdf2.c:190
+#, fuzzy
+msgid "USER PBKDF2_PASSWORD"
+msgstr "CONTRASEÑA D'USUARIU"
+
+#: grub-core/commands/password_pbkdf2.c:191
+msgid "Set user password (PBKDF2). "
+msgstr ""
+
+#: grub-core/commands/probe.c:38
 msgid "Set a variable to return value."
 msgstr "Afitar una variable pa devolver el valor."
 
-#: commands/probe.c:39
+#: grub-core/commands/probe.c:39
 msgid "Determine driver."
 msgstr "Determinar controlador."
 
-#: commands/probe.c:40
+#: grub-core/commands/probe.c:40
 msgid "Determine partition map type."
 msgstr "Determinar el tipu de mapa de particiones"
 
-#: commands/probe.c:41
+#: grub-core/commands/probe.c:41
 msgid "Determine filesystem type."
 msgstr "Determinar tipu de sistema de ficheros."
 
-#: commands/probe.c:42
+#: grub-core/commands/probe.c:42
 msgid "Determine filesystem UUID."
 msgstr "Determinar UUID de sistema de ficheros."
 
-#: commands/probe.c:43
+#: grub-core/commands/probe.c:43
 msgid "Determine filesystem label."
 msgstr "Determinar etiqueta de sistema de ficheros."
 
-#: commands/probe.c:155
+#: grub-core/commands/probe.c:153
+msgid "[DEVICE]"
+msgstr "[PRESÉU]"
+
+#: grub-core/commands/probe.c:154
 msgid "Retrieve device info."
 msgstr "Recuperar información del preséu."
 
-#: commands/read.c:83
+#: grub-core/commands/read.c:83
 msgid "[ENVVAR]"
 msgstr "[ENVVAR]"
 
-#: commands/read.c:84
+#: grub-core/commands/read.c:84
 msgid "Set variable with user input."
 msgstr "Afitar la variable cola entrada del usuariu."
 
-#: commands/reboot.c:39
+#: grub-core/commands/reboot.c:39
 msgid "Reboot the computer."
 msgstr "Reaniciar l'equipu."
 
-#: commands/search.c:161
-msgid "NAME [VARIABLE]"
+#: grub-core/commands/regexp.c:33
+msgid "Variable names to update with matches."
+msgstr ""
+
+#: grub-core/commands/regexp.c:34
+msgid "[NUMBER:]VARNAME"
+msgstr ""
+
+#: grub-core/commands/regexp.c:139
+msgid "REGEXP STRING"
+msgstr ""
+
+#: grub-core/commands/regexp.c:140
+msgid "Test if REGEXP matches STRING."
+msgstr ""
+
+#: grub-core/commands/search.c:230
+#, fuzzy
+msgid "NAME [VARIABLE] [HINTS]"
 msgstr "NOME [VARIABLE]"
 
-#: commands/search_file.c:5
-msgid "Search devices by file. If VARIABLE is specified, the first device found is set to a variable."
-msgstr "Guetar preseos por ficheru. Si s'especificó VARIABLE, el primer preséu atopáu guárdase nuna variable."
+#: grub-core/commands/search_file.c:5
+msgid ""
+"Search devices by file. If VARIABLE is specified, the first device found is "
+"set to a variable."
+msgstr ""
+"Guetar preseos por ficheru. Si s'especificó VARIABLE, el primer preséu "
+"atopáu guárdase nuna variable."
 
-#: commands/search_label.c:5
-msgid "Search devices by label. If VARIABLE is specified, the first device found is set to a variable."
-msgstr "Guetar preseos por etiqueta. Si s'especificó VARIABLE, el primer preséu atopáu guárdase nuna variable."
+#: grub-core/commands/search_label.c:5
+msgid ""
+"Search devices by label. If VARIABLE is specified, the first device found is "
+"set to a variable."
+msgstr ""
+"Guetar preseos por etiqueta. Si s'especificó VARIABLE, el primer preséu "
+"atopáu guárdase nuna variable."
 
-#: commands/search_uuid.c:5
-msgid "Search devices by UUID. If VARIABLE is specified, the first device found is set to a variable."
-msgstr "Guetar preseos por UUID. Si s'especificó VARIABLE, el primer preséu alcontráu guárdase nuna variable."
+#: grub-core/commands/search_uuid.c:5
+msgid ""
+"Search devices by UUID. If VARIABLE is specified, the first device found is "
+"set to a variable."
+msgstr ""
+"Guetar preseos por UUID. Si s'especificó VARIABLE, el primer preséu "
+"alcontráu guárdase nuna variable."
 
-#: commands/sleep.c:31
+#: grub-core/commands/search_wrap.c:32
+#, fuzzy
+msgid "Search devices by a file."
+msgstr "Crear un preséu d'un ficheru."
+
+#: grub-core/commands/search_wrap.c:33
+#, fuzzy
+msgid "Search devices by a filesystem label."
+msgstr "Determinar etiqueta de sistema de ficheros."
+
+#: grub-core/commands/search_wrap.c:35
+#, fuzzy
+msgid "Search devices by a filesystem UUID."
+msgstr "Determinar UUID de sistema de ficheros."
+
+#: grub-core/commands/search_wrap.c:38
+#, fuzzy
+msgid "Set a variable to the first device found."
+msgstr "Afitar una variable pa devolver el valor."
+
+#: grub-core/commands/search_wrap.c:39
+msgid "Do not probe any floppy drive."
+msgstr ""
+
+#: grub-core/commands/search_wrap.c:41
+msgid ""
+"First try the device HINT. If HINT ends in comma, also try subpartitions"
+msgstr ""
+
+#: grub-core/commands/search_wrap.c:42
+msgid "HINT"
+msgstr ""
+
+#: grub-core/commands/search_wrap.c:94
+msgid "[-f|-l|-u|-s|-n] [--hint HINT [--hint HINT] ...] NAME"
+msgstr ""
+
+#: grub-core/commands/search_wrap.c:96
+#, fuzzy
+msgid ""
+"Search devices by file, filesystem label or filesystem UUID. If --set is "
+"specified, the first device found is set to a variable. If no variable name "
+"is specified, \"root\" is used."
+msgstr ""
+"Guetar preseos por etiqueta. Si s'especificó VARIABLE, el primer preséu "
+"atopáu guárdase nuna variable."
+
+#: grub-core/commands/setpci.c:333
+msgid "[-s POSITION] [-d DEVICE] [-v VAR] [REGISTER][=VALUE[:MASK]]"
+msgstr ""
+
+#: grub-core/commands/setpci.c:335
+#, fuzzy
+msgid "Manipulate PCI devices."
+msgstr "Llista de preseos PCI."
+
+#: grub-core/commands/sleep.c:30
 msgid "Verbose countdown."
 msgstr "Cunta regresiva detallada."
 
-#: commands/sleep.c:32
+#: grub-core/commands/sleep.c:31
 msgid "Interruptible with ESC."
 msgstr "Interrumpible con ESC."
 
-#: commands/sleep.c:106
+#: grub-core/commands/sleep.c:104
 msgid "NUMBER_OF_SECONDS"
 msgstr "NÚMBERU_DE_SEGUNDOS"
 
-#: commands/sleep.c:107
+#: grub-core/commands/sleep.c:105
 msgid "Wait for a specified number of seconds."
 msgstr "Esperar un númberu específicu de segundos."
 
-#: commands/test.c:424
+#: grub-core/commands/terminal.c:87
+#, fuzzy
+msgid "no terminal specified"
+msgstr "Nun s'especificó dengún preséu.\n"
+
+#: grub-core/commands/terminal.c:216
+msgid "Active input terminals:"
+msgstr ""
+
+#: grub-core/commands/terminal.c:217
+msgid "Available input terminals:"
+msgstr ""
+
+#: grub-core/commands/terminal.c:231
+msgid "Active output terminals:"
+msgstr ""
+
+#: grub-core/commands/terminal.c:232
+msgid "Available output terminals:"
+msgstr ""
+
+#: grub-core/commands/terminal.c:241 grub-core/commands/terminal.c:246
+msgid "[--append|--remove] [TERMINAL1] [TERMINAL2] ..."
+msgstr ""
+
+#: grub-core/commands/terminal.c:243
+#, fuzzy
+msgid "List or select an input terminal."
+msgstr "Llista o escueyi un manexador."
+
+#: grub-core/commands/terminal.c:248
+#, fuzzy
+msgid "List or select an output terminal."
+msgstr "Llista o escueyi un manexador."
+
+#: grub-core/commands/test.c:425
 msgid "EXPRESSION ]"
 msgstr "ESPRESIÓN ]"
 
-#: commands/test.c:424 commands/test.c:426
+#: grub-core/commands/test.c:425 grub-core/commands/test.c:428
 msgid "Evaluate an expression."
 msgstr "Evaluar una espresión"
 
-#: commands/test.c:426
+#: grub-core/commands/test.c:428
 msgid "EXPRESSION"
 msgstr "ESPRESIÓN"
 
-#: commands/true.c:47
+#: grub-core/commands/testload.c:149
+msgid "Load the same file in multiple ways."
+msgstr ""
+
+#: grub-core/commands/true.c:47
 msgid "Do nothing, successfully."
 msgstr "Nun faer res, con ésitu."
 
-#: commands/true.c:50
+#: grub-core/commands/true.c:50
 msgid "Do nothing, unsuccessfully."
 msgstr "Nun faer res, ensin ésitu."
 
-#: commands/usbtest.c:199
+#: grub-core/commands/usbtest.c:210
 msgid "Test USB support."
 msgstr "Comprobar sofitu USB."
 
-#: commands/videotest.c:185
+#: grub-core/commands/videoinfo.c:166 grub-core/commands/videoinfo.c:171
+msgid ""
+"List available video modes. If resolution is given show only modes matching "
+"it."
+msgstr ""
+
+#: grub-core/commands/videotest.c:203
+#, fuzzy
+msgid "Test video subsystem in mode WxH."
+msgstr "Comprobar subsistema de vídeu."
+
+#: grub-core/commands/videotest.c:206
 msgid "Test video subsystem."
 msgstr "Comprobar subsistema de vídeu."
 
-#: commands/xnu_uuid.c:92
+#: grub-core/commands/xnu_uuid.c:92
 msgid "GRUBUUID [VARNAME]"
 msgstr "GRUBUUID [NOME_VAR]"
 
-#: commands/xnu_uuid.c:93
+#: grub-core/commands/xnu_uuid.c:93
 msgid "Transform 64-bit UUID to format suitable for XNU."
 msgstr "Tresformar 64-bit UUID al formatu afechu pa XNU."
 
-#: disk/loopback.c:40
+#: grub-core/disk/loopback.c:39
 msgid "Delete the loopback device entry."
 msgstr "Desaniciar la entrada del preséu loopback."
 
-#: disk/loopback.c:41
-msgid "Simulate a hard drive with partitions."
-msgstr "Simular un discu duru con particiones."
-
-#: disk/loopback.c:249
+#: grub-core/disk/loopback.c:225
 msgid "[-d|-p] DEVICENAME FILE."
 msgstr "[-d|-p] FICHERU NOME_PRESÉU."
 
-#: disk/loopback.c:250
+#: grub-core/disk/loopback.c:226
 msgid "Make a device of a file."
 msgstr "Crear un preséu d'un ficheru."
 
-#: hello/hello.c:43
-msgid "Say \"Hello World\"."
-msgstr "Dicir «Hola mundu»."
-
-#: lib/arg.c:34
-msgid "Display this help and exit."
-msgstr "Amosar esta aida y colar."
-
-#: lib/arg.c:36
-msgid "Display the usage of this command and exit."
-msgstr "Amosar l'usu d'esta orde y colar."
-
-#: loader/efi/appleloader.c:325
-msgid "Boot legacy system."
-msgstr "Antiguu sistema d'arranque."
-
-#: loader/efi/chainloader.c:340 loader/i386/pc/chainloader.c:153
-msgid "Load another boot loader."
-msgstr "Cargar otru cargador d'arranque."
-
-#: loader/i386/bsd.c:65
-msgid "Display output on all consoles."
-msgstr "Amosar salida en toles consoles."
-
-#: loader/i386/bsd.c:66
-msgid "Use serial console."
-msgstr "Usar consola serie."
-
-#: loader/i386/bsd.c:67 loader/i386/bsd.c:93 loader/i386/bsd.c:114
-msgid "Ask for file name to reboot from."
-msgstr "Entrugar pol nome del ficheru pa reaniciar."
-
-#: loader/i386/bsd.c:68
-msgid "Use CDROM as root."
-msgstr "Usa CDROM como raíz."
-
-#: loader/i386/bsd.c:69
-msgid "Invoke user configuration routing."
-msgstr "Invocar configuración d'encaminamientu del usuariu."
-
-#: loader/i386/bsd.c:70 loader/i386/bsd.c:97 loader/i386/bsd.c:117
-msgid "Enter in KDB on boot."
-msgstr "Entrar en KDB al bootear"
-
-#: loader/i386/bsd.c:71
-msgid "Use GDB remote debugger instead of DDB."
-msgstr "Usar el depurador llonxanu GDB n'arróu de DDB."
-
-#: loader/i386/bsd.c:72
-msgid "Disable all boot output."
-msgstr "Desactivar tola salida d'arranque."
-
-#: loader/i386/bsd.c:74
-msgid "Wait for keypress after every line of output."
-msgstr "Esperar por cada tecla primida dempués de cada llinia de salida."
-
-#: loader/i386/bsd.c:76
-msgid "Use compiled-in rootdev."
-msgstr "Usar preséu raigañu integráu."
-
-#: loader/i386/bsd.c:77 loader/i386/bsd.c:96 loader/i386/bsd.c:120
-msgid "Boot into single mode."
-msgstr "Arrancar en mou únicu."
-
-#: loader/i386/bsd.c:78 loader/i386/bsd.c:121
-msgid "Boot with verbose messages."
-msgstr "Arrancar con mensaxes detallaos."
-
-#: loader/i386/bsd.c:94 loader/i386/bsd.c:115
-msgid "Don't reboot, just halt."
-msgstr "Nun reaniciar, namái parar."
-
-#: loader/i386/bsd.c:95 loader/i386/bsd.c:116
-msgid "Change configured devices."
-msgstr "Camudar preseos configuraos."
-
-#: loader/i386/bsd.c:98 loader/i386/bsd.c:124
-msgid "Set root device."
-msgstr "Afitar el preséu raigañu."
-
-#: loader/i386/bsd.c:112
-msgid "Disable SMP."
-msgstr "Desactivar SMP."
-
-#: loader/i386/bsd.c:113
-msgid "Disable ACPI."
-msgstr "Desactivar ACPI"
-
-#: loader/i386/bsd.c:119
-msgid "Don't display boot diagnostic messages."
-msgstr "Nun amosar los mensaxes de diagnósticu d'arranque."
-
-#: loader/i386/bsd.c:122
-msgid "Boot with debug messages."
-msgstr "Arrancar con mensaxes de depuración"
-
-#: loader/i386/bsd.c:123
-msgid "Supress normal output (warnings remain)."
-msgstr "Suprimir salida normal (permanecen avisos)."
-
-#: loader/i386/bsd.c:124
-msgid "DEVICE"
-msgstr "PRESÉU"
-
-#: loader/i386/bsd.c:1296
-msgid "Load kernel of FreeBSD."
-msgstr "Cargar núcleu de FreeBSD."
-
-#: loader/i386/bsd.c:1300
-msgid "Load kernel of OpenBSD."
-msgstr "Cargar núcleu de OpenBSD."
-
-#: loader/i386/bsd.c:1304
-msgid "Load kernel of NetBSD."
-msgstr "Cargar núcleu de NetBSD."
-
-#: loader/i386/bsd.c:1308
-msgid "Load FreeBSD env."
-msgstr "Cargar entornu FreeBSD."
-
-#: loader/i386/bsd.c:1311
-msgid "Load FreeBSD kernel module."
-msgstr "Cargar módulu del núcleu FreeBSD."
-
-#: loader/i386/bsd.c:1314
-msgid "Load FreeBSD kernel module (ELF)."
-msgstr "Cargar módulu (ELF) del núcleu FreeBSD."
-
-#: loader/i386/efi/linux.c:1011 loader/i386/ieee1275/linux.c:301
-#: loader/i386/linux.c:1007 loader/i386/pc/linux.c:399
-#: loader/powerpc/ieee1275/linux.c:353 loader/sparc64/ieee1275/linux.c:520
-msgid "Load Linux."
-msgstr "Cargar Linux."
-
-#: loader/i386/efi/linux.c:1013 loader/i386/ieee1275/linux.c:303
-#: loader/i386/linux.c:1009 loader/i386/pc/linux.c:402
-#: loader/powerpc/ieee1275/linux.c:355 loader/sparc64/ieee1275/linux.c:522
-msgid "Load initrd."
-msgstr "Cargar initrd."
-
-#: loader/i386/xnu.c:1032
-msgid "Load device-properties dump."
-msgstr "Cargar volcáu de preséu-propiedaes."
-
-#: loader/multiboot_loader.c:133
-msgid "Load a multiboot 2 kernel."
-msgstr "Cargar núcleu de multiarranque 2."
-
-#: loader/multiboot_loader.c:136
-msgid "Load a multiboot kernel."
-msgstr "Cargar un núcleu d'arranque múltiple."
-
-#: loader/multiboot_loader.c:141
-msgid "Load a multiboot module."
-msgstr "Cargar un módulu d'arranque múltiple."
-
-#: loader/xnu.c:1407
-msgid "Load XNU image."
-msgstr "Cargar imaxe XNU."
-
-#: loader/xnu.c:1409
-msgid "Load 64-bit XNU image."
-msgstr "Cargar imaxe XNU de 64-bit."
-
-#: loader/xnu.c:1411
-msgid "Load XNU extension package."
-msgstr "Cargar paquete d'estensión XNU."
-
-#: loader/xnu.c:1413
-msgid "Load XNU extension."
-msgstr "Cargar estensión XNU."
-
-#: loader/xnu.c:1415
-msgid "DIRECTORY [OSBundleRequired]"
-msgstr "DIREUTORIU [OSBundleRequired]"
-
-#: loader/xnu.c:1416
-msgid "Load XNU extension directory."
-msgstr "Cargar direutoriu d'estensión XNU."
-
-#: loader/xnu.c:1418
-msgid "Load XNU ramdisk. It will be seen as md0."
-msgstr "Carga XNU ramdisk. Va vese como md0"
-
-#: loader/xnu.c:1421
-msgid "Load a splash image for XNU."
-msgstr "Cargar una imaxe de bienvinía pa XNU."
-
-#: loader/xnu.c:1425
-msgid "Load XNU hibernate image."
-msgstr "Cargar imagen d'ivernación XNU."
-
-#: normal/auth.c:233
-msgid "Enter username: "
-msgstr "Introduz nome d'usuariu: "
-
-#: normal/auth.c:238
-msgid "Enter password: "
-msgstr "Introduz contraseña: "
-
-#: normal/color.c:80
-#, c-format
-msgid "Warning: syntax error (missing slash) in `%s'\n"
-msgstr "Avisu: fallu de sintasis (falta barra) en `%s'\n"
-
-#: normal/color.c:89
-#, c-format
-msgid "Warning: invalid foreground color `%s'\n"
-msgstr "Avisu: color de primer planu nun válidu `%s'\n"
-
-#: normal/color.c:95
-#, c-format
-msgid "Warning: invalid background color `%s'\n"
-msgstr "Avisu: color de fondu nun válidu `%s'\n"
-
-#: normal/dyncmd.c:147
-msgid "not loaded"
-msgstr "non cargáu"
-
-#: normal/main.c:408
-#, c-format
-msgid "GNU GRUB  version %s"
-msgstr "GNU GRUB  version %s"
-
-#: normal/main.c:538
-#, c-format
-msgid "Minimal BASH-like line editing is supported. For the first word, TAB lists possible command completions. Anywhere else TAB lists possible device or file completions. %s"
-msgstr "Almítese una mínima edición de llinies al estilu BASH. Pa la primer pallabra, TAB amuesa les posibles formes de completar comandos. En cualesquier otru sitiu, TAB amuesa les posibles formes de completar preseos o ficheros. %s"
-
-#: normal/main.c:541
-msgid "ESC at any time exits."
-msgstr "Calcar ESC en cualisquier momentu pa colar."
-
-#: normal/menu_entry.c:1060
-msgid "Possible commands are:"
-msgstr "Les posibles ordes son:"
-
-#: normal/menu_entry.c:1064
-msgid "Possible devices are:"
-msgstr "Los posibles preseos son:"
-
-#: normal/menu_entry.c:1068
-msgid "Possible files are:"
-msgstr "Los ficheros posibles son:"
-
-#: normal/menu_entry.c:1072
-msgid "Possible partitions are:"
-msgstr "Les posibles particiones son:"
-
-#: normal/menu_entry.c:1076
-msgid "Possible arguments are:"
-msgstr "Los posibles argumentos son:"
-
-#: normal/menu_entry.c:1080
-msgid "Possible things are:"
-msgstr "Les posibles coses son:"
-
-#: normal/menu_entry.c:1184
-msgid "Booting a command list"
-msgstr "Arrancar una llista d'órdenes"
-
-#: normal/menu_entry.c:1397
-msgid "Press any key to continue..."
-msgstr "Calca una tecla pa siguir..."
-
-#: normal/menu_text.c:179
-msgid "Minimum Emacs-like screen editing is supported. TAB lists completions. Press Ctrl-x to boot, Ctrl-c for a command-line or ESC to return menu."
-msgstr "Permítese la edición mínima en pantalla tipu Emacs. TAB llista completaos. Calca Ctrl-x pa empecipiar, Ctrl-c pa una llinia d'ordes o ESC pa tornar al menú."
-
-#: normal/menu_text.c:186
-#, c-format
-msgid "Use the %C and %C keys to select which entry is highlighted.\n"
-msgstr "Usa les tecles %C y %C pa esbillar qué entrada prefieres.\n"
-
-#: normal/menu_text.c:203
-msgid "Press enter to boot the selected OS, 'e' to edit the commands before booting or 'c' for a command-line. ESC to return previous menu.\n"
-msgstr "Calca intro p'arrancar el Sistema Operativu escoyíu, «e» pa editar los comandos enantes d'arrancar o «c» pa una llinia d'ordes. ESC pa volver al menú anterior.\n"
-
-#: normal/menu_text.c:211
-msgid "Press enter to boot the selected OS, 'e' to edit the commands before booting or 'c' for a command-line.\n"
-msgstr "Calca intro p'arrancar el Sistema Operativu escoyíu, «e» pa editar los comandos ordes enantes d'arrancar o «c» pa una llinia d'ordes.\n"
-
-#: normal/menu_text.c:363
+#: grub-core/efiemu/main.c:317
+msgid "Load and initialize EFI emulator."
+msgstr ""
+
+#: grub-core/efiemu/main.c:321
+msgid "Finalize loading of EFI emulator."
+msgstr ""
+
+#: grub-core/efiemu/main.c:324
+#, fuzzy
+msgid "Unload EFI emulator."
+msgstr "Descargar entornu PXE."
+
+#: grub-core/font/font_cmd.c:66
+#, fuzzy
+msgid "FILE..."
+msgstr "FICHERU"
+
+#: grub-core/font/font_cmd.c:67
+msgid "Specify one or more font files to load."
+msgstr ""
+
+#: grub-core/font/font_cmd.c:70
+msgid "List the loaded fonts."
+msgstr ""
+
+#: grub-core/gettext/gettext.c:356
+#, fuzzy
+msgid "STRING"
+msgstr "[-e|-n] CADENA"
+
+#: grub-core/gettext/gettext.c:357
+msgid "Translates the string with the current settings."
+msgstr ""
+
+#: grub-core/gfxmenu/gui_progress_bar.c:281 grub-core/normal/menu_text.c:328
 #, c-format
 msgid "The highlighted entry will be executed automatically in %ds."
 msgstr "La entrada resaltada va executase automáticamente en %ds."
 
-#: normal/misc.c:41
+#. TRANSLATORS:  's' stands for seconds.
+#. It's a standalone timeout notification.
+#. Please use the short form in your language.
+#: grub-core/gfxmenu/gui_progress_bar.c:286
+#, c-format
+msgid "%ds remaining."
+msgstr ""
+
+#. TRANSLATORS:  's' stands for seconds.
+#. It's a standalone timeout notification.
+#. Please use the shortest form available in you language.
+#: grub-core/gfxmenu/gui_progress_bar.c:291
+#, c-format
+msgid "%ds"
+msgstr ""
+
+#: grub-core/hello/hello.c:43
+msgid "Say \"Hello World\"."
+msgstr "Dicir «Hola mundu»."
+
+#: grub-core/kern/corecmd.c:183
+#, fuzzy
+msgid "[ENVVAR=VALUE]"
+msgstr "[ENVVAR]"
+
+#: grub-core/kern/corecmd.c:184
+#, fuzzy
+msgid "Set an environment variable."
+msgstr "Guardar variables nel ficheru de bloque d'entornu."
+
+#: grub-core/kern/corecmd.c:188
+#, fuzzy
+msgid "ENVVAR"
+msgstr "[ENVVAR]"
+
+#: grub-core/kern/corecmd.c:189
+msgid "Remove an environment variable."
+msgstr ""
+
+#: grub-core/kern/corecmd.c:191
+msgid "[ARG]"
+msgstr ""
+
+#: grub-core/kern/corecmd.c:191
+#, fuzzy
+msgid "List devices or files."
+msgstr "Llista de preseos y ficheros"
+
+#: grub-core/kern/corecmd.c:193
+#, fuzzy
+msgid "Insert a module."
+msgstr "Desaniciar un módulu."
+
+#: grub-core/kern/emu/hostdisk.c:901 util/grub-setup.c:662
+#, c-format
+msgid "cannot open `%s'"
+msgstr "nun puede abrise «%s»"
+
+#: grub-core/kern/emu/hostdisk.c:1427
+msgid "device count exceeds limit"
+msgstr ""
+
+#: grub-core/kern/emu/misc.c:81
+#, c-format
+msgid "%s: warn:"
+msgstr ""
+
+#: grub-core/kern/emu/misc.c:97
+#, c-format
+msgid "%s: info:"
+msgstr ""
+
+#: grub-core/kern/emu/misc.c:112
+#, c-format
+msgid "%s: error:"
+msgstr ""
+
+#: grub-core/kern/err.c:127
+#, c-format
+msgid "error: %s.\n"
+msgstr ""
+
+#: grub-core/lib/arg.c:34
+msgid "Display this help and exit."
+msgstr "Amosar esta aida y colar."
+
+#: grub-core/lib/arg.c:36
+msgid "Display the usage of this command and exit."
+msgstr "Amosar l'usu d'esta orde y colar."
+
+#: grub-core/loader/efi/appleloader.c:325
+msgid "Boot legacy system."
+msgstr "Antiguu sistema d'arranque."
+
+#: grub-core/loader/efi/chainloader.c:340
+#: grub-core/loader/i386/pc/chainloader.c:168
+msgid "Load another boot loader."
+msgstr "Cargar otru cargador d'arranque."
+
+#: grub-core/loader/i386/bsd.c:95
+msgid "Display output on all consoles."
+msgstr "Amosar salida en toles consoles."
+
+#: grub-core/loader/i386/bsd.c:96 grub-core/loader/i386/bsd.c:130
+#: grub-core/loader/i386/bsd.c:159
+msgid "Use serial console."
+msgstr "Usar consola serie."
+
+#: grub-core/loader/i386/bsd.c:97 grub-core/loader/i386/bsd.c:123
+#: grub-core/loader/i386/bsd.c:147
+msgid "Ask for file name to reboot from."
+msgstr "Entrugar pol nome del ficheru pa reaniciar."
+
+#: grub-core/loader/i386/bsd.c:98
+msgid "Use CDROM as root."
+msgstr "Usa CDROM como raíz."
+
+#: grub-core/loader/i386/bsd.c:99
+msgid "Invoke user configuration routing."
+msgstr "Invocar configuración d'encaminamientu del usuariu."
+
+#: grub-core/loader/i386/bsd.c:100 grub-core/loader/i386/bsd.c:127
+#: grub-core/loader/i386/bsd.c:150
+msgid "Enter in KDB on boot."
+msgstr "Entrar en KDB al bootear"
+
+#: grub-core/loader/i386/bsd.c:101
+msgid "Use GDB remote debugger instead of DDB."
+msgstr "Usar el depurador llonxanu GDB n'arróu de DDB."
+
+#: grub-core/loader/i386/bsd.c:102
+msgid "Disable all boot output."
+msgstr "Desactivar tola salida d'arranque."
+
+#: grub-core/loader/i386/bsd.c:104
+msgid "Wait for keypress after every line of output."
+msgstr "Esperar por cada tecla primida dempués de cada llinia de salida."
+
+#: grub-core/loader/i386/bsd.c:106
+msgid "Use compiled-in rootdev."
+msgstr "Usar preséu raigañu integráu."
+
+#: grub-core/loader/i386/bsd.c:107 grub-core/loader/i386/bsd.c:126
+#: grub-core/loader/i386/bsd.c:153
+msgid "Boot into single mode."
+msgstr "Arrancar en mou únicu."
+
+#: grub-core/loader/i386/bsd.c:108 grub-core/loader/i386/bsd.c:154
+msgid "Boot with verbose messages."
+msgstr "Arrancar con mensaxes detallaos."
+
+#: grub-core/loader/i386/bsd.c:124 grub-core/loader/i386/bsd.c:148
+msgid "Don't reboot, just halt."
+msgstr "Nun reaniciar, namái parar."
+
+#: grub-core/loader/i386/bsd.c:125 grub-core/loader/i386/bsd.c:149
+msgid "Change configured devices."
+msgstr "Camudar preseos configuraos."
+
+#: grub-core/loader/i386/bsd.c:128 grub-core/loader/i386/bsd.c:157
+#: util/grub-fstest.c:355
+msgid "Set root device."
+msgstr "Afitar el preséu raigañu."
+
+#: grub-core/loader/i386/bsd.c:130
+msgid "comUNIT[,SPEED]"
+msgstr ""
+
+#: grub-core/loader/i386/bsd.c:145
+msgid "Disable SMP."
+msgstr "Desactivar SMP."
+
+#: grub-core/loader/i386/bsd.c:146
+msgid "Disable ACPI."
+msgstr "Desactivar ACPI"
+
+#: grub-core/loader/i386/bsd.c:152
+msgid "Don't display boot diagnostic messages."
+msgstr "Nun amosar los mensaxes de diagnósticu d'arranque."
+
+#: grub-core/loader/i386/bsd.c:155
+msgid "Boot with debug messages."
+msgstr "Arrancar con mensaxes de depuración"
+
+#: grub-core/loader/i386/bsd.c:156
+msgid "Supress normal output (warnings remain)."
+msgstr "Suprimir salida normal (permanecen avisos)."
+
+#: grub-core/loader/i386/bsd.c:157 util/grub-setup.c:840
+msgid "DEVICE"
+msgstr "PRESÉU"
+
+#: grub-core/loader/i386/bsd.c:159
+msgid "[ADDR|comUNIT][,SPEED]"
+msgstr ""
+
+#: grub-core/loader/i386/bsd.c:1942
+msgid "Load kernel of FreeBSD."
+msgstr "Cargar núcleu de FreeBSD."
+
+#: grub-core/loader/i386/bsd.c:1945
+msgid "Load kernel of OpenBSD."
+msgstr "Cargar núcleu de OpenBSD."
+
+#: grub-core/loader/i386/bsd.c:1948
+msgid "Load kernel of NetBSD."
+msgstr "Cargar núcleu de NetBSD."
+
+#: grub-core/loader/i386/bsd.c:1952
+msgid "Load FreeBSD env."
+msgstr "Cargar entornu FreeBSD."
+
+#: grub-core/loader/i386/bsd.c:1955
+msgid "Load FreeBSD kernel module."
+msgstr "Cargar módulu del núcleu FreeBSD."
+
+#: grub-core/loader/i386/bsd.c:1958
+#, fuzzy
+msgid "Load NetBSD kernel module."
+msgstr "Cargar módulu del núcleu FreeBSD."
+
+#: grub-core/loader/i386/bsd.c:1961
+#, fuzzy
+msgid "Load NetBSD kernel module (ELF)."
+msgstr "Cargar módulu (ELF) del núcleu FreeBSD."
+
+#: grub-core/loader/i386/bsd.c:1964
+msgid "Load FreeBSD kernel module (ELF)."
+msgstr "Cargar módulu (ELF) del núcleu FreeBSD."
+
+#: grub-core/loader/i386/linux.c:986 grub-core/loader/i386/pc/linux.c:444
+#: grub-core/loader/mips/linux.c:430
+#: grub-core/loader/powerpc/ieee1275/linux.c:376
+#: grub-core/loader/sparc64/ieee1275/linux.c:521
+msgid "Load Linux."
+msgstr "Cargar Linux."
+
+#: grub-core/loader/i386/linux.c:988 grub-core/loader/i386/pc/linux.c:447
+#: grub-core/loader/mips/linux.c:432
+#: grub-core/loader/powerpc/ieee1275/linux.c:378
+#: grub-core/loader/sparc64/ieee1275/linux.c:523
+msgid "Load initrd."
+msgstr "Cargar initrd."
+
+#: grub-core/loader/i386/pc/ntldr.c:150
+msgid "Load NTLDR or BootMGR."
+msgstr ""
+
+#: grub-core/loader/i386/xnu.c:1128
+msgid "Load device-properties dump."
+msgstr "Cargar volcáu de preséu-propiedaes."
+
+#: grub-core/loader/multiboot.c:337
+msgid "Load a multiboot 2 kernel."
+msgstr "Cargar núcleu de multiarranque 2."
+
+#: grub-core/loader/multiboot.c:340
+#, fuzzy
+msgid "Load a multiboot 2 module."
+msgstr "Cargar un módulu d'arranque múltiple."
+
+#: grub-core/loader/multiboot.c:343
+msgid "Load a multiboot kernel."
+msgstr "Cargar un núcleu d'arranque múltiple."
+
+#: grub-core/loader/multiboot.c:346
+msgid "Load a multiboot module."
+msgstr "Cargar un módulu d'arranque múltiple."
+
+#: grub-core/loader/xnu.c:1423
+msgid "Load XNU image."
+msgstr "Cargar imaxe XNU."
+
+#: grub-core/loader/xnu.c:1425
+msgid "Load 64-bit XNU image."
+msgstr "Cargar imaxe XNU de 64-bit."
+
+#: grub-core/loader/xnu.c:1427
+msgid "Load XNU extension package."
+msgstr "Cargar paquete d'estensión XNU."
+
+#: grub-core/loader/xnu.c:1429
+msgid "Load XNU extension."
+msgstr "Cargar estensión XNU."
+
+#: grub-core/loader/xnu.c:1431
+msgid "DIRECTORY [OSBundleRequired]"
+msgstr "DIREUTORIU [OSBundleRequired]"
+
+#: grub-core/loader/xnu.c:1432
+msgid "Load XNU extension directory."
+msgstr "Cargar direutoriu d'estensión XNU."
+
+#: grub-core/loader/xnu.c:1438
+msgid "Load a splash image for XNU."
+msgstr "Cargar una imaxe de bienvinía pa XNU."
+
+#: grub-core/loader/xnu.c:1443
+msgid "Load XNU hibernate image."
+msgstr "Cargar imagen d'ivernación XNU."
+
+#: grub-core/mmap/mmap.c:471
+msgid "ADDR1,MASK1[,ADDR2,MASK2[,...]]"
+msgstr ""
+
+#: grub-core/mmap/mmap.c:472
+msgid "Declare memory regions as badram."
+msgstr ""
+
+#: grub-core/mmap/mmap.c:474
+msgid "FROM[K|M|G] TO[K|M|G]"
+msgstr ""
+
+#: grub-core/mmap/mmap.c:475
+msgid "Remove any memory regions in specified range."
+msgstr ""
+
+#: grub-core/normal/auth.c:216
+msgid "Enter username: "
+msgstr "Introduz nome d'usuariu: "
+
+#: grub-core/normal/auth.c:221
+msgid "Enter password: "
+msgstr "Introduz contraseña: "
+
+#: grub-core/normal/auth.c:265
+msgid "[USERLIST]"
+msgstr ""
+
+#: grub-core/normal/auth.c:265
+msgid "Authenticate users"
+msgstr ""
+
+#: grub-core/normal/cmdline.c:174 grub-core/normal/menu_entry.c:1073
+msgid "Possible commands are:"
+msgstr "Les posibles ordes son:"
+
+#: grub-core/normal/cmdline.c:177 grub-core/normal/menu_entry.c:1077
+msgid "Possible devices are:"
+msgstr "Los posibles preseos son:"
+
+#: grub-core/normal/cmdline.c:180 grub-core/normal/menu_entry.c:1081
+msgid "Possible files are:"
+msgstr "Los ficheros posibles son:"
+
+#: grub-core/normal/cmdline.c:183 grub-core/normal/menu_entry.c:1085
+msgid "Possible partitions are:"
+msgstr "Les posibles particiones son:"
+
+#: grub-core/normal/cmdline.c:186 grub-core/normal/menu_entry.c:1089
+msgid "Possible arguments are:"
+msgstr "Los posibles argumentos son:"
+
+#: grub-core/normal/cmdline.c:189 grub-core/normal/menu_entry.c:1093
+msgid "Possible things are:"
+msgstr "Les posibles coses son:"
+
+#: grub-core/normal/color.c:81
+#, c-format
+msgid "Warning: syntax error (missing slash) in `%s'\n"
+msgstr "Avisu: fallu de sintasis (falta barra) en `%s'\n"
+
+#: grub-core/normal/color.c:90
+#, c-format
+msgid "Warning: invalid foreground color `%s'\n"
+msgstr "Avisu: color de primer planu nun válidu `%s'\n"
+
+#: grub-core/normal/color.c:96
+#, c-format
+msgid "Warning: invalid background color `%s'\n"
+msgstr "Avisu: color de fondu nun válidu `%s'\n"
+
+#: grub-core/normal/context.c:223
+msgid "ENVVAR [ENVVAR] ..."
+msgstr ""
+
+#: grub-core/normal/context.c:224
+#, fuzzy
+msgid "Export variables."
+msgstr "Esponer tables v1"
+
+#: grub-core/normal/dyncmd.c:159
+msgid "not loaded"
+msgstr "non cargáu"
+
+#: grub-core/normal/main.c:212
+#, c-format
+msgid "GNU GRUB  version %s"
+msgstr "GNU GRUB  version %s"
+
+#: grub-core/normal/main.c:357
+#, c-format
+msgid ""
+"Minimal BASH-like line editing is supported. For the first word, TAB lists "
+"possible command completions. Anywhere else TAB lists possible device or "
+"file completions. %s"
+msgstr ""
+"Almítese una mínima edición de llinies al estilu BASH. Pa la primer "
+"pallabra, TAB amuesa les posibles formes de completar comandos. En "
+"cualesquier otru sitiu, TAB amuesa les posibles formes de completar preseos "
+"o ficheros. %s"
+
+#: grub-core/normal/main.c:360
+msgid "ESC at any time exits."
+msgstr "Calcar ESC en cualisquier momentu pa colar."
+
+#: grub-core/normal/main.c:494
+msgid "Clear the screen."
+msgstr "Llimpiar la pantalla."
+
+#: grub-core/normal/main.c:502
+msgid "Enter normal mode."
+msgstr ""
+
+#: grub-core/normal/main.c:504
+msgid "Exit from normal mode."
+msgstr ""
+
+#: grub-core/normal/menu.c:48 grub-core/normal/menu_entry.c:1446
+msgid "Press any key to continue..."
+msgstr "Calca una tecla pa siguir..."
+
+#: grub-core/normal/menu.c:551
+#, c-format
+msgid "Booting '%s'"
+msgstr "Aniciando '%s'"
+
+#: grub-core/normal/menu.c:563
+#, c-format
+msgid "Falling back to '%s'"
+msgstr "Fallu tornando a '%s'"
+
+#: grub-core/normal/menu.c:579
+#, fuzzy
+msgid "Failed to boot both default and fallback entries.\n"
+msgstr "Fallu al aniciar entraes por defeutu.\n"
+
+#: grub-core/normal/menu_entry.c:1200
+msgid "Booting a command list"
+msgstr "Arrancar una llista d'órdenes"
+
+#: grub-core/normal/menu_text.c:123
+#, fuzzy
+msgid ""
+"Minimum Emacs-like screen editing is supported. TAB lists completions. Press "
+"Ctrl-x or F10 to boot, Ctrl-c or F2 for a command-line or ESC to discard "
+"edits and return to the GRUB menu."
+msgstr ""
+"Permítese la edición mínima en pantalla tipu Emacs. TAB llista completaos. "
+"Calca Ctrl-x pa empecipiar, Ctrl-c pa una llinia d'ordes o ESC pa tornar al "
+"menú."
+
+#: grub-core/normal/menu_text.c:130
+#, c-format
+msgid "Use the %C and %C keys to select which entry is highlighted.\n"
+msgstr "Usa les tecles %C y %C pa esbillar qué entrada prefieres.\n"
+
+#: grub-core/normal/menu_text.c:147
+msgid ""
+"Press enter to boot the selected OS, 'e' to edit the commands before booting "
+"or 'c' for a command-line. ESC to return previous menu.\n"
+msgstr ""
+"Calca intro p'arrancar el Sistema Operativu escoyíu, «e» pa editar los "
+"comandos enantes d'arrancar o «c» pa una llinia d'ordes. ESC pa volver al "
+"menú anterior.\n"
+
+#: grub-core/normal/menu_text.c:155
+msgid ""
+"Press enter to boot the selected OS, 'e' to edit the commands before booting "
+"or 'c' for a command-line.\n"
+msgstr ""
+"Calca intro p'arrancar el Sistema Operativu escoyíu, «e» pa editar los "
+"comandos ordes enantes d'arrancar o «c» pa una llinia d'ordes.\n"
+
+#: grub-core/normal/misc.c:42
 #, c-format
 msgid "Partition %s:"
 msgstr "Partición %s:"
 
-#: normal/misc.c:46
+#: grub-core/normal/misc.c:47
 #, c-format
 msgid "Device %s:"
 msgstr "Preséu %s:"
 
-#: normal/misc.c:52
+#: grub-core/normal/misc.c:53
 msgid "Filesystem cannot be accessed"
 msgstr "Nun puede accedese al sistema de ficheros"
 
-#: normal/misc.c:63
+#: grub-core/normal/misc.c:64
 #, c-format
 msgid "Filesystem type %s"
 msgstr "Sistema de ficheros triba %s"
 
-#: normal/misc.c:73
+#: grub-core/normal/misc.c:74
 #, c-format
 msgid "- Label \"%s\""
 msgstr "- Etiqueta «%s»"
 
-#: normal/misc.c:88
+#: grub-core/normal/misc.c:89
 #, c-format
 msgid "- Last modification time %d-%02d-%02d %02d:%02d:%02d %s"
 msgstr "- Hora de cabera modificación %d-%02d-%02d %02d:%02d:%02d %s"
 
-#: normal/misc.c:111
-msgid "Unknown filesystem"
+#: grub-core/normal/misc.c:112
+#, fuzzy
+msgid "Not a known filesystem"
 msgstr "Sistema de ficheros desconocíu"
 
-#: normal/misc.c:113
-msgid "Partition table"
+#: grub-core/normal/misc.c:115
+#, fuzzy, c-format
+msgid " - Partition start at %u"
 msgstr "Tabla de partición"
 
-#: term/serial.c:46
+#: grub-core/normal/misc.c:118
+msgid " - Total size unknown"
+msgstr ""
+
+#: grub-core/normal/misc.c:121
+#, c-format
+msgid " - Total size %u sectors"
+msgstr ""
+
+#: grub-core/script/main.c:54 grub-core/script/main.c:56
+#: grub-core/script/main.c:58 grub-core/script/main.c:63
+msgid "[n]"
+msgstr ""
+
+#: grub-core/script/main.c:54
+#, fuzzy
+msgid "Exit from loops"
+msgstr "Colar del GRUB."
+
+#: grub-core/script/main.c:56
+msgid "Continue loops"
+msgstr ""
+
+#: grub-core/script/main.c:58
+msgid "Shift positional parameters."
+msgstr ""
+
+#: grub-core/script/main.c:60
+msgid "[VALUE]..."
+msgstr ""
+
+#: grub-core/script/main.c:61
+#, fuzzy
+msgid "Set positional parameters."
+msgstr "Llograr/afitar parámetros ATA del discu"
+
+#: grub-core/script/main.c:63
+msgid "Return from a function."
+msgstr ""
+
+#: grub-core/term/gfxterm.c:1211
+msgid "[-m (stretch|normal)] FILE"
+msgstr ""
+
+#: grub-core/term/gfxterm.c:1212
+msgid "Load background image for active terminal."
+msgstr ""
+
+#: grub-core/term/serial.c:35
 msgid "Set the serial unit."
 msgstr "Afitar la unidá serie."
 
-#: term/serial.c:47
+#: grub-core/term/serial.c:36
 msgid "Set the serial port address."
 msgstr "Afitar la direición del puertu serie."
 
-#: term/serial.c:48
+#: grub-core/term/serial.c:37
 msgid "Set the serial port speed."
 msgstr "Afita la velocidá del puertu serie."
 
-#: term/serial.c:49
+#: grub-core/term/serial.c:38
 msgid "Set the serial port word length."
 msgstr "Afitar el llargor de la pallabra del puertu de serie."
 
-#: term/serial.c:50
+#: grub-core/term/serial.c:39
 msgid "Set the serial port parity."
 msgstr "Afitar la paridá del puertu serie."
 
-#: term/serial.c:51
+#: grub-core/term/serial.c:40
 msgid "Set the serial port stop bits."
 msgstr "Afitar el bit de posa del puertu serie."
 
-#: util/grub-mkrawimage.c:67
+#: grub-core/term/serial.c:344
+#, fuzzy
+msgid "[OPTIONS...]"
+msgstr "[OPCIONES] DISCU"
+
+#: grub-core/term/serial.c:345
+msgid "Configure serial port."
+msgstr ""
+
+#: grub-core/term/terminfo.c:526
+msgid "ASCII"
+msgstr ""
+
+#: grub-core/term/terminfo.c:529
+msgid "UTF-8"
+msgstr ""
+
+#: grub-core/term/terminfo.c:531
+msgid "UTF-8 visual"
+msgstr ""
+
+#: grub-core/term/terminfo.c:534
+msgid "Unknown"
+msgstr ""
+
+#: grub-core/term/terminfo.c:551
+msgid "Terminal is ASCII-only [default]."
+msgstr ""
+
+#: grub-core/term/terminfo.c:552
+msgid "Terminal is logical-ordered UTF-8."
+msgstr ""
+
+#: grub-core/term/terminfo.c:553
+msgid "Terminal is visually-ordered UTF-8."
+msgstr ""
+
+#: grub-core/term/terminfo.c:555
+msgid "Terminal has given geometry."
+msgstr ""
+
+#: grub-core/term/terminfo.c:556
+msgid "WIDTHxHEIGHT."
+msgstr ""
+
+#: grub-core/term/terminfo.c:633
+msgid "[[-a|-u|-v] [-g WxH] TERM [TYPE]]"
+msgstr ""
+
+#: grub-core/term/terminfo.c:634
+msgid "Set terminfo type of TERM  to TYPE.\n"
+msgstr ""
+
+#: grub-core/tests/test_blockarg.c:45
+#, fuzzy
+msgid "Print and execute block argument."
+msgstr "Imprentar una llista de bloques."
+
+#: util/grub-editenv.c:39 util/grub-fstest.c:347
+msgid "Commands:"
+msgstr ""
+
+#: util/grub-editenv.c:41
+#, fuzzy
+msgid "Create a blank environment block file."
+msgstr "Guardar variables nel ficheru de bloque d'entornu."
+
+#: util/grub-editenv.c:43
+#, fuzzy
+msgid "List the current variables."
+msgstr "Amosar asignaciones actuales."
+
+#: util/grub-editenv.c:45
+#, fuzzy
+msgid "Set variables."
+msgstr "Afitar la variable cola entrada del usuariu."
+
+#: util/grub-editenv.c:47
+msgid "Delete variables."
+msgstr ""
+
+#: util/grub-editenv.c:49
+#, fuzzy
+msgid "Options:"
+msgstr "Opciones:\n"
+
+#: util/grub-editenv.c:50 util/grub-fstest.c:360 util/grub-setup.c:701
+#, fuzzy
+msgid "Print verbose messages."
+msgstr "Arrancar con mensaxes detallaos."
+
+#: util/grub-editenv.c:76
+msgid "You need to specify at least one command.\n"
+msgstr ""
+
+#: util/grub-editenv.c:101
+msgid "FILENAME COMMAND"
+msgstr ""
+
+#: util/grub-editenv.c:102
+#, fuzzy
+msgid "Tool to edit environment block."
+msgstr "Guardar variables nel ficheru de bloque d'entornu."
+
+#: util/grub-editenv.c:104
+#, c-format
+msgid "If FILENAME is '-', the default value %s is used."
+msgstr ""
+
+#: util/grub-editenv.c:276 util/grub-setup.c:881
+msgid "Error in parsing command line arguments\n"
+msgstr ""
+
+#: util/grub-editenv.c:306
+#, fuzzy, c-format
+msgid "Unknown command `%s'.\n"
+msgstr "Argumentu estra desconocíu `%s'.\n"
+
+#: util/grub-fstest.c:52
+#, fuzzy, c-format
+msgid "can't find command %s"
+msgstr "Arrancar una llista d'órdenes"
+
+#: util/grub-fstest.c:81
+#, fuzzy
+msgid "can't open device"
+msgstr "Nun pudó abrise ficheru de rexistru: %s"
+
+#: util/grub-fstest.c:96
+#, c-format
+msgid "disk read fails at offset %lld, length %d"
+msgstr ""
+
+#: util/grub-fstest.c:114
+#, fuzzy, c-format
+msgid "cannot open file %s"
+msgstr "nun puede abrise %s"
+
+#: util/grub-fstest.c:122
+#, c-format
+msgid "invalid skip value %lld"
+msgstr ""
+
+#: util/grub-fstest.c:140 util/grub-fstest.c:195
+#, c-format
+msgid "read error at offset %llu: %s"
+msgstr ""
+
+#: util/grub-fstest.c:167
+msgid "write error"
+msgstr ""
+
+#: util/grub-fstest.c:177 util/grub-fstest.c:216
+msgid "open error"
+msgstr ""
+
+#: util/grub-fstest.c:206
+#, c-format
+msgid "compare fail at offset %llu"
+msgstr ""
+
+#: util/grub-fstest.c:221
+msgid "seek error"
+msgstr ""
+
+#: util/grub-fstest.c:292
+#, fuzzy
+msgid "loopback command fails"
+msgstr "Arrancar una llista d'órdenes"
+
+#: util/grub-fstest.c:348
+msgid "ls PATH"
+msgstr ""
+
+#: util/grub-fstest.c:348
+#, fuzzy
+msgid "List files in PATH."
+msgstr "Llista de tolos ficheros."
+
+#: util/grub-fstest.c:349
+msgid "cp FILE LOCAL"
+msgstr ""
+
+#: util/grub-fstest.c:349
+msgid "Copy FILE to local file LOCAL."
+msgstr ""
+
+#: util/grub-fstest.c:350
+msgid "cmp FILE LOCAL"
+msgstr ""
+
+#: util/grub-fstest.c:350
+#, fuzzy
+msgid "Compare FILE with local file LOCAL."
+msgstr "Comparar dos ficheros."
+
+#: util/grub-fstest.c:351
+#, fuzzy
+msgid "hex FILE"
+msgstr "FICHERU"
+
+#: util/grub-fstest.c:351
+msgid "Hex dump FILE."
+msgstr ""
+
+#: util/grub-fstest.c:352
+#, fuzzy
+msgid "crc FILE"
+msgstr "FICHERU"
+
+#: util/grub-fstest.c:352
+#, fuzzy
+msgid "Get crc32 checksum of FILE."
+msgstr "Calcular la suma de comprobación crc32 d'un ficheru."
+
+#: util/grub-fstest.c:353
+msgid "blocklist FILE"
+msgstr ""
+
+#: util/grub-fstest.c:353
+#, fuzzy
+msgid "Display blocklist of FILE."
+msgstr "Amosar una llinia de testu."
+
+#: util/grub-fstest.c:355
+#, fuzzy
+msgid "DEVICE_NAME"
+msgstr "PRESÉU"
+
+#: util/grub-fstest.c:356
+#, fuzzy
+msgid "Skip N bytes from output file."
+msgstr "Saltar bytes de desplazamientu dende l'empiezu del ficheru."
+
+#: util/grub-fstest.c:357
+msgid "Handle N bytes in output file."
+msgstr ""
+
+#: util/grub-fstest.c:358
+#, fuzzy
+msgid "N input files."
+msgstr "Llista de tolos ficheros."
+
+#: util/grub-fstest.c:359
+msgid "Set debug environment variable."
+msgstr ""
+
+#: util/grub-fstest.c:399
+#, fuzzy
+msgid "Invalid disk count.\n"
+msgstr "Preséu inválidu `%s'.\n"
+
+#: util/grub-fstest.c:404
+msgid "Disk count must precede disks list.\n"
+msgstr ""
+
+#: util/grub-fstest.c:420
+#, fuzzy
+msgid "No command is specified.\n"
+msgstr "Nun s'especificó dengún preséu.\n"
+
+#: util/grub-fstest.c:425
+msgid "Not enough parameters to command.\n"
+msgstr ""
+
+#: util/grub-fstest.c:441
+msgid "Must use absolute path.\n"
+msgstr ""
+
+#: util/grub-fstest.c:484
+#, fuzzy, c-format
+msgid "Invalid command %s.\n"
+msgstr "nodu nun válidu - %s\n"
+
+#: util/grub-fstest.c:497
+#, fuzzy
+msgid "IMAGE_PATH COMMANDS"
+msgstr "ÓRDENES DE PARTICIÓN"
+
+#: util/grub-fstest.c:498
+#, fuzzy
+msgid "Debug tool for filesystem driver."
+msgstr "Determinar tipu de sistema de ficheros."
+
+#: util/grub-mkimage.c:493 util/grub-mkimage.c:534
 msgid "the core image is too small"
 msgstr "la imaxe del nucleu ye enforma pequeña"
 
-#: util/grub-mkrawimage.c:79
+#: util/grub-mkimage.c:504 util/grub-mkimage.c:538 util/grub-mkimage.c:556
 msgid "cannot compress the kernel image"
 msgstr "nun puede comprimise la imaxe kernel"
 
-#: util/grub-mkrawimage.c:154
+#: util/grub-mkimage.c:671
 msgid "prefix is too long"
 msgstr "el prefixu ye enforma llargu"
 
-#: util/grub-mkrawimage.c:240
-msgid "the core image is too big"
-msgstr "la imaxe del nucleu ye enforma grande"
-
-#: util/grub-mkrawimage.c:245
-#, c-format
-msgid "diskboot.img size must be %u bytes"
-msgstr "el tamañu de diskboot.img tien de ser de %u bytes"
-
-#: util/grub-mkrawimage.c:328
+#: util/grub-mkimage.c:835
 #, c-format
 msgid "core image is too big (%p > %p)"
 msgstr "la imaxe del núcleu ye enforma grande (%p > %p)"
 
-#: util/grub-mkrawimage.c:432 util/i386/pc/grub-setup.c:587
+#: util/grub-mkimage.c:841
+msgid "the core image is too big"
+msgstr "la imaxe del nucleu ye enforma grande"
+
+#: util/grub-mkimage.c:860
+#, c-format
+msgid "diskboot.img size must be %u bytes"
+msgstr "el tamañu de diskboot.img tien de ser de %u bytes"
+
+#: util/grub-mkimage.c:1374
 #, c-format
 msgid "Try `%s --help' for more information.\n"
 msgstr "Executa `%s --help' pa más información.\n"
 
-#: util/grub-mkrawimage.c:434
-#, c-format
+#: util/grub-mkimage.c:1393
+#, fuzzy, c-format
 msgid ""
 "Usage: %s [OPTION]... [MODULES]\n"
 "\n"
 "Make a bootable image of GRUB.\n"
 "\n"
-"  -d, --directory=DIR     use images and modules under DIR [default=%s]\n"
+"  -d, --directory=DIR     use images and modules under DIR [default=%s/"
+"@platform@]\n"
 "  -p, --prefix=DIR        set grub_prefix directory [default=%s]\n"
 "  -m, --memdisk=FILE      embed FILE as a memdisk image\n"
-"  -f, --font=FILE         embed FILE as a boot font\n"
 "  -c, --config=FILE       embed FILE as boot config\n"
+"  -n, --note              add NOTE segment for CHRP Open Firmware\n"
 "  -o, --output=FILE       output a generated image to FILE [default=stdout]\n"
-"  -O, --format=FORMAT     generate an image in format [default="
-msgstr ""
-"Usu:% s [OPCIÓN] ... [MÓDULOS]\n"
-"\n"
-"Crea una imaxe d'arranque de GRUB.\n"
-"  -d, - directory=DIR usa les imaxes y módulos asitiaos en DIR [por omisión =%s]\n"
-"  -p, - prefix=DIR asigna'l direutoriu grub_prefix [por omisión = %s]\n"
-"  -m, - memdisk=FICHERU incrusta FICHERU como imaxe memdisk\n"
-"  -F, - font=FICHERU incrusta FICHERU como tipografía d'arranque\n"
-"  -c, - config=FICHERU incrusta FICHERU como configuración d'arranque\n"
-"  -o, - output=FICHERU unvia la imaxe xenerada a FICHERU [por omisión = stdout]\n"
-"  -O, - format=FORMATU xenera una imaxe en FORMATU [por omisión ="
-
-#: util/grub-mkrawimage.c:573
-#, c-format
-msgid "cannot open %s"
-msgstr "nun puede abrise %s"
-
-#: util/i386/pc/grub-setup.c:159
-msgid "the first sector of the core file is not sector-aligned"
-msgstr "el primer sector del ficheru principal nun ta alliniáu col sector"
-
-#: util/i386/pc/grub-setup.c:173
-msgid "non-sector-aligned data is found in the core file"
-msgstr "atopáronse datos non alliniaos con un sector nel ficheru principal"
-
-#: util/i386/pc/grub-setup.c:187
-msgid "the sectors of the core file are too fragmented"
-msgstr "los sectores del ficheru núcleu tán enforma estrizaos."
-
-#: util/i386/pc/grub-setup.c:198
-#, c-format
-msgid "the size of `%s' is not %u"
-msgstr "el tamañu de «%s» nun ye %u"
-
-#: util/i386/pc/grub-setup.c:215
-#, c-format
-msgid "the size of `%s' is too small"
-msgstr "el tamañu de «%s» ye enforma pequeñu"
-
-#: util/i386/pc/grub-setup.c:217
-#, c-format
-msgid "the size of `%s' is too large"
-msgstr "el tamañu de «%s» ye enforma grande"
-
-#: util/i386/pc/grub-setup.c:254
-#, c-format
-msgid "unable to identify a filesystem in %s; safety check can't be performed"
-msgstr "nun ye dable identificar un sistema d'ficheros en %s; nun puede llevase a cabu una comprobación de seguridá"
-
-#: util/i386/pc/grub-setup.c:258
-#, c-format
-msgid "%s appears to contain a %s filesystem which isn't known to reserve space for DOS-style boot.  Installing GRUB there could result in FILESYSTEM DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe disables this check, use at your own risk)"
-msgstr "%s paez contener un sistema de ficheros %s que nun sabi cómo acutar espaciu pa l'arranque estilu DOS. Instalar GRUB ehí podría probar una DESTRUCCIÓN DEL SISTEMA DE FICHEROS si se sobreescriben datos pervalibles per aciu de grub-setup (--skip-fs-probe desactiva esta comprobación; úsalu baxo la to responsabilidá)"
-
-#: util/i386/pc/grub-setup.c:307
-msgid "no DOS-style partitions found"
-msgstr "nun s'atopó denguna partición tipu DOS"
-
-#: util/i386/pc/grub-setup.c:323 util/i386/pc/grub-setup.c:348
-msgid "Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
-msgstr "Intentando instalar GRUB a un discu ensin partición. Esto ye una MALA idega."
-
-#: util/i386/pc/grub-setup.c:329
-msgid "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD idea."
-msgstr "Intentado instalar GRUB a una partición en llugar del MBR.  Esto ye una MALA idega."
-
-#: util/i386/pc/grub-setup.c:357
-msgid "No DOS-style partitions found"
-msgstr "Nun s'alcontraron particiones DOS-style"
-
-#: util/i386/pc/grub-setup.c:362
-msgid "This msdos-style partition label has no post-MBR gap; embedding won't be possible!"
-msgstr "Esta etiqueta de partición tipu MS-DOS nun tien un buecu darrera del MBR; nun ye dable incrustar"
-
-#: util/i386/pc/grub-setup.c:364
-msgid "This GPT partition label has no BIOS Boot Partition; embedding won't be possible!"
-msgstr "La etiqueta de partición GPT nun tien una Partición BIOS Boot; l'embebíu nun ye posible!"
-
-#: util/i386/pc/grub-setup.c:371
-msgid "Your core.img is unusually large.  It won't fit in the embedding area."
-msgstr "El core.img ye enforma grande.  Nun va poder contenese nel area d'embebíu"
-
-#: util/i386/pc/grub-setup.c:373
-msgid "Your embedding area is unusually small.  core.img won't fit in it."
-msgstr "La so área d'empotráu ye inusualmente pequeña. core.img nun va caber nella."
-
-#: util/i386/pc/grub-setup.c:416
-msgid "embedding is not possible, but this is required when the root device is on a RAID array or LVM volume"
-msgstr "nun ye posible incrusta, pero esto ye necesariu cuando'l preséu raigañu ta nún array RAID o nún volume LVM."
-
-#: util/i386/pc/grub-setup.c:419
-msgid "Embedding is not possible.  GRUB can only be installed in this setup by using blocklists.  However, blocklists are UNRELIABLE and its use is discouraged."
-msgstr "Nun ye dable incrustar. GRUB namái puede instalase nesta configuración usando llistes de bloques. Sicasí, éstes NUN SON FIABLES y el so usu desaconséyase."
-
-#: util/i386/pc/grub-setup.c:423
-msgid "if you really want blocklists, use --force"
-msgstr "Si daveres quies usar llistes de bloques, usa --force"
-
-#: util/i386/pc/grub-setup.c:439
-#, c-format
-msgid "attempting to read the core image `%s' from GRUB"
-msgstr "intentando lleer la imaxe del nucleu `%s' dende'l GRUB"
-
-#: util/i386/pc/grub-setup.c:440
-#, c-format
-msgid "attempting to read the core image `%s' from GRUB again"
-msgstr "intentando lleer la imaxe del nucleu `%s' dende'l GRUB otra vegada"
-
-#: util/i386/pc/grub-setup.c:498
-#, c-format
-msgid "cannot read `%s' correctly"
-msgstr "nun puede lleese «%s» correchamente"
-
-#: util/i386/pc/grub-setup.c:511
-msgid "no terminator in the core image"
-msgstr "nun hai terminador na imaxe principal"
-
-#: util/i386/pc/grub-setup.c:522
-msgid "failed to read the first sector of the core image"
-msgstr "fallu al lleer el primer sector de la imaxe principal"
-
-#: util/i386/pc/grub-setup.c:528
-msgid "failed to read the rest sectors of the core image"
-msgstr "fallu al lleer los restantes sectores de la imaxe principal"
-
-#: util/i386/pc/grub-setup.c:547
-#, c-format
-msgid "cannot open `%s'"
-msgstr "nun puede abrise «%s»"
-
-#: util/i386/pc/grub-setup.c:589
-#, c-format
-msgid ""
-"Usage: %s [OPTION]... DEVICE\n"
-"\n"
-"Set up images to boot from DEVICE.\n"
-"DEVICE must be a GRUB device (e.g. `(hd0,1)').\n"
-"\n"
-"  -b, --boot-image=FILE   use FILE as the boot image [default=%s]\n"
-"  -c, --core-image=FILE   use FILE as the core image [default=%s]\n"
-"  -d, --directory=DIR     use GRUB files in the directory DIR [default=%s]\n"
-"  -m, --device-map=FILE   use FILE as the device map [default=%s]\n"
-"  -r, --root-device=DEV   use DEV as the root device [default=guessed]\n"
-"  -f, --force             install even if problems are detected\n"
-"  -s, --skip-fs-probe     do not probe for filesystems in DEVICE\n"
+"  -O, --format=FORMAT     generate an image in format\n"
+"                          available formats: %s\n"
+"  -C, --compression=(xz|none|auto)  choose the compression to use\n"
 "  -h, --help              display this message and exit\n"
 "  -V, --version           print version information and exit\n"
 "  -v, --verbose           print verbose messages\n"
 "\n"
 "Report bugs to <%s>.\n"
 msgstr ""
-"Usu: %s [OPCIÓN]... PRESÉU\n"
+"Usu:% s [OPCIÓN] ... [MÓDULOS]\n"
 "\n"
-"Configura una imaxe pal arranque d'un PRESÉU.\n"
-"El PRESÉU tien de ser un preséu GRUB (por exemplu, «(hd0, 1) »).\n"
-"\n"
-"  -b, --boot-image=FICHERU usa FICHERU como la imaxe d'arranque [predetermináu=%s]\n"
-"  -c, --core-image=FICHERU usa FICHERU uso como la imaxe principal [predetermináu=%s]\n"
-"  -d, --directory=DIR usu de los ficheros de GRUB nel direutoriu DIR [predetermináu=%s]\n"
-"  -m, --device-map=FICHERU usa FICHERU como'l mapa de preséu [predetermináu=%s]\n"
-"  -r, --root-device=DIS usa DIS como preséu raigañu [predetermináu=aldovináu]\n"
-"  -f, --force fuercia la instalación anque se deteuten problemes\n"
-"  -s, --skip-fs-probe non prueba pa sistemes de ficheros en PRESÉU\n"
-"  -h, --help amuesa esti mensaxe y colar\n"
-"  -V, --version amuesa información sobro la versión y sal\n"
-"  -v, --verbose amuesa un mensaxe verbosu\n"
-"\n"
-"Informe de fallos a <%s>.\n"
+"Crea una imaxe d'arranque de GRUB.\n"
+"  -d, - directory=DIR usa les imaxes y módulos asitiaos en DIR [por omisión ="
+"%s]\n"
+"  -p, - prefix=DIR asigna'l direutoriu grub_prefix [por omisión = %s]\n"
+"  -m, - memdisk=FICHERU incrusta FICHERU como imaxe memdisk\n"
+"  -F, - font=FICHERU incrusta FICHERU como tipografía d'arranque\n"
+"  -c, - config=FICHERU incrusta FICHERU como configuración d'arranque\n"
+"  -o, - output=FICHERU unvia la imaxe xenerada a FICHERU [por omisión = "
+"stdout]\n"
+"  -O, - format=FORMATU xenera una imaxe en FORMATU [por omisión ="
 
-#: util/i386/pc/grub-setup.c:719
+#: util/grub-mkimage.c:1549
 #, c-format
-msgid "No device is specified.\n"
-msgstr "Nun s'especificó dengún preséu.\n"
+msgid "cannot open %s"
+msgstr "nun puede abrise %s"
 
-#: util/i386/pc/grub-setup.c:725
+#: util/grub-setup.c:215
+msgid "the first sector of the core file is not sector-aligned"
+msgstr "el primer sector del ficheru principal nun ta alliniáu col sector"
+
+#: util/grub-setup.c:229
+msgid "non-sector-aligned data is found in the core file"
+msgstr "atopáronse datos non alliniaos con un sector nel ficheru principal"
+
+#: util/grub-setup.c:245
+msgid "the sectors of the core file are too fragmented"
+msgstr "los sectores del ficheru núcleu tán enforma estrizaos."
+
+#: util/grub-setup.c:258
+#, c-format
+msgid "the size of `%s' is not %u"
+msgstr "el tamañu de «%s» nun ye %u"
+
+#: util/grub-setup.c:268
+#, c-format
+msgid "the size of `%s' is too small"
+msgstr "el tamañu de «%s» ye enforma pequeñu"
+
+#: util/grub-setup.c:271
+#, c-format
+msgid "the size of `%s' is too large"
+msgstr "el tamañu de «%s» ye enforma grande"
+
+#: util/grub-setup.c:364
+#, c-format
+msgid "unable to identify a filesystem in %s; safety check can't be performed"
+msgstr ""
+"nun ye dable identificar un sistema d'ficheros en %s; nun puede llevase a "
+"cabu una comprobación de seguridá"
+
+#: util/grub-setup.c:367
+#, c-format
+msgid ""
+"%s appears to contain a %s filesystem which isn't known to reserve space for "
+"DOS-style boot.  Installing GRUB there could result in FILESYSTEM "
+"DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe "
+"disables this check, use at your own risk)"
+msgstr ""
+"%s paez contener un sistema de ficheros %s que nun sabi cómo acutar espaciu "
+"pa l'arranque estilu DOS. Instalar GRUB ehí podría probar una DESTRUCCIÓN "
+"DEL SISTEMA DE FICHEROS si se sobreescriben datos pervalibles per aciu de "
+"grub-setup (--skip-fs-probe desactiva esta comprobación; úsalu baxo la to "
+"responsabilidá)"
+
+#: util/grub-setup.c:379
+#, fuzzy, c-format
+msgid ""
+"%s appears to contain a %s partition map which isn't known to reserve space "
+"for DOS-style boot.  Installing GRUB there could result in FILESYSTEM "
+"DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe "
+"disables this check, use at your own risk)"
+msgstr ""
+"%s paez contener un sistema de ficheros %s que nun sabi cómo acutar espaciu "
+"pa l'arranque estilu DOS. Instalar GRUB ehí podría probar una DESTRUCCIÓN "
+"DEL SISTEMA DE FICHEROS si se sobreescriben datos pervalibles per aciu de "
+"grub-setup (--skip-fs-probe desactiva esta comprobación; úsalu baxo la to "
+"responsabilidá)"
+
+#: util/grub-setup.c:389
+#, fuzzy
+msgid ""
+"Attempting to install GRUB to a partitionless disk or to a partition.  This "
+"is a BAD idea."
+msgstr ""
+"Intentando instalar GRUB a un discu ensin partición. Esto ye una MALA idega."
+
+#: util/grub-setup.c:394
+#, fuzzy
+msgid ""
+"Attempting to install GRUB to a disk with multiple partition labels or both "
+"partition label and filesystem.  This is not supported yet."
+msgstr ""
+"Intentando instalar GRUB a un discu ensin partición. Esto ye una MALA idega."
+
+#: util/grub-setup.c:485
+msgid ""
+"embedding is not possible, but this is required when the root device is on a "
+"RAID array or LVM volume"
+msgstr ""
+"nun ye posible incrusta, pero esto ye necesariu cuando'l preséu raigañu ta "
+"nún array RAID o nún volume LVM."
+
+#: util/grub-setup.c:490
+#, fuzzy
+msgid "embedding is not possible, but this is required for cross-disk install"
+msgstr ""
+"nun ye posible incrusta, pero esto ye necesariu cuando'l preséu raigañu ta "
+"nún array RAID o nún volume LVM."
+
+#: util/grub-setup.c:494
+#, fuzzy
+msgid ""
+"Embedding is not possible.  GRUB can only be installed in this setup by "
+"using blocklists.  However, blocklists are UNRELIABLE and their use is "
+"discouraged."
+msgstr ""
+"Nun ye dable incrustar. GRUB namái puede instalase nesta configuración "
+"usando llistes de bloques. Sicasí, éstes NUN SON FIABLES y el so usu "
+"desaconséyase."
+
+#: util/grub-setup.c:498
+msgid "if you really want blocklists, use --force"
+msgstr "Si daveres quies usar llistes de bloques, usa --force"
+
+#: util/grub-setup.c:520
+#, c-format
+msgid "attempting to read the core image `%s' from GRUB"
+msgstr "intentando lleer la imaxe del nucleu `%s' dende'l GRUB"
+
+#: util/grub-setup.c:521
+#, c-format
+msgid "attempting to read the core image `%s' from GRUB again"
+msgstr "intentando lleer la imaxe del nucleu `%s' dende'l GRUB otra vegada"
+
+#: util/grub-setup.c:589
+#, c-format
+msgid "cannot read `%s' correctly"
+msgstr "nun puede lleese «%s» correchamente"
+
+#: util/grub-setup.c:604
+msgid "no terminator in the core image"
+msgstr "nun hai terminador na imaxe principal"
+
+#: util/grub-setup.c:616
+msgid "failed to read the first sector of the core image"
+msgstr "fallu al lleer el primer sector de la imaxe principal"
+
+#: util/grub-setup.c:622
+msgid "failed to read the rest sectors of the core image"
+msgstr "fallu al lleer los restantes sectores de la imaxe principal"
+
+#: util/grub-setup.c:687
+#, c-format
+msgid "Use FILE as the boot image [default=%s]"
+msgstr ""
+
+#: util/grub-setup.c:689
+#, c-format
+msgid "Use FILE as the core image [default=%s]"
+msgstr ""
+
+#: util/grub-setup.c:690
+msgid "DIR"
+msgstr ""
+
+#: util/grub-setup.c:691
+#, c-format
+msgid "Use GRUB files in the directory DIR [default=%s]"
+msgstr ""
+
+#: util/grub-setup.c:693
+#, c-format
+msgid "Use FILE as the device map [default=%s]"
+msgstr ""
+
+#: util/grub-setup.c:694
+#, fuzzy
+msgid "DEV"
+msgstr "PRESÉU"
+
+#: util/grub-setup.c:695
+msgid "Use DEV as the root device [default=guessed]"
+msgstr ""
+
+#: util/grub-setup.c:697
+msgid "Install even if problems are detected"
+msgstr ""
+
+#: util/grub-setup.c:699
+msgid "Do not probe for filesystems in DEVICE"
+msgstr ""
+
+#: util/grub-setup.c:703
+msgid ""
+"Make the drive also bootable as floppy (default for fdX devices). May break "
+"on some BIOSes."
+msgstr ""
+
+#: util/grub-setup.c:822
 #, c-format
 msgid "Unknown extra argument `%s'.\n"
 msgstr "Argumentu estra desconocíu `%s'.\n"
 
-#: util/i386/pc/grub-setup.c:742
+#: util/grub-setup.c:828
+msgid "No device is specified.\n"
+msgstr "Nun s'especificó dengún preséu.\n"
+
+#: util/grub-setup.c:841
+msgid ""
+"Set up images to boot from DEVICE.\n"
+"\n"
+"You should not normally run this program directly.  Use grub-install instead."
+msgstr ""
+
+#: util/grub-setup.c:845
+msgid "DEVICE must be an OS device (e.g. /dev/sda)."
+msgstr ""
+
+#: util/grub-setup.c:915
 #, c-format
 msgid "Invalid device `%s'.\n"
 msgstr "Preséu inválidu `%s'.\n"
 
-#: util/i386/pc/grub-setup.c:755
+#: util/grub-setup.c:935
 #, c-format
 msgid "invalid root device `%s'"
 msgstr "Preséu root invalidu «%s»"
 
-#: util/i386/pc/grub-setup.c:768
+#: util/grub-setup.c:949
 msgid "cannot guess the root device. Specify the option `--root-device'"
-msgstr "nun puede determinase'l preséu raigañu. Especifique la opción `--root-device'"
+msgstr ""
+"nun puede determinase'l preséu raigañu. Especifique la opción `--root-device'"
 
-#: util/grub.d/10_kfreebsd.in:40
+#: util/grub.d/10_kfreebsd.in:74
+#, fuzzy
+msgid "%s, with kFreeBSD %s (recovery mode)"
+msgstr "%s, con Linux %s (mou recuperación)"
+
+#: util/grub.d/10_kfreebsd.in:76
 msgid "%s, with kFreeBSD %s"
 msgstr "%s, con kFreeBSD %s"
 
-#: util/grub.d/10_kfreebsd.in:48
-msgid "Loading kernel of FreeBSD %s ..."
-msgstr "Cargando núcleu de FreeBSD %s ..."
-
-#: util/grub.d/10_linux.in:57
+#: util/grub.d/10_linux.in:61
 msgid "%s, with Linux %s (recovery mode)"
 msgstr "%s, con Linux %s (mou recuperación)"
 
-#: util/grub.d/10_linux.in:59
+#: util/grub.d/10_linux.in:63
 msgid "%s, with Linux %s"
 msgstr "%s, con Linux %s"
 
-#: util/grub.d/10_linux.in:77
-msgid "Loading Linux %s ..."
-msgstr "Cargando Linux %s ..."
+#: util/grub.d/10_netbsd.in:44
+#, fuzzy
+msgid "%s, with kernel %s (via %s, recovery mode)"
+msgstr "%s, con Linux %s (mou recuperación)"
 
-#: util/grub.d/10_linux.in:82
-msgid "Loading initial ramdisk ..."
-msgstr "Cargando discu RAM inicial..."
+#: util/grub.d/10_netbsd.in:46
+#, fuzzy
+msgid "%s, with kernel %s (via %s)"
+msgstr "%s, con kFreeBSD %s"
+
+#: util/grub.d/20_linux_xen.in:63
+#, fuzzy
+msgid "%s, with Linux %s and XEN %s (recovery mode)"
+msgstr "%s, con Linux %s (mou recuperación)"
+
+#: util/grub.d/20_linux_xen.in:65
+#, fuzzy
+msgid "%s, with Linux %s and XEN %s"
+msgstr "%s, con Linux %s"
+
+#~ msgid "[class [handler]]"
+#~ msgstr "[clase [manexador]]"
+
+#~ msgid "List compatible VESA BIOS extension video modes."
+#~ msgstr "Listar moos de vídeu compatibles de la estensión VESA BIOS."
+
+#~ msgid "Test VESA BIOS Extension 2.0+ support."
+#~ msgstr "Probar sofitu pa la estension VESA BIOS 2.0+."
+
+#~ msgid "Set the root device."
+#~ msgstr "Afitar el preséu raigañu."
+
+#~ msgid "Simulate a hard drive with partitions."
+#~ msgstr "Simular un discu duru con particiones."
+
+#~ msgid "Load XNU ramdisk. It will be seen as md0."
+#~ msgstr "Carga XNU ramdisk. Va vese como md0"
+
+#~ msgid "no DOS-style partitions found"
+#~ msgstr "nun s'atopó denguna partición tipu DOS"
+
+#~ msgid ""
+#~ "Attempting to install GRUB to a partition instead of the MBR.  This is a "
+#~ "BAD idea."
+#~ msgstr ""
+#~ "Intentado instalar GRUB a una partición en llugar del MBR.  Esto ye una "
+#~ "MALA idega."
+
+#~ msgid "No DOS-style partitions found"
+#~ msgstr "Nun s'alcontraron particiones DOS-style"
+
+#~ msgid ""
+#~ "This msdos-style partition label has no post-MBR gap; embedding won't be "
+#~ "possible!"
+#~ msgstr ""
+#~ "Esta etiqueta de partición tipu MS-DOS nun tien un buecu darrera del MBR; "
+#~ "nun ye dable incrustar"
+
+#~ msgid ""
+#~ "This GPT partition label has no BIOS Boot Partition; embedding won't be "
+#~ "possible!"
+#~ msgstr ""
+#~ "La etiqueta de partición GPT nun tien una Partición BIOS Boot; l'embebíu "
+#~ "nun ye posible!"
+
+#~ msgid ""
+#~ "Your core.img is unusually large.  It won't fit in the embedding area."
+#~ msgstr ""
+#~ "El core.img ye enforma grande.  Nun va poder contenese nel area d'embebíu"
+
+#~ msgid "Your embedding area is unusually small.  core.img won't fit in it."
+#~ msgstr ""
+#~ "La so área d'empotráu ye inusualmente pequeña. core.img nun va caber "
+#~ "nella."
+
+#~ msgid ""
+#~ "Usage: %s [OPTION]... DEVICE\n"
+#~ "\n"
+#~ "Set up images to boot from DEVICE.\n"
+#~ "DEVICE must be a GRUB device (e.g. `(hd0,1)').\n"
+#~ "\n"
+#~ "  -b, --boot-image=FILE   use FILE as the boot image [default=%s]\n"
+#~ "  -c, --core-image=FILE   use FILE as the core image [default=%s]\n"
+#~ "  -d, --directory=DIR     use GRUB files in the directory DIR [default="
+#~ "%s]\n"
+#~ "  -m, --device-map=FILE   use FILE as the device map [default=%s]\n"
+#~ "  -r, --root-device=DEV   use DEV as the root device [default=guessed]\n"
+#~ "  -f, --force             install even if problems are detected\n"
+#~ "  -s, --skip-fs-probe     do not probe for filesystems in DEVICE\n"
+#~ "  -h, --help              display this message and exit\n"
+#~ "  -V, --version           print version information and exit\n"
+#~ "  -v, --verbose           print verbose messages\n"
+#~ "\n"
+#~ "Report bugs to <%s>.\n"
+#~ msgstr ""
+#~ "Usu: %s [OPCIÓN]... PRESÉU\n"
+#~ "\n"
+#~ "Configura una imaxe pal arranque d'un PRESÉU.\n"
+#~ "El PRESÉU tien de ser un preséu GRUB (por exemplu, «(hd0, 1) »).\n"
+#~ "\n"
+#~ "  -b, --boot-image=FICHERU usa FICHERU como la imaxe d'arranque "
+#~ "[predetermináu=%s]\n"
+#~ "  -c, --core-image=FICHERU usa FICHERU uso como la imaxe principal "
+#~ "[predetermináu=%s]\n"
+#~ "  -d, --directory=DIR usu de los ficheros de GRUB nel direutoriu DIR "
+#~ "[predetermináu=%s]\n"
+#~ "  -m, --device-map=FICHERU usa FICHERU como'l mapa de preséu "
+#~ "[predetermináu=%s]\n"
+#~ "  -r, --root-device=DIS usa DIS como preséu raigañu "
+#~ "[predetermináu=aldovináu]\n"
+#~ "  -f, --force fuercia la instalación anque se deteuten problemes\n"
+#~ "  -s, --skip-fs-probe non prueba pa sistemes de ficheros en PRESÉU\n"
+#~ "  -h, --help amuesa esti mensaxe y colar\n"
+#~ "  -V, --version amuesa información sobro la versión y sal\n"
+#~ "  -v, --verbose amuesa un mensaxe verbosu\n"
+#~ "\n"
+#~ "Informe de fallos a <%s>.\n"
+
+#~ msgid "Loading kernel of FreeBSD %s ..."
+#~ msgstr "Cargando núcleu de FreeBSD %s ..."
+
+#~ msgid "Loading Linux %s ..."
+#~ msgstr "Cargando Linux %s ..."
+
+#~ msgid "Loading initial ramdisk ..."
+#~ msgstr "Cargando discu RAM inicial..."
 
 #~ msgid "Please check the following file: %s.\n"
 #~ msgstr "Por favor, comprueba'l siguiente ficheru: %s.\n"
 
 #~ msgid "This file must be removed before a bootable CD can be done.\n"
-#~ msgstr "Esti ficheru ha desaniciase enantes de que pueda facese un CD autoarrancable.\n"
+#~ msgstr ""
+#~ "Esti ficheru ha desaniciase enantes de que pueda facese un CD "
+#~ "autoarrancable.\n"
 
 #~ msgid "Error creating boot catalog (%s)"
 #~ msgstr "Fallu creando catálogu de boot (%s)"
@@ -1256,7 +2335,8 @@ msgstr "Cargando discu RAM inicial..."
 #~ msgstr "Fallu abriendo ficheru d'imaxe del boot '%s' p'anovamientu"
 
 #~ msgid "Odd alignment at non-end-of-file in boot image '%s'"
-#~ msgstr "Alliniamientu incorreutu nel non-fin-de-ficheru na imaxe del boot '%s'"
+#~ msgstr ""
+#~ "Alliniamientu incorreutu nel non-fin-de-ficheru na imaxe del boot '%s'"
 
 #~ msgid "Boot image file '%s' changed unexpectedly"
 #~ msgstr "El ficheru d'imaxe de Boot '%s' camudó inesperadamente"
@@ -1316,7 +2396,8 @@ msgstr "Cargando discu RAM inicial..."
 #~ msgstr "Xenerar información de direutoriu Joliet"
 
 #~ msgid "Allow full 32 character filenames for iso9660 names"
-#~ msgstr "Permitir nomes de ficheru de 32 carauteres de llargo pa nomes iso9660"
+#~ msgstr ""
+#~ "Permitir nomes de ficheru de 32 carauteres de llargo pa nomes iso9660"
 
 #~ msgid "Allow iso9660 filenames to start with '.'"
 #~ msgstr "Permitir nomes de ficheru iso9660 aniciar con '.'"
@@ -1360,8 +2441,12 @@ msgstr "Cargando discu RAM inicial..."
 #~ msgid "Set System ID"
 #~ msgstr "Afitar ID Sistema"
 
-#~ msgid "Generate translation tables for systems that don't understand long filenames"
-#~ msgstr "Xenerar tables de tornes pa sistemes que nun entienden nomes de ficheros llargos"
+#~ msgid ""
+#~ "Generate translation tables for systems that don't understand long "
+#~ "filenames"
+#~ msgstr ""
+#~ "Xenerar tables de tornes pa sistemes que nun entienden nomes de ficheros "
+#~ "llargos"
 
 #~ msgid "Verbose"
 #~ msgstr "Detallao"
@@ -1402,9 +2487,6 @@ msgstr "Cargando discu RAM inicial..."
 #~ msgid "Usage: %s [options] file...\n"
 #~ msgstr "Usu: %s [opciones] ficheru...\n"
 
-#~ msgid "Options:\n"
-#~ msgstr "Opciones:\n"
-
 #~ msgid "Required boot image pathname missing"
 #~ msgstr "Falta camín pa la imaxe d'arranque"
 
@@ -1412,7 +2494,8 @@ msgstr "Cargando discu RAM inicial..."
 #~ msgstr "Falta camín pal catálogu d'arranque\n"
 
 #~ msgid "Ignoring -no-emul-boot (no-emulation is the default behaviour)\n"
-#~ msgstr "Ignorando -no-emul-boot (no-emulation ye'l comportamientu por defeutu)\n"
+#~ msgstr ""
+#~ "Ignorando -no-emul-boot (no-emulation ye'l comportamientu por defeutu)\n"
 
 #~ msgid "Application-id string too long\n"
 #~ msgstr "Cadena Application-id demasiao llarga\n"
@@ -1438,9 +2521,6 @@ msgstr "Cargando discu RAM inicial..."
 #~ msgid "Multisession usage bug: Must specify -C if -M is used.\n"
 #~ msgstr "Fallu n'usu Multisesión: Tienes qu'especificar -C si -M ye usao.\n"
 
-#~ msgid "can't open logfile: %s"
-#~ msgstr "Nun pudó abrise ficheru de rexistru: %s"
-
 #~ msgid "re-directing all messages to %s\n"
 #~ msgstr "redireicionar tolos mensaxes a %s\n"
 
@@ -1449,9 +2529,6 @@ msgstr "Cargando discu RAM inicial..."
 
 #~ msgid "Unable to open previous session image %s\n"
 #~ msgstr "Nun pudó abrise imaxe de sesión previa %s\n"
-
-#~ msgid "Invalid node - %s\n"
-#~ msgstr "nodu nun válidu - %s\n"
 
 #~ msgid "Unable to open /dev/null\n"
 #~ msgstr "Nun pudó abrise /dev/null\n"
@@ -1545,12 +2622,3 @@ msgstr "Cargando discu RAM inicial..."
 
 #~ msgid "ESC to return previous menu."
 #~ msgstr "ESC pa tornar al menú previu."
-
-#~ msgid "Booting '%s'"
-#~ msgstr "Aniciando '%s'"
-
-#~ msgid "Falling back to '%s'"
-#~ msgstr "Fallu tornando a '%s'"
-
-#~ msgid "Failed to boot default entries.\n"
-#~ msgstr "Fallu al aniciar entraes por defeutu.\n"
