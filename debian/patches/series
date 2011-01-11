@@ -31,7 +31,6 @@ ubuntu_quiet_grub_loading.patch
 ubuntu_lvm_raid_probe.patch
 ubuntu_langpacks.patch
 ubuntu_qemu.patch
-ubuntu_vesafb.patch
 ubuntu_lua_bitop.patch
 ubuntu_lua_enum_pci.patch
 ubuntu_gfxpayload_filter.patch
