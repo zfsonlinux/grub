@@ -1,0 +1,1255 @@
+# GRUB의 한국어 번역.
+# Copyright (C) 2009, 2010 Free Software Foundation, Inc.
+# This file is distributed under the same license as the grub package.
+#
+# Exported from Launchpad (2010-10-16 22:52+0000), Ubuntu Korean-team
+# <ubuntu-ko@lists.ubuntu.com>:
+#
+# Kang Bundo <bundo@bundo.biz>, 2010.
+# Para, 2010
+#
+# Revised:
+#
+# Changwoo Ryu <cwryu@debian.org>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: grub 1.97+20100124\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-01-24 19:29+0000\n"
+"PO-Revision-Date: 2010-10-24 23:37+0900\n"
+"Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
+"Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: commands/acpi.c:40
+msgid "Don't load host tables specified by comma-separated list."
+msgstr "쉼표(,)로 구분한 호스트 테이블을 읽어들이지 않습니다."
+
+#: commands/acpi.c:43
+msgid "Load only tables specified by comma-separated list."
+msgstr "쉼표(,)로 구분한 테이블을 읽어들입니다."
+
+#: commands/acpi.c:44
+msgid "Expose v1 tables."
+msgstr "v1 테이블을 보여줍니다."
+
+#: commands/acpi.c:45
+msgid "Expose v2 and v3 tables."
+msgstr "v2와 v3 테이블을 보여줍니다."
+
+#: commands/acpi.c:46
+msgid "Set OEMID of RSDP, XSDT and RSDT."
+msgstr "RSDP와 XSDT, RSDT의 OEMID를 설정합니다."
+
+#: commands/acpi.c:48
+msgid "Set OEMTABLE ID of RSDP, XSDT and RSDT."
+msgstr "RSDP와 XSDT, RSDT의 OEMTABLE ID를 설정합니다."
+
+#: commands/acpi.c:50
+msgid "Set OEMTABLE revision of RSDP, XSDT and RSDT."
+msgstr "RSDP와 XSDT, RSDT의 OEMTABLE 수정 사항을 설정합니다."
+
+#: commands/acpi.c:52
+msgid "Set creator field of RSDP, XSDT and RSDT."
+msgstr "RSDP와 XSDT, RSDT의 생성자 필드를 설정합니다."
+
+#: commands/acpi.c:54
+msgid "Set creator revision of RSDP, XSDT and RSDT."
+msgstr "RSDP와 XSDT, RSDT의 생성자 수정 사항을 설정합니다."
+
+#: commands/acpi.c:55
+msgid "Don't update EBDA. May fix failures or hangs on some. BIOSes but makes it ineffective with OS not receiving RSDP from GRUB."
+msgstr "EBDA를 업데이트 하지 않습니다. 장애를 수리하거나 어떤 것은 멈출수도 있습니다. BIOS는 OS가 GRUB에서 RSDP를 못 받게하여 이것을 무력화합니다."
+
+#: commands/acpi.c:763
+msgid "[-1|-2] [--exclude=TABLE1,TABLE2|--load-only=table1,table2] FILE1 [FILE2] [...]"
+msgstr "[-1|-2] [--exclude=<테이블1>,<테이블2>|--load-only=<테이블1>,<테이블2>] <파일1> [<파일2>] [...]"
+
+#: commands/acpi.c:766
+msgid "Load host ACPI tables and tables specified by arguments."
+msgstr "호스트 ACPI 테이블과 인자로 주어진 테이블을 읽어들입니다."
+
+#: commands/blocklist.c:114 commands/cat.c:82 commands/configfile.c:57
+#: commands/configfile.c:60 commands/configfile.c:65 commands/crc.c:64
+#: commands/i386/pc/play.c:211 commands/minicmd.c:358 loader/i386/bsd.c:1296
+#: loader/i386/bsd.c:1300 loader/i386/bsd.c:1304
+msgid "FILE"
+msgstr "<파일>"
+
+#: commands/blocklist.c:114
+msgid "Print a block list."
+msgstr "블럭 목록을 출력합니다."
+
+#: commands/boot.c:190
+msgid "Boot an operating system."
+msgstr "운영 체제를 부팅합니다."
+
+#: commands/cat.c:82 commands/minicmd.c:358
+msgid "Show the contents of a file."
+msgstr "파일의 내용을 표시합니다."
+
+#: commands/cmp.c:113
+msgid "FILE1 FILE2"
+msgstr "<파일1> <파일2>"
+
+#: commands/cmp.c:113
+msgid "Compare two files."
+msgstr "두개의 파일을 비교합니다."
+
+#: commands/configfile.c:57
+msgid "Load another config file."
+msgstr "다른 설정파일을 읽어들입니다."
+
+#: commands/configfile.c:61 commands/configfile.c:66
+msgid "Load another config file without changing context."
+msgstr "문맥의 변환없이 다른 설정 파일을 읽어들입니다."
+
+#: commands/crc.c:65
+msgid "Calculate the crc32 checksum of a file."
+msgstr "파일의 CRC32 체크섬을 계산합니다."
+
+#: commands/date.c:139
+msgid "[[year-]month-day] [hour:minute[:second]]"
+msgstr "[[년-]월-일] [시:분[:초]]"
+
+#: commands/date.c:140
+msgid "Command to display/set current datetime."
+msgstr "현재 일시를 표시/설정하는 명령."
+
+#: commands/echo.c:27
+msgid "Do not output the trailing newline."
+msgstr "쓸모없는 새 행을 출력하지 않습니다."
+
+#: commands/echo.c:28
+msgid "Enable interpretation of backslash escapes."
+msgstr "역슬래쉬 이스케입문자의 해석을 가능케합니다."
+
+#: commands/echo.c:117
+msgid "[-e|-n] STRING"
+msgstr "[-e|-n] 문자열"
+
+#: commands/echo.c:117
+msgid "Display a line of text."
+msgstr "텍스트의 줄을 표시합니다."
+
+#: commands/efi/fixvideo.c:103
+msgid "Fix video problem."
+msgstr "비디오 문제를 수정합니다."
+
+#: commands/efi/loadbios.c:207
+msgid "Fake BIOS."
+msgstr "바이오스를 흉내냅니다."
+
+#: commands/efi/loadbios.c:211
+msgid "Load BIOS dump."
+msgstr "바이오스 덤프를 읽어들입니다."
+
+#: commands/gptsync.c:244
+msgid "DEVICE [PARTITION[+/-[TYPE]]] ..."
+msgstr "<장치> [<파티션>[+/-[<유형>]]] ..."
+
+#: commands/gptsync.c:245
+#, fuzzy
+msgid "Fill hybrid MBR of GPT drive DEVICE. specified partitions will be a part of hybrid mbr. Up to 3 partitions are allowed. TYPE is an MBR type. + means that partition is active. Only one partition can be active."
+msgstr "GPT 드라이브 장치의 하이브리드 MBR을 채우시오. 특정한 파티션은 하이브리드 MBR의 일부가 될 것입니다. 3개의 파티션까지 허용되니다. TYPE은 MBR 형식입니다. +는 파티션이 활성화되었다는 것을 의미합니다. 한 개의 파티션만을 활성화할 수 있습니다."
+
+#: commands/halt.c:39
+msgid "Halts the computer.  This command does not work on all firmware implementations."
+msgstr "컴퓨터를 정지시킵니다. 이 명령은 구현된 모든 펌웨어 상에서 작동하지 않습니다."
+
+#: commands/handler.c:94
+msgid "[class [handler]]"
+msgstr ""
+
+#: commands/handler.c:95
+msgid "List or select a handler."
+msgstr ""
+
+#: commands/hdparm.c:30
+msgid ""
+"Set Advanced Power Management\n"
+"(1=low, ..., 254=high, 255=off)."
+msgstr ""
+"고급 전원관리 설정\n"
+"(1=low, ..., 254=high, 255=off)."
+
+#: commands/hdparm.c:33
+msgid "Check power mode."
+msgstr "절전 모드를 확인하십시오."
+
+#: commands/hdparm.c:34
+msgid "Freeze ATA security settings until reset."
+msgstr "리셋하기 전까지 ATA 보안 설정을 정지시킵니다."
+
+#: commands/hdparm.c:36
+msgid "Check SMART health status."
+msgstr "SMART 건강 상태를 체크합니다."
+
+#: commands/hdparm.c:37
+msgid ""
+"Set Automatic Acoustic Management\n"
+"(0=off, 128=quiet, ..., 254=fast)."
+msgstr ""
+"자동 소음 관리를 설정합니다.\n"
+"(0=끔, 128=조용, ..., 254=빠름)."
+
+#: commands/hdparm.c:40
+msgid ""
+"Set standby timeout\n"
+"(0=off, 1=5s, 2=10s, ..., 240=20m, 241=30m, ...)."
+msgstr ""
+"대기시간 설정\n"
+"(0=끔, 1=5초, 2=10초, ..., 240=20분, 241=30분, ...)."
+
+#: commands/hdparm.c:43
+msgid "Set drive to standby mode."
+msgstr "드라이브를 대기모드로 설정."
+
+#: commands/hdparm.c:44
+msgid "Set drive to sleep mode."
+msgstr "드라이브를 수면모드로 설정."
+
+#: commands/hdparm.c:45
+msgid "Print drive identity and settings."
+msgstr "드라이브 ID와 설정을 출력합니다."
+
+#: commands/hdparm.c:47
+msgid "Dump contents of ATA IDENTIFY sector."
+msgstr "ATA IDENTIFY 영역의 내용을 덤프합니다."
+
+#: commands/hdparm.c:49
+msgid "Disable/enable SMART (0/1)."
+msgstr "SMART를 해제하거나 활성화 합니다 (0/1)."
+
+#: commands/hdparm.c:50
+msgid "Do not print messages."
+msgstr "메시지를 출력하지 마십시오."
+
+#: commands/hdparm.c:414
+msgid "[OPTIONS] DISK"
+msgstr "[옵션] 디스크"
+
+#: commands/hdparm.c:415
+msgid "Get/set ATA disk parameters."
+msgstr "ATA 디스크 매개 변수를 얻거나 설정합니다."
+
+#: commands/help.c:103 lib/arg.c:110
+msgid "Usage:"
+msgstr "사용법:"
+
+#: commands/help.c:136
+msgid "[PATTERN ...]"
+msgstr "[패턴 ...]"
+
+#: commands/help.c:137
+msgid "Show a help message."
+msgstr "도움말 표시."
+
+#: commands/hexdump.c:30
+msgid "Skip offset bytes from the beginning of file."
+msgstr "파일 첫부분의 오프셋 바이트를 건너뜁니다."
+
+#: commands/hexdump.c:32
+msgid "Read only LENGTH bytes."
+msgstr "단지 LENGTH 바이트를 읽습니다."
+
+#: commands/hexdump.c:125
+msgid "[OPTIONS] FILE_OR_DEVICE"
+msgstr "[옵션] <파일또는장치>"
+
+#: commands/hexdump.c:126
+msgid "Dump the contents of a file or memory."
+msgstr "파일 또는 메모리의 내용을 덤프합니다."
+
+#: commands/i386/cpuid.c:37
+msgid "Check for long mode flag (default)."
+msgstr "긴 모드 플래그에 대해 확인합니다 (기본값)."
+
+#: commands/i386/cpuid.c:92
+msgid "Check for CPU features."
+msgstr "CPU 기능을 확인."
+
+#: commands/i386/pc/drivemap.c:37
+msgid "Show the current mappings."
+msgstr "현재의 매핑을 보입니다."
+
+#: commands/i386/pc/drivemap.c:38
+msgid "Reset all mappings to the default values."
+msgstr "기본값에 대한 모든 매핑을 리셋합니다."
+
+#: commands/i386/pc/drivemap.c:39
+msgid "Perform both direct and reverse mappings."
+msgstr "순 매핑과 역 매핑 둘 다 수행합니다."
+
+#: commands/i386/pc/drivemap.c:407
+msgid "-l | -r | [-s] grubdev osdisk."
+msgstr "-l | -r | [-s] grubdev osdisk."
+
+#: commands/i386/pc/drivemap.c:408
+msgid "Manage the BIOS drive mappings."
+msgstr "BIOS 드라이브 매핑을 관리합니다."
+
+#: commands/i386/pc/halt.c:27
+msgid "Do not use APM to halt the computer."
+msgstr "컴퓨터를 멈추기 위해 APM을 사용하지 않습니다."
+
+#: commands/i386/pc/halt.c:51
+msgid "Halt the system, if possible using APM."
+msgstr "APM이 사용 가능하다면 시스템을 중지시킵니다."
+
+#: commands/i386/pc/play.c:211
+msgid "Play a tune."
+msgstr "소리를 재생합니다."
+
+#: commands/i386/pc/pxecmd.c:46
+msgid "Unload PXE environment."
+msgstr "PXE 환경 제거."
+
+#: commands/i386/pc/vbeinfo.c:179
+msgid "List compatible VESA BIOS extension video modes."
+msgstr "호환 가능한 VESA BIOS 확장 비디오 모드를 열거함."
+
+#: commands/i386/pc/vbetest.c:172
+msgid "Test VESA BIOS Extension 2.0+ support."
+msgstr "VESA BIOS 확장 2.0+ 지원여부 테스트."
+
+#: commands/ieee1275/suspend.c:43
+msgid "Return to Open Firmware prompt."
+msgstr "오픈 펌웨어 프롬프트로 되돌아 갑니다."
+
+#: commands/keystatus.c:28
+msgid "Check Shift key."
+msgstr "Shift키를 확인합니다."
+
+#: commands/keystatus.c:29
+msgid "Check Control key."
+msgstr "Control키를 확인합니다."
+
+#: commands/keystatus.c:30
+msgid "Check Alt key."
+msgstr "ALt 키를 확인합니다."
+
+#: commands/keystatus.c:85
+msgid "[--shift] [--ctrl] [--alt]"
+msgstr "[--shift] [--ctrl] [--alt]"
+
+#: commands/keystatus.c:86
+msgid "Check key modifier status."
+msgstr "키 수정자 상태를 확인."
+
+#: commands/loadenv.c:33
+msgid "Specify filename."
+msgstr "파일 이름을 지정합니다."
+
+#: commands/loadenv.c:383 commands/loadenv.c:389
+msgid "[-f FILE]"
+msgstr "[-f <파일>]"
+
+#: commands/loadenv.c:384
+msgid "Load variables from environment block file."
+msgstr "환경 블록 파일로부터 값을 읽어들입니다."
+
+#: commands/loadenv.c:390
+msgid "List variables from environment block file."
+msgstr "환경 블록 파일로부터 값을 열거합니다."
+
+#: commands/loadenv.c:395
+msgid "[-f FILE] variable_name [...]"
+msgstr "[-f <파일>] <변수_이름> [...]"
+
+#: commands/loadenv.c:396
+msgid "Save variables to environment block file."
+msgstr "값을 환경 블록 파일로 저장합니다."
+
+#: commands/ls.c:37
+msgid "Show a long list with more detailed information."
+msgstr "더 상세한 정보를 담은 긴 리스트를 보여줍니다."
+
+#: commands/ls.c:38
+msgid "Print sizes in a human readable format."
+msgstr "사람이 읽을 수 있는 형식으로 크기를 출력합니다."
+
+#: commands/ls.c:39
+msgid "List all files."
+msgstr "파일의 목록을 보여줍니다."
+
+#: commands/ls.c:268
+msgid "[-l|-h|-a] [FILE]"
+msgstr "[-l|-h|-a] [<파일>]"
+
+#: commands/ls.c:269
+msgid "List devices and files."
+msgstr "장치와 파일을 목록으로 만듭니다."
+
+#: commands/lsmmap.c:47
+msgid "List memory map provided by firmware."
+msgstr "펌웨어에 의해 제공된 메모리 맵을 열거합니다."
+
+#: commands/lspci.c:228
+msgid "List PCI devices."
+msgstr "PCI 장치를 열거합니다."
+
+#: commands/memrw.c:31
+msgid "Save read value into variable VARNAME."
+msgstr "읽어들인 값을 <변수이름> 변수로 저장합니다."
+
+#: commands/memrw.c:123 commands/memrw.c:126 commands/memrw.c:129
+#: commands/minicmd.c:367
+msgid "ADDR"
+msgstr "<주소>"
+
+#: commands/memrw.c:123
+msgid "Read byte from ADDR."
+msgstr "<주소>에서 바이트를 읽습니다."
+
+#: commands/memrw.c:126
+msgid "Read word from ADDR."
+msgstr "<주소>에서 워드를 읽습니다."
+
+#: commands/memrw.c:129
+msgid "Read dword from ADDR."
+msgstr "<주소>에서 더블 워드를 읽습니다."
+
+#: commands/memrw.c:132 commands/memrw.c:135 commands/memrw.c:138
+msgid "ADDR VALUE [MASK]"
+msgstr "<주소> <값> [마스크]"
+
+#: commands/memrw.c:132
+msgid "Write byte VALUE to ADDR."
+msgstr "<주소>에 <값> 바이트를 씁니다."
+
+#: commands/memrw.c:135
+msgid "Write word VALUE to ADDR."
+msgstr "<주소>에 <값> 워드를 씁니다."
+
+#: commands/memrw.c:138
+msgid "Write dword VALUE to ADDR."
+msgstr "<주소>에 <값> 더블 워드를 씁니다."
+
+#: commands/minicmd.c:361
+msgid "Show this message."
+msgstr "이 메시지를 보여줍니다."
+
+#: commands/minicmd.c:364 commands/probe.c:154
+msgid "[DEVICE]"
+msgstr "[<장치>]"
+
+#: commands/minicmd.c:364
+msgid "Set the root device."
+msgstr "루트 장치를 설정합니다."
+
+#: commands/minicmd.c:367
+msgid "Dump memory."
+msgstr "메모리를 덤프합니다."
+
+#: commands/minicmd.c:370
+msgid "MODULE"
+msgstr "<모듈>"
+
+#: commands/minicmd.c:370
+msgid "Remove a module."
+msgstr "모듈을 제거합니다."
+
+#: commands/minicmd.c:373
+msgid "Show loaded modules."
+msgstr "읽어들인 모듈을 보여줍니다."
+
+#: commands/minicmd.c:376
+msgid "Exit from GRUB."
+msgstr "GRUB에서 나갑니다."
+
+#: commands/minicmd.c:379
+msgid "Clear the screen."
+msgstr "화면을 지웁니다."
+
+#: commands/parttool.c:325
+msgid "PARTITION COMMANDS"
+msgstr "파티션 명령어"
+
+#: commands/password.c:78
+msgid "USER PASSWORD"
+msgstr "사용자 암호"
+
+#: commands/password.c:79
+msgid "Set user password (plaintext). Unrecommended and insecure."
+msgstr "사용자 암호 (평문)를 설정합니다. 권장하지 않으며, 보안에 취약합니다."
+
+#: commands/probe.c:38
+msgid "Set a variable to return value."
+msgstr "어떤 값을 리턴 값으로 설정합니다."
+
+#: commands/probe.c:39
+msgid "Determine driver."
+msgstr "드라이버를 결정합니다."
+
+#: commands/probe.c:40
+msgid "Determine partition map type."
+msgstr "파티션 맵 유형을 결정합니다."
+
+#: commands/probe.c:41
+msgid "Determine filesystem type."
+msgstr "파일 시스템의 종류를 결정합니다."
+
+#: commands/probe.c:42
+msgid "Determine filesystem UUID."
+msgstr "파일 시스템 UUID를 결정합니다."
+
+#: commands/probe.c:43
+msgid "Determine filesystem label."
+msgstr "파일 시스템의 라벨(label)을 결정합니다."
+
+#: commands/probe.c:155
+msgid "Retrieve device info."
+msgstr "장치 정보를 검색합니다."
+
+#: commands/read.c:83
+msgid "[ENVVAR]"
+msgstr "[환경변수]"
+
+#: commands/read.c:84
+msgid "Set variable with user input."
+msgstr "변수를 사용자 입력으로 지정합니다."
+
+#: commands/reboot.c:39
+msgid "Reboot the computer."
+msgstr "컴퓨터를 재부팅합니다."
+
+#: commands/search.c:161
+msgid "NAME [VARIABLE]"
+msgstr "<이름> [<변수>]"
+
+#: commands/search_file.c:5
+msgid "Search devices by file. If VARIABLE is specified, the first device found is set to a variable."
+msgstr "파일로 장치를 찾습니다. 만약 <변수>가 명시되지 않으면, 첫 번째로 발견되는 장치가 변수로 지정됩니다."
+
+#: commands/search_label.c:5
+msgid "Search devices by label. If VARIABLE is specified, the first device found is set to a variable."
+msgstr "레이블로 장치를 찾습니다. 만약 <변수>가 명시되지 않으면, 첫 번째로 발견되는 장치가 변수로 지정됩니다."
+
+#: commands/search_uuid.c:5
+msgid "Search devices by UUID. If VARIABLE is specified, the first device found is set to a variable."
+msgstr "UUID로 장치를 찾습니다. 만약 <변수>가 명시되지 않으면, 첫 번째로 발견되는 장치가 변수로 지정됩니다."
+
+#: commands/sleep.c:31
+msgid "Verbose countdown."
+msgstr "자세한 카운트 다운."
+
+#: commands/sleep.c:32
+msgid "Interruptible with ESC."
+msgstr "ESC로 중단 가능."
+
+#: commands/sleep.c:106
+msgid "NUMBER_OF_SECONDS"
+msgstr "<초 수>"
+
+#: commands/sleep.c:107
+msgid "Wait for a specified number of seconds."
+msgstr "지정된 초 만큼 기다립니다."
+
+#: commands/test.c:424
+msgid "EXPRESSION ]"
+msgstr "표현식 ]"
+
+#: commands/test.c:424 commands/test.c:426
+msgid "Evaluate an expression."
+msgstr "표현식으로 평가함."
+
+#: commands/test.c:426
+msgid "EXPRESSION"
+msgstr "표현식"
+
+#: commands/true.c:47
+msgid "Do nothing, successfully."
+msgstr "성공적으로 아무일도 하지 않습니다."
+
+#: commands/true.c:50
+msgid "Do nothing, unsuccessfully."
+msgstr "불행하게도 아무일도 하지 않습니다."
+
+#: commands/usbtest.c:199
+msgid "Test USB support."
+msgstr "USB 지원여부를 테스트 합니다."
+
+#: commands/videotest.c:185
+msgid "Test video subsystem."
+msgstr "비디오 서브시스템을 테스트 합니다."
+
+#: commands/xnu_uuid.c:92
+msgid "GRUBUUID [VARNAME]"
+msgstr "GRUBUUID [<변수이름>]"
+
+#: commands/xnu_uuid.c:93
+msgid "Transform 64-bit UUID to format suitable for XNU."
+msgstr "64-bit UUID를  XNU에 알맞는 포맷으로 변환합니다."
+
+#: disk/loopback.c:40
+msgid "Delete the loopback device entry."
+msgstr "루프백 장치 엔트리를 제거합니다."
+
+#: disk/loopback.c:41
+msgid "Simulate a hard drive with partitions."
+msgstr "파티션을 가진 하드 드라이브 흉내를 냅니다."
+
+#: disk/loopback.c:249
+msgid "[-d|-p] DEVICENAME FILE."
+msgstr "[-d|-p] <장치이름> <파일>."
+
+#: disk/loopback.c:250
+msgid "Make a device of a file."
+msgstr "파일 장치를 만듭니다."
+
+#: hello/hello.c:43
+msgid "Say \"Hello World\"."
+msgstr "인사합니다  \"여러분 안녕\"."
+
+#: lib/arg.c:34
+msgid "Display this help and exit."
+msgstr "이 도움말을 보이고 종료합니다."
+
+#: lib/arg.c:36
+msgid "Display the usage of this command and exit."
+msgstr "이 명령의 사용법을 보이고 종료합니다."
+
+#: loader/efi/appleloader.c:325
+msgid "Boot legacy system."
+msgstr "레거시 시스템을 부팅합니다."
+
+#: loader/efi/chainloader.c:340 loader/i386/pc/chainloader.c:153
+msgid "Load another boot loader."
+msgstr "또 다른 부트로더를 읽어들입니다."
+
+#: loader/i386/bsd.c:65
+msgid "Display output on all consoles."
+msgstr "모든 콘솔상의 출력을 보입니다."
+
+#: loader/i386/bsd.c:66
+msgid "Use serial console."
+msgstr "시리얼 콘솔을 사용합니다."
+
+#: loader/i386/bsd.c:67 loader/i386/bsd.c:93 loader/i386/bsd.c:114
+msgid "Ask for file name to reboot from."
+msgstr "재부팅할 파일명을 묻습니다."
+
+#: loader/i386/bsd.c:68
+msgid "Use CDROM as root."
+msgstr "루트사용자로 CDROM을 사용합니다."
+
+#: loader/i386/bsd.c:69
+msgid "Invoke user configuration routing."
+msgstr "사용자 설정 라우팅을 호출합니다."
+
+#: loader/i386/bsd.c:70 loader/i386/bsd.c:97 loader/i386/bsd.c:117
+msgid "Enter in KDB on boot."
+msgstr "부팅시 KDB 모드로 진입합니다."
+
+#: loader/i386/bsd.c:71
+msgid "Use GDB remote debugger instead of DDB."
+msgstr "DDB 대신 GDB 원격 디버거를 사용합니다."
+
+#: loader/i386/bsd.c:72
+msgid "Disable all boot output."
+msgstr "모든 부팅 메시지 출력을 하지 않습니다."
+
+#: loader/i386/bsd.c:74
+msgid "Wait for keypress after every line of output."
+msgstr "출력 행마다 키 입력을 기다립니다."
+
+#: loader/i386/bsd.c:76
+msgid "Use compiled-in rootdev."
+msgstr "compiled-in rootdev를 사용합니다."
+
+#: loader/i386/bsd.c:77 loader/i386/bsd.c:96 loader/i386/bsd.c:120
+msgid "Boot into single mode."
+msgstr "단일 모드로 부트합니다."
+
+#: loader/i386/bsd.c:78 loader/i386/bsd.c:121
+msgid "Boot with verbose messages."
+msgstr "부팅시 자세한 메시지를 출력합니다."
+
+#: loader/i386/bsd.c:94 loader/i386/bsd.c:115
+msgid "Don't reboot, just halt."
+msgstr "재부팅 하지 마십시오, 단지 중지만 시키십시오."
+
+#: loader/i386/bsd.c:95 loader/i386/bsd.c:116
+msgid "Change configured devices."
+msgstr "구성된 장치를 변경합니다."
+
+#: loader/i386/bsd.c:98 loader/i386/bsd.c:124
+msgid "Set root device."
+msgstr "루트 장치를 정합니다."
+
+#: loader/i386/bsd.c:112
+msgid "Disable SMP."
+msgstr "SMP 비활성화."
+
+#: loader/i386/bsd.c:113
+msgid "Disable ACPI."
+msgstr "ACPI 비활성화."
+
+#: loader/i386/bsd.c:119
+msgid "Don't display boot diagnostic messages."
+msgstr "부트 진단 메시지를 보이지 마십시요."
+
+#: loader/i386/bsd.c:122
+msgid "Boot with debug messages."
+msgstr "부팅시 디버그 메시지를 표시합니다."
+
+#: loader/i386/bsd.c:123
+msgid "Supress normal output (warnings remain)."
+msgstr "일반 출력 메시지를 안보이게 합니다( 경고는 남습니다)."
+
+#: loader/i386/bsd.c:124
+msgid "DEVICE"
+msgstr "<장치>"
+
+#: loader/i386/bsd.c:1296
+msgid "Load kernel of FreeBSD."
+msgstr "FreeBSD 커널을 읽어들입니다."
+
+#: loader/i386/bsd.c:1300
+msgid "Load kernel of OpenBSD."
+msgstr "OpenBSD 커널을 읽어들입니다."
+
+#: loader/i386/bsd.c:1304
+msgid "Load kernel of NetBSD."
+msgstr "NetBSD 커널을 읽어들입니다."
+
+#: loader/i386/bsd.c:1308
+msgid "Load FreeBSD env."
+msgstr "FreeBSD env를 읽어들입니다."
+
+#: loader/i386/bsd.c:1311
+msgid "Load FreeBSD kernel module."
+msgstr "FreeBSD 커널 모듈을 읽어들입니다."
+
+#: loader/i386/bsd.c:1314
+msgid "Load FreeBSD kernel module (ELF)."
+msgstr "FreeBSD  커널 모듈을 (ELF) 읽어들입니다."
+
+#: loader/i386/efi/linux.c:1011 loader/i386/ieee1275/linux.c:301
+#: loader/i386/linux.c:1007 loader/i386/pc/linux.c:399
+#: loader/powerpc/ieee1275/linux.c:353 loader/sparc64/ieee1275/linux.c:520
+msgid "Load Linux."
+msgstr "리눅스를 읽어들입니다."
+
+#: loader/i386/efi/linux.c:1013 loader/i386/ieee1275/linux.c:303
+#: loader/i386/linux.c:1009 loader/i386/pc/linux.c:402
+#: loader/powerpc/ieee1275/linux.c:355 loader/sparc64/ieee1275/linux.c:522
+msgid "Load initrd."
+msgstr "initrd를 읽어들입니다."
+
+#: loader/i386/xnu.c:1032
+msgid "Load device-properties dump."
+msgstr "device-properties 덤프를 읽어들입니다."
+
+#: loader/multiboot_loader.c:133
+msgid "Load a multiboot 2 kernel."
+msgstr "multiboot 2 커널을 읽어들입니다."
+
+#: loader/multiboot_loader.c:136
+msgid "Load a multiboot kernel."
+msgstr "multiboot 커널을 읽어들입니다."
+
+#: loader/multiboot_loader.c:141
+msgid "Load a multiboot module."
+msgstr "multiboot 모듈을 읽어들입니다."
+
+#: loader/xnu.c:1407
+msgid "Load XNU image."
+msgstr "XNU 이미지를 읽어들입니다."
+
+#: loader/xnu.c:1409
+msgid "Load 64-bit XNU image."
+msgstr "64-bit XNU 이미지를 읽어들입니다."
+
+#: loader/xnu.c:1411
+msgid "Load XNU extension package."
+msgstr "XNU 확장 패키지를 읽어들입니다."
+
+#: loader/xnu.c:1413
+msgid "Load XNU extension."
+msgstr "XNU 확장팩을 읽어들입니다."
+
+#: loader/xnu.c:1415
+msgid "DIRECTORY [OSBundleRequired]"
+msgstr "디렉터리 [OS요구번들]"
+
+#: loader/xnu.c:1416
+msgid "Load XNU extension directory."
+msgstr "XNU 확장 디렉터리를 읽어들입니다."
+
+#: loader/xnu.c:1418
+msgid "Load XNU ramdisk. It will be seen as md0."
+msgstr ""
+
+#: loader/xnu.c:1421
+msgid "Load a splash image for XNU."
+msgstr "XNU의 스플래시 화면이미지를 읽어들입니다."
+
+#: loader/xnu.c:1425
+msgid "Load XNU hibernate image."
+msgstr "XNU 최대절전모드 이미지를 읽어들입니다."
+
+#: normal/auth.c:233
+msgid "Enter username: "
+msgstr "사용자 이름을 입력하십시오: "
+
+#: normal/auth.c:238
+msgid "Enter password: "
+msgstr "암호를 입력하십시오: "
+
+#: normal/color.c:80
+#, c-format
+msgid "Warning: syntax error (missing slash) in `%s'\n"
+msgstr "경고: 문법 에러 (슬레쉬 없음)  `%s'\n"
+
+#: normal/color.c:89
+#, c-format
+msgid "Warning: invalid foreground color `%s'\n"
+msgstr "경고: 잘못된 전경 색 `%s'\n"
+
+#: normal/color.c:95
+#, c-format
+msgid "Warning: invalid background color `%s'\n"
+msgstr "경고: 잘못된 배경 색 `%s'\n"
+
+#: normal/dyncmd.c:147
+msgid "not loaded"
+msgstr "로드 안됨."
+
+#: normal/main.c:408
+#, c-format
+msgid "GNU GRUB  version %s"
+msgstr "GNU GRUB  버전 %s"
+
+#: normal/main.c:538
+#, c-format
+msgid "Minimal BASH-like line editing is supported. For the first word, TAB lists possible command completions. Anywhere else TAB lists possible device or file completions. %s"
+msgstr "최소한의 BASH 형태의 라인 편집을 지원합니다. TAB을 누르시면 사용 가능한 명령어 목록을 표시합니다. 장치나 파일도 마찬가지로 어느 곳에서든지 TAB을 통해 목록을 보실 수 있습니다. %s"
+
+#: normal/main.c:541
+msgid "ESC at any time exits."
+msgstr "ESC 언제든지 종료합니다."
+
+#: normal/menu_entry.c:1060
+msgid "Possible commands are:"
+msgstr "가능한 명령은:"
+
+#: normal/menu_entry.c:1064
+msgid "Possible devices are:"
+msgstr "가능한 장치는:"
+
+#: normal/menu_entry.c:1068
+msgid "Possible files are:"
+msgstr "가능한 파일은:"
+
+#: normal/menu_entry.c:1072
+msgid "Possible partitions are:"
+msgstr "가능한 파티션은:"
+
+#: normal/menu_entry.c:1076
+msgid "Possible arguments are:"
+msgstr "가능한 인자값은:"
+
+#: normal/menu_entry.c:1080
+msgid "Possible things are:"
+msgstr "가능한 것은:"
+
+#: normal/menu_entry.c:1184
+msgid "Booting a command list"
+msgstr "명령행을 부팅"
+
+#: normal/menu_entry.c:1397
+msgid "Press any key to continue..."
+msgstr "계속하려면 아무 키나 누르십시오..."
+
+#: normal/menu_text.c:179
+#, fuzzy
+msgid "Minimum Emacs-like screen editing is supported. TAB lists completions. Press Ctrl-x to boot, Ctrl-c for a command-line or ESC to return menu."
+msgstr "이맥스와 같은 편집 기능을 최소한으로 지원합니다. 탭은 완성 기능을 지원합니다. Ctrl-x는 부팅, Ctrl-c는 명령행 또는 ESC는 현재 편집한 것을 취소하고 GRUB으로 되돌아갑니다."
+
+#: normal/menu_text.c:186
+#, c-format
+msgid "Use the %C and %C keys to select which entry is highlighted.\n"
+msgstr "%C 및 %C 키를 이용하여 원하는 항목이 밝게 표시되도록 선택하십시오.\n"
+
+#: normal/menu_text.c:203
+msgid "Press enter to boot the selected OS, 'e' to edit the commands before booting or 'c' for a command-line. ESC to return previous menu.\n"
+msgstr "Enter 키를 누르면 선택된 OS로 부팅되며, 부팅전에 'e' 키를 누르면 옵션을 편집할 수 있고 'c' 키를 누르면 명령어를 직접 입력할 수 있습니다. 이전 메뉴로 돌아가려면 ESC 키를 누르십시오.\n"
+
+#: normal/menu_text.c:211
+msgid "Press enter to boot the selected OS, 'e' to edit the commands before booting or 'c' for a command-line.\n"
+msgstr "Enter 키를 누르면 선택된 OS로 부팅되며, 부팅전에 'e' 키를 누르면 옵션을 편집할 수 있고 'c' 키를 누르면 명령어를 직접 입력할 수 있습니다.\n"
+
+#: normal/menu_text.c:363
+#, c-format
+msgid "The highlighted entry will be executed automatically in %ds."
+msgstr "%d초 후에 밝게 표시된 항목을 자동으로 실행합니다."
+
+#: normal/misc.c:41
+#, c-format
+msgid "Partition %s:"
+msgstr "파티션 %s:"
+
+#: normal/misc.c:46
+#, c-format
+msgid "Device %s:"
+msgstr "장치 %s:"
+
+#: normal/misc.c:52
+msgid "Filesystem cannot be accessed"
+msgstr "파일 시스템에 접근할 수 없습니다."
+
+#: normal/misc.c:63
+#, c-format
+msgid "Filesystem type %s"
+msgstr "파일 시스템 종류 %s"
+
+#: normal/misc.c:73
+#, c-format
+msgid "- Label \"%s\""
+msgstr "- 레이블 \"%s\""
+
+#: normal/misc.c:88
+#, c-format
+msgid "- Last modification time %d-%02d-%02d %02d:%02d:%02d %s"
+msgstr "- 마지막으로 수정된 시간 %d-%02d-%02d %02d:%02d:%02d %s"
+
+#: normal/misc.c:111
+msgid "Unknown filesystem"
+msgstr "알 수 없는 파일 시스템"
+
+#: normal/misc.c:113
+msgid "Partition table"
+msgstr "파티션 테이블"
+
+#: term/serial.c:46
+msgid "Set the serial unit."
+msgstr "시리얼 유닛을 정합니다."
+
+#: term/serial.c:47
+msgid "Set the serial port address."
+msgstr "시리얼 포트 주소를 정합니다."
+
+#: term/serial.c:48
+msgid "Set the serial port speed."
+msgstr "시리얼 포트 속도를 정합니다."
+
+#: term/serial.c:49
+msgid "Set the serial port word length."
+msgstr "시리얼 포트 워드 길이를 정합니다."
+
+#: term/serial.c:50
+msgid "Set the serial port parity."
+msgstr "시리얼 포트 패리티를 정합니다."
+
+#: term/serial.c:51
+msgid "Set the serial port stop bits."
+msgstr "시리얼 포트 스톱 비트를 정합니다."
+
+#: util/grub-mkrawimage.c:67
+msgid "the core image is too small"
+msgstr "코어 이미지가 너무 작습니다"
+
+#: util/grub-mkrawimage.c:79
+msgid "cannot compress the kernel image"
+msgstr "커널 이미지 압축을 할 수 없습니다"
+
+#: util/grub-mkrawimage.c:154
+msgid "prefix is too long"
+msgstr "접두어가 너무 깁니다."
+
+#: util/grub-mkrawimage.c:240
+msgid "the core image is too big"
+msgstr "코어 이미지가 너무 큽니다"
+
+#: util/grub-mkrawimage.c:245
+#, c-format
+msgid "diskboot.img size must be %u bytes"
+msgstr "diskboot.img 크기는 반드시 %u 바이트이어야 합니다"
+
+#: util/grub-mkrawimage.c:328
+#, c-format
+msgid "core image is too big (%p > %p)"
+msgstr "코어 이미지가 너무 큽니다  (%p > %p)"
+
+#: util/grub-mkrawimage.c:432 util/i386/pc/grub-setup.c:587
+#, c-format
+msgid "Try `%s --help' for more information.\n"
+msgstr "더 많은 정보를 보려면 `%s --help' 하십시오.\n"
+
+#: util/grub-mkrawimage.c:434
+#, fuzzy, c-format
+msgid ""
+"Usage: %s [OPTION]... [MODULES]\n"
+"\n"
+"Make a bootable image of GRUB.\n"
+"\n"
+"  -d, --directory=DIR     use images and modules under DIR [default=%s]\n"
+"  -p, --prefix=DIR        set grub_prefix directory [default=%s]\n"
+"  -m, --memdisk=FILE      embed FILE as a memdisk image\n"
+"  -f, --font=FILE         embed FILE as a boot font\n"
+"  -c, --config=FILE       embed FILE as boot config\n"
+"  -o, --output=FILE       output a generated image to FILE [default=stdout]\n"
+"  -O, --format=FORMAT     generate an image in format [default="
+msgstr ""
+"사용법: %s [옵션]... [모듈]\n"
+"\n"
+"GRUB의 부트용 이미지를 만들니다.\n"
+"\n"
+"  -d, --directory=<디렉터리>   디렉터리 내에 있는 이미지와 모듈을\n"
+"                               사용합니다. [기본=%s/@platform@]\n"
+"  -p, --prefix=<디렉터리>      grub_prefix 디렉터리를 설정합니다. [기본=%s]\n"
+"  -m, --memdisk=<파일>         <파일>을 memdisk 이미지로 포함합니다\n"
+"  -f, --font=<파일>            <파일>을 부팅 글꼴로 포함합니다\n"
+"  -c, --config=<파일>          <파일>을 부팅 설정으로 포함합니다\n"
+"  -n, --note                   CHRP 오픈 펌웨어에 NOTE 세그먼트 추가\n"
+"  -o, --output=<파일>          생성한 이미지를 파일로 출력합니다. [기본=stdout]\n"
+"  -O, --format=<형식>          주어진 형식으로 이미지를 생성합니다.\n"
+"                               사용가능한 형식: %s\n"
+"  -h, --help                   현재 메시지를 보여주고 종료합니다.\n"
+"  -V, --version                버전 정보를 출력하고 종료합니다.\n"
+"  -v, --verbose                더욱 다양한 메시지를 출력합니다.\n"
+"\n"
+"문제점은 <%s> 주소로 보내 주십시오.\n"
+
+#: util/grub-mkrawimage.c:573
+#, c-format
+msgid "cannot open %s"
+msgstr "%s을(를) 열 수 없습니다."
+
+#: util/i386/pc/grub-setup.c:159
+msgid "the first sector of the core file is not sector-aligned"
+msgstr "코어 파일의 첫 섹터 부분이 sector-aligned가 아닙니다"
+
+#: util/i386/pc/grub-setup.c:173
+msgid "non-sector-aligned data is found in the core file"
+msgstr ""
+"Copy text   \t\r\n"
+"non-sector-aligned 데이터가 코어 파일에서 발견되었습니다"
+
+#: util/i386/pc/grub-setup.c:187
+msgid "the sectors of the core file are too fragmented"
+msgstr "코어 파일의 섹터가 너무 잘려져 있습니다"
+
+#: util/i386/pc/grub-setup.c:198
+#, c-format
+msgid "the size of `%s' is not %u"
+msgstr "'%s'의 크기는 %u이(가) 아닙니다."
+
+#: util/i386/pc/grub-setup.c:215
+#, c-format
+msgid "the size of `%s' is too small"
+msgstr "'%s'의 크기가 너무 작습니다."
+
+#: util/i386/pc/grub-setup.c:217
+#, c-format
+msgid "the size of `%s' is too large"
+msgstr "'%s'의 크기가 너무 큽니다."
+
+#: util/i386/pc/grub-setup.c:254
+#, c-format
+msgid "unable to identify a filesystem in %s; safety check can't be performed"
+msgstr "%s 상의 파일 시스템을 알 수 없습니다; 안전 점검을 수행할 수 없습니다"
+
+#: util/i386/pc/grub-setup.c:258
+#, c-format
+msgid "%s appears to contain a %s filesystem which isn't known to reserve space for DOS-style boot.  Installing GRUB there could result in FILESYSTEM DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe disables this check, use at your own risk)"
+msgstr ""
+"%s에 %s 파일 시스템이 포함된 것처럼 보입니다. 이것은 DOS 방식의 부팅을 위한 공간확보를 하는지 알 수 없습니다.\\r\n"
+"GRUB 설치는 만약 귀중한 데이터가 grub-setup에 의해 덮어 씌워진다면 FILESYSTEM DESTRUCTION 파일 시스템 파괴를 가져올 수 있습니다.(--skip-fs-probe 옵션은 이러한 점검을 하지 않습니다. 책임은 전적으로 당신에게 있습니다)"
+
+#: util/i386/pc/grub-setup.c:307
+#, fuzzy
+msgid "no DOS-style partitions found"
+msgstr "도스 방식의 파티션이 발견되지 않았습니다."
+
+#: util/i386/pc/grub-setup.c:323 util/i386/pc/grub-setup.c:348
+msgid "Attempting to install GRUB to a partitionless disk.  This is a BAD idea."
+msgstr "파티션되지 않은 디스크에 GRUB 설치를 시도합니다. 좋지 않은 방법입니다."
+
+#: util/i386/pc/grub-setup.c:329
+msgid "Attempting to install GRUB to a partition instead of the MBR.  This is a BAD idea."
+msgstr "파티션에 MBR 대신 GRUB 설치를 시도합니다. 좋지 않은 방법입니다."
+
+#: util/i386/pc/grub-setup.c:357
+msgid "No DOS-style partitions found"
+msgstr "도스 방식의 파티션이 발견되지 않았습니다."
+
+#: util/i386/pc/grub-setup.c:362
+msgid "This msdos-style partition label has no post-MBR gap; embedding won't be possible!"
+msgstr "이러한 msdos-방식의 파티션 레이블은  post-MBR 공간이 없습니다; 끼워넣기가 불가능합니다!"
+
+#: util/i386/pc/grub-setup.c:364
+msgid "This GPT partition label has no BIOS Boot Partition; embedding won't be possible!"
+msgstr "GPT 파티션 라벨이 BIOS 부트 파티션을 가지고 있지 않습니다;임베딩이 불가능합니다!"
+
+#: util/i386/pc/grub-setup.c:371
+msgid "Your core.img is unusually large.  It won't fit in the embedding area."
+msgstr "core.img가 비정상적으로 큽니다. 끼워넣기 공간에 맞지 않습니다."
+
+#: util/i386/pc/grub-setup.c:373
+msgid "Your embedding area is unusually small.  core.img won't fit in it."
+msgstr "끼워넣기 공간이 비정상적으로 작습니다.  core.img가 맞지 않습니다."
+
+#: util/i386/pc/grub-setup.c:416
+msgid "embedding is not possible, but this is required when the root device is on a RAID array or LVM volume"
+msgstr "끼워넣기가 불가능합니다, 하지만 루트 장치가 RAID 어레이 혹은 LVM 볼륨에 들어 있다면 끼워넣기가 필요합니다."
+
+#: util/i386/pc/grub-setup.c:419
+#, fuzzy
+msgid "Embedding is not possible.  GRUB can only be installed in this setup by using blocklists.  However, blocklists are UNRELIABLE and its use is discouraged."
+msgstr "임베딩이 불가능합니다. 차단목록을 사용하여 이 설정으로 GRUB을 설치만 할 수 있습니다. 하지만, 차단목록을 신뢰할 수 없고 이것의 사용을 불허합니다."
+
+#: util/i386/pc/grub-setup.c:423
+msgid "if you really want blocklists, use --force"
+msgstr "만약 블록리스트 사용을 원한다면, --force 옵션을 사용하십시요."
+
+#: util/i386/pc/grub-setup.c:439
+#, c-format
+msgid "attempting to read the core image `%s' from GRUB"
+msgstr "GRUB의 `%s' 코어 이미지 읽기를 시도합니다"
+
+#: util/i386/pc/grub-setup.c:440
+#, c-format
+msgid "attempting to read the core image `%s' from GRUB again"
+msgstr "다시한번 GRUB의 `%s' 코어 이미지 읽기를 시도합니다"
+
+#: util/i386/pc/grub-setup.c:498
+#, c-format
+msgid "cannot read `%s' correctly"
+msgstr "올바르게 `%s'을(를) 읽을 수 없습니다"
+
+#: util/i386/pc/grub-setup.c:511
+msgid "no terminator in the core image"
+msgstr "코어 이미지내에 종료문자가 없습니다"
+
+#: util/i386/pc/grub-setup.c:522
+msgid "failed to read the first sector of the core image"
+msgstr "코어 이미지의 첫 섹터 부분읽기에 실패 했습니다"
+
+#: util/i386/pc/grub-setup.c:528
+msgid "failed to read the rest sectors of the core image"
+msgstr "코어 이미지의 나머지 섹터 부분읽기에 실패 했습니다"
+
+#: util/i386/pc/grub-setup.c:547
+#, c-format
+msgid "cannot open `%s'"
+msgstr "'%s'을(를) 열 수 없습니다."
+
+#: util/i386/pc/grub-setup.c:589
+#, fuzzy, c-format
+msgid ""
+"Usage: %s [OPTION]... DEVICE\n"
+"\n"
+"Set up images to boot from DEVICE.\n"
+"DEVICE must be a GRUB device (e.g. `(hd0,1)').\n"
+"\n"
+"  -b, --boot-image=FILE   use FILE as the boot image [default=%s]\n"
+"  -c, --core-image=FILE   use FILE as the core image [default=%s]\n"
+"  -d, --directory=DIR     use GRUB files in the directory DIR [default=%s]\n"
+"  -m, --device-map=FILE   use FILE as the device map [default=%s]\n"
+"  -r, --root-device=DEV   use DEV as the root device [default=guessed]\n"
+"  -f, --force             install even if problems are detected\n"
+"  -s, --skip-fs-probe     do not probe for filesystems in DEVICE\n"
+"  -h, --help              display this message and exit\n"
+"  -V, --version           print version information and exit\n"
+"  -v, --verbose           print verbose messages\n"
+"\n"
+"Report bugs to <%s>.\n"
+msgstr ""
+"사용법: %s [옵션]... <장치>\n"
+"\n"
+"<장치>로부터 부팅할 이미지를 설정합니다.\n"
+"<장치>는 GRUB용 장치이여야 합니다. (예. `(hd0,1)').\n"
+"\n"
+"일반적으로 %s 명령을 직접 실행하지 말아야 합니다.  대신\n"
+"grub-install을 사용하십시오.\n"
+"\n"
+"  -b, --boot-image=<파일>     부트 이미지로 파일을 사용합니다 [기본=%s]\n"
+"  -c, --core-image=<파일>     코어 이미지로 파일을 사용합니다 [기본=%s]\n"
+"  -d, --directory=<디렉터리>  <디렉터리>의 GRUB 파일을 사용합니다 [기본=%s]\n"
+"  -m, --device-map=<파일>     장치 맵으로 파일을 사용합니다 [기본=%s]\n"
+"  -r, --root-device=<장치>    루트 장치로 <장치>를 사용합니다 [기본=guessed]\n"
+"  -f, --force                 문제를 발견하여도 설치합니다\n"
+"  -s, --skip-fs-probe         장치 내의 파일 시스템 검증을 하지 않습니다\n"
+"  -h, --help                  현재 메시지를 보여주고 종료합니다\n"
+"  -V, --version               버전 정보를 출력하고 종료합니다\n"
+"  -v, --verbose               더욱 다양한 메시지를 보여줍니다\n"
+"\n"
+"문제점은 <%s> 주소로 보내 주십시오.\n"
+
+#: util/i386/pc/grub-setup.c:719
+#, c-format
+msgid "No device is specified.\n"
+msgstr "알려진 장치가 없음.\n"
+
+#: util/i386/pc/grub-setup.c:725
+#, c-format
+msgid "Unknown extra argument `%s'.\n"
+msgstr "알 수 없는 추가적인 인자 값 `%s'.\n"
+
+#: util/i386/pc/grub-setup.c:742
+#, c-format
+msgid "Invalid device `%s'.\n"
+msgstr "유효하지 않은 장치 `%s'.\n"
+
+#: util/i386/pc/grub-setup.c:755
+#, c-format
+msgid "invalid root device `%s'"
+msgstr "유효하지 않은 루트 장치 `%s'"
+
+#: util/i386/pc/grub-setup.c:768
+msgid "cannot guess the root device. Specify the option `--root-device'"
+msgstr "루트 장치같지 않음. `--root-device' 옵션을 사용해 지정하십시오."
+
+#: util/grub.d/10_kfreebsd.in:40
+msgid "%s, with kFreeBSD %s"
+msgstr ""
+
+#: util/grub.d/10_kfreebsd.in:48
+#, fuzzy
+msgid "Loading kernel of FreeBSD %s ..."
+msgstr "FreeBSD 커널을 읽어들입니다."
+
+#: util/grub.d/10_linux.in:57
+msgid "%s, with Linux %s (recovery mode)"
+msgstr ""
+
+#: util/grub.d/10_linux.in:59
+msgid "%s, with Linux %s"
+msgstr ""
+
+#: util/grub.d/10_linux.in:77
+#, fuzzy
+msgid "Loading Linux %s ..."
+msgstr "리눅스를 읽어들입니다."
+
+#: util/grub.d/10_linux.in:82
+#, fuzzy
+msgid "Loading initial ramdisk ..."
+msgstr "initrd를 읽어들입니다."
+
+#~ msgid "FILE | TEMPO [PITCH1 DURATION1] [PITCH2 DURATION2] ... "
+#~ msgstr "<파일> | <간격> [<높낮이1> <시간>] [<높낮이2> <시간>] ... "
+
+#~ msgid "Load a multiboot 2 module."
+#~ msgstr "멀티부트 2 모듈을 불러옵니다."
+
+#~ msgid "Enter normal mode."
+#~ msgstr "일반 모드에 진입합니다."
+
+#~ msgid "Exit from normal mode."
+#~ msgstr "일반 모드에서 나갑니다."
+
+#~ msgid "Minimum Emacs-like screen editing is supported. TAB lists completions. Press F1 to boot, F2=Ctrl-a, F3=Ctrl-e, F4 for a command-line or ESC to discard edits and return to the GRUB menu."
+#~ msgstr "이맥스와 같은 편집 기능을 최소한으로 지원합니다. 탭은 완성 기능을 지원합니다. F1은 부팅, F2=Ctrl-a, F3=Ctrl-e, F4는 명령행 또는 ESC는 현재 편집한 것을 취소하고 GRUB으로 되돌아갑니다."
+
+#~ msgid "[OPTIONS...]"
+#~ msgstr "[옵션...]"
+
+#~ msgid "Configure serial port."
+#~ msgstr "직렬 포트를 설정합니다."
