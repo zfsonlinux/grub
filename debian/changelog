@@ -1,3 +1,23 @@
+grub2 (1.99~rc1-1) experimental; urgency=low
+
+  [ Colin Watson ]
+  * New upstream release candidate.
+
+  [ Alexander Kurtz ]
+  * 05_debian_theme:
+    - If we find a background image and no colours were specified, use
+      upstream defaults for color_normal and color_highlight rather than
+      setting color_normal to black/black.
+    - Make the code more readable by replacing code for handling
+      alternatives.
+    - Make the code for searching for pictures in /boot/grub more readable
+      and robust (for example against newlines in the filename).
+    - Don't try the other alternatives when $GRUB_BACKGROUND is set; you can
+      now add GRUB_BACKGROUND= to /etc/default/grub to force no background
+      image (closes: #608263).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 17 Jan 2011 13:43:06 +0000
+
 grub2 (1.99~20110112-1) experimental; urgency=low
 
   * New Bazaar snapshot.
