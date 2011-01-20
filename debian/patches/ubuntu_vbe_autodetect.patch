@@ -7,13 +7,12 @@ Index: b/ChangeLog.vbe-autodetect
 ===================================================================
 --- /dev/null
 +++ b/ChangeLog.vbe-autodetect
-@@ -0,0 +1,36 @@
-+2010-12-14  Colin Watson  <cjwatson@ubuntu.com>
+@@ -0,0 +1,31 @@
++2011-01-17  Colin Watson  <cjwatson@ubuntu.com>
 +
 +	Preferred resolution detection for VBE.
 +
 +	* grub-core/video/video.c (grub_video_edid_checksum): New function.
-+	(grub_video_get_edid): Likewise.
 +	(grub_video_edid_preferred_mode): Likewise.  Try EDID followed by
 +	the Flat Panel extension, in line with the X.org VESA driver.
 +	* grub-core/video/i386/pc/vbe.c (grub_vbe_bios_get_flat_panel_info):
@@ -31,13 +30,9 @@ Index: b/ChangeLog.vbe-autodetect
 +	* include/grub/video.h (struct grub_vbe_edid_info): New structure.
 +	(struct grub_video_adapter): Add get_edid.
 +	(grub_video_edid_checksum): Add prototype.
-+	(grub_video_get_edid): Likewise.
 +	(grub_video_edid_preferred_mode): Likewise.
 +	* include/grub/i386/pc/vbe.h (struct grub_vbe_flat_panel_info): New
 +	structure.
-+	(grub_vbe_bios_get_flat_panel_info): Add prototype.
-+	(grub_vbe_bios_get_ddc_capabilities): Likewise.
-+	(grub_vbe_bios_read_edid): Likewise.
 +
 +	* grub-core/commands/videoinfo.c (print_edid): New function.
 +	(grub_cmd_videoinfo): Print EDID if available.
@@ -109,7 +104,7 @@ Index: b/grub-core/video/i386/pc/vbe.c
  }
  
 +/* Call VESA BIOS 0x4f11 to get flat panel information, return status.  */
-+grub_vbe_status_t
++static grub_vbe_status_t
 +grub_vbe_bios_get_flat_panel_info (struct grub_vbe_flat_panel_info *flat_panel_info)
 +{
 +  struct grub_bios_int_registers regs;
@@ -124,7 +119,7 @@ Index: b/grub-core/video/i386/pc/vbe.c
 +}
 +
 +/* Call VESA BIOS 0x4f15 to get DDC availability, return status.  */
-+grub_vbe_status_t
++static grub_vbe_status_t
 +grub_vbe_bios_get_ddc_capabilities (grub_uint8_t *level)
 +{
 +  struct grub_bios_int_registers regs;
@@ -142,7 +137,7 @@ Index: b/grub-core/video/i386/pc/vbe.c
 +}
 +
 +/* Call VESA BIOS 0x4f15 to read EDID information, return status.  */
-+grub_vbe_status_t
++static grub_vbe_status_t
 +grub_vbe_bios_read_edid (struct grub_video_edid_info *edid_info)
 +{
 +  struct grub_bios_int_registers regs;
@@ -161,23 +156,47 @@ Index: b/grub-core/video/i386/pc/vbe.c
  
  grub_err_t
  grub_vbe_probe (struct grub_vbe_info_block *info_block)
-@@ -327,6 +377,37 @@
+@@ -327,6 +377,61 @@
    return GRUB_ERR_NONE;
  }
  
++static grub_err_t
++grub_video_vbe_get_edid (struct grub_video_edid_info *edid_info)
++{
++  struct grub_video_edid_info *edid_info_lowmem;
++
++  /* Use low memory scratch area as temporary storage for VESA BIOS calls.  */
++  edid_info_lowmem =
++    (struct grub_video_edid_info *) GRUB_MEMORY_MACHINE_SCRATCH_ADDR;
++  grub_memset (edid_info_lowmem, 0, sizeof (*edid_info_lowmem));
++
++  if (grub_vbe_bios_read_edid (edid_info_lowmem) != GRUB_VBE_STATUS_OK)
++    return grub_error (GRUB_ERR_BAD_DEVICE, "EDID information not available");
++
++  grub_memcpy (edid_info, edid_info_lowmem, sizeof (*edid_info));
++
++  return GRUB_ERR_NONE;
++}
++
 +static grub_err_t
 +grub_vbe_get_preferred_mode (unsigned int *width, unsigned int *height)
 +{
 +  grub_vbe_status_t status;
 +  grub_uint8_t ddc_level;
 +  struct grub_video_edid_info edid_info;
-+  struct grub_vbe_flat_panel_info flat_panel_info;
++  struct grub_vbe_flat_panel_info *flat_panel_info;
++
++  /* Use low memory scratch area as temporary storage for VESA BIOS calls.  */
++  flat_panel_info = (struct grub_vbe_flat_panel_info *)
++    (GRUB_MEMORY_MACHINE_SCRATCH_ADDR + sizeof (struct grub_video_edid_info));
++  grub_memset (flat_panel_info, 0, sizeof (*flat_panel_info));
 +
 +  if (controller_info.version >= 0x200
 +      && (grub_vbe_bios_get_ddc_capabilities (&ddc_level) & 0xff)
 +	 == GRUB_VBE_STATUS_OK)
 +    {
-+      if (grub_video_get_edid (&edid_info) == GRUB_ERR_NONE
++      if (grub_video_vbe_get_edid (&edid_info) == GRUB_ERR_NONE
++	  && grub_video_edid_checksum (&edid_info) == GRUB_ERR_NONE
 +	  && grub_video_edid_preferred_mode (&edid_info, width, height)
 +	      == GRUB_ERR_NONE)
 +	return GRUB_ERR_NONE;
@@ -185,11 +204,11 @@ Index: b/grub-core/video/i386/pc/vbe.c
 +      grub_errno = GRUB_ERR_NONE;
 +    }
 +
-+  status = grub_vbe_bios_get_flat_panel_info (&flat_panel_info);
++  status = grub_vbe_bios_get_flat_panel_info (flat_panel_info);
 +  if (status == GRUB_VBE_STATUS_OK)
 +    {
-+      *width = flat_panel_info.horizontal_size;
-+      *height = flat_panel_info.vertical_size;
++      *width = flat_panel_info->horizontal_size;
++      *height = flat_panel_info->vertical_size;
 +      return GRUB_ERR_NONE;
 +    }
 +
@@ -199,7 +218,7 @@ Index: b/grub-core/video/i386/pc/vbe.c
  grub_err_t
  grub_vbe_set_video_mode (grub_uint32_t vbe_mode,
  			 struct grub_vbe_mode_info_block *vbe_mode_info)
-@@ -695,11 +776,28 @@
+@@ -695,11 +800,28 @@
    struct grub_vbe_mode_info_block best_vbe_mode_info;
    grub_uint32_t best_vbe_mode = 0;
    int depth;
@@ -228,7 +247,7 @@ Index: b/grub-core/video/i386/pc/vbe.c
    /* Walk thru mode list and try to find matching mode.  */
    for (p = vbe_mode_list; *p != 0xFFFF; p++)
      {
-@@ -742,10 +840,21 @@
+@@ -742,10 +864,21 @@
  	/* Unsupported bitdepth . */
          continue;
  
@@ -254,23 +273,7 @@ Index: b/grub-core/video/i386/pc/vbe.c
  
        /* Check if user requested RGB or index color mode.  */
        if ((mode_mask & GRUB_VIDEO_MODE_TYPE_COLOR_MASK) != 0)
-@@ -855,6 +964,15 @@
-   return grub_video_fb_get_info_and_fini (mode_info, framebuf);
- }
- 
-+static grub_err_t
-+grub_video_vbe_get_edid (struct grub_video_edid_info *edid_info)
-+{
-+  if (grub_vbe_bios_read_edid (edid_info) != GRUB_VBE_STATUS_OK)
-+    return grub_error (GRUB_ERR_BAD_DEVICE, "EDID information not available");
-+
-+  return GRUB_ERR_NONE;
-+}
-+
- static void
- grub_video_vbe_print_adapter_specific_info (void)
- {
-@@ -899,6 +1017,7 @@
+@@ -899,6 +1032,7 @@
      .set_active_render_target = grub_video_fb_set_active_render_target,
      .get_active_render_target = grub_video_fb_get_active_render_target,
      .iterate = grub_video_vbe_iterate,
@@ -282,7 +285,7 @@ Index: b/grub-core/video/video.c
 ===================================================================
 --- a/grub-core/video/video.c
 +++ b/grub-core/video/video.c
-@@ -374,6 +374,68 @@
+@@ -374,6 +374,50 @@
    return grub_video_adapter_active->get_active_render_target (target);
  }
  
@@ -303,24 +306,6 @@ Index: b/grub-core/video/video.c
 +
 +  grub_errno = GRUB_ERR_NONE;
 +  return grub_errno;
-+}
-+
-+grub_err_t
-+grub_video_get_edid (struct grub_video_edid_info *edid_info)
-+{
-+  if (! grub_video_adapter_active)
-+    return grub_error (GRUB_ERR_BAD_DEVICE, "no video mode activated");
-+
-+  if (! grub_video_adapter_active->get_edid)
-+    return grub_error (GRUB_ERR_BAD_DEVICE,
-+		       "EDID information unavailable for this video mode");
-+
-+  if (grub_video_adapter_active->get_edid (edid_info) != GRUB_ERR_NONE)
-+    return grub_errno;
-+  if (grub_video_edid_checksum (edid_info) != GRUB_ERR_NONE)
-+    return grub_errno;
-+
-+  return GRUB_ERR_NONE;
 +}
 +
 +grub_err_t
@@ -386,22 +371,6 @@ Index: b/include/grub/i386/pc/vbe.h
  /* Prototypes for helper functions.  */
  /* Call VESA BIOS 0x4f00 to get VBE Controller Information, return status.  */
  grub_vbe_status_t 
-@@ -197,6 +214,15 @@
- grub_vbe_status_t 
- grub_vbe_bios_get_display_start (grub_uint32_t *x,
- 				 grub_uint32_t *y);
-+/* Call VESA BIOS 0x4f11 to get flat panel information, return status.  */
-+grub_vbe_status_t
-+grub_vbe_bios_get_flat_panel_info (struct grub_vbe_flat_panel_info *flat_panel_info);
-+/* Call VESA BIOS 0x4f15 to get DDC availability, return status.  */
-+grub_vbe_status_t
-+grub_vbe_bios_get_ddc_capabilities (grub_uint8_t *level);
-+/* Call VESA BIOS 0x4f15 to read EDID information, return status.  */
-+grub_vbe_status_t
-+grub_vbe_bios_read_edid (struct grub_video_edid_info *edid_data);
- 
- grub_vbe_status_t grub_vbe_bios_getset_dac_palette_width (int set, int *width);
- 
 Index: b/include/grub/video.h
 ===================================================================
 --- a/include/grub/video.h
@@ -482,12 +451,11 @@ Index: b/include/grub/video.h
    void (*print_adapter_specific_info) (void);
  };
  typedef struct grub_video_adapter *grub_video_adapter_t;
-@@ -423,6 +485,12 @@
+@@ -423,6 +485,11 @@
  
  grub_err_t grub_video_get_active_render_target (struct grub_video_render_target **target);
  
 +grub_err_t grub_video_edid_checksum (struct grub_video_edid_info *edid_info);
-+grub_err_t grub_video_get_edid (struct grub_video_edid_info *edid_info);
 +grub_err_t grub_video_edid_preferred_mode (struct grub_video_edid_info *edid_info,
 +					   unsigned int *width,
 +					   unsigned int *height);

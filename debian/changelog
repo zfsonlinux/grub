@@ -1,3 +1,80 @@
+grub2 (1.99~rc1-1ubuntu1) natty; urgency=low
+
+  * Resynchronise with Debian.  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme and an aubergine background for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script: title,
+      recovery mode, quiet option, tweak how memtest86+ is displayed, and
+      use UUIDs where appropriate.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel option.
+    - Bypass menu unless other OSes are installed or Shift is pressed.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Reduce visual clutter in normal mode.
+    - Remove verbose messages printed before reading configuration.
+    - Suppress kernel/initrd progress messages, except in recovery mode.
+    - Handle filesystems loop-mounted on file images.
+    - Ignore devices loop-mounted from files in Linux grub.d scripts.
+    - Show the boot menu if the previous boot failed.
+    - Don't generate device.map during grub-install or grub-mkconfig.
+    - Adjust upgrade version checks for Ubuntu.
+    - Suppress "GRUB loading" message unless Shift is held down.
+    - Adjust versions of grub-doc and grub-legacy-doc conflicts.
+    - Fix LVM/RAID probing in the absence of /boot/grub/device.map.
+    - Look for .mo files in /usr/share/locale-langpack first.
+    - Make sure GRUB_TIMEOUT isn't quoted unnecessarily.
+    - Build-depend on qemu-kvm rather than qemu-system for grub-pc tests.
+    - Use qemu rather than qemu-system-i386.
+    - Add a grub-rescue-efi-amd64 package.
+    - On Wubi, don't ask for an install device, but just update wubildr
+      using the diverted grub-install.
+    - Enable lua from grub-extras.
+    - Incorporate the bitop library into lua.
+    - Add enum_pci function to grub module in lua.
+    - Check hardware support before using gfxpayload=keep.
+    - Build part_msdos and vfat into EFI boot images.
+    - Put second and subsequent Linux menu entries in a submenu.
+    - Preferred resolution detection for VBE.
+    - Set vt.handoff=7 for smooth handoff to kernel graphical mode.
+  * Fix logic error in VBE resolution detection that meant EDID information
+    was never used (LP: #693093).
+  * Export linux_gfx_mode so that it's usable in submenus (LP: #702594).
+  * Restore grub_mkdevicemap and associated options to grub-install, since
+    it's needed when doing EFI installs (thanks, Jason Gunthorpe;
+    LP: #702707).
+  * Don't fail when there are no *.lua files in $pkglibdir (thanks, Jason
+    Gunthorpe; LP: #702707).
+  * If we're upgrading and /boot/grub/core.img doesn't exist, then don't ask
+    where to install GRUB, since it probably means we're in some kind of
+    specialised environment such as a live USB stick (LP: #591202).
+  * Drop the default priority of grub2/linux_cmdline to medium.  We only
+    need to ask it if we're upgrading from GRUB Legacy and found an empty
+    kopt in menu.lst (LP: #591202).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 20 Jan 2011 15:02:53 +0000
+
+grub2 (1.99~rc1-1) experimental; urgency=low
+
+  [ Colin Watson ]
+  * New upstream release candidate.
+
+  [ Alexander Kurtz ]
+  * 05_debian_theme:
+    - If we find a background image and no colours were specified, use
+      upstream defaults for color_normal and color_highlight rather than
+      setting color_normal to black/black.
+    - Make the code more readable by replacing code for handling
+      alternatives.
+    - Make the code for searching for pictures in /boot/grub more readable
+      and robust (for example against newlines in the filename).
+    - Don't try the other alternatives when $GRUB_BACKGROUND is set; you can
+      now add GRUB_BACKGROUND= to /etc/default/grub to force no background
+      image (closes: #608263).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 17 Jan 2011 13:43:06 +0000
+
 grub2 (1.99~20110112-1ubuntu1) natty; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:
