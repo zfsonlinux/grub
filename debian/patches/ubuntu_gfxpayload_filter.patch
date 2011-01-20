@@ -31,7 +31,7 @@ Index: b/util/grub.d/10_linux.in
  
    if [ -z "${prepare_boot_cache}" ]; then
      prepare_boot_cache="$(prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/")"
-@@ -127,6 +118,31 @@
+@@ -127,6 +118,34 @@
        done`
  prepare_boot_cache=
  
@@ -58,7 +58,10 @@ Index: b/util/grub.d/10_linux.in
 +fi
 +EOF
 +fi
-+echo 'if [ "$linux_gfx_mode" != "text" ]; then load_video; fi'
++cat << EOF
++export linux_gfx_mode
++if [ "$linux_gfx_mode" != "text" ]; then load_video; fi
++EOF
 +
  while [ "x$list" != "x" ] ; do
    linux=`version_find_latest $list`
@@ -67,7 +70,7 @@ Index: b/util/grub-install.in
 ===================================================================
 --- a/util/grub-install.in
 +++ b/util/grub-install.in
-@@ -409,12 +409,12 @@
+@@ -411,13 +411,15 @@
  fi
  
  # Copy the GRUB images to the GRUB directory.
@@ -78,7 +81,11 @@ Index: b/util/grub-install.in
      fi
  done
 -for file in "${pkglibdir}"/*.mod "${pkglibdir}"/*.lst; do
+-    cp -f "$file" "${grubdir}" || exit 1
 +for file in "${pkglibdir}"/*.mod "${pkglibdir}"/*.lua "${pkglibdir}"/*.lst; do
-     cp -f "$file" "${grubdir}" || exit 1
++    if test -f "$file"; then
++	cp -f "$file" "${grubdir}" || exit 1
++    fi
  done
  if [ "${target_cpu}-${platform}" = "i386-pc" ] || [ "${target_cpu}-${platform}" = "sparc64-ieee1275" ] ; then
+     for file in "${pkglibdir}"/*.img "${pkglibdir}"/efiemu??.o; do

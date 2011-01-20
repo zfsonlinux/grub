@@ -7,35 +7,7 @@ Index: b/util/grub-install.in
 ===================================================================
 --- a/util/grub-install.in
 +++ b/util/grub-install.in
-@@ -38,7 +38,6 @@
- 
- grub_setup="${sbindir}/`echo grub-setup | sed ${transform}`"
- grub_mkimage="${bindir}/`echo grub-mkimage | sed ${transform}`"
--grub_mkdevicemap="${sbindir}/`echo grub-mkdevicemap | sed ${transform}`"
- grub_probe="${sbindir}/`echo grub-probe | sed ${transform}`"
- grub_editenv="${bindir}/`echo grub-editenv | sed ${transform}`"
- grub_mkrelpath="${bindir}/`echo grub-mkrelpath | sed ${transform}`"
-@@ -101,7 +100,6 @@
-   --grub-setup=FILE       use FILE as grub-setup
-   --grub-mkimage=FILE     use FILE as grub-mkimage
-   --grub-mkrelpath=FILE   use FILE as grub-mkrelpath
--  --grub-mkdevicemap=FILE use FILE as grub-mkdevicemap
-   --grub-probe=FILE       use FILE as grub-probe
-   --no-floppy             do not probe any floppy drive
-   --allow-floppy          Make the drive also bootable as floppy 
-@@ -206,9 +204,9 @@
- 	grub_mkrelpath="`echo "$option" | sed 's/--grub-mkrelpath=//'`" ;;
- 
-     --grub-mkdevicemap)
--	grub_mkdevicemap="`argument "$option" "$@"`"; shift;;
-+	: ;; # compatibility only
-     --grub-mkdevicemap=*)
--	grub_mkdevicemap="`echo "$option" | sed 's/--grub-mkdevicemap=//'`" ;;
-+	: ;; # compatibility only
- 
-     --grub-probe)
- 	    grub_probe="`argument "$option" "$@"`"; shift;;
-@@ -311,14 +309,6 @@
+@@ -311,14 +311,6 @@
      exit 1
  fi
  
@@ -50,7 +22,7 @@ Index: b/util/grub-install.in
  if [ x"$platform" = xefi ]; then
      # Find the EFI System Partition.
      efidir=
-@@ -408,22 +398,14 @@
+@@ -408,22 +400,14 @@
      rm -f "$device_map"
  fi
  
