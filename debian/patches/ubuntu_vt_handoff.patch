@@ -11,11 +11,15 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -56,6 +56,8 @@
+@@ -56,6 +56,12 @@
    LINUX_ROOT_DEVICE=UUID=${GRUB_DEVICE_UUID}
  fi
  
-+GRUB_CMDLINE_EXTRA="$GRUB_CMDLINE_EXTRA vt.handoff=7"
++for word in $GRUB_CMDLINE_LINUX_DEFAULT; do
++  if [ "$word" = splash ]; then
++    GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT vt.handoff=7"
++  fi
++done
 +
  # add crashkernel option if we have the required tools
  if [ -x "/usr/bin/makedumpfile" ] && [ -x "/sbin/kexec" ]; then
