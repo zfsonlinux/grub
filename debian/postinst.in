@@ -255,6 +255,14 @@ get_mountpoint()
   echo "${boot_mountpoint:-/}"
 }
 
+config_item()
+{
+  if [ -f /etc/default/grub ]; then
+    . /etc/default/grub || return
+  fi
+  eval echo "\$$1"
+}
+
 case "$1" in
   configure)
     . /usr/share/debconf/confmodule
@@ -290,10 +298,18 @@ case "$1" in
       # whole it's less risky to move to /dev/disk/by-id/.
       devicemap_lines="$(egrep -v '^[[:space:]]+#' /boot/grub/device.map | wc -l)"
       grub-mkdevicemap --no-floppy
+      devicemap_regenerated=1
       if test "$devicemap_lines" != 1; then
         db_input critical grub2/device_map_regenerated || true
         db_go || true
       fi
+    fi
+
+    if test -z "$devicemap_regenerated" && \
+       dpkg --compare-versions "$2" lt-nl 1.99~20101210-2 && \
+       grep -qs /md-uuid- /boot/grub/device.map; then
+      echo "Removing MD devices from device.map, since the BIOS cannot read from these." >&2
+      sed -i '/\/md-uuid-/d' /boot/grub/device.map
     fi
 
     tmp_default_grub="$(mktemp -t grub.XXXXXXXXXX)"
@@ -379,7 +395,7 @@ case "$1" in
              test "$(uname -s)" = Linux; then
             # Migrate to new by-id naming scheme.
             db_get grub-pc/install_devices
-            old_devices="$RET"
+            old_devices="$(echo "$RET" | sed 's/, / /g')"
             new_devices=
             # Common-case optimisation: if the list of devices is
             # identical to the LHS of grub-mkdevicemap's output, then
@@ -435,7 +451,7 @@ case "$1" in
             db_get grub-pc/install_devices
             valid=1
             for device in $RET; do
-              if [ ! -e "$device" ]; then
+              if [ ! -e "${device%,}" ]; then
                 valid=0
                 break
               fi
@@ -492,7 +508,7 @@ case "$1" in
             db_go
             db_get "$question"
             failed_devices=
-            for i in `echo $RET | sed -e 's/,/ /g'` ; do
+            for i in `echo $RET | sed -e 's/, / /g'` ; do
               real_device="$(readlink -f "$i")"
               if grub-install --force --no-floppy $real_device ; then
                 # We just installed GRUB 2; then also generate grub.cfg.
@@ -586,6 +602,14 @@ case "$1" in
           # rather than upgrade-from-grub-legacy.  Since stage2 has been
           # removed, we don't need this any more.
           rm -f /boot/grub/grub2-installed
+        fi
+      ;;
+
+      grub-efi-ia32|grub-efi-amd64)
+        bootloader_id="$(config_item GRUB_DISTRIBUTOR | tr A-Z a-z | \
+                         cut -d' ' -f1)"
+        if [ "$bootloader_id" ] && [ -d "/boot/efi/EFI/$bootloader_id" ]; then
+          grub-install
         fi
       ;;
     esac
