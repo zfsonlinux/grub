@@ -1,3 +1,227 @@
+grub2 (1.99~rc1-2) unstable; urgency=low
+
+  * Merge 1.98+20100804-13 and 1.98+20100804-14, updating translations:
+    - Kazakh (Baurzhan Muftakhidinov / Timur Birsh).
+  * mkconfig_skip_dmcrypt.patch: Refer to GRUB_PRELOAD_MODULES rather than
+    suggesting people write a /etc/grub.d/01_modules script (thanks, Jordan
+    Uggla).
+  * Handle empty dir passed to grub_find_root_device_from_mountinfo; fixes
+    grub-mkrelpath on btrfs subvolumes (LP: #712029).
+  * Add rootflags=subvol=<name> if / is on a btrfs subvolume (LP: #712029).
+  * Upload to unstable.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 08 Feb 2011 11:39:26 +0000
+
+grub2 (1.99~rc1-1) experimental; urgency=low
+
+  [ Colin Watson ]
+  * New upstream release candidate.
+
+  [ Alexander Kurtz ]
+  * 05_debian_theme:
+    - If we find a background image and no colours were specified, use
+      upstream defaults for color_normal and color_highlight rather than
+      setting color_normal to black/black.
+    - Make the code more readable by replacing code for handling
+      alternatives.
+    - Make the code for searching for pictures in /boot/grub more readable
+      and robust (for example against newlines in the filename).
+    - Don't try the other alternatives when $GRUB_BACKGROUND is set; you can
+      now add GRUB_BACKGROUND= to /etc/default/grub to force no background
+      image (closes: #608263).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 17 Jan 2011 13:43:06 +0000
+
+grub2 (1.99~20110112-1) experimental; urgency=low
+
+  * New Bazaar snapshot.
+    - Disable ieee1275_fb on sparc (closes: #560823).
+    - Fix pf2 font generation on big-endian platforms (closes: #609818).
+  * branch_butter.patch: Resolve the device returned by
+    grub_find_root_device_from_mountinfo or find_root_device_from_libzfs
+    using grub_find_device (closes: #609590, #609814, LP: #700147).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 13 Jan 2011 00:12:41 +0000
+
+grub2 (1.99~20110111-1) experimental; urgency=low
+
+  * New Bazaar snapshot.
+    - Don't check amount of low memory, as reportedly INT 12h can be broken
+      and if low memory is too low we wouldn't have gotten into
+      grub_machine_init anyway (closes: #588293, LP: #513528).
+    - Submenu default support (LP: #691878).
+    - Fix optimisation-dependent grub-mklayout crash (closes: #609584).
+  * branch_butter.patch: Don't free an uninitialised pointer if /proc is
+    unmounted (LP: #697493).
+  * Add a po/LINGUAS file listing the translations we've synced from the TP
+    (closes: #609671).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 11 Jan 2011 17:11:44 +0000
+
+grub2 (1.99~20110106-1) experimental; urgency=low
+
+  * New Bazaar snapshot.
+    - Check that named RAID array devices exist before using them (closes:
+      #606035).
+    - Clear terminfo output on initialisation (closes: #569678).
+    - Fix grub-probe when btrfs is on / without a separate /boot.
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 06 Jan 2011 13:38:57 +0000
+
+grub2 (1.99~20110104-2) experimental; urgency=low
+
+  * Support long command lines as per the 2.06 Linux boot protocol, from the
+    upstream 'longlinuxcmd' branch.
+  * Add a background_color command, from the upstream 'parse-color' branch.
+  * Update branch_devmapper.patch, adding a #include to fix a build failure
+    on Ubuntu amd64.
+  * When embedding the core image in a post-MBR gap, check for and avoid
+    sectors matching any of a number of known signatures, from the upstream
+    'embed-sectors' branch.
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 05 Jan 2011 13:31:05 +0000
+
+grub2 (1.99~20110104-1) experimental; urgency=low
+
+  * New Bazaar snapshot.
+    - Don't emit drivemap directive for Windows Server 2008 (closes:
+      #607687).
+    - Don't add spurious RAID array members (closes: #605357).
+    - Improve presentation of Xen menu entries (closes: #607867).
+    - Fix PCI probing hangs by skipping remaining functions on devices that
+      do not implement function 0 (closes: #594967).
+    - Fix typo in descriptions of extract_legacy_entries_source and
+      extract_legacy_entries_configfile (LP: #696721).
+  * Merge 1.98+20100804-12:
+    - Use semicolons rather than commas to separate size from model in
+      debconf disk and partition descriptions.
+  * Add full btrfs support, from the upstream 'butter' branch.
+  * Support partitioned loop devices and improve devmapper support, from the
+    upstream 'devmapper' branch.
+  * Add squashfs 4 support, from the upstream 'squash' branch.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 04 Jan 2011 16:12:45 +0000
+
+grub2 (1.99~20101221-1) experimental; urgency=low
+
+  * New Bazaar snapshot.
+    - Initialise next pointer when creating multiboot module (closes:
+      #605567).
+    - Fix gettext quoting to work with bash as /bin/sh, and make echo
+      UTF-8-clean so that (at least) Catalan boot messages are displayed
+      properly (closes: #605615).
+    - Fix use of uninitialised memory in Reed-Solomon recovery code
+      (LP: #686705).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 21 Dec 2010 17:43:52 +0000
+
+grub2 (1.99~20101210-2) experimental; urgency=low
+
+  * Automatically remove MD devices from device.map on upgrade, since the
+    BIOS cannot read from these and including them in device.map will break
+    GRUB's ability to read from such devices (LP: #690030).
+  * Merge 1.98+20100804-9, 1.98+20100804-10, and 1.98+20100804-11:
+    - Apply debconf template review by debian-l10n-english and mark several
+      more strings for translation, thanks to David Prévot and Justin B Rye.
+    - Incorporate rewritten 05_debian_theme by Alexander Kurtz, which works
+      when /usr is inaccessible by GRUB.
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 19 Dec 2010 13:25:14 +0000
+
+grub2 (1.99~20101210-1) experimental; urgency=low
+
+  * New Bazaar snapshot.
+    - ZFS moved into grub-core.
+    - Extend gettext to fall back from ll_CC to ll, and set lang to include
+      country part by default so that Chinese works (LP: #686788).
+  * Remove grub-mknetdir from grub-emu.
+  * Exit silently from zz-update-grub kernel hook if update-grub does not
+    exist (e.g. if grub-pc has been removed but not purged; closes:
+    #606184).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 11 Dec 2010 01:22:26 +0000
+
+grub2 (1.99~20101126-1) experimental; urgency=low
+
+  * New Bazaar snapshot (mipsel build fix, LVM-on-RAID probing fix).
+  * Fix comma-separation in handling of grub-pc/install_devices.
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 26 Nov 2010 13:08:52 +0000
+
+grub2 (1.99~20101124-1) experimental; urgency=low
+
+  * New Bazaar snapshot (command priorities, build fixes, grub-mkdevicemap
+    segfault).
+  * Don't try to build grub-efi-amd64 on kfreebsd-i386 or hurd-i386
+    (requires gcc-4.4-multilib).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 24 Nov 2010 12:12:33 +0000
+
+grub2 (1.99~20101123-1) experimental; urgency=low
+
+  * New Bazaar snapshot (build fixes).
+  * Build-depend on qemu-utils and parted on non-Hurd architectures.
+  * qemu_img_exists.patch: Skip partmap test if qemu-img doesn't exist (as
+    is the case on the Hurd).
+  * Make grub-efi-ia32 and grub-efi-amd64 depend on efibootmgr so that
+    grub-install works properly.
+  * Upgrade the installed core image when upgrading grub-efi-ia32 or
+    grub-efi-amd64, although only if /boot/efi/EFI/<id> (where <id> is an
+    identifier based on GRUB_DISTRIBUTOR, e.g. 'debian') already exists.
+  * Re-expand a couple of dpkg architecture wildcards to exclude certain
+    special cases: gcc-4.4-multilib is not available on kfreebsd-i386 or
+    hurd-i386, and qemu-system is not available on hurd-i386.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 23 Nov 2010 10:51:23 +0000
+
+grub2 (1.99~20101122-1) experimental; urgency=low
+
+  [ Colin Watson ]
+  * New Bazaar snapshot.  Too many changes to list in full, but some of the
+    more user-visible ones are as follows:
+    - GRUB script:
+      + Function parameters, "break", "continue", "shift", "setparams",
+        "return", and "!".
+      + "export" command supports multiple variable names.
+      + Multi-line quoted strings support.
+      + Wildcard expansion.
+    - sendkey support.
+    - USB hotunplugging and USB serial support.
+    - Rename CD-ROM to cd on BIOS.
+    - Add new --boot-directory option to grub-install, grub-reboot, and
+      grub-set-default; the old --root-directory option is still accepted
+      but was often confusing.
+    - Basic btrfs detection/UUID support (but no file reading yet).
+    - bash-completion for utilities.
+    - If a device is listed in device.map, always assume that it is
+      BIOS-visible rather than using extra layers such as LVM or RAID.
+    - Add grub-mknetdir script (closes: #550658).
+    - Remove deprecated "root" command.
+    - Handle RAID devices containing virtio components.
+    - GRUB Legacy configuration file support (via grub-menulst2cfg).
+    - Keyboard layout support (via grub-mklayout and grub-kbdcomp).
+    - Check generated grub.cfg for syntax errors before saving.
+    - Pause execution for at most ten seconds if any errors are displayed,
+      so that the user has a chance to see them.
+    - Support submenus.
+    - Write embedding zone using Reed-Solomon, so that it's robust against
+      being partially overwritten (closes: #550702, #591416, #593347).
+    - GRUB_DISABLE_LINUX_RECOVERY and GRUB_DISABLE_NETBSD_RECOVERY merged
+      into a single GRUB_DISABLE_RECOVERY variable.
+    - Fix loader memory allocation failure (closes: #551627).
+    - Don't call savedefault on recovery entries (closes: #589325).
+    - Support triple-indirect blocks on ext2 (closes: #543924).
+    - Recognise DDF1 fake RAID (closes: #603354).
+
+  [ Robert Millan ]
+  * Use dpkg architecture wildcards.
+
+  [ Updated translations ]
+  * Slovenian (Vanja Cvelbar).  Closes: #604003
+  * Dzongkha (dawa pemo via Tenzin Dendup).  Closes: #604102
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 22 Nov 2010 12:24:56 +0000
+
 grub2 (1.98+20100804-14) unstable; urgency=low
 
   [ Updated translations ]
