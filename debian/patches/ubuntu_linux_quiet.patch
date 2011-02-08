@@ -8,7 +8,7 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -89,15 +89,23 @@
+@@ -97,15 +97,23 @@
      prepare_boot_cache="$(prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/")"
    fi
    printf '%s\n' "${prepare_boot_cache}"
@@ -36,7 +36,7 @@ Index: b/util/grub.d/10_linux.in
  	initrd	${rel_dirname}/${initrd}
  EOF
    fi
-@@ -149,7 +157,8 @@
+@@ -157,7 +165,8 @@
    fi
  
    linux_entry "${OS}" "${version}" false \

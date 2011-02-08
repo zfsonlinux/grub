@@ -11,8 +11,8 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -56,6 +56,12 @@
-   LINUX_ROOT_DEVICE=UUID=${GRUB_DEVICE_UUID}
+@@ -64,6 +64,12 @@
+   fi
  fi
  
 +for word in $GRUB_CMDLINE_LINUX_DEFAULT; do

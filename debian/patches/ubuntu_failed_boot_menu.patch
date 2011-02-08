@@ -46,7 +46,7 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -73,6 +73,9 @@
+@@ -81,6 +81,9 @@
      title="$(gettext_quoted "%s, with Linux %s")"
    fi
    printf "menuentry '${title}' ${CLASS} {\n" "${os}" "${version}"
