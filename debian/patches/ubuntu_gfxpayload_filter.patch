@@ -10,7 +10,7 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -80,18 +80,9 @@
+@@ -88,18 +88,9 @@
        save_default_entry | sed -e "s/^/\t/"
    fi
  
@@ -31,7 +31,7 @@ Index: b/util/grub.d/10_linux.in
  
    if [ -z "${prepare_boot_cache}" ]; then
      prepare_boot_cache="$(prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/")"
-@@ -127,6 +118,34 @@
+@@ -135,6 +126,34 @@
        done`
  prepare_boot_cache=
  
@@ -60,7 +60,7 @@ Index: b/util/grub.d/10_linux.in
 +fi
 +cat << EOF
 +export linux_gfx_mode
-+if [ "$linux_gfx_mode" != "text" ]; then load_video; fi
++if [ "\$linux_gfx_mode" != "text" ]; then load_video; fi
 +EOF
 +
  while [ "x$list" != "x" ] ; do
