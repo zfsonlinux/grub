@@ -1,3 +1,10 @@
+grub2 (1.99~rc1-3ubuntu3) natty; urgency=low
+
+  * Blacklist 1440x900x32 from VBE preferred mode handling until a better
+    solution is available (LP: #701111).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 04 Mar 2011 15:29:44 +0000
+
 grub2 (1.99~rc1-3ubuntu2) natty; urgency=low
 
   * Build with gcc-4.5 on ppc64.
