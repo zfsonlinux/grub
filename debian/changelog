@@ -1,3 +1,11 @@
+grub2 (1.99~rc1-3ubuntu4) natty; urgency=low
+
+  * debian/grub-common.install, debian/apport/source_grub2.py: add
+    apport hook for ProblemType = 'Package', thanks to Jean-Baptiste
+    Lallement (LP: #591753).
+
+ -- Kees Cook <kees@ubuntu.com>  Thu, 10 Mar 2011 14:52:27 -0800
+
 grub2 (1.99~rc1-3ubuntu3) natty; urgency=low
 
   * Blacklist 1440x900x32 from VBE preferred mode handling until a better
