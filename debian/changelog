@@ -1,3 +1,9 @@
+grub2 (1.99~rc1-3ubuntu5) natty; urgency=low
+
+  * Fix loading GRUB from lnxboot (LP: #693671).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 11 Mar 2011 13:38:53 +0000
+
 grub2 (1.99~rc1-3ubuntu4) natty; urgency=low
 
   * debian/grub-common.install, debian/apport/source_grub2.py: add
