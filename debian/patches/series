@@ -17,6 +17,7 @@ branch_longlinuxcmd.patch
 branch_parse-color.patch
 branch_embed-sectors.patch
 btrfs_rootflags.patch
+lnxboot_grub.patch
 ubuntu_grub_standards.patch
 ubuntu_crashkernel.patch
 ubuntu_quick_boot.patch
@@ -40,4 +41,3 @@ ubuntu_linux_submenus.patch
 ubuntu_vt_handoff.patch
 ubuntu_vbe_autodetect.patch
 ubuntu_blacklist_1440x900x32.patch
-ubuntu_lnxboot.patch
