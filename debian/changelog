@@ -1,3 +1,18 @@
+grub2 (1.99~rc1-5) unstable; urgency=low
+
+  * Update debian/legacy/update-grub to the version from grub 0.97-65.
+  * Mark binary packages as Multi-Arch: foreign (for example, an amd64
+    kernel installed on an i386 system could use the native architecture's
+    GRUB).
+  * Rewrite find_root_device_from_mountinfo to cope with move-mounts
+    (LP: #738345).
+
+  [ Updated translations ]
+  * Esperanto (Felipe Castro).  Closes: #606524
+  * Thai (Theppitak Karoonboonyanan).  Closes: #607706
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 23 Mar 2011 15:51:47 +0000
+
 grub2 (1.99~rc1-4) unstable; urgency=low
 
   * Don't touch /boot/grub/grub2-installed if using the --root-directory
