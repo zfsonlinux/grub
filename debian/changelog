@@ -1,3 +1,20 @@
+grub2 (1.99~rc1-7) unstable; urgency=low
+
+  * Add /proc/mdstat, LVM information, and listings of /dev/disk/by-id/ and
+    /dev/disk/by-uuid/ to bug reports, by request of upstream.
+  * Cherry-pick from upstream:
+    - Use libgeom on FreeBSD to detect partitions (closes: #612128).
+    - Copy the partition table zone if floppy support is disabled, even if
+      no partition table is found (LP: #741867).
+    - Fix an ext2 overflow affecting inodes past 2TiB.
+    - Fix RAID-0 disk size calculation for metadata 1.x (LP: #743136).
+  * Merge from Ubuntu:
+    - Build with gcc-4.5 on ppc64.
+    - Add apport hook for ProblemType = 'Package', thanks to Jean-Baptiste
+      Lallement (LP: #591753).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 29 Mar 2011 12:30:36 +0100
+
 grub2 (1.99~rc1-6) unstable; urgency=low
 
   * Cherry-pick from upstream:
