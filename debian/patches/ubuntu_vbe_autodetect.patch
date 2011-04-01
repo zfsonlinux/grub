@@ -7,7 +7,7 @@ Index: b/ChangeLog.vbe-autodetect
 ===================================================================
 --- /dev/null
 +++ b/ChangeLog.vbe-autodetect
-@@ -0,0 +1,31 @@
+@@ -0,0 +1,33 @@
 +2011-01-17  Colin Watson  <cjwatson@ubuntu.com>
 +
 +	Preferred resolution detection for VBE.
@@ -39,6 +39,22 @@ Index: b/ChangeLog.vbe-autodetect
 +
 +	* util/grub.d/00_header.in (GRUB_GFXMODE): Default to "auto".  This
 +	is more appropriate on a wider range of platforms than 640x480.
++	* docs/grub.texi (Simple configuration): Update GRUB_GFXMODE
++	documentation.
+Index: b/docs/grub.texi
+===================================================================
+--- a/docs/grub.texi
++++ b/docs/grub.texi
+@@ -1142,7 +1142,8 @@
+ Set the resolution used on the @samp{gfxterm} graphical terminal.  Note that
+ you can only use modes which your graphics card supports via VESA BIOS
+ Extensions (VBE), so for example native LCD panel resolutions may not be
+-available.  The default is @samp{640x480}.
++available.  The default is @samp{auto}, which tries to select a preferred
++resolution.
+ 
+ @item GRUB_BACKGROUND
+ Set a background image for use with the @samp{gfxterm} graphical terminal.
 Index: b/grub-core/commands/videoinfo.c
 ===================================================================
 --- a/grub-core/commands/videoinfo.c
