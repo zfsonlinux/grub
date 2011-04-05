@@ -1,3 +1,9 @@
+grub2 (1.99~rc1-8ubuntu2) natty; urgency=low
+
+  * Make sure to reinstall GRUB on upgrade if Wubi is in use (LP: #742967).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 05 Apr 2011 19:30:09 +0100
+
 grub2 (1.99~rc1-8ubuntu1) natty; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:
