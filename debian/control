@@ -34,6 +34,7 @@ Build-Depends: debhelper (>= 7.0.50~),
  xorriso (>= 0.5.6.pl00),
  qemu-kvm [i386 kfreebsd-i386 kopensolaris-i386 any-amd64],
  parted [!hurd-any],
+ libfuse-dev [linux-any],
  mtools [any-i386 any-amd64],
 Build-Conflicts: autoconf2.13 
 Standards-Version: 3.8.4
@@ -149,7 +150,7 @@ Description: GRand Unified Bootloader, version 2 (Coreboot version)
 
 Package: grub-efi-ia32
 Architecture: any-i386 any-amd64
-Depends: ${shlibs:Depends}, grub-common (= ${binary:Version}), ${misc:Depends}, ucf, efibootmgr
+Depends: ${shlibs:Depends}, grub-common (= ${binary:Version}), ${misc:Depends}, ucf, efibootmgr [i386 amd64]
 Replaces: grub, grub-legacy, grub2 (<< ${source:Version}), grub-common (<< 1.97~beta1-1ubuntu4), grub-efi, grub-efi-amd64, grub-pc, grub-coreboot, grub-ieee1275
 Conflicts: grub (<< 0.97-54), grub-legacy, grub-efi-amd64, grub-pc, grub-coreboot, grub-ieee1275
 Suggests: os-prober
@@ -170,7 +171,7 @@ Description: GRand Unified Bootloader, version 2 (EFI-IA32 version)
 
 Package: grub-efi-amd64
 Architecture: i386 kopensolaris-i386 any-amd64
-Depends: ${shlibs:Depends}, grub-common (= ${binary:Version}), ${misc:Depends}, ucf, efibootmgr
+Depends: ${shlibs:Depends}, grub-common (= ${binary:Version}), ${misc:Depends}, ucf, efibootmgr [i386 amd64]
 Replaces: grub, grub-legacy, grub2 (<< ${source:Version}), grub-common (<< 1.97~beta1-1ubuntu4), grub-pc, grub-efi-ia32, grub-coreboot, grub-ieee1275
 Conflicts: grub, grub-legacy, grub-efi-ia32, grub-pc, grub-coreboot, grub-ieee1275
 Suggests: os-prober
@@ -258,3 +259,10 @@ Description: GRand Unified Bootloader, version 2 (Yeeloong version)
  .
  This package contains a version of GRUB that has been built for use with
  the Lemote Yeeloong laptop.
+
+Package: grub-mount-udeb
+XC-Package-Type: udeb
+Section: debian-installer
+Architecture: i386 amd64 powerpc ppc64 sparc mipsel
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: export GRUB filesystems using FUSE
