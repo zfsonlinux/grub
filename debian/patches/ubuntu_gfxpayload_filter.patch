@@ -196,7 +196,7 @@ Index: b/util/grub.d/10_linux.in
  
    if [ -z "${prepare_boot_cache}" ]; then
      prepare_boot_cache="$(prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/")"
-@@ -135,6 +126,32 @@
+@@ -135,6 +126,36 @@
        done`
  prepare_boot_cache=
  
@@ -207,14 +207,18 @@ Index: b/util/grub.d/10_linux.in
 +else
 +  cat << EOF
 +if [ \${recordfail} != 1 ]; then
-+  if hwmatch \${prefix}/gfxblacklist.txt 3; then
-+    if [ \${match} = 0 ]; then
-+      set linux_gfx_mode=keep
++  if [ -e \${prefix}/gfxblacklist.txt ]; then
++    if hwmatch \${prefix}/gfxblacklist.txt 3; then
++      if [ \${match} = 0 ]; then
++        set linux_gfx_mode=keep
++      else
++        set linux_gfx_mode=text
++      fi
 +    else
 +      set linux_gfx_mode=text
 +    fi
 +  else
-+    set linux_gfx_mode=text
++    set linux_gfx_mode=keep
 +  fi
 +else
 +  set linux_gfx_mode=text
