@@ -32,3 +32,5 @@ mdraid1x_super_offset.patch
 host_optimise_flush.patch
 mkimage_yeeloong.patch
 loopback_replace.patch
+btrfs_reserved_sector.patch
+mkrescue_efi_modules.patch
