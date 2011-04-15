@@ -1,3 +1,51 @@
+grub2 (1.99~rc1-13ubuntu1) natty; urgency=low
+
+  * Resynchronise with Debian.  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme and an aubergine background for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel option.
+    - Bypass menu unless other OSes are installed or Shift is pressed.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Reduce visual clutter in normal mode.
+    - Remove verbose messages printed before reading configuration.
+    - Suppress kernel/initrd progress messages, except in recovery mode.
+    - Handle filesystems loop-mounted on file images.
+    - Ignore devices loop-mounted from files in Linux grub.d scripts.
+    - Show the boot menu if the previous boot failed.
+    - Don't generate device.map during grub-install or grub-mkconfig.
+    - Adjust upgrade version checks for Ubuntu.
+    - Suppress "GRUB loading" message unless Shift is held down.
+    - Adjust versions of grub-doc and grub-legacy-doc conflicts.
+    - Fix LVM/RAID probing in the absence of /boot/grub/device.map.
+    - Look for .mo files in /usr/share/locale-langpack first.
+    - Build-depend on qemu-kvm rather than qemu-system for grub-pc tests.
+    - Add a grub-rescue-efi-amd64 package.
+    - On Wubi, just update wubildr rather than asking for an install device.
+    - Check hardware support before using gfxpayload=keep.
+    - Put second and subsequent Linux menu entries in a submenu.
+    - Preferred resolution detection for VBE.
+    - Set vt.handoff=7 for smooth handoff to kernel graphical mode.
+    - Add grub-mount-udeb, containing just grub-mount.
+  * Use /lib/plymouth/themes/default.grub if it exists, rather than
+    hardcoding an aubergine background (LP: #696915).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 15 Apr 2011 14:37:43 +0100
+
+grub2 (1.99~rc1-13) unstable; urgency=low
+
+  * Cherry-pick from upstream:
+    - Use correct limits for mips initrd.
+  * Run grub-install on install or upgrade of grub-yeeloong.
+  * Update branch_fuse.patch:
+    - Tell FUSE to run single-threaded, since GRUB code is not thread-safe
+      (LP: #756297).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 15 Apr 2011 12:11:21 +0100
+
 grub2 (1.99~rc1-12ubuntu1) natty; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:
