@@ -34,6 +34,7 @@ mkimage_yeeloong.patch
 loopback_replace.patch
 btrfs_reserved_sector.patch
 mkrescue_efi_modules.patch
+mips_initrd_limits.patch
 ubuntu_grub_standards.patch
 ubuntu_crashkernel.patch
 ubuntu_quick_boot.patch
