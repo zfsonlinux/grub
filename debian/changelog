@@ -1,3 +1,16 @@
+grub2 (1.99~rc1-13ubuntu2) natty; urgency=low
+
+  [ Stéphane Graber ]
+  * Update default/grub.md5sum to include maverick's default md5sum to avoid
+    prompt during update (LP: #759545).
+
+  [ Colin Watson ]
+  * Cherry-pick from upstream:
+    - Support huge btrfs chunks.
+    - Fix stack pointer handling in 16-bit relocator (LP: #683904).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 21 Apr 2011 00:11:40 +0100
+
 grub2 (1.99~rc1-13ubuntu1) natty; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:
