@@ -57,3 +57,4 @@ ubuntu_blacklist_1440x900x32.patch
 ubuntu_64bit_div.patch
 ubuntu_btrfs_huge_chunk.patch
 ubuntu_16bit_relocator_sp.patch
+ubuntu_x86_64_efi.patch
