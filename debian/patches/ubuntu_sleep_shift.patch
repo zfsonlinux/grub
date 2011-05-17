@@ -10,7 +10,7 @@ Index: b/grub-core/commands/sleep.c
 ===================================================================
 --- a/grub-core/commands/sleep.c
 +++ b/grub-core/commands/sleep.c
-@@ -43,6 +43,31 @@
+@@ -45,6 +45,31 @@
    grub_printf ("%d    ", n);
  }
  
@@ -42,7 +42,7 @@ Index: b/grub-core/commands/sleep.c
  /* Based on grub_millisleep() from kern/generic/millisleep.c.  */
  static int
  grub_interruptible_millisleep (grub_uint32_t ms)
-@@ -52,7 +77,7 @@
+@@ -54,7 +79,7 @@
    start = grub_get_time_ms ();
  
    while (grub_get_time_ms () - start < ms)

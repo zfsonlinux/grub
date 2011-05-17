@@ -194,11 +194,11 @@ Index: b/util/grub.d/10_linux.in
  EOF
 -  fi
  
-   if [ -z "${prepare_boot_cache}" ]; then
-     prepare_boot_cache="$(prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/")"
-@@ -135,6 +126,36 @@
-       done`
+   cat << EOF
+ 	insmod gzio
+@@ -155,6 +146,36 @@
  prepare_boot_cache=
+ prepare_root_cache=
  
 +# Use ELILO's generic "efifb" when it's known to be available.
 +# FIXME: We need an interface to select vesafb in case efifb can't be used.

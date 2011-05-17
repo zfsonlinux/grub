@@ -1,2 +1,2 @@
-usr/sbin/update-grub			usr/sbin/update-grub2
-usr/share/man/man8/update-grub.8	usr/share/man/man8/update-grub2.8
+usr/lib/grub/@CPU_PLATFORM@/grub-install	usr/sbin/grub-install
+usr/lib/grub/@CPU_PLATFORM@/grub-mknetdir	usr/sbin/grub-mknetdir

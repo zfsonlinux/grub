@@ -1,5 +1,7 @@
 /* This file was automatically imported with 
    import_gcry.py. Please don't modify it */
+#include <grub/dl.h>
+GRUB_MOD_LICENSE ("GPLv3+");
 /* SEED for libgcrypt
  *	Copyright (C) 2006 Free Software Foundation, Inc.
  *
