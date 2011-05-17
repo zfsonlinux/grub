@@ -1,5 +1,7 @@
 /* This file was automatically imported with 
    import_gcry.py. Please don't modify it */
+#include <grub/dl.h>
+GRUB_MOD_LICENSE ("GPLv3+");
 /* md5.c - MD5 Message-Digest Algorithm
  * Copyright (C) 1995,1996,1998,1999,2001,2002,
  *               2003  Free Software Foundation, Inc.

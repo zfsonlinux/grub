@@ -1,5 +1,7 @@
 /* This file was automatically imported with 
    import_gcry.py. Please don't modify it */
+#include <grub/dl.h>
+GRUB_MOD_LICENSE ("GPLv3+");
 /* rfc2268.c  - The cipher described in rfc2268; aka Ron's Cipher 2.
  * Copyright (C) 2003 Nikos Mavroyanopoulos
  * Copyright (C) 2004 Free Software Foundation, Inc.

@@ -1,5 +1,7 @@
 /* This file was automatically imported with 
    import_gcry.py. Please don't modify it */
+#include <grub/dl.h>
+GRUB_MOD_LICENSE ("GPLv3+");
 /* rsa.c - RSA implementation
  * Copyright (C) 1997, 1998, 1999 by Werner Koch (dd9jn)
  * Copyright (C) 2000, 2001, 2002, 2003, 2008 Free Software Foundation, Inc.

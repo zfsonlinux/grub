@@ -16886,7 +16886,7 @@ endif
 if COND_emu
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -16908,7 +16908,7 @@ endif
 if COND_i386_pc
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -16930,7 +16930,7 @@ endif
 if COND_i386_efi
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -16952,7 +16952,7 @@ endif
 if COND_i386_qemu
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -16974,7 +16974,7 @@ endif
 if COND_i386_coreboot
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -16996,7 +16996,7 @@ endif
 if COND_i386_multiboot
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -17018,7 +17018,7 @@ endif
 if COND_i386_ieee1275
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -17040,7 +17040,7 @@ endif
 if COND_x86_64_efi
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -17062,7 +17062,7 @@ endif
 if COND_mips_yeeloong
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -17084,7 +17084,7 @@ endif
 if COND_sparc64_ieee1275
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -17106,7 +17106,7 @@ endif
 if COND_powerpc_ieee1275
 noinst_PROGRAMS += btrfs.module
 MODULE_FILES += btrfs.module$(EXEEXT)
-btrfs_module_SOURCES  = fs/btrfs.c  ## platform sources
+btrfs_module_SOURCES  = fs/btrfs.c lib/crc.c  ## platform sources
 nodist_btrfs_module_SOURCES  =  ## platform nodist sources
 btrfs_module_LDADD  = 
 btrfs_module_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_MODULE) 
@@ -38818,7 +38818,7 @@ CLEANFILES += grub-emu.1
 endif
 grub_emu_SOURCES  = kern/emu/full.c 
 nodist_grub_emu_SOURCES  = grub_emu_init.c 
-grub_emu_LDADD  = kernel.img$(EXEEXT) $(MODULE_FILES) $(LIBUTIL) $(LIBCURSES) $(LIBSDL) $(LIBUSB) $(LIBPCIACCESS) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_emu_LDADD  = kernel.img$(EXEEXT) $(MODULE_FILES) $(LIBUTIL) $(LIBCURSES) $(LIBSDL) $(LIBUSB) $(LIBPCIACCESS) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_emu_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_emu_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_emu_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -38832,7 +38832,7 @@ if COND_emu
 bin_PROGRAMS += grub-emu-lite
 grub_emu_lite_SOURCES  = kern/emu/lite.c 
 nodist_grub_emu_lite_SOURCES  = symlist.c 
-grub_emu_lite_LDADD  = kernel.img$(EXEEXT) $(LIBUTIL) $(LIBCURSES) $(LIBSDL) $(LIBUSB) $(LIBPCIACCESS) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_emu_lite_LDADD  = kernel.img$(EXEEXT) $(LIBUTIL) $(LIBCURSES) $(LIBSDL) $(LIBUSB) $(LIBPCIACCESS) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_emu_lite_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_emu_lite_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_emu_lite_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
