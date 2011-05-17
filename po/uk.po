@@ -1,0 +1,2176 @@
+# Translation of grub to Ukrainian
+#
+# Copyright (C) 2011 Free Software Foundation, Inc.
+# This file is distributed under the same license as the grub package.
+#
+# Andriy Rysin <arysin@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: grub 1.97+20110101\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-05-14 22:59+0200\n"
+"PO-Revision-Date: 2011-01-19 17:49+0200\n"
+"Last-Translator: Andriy Rysin <arysin@gmail.com>\n"
+"Language-Team: Ukrainian <translation-team-uk@lists.sourceforge.net>\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: grub-core/commands/acpi.c:40
+msgid "Don't load host tables specified by comma-separated list."
+msgstr ""
+"Не завантажувати таблиці комп’ютера, вказані за допомогою списку значень, "
+"відокремлених комами."
+
+#: grub-core/commands/acpi.c:43
+msgid "Load only tables specified by comma-separated list."
+msgstr ""
+"Завантажувати лише таблиці, вказані за допомогою списку значень, "
+"відокремлених комами."
+
+#: grub-core/commands/acpi.c:44
+msgid "Expose v1 tables."
+msgstr "Обробити таблиці v1."
+
+#: grub-core/commands/acpi.c:45
+msgid "Expose v2 and v3 tables."
+msgstr "Обробити таблиці v2 і v3."
+
+#: grub-core/commands/acpi.c:46
+msgid "Set OEMID of RSDP, XSDT and RSDT."
+msgstr "Встановити OEMID у RSDP, XSDT та RSDT."
+
+#: grub-core/commands/acpi.c:48
+msgid "Set OEMTABLE ID of RSDP, XSDT and RSDT."
+msgstr "Встановити ідентифікатор OEMTABLE у RSDP, XSDT та RSDT."
+
+#: grub-core/commands/acpi.c:50
+msgid "Set OEMTABLE revision of RSDP, XSDT and RSDT."
+msgstr "Встановити модифікацію OEMTABLE у RSDP, XSDT та RSDT."
+
+#: grub-core/commands/acpi.c:52
+msgid "Set creator field of RSDP, XSDT and RSDT."
+msgstr "Встановити поле програми для створення у RSDP, XSDT та RSDT."
+
+#: grub-core/commands/acpi.c:54
+msgid "Set creator revision of RSDP, XSDT and RSDT."
+msgstr "Встановити версію програми для створення у RSDP, XSDT та RSDT."
+
+#: grub-core/commands/acpi.c:55
+msgid ""
+"Don't update EBDA. May fix failures or hangs on some. BIOSes but makes it "
+"ineffective with OS not receiving RSDP from GRUB."
+msgstr ""
+"Не оновлювати EBDA. Може допомогти у разі помилок чи підвисань для деяких "
+"BIOS, але ні на що не впливає, якщо операційна система не отримує RSDP від "
+"GRUB."
+
+#: grub-core/commands/acpi.c:763
+msgid ""
+"[-1|-2] [--exclude=TABLE1,TABLE2|--load-only=table1,table2] FILE1 [FILE2] "
+"[...]"
+msgstr ""
+"[-1|-2] [--exclude=ТАБЛИЦЯ1,ТАБЛИЦЯ2|--load-only=таблиця1,таблиця2] ФАЙЛ1 "
+"[ФАЙЛ2] [...]"
+
+#: grub-core/commands/acpi.c:766
+msgid "Load host ACPI tables and tables specified by arguments."
+msgstr "Завантажувати таблиці ACPI комп’ютера і таблиці, вказані параметрами."
+
+#: grub-core/commands/blocklist.c:116 grub-core/commands/cat.c:97
+#: grub-core/commands/configfile.c:65 grub-core/commands/configfile.c:68
+#: grub-core/commands/configfile.c:74 grub-core/commands/configfile.c:80
+#: grub-core/commands/configfile.c:86 grub-core/commands/hashsum.c:33
+#: grub-core/commands/legacycfg.c:763 grub-core/commands/legacycfg.c:768
+#: grub-core/commands/legacycfg.c:773 grub-core/commands/legacycfg.c:778
+#: grub-core/commands/minicmd.c:204 grub-core/commands/testload.c:150
+#: grub-core/efiemu/main.c:318 grub-core/loader/i386/bsd.c:1947
+#: grub-core/loader/i386/bsd.c:1950 grub-core/loader/i386/bsd.c:1953
+#: util/grub-setup.c:686 util/grub-setup.c:688 util/grub-setup.c:692
+msgid "FILE"
+msgstr "ФАЙЛ"
+
+#: grub-core/commands/blocklist.c:116
+msgid "Print a block list."
+msgstr "Показати список блоків."
+
+#: grub-core/commands/boot.c:192
+msgid "Boot an operating system."
+msgstr "Завантажити операційну систему."
+
+#: grub-core/commands/cat.c:32
+msgid "Accept DOS-style CR/NL line endings."
+msgstr "Приймати завершення рядків CR/NL у стилі DOS."
+
+#: grub-core/commands/cat.c:97 grub-core/commands/minicmd.c:204
+msgid "Show the contents of a file."
+msgstr "Показати вміст файла."
+
+#: grub-core/commands/cmp.c:114
+msgid "FILE1 FILE2"
+msgstr "ФАЙЛ1 ФАЙЛ2"
+
+#: grub-core/commands/cmp.c:114
+msgid "Compare two files."
+msgstr "Порівняти два файла."
+
+#: grub-core/commands/configfile.c:65
+msgid "Load another config file."
+msgstr "Завантажити інший файл налаштування."
+
+#: grub-core/commands/configfile.c:69 grub-core/commands/configfile.c:87
+msgid "Load another config file without changing context."
+msgstr "Завантажити інший файл налаштування без зміни контексту."
+
+#: grub-core/commands/configfile.c:75 grub-core/commands/configfile.c:81
+msgid ""
+"Load another config file without changing context but take only menuentries."
+msgstr ""
+"Завантажити інший файл налаштування без зміни контексту, використати лише "
+"пункти меню."
+
+#: grub-core/commands/date.c:141
+msgid "[[year-]month-day] [hour:minute[:second]]"
+msgstr "[[рік-]місяць-день] [години:хвилини[:секунди]]"
+
+#: grub-core/commands/date.c:142
+msgid "Command to display/set current datetime."
+msgstr "Команда для показу або встановлення поточної дати і часу."
+
+#: grub-core/commands/echo.c:30
+msgid "Do not output the trailing newline."
+msgstr "Не виводити кінцевий символ завершення рядка."
+
+#: grub-core/commands/echo.c:31
+msgid "Enable interpretation of backslash escapes."
+msgstr ""
+"Увімкнути обробку екранування за допомогою символу зворотної похилої риски."
+
+#: grub-core/commands/echo.c:134
+msgid "[-e|-n] STRING"
+msgstr "[-e|-n] РЯДОК"
+
+#: grub-core/commands/echo.c:134
+msgid "Display a line of text."
+msgstr "Показати рядок тексту."
+
+#: grub-core/commands/efi/fixvideo.c:105
+msgid "Fix video problem."
+msgstr "Виправити проблему з відео."
+
+#: grub-core/commands/efi/loadbios.c:209
+msgid "Fake BIOS."
+msgstr "Фальшивий BIOS."
+
+#: grub-core/commands/efi/loadbios.c:213
+msgid "Load BIOS dump."
+msgstr "Завантажити дамп BIOS."
+
+#: grub-core/commands/gptsync.c:246
+msgid "DEVICE [PARTITION[+/-[TYPE]]] ..."
+msgstr "ПРИСТРІЙ [РОЗДІЛ[+/-[ТИП]]] ..."
+
+#: grub-core/commands/gptsync.c:247
+msgid ""
+"Fill hybrid MBR of GPT drive DEVICE. Specified partitions will be a part of "
+"hybrid MBR. Up to 3 partitions are allowed. TYPE is an MBR type. + means "
+"that partition is active. Only one partition can be active."
+msgstr ""
+"Заповнити гібридний запис MBR пристрою GPT ПРИСТРІЙ. Вказані розділи будуть "
+"частиною гібридного запису MBR. Можна використовувати до 3 розділів. ТИП є "
+"типом MBR. «+» означає, що розділ є активним. Активним може бути лише один "
+"розділ."
+
+#: grub-core/commands/halt.c:41
+msgid ""
+"Halts the computer.  This command does not work on all firmware "
+"implementations."
+msgstr ""
+"Завершує роботу комп’ютера. Ця команда працює не для всіх реалізацій "
+"мікропрограм."
+
+#: grub-core/commands/hashsum.c:32
+msgid "Specify hash to use."
+msgstr "Вказати хеш для використання."
+
+#: grub-core/commands/hashsum.c:32
+msgid "HASH"
+msgstr "ХЕШ"
+
+#: grub-core/commands/hashsum.c:33
+msgid "Check hash list file."
+msgstr "Перевірити за файлом списку хешів."
+
+#: grub-core/commands/hashsum.c:34
+msgid "Base directory for hash list."
+msgstr "Базовий каталог списку хешів."
+
+#: grub-core/commands/hashsum.c:34
+msgid "DIRECTORY"
+msgstr "КАТАЛОГ"
+
+#: grub-core/commands/hashsum.c:36
+msgid "Don't stop after first error."
+msgstr "Не зупиняти виконання після першої помилки."
+
+#: grub-core/commands/hashsum.c:37
+msgid "Uncompress file before checksumming."
+msgstr "Розпакувати файл до обчислення контрольної суми."
+
+#: grub-core/commands/hashsum.c:262 grub-core/commands/hashsum.c:267
+#: grub-core/commands/hashsum.c:272 grub-core/commands/hashsum.c:277
+#: grub-core/commands/hashsum.c:282 grub-core/commands/hashsum.c:288
+msgid "Compute or check hash checksum."
+msgstr "Обчислити або перевірити хеш контрольної суми."
+
+#: grub-core/commands/hashsum.c:265 grub-core/commands/hashsum.c:270
+#: grub-core/commands/hashsum.c:275 grub-core/commands/hashsum.c:280
+#: grub-core/commands/hashsum.c:286
+msgid "[-c FILE [-p PREFIX]] [FILE1 [FILE2 ...]]"
+msgstr "[-c ФАЙЛ [-p ПРЕФІКС]] [ФАЙЛ1 [ФАЙЛ2 ...]]"
+
+#: grub-core/commands/hdparm.c:32
+msgid ""
+"Set Advanced Power Management\n"
+"(1=low, ..., 254=high, 255=off)."
+msgstr ""
+"Налаштувати Advanced Power Management\n"
+"(1=мін, ..., 254=макс, 255=вимкн)."
+
+#: grub-core/commands/hdparm.c:35
+msgid "Check power mode."
+msgstr "Перевірити режим живлення."
+
+#: grub-core/commands/hdparm.c:36
+msgid "Freeze ATA security settings until reset."
+msgstr "Зафіксувати параметри безпеки ATA до перезавантаження."
+
+#: grub-core/commands/hdparm.c:38
+msgid "Check SMART health status."
+msgstr "Перевірити стан працездатності SMART."
+
+#: grub-core/commands/hdparm.c:39
+msgid ""
+"Set Automatic Acoustic Management\n"
+"(0=off, 128=quiet, ..., 254=fast)."
+msgstr ""
+"Налаштувати Automatic Acoustic Management\n"
+"(0=вимкн, 128=тихо, ..., 254=швидко)."
+
+#: grub-core/commands/hdparm.c:42
+msgid ""
+"Set standby timeout\n"
+"(0=off, 1=5s, 2=10s, ..., 240=20m, 241=30m, ...)."
+msgstr ""
+"Встановити затримку переходу у режим очікування\n"
+"(0=вимкн, 1=5с, 2=10с, ..., 240=20хв, 241=30хв, ...)."
+
+#: grub-core/commands/hdparm.c:45
+msgid "Set drive to standby mode."
+msgstr "Перевести пристрій у режим очікування."
+
+#: grub-core/commands/hdparm.c:46
+msgid "Set drive to sleep mode."
+msgstr "Перевести пристрій у режим сну."
+
+#: grub-core/commands/hdparm.c:47
+msgid "Print drive identity and settings."
+msgstr "Показати профіль пристрою та його параметри."
+
+#: grub-core/commands/hdparm.c:49
+msgid "Dump contents of ATA IDENTIFY sector."
+msgstr "Створити дамп вмісту сектора ATA IDENTIFY."
+
+#: grub-core/commands/hdparm.c:51
+msgid "Disable/enable SMART (0/1)."
+msgstr "Вимкнути або увімкнути SMART (0/1)."
+
+#: grub-core/commands/hdparm.c:52
+msgid "Do not print messages."
+msgstr "Не показувати повідомлень."
+
+#: grub-core/commands/hdparm.c:415
+msgid "[OPTIONS] DISK"
+msgstr "[ПАРАМЕТРИ] ДИСК"
+
+#: grub-core/commands/hdparm.c:416
+msgid "Get/set ATA disk parameters."
+msgstr "Отримати або встановити параметри диска ATA."
+
+#: grub-core/commands/help.c:120 grub-core/lib/arg.c:110
+msgid "Usage:"
+msgstr "Використання:"
+
+#: grub-core/commands/help.c:136
+msgid "[PATTERN ...]"
+msgstr "[ШАБЛОН ...]"
+
+#: grub-core/commands/help.c:137
+msgid "Show a help message."
+msgstr "Показати довідкове повідомлення."
+
+#: grub-core/commands/hexdump.c:31
+msgid "Skip offset bytes from the beginning of file."
+msgstr "Пропустити вказану кількість байтів на початку файла."
+
+#: grub-core/commands/hexdump.c:33
+msgid "Read only LENGTH bytes."
+msgstr "Прочитати лише ВКАЗАНУ кількість байтів."
+
+#: grub-core/commands/hexdump.c:125
+msgid "[OPTIONS] FILE_OR_DEVICE"
+msgstr "[ПАРАМЕТРИ] ФАЙЛ_АБО_ПРИСТРІЙ"
+
+#: grub-core/commands/hexdump.c:126
+msgid "Dump the contents of a file or memory."
+msgstr "Створити дамп вмісту файла або пам’яті."
+
+#: grub-core/commands/i386/cpuid.c:39
+msgid "Check for long mode flag (default)."
+msgstr "Перевірити файл «довгого» режиму (типова поведінка)."
+
+#: grub-core/commands/i386/cpuid.c:94
+msgid "Check for CPU features."
+msgstr "Перевірити можливості ЦП."
+
+#: grub-core/commands/i386/pc/drivemap.c:39
+msgid "Show the current mappings."
+msgstr "Показати поточні відображення."
+
+#: grub-core/commands/i386/pc/drivemap.c:40
+msgid "Reset all mappings to the default values."
+msgstr "Відновити типові значення всіх відображень."
+
+#: grub-core/commands/i386/pc/drivemap.c:41
+msgid "Perform both direct and reverse mappings."
+msgstr "Виконати прямі і зворотні відображення."
+
+#: grub-core/commands/i386/pc/drivemap.c:407
+msgid "-l | -r | [-s] grubdev osdisk."
+msgstr "-l | -r | [-s] пристрій_grub диск_ОС."
+
+#: grub-core/commands/i386/pc/drivemap.c:408
+msgid "Manage the BIOS drive mappings."
+msgstr "Керувати відображеннями BIOS пристроїв."
+
+#: grub-core/commands/i386/pc/halt.c:31
+msgid "Do not use APM to halt the computer."
+msgstr "Не використовувати APM для вимикання комп’ютера."
+
+#: grub-core/commands/i386/pc/halt.c:120
+msgid "Halt the system, if possible using APM."
+msgstr "Вимкнути систему, якщо можливо, за допомогою APM."
+
+#: grub-core/commands/i386/pc/lsapm.c:107
+msgid "Show APM information."
+msgstr "Показати відомості APM."
+
+#: grub-core/commands/i386/pc/play.c:268
+msgid "FILE | TEMPO [PITCH1 DURATION1] [PITCH2 DURATION2] ... "
+msgstr "ФАЙЛ | ТЕМП [ТОН1 ТРИВАЛІСТЬ1] [ТОН2 ТРИВАЛІСТЬ2] ... "
+
+#: grub-core/commands/i386/pc/play.c:269
+msgid "Play a tune."
+msgstr "Відтворити звук."
+
+#: grub-core/commands/i386/pc/pxecmd.c:48
+msgid "Unload PXE environment."
+msgstr "Вивантажити оточення PXE."
+
+#: grub-core/commands/ieee1275/suspend.c:45
+msgid "Return to Open Firmware prompt."
+msgstr "Повернутися до запрошення Open Firmware."
+
+#: grub-core/commands/iorw.c:34 grub-core/commands/memrw.c:33
+msgid "Save read value into variable VARNAME."
+msgstr "Надати змінній НАЗВА_ЗМІННОЇ прочитане значення."
+
+#: grub-core/commands/iorw.c:35
+msgid "VARNAME"
+msgstr "НАЗВА_ЗМІННОЇ"
+
+#: grub-core/commands/iorw.c:123 grub-core/commands/iorw.c:126
+#: grub-core/commands/iorw.c:129
+msgid "PORT"
+msgstr "ПОРТ"
+
+#: grub-core/commands/iorw.c:123
+msgid "Read byte from PORT."
+msgstr "Прочитати байт з ПОРТу."
+
+#: grub-core/commands/iorw.c:126
+msgid "Read word from PORT."
+msgstr "Прочитати слово з ПОРТу."
+
+#: grub-core/commands/iorw.c:129
+msgid "Read dword from PORT."
+msgstr "Прочитати значення dword з ПОРТу."
+
+#: grub-core/commands/iorw.c:132 grub-core/commands/iorw.c:136
+msgid "PORT VALUE [MASK]"
+msgstr "ПОРТ ЗНАЧЕННЯ [МАСКА]"
+
+#: grub-core/commands/iorw.c:133
+msgid "Write byte VALUE to PORT."
+msgstr "Записати байтове ЗНАЧЕННЯ до ПОРТу."
+
+#: grub-core/commands/iorw.c:137
+msgid "Write word VALUE to PORT."
+msgstr "Записати ЗНАЧЕННЯ типу word до ПОРТу."
+
+#: grub-core/commands/iorw.c:140 grub-core/commands/memrw.c:134
+#: grub-core/commands/memrw.c:137 grub-core/commands/memrw.c:140
+msgid "ADDR VALUE [MASK]"
+msgstr "АДРЕСА ЗНАЧЕННЯ [МАСКА]"
+
+#: grub-core/commands/iorw.c:141
+msgid "Write dword VALUE to PORT."
+msgstr "Записати ЗНАЧЕННЯ типу dword до ПОРТу."
+
+#: grub-core/commands/keylayouts.c:293
+msgid "Load a keyboard layout."
+msgstr "Завантажити розкладку клавіатури."
+
+#: grub-core/commands/keystatus.c:30
+msgid "Check Shift key."
+msgstr "Перевірити стан Shift."
+
+#: grub-core/commands/keystatus.c:31
+msgid "Check Control key."
+msgstr "Перевірити стан Ctrl."
+
+#: grub-core/commands/keystatus.c:32
+msgid "Check Alt key."
+msgstr "Перевірити стан Alt."
+
+#: grub-core/commands/keystatus.c:102
+msgid "[--shift] [--ctrl] [--alt]"
+msgstr "[--shift] [--ctrl] [--alt]"
+
+#: grub-core/commands/keystatus.c:103
+msgid "Check key modifier status."
+msgstr "Перевірити стан модифікатора клавіатури."
+
+#: grub-core/commands/legacycfg.c:764
+msgid "Parse legacy config in same context"
+msgstr "Обробити застарілі налаштування у тому самому контексті"
+
+#: grub-core/commands/legacycfg.c:769
+msgid "Parse legacy config in new context"
+msgstr "Обробити застарілі налаштування у новому контексті"
+
+#: grub-core/commands/legacycfg.c:774
+#, fuzzy
+msgid "Parse legacy config in same context taking only menu entries"
+msgstr ""
+"Обробити застарілі налаштування у тому самому контексті, використати лише "
+"записи"
+
+#: grub-core/commands/legacycfg.c:779
+#, fuzzy
+msgid "Parse legacy config in new context taking only menu entries"
+msgstr ""
+"Обробити застарілі налаштування у новому контексті, використати лише записи"
+
+#: grub-core/commands/legacycfg.c:783
+msgid "[--no-mem-option] [--type=TYPE] FILE [ARG ...]"
+msgstr "[--no-mem-option] [--type=ТИП] ФАЙЛ [ПАРАМЕТР ...]"
+
+#: grub-core/commands/legacycfg.c:784
+msgid "Simulate grub-legacy kernel command"
+msgstr "Імітувати команду ядра попередньої версії grub"
+
+#: grub-core/commands/legacycfg.c:788 grub-core/commands/legacycfg.c:792
+msgid "FILE [ARG ...]"
+msgstr "ФАЙЛ [ПАРАМЕТР ...]"
+
+#: grub-core/commands/legacycfg.c:789
+msgid "Simulate grub-legacy initrd command"
+msgstr "Імітувати команду initrd попередньої версії grub"
+
+#: grub-core/commands/legacycfg.c:793
+msgid "Simulate grub-legacy modulenounzip command"
+msgstr "Імітувати команду modulenounzip попередньої версії grub"
+
+#: grub-core/commands/legacycfg.c:797 grub-core/commands/legacycfg.c:802
+msgid "[--md5] PASSWD [FILE]"
+msgstr "[--md5] ПАРОЛЬ [ФАЙЛ]"
+
+#: grub-core/commands/legacycfg.c:798
+msgid "Simulate grub-legacy password command"
+msgstr "Імітувати команду пароля попередньої версії grub"
+
+#: grub-core/commands/legacycfg.c:803
+msgid "Simulate grub-legacy password command in menuentry mode"
+msgstr "Імітувати команду пароля попередньої версії grub у режимі пункту меню"
+
+#: grub-core/commands/loadenv.c:35
+msgid "Specify filename."
+msgstr "Вказати назву файла."
+
+#: grub-core/commands/loadenv.c:380 grub-core/commands/loadenv.c:384
+msgid "[-f FILE]"
+msgstr "[-f ФАЙЛ]"
+
+#: grub-core/commands/loadenv.c:381
+msgid "Load variables from environment block file."
+msgstr "Завантажити змінні з блокового файла оточення."
+
+#: grub-core/commands/loadenv.c:385
+msgid "List variables from environment block file."
+msgstr "Показати список змінних з блокового файла оточення."
+
+#: grub-core/commands/loadenv.c:389
+msgid "[-f FILE] variable_name [...]"
+msgstr "[-f ФАЙЛ] назва_змінної [...]"
+
+#: grub-core/commands/loadenv.c:390
+msgid "Save variables to environment block file."
+msgstr "Зберегти змінні до блокового файла оточення."
+
+#: grub-core/commands/ls.c:39
+msgid "Show a long list with more detailed information."
+msgstr "Показати довгий список з додатковими відомостями."
+
+#: grub-core/commands/ls.c:40
+msgid "Print sizes in a human readable format."
+msgstr "Показати розміри у зручному для читання форматі."
+
+#: grub-core/commands/ls.c:41
+msgid "List all files."
+msgstr "Показати список всіх файлів."
+
+#: grub-core/commands/ls.c:275
+msgid "[-l|-h|-a] [FILE ...]"
+msgstr "[-l|-h|-a] [ФАЙЛ ...]"
+
+#: grub-core/commands/ls.c:276
+msgid "List devices and files."
+msgstr "Показати список пристроїв і файлів."
+
+#: grub-core/commands/lsacpi.c:196
+msgid "Show v1 tables only."
+msgstr "Показати лише таблиці v1."
+
+#: grub-core/commands/lsacpi.c:197
+msgid "Show v2 and v3 tablesv only."
+msgstr "Показати лише таблиці v2 і v3."
+
+#: grub-core/commands/lsacpi.c:243
+msgid "[-1|-2]"
+msgstr "[-1|-2]"
+
+#: grub-core/commands/lsacpi.c:244
+msgid "Show ACPI information."
+msgstr "Показати дані щодо ACPI."
+
+#: grub-core/commands/lsmmap.c:68
+msgid "List memory map provided by firmware."
+msgstr "Показати карту пам’яті, надану мікропрограмою (firmware)."
+
+#: grub-core/commands/lspci.c:230
+msgid "List PCI devices."
+msgstr "Показати список пристроїв PCI."
+
+#: grub-core/commands/memrw.c:125 grub-core/commands/memrw.c:128
+#: grub-core/commands/memrw.c:131 grub-core/commands/minicmd.c:210
+msgid "ADDR"
+msgstr "АДРЕСА"
+
+#: grub-core/commands/memrw.c:125
+msgid "Read byte from ADDR."
+msgstr "Прочитати значення byte за АДРЕСОЮ."
+
+#: grub-core/commands/memrw.c:128
+msgid "Read word from ADDR."
+msgstr "Прочитати значення word за АДРЕСОЮ."
+
+#: grub-core/commands/memrw.c:131
+msgid "Read dword from ADDR."
+msgstr "Прочитати значення dword за АДРЕСОЮ."
+
+#: grub-core/commands/memrw.c:134
+msgid "Write byte VALUE to ADDR."
+msgstr "Записати ЗНАЧЕННЯ типу byte за АДРЕСОЮ."
+
+#: grub-core/commands/memrw.c:137
+msgid "Write word VALUE to ADDR."
+msgstr "Записати ЗНАЧЕННЯ типу word за АДРЕСОЮ."
+
+#: grub-core/commands/memrw.c:140
+msgid "Write dword VALUE to ADDR."
+msgstr "Записати ЗНАЧЕННЯ типу dword за АДРЕСОЮ."
+
+#: grub-core/commands/menuentry.c:31
+msgid "Menu entry type."
+msgstr "Тип запису меню."
+
+#: grub-core/commands/menuentry.c:33
+msgid "Users allowed to boot this entry."
+msgstr "Користувачі, які можуть завантажувати цей пункт."
+
+#: grub-core/commands/menuentry.c:35
+msgid "Keyboard key for this entry."
+msgstr "Клавіша цього запису."
+
+#: grub-core/commands/menuentry.c:37
+msgid "Menu entry definition as a string."
+msgstr "Визначення пункту меню у форматі рядка."
+
+#: grub-core/commands/menuentry.c:294 grub-core/commands/menuentry.c:298
+#: grub-core/tests/test_blockarg.c:46
+msgid "BLOCK"
+msgstr "БЛОК"
+
+#: grub-core/commands/menuentry.c:294
+msgid "Define a menuentry."
+msgstr "Визначити запис меню."
+
+#: grub-core/commands/menuentry.c:298
+msgid "Define a submenu."
+msgstr "Визначити підменю."
+
+#: grub-core/commands/minicmd.c:207
+msgid "Show this message."
+msgstr "Показати це повідомлення."
+
+#: grub-core/commands/minicmd.c:210
+msgid "Dump memory."
+msgstr "Створити дамп пам’яті."
+
+#: grub-core/commands/minicmd.c:213 grub-core/kern/corecmd.c:193
+msgid "MODULE"
+msgstr "МОДУЛЬ"
+
+#: grub-core/commands/minicmd.c:213
+msgid "Remove a module."
+msgstr "Вилучити модуль."
+
+#: grub-core/commands/minicmd.c:216
+msgid "Show loaded modules."
+msgstr "Показати список завантажених модулів."
+
+#: grub-core/commands/minicmd.c:219
+msgid "Exit from GRUB."
+msgstr "Вийти з GRUB."
+
+#: grub-core/commands/parttool.c:326
+msgid "PARTITION COMMANDS"
+msgstr "КОМАНДИ РОБОТИ З РОЗДІЛАМИ"
+
+#: grub-core/commands/password.c:85
+msgid "USER PASSWORD"
+msgstr "ПАРОЛЬ КОРИСТУВАЧА"
+
+#: grub-core/commands/password.c:86
+msgid "Set user password (plaintext). Unrecommended and insecure."
+msgstr ""
+"Визначити пароль користувача (незашифрованим). Небезпечно і не "
+"рекомендується."
+
+#: grub-core/commands/password_pbkdf2.c:192
+msgid "USER PBKDF2_PASSWORD"
+msgstr "КОРИСТУВАЧ ПАРОЛЬ_PBKDF2"
+
+#: grub-core/commands/password_pbkdf2.c:193
+msgid "Set user password (PBKDF2). "
+msgstr "Встановити пароль користувача (PBKDF2). "
+
+#: grub-core/commands/probe.c:40
+msgid "Set a variable to return value."
+msgstr "Встановити змінну для повернутого значення."
+
+#: grub-core/commands/probe.c:41
+msgid "Determine driver."
+msgstr "Визначити драйвер."
+
+#: grub-core/commands/probe.c:42
+msgid "Determine partition map type."
+msgstr "Визначити тип карти розділів."
+
+#: grub-core/commands/probe.c:43
+msgid "Determine filesystem type."
+msgstr "Визначити тип файлової системи."
+
+#: grub-core/commands/probe.c:44
+msgid "Determine filesystem UUID."
+msgstr "Визначити UUID файлової системи."
+
+#: grub-core/commands/probe.c:45
+msgid "Determine filesystem label."
+msgstr "Визначити мітку файлової системи."
+
+#: grub-core/commands/probe.c:155 grub-core/loader/i386/bsd.c:159
+#: util/grub-setup.c:840
+msgid "DEVICE"
+msgstr "ПРИСТРІЙ"
+
+#: grub-core/commands/probe.c:156
+msgid "Retrieve device info."
+msgstr "Отримати відомості щодо пристрою."
+
+#: grub-core/commands/read.c:85
+msgid "[ENVVAR]"
+msgstr "[ЗМІННА_СЕРЕДОВИЩА]"
+
+#: grub-core/commands/read.c:86
+msgid "Set variable with user input."
+msgstr "Визначити значення змінної за введеними користувачем даними."
+
+#: grub-core/commands/reboot.c:41
+msgid "Reboot the computer."
+msgstr "Перезавантажити комп’ютер."
+
+#: grub-core/commands/regexp.c:35
+msgid "Variable names to update with matches."
+msgstr "Назви змінних для оновлення відповідниками."
+
+#: grub-core/commands/regexp.c:36
+msgid "[NUMBER:]VARNAME"
+msgstr "[НОМЕР:]НАЗВА_ЗМІННОЇ"
+
+#: grub-core/commands/regexp.c:140
+msgid "REGEXP STRING"
+msgstr "ФОРМАЛЬНИЙ_ВИРАЗ РЯДОК"
+
+#: grub-core/commands/regexp.c:141
+msgid "Test if REGEXP matches STRING."
+msgstr "Перевірити відповідність ФОРМАЛЬНОГО ВИРАЗУ РЯДКУ."
+
+#: grub-core/commands/search.c:232
+msgid "NAME [VARIABLE] [HINTS]"
+msgstr "НАЗВА [ЗМІННА] [ПІДКАЗКИ]"
+
+#: grub-core/commands/search_file.c:5
+msgid ""
+"Search devices by file. If VARIABLE is specified, the first device found is "
+"set to a variable."
+msgstr ""
+"Шукати пристрої за файлом. Якщо вказано ЗМІННУ, їй буде надано значення "
+"першого знайденого пристрою."
+
+#: grub-core/commands/search_label.c:5
+msgid ""
+"Search devices by label. If VARIABLE is specified, the first device found is "
+"set to a variable."
+msgstr ""
+"Шукати пристрої за міткою. Якщо вказано ЗМІННУ, їй буде надано значення "
+"першого знайденого пристрою."
+
+#: grub-core/commands/search_uuid.c:5
+msgid ""
+"Search devices by UUID. If VARIABLE is specified, the first device found is "
+"set to a variable."
+msgstr ""
+"Шукати пристрої за UUID. Якщо вказано ЗМІННУ, їй буде надано значення "
+"першого знайденого пристрою."
+
+#: grub-core/commands/search_wrap.c:34
+msgid "Search devices by a file."
+msgstr "Шукати пристрої за файлом."
+
+#: grub-core/commands/search_wrap.c:35
+msgid "Search devices by a filesystem label."
+msgstr "Шукати пристрої за міткою файлової системи."
+
+#: grub-core/commands/search_wrap.c:37
+msgid "Search devices by a filesystem UUID."
+msgstr "Шукати пристрої за UUID файлової системи."
+
+#: grub-core/commands/search_wrap.c:40
+msgid "Set a variable to the first device found."
+msgstr "Встановити для змінної значення першого знайденого пристрою."
+
+#: grub-core/commands/search_wrap.c:41
+msgid "Do not probe any floppy drive."
+msgstr "Не шукати на дискетах."
+
+#: grub-core/commands/search_wrap.c:43
+msgid ""
+"First try the device HINT. If HINT ends in comma, also try subpartitions"
+msgstr ""
+"Спершу спробувати пристрій ПІДКАЗКА. Якщо запис ПІДКАЗКА завершується комою, "
+"також спробувати пошук на вкладених розділах."
+
+#: grub-core/commands/search_wrap.c:44
+msgid "HINT"
+msgstr "ПІДКАЗКА"
+
+#: grub-core/commands/search_wrap.c:96
+msgid "[-f|-l|-u|-s|-n] [--hint HINT [--hint HINT] ...] NAME"
+msgstr "[-f|-l|-u|-s|-n] [--hint ПІДКАЗКА [--hint ПІДКАЗКА] ...] НАЗВА"
+
+#: grub-core/commands/search_wrap.c:98
+msgid ""
+"Search devices by file, filesystem label or filesystem UUID. If --set is "
+"specified, the first device found is set to a variable. If no variable name "
+"is specified, \"root\" is used."
+msgstr ""
+"Шукати пристрої за файлом, міткою файлової системи або унікальним "
+"ідентифікатором файлової системи (UUID). якщо вказано параметр --set, "
+"змінній буде надано значення першого знайденого пристрою. Якщо назви змінної "
+"не буде вказано, буде використано назву \"root\"."
+
+#: grub-core/commands/setpci.c:335
+msgid "[-s POSITION] [-d DEVICE] [-v VAR] [REGISTER][=VALUE[:MASK]]"
+msgstr "[-s ПОЗИЦІЯ] [-d ПРИСТРІЙ] [-v ЗМІННА] [РЕГІСТР][=ЗНАЧЕННЯ[:МАСКА]]"
+
+#: grub-core/commands/setpci.c:337
+msgid "Manipulate PCI devices."
+msgstr "Керувати пристроями PCI."
+
+#: grub-core/commands/sleep.c:32
+msgid "Verbose countdown."
+msgstr "Докладний зворотний відлік."
+
+#: grub-core/commands/sleep.c:33
+msgid "Interruptible with ESC."
+msgstr "Можна перервати за допомогою ESC."
+
+#: grub-core/commands/sleep.c:106
+msgid "NUMBER_OF_SECONDS"
+msgstr "КІЛЬКІСТЬ СЕКУНД"
+
+#: grub-core/commands/sleep.c:107
+msgid "Wait for a specified number of seconds."
+msgstr "Очікувати протягом вказаної кількості секунд."
+
+#: grub-core/commands/terminal.c:89
+msgid "no terminal specified"
+msgstr "не вказано терміналів"
+
+#: grub-core/commands/terminal.c:218
+msgid "Active input terminals:"
+msgstr "Активні термінали введення даних:"
+
+#: grub-core/commands/terminal.c:219
+msgid "Available input terminals:"
+msgstr "Доступні термінали введення даних:"
+
+#: grub-core/commands/terminal.c:234
+msgid "Active output terminals:"
+msgstr "Активні термінали виведення даних:"
+
+#: grub-core/commands/terminal.c:235
+msgid "Available output terminals:"
+msgstr "Доступні термінали виведення даних:"
+
+#: grub-core/commands/terminal.c:244 grub-core/commands/terminal.c:249
+msgid "[--append|--remove] [TERMINAL1] [TERMINAL2] ..."
+msgstr "[--append|--remove] [ТЕРМІНАЛ1] [ТЕРМІНАЛ2] ..."
+
+#: grub-core/commands/terminal.c:246
+msgid "List or select an input terminal."
+msgstr "Показати список або вибрати термінал для введення даних."
+
+#: grub-core/commands/terminal.c:251
+msgid "List or select an output terminal."
+msgstr "Показати список або вибрати термінал для виведення даних."
+
+#: grub-core/commands/test.c:427
+msgid "EXPRESSION ]"
+msgstr "ВИРАЗ ]"
+
+#: grub-core/commands/test.c:427 grub-core/commands/test.c:430
+msgid "Evaluate an expression."
+msgstr "Обчислити значення виразу."
+
+#: grub-core/commands/test.c:430
+msgid "EXPRESSION"
+msgstr "ВИРАЗ"
+
+#: grub-core/commands/testload.c:151
+msgid "Load the same file in multiple ways."
+msgstr "Завантажити файл у декілька способів."
+
+#: grub-core/commands/true.c:49
+msgid "Do nothing, successfully."
+msgstr "Нічого не виконано, успішне завершення."
+
+#: grub-core/commands/true.c:52
+msgid "Do nothing, unsuccessfully."
+msgstr "Нічого не виконано, невдале завершення."
+
+#: grub-core/commands/usbtest.c:212
+msgid "Test USB support."
+msgstr "Перевірка підтримки USB."
+
+#: grub-core/commands/videoinfo.c:168 grub-core/commands/videoinfo.c:173
+msgid ""
+"List available video modes. If resolution is given show only modes matching "
+"it."
+msgstr ""
+"Показати список доступних відеорежимів. Якщо буде вказано роздільну "
+"здатність, у списку залишаться лише режими, які їй відповідають."
+
+#: grub-core/commands/videotest.c:205
+msgid "Test video subsystem in mode WxH."
+msgstr "Перевірити відеопідсистему у режимі ВxШ."
+
+#: grub-core/commands/videotest.c:208
+msgid "Test video subsystem."
+msgstr "Перевірити відеопідсистему."
+
+#: grub-core/commands/xnu_uuid.c:94
+msgid "GRUBUUID [VARNAME]"
+msgstr "UUID_GRUB [НАЗВА_ЗМІННОЇ]"
+
+#: grub-core/commands/xnu_uuid.c:95
+msgid "Transform 64-bit UUID to format suitable for XNU."
+msgstr "Перетворити 64-бітове значення UUID у формат, що відповідає XNU."
+
+#: grub-core/disk/loopback.c:41
+msgid "Delete the loopback device entry."
+msgstr "Вилучити запис пристрою зворотної петлі."
+
+#: grub-core/disk/loopback.c:223
+#, fuzzy
+msgid "[-d] DEVICENAME FILE."
+msgstr "[-d|-p] НАЗВА_ПРИСТРОЮ ФАЙЛ."
+
+#: grub-core/disk/loopback.c:224
+msgid "Make a device of a file."
+msgstr "Створити пристрій з файла."
+
+#: grub-core/efiemu/main.c:319
+msgid "Load and initialize EFI emulator."
+msgstr "Завантажити і ініціалізувати емулятор EFI."
+
+#: grub-core/efiemu/main.c:323
+msgid "Finalize loading of EFI emulator."
+msgstr "Завершити завантаження емулятора EFI."
+
+#: grub-core/efiemu/main.c:326
+msgid "Unload EFI emulator."
+msgstr "Вивантажити емулятор EFI."
+
+#: grub-core/font/font_cmd.c:70
+msgid "FILE..."
+msgstr "ФАЙЛ..."
+
+#: grub-core/font/font_cmd.c:71
+msgid "Specify one or more font files to load."
+msgstr "Вказати один або декілька файлів для завантаження."
+
+#: grub-core/font/font_cmd.c:74
+msgid "List the loaded fonts."
+msgstr "Список завантажених шрифтів."
+
+#: grub-core/gettext/gettext.c:382
+msgid "STRING"
+msgstr "РЯДОК"
+
+#: grub-core/gettext/gettext.c:383
+msgid "Translates the string with the current settings."
+msgstr "Перекладає рядок відповідно до поточних параметрів."
+
+#: grub-core/gfxmenu/gui_progress_bar.c:281 grub-core/normal/menu_text.c:365
+#, c-format
+msgid "The highlighted entry will be executed automatically in %ds."
+msgstr "Обробку позначеного пункту буде автоматично виконано за %d с."
+
+#. TRANSLATORS:  's' stands for seconds.
+#. It's a standalone timeout notification.
+#. Please use the short form in your language.
+#: grub-core/gfxmenu/gui_progress_bar.c:286
+#, c-format
+msgid "%ds remaining."
+msgstr "Залишилося %d с."
+
+#. TRANSLATORS:  's' stands for seconds.
+#. It's a standalone timeout notification.
+#. Please use the shortest form available in you language.
+#: grub-core/gfxmenu/gui_progress_bar.c:291
+#, c-format
+msgid "%ds"
+msgstr "%dс"
+
+#: grub-core/hello/hello.c:45
+msgid "Say \"Hello World\"."
+msgstr "Повідомити \"Hello World\"."
+
+#: grub-core/kern/corecmd.c:183
+msgid "[ENVVAR=VALUE]"
+msgstr "[ЗМІННА_СЕРЕДОВИЩА=ЗНАЧЕННЯ]"
+
+#: grub-core/kern/corecmd.c:184
+msgid "Set an environment variable."
+msgstr "Встановити змінну середовища."
+
+#: grub-core/kern/corecmd.c:188
+msgid "ENVVAR"
+msgstr "ЗМІННА_СЕРЕДОВИЩА"
+
+#: grub-core/kern/corecmd.c:189
+msgid "Remove an environment variable."
+msgstr "Вилучити змінну середовища."
+
+#: grub-core/kern/corecmd.c:191
+msgid "[ARG]"
+msgstr "[ПАРАМЕТР]"
+
+#: grub-core/kern/corecmd.c:191
+msgid "List devices or files."
+msgstr "Список пристроїв або файлів."
+
+#: grub-core/kern/corecmd.c:193
+msgid "Insert a module."
+msgstr "Вставити модуль."
+
+#: grub-core/kern/emu/hostdisk.c:1015 util/grub-setup.c:662
+#, c-format
+msgid "cannot open `%s'"
+msgstr "не вдалося відкрити «%s»"
+
+#: grub-core/kern/emu/hostdisk.c:1539
+msgid "device count exceeds limit"
+msgstr "перевищено обмеження на кількість пристроїв"
+
+#: grub-core/kern/emu/misc.c:81
+#, c-format
+msgid "%s: warn:"
+msgstr "%s: попередження:"
+
+#: grub-core/kern/emu/misc.c:97
+#, c-format
+msgid "%s: info:"
+msgstr "%s: інформація:"
+
+#: grub-core/kern/emu/misc.c:112
+#, c-format
+msgid "%s: error:"
+msgstr "%s: помилка:"
+
+#: grub-core/kern/err.c:127
+#, c-format
+msgid "error: %s.\n"
+msgstr "помилка: %s.\n"
+
+#: grub-core/lib/arg.c:34
+msgid "Display this help and exit."
+msgstr "Показати ці довідкові дані і завершити роботу."
+
+#: grub-core/lib/arg.c:36
+msgid "Display the usage of this command and exit."
+msgstr "Показати довідку з цієї команди і завершити роботу."
+
+#: grub-core/loader/efi/appleloader.c:223
+msgid "Boot legacy system."
+msgstr "Завантажити застарілу систему."
+
+#: grub-core/loader/efi/chainloader.c:348
+#: grub-core/loader/i386/pc/chainloader.c:170
+msgid "Load another boot loader."
+msgstr "Завантажити інший інструмент завантаження."
+
+#: grub-core/loader/i386/bsd.c:97
+msgid "Display output on all consoles."
+msgstr "Показувати повідомлення у всіх консолях."
+
+#: grub-core/loader/i386/bsd.c:98 grub-core/loader/i386/bsd.c:132
+#: grub-core/loader/i386/bsd.c:161
+msgid "Use serial console."
+msgstr "Використовувати консоль на послідовному порті."
+
+#: grub-core/loader/i386/bsd.c:99 grub-core/loader/i386/bsd.c:125
+#: grub-core/loader/i386/bsd.c:149
+msgid "Ask for file name to reboot from."
+msgstr "Запитати про назву файла для перезавантаження."
+
+#: grub-core/loader/i386/bsd.c:100
+msgid "Use CDROM as root."
+msgstr "Використовувати CDROM як кореневу теку."
+
+#: grub-core/loader/i386/bsd.c:101
+msgid "Invoke user configuration routing."
+msgstr "Виконати налаштування маршрутизації користувачем."
+
+#: grub-core/loader/i386/bsd.c:102 grub-core/loader/i386/bsd.c:129
+#: grub-core/loader/i386/bsd.c:152
+msgid "Enter in KDB on boot."
+msgstr "Увійти до KDB під час завантаження."
+
+#: grub-core/loader/i386/bsd.c:103
+msgid "Use GDB remote debugger instead of DDB."
+msgstr "Використати віддалений інструмент зневаджування GDB замість DDB."
+
+#: grub-core/loader/i386/bsd.c:104
+msgid "Disable all boot output."
+msgstr "Вимкнути виведення всіх повідомлень під час завантаження."
+
+#: grub-core/loader/i386/bsd.c:106
+msgid "Wait for keypress after every line of output."
+msgstr "Очікувати на натискання клавіші після кожного виведеного рядка."
+
+#: grub-core/loader/i386/bsd.c:108
+msgid "Use compiled-in rootdev."
+msgstr "Використовувати вбудований rootdev."
+
+#: grub-core/loader/i386/bsd.c:109 grub-core/loader/i386/bsd.c:128
+#: grub-core/loader/i386/bsd.c:155
+msgid "Boot into single mode."
+msgstr "Завантажити систему у режимі єдиного користувача."
+
+#: grub-core/loader/i386/bsd.c:110 grub-core/loader/i386/bsd.c:156
+msgid "Boot with verbose messages."
+msgstr "Показувати докладні повідомлення під час завантаження."
+
+#: grub-core/loader/i386/bsd.c:126 grub-core/loader/i386/bsd.c:150
+msgid "Don't reboot, just halt."
+msgstr "Не виконувати перезавантаження, просто вимкнути."
+
+#: grub-core/loader/i386/bsd.c:127 grub-core/loader/i386/bsd.c:151
+msgid "Change configured devices."
+msgstr "Змінити налаштовані пристрої."
+
+#: grub-core/loader/i386/bsd.c:130 grub-core/loader/i386/bsd.c:159
+#: util/grub-fstest.c:364
+msgid "Set root device."
+msgstr "Вказати кореневий пристрій."
+
+#: grub-core/loader/i386/bsd.c:132
+msgid "comUNIT[,SPEED]"
+msgstr "одинОБМІНУ[,ШВИДКІСТЬ]"
+
+#: grub-core/loader/i386/bsd.c:147
+msgid "Disable SMP."
+msgstr "Вимкнути SMP."
+
+#: grub-core/loader/i386/bsd.c:148
+msgid "Disable ACPI."
+msgstr "Вимкнути ACPI."
+
+#: grub-core/loader/i386/bsd.c:154
+msgid "Don't display boot diagnostic messages."
+msgstr "Не показувати діагностичні повідомлення при завантаженні."
+
+#: grub-core/loader/i386/bsd.c:157
+msgid "Boot with debug messages."
+msgstr "Завантаження з показом діагностичних повідомлень."
+
+#: grub-core/loader/i386/bsd.c:158
+msgid "Supress normal output (warnings remain)."
+msgstr "Придушити звичайні повідомлення (показувати лише попередження)."
+
+#: grub-core/loader/i386/bsd.c:161
+msgid "[ADDR|comUNIT][,SPEED]"
+msgstr "[АДРЕСА|одинОБМІНУ][,ШВИДКІСТЬ]"
+
+#: grub-core/loader/i386/bsd.c:1947
+msgid "Load kernel of FreeBSD."
+msgstr "Завантажити ядро FreeBSD."
+
+#: grub-core/loader/i386/bsd.c:1950
+msgid "Load kernel of OpenBSD."
+msgstr "Завантажити ядро OpenBSD."
+
+#: grub-core/loader/i386/bsd.c:1953
+msgid "Load kernel of NetBSD."
+msgstr "Завантажити ядро NetBSD."
+
+#: grub-core/loader/i386/bsd.c:1957
+msgid "Load FreeBSD env."
+msgstr "Завантажити середовище FreeBSD."
+
+#: grub-core/loader/i386/bsd.c:1960
+msgid "Load FreeBSD kernel module."
+msgstr "Завантажити модуль ядра FreeBSD."
+
+#: grub-core/loader/i386/bsd.c:1963
+msgid "Load NetBSD kernel module."
+msgstr "Завантажити модуль ядра NetBSD."
+
+#: grub-core/loader/i386/bsd.c:1966
+msgid "Load NetBSD kernel module (ELF)."
+msgstr "Завантажити модуль ядра NetBSD (ELF)."
+
+#: grub-core/loader/i386/bsd.c:1969
+msgid "Load FreeBSD kernel module (ELF)."
+msgstr "Завантажити модуль ядра FreeBSD (ELF)."
+
+#: grub-core/loader/i386/linux.c:1006 grub-core/loader/i386/pc/linux.c:439
+#: grub-core/loader/mips/linux.c:433
+#: grub-core/loader/powerpc/ieee1275/linux.c:375
+#: grub-core/loader/sparc64/ieee1275/linux.c:515
+msgid "Load Linux."
+msgstr "Завантажити Linux."
+
+#: grub-core/loader/i386/linux.c:1008 grub-core/loader/i386/pc/linux.c:442
+#: grub-core/loader/mips/linux.c:435
+#: grub-core/loader/powerpc/ieee1275/linux.c:377
+#: grub-core/loader/sparc64/ieee1275/linux.c:517
+msgid "Load initrd."
+msgstr "Завантажити initrd."
+
+#: grub-core/loader/i386/pc/ntldr.c:152
+msgid "Load NTLDR or BootMGR."
+msgstr "Завантажити NTLDR або BootMGR."
+
+#: grub-core/loader/i386/xnu.c:1130
+msgid "Load device-properties dump."
+msgstr "Завантажити дамп параметрів пристрою."
+
+#: grub-core/loader/multiboot.c:339
+msgid "Load a multiboot 2 kernel."
+msgstr "Завантажити ядро multiboot 2."
+
+#: grub-core/loader/multiboot.c:342
+msgid "Load a multiboot 2 module."
+msgstr "Завантажити модуль multiboot 2."
+
+#: grub-core/loader/multiboot.c:345
+msgid "Load a multiboot kernel."
+msgstr "Завантажити ядро multiboot."
+
+#: grub-core/loader/multiboot.c:348
+msgid "Load a multiboot module."
+msgstr "Завантажити модуль multiboot."
+
+#: grub-core/loader/xnu.c:1456
+msgid "Load XNU image."
+msgstr "Завантажити образ XNU."
+
+#: grub-core/loader/xnu.c:1458
+msgid "Load 64-bit XNU image."
+msgstr "Завантажити 64-бітовий образ XNU."
+
+#: grub-core/loader/xnu.c:1460
+msgid "Load XNU extension package."
+msgstr "Завантажити пакунок розширення XNU."
+
+#: grub-core/loader/xnu.c:1462
+msgid "Load XNU extension."
+msgstr "Завантажити розширення XNU."
+
+#: grub-core/loader/xnu.c:1464
+msgid "DIRECTORY [OSBundleRequired]"
+msgstr "КАТАЛОГ [ПотрібнаПрив’язкаДоОС]"
+
+#: grub-core/loader/xnu.c:1465
+msgid "Load XNU extension directory."
+msgstr "Завантажити каталог розширення XNU."
+
+#: grub-core/loader/xnu.c:1471
+msgid "Load a splash image for XNU."
+msgstr "Завантажити вітальне зображення для XNU."
+
+#: grub-core/loader/xnu.c:1476
+msgid "Load XNU hibernate image."
+msgstr "Завантажити образ XNU для присипляння системи."
+
+#: grub-core/mmap/mmap.c:473
+msgid "ADDR1,MASK1[,ADDR2,MASK2[,...]]"
+msgstr "АДРЕСА1,МАСКА1[,АДРЕСА2,МАСКА2[,...]]"
+
+#: grub-core/mmap/mmap.c:474
+msgid "Declare memory regions as badram."
+msgstr "Позначити діапазони пам’яті міткою пошкодженої пам’яті (badram)."
+
+#: grub-core/mmap/mmap.c:476
+msgid "FROM[K|M|G] TO[K|M|G]"
+msgstr "З[K|M|G] ДО[K|M|G]"
+
+#: grub-core/mmap/mmap.c:477
+msgid "Remove any memory regions in specified range."
+msgstr "Вилучити всі ділянки пам’яті у вказаному діапазоні."
+
+#: grub-core/normal/auth.c:216
+msgid "Enter username: "
+msgstr "Введіть ім’я користувача: "
+
+#: grub-core/normal/auth.c:221
+msgid "Enter password: "
+msgstr "Введіть пароль: "
+
+#: grub-core/normal/auth.c:265
+msgid "[USERLIST]"
+msgstr "[СПИСОК_КОРИСТУВАЧІВ]"
+
+#: grub-core/normal/auth.c:265
+msgid "Authenticate users"
+msgstr "Розпізнавання користувачів"
+
+#: grub-core/normal/cmdline.c:174 grub-core/normal/menu_entry.c:1074
+msgid "Possible commands are:"
+msgstr "Можливі команди:"
+
+#: grub-core/normal/cmdline.c:177 grub-core/normal/menu_entry.c:1078
+msgid "Possible devices are:"
+msgstr "Можливі пристрої:"
+
+#: grub-core/normal/cmdline.c:180 grub-core/normal/menu_entry.c:1082
+msgid "Possible files are:"
+msgstr "Можливі файли:"
+
+#: grub-core/normal/cmdline.c:183 grub-core/normal/menu_entry.c:1086
+msgid "Possible partitions are:"
+msgstr "Можливі розділи:"
+
+#: grub-core/normal/cmdline.c:186 grub-core/normal/menu_entry.c:1090
+msgid "Possible arguments are:"
+msgstr "Можливі параметри:"
+
+#: grub-core/normal/cmdline.c:189 grub-core/normal/menu_entry.c:1094
+msgid "Possible things are:"
+msgstr "Можливі елементи:"
+
+#: grub-core/normal/color.c:81
+#, c-format
+msgid "Warning: syntax error (missing slash) in `%s'\n"
+msgstr "Попередження: синтаксична помилка (немає похилої риски) у «%s»\n"
+
+#: grub-core/normal/color.c:90
+#, c-format
+msgid "Warning: invalid foreground color `%s'\n"
+msgstr "Попередження: некоректний колір тексту «%s»\n"
+
+#: grub-core/normal/color.c:96
+#, c-format
+msgid "Warning: invalid background color `%s'\n"
+msgstr "Попередження: помилковий колір тла «%s»\n"
+
+#: grub-core/normal/context.c:201
+msgid "ENVVAR [ENVVAR] ..."
+msgstr "ЗМІННА_СЕРЕДОВИЩА [ЗМІННА_СЕРЕДОВИЩА] ..."
+
+#: grub-core/normal/context.c:202
+msgid "Export variables."
+msgstr "Експортувати змінні."
+
+#: grub-core/normal/dyncmd.c:159
+msgid "not loaded"
+msgstr "не завантажено"
+
+#: grub-core/normal/main.c:214
+#, c-format
+msgid "GNU GRUB  version %s"
+msgstr "GNU GRUB, версія %s"
+
+#: grub-core/normal/main.c:359
+#, c-format
+msgid ""
+"Minimal BASH-like line editing is supported. For the first word, TAB lists "
+"possible command completions. Anywhere else TAB lists possible device or "
+"file completions. %s"
+msgstr ""
+"Передбачено підтримку декількох BASH-подібних команд редагування рядків. "
+"Натискання клавіші TAB під час введення першого слова призведе до показу "
+"можливих варіантів завершення команди. Для інших слів натискання TAB "
+"призведе до показу списку можливих варіантів завершення назви пристрою або "
+"файла. %s"
+
+#: grub-core/normal/main.c:362
+msgid "ESC at any time exits."
+msgstr "Щоб вийти, натисніть ESC."
+
+#: grub-core/normal/main.c:496
+msgid "Clear the screen."
+msgstr "Спорожнити екран."
+
+#: grub-core/normal/main.c:505
+msgid "Enter normal mode."
+msgstr "Увійти у звичайний режим."
+
+#: grub-core/normal/main.c:507
+msgid "Exit from normal mode."
+msgstr "Вийти зі звичайного режиму."
+
+#: grub-core/normal/menu.c:50 grub-core/normal/menu_entry.c:1445
+msgid "Press any key to continue..."
+msgstr "Натисніть будь-яку клавішу, щоб продовжити..."
+
+#: grub-core/normal/menu.c:675
+#, c-format
+msgid "Booting '%s'"
+msgstr "Завантаження «%s»"
+
+#: grub-core/normal/menu.c:687
+#, c-format
+msgid "Falling back to '%s'"
+msgstr "Повернення до «%s»"
+
+#: grub-core/normal/menu.c:703
+msgid "Failed to boot both default and fallback entries.\n"
+msgstr "Не вдалося завантажити типовий та резервний записи.\n"
+
+#: grub-core/normal/menu_entry.c:1199
+msgid "Booting a command list"
+msgstr "Завантаження списку команд"
+
+#: grub-core/normal/menu_text.c:151
+msgid ""
+"Minimum Emacs-like screen editing is supported. TAB lists completions. Press "
+"Ctrl-x or F10 to boot, Ctrl-c or F2 for a command-line or ESC to discard "
+"edits and return to the GRUB menu."
+msgstr ""
+"Передбачено підтримку декількох команд Emacs-подібного редагування рядків. "
+"Натискання клавіші TAB призводить до показу списку можливих варіантів "
+"завершення, натискання Ctrl-X або F10 — до завантаження, Ctrl-C або F2 — до "
+"переходу у режим командного рядка, ESC — до відкидання внесених змін і "
+"повернення до меню GRUB."
+
+#: grub-core/normal/menu_text.c:159
+#, c-format
+msgid "Use the %C and %C keys to select which entry is highlighted.\n"
+msgstr "Скористайтеся клавішами %C і %C для позначення пункту.\n"
+
+#: grub-core/normal/menu_text.c:179
+msgid ""
+"Press enter to boot the selected OS, 'e' to edit the commands before booting "
+"or 'c' for a command-line. ESC to return previous menu.\n"
+msgstr ""
+"Натисніть Enter, щоб почати завантаження позначеної ОС. Натисніть «e», щоб "
+"змінити команду до завантаження системи, «c» — щоб перейти у режим "
+"командного рядка. ESC — повернутися до попереднього меню.\n"
+
+#: grub-core/normal/menu_text.c:187
+msgid ""
+"Press enter to boot the selected OS, 'e' to edit the commands before booting "
+"or 'c' for a command-line.\n"
+msgstr ""
+"Натисніть Enter, щоб почати завантаження позначеної ОС. Натисніть «e», щоб "
+"змінити команду до завантаження системи, «c» — щоб перейти у режим "
+"командного рядка.\n"
+
+#: grub-core/normal/misc.c:42
+#, c-format
+msgid "Partition %s:"
+msgstr "Розділ %s:"
+
+#: grub-core/normal/misc.c:47
+#, c-format
+msgid "Device %s:"
+msgstr "Пристрій %s:"
+
+#: grub-core/normal/misc.c:53
+msgid "Filesystem cannot be accessed"
+msgstr "Файлова система недоступна"
+
+#: grub-core/normal/misc.c:64
+#, c-format
+msgid "Filesystem type %s"
+msgstr "Тип файлової системи %s"
+
+#: grub-core/normal/misc.c:74
+#, c-format
+msgid "- Label \"%s\""
+msgstr "- Мітка «%s»"
+
+#: grub-core/normal/misc.c:89
+#, c-format
+msgid "- Last modification time %d-%02d-%02d %02d:%02d:%02d %s"
+msgstr "- Час останньої зміни — %d-%02d-%02d %02d:%02d:%02d %s"
+
+#: grub-core/normal/misc.c:112
+msgid "Not a known filesystem"
+msgstr "Невідома файлова система"
+
+#: grub-core/normal/misc.c:115
+#, fuzzy, c-format
+msgid " - Partition start at %llu"
+msgstr " - Розділ починається з %u"
+
+#: grub-core/normal/misc.c:120
+#, fuzzy, c-format
+msgid " - Total size %llu sectors"
+msgstr " - Загальний розмір — %u секторів"
+
+#: grub-core/script/main.c:54 grub-core/script/main.c:56
+#: grub-core/script/main.c:58 grub-core/script/main.c:63
+msgid "[n]"
+msgstr "[n]"
+
+#: grub-core/script/main.c:54
+msgid "Exit from loops"
+msgstr "Вийти з циклів"
+
+#: grub-core/script/main.c:56
+msgid "Continue loops"
+msgstr "Продовжити виконання команд циклу"
+
+#: grub-core/script/main.c:58
+msgid "Shift positional parameters."
+msgstr "Зсунути значення позиційних параметрів."
+
+#: grub-core/script/main.c:60
+msgid "[VALUE]..."
+msgstr "[ЗНАЧЕННЯ]..."
+
+#: grub-core/script/main.c:61
+msgid "Set positional parameters."
+msgstr "Встановити значення позиційних параметрів."
+
+#: grub-core/script/main.c:63
+msgid "Return from a function."
+msgstr "Повернутися з функції."
+
+#: grub-core/term/gfxterm.c:1211
+msgid "[-m (stretch|normal)] FILE"
+msgstr "[-m (stretch|normal)] ФАЙЛ"
+
+#: grub-core/term/gfxterm.c:1212
+msgid "Load background image for active terminal."
+msgstr "Завантажити зображення тла для активного термінала."
+
+#: grub-core/term/serial.c:37
+msgid "Set the serial unit."
+msgstr "Вказати номер послідовного порту."
+
+#: grub-core/term/serial.c:38
+msgid "Set the serial port address."
+msgstr "Вказати адресу послідовного порту."
+
+#: grub-core/term/serial.c:39
+msgid "Set the serial port speed."
+msgstr "Вказати швидкість послідовного порту."
+
+#: grub-core/term/serial.c:40
+msgid "Set the serial port word length."
+msgstr "Вказати довжину слова послідовного порту."
+
+#: grub-core/term/serial.c:41
+msgid "Set the serial port parity."
+msgstr "Вказати парність послідовного порту."
+
+#: grub-core/term/serial.c:42
+msgid "Set the serial port stop bits."
+msgstr "Вказати кількість стоп-бітів послідовного порту."
+
+#: grub-core/term/serial.c:347
+msgid "[OPTIONS...]"
+msgstr "[ПАРАМЕТРИ...]"
+
+#: grub-core/term/serial.c:348
+msgid "Configure serial port."
+msgstr "Вказати послідовний порт."
+
+#: grub-core/term/terminfo.c:537
+msgid "ASCII"
+msgstr "ASCII"
+
+#: grub-core/term/terminfo.c:540
+msgid "UTF-8"
+msgstr "UTF-8"
+
+#: grub-core/term/terminfo.c:542
+msgid "UTF-8 visual"
+msgstr "Візуальний UTF-8"
+
+#: grub-core/term/terminfo.c:545
+msgid "Unknown"
+msgstr "Невідомо"
+
+#: grub-core/term/terminfo.c:562
+msgid "Terminal is ASCII-only [default]."
+msgstr "У терміналі можна використовувати лише ASCII [типове значення]."
+
+#: grub-core/term/terminfo.c:563
+msgid "Terminal is logical-ordered UTF-8."
+msgstr "Термінал з логічним впорядкуванням UTF-8."
+
+#: grub-core/term/terminfo.c:564
+msgid "Terminal is visually-ordered UTF-8."
+msgstr "Термінал з візуальним впорядкуванням UTF-8."
+
+#: grub-core/term/terminfo.c:566
+msgid "Terminal has given geometry."
+msgstr "Зображення термінала має вказані геометричні параметри."
+
+#: grub-core/term/terminfo.c:567
+msgid "WIDTHxHEIGHT."
+msgstr "ШИРИНАxВИСОТА."
+
+#: grub-core/term/terminfo.c:644
+msgid "[[-a|-u|-v] [-g WxH] TERM [TYPE]]"
+msgstr "[[-a|-u|-v] [-g ВxШ] ТЕРМІНАЛ [ТИП]]"
+
+#: grub-core/term/terminfo.c:645
+msgid "Set terminfo type of TERM  to TYPE.\n"
+msgstr "Встановити значення типу terminfo ТЕРМІНАЛА ТИП.\n"
+
+#: grub-core/tests/test_blockarg.c:47
+msgid "Print and execute block argument."
+msgstr "Вивести і виконати блоковий параметр."
+
+#: util/grub-editenv.c:39 util/grub-fstest.c:356
+msgid "Commands:"
+msgstr "Команди:"
+
+#: util/grub-editenv.c:41
+msgid "Create a blank environment block file."
+msgstr "Створити блоковий файл порожнього середовища."
+
+#: util/grub-editenv.c:43
+msgid "List the current variables."
+msgstr "Показати список поточних змінних."
+
+#: util/grub-editenv.c:45
+msgid "Set variables."
+msgstr "Встановити значення змінних."
+
+#: util/grub-editenv.c:47
+msgid "Delete variables."
+msgstr "Вилучити змінні."
+
+#: util/grub-editenv.c:49
+msgid "Options:"
+msgstr "Параметри:"
+
+#: util/grub-editenv.c:50 util/grub-fstest.c:369 util/grub-setup.c:701
+msgid "Print verbose messages."
+msgstr "Показати докладні повідомлення."
+
+#: util/grub-editenv.c:76
+msgid "You need to specify at least one command.\n"
+msgstr "Вам слід вказати принаймні одну команду.\n"
+
+#: util/grub-editenv.c:101
+msgid "FILENAME COMMAND"
+msgstr "НАЗВА_ФАЙЛА КОМАНДА"
+
+#: util/grub-editenv.c:102
+msgid "Tool to edit environment block."
+msgstr "Інструмент для редагування блоку середовища."
+
+#: util/grub-editenv.c:104
+#, c-format
+msgid "If FILENAME is '-', the default value %s is used."
+msgstr ""
+"Якщо буде вказано НАЗВУ_ФАЙЛА «-», буде використано типове значення, %s."
+
+#: util/grub-editenv.c:276 util/grub-setup.c:881
+msgid "Error in parsing command line arguments\n"
+msgstr "Помилка під час спроби обробки параметрів командного рядка\n"
+
+#: util/grub-editenv.c:306
+#, c-format
+msgid "Unknown command `%s'.\n"
+msgstr "Невідома команда «%s».\n"
+
+#: util/grub-fstest.c:52
+#, c-format
+msgid "can't find command %s"
+msgstr "не вдалося знайти команди %s"
+
+#: util/grub-fstest.c:81
+msgid "can't open device"
+msgstr "не вдалося відкрити пристрою"
+
+#: util/grub-fstest.c:96
+#, c-format
+msgid "disk read fails at offset %lld, length %d"
+msgstr ""
+"спроба читання даних з диска зазнала невдачі на позиції %lld, довжина %d"
+
+#: util/grub-fstest.c:114
+#, fuzzy, c-format
+msgid "cannot open file %s:%s"
+msgstr "Не вдалося відкрити файл %s"
+
+#: util/grub-fstest.c:123
+#, c-format
+msgid "invalid skip value %lld"
+msgstr "некоректне значення пропуску %lld"
+
+#: util/grub-fstest.c:141 util/grub-fstest.c:196
+#, c-format
+msgid "read error at offset %llu: %s"
+msgstr "помилка читання з позиції %llu: %s"
+
+#: util/grub-fstest.c:168
+msgid "write error"
+msgstr "помилка запису"
+
+#: util/grub-fstest.c:178 util/grub-fstest.c:217
+msgid "open error"
+msgstr "помилка відкриття"
+
+#: util/grub-fstest.c:207
+#, c-format
+msgid "compare fail at offset %llu"
+msgstr "помилка порівняння у позиції %llu"
+
+#: util/grub-fstest.c:222
+msgid "seek error"
+msgstr "помилка пошуку"
+
+#: util/grub-fstest.c:231
+msgid "unexpected end of file"
+msgstr ""
+
+#: util/grub-fstest.c:301
+msgid "loopback command fails"
+msgstr "помилка команди зворотної петлі"
+
+#: util/grub-fstest.c:357
+msgid "ls PATH"
+msgstr "ls ШЛЯХ"
+
+#: util/grub-fstest.c:357
+msgid "List files in PATH."
+msgstr "Показати список файлів у каталозі ШЛЯХ."
+
+#: util/grub-fstest.c:358
+msgid "cp FILE LOCAL"
+msgstr "cp ФАЙЛ ЛОКАЛЬНИЙ_ФАЙЛ"
+
+#: util/grub-fstest.c:358
+msgid "Copy FILE to local file LOCAL."
+msgstr "Копіювати ФАЙЛ у ЛОКАЛЬНИЙ_ФАЙЛ."
+
+#: util/grub-fstest.c:359
+msgid "cmp FILE LOCAL"
+msgstr "cmp ФАЙЛ ЛОКАЛЬНИЙ_ФАЙЛ"
+
+#: util/grub-fstest.c:359
+msgid "Compare FILE with local file LOCAL."
+msgstr "Порівняти ФАЙЛ з ЛОКАЛЬНИМ_ФАЙЛОМ."
+
+#: util/grub-fstest.c:360
+msgid "hex FILE"
+msgstr "hex ФАЙЛ"
+
+#: util/grub-fstest.c:360
+msgid "Hex dump FILE."
+msgstr "Створити шістнадцятковий дамп ФАЙЛа."
+
+#: util/grub-fstest.c:361
+msgid "crc FILE"
+msgstr "crc ФАЙЛ"
+
+#: util/grub-fstest.c:361
+msgid "Get crc32 checksum of FILE."
+msgstr "Визначити контрольну суму crc32 ФАЙЛа."
+
+#: util/grub-fstest.c:362
+msgid "blocklist FILE"
+msgstr "blocklist ФАЙЛ"
+
+#: util/grub-fstest.c:362
+msgid "Display blocklist of FILE."
+msgstr "Показати список блоків ФАЙЛа."
+
+#: util/grub-fstest.c:364
+msgid "DEVICE_NAME"
+msgstr "НАЗВА_ПРИСТРОЮ"
+
+#: util/grub-fstest.c:365
+msgid "Skip N bytes from output file."
+msgstr "Пропустити N байтів з файла виведених даних."
+
+#: util/grub-fstest.c:366
+msgid "Handle N bytes in output file."
+msgstr "Обробити N байтів з файла виведених даних."
+
+#: util/grub-fstest.c:367
+msgid "N input files."
+msgstr "N файлів вхідних даних."
+
+#: util/grub-fstest.c:368
+msgid "Set debug environment variable."
+msgstr "Встановити зневаджувальну змінну середовища."
+
+#: util/grub-fstest.c:408
+msgid "Invalid disk count.\n"
+msgstr "Некоректна кількість дисків.\n"
+
+#: util/grub-fstest.c:413
+msgid "Disk count must precede disks list.\n"
+msgstr "Перед списком дисків слід вказати кількість дисків.\n"
+
+#: util/grub-fstest.c:429
+msgid "No command is specified.\n"
+msgstr "Не вказано команди.\n"
+
+#: util/grub-fstest.c:434
+msgid "Not enough parameters to command.\n"
+msgstr "Недостатньо параметрів команди.\n"
+
+#: util/grub-fstest.c:450
+msgid "Must use absolute path.\n"
+msgstr "Слід вказати абсолютну адресу.\n"
+
+#: util/grub-fstest.c:493
+#, c-format
+msgid "Invalid command %s.\n"
+msgstr "Некоректна команда %s.\n"
+
+#: util/grub-fstest.c:506
+msgid "IMAGE_PATH COMMANDS"
+msgstr "АДРЕСА_ОБРАЗУ КОМАНДИ"
+
+#: util/grub-fstest.c:507
+msgid "Debug tool for filesystem driver."
+msgstr "Інструмент діагностики драйвера файлової системи."
+
+#: util/grub-mkimage.c:494 util/grub-mkimage.c:535
+msgid "the core image is too small"
+msgstr "основний образ є занадто малим"
+
+#: util/grub-mkimage.c:505 util/grub-mkimage.c:539 util/grub-mkimage.c:557
+msgid "cannot compress the kernel image"
+msgstr "не вдалося стиснути образ ядра"
+
+#: util/grub-mkimage.c:672
+msgid "prefix is too long"
+msgstr "префікс є занадто довгим"
+
+#: util/grub-mkimage.c:836
+#, c-format
+msgid "core image is too big (%p > %p)"
+msgstr "основний образ є занадто великим (%p > %p)"
+
+#: util/grub-mkimage.c:842
+msgid "the core image is too big"
+msgstr "основний образ є занадто великим"
+
+#: util/grub-mkimage.c:861
+#, c-format
+msgid "diskboot.img size must be %u bytes"
+msgstr "розмір diskboot.img має дорівнювати %u байтів"
+
+#: util/grub-mkimage.c:1402
+#, c-format
+msgid "Try `%s --help' for more information.\n"
+msgstr "Виконайте команду «%s --help», щоб дізнатися більше.\n"
+
+#: util/grub-mkimage.c:1421
+#, c-format
+msgid ""
+"Usage: %s [OPTION]... [MODULES]\n"
+"\n"
+"Make a bootable image of GRUB.\n"
+"\n"
+"  -d, --directory=DIR     use images and modules under DIR [default=%s/"
+"@platform@]\n"
+"  -p, --prefix=DIR        set grub_prefix directory [default=%s]\n"
+"  -m, --memdisk=FILE      embed FILE as a memdisk image\n"
+"  -c, --config=FILE       embed FILE as boot config\n"
+"  -n, --note              add NOTE segment for CHRP Open Firmware\n"
+"  -o, --output=FILE       output a generated image to FILE [default=stdout]\n"
+"  -O, --format=FORMAT     generate an image in format\n"
+"                          available formats: %s\n"
+"  -C, --compression=(xz|none|auto)  choose the compression to use\n"
+"  -h, --help              display this message and exit\n"
+"  -V, --version           print version information and exit\n"
+"  -v, --verbose           print verbose messages\n"
+"\n"
+"Report bugs to <%s>.\n"
+msgstr ""
+"Використання: %s [ПАРАМЕТР]... [МОДУЛІ]\n"
+"\n"
+"Створити придатний для завантаження модуль GRUB.\n"
+"\n"
+"  -d, --directory=DIR     використати образи і модулі з каталогу DIR [типове "
+"значення=%s/@платформа@]\n"
+"  -p, --prefix=DIR        вказати каталог префіксу (grub_prefix) [типове "
+"значення=%s]\n"
+"  -m, --memdisk=ФАЙЛ      вбудувати ФАЙЛ як образ диску у пам’яті\n"
+"  -c, --config=ФАЙЛ       вбудувати ФАЙЛ як файл налаштування завантаження\n"
+"  -n, --note              додати сегмент NOTE для CHRP Open Firmware\n"
+"  -o, --output=ФАЙЛ       записати створений образ до файл ФАЙЛ [типове "
+"значення=stdout]\n"
+"  -O, --format=ФОРМАТ     створити образ у вказаному форматі\n"
+"                          доступні формати: %s\n"
+"  -C, --compression=(xz|none|auto)  вибрати режим стискання\n"
+"  -h, --help              показати це повідомлення і завершити роботу\n"
+"  -V, --version           показати повідомлення щодо версії і завершити "
+"роботу\n"
+"  -v, --verbose           показувати докладні повідомлення\n"
+"\n"
+"Про вади слід повідомляти на адресу <%s>.\n"
+
+#: util/grub-mkimage.c:1577
+#, c-format
+msgid "cannot open %s"
+msgstr "не вдалося відкрити %s"
+
+#: util/grub-setup.c:215
+msgid "the first sector of the core file is not sector-aligned"
+msgstr "перший сектор базового файла не вирівняно за секторами"
+
+#: util/grub-setup.c:229
+msgid "non-sector-aligned data is found in the core file"
+msgstr "у базовому файлі виявлено невирівняні за секторами дані"
+
+#: util/grub-setup.c:245
+msgid "the sectors of the core file are too fragmented"
+msgstr "сектори основного файла занадто фрагментовані"
+
+#: util/grub-setup.c:258
+#, c-format
+msgid "the size of `%s' is not %u"
+msgstr "розмір «%s» не дорівнює %u"
+
+#: util/grub-setup.c:268
+#, c-format
+msgid "the size of `%s' is too small"
+msgstr "розмір «%s» є занадто малим"
+
+#: util/grub-setup.c:271
+#, c-format
+msgid "the size of `%s' is too large"
+msgstr "розмір «%s» є занадто великим"
+
+#: util/grub-setup.c:367 util/grub-setup.c:418
+msgid ""
+"Attempting to install GRUB to a disk with multiple partition labels or both "
+"partition label and filesystem.  This is not supported yet."
+msgstr ""
+"Спроба встановлення GRUB на диск з декількома мітками розділів або з міткою "
+"розділу і файловою системою. У поточній версії ще не передбачено такої "
+"можливості."
+
+#: util/grub-setup.c:379
+#, c-format
+msgid "unable to identify a filesystem in %s; safety check can't be performed"
+msgstr ""
+"не вдалося визначити файлову систему на %s; виконання перевірки безпеки "
+"неможливе"
+
+#: util/grub-setup.c:382
+#, c-format
+msgid ""
+"%s appears to contain a %s filesystem which isn't known to reserve space for "
+"DOS-style boot.  Installing GRUB there could result in FILESYSTEM "
+"DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe "
+"disables this check, use at your own risk)"
+msgstr ""
+"%s містить файлову систему %s. Невідомо, чи підтримується цією файловою "
+"системою надання місця для завантажувача у стилі DOS. Встановлення GRUB у цю "
+"файлову систему може призвести до РУЙНУВАННЯ ФАЙЛОВОЇ СИСТЕМИ, якщо важливі "
+"дані цієї системи буде перезаписано grub-setup (--skip-fs-probe вимикає цю "
+"перевірку, ви можете скористатися цим параметром, якщо вважаєте, що "
+"пошкодження є неможливими)."
+
+#: util/grub-setup.c:394
+#, c-format
+msgid ""
+"%s appears to contain a %s partition map which isn't known to reserve space "
+"for DOS-style boot.  Installing GRUB there could result in FILESYSTEM "
+"DESTRUCTION if valuable data is overwritten by grub-setup (--skip-fs-probe "
+"disables this check, use at your own risk)"
+msgstr ""
+"%s містить карту розділів %s. Невідомо, чи підтримується цією картою "
+"розділів надання місця для завантажувача у стилі DOS. Встановлення GRUB на "
+"цю карту розділів може призвести до РУЙНУВАННЯ ФАЙЛОВОЇ СИСТЕМИ, якщо "
+"важливі дані цієї системи буде перезаписано grub-setup (--skip-fs-probe "
+"вимикає цю перевірку, ви можете скористатися цим параметром, якщо вважаєте, "
+"що пошкодження є неможливими)."
+
+#: util/grub-setup.c:413
+msgid ""
+"Attempting to install GRUB to a partitionless disk or to a partition.  This "
+"is a BAD idea."
+msgstr ""
+"Спроба встановлення GRUB на диск без розділів або на певний розділ диска. "
+"Вам НЕ ВАРТО виконувати подібні маніпуляції."
+
+#: util/grub-setup.c:499
+msgid ""
+"embedding is not possible, but this is required when the root device is on a "
+"RAID array or LVM volume"
+msgstr ""
+"вбудовування неможливе, але без нього не обійтися, якщо кореневий пристрій є "
+"частиною масиву RAID або томом LVM"
+
+#: util/grub-setup.c:504
+msgid "embedding is not possible, but this is required for cross-disk install"
+msgstr ""
+"вбудовування неможливе, але без нього не обійтися під час встановлення на "
+"декілька дисків"
+
+#: util/grub-setup.c:508
+msgid ""
+"Embedding is not possible.  GRUB can only be installed in this setup by "
+"using blocklists.  However, blocklists are UNRELIABLE and their use is "
+"discouraged."
+msgstr ""
+"Вбудовування неможливе. GRUB можна встановити на таку конфігурацію лише з "
+"використанням списків блоків. Використання списків блоків може ПРИЗВЕСТИ ДО "
+"ВТРАТИ ДАНИХ, не радимо ними користуватися."
+
+#: util/grub-setup.c:512
+msgid "will not proceed with blocklists"
+msgstr "не буде продовжено за допомогою списків блоків"
+
+#: util/grub-setup.c:529
+#, c-format
+msgid "attempting to read the core image `%s' from GRUB"
+msgstr "спроба читання основного образу «%s» з GRUB"
+
+#: util/grub-setup.c:530
+#, c-format
+msgid "attempting to read the core image `%s' from GRUB again"
+msgstr "повторна спроба читання основного образу «%s» з GRUB"
+
+#: util/grub-setup.c:589
+#, c-format
+msgid "cannot read `%s' correctly"
+msgstr "не вдалося правильно прочитати «%s»"
+
+#: util/grub-setup.c:604
+msgid "no terminator in the core image"
+msgstr "у основному образі немає мітки завершення"
+
+#: util/grub-setup.c:616
+msgid "failed to read the first sector of the core image"
+msgstr "не вдалося прочитати перший сектор основного образу"
+
+#: util/grub-setup.c:622
+msgid "failed to read the rest sectors of the core image"
+msgstr "не вдалося прочитати решту секторів основного образу"
+
+#: util/grub-setup.c:687
+#, c-format
+msgid "Use FILE as the boot image [default=%s]"
+msgstr "Використати ФАЙЛ як образ для завантаження [типове значення=%s]"
+
+#: util/grub-setup.c:689
+#, c-format
+msgid "Use FILE as the core image [default=%s]"
+msgstr "Використати ФАЙЛ як образ теки ядра [типове значення=%s]"
+
+#: util/grub-setup.c:690
+msgid "DIR"
+msgstr "КАТАЛОГ"
+
+#: util/grub-setup.c:691
+#, c-format
+msgid "Use GRUB files in the directory DIR [default=%s]"
+msgstr "Використовувати файли GRUB у каталозі КАТАЛОГ [типове значення=%s]"
+
+#: util/grub-setup.c:693
+#, c-format
+msgid "Use FILE as the device map [default=%s]"
+msgstr "Використовувати ФАЙЛ яка карту пристрою [типове значення=%s]"
+
+#: util/grub-setup.c:694
+msgid "DEV"
+msgstr "ПРИСТРІЙ"
+
+#: util/grub-setup.c:695
+msgid "Use DEV as the root device [default=guessed]"
+msgstr ""
+"Використовувати ПРИСТРІЙ як кореневий пристрій [типове значення=guessed]"
+
+#: util/grub-setup.c:697
+msgid "Install even if problems are detected"
+msgstr "Встановити, навіть якщо буде виявлено проблеми"
+
+#: util/grub-setup.c:699
+msgid "Do not probe for filesystems in DEVICE"
+msgstr "Не шукати файлові системи на ПРИСТРОЇ"
+
+#: util/grub-setup.c:703
+msgid ""
+"Make the drive also bootable as floppy (default for fdX devices). May break "
+"on some BIOSes."
+msgstr ""
+"Уможливити завантаження з пристрою, як з дискети (типова поведінка для "
+"пристроїв fdX). Може призвести до непрацездатності з деякими BIOS."
+
+#: util/grub-setup.c:822
+#, c-format
+msgid "Unknown extra argument `%s'.\n"
+msgstr "Невідомий додатковий параметр «%s».\n"
+
+#: util/grub-setup.c:828
+msgid "No device is specified.\n"
+msgstr "Не вказано жодного пристрою.\n"
+
+#: util/grub-setup.c:841
+msgid ""
+"Set up images to boot from DEVICE.\n"
+"\n"
+"You should not normally run this program directly.  Use grub-install instead."
+msgstr ""
+"Визначення образів для завантаження з ПРИСТРОЮ.\n"
+"\n"
+"За типових умов вам не слід запускати цю програму безпосередньо. "
+"Скористайтеся краще grub-install."
+
+#: util/grub-setup.c:845
+msgid "DEVICE must be an OS device (e.g. /dev/sda)."
+msgstr "ПРИСТРІЙ має бути пристроєм ОС (наприклад, /dev/sda)."
+
+#: util/grub-setup.c:915
+#, c-format
+msgid "Invalid device `%s'.\n"
+msgstr "Некоректний пристрій «%s».\n"
+
+#: util/grub-setup.c:935
+#, c-format
+msgid "invalid root device `%s'"
+msgstr "некоректний кореневий пристрій «%s»"
+
+#: util/grub-setup.c:949
+msgid "cannot guess the root device. Specify the option `--root-device'"
+msgstr ""
+"не вдалося визначити кореневий пристрій. Вкажіть його за допомогою параметра "
+"«--root-device»"
+
+#: util/grub.d/10_hurd.in:84 util/grub.d/10_hurd.in:108
+msgid "Loading GNU Mach ..."
+msgstr "Завантаження GNU Mach…"
+
+#: util/grub.d/10_hurd.in:91 util/grub.d/10_hurd.in:114
+msgid "Loading the Hurd ..."
+msgstr "Завантаження Hurd…"
+
+#: util/grub.d/10_kfreebsd.in:74
+msgid "%s, with kFreeBSD %s (recovery mode)"
+msgstr "%s, з kFreeBSD %s (режим відновлення)"
+
+#: util/grub.d/10_kfreebsd.in:76
+msgid "%s, with kFreeBSD %s"
+msgstr "%s, з kFreeBSD %s"
+
+#: util/grub.d/10_kfreebsd.in:87
+msgid "Loading kernel of FreeBSD %s ..."
+msgstr "Завантаження ядра FreeBSD %s…"
+
+#: util/grub.d/10_linux.in:69
+msgid "%s, with Linux %s (recovery mode)"
+msgstr "%s, з Linux %s (режим відновлення)"
+
+#: util/grub.d/10_linux.in:71
+msgid "%s, with Linux %s"
+msgstr "%s, з Linux %s"
+
+#: util/grub.d/10_linux.in:116 util/grub.d/20_linux_xen.in:85
+msgid "Loading Linux %s ..."
+msgstr "Завантаження Linux %s…"
+
+#: util/grub.d/10_linux.in:122 util/grub.d/20_linux_xen.in:93
+msgid "Loading initial ramdisk ..."
+msgstr "Завантаження початкового диска у оперативній пам’яті…"
+
+#: util/grub.d/10_netbsd.in:98
+msgid "%s, with kernel %s (via %s, recovery mode)"
+msgstr "%s, з ядром %s (за допомогою %s, режим відновлення)"
+
+#: util/grub.d/10_netbsd.in:100
+msgid "%s, with kernel %s (via %s)"
+msgstr "%s, з ядром %s (за допомогою %s)"
+
+#: util/grub.d/20_linux_xen.in:71
+msgid "%s, with Xen %s and Linux %s (recovery mode)"
+msgstr "%s, з Xen %s і Linux %s (режим відновлення)"
+
+#: util/grub.d/20_linux_xen.in:73
+msgid "%s, with Xen %s and Linux %s"
+msgstr "%s, з Xen %s і Linux %s"
+
+#: util/grub.d/20_linux_xen.in:84
+msgid "Loading Xen %s ..."
+msgstr "Завантаження Xen %s…"
+
+#~ msgid "[DEVICE]"
+#~ msgstr "[ПРИСТРІЙ]"
+
+#~ msgid " - Total size unknown"
+#~ msgstr " - Загальний розмір невідомий"

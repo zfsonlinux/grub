@@ -1,5 +1,7 @@
 /* This file was automatically imported with 
    import_gcry.py. Please don't modify it */
+#include <grub/dl.h>
+GRUB_MOD_LICENSE ("GPLv3+");
 /* des.c - DES and Triple-DES encryption/decryption Algorithm
  * Copyright (C) 1998, 1999, 2001, 2002, 2003,
  *               2008  Free Software Foundation, Inc.
