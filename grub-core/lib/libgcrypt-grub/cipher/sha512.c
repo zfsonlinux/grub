@@ -1,5 +1,7 @@
 /* This file was automatically imported with 
    import_gcry.py. Please don't modify it */
+#include <grub/dl.h>
+GRUB_MOD_LICENSE ("GPLv3+");
 /* sha512.c - SHA384 and SHA512 hash functions
  *	Copyright (C) 2003, 2008 Free Software Foundation, Inc.
  *

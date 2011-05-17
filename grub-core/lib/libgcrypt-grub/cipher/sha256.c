@@ -1,5 +1,7 @@
 /* This file was automatically imported with 
    import_gcry.py. Please don't modify it */
+#include <grub/dl.h>
+GRUB_MOD_LICENSE ("GPLv3+");
 /* sha256.c - SHA256 hash function
  *	Copyright (C) 2003, 2006, 2008 Free Software Foundation, Inc.
  *

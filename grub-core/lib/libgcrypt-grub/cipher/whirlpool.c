@@ -1,5 +1,7 @@
 /* This file was automatically imported with 
    import_gcry.py. Please don't modify it */
+#include <grub/dl.h>
+GRUB_MOD_LICENSE ("GPLv3+");
 /* whirlpool.c - Whirlpool hashing algorithm
  * Copyright (C) 2005 Free Software Foundation, Inc.
  *

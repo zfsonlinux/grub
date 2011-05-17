@@ -1,3 +1,111 @@
+grub2 (1.99-2) unstable; urgency=low
+
+  * Include both old and new Lintian override styles for
+    statically-linked-binary tag, since ftp-master has not yet been updated
+    to 2.5.0~rc1.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 17 May 2011 01:36:10 +0100
+
+grub2 (1.99-1) unstable; urgency=low
+
+  * New upstream release.
+    - Ensure uniqueness of RAID array numbers even if some elements have a
+      name (closes: #609804).
+    - Remove unnecessary brackets from tr arguments (closes: #612564).
+    - Add grub-mkrescue info documentation (closes: #612585).
+    - Avoid generating invalid configuration when something that looks like
+      a Xen hypervisor is present without any Xen kernels (closes: #612898).
+    - Fix memory alignment when calling 'linux' multiple times on EFI
+      (closes: #616638).
+    - Fix grub-install on amd64 EFI systems (closes: #617388).
+    - Automatically export pager variable (closes: #612995).
+    - Fix parser error with "time" (closes: #612991).
+    - Ignore case of bitmap extensions (closes: #611123).
+    - Skip vmlinux-* on x86 platforms (closes: #536846, #546008).
+    - Accept old-style Xen kernels (closes: #610428).
+    - Skip damaged LVM volumes (closes: #544731).
+    - Handle LVM mirroring (closes: #598441).
+    - Detect spares and report them as not RAID members (closes: #611561).
+    - Don't enable localisation unless gfxterm is available (closes:
+      #604609).
+    - Fix partitioned RAID support (closes: #595071, #613444).
+    - Dynamically count the number of lines for the lower banner (closes:
+      #606494).
+    - Improve quoting in grub-mkconfig, to support background image file
+      names containing spaces (closes: #612417).
+    - Flush BIOS disk devices more accurately (closes: #623124).
+    - Identify RAID devices by their UUID rather than by their guessed name
+      (closes: #624232).
+    - Add "SEE ALSO" sections to most man pages (closes: #551428).
+
+  [ Christian Perrier ]
+  * Drop extra word in French debconf translation. Thanks to David
+    Prévôt.
+  * Fix spelling error in French debconf translation. Thanks to David
+    Prévôt.
+
+  [ Colin Watson ]
+  * Set PACKAGE_VERSION and PACKAGE_STRING using configure arguments rather
+    than sedding configure.ac in debian/rules (which sometimes has annoying
+    interactions with quilt, etc.).
+  * Update branch_embed-sectors.patch:
+    - Detect sector used by HighPoint RAID controller (closes: #394868).
+  * Add debian/README.source (from quilt).
+  * Make debian/rules more explicit about when autogen.sh is run.  We need
+    to be careful that all full builds run it, since we use GRUB extras.
+  * Merge from Ubuntu:
+    - Handle filesystems loop-mounted on file images.
+    - On Wubi, don't ask for an install device, but just update wubildr
+      using the diverted grub-install.
+    - Add grub-mount-udeb, containing just grub-mount.  This can be used by
+      os-prober and other parts of d-i.
+    - Artificially bump Replaces: grub-common versioning to account for
+      grub-reboot/grub-set-default movement in Ubuntu.
+  * Don't do a separate build pass for grub-common.  It will be identical to
+    the build for the default platform for the CPU architecture anyway, so
+    reuse that.
+  * Build with GCC 4.5 on all architectures.
+  * Update Lintian overrides for changes in Lintian 2.5.0~rc1.
+  * Invert how files are split among binary packages: rather than code in
+    debian/rules to remove files we don't want, add dh_install configuration
+    to declare the files we do want.  This means a little more repetition
+    for platform-specific programs, but it seems less confusing and easier
+    to extend.
+  * Drop versioned dependencies on base-files.  GPL-3 has been there for two
+    Debian releases now, and the dependency was never upgrade-critical
+    anyway.
+  * Create grub2-common package containing files that are common among GRUB
+    platform packages but that would break GRUB Legacy, or that are too
+    confusing when coinstalled with GRUB Legacy (closes: #564167).
+  * Drop conflict on an ancient (pre-lenny/hardy) version of desktop-base.
+  * Move /etc/grub.d/05_debian_theme to grub-common, to go with the other
+    /etc/grub.d/* files.
+  * Drop redundant Suggests: os-prober from several platform packages, as
+    grub-common already Recommends: os-prober.
+  * Create grub-<platform>-bin packages corresponding to all grub-<platform>
+    packages (except for grub-emu).  These do not automatically install the
+    boot loader or update grub.cfg, and they install their binaries to
+    /usr/lib/grub/<cpu>-<platform>/; this means that they can be installed
+    in parallel, making it easier to use them to build GRUB-based disk
+    images (e.g. d-i).  The grub-<platform> packages now depend on these and
+    include symlinks, so their behaviour will remain as before.
+  * Make grub-emu depend on grub-common.
+  * Make the documentation directory in most binary packages be a symlink to
+    that in grub-common.
+  * Drop lenny compatibility from grub2-common's dpkg/install-info
+    dependency, since it produces a Lintian warning and using the current
+    packaging on lenny is probably rather a stretch anyway.
+
+  [ Updated translations ]
+  * Belarusian (Viktar Siarheichyk).  Closes: #606864
+  * Danish (Joe Hansen).  Closes: #606879
+  * Romanian (Andrei POPESCU).  Closes: #606888
+  * Italian (Luca Monducci).  Closes: #606891
+  * Brazilian Portuguese (Flamarion Jorge).  Closes: #610613
+  * Greek (Emmanuel Galatoulas).  Closes: #604847
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 16 May 2011 17:42:07 +0100
+
 grub2 (1.99~rc1-13) unstable; urgency=low
 
   * Cherry-pick from upstream:
