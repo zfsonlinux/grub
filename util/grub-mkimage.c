@@ -1169,19 +1169,21 @@ generate_image (const char *dir, char *prefix, FILE *out, char *mods[],
       char *boot_path, *boot_img;
       size_t boot_size;
       grub_uint8_t context[GRUB_MD_SHA512->contextsize];
-      /* fwstart.img is the only part which can't be testes by using *-elf
+      /* fwstart.img is the only part which can't be tested by using *-elf
 	 target. Check it against the checksum. This checksum is obtained with
 	 sha512sum utility after compiling on Gnewsense.
       */
       const grub_uint8_t fwstart_good_hash[] = 
-	{ 0x75, 0xbf, 0xa3, 0x0e, 0x7c, 0xd1, 0x03, 0x82,
-	  0xe1, 0x34, 0x55, 0xd7, 0x09, 0x1e, 0x6c, 0xcc,
-	  0xef, 0x08, 0x61, 0xc1, 0x3c, 0xd8, 0xc7, 0x9f,
-	  0xe8, 0x2d, 0x3d, 0xb2, 0xda, 0x41, 0xd3, 0x83,
-	  0xd7, 0xb8, 0xe3, 0xd7, 0x13, 0xec, 0x9b, 0xf6,
-	  0xf6, 0xae, 0x6b, 0x32, 0x29, 0xc1, 0x69, 0x82,
-	  0xfa, 0x65, 0x2d, 0x97, 0x3e, 0x83, 0x6e, 0x6c,
-	  0xce, 0x34, 0x10, 0x59, 0x74, 0x0e, 0x96, 0x26 };
+	{ 
+	  0x44, 0xce, 0xbc, 0xe7, 0xc2, 0x5e, 0xff, 0x65,
+	  0xc5, 0xda, 0x29, 0x5a, 0xb9, 0x08, 0x89, 0x42,
+	  0x83, 0x3f, 0x2b, 0x2e, 0x06, 0xe1, 0x6f, 0x79,
+	  0x9b, 0x78, 0x6d, 0xe5, 0xd3, 0x64, 0x98, 0x35,
+	  0xc8, 0x58, 0xac, 0xb8, 0x08, 0x6d, 0x21, 0x51,
+	  0xcf, 0xe0, 0x76, 0x48, 0x81, 0x6c, 0xed, 0x65,
+	  0x4a, 0x50, 0xb4, 0x06, 0x38, 0x0b, 0x26, 0x74,
+	  0x43, 0xbf, 0xc5, 0x2e, 0x07, 0xa6, 0xb8, 0x0e,
+	};
       
       boot_path = grub_util_get_path (dir, "fwstart.img");
       boot_size = grub_util_get_image_size (boot_path);
@@ -1196,7 +1198,9 @@ generate_image (const char *dir, char *prefix, FILE *out, char *mods[],
 	grub_util_warn ("fwstart.img doesn't match the known good version. "
 			"Proceed at your own risk");
 
-      rom_size = ALIGN_UP (core_size + boot_size, 512 * 1024);
+      if (core_size + boot_size > 512 * 1024)
+	grub_util_error ("firmware image is too big");
+      rom_size = 512 * 1024;
 
       rom_img = xmalloc (rom_size);
       memset (rom_img, 0, rom_size); 
@@ -1586,15 +1590,27 @@ main (int argc, char *argv[])
 		     + 1);
       memcpy (dir, GRUB_PKGLIBROOTDIR, sizeof (GRUB_PKGLIBROOTDIR) - 1);
       *(dir + sizeof (GRUB_PKGLIBROOTDIR) - 1) = '/';
-      memcpy (dir + sizeof (GRUB_PKGLIBROOTDIR), image_target->name,
-	      last - image_target->name);
-      *(dir + sizeof (GRUB_PKGLIBROOTDIR) + (last - image_target->name)) = 0;
+      if (strncmp (image_target->name, "mipsel-yeeloong",
+		   last - image_target->name) == 0)
+	{
+	  memcpy (dir + sizeof (GRUB_PKGLIBROOTDIR), "mips-yeeloong",
+		  sizeof ("mips-yeeloong"));	  
+	}
+      else
+	{
+	  memcpy (dir + sizeof (GRUB_PKGLIBROOTDIR), image_target->name,
+		  last - image_target->name);
+	  *(dir + sizeof (GRUB_PKGLIBROOTDIR) + (last - image_target->name))
+	    = 0;
+	}
     }
 
   generate_image (dir, prefix ? : DEFAULT_DIRECTORY, fp,
 		  argv + optind, memdisk, config,
 		  image_target, note, comp);
 
+  fflush (fp);
+  fsync (fileno (fp));
   fclose (fp);
 
   if (dir)
