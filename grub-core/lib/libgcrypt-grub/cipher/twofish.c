@@ -1,5 +1,7 @@
 /* This file was automatically imported with 
    import_gcry.py. Please don't modify it */
+#include <grub/dl.h>
+GRUB_MOD_LICENSE ("GPLv3+");
 /* Twofish for GPG
  * Copyright (C) 1998, 2002, 2003 Free Software Foundation, Inc.
  * Written by Matthew Skala <mskala@ansuz.sooke.bc.ca>, July 26, 1998

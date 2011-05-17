@@ -144,7 +144,7 @@ endif
 
 if COND_emu
 noinst_LIBRARIES += libgrubmods.a
-libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c 
+libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/lib/crc.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c grub-core/io/gzio.c 
 nodist_libgrubmods_a_SOURCES += grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 libgrubmods_a_CFLAGS += $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 libgrubmods_a_CPPFLAGS += $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -156,7 +156,7 @@ endif
 
 if COND_i386_pc
 noinst_LIBRARIES += libgrubmods.a
-libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c 
+libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/lib/crc.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c grub-core/io/gzio.c 
 nodist_libgrubmods_a_SOURCES += grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 libgrubmods_a_CFLAGS += $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 libgrubmods_a_CPPFLAGS += $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -168,7 +168,7 @@ endif
 
 if COND_i386_efi
 noinst_LIBRARIES += libgrubmods.a
-libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c 
+libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/lib/crc.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c grub-core/io/gzio.c 
 nodist_libgrubmods_a_SOURCES += grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 libgrubmods_a_CFLAGS += $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 libgrubmods_a_CPPFLAGS += $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -180,7 +180,7 @@ endif
 
 if COND_i386_qemu
 noinst_LIBRARIES += libgrubmods.a
-libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c 
+libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/lib/crc.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c grub-core/io/gzio.c 
 nodist_libgrubmods_a_SOURCES += grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 libgrubmods_a_CFLAGS += $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 libgrubmods_a_CPPFLAGS += $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -192,7 +192,7 @@ endif
 
 if COND_i386_coreboot
 noinst_LIBRARIES += libgrubmods.a
-libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c 
+libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/lib/crc.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c grub-core/io/gzio.c 
 nodist_libgrubmods_a_SOURCES += grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 libgrubmods_a_CFLAGS += $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 libgrubmods_a_CPPFLAGS += $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -204,7 +204,7 @@ endif
 
 if COND_i386_multiboot
 noinst_LIBRARIES += libgrubmods.a
-libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c 
+libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/lib/crc.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c grub-core/io/gzio.c 
 nodist_libgrubmods_a_SOURCES += grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 libgrubmods_a_CFLAGS += $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 libgrubmods_a_CPPFLAGS += $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -216,7 +216,7 @@ endif
 
 if COND_i386_ieee1275
 noinst_LIBRARIES += libgrubmods.a
-libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c 
+libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/lib/crc.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c grub-core/io/gzio.c 
 nodist_libgrubmods_a_SOURCES += grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 libgrubmods_a_CFLAGS += $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 libgrubmods_a_CPPFLAGS += $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -228,7 +228,7 @@ endif
 
 if COND_x86_64_efi
 noinst_LIBRARIES += libgrubmods.a
-libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c 
+libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/lib/crc.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c grub-core/io/gzio.c 
 nodist_libgrubmods_a_SOURCES += grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 libgrubmods_a_CFLAGS += $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 libgrubmods_a_CPPFLAGS += $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -240,7 +240,7 @@ endif
 
 if COND_mips_yeeloong
 noinst_LIBRARIES += libgrubmods.a
-libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c 
+libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/lib/crc.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c grub-core/io/gzio.c 
 nodist_libgrubmods_a_SOURCES += grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 libgrubmods_a_CFLAGS += $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 libgrubmods_a_CPPFLAGS += $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -252,7 +252,7 @@ endif
 
 if COND_sparc64_ieee1275
 noinst_LIBRARIES += libgrubmods.a
-libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c 
+libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/lib/crc.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c grub-core/io/gzio.c 
 nodist_libgrubmods_a_SOURCES += grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 libgrubmods_a_CFLAGS += $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 libgrubmods_a_CPPFLAGS += $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -264,7 +264,7 @@ endif
 
 if COND_powerpc_ieee1275
 noinst_LIBRARIES += libgrubmods.a
-libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c 
+libgrubmods_a_SOURCES += grub-core/commands/blocklist.c grub-core/commands/extcmd.c grub-core/commands/ls.c grub-core/disk/dmraid_nvidia.c grub-core/disk/loopback.c grub-core/disk/lvm.c grub-core/disk/mdraid_linux.c grub-core/disk/mdraid1x_linux.c grub-core/disk/raid5_recover.c grub-core/disk/raid6_recover.c grub-core/disk/raid.c grub-core/fs/affs.c grub-core/fs/afs_be.c grub-core/fs/afs.c grub-core/fs/befs_be.c grub-core/fs/befs.c grub-core/fs/btrfs.c grub-core/fs/cpio.c grub-core/fs/ext2.c grub-core/fs/fat.c grub-core/fs/fshelp.c grub-core/fs/hfs.c grub-core/fs/hfsplus.c grub-core/fs/iso9660.c grub-core/fs/jfs.c grub-core/fs/minix.c grub-core/fs/minix2.c grub-core/fs/nilfs2.c grub-core/fs/ntfs.c grub-core/fs/ntfscomp.c grub-core/fs/reiserfs.c grub-core/fs/sfs.c grub-core/fs/tar.c grub-core/fs/udf.c grub-core/fs/ufs2.c grub-core/fs/ufs.c grub-core/fs/xfs.c grub-core/fs/zfs/zfs.c grub-core/fs/zfs/zfs_lzjb.c grub-core/fs/zfs/zfs_sha256.c grub-core/fs/zfs/zfs_fletcher.c grub-core/lib/arg.c grub-core/lib/crypto.c grub-core/lib/envblk.c grub-core/lib/hexdump.c grub-core/lib/libgcrypt-grub/cipher/sha512.c grub-core/lib/libgcrypt-grub/cipher/crc.c grub-core/lib/LzFind.c grub-core/lib/LzmaEnc.c grub-core/lib/pbkdf2.c grub-core/lib/crc.c grub-core/normal/datetime.c grub-core/normal/misc.c grub-core/partmap/acorn.c grub-core/partmap/amiga.c grub-core/partmap/apple.c grub-core/partmap/gpt.c grub-core/partmap/msdos.c grub-core/partmap/sun.c grub-core/partmap/sunpc.c grub-core/partmap/bsdlabel.c grub-core/script/function.c grub-core/script/lexer.c grub-core/script/main.c grub-core/script/script.c grub-core/script/argv.c grub-core/io/gzio.c 
 nodist_libgrubmods_a_SOURCES += grub_script.tab.c grub_script.yy.c libgrub_a_init.c grub_script.yy.h grub_script.tab.h 
 libgrubmods_a_CFLAGS += $(AM_CFLAGS) $(CFLAGS_LIBRARY) $(CFLAGS_GCRY) 
 libgrubmods_a_CPPFLAGS += $(AM_CPPFLAGS) $(CPPFLAGS_LIBRARY) $(CPPFLAGS_GCRY) 
@@ -540,7 +540,7 @@ CLEANFILES += grub-mkimage.1
 endif
 grub_mkimage_SOURCES  = util/grub-mkimage.c util/resolve.c 
 nodist_grub_mkimage_SOURCES  = 
-grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkimage_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkimage_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkimage_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) -DGRUB_PKGLIBROOTDIR=\"$(pkglibrootdir)\" 
@@ -563,7 +563,7 @@ CLEANFILES += grub-mkimage.1
 endif
 grub_mkimage_SOURCES  = util/grub-mkimage.c util/resolve.c 
 nodist_grub_mkimage_SOURCES  = 
-grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkimage_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkimage_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkimage_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) -DGRUB_PKGLIBROOTDIR=\"$(pkglibrootdir)\" 
@@ -586,7 +586,7 @@ CLEANFILES += grub-mkimage.1
 endif
 grub_mkimage_SOURCES  = util/grub-mkimage.c util/resolve.c 
 nodist_grub_mkimage_SOURCES  = 
-grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkimage_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkimage_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkimage_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) -DGRUB_PKGLIBROOTDIR=\"$(pkglibrootdir)\" 
@@ -609,7 +609,7 @@ CLEANFILES += grub-mkimage.1
 endif
 grub_mkimage_SOURCES  = util/grub-mkimage.c util/resolve.c 
 nodist_grub_mkimage_SOURCES  = 
-grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkimage_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkimage_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkimage_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) -DGRUB_PKGLIBROOTDIR=\"$(pkglibrootdir)\" 
@@ -632,7 +632,7 @@ CLEANFILES += grub-mkimage.1
 endif
 grub_mkimage_SOURCES  = util/grub-mkimage.c util/resolve.c 
 nodist_grub_mkimage_SOURCES  = 
-grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkimage_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkimage_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkimage_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) -DGRUB_PKGLIBROOTDIR=\"$(pkglibrootdir)\" 
@@ -655,7 +655,7 @@ CLEANFILES += grub-mkimage.1
 endif
 grub_mkimage_SOURCES  = util/grub-mkimage.c util/resolve.c 
 nodist_grub_mkimage_SOURCES  = 
-grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkimage_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkimage_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkimage_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) -DGRUB_PKGLIBROOTDIR=\"$(pkglibrootdir)\" 
@@ -678,7 +678,7 @@ CLEANFILES += grub-mkimage.1
 endif
 grub_mkimage_SOURCES  = util/grub-mkimage.c util/resolve.c 
 nodist_grub_mkimage_SOURCES  = 
-grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkimage_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkimage_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkimage_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) -DGRUB_PKGLIBROOTDIR=\"$(pkglibrootdir)\" 
@@ -701,7 +701,7 @@ CLEANFILES += grub-mkimage.1
 endif
 grub_mkimage_SOURCES  = util/grub-mkimage.c util/resolve.c 
 nodist_grub_mkimage_SOURCES  = 
-grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkimage_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkimage_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkimage_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) -DGRUB_PKGLIBROOTDIR=\"$(pkglibrootdir)\" 
@@ -724,7 +724,7 @@ CLEANFILES += grub-mkimage.1
 endif
 grub_mkimage_SOURCES  = util/grub-mkimage.c util/resolve.c 
 nodist_grub_mkimage_SOURCES  = 
-grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkimage_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkimage_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkimage_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) -DGRUB_PKGLIBROOTDIR=\"$(pkglibrootdir)\" 
@@ -747,7 +747,7 @@ CLEANFILES += grub-mkimage.1
 endif
 grub_mkimage_SOURCES  = util/grub-mkimage.c util/resolve.c 
 nodist_grub_mkimage_SOURCES  = 
-grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkimage_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkimage_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkimage_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) -DGRUB_PKGLIBROOTDIR=\"$(pkglibrootdir)\" 
@@ -770,7 +770,7 @@ CLEANFILES += grub-mkimage.1
 endif
 grub_mkimage_SOURCES  = util/grub-mkimage.c util/resolve.c 
 nodist_grub_mkimage_SOURCES  = 
-grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkimage_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBLZMA) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkimage_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkimage_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkimage_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) -DGRUB_PKGLIBROOTDIR=\"$(pkglibrootdir)\" 
@@ -793,7 +793,7 @@ CLEANFILES += grub-mkrelpath.1
 endif
 grub_mkrelpath_SOURCES  = util/grub-mkrelpath.c 
 nodist_grub_mkrelpath_SOURCES  = 
-grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkrelpath_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkrelpath_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkrelpath_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -816,7 +816,7 @@ CLEANFILES += grub-mkrelpath.1
 endif
 grub_mkrelpath_SOURCES  = util/grub-mkrelpath.c 
 nodist_grub_mkrelpath_SOURCES  = 
-grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkrelpath_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkrelpath_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkrelpath_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -839,7 +839,7 @@ CLEANFILES += grub-mkrelpath.1
 endif
 grub_mkrelpath_SOURCES  = util/grub-mkrelpath.c 
 nodist_grub_mkrelpath_SOURCES  = 
-grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkrelpath_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkrelpath_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkrelpath_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -862,7 +862,7 @@ CLEANFILES += grub-mkrelpath.1
 endif
 grub_mkrelpath_SOURCES  = util/grub-mkrelpath.c 
 nodist_grub_mkrelpath_SOURCES  = 
-grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkrelpath_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkrelpath_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkrelpath_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -885,7 +885,7 @@ CLEANFILES += grub-mkrelpath.1
 endif
 grub_mkrelpath_SOURCES  = util/grub-mkrelpath.c 
 nodist_grub_mkrelpath_SOURCES  = 
-grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkrelpath_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkrelpath_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkrelpath_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -908,7 +908,7 @@ CLEANFILES += grub-mkrelpath.1
 endif
 grub_mkrelpath_SOURCES  = util/grub-mkrelpath.c 
 nodist_grub_mkrelpath_SOURCES  = 
-grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkrelpath_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkrelpath_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkrelpath_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -931,7 +931,7 @@ CLEANFILES += grub-mkrelpath.1
 endif
 grub_mkrelpath_SOURCES  = util/grub-mkrelpath.c 
 nodist_grub_mkrelpath_SOURCES  = 
-grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkrelpath_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkrelpath_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkrelpath_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -954,7 +954,7 @@ CLEANFILES += grub-mkrelpath.1
 endif
 grub_mkrelpath_SOURCES  = util/grub-mkrelpath.c 
 nodist_grub_mkrelpath_SOURCES  = 
-grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkrelpath_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkrelpath_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkrelpath_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -977,7 +977,7 @@ CLEANFILES += grub-mkrelpath.1
 endif
 grub_mkrelpath_SOURCES  = util/grub-mkrelpath.c 
 nodist_grub_mkrelpath_SOURCES  = 
-grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkrelpath_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkrelpath_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkrelpath_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1000,7 +1000,7 @@ CLEANFILES += grub-mkrelpath.1
 endif
 grub_mkrelpath_SOURCES  = util/grub-mkrelpath.c 
 nodist_grub_mkrelpath_SOURCES  = 
-grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkrelpath_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkrelpath_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkrelpath_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1023,7 +1023,7 @@ CLEANFILES += grub-mkrelpath.1
 endif
 grub_mkrelpath_SOURCES  = util/grub-mkrelpath.c 
 nodist_grub_mkrelpath_SOURCES  = 
-grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkrelpath_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkrelpath_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkrelpath_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkrelpath_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1046,7 +1046,7 @@ CLEANFILES += grub-script-check.1
 endif
 grub_script_check_SOURCES  = util/grub-script-check.c 
 nodist_grub_script_check_SOURCES  = 
-grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_script_check_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_script_check_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_script_check_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1069,7 +1069,7 @@ CLEANFILES += grub-script-check.1
 endif
 grub_script_check_SOURCES  = util/grub-script-check.c 
 nodist_grub_script_check_SOURCES  = 
-grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_script_check_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_script_check_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_script_check_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1092,7 +1092,7 @@ CLEANFILES += grub-script-check.1
 endif
 grub_script_check_SOURCES  = util/grub-script-check.c 
 nodist_grub_script_check_SOURCES  = 
-grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_script_check_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_script_check_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_script_check_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1115,7 +1115,7 @@ CLEANFILES += grub-script-check.1
 endif
 grub_script_check_SOURCES  = util/grub-script-check.c 
 nodist_grub_script_check_SOURCES  = 
-grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_script_check_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_script_check_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_script_check_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1138,7 +1138,7 @@ CLEANFILES += grub-script-check.1
 endif
 grub_script_check_SOURCES  = util/grub-script-check.c 
 nodist_grub_script_check_SOURCES  = 
-grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_script_check_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_script_check_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_script_check_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1161,7 +1161,7 @@ CLEANFILES += grub-script-check.1
 endif
 grub_script_check_SOURCES  = util/grub-script-check.c 
 nodist_grub_script_check_SOURCES  = 
-grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_script_check_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_script_check_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_script_check_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1184,7 +1184,7 @@ CLEANFILES += grub-script-check.1
 endif
 grub_script_check_SOURCES  = util/grub-script-check.c 
 nodist_grub_script_check_SOURCES  = 
-grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_script_check_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_script_check_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_script_check_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1207,7 +1207,7 @@ CLEANFILES += grub-script-check.1
 endif
 grub_script_check_SOURCES  = util/grub-script-check.c 
 nodist_grub_script_check_SOURCES  = 
-grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_script_check_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_script_check_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_script_check_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1230,7 +1230,7 @@ CLEANFILES += grub-script-check.1
 endif
 grub_script_check_SOURCES  = util/grub-script-check.c 
 nodist_grub_script_check_SOURCES  = 
-grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_script_check_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_script_check_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_script_check_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1253,7 +1253,7 @@ CLEANFILES += grub-script-check.1
 endif
 grub_script_check_SOURCES  = util/grub-script-check.c 
 nodist_grub_script_check_SOURCES  = 
-grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_script_check_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_script_check_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_script_check_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1276,7 +1276,7 @@ CLEANFILES += grub-script-check.1
 endif
 grub_script_check_SOURCES  = util/grub-script-check.c 
 nodist_grub_script_check_SOURCES  = 
-grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_script_check_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_script_check_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_script_check_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_script_check_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1299,7 +1299,7 @@ CLEANFILES += grub-editenv.1
 endif
 grub_editenv_SOURCES  = util/grub-editenv.c 
 nodist_grub_editenv_SOURCES  = 
-grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_editenv_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_editenv_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_editenv_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1322,7 +1322,7 @@ CLEANFILES += grub-editenv.1
 endif
 grub_editenv_SOURCES  = util/grub-editenv.c 
 nodist_grub_editenv_SOURCES  = 
-grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_editenv_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_editenv_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_editenv_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1345,7 +1345,7 @@ CLEANFILES += grub-editenv.1
 endif
 grub_editenv_SOURCES  = util/grub-editenv.c 
 nodist_grub_editenv_SOURCES  = 
-grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_editenv_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_editenv_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_editenv_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1368,7 +1368,7 @@ CLEANFILES += grub-editenv.1
 endif
 grub_editenv_SOURCES  = util/grub-editenv.c 
 nodist_grub_editenv_SOURCES  = 
-grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_editenv_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_editenv_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_editenv_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1391,7 +1391,7 @@ CLEANFILES += grub-editenv.1
 endif
 grub_editenv_SOURCES  = util/grub-editenv.c 
 nodist_grub_editenv_SOURCES  = 
-grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_editenv_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_editenv_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_editenv_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1414,7 +1414,7 @@ CLEANFILES += grub-editenv.1
 endif
 grub_editenv_SOURCES  = util/grub-editenv.c 
 nodist_grub_editenv_SOURCES  = 
-grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_editenv_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_editenv_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_editenv_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1437,7 +1437,7 @@ CLEANFILES += grub-editenv.1
 endif
 grub_editenv_SOURCES  = util/grub-editenv.c 
 nodist_grub_editenv_SOURCES  = 
-grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_editenv_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_editenv_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_editenv_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1460,7 +1460,7 @@ CLEANFILES += grub-editenv.1
 endif
 grub_editenv_SOURCES  = util/grub-editenv.c 
 nodist_grub_editenv_SOURCES  = 
-grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_editenv_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_editenv_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_editenv_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1483,7 +1483,7 @@ CLEANFILES += grub-editenv.1
 endif
 grub_editenv_SOURCES  = util/grub-editenv.c 
 nodist_grub_editenv_SOURCES  = 
-grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_editenv_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_editenv_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_editenv_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1506,7 +1506,7 @@ CLEANFILES += grub-editenv.1
 endif
 grub_editenv_SOURCES  = util/grub-editenv.c 
 nodist_grub_editenv_SOURCES  = 
-grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_editenv_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_editenv_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_editenv_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1529,7 +1529,7 @@ CLEANFILES += grub-editenv.1
 endif
 grub_editenv_SOURCES  = util/grub-editenv.c 
 nodist_grub_editenv_SOURCES  = 
-grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_editenv_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_editenv_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_editenv_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_editenv_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -1552,7 +1552,7 @@ CLEANFILES += grub-mkpasswd-pbkdf2.1
 endif
 grub_mkpasswd_pbkdf2_SOURCES  = util/grub-mkpasswd-pbkdf2.c 
 nodist_grub_mkpasswd_pbkdf2_SOURCES  = 
-grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkpasswd_pbkdf2_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_mkpasswd_pbkdf2_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkpasswd_pbkdf2_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -1575,7 +1575,7 @@ CLEANFILES += grub-mkpasswd-pbkdf2.1
 endif
 grub_mkpasswd_pbkdf2_SOURCES  = util/grub-mkpasswd-pbkdf2.c 
 nodist_grub_mkpasswd_pbkdf2_SOURCES  = 
-grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkpasswd_pbkdf2_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_mkpasswd_pbkdf2_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkpasswd_pbkdf2_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -1598,7 +1598,7 @@ CLEANFILES += grub-mkpasswd-pbkdf2.1
 endif
 grub_mkpasswd_pbkdf2_SOURCES  = util/grub-mkpasswd-pbkdf2.c 
 nodist_grub_mkpasswd_pbkdf2_SOURCES  = 
-grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkpasswd_pbkdf2_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_mkpasswd_pbkdf2_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkpasswd_pbkdf2_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -1621,7 +1621,7 @@ CLEANFILES += grub-mkpasswd-pbkdf2.1
 endif
 grub_mkpasswd_pbkdf2_SOURCES  = util/grub-mkpasswd-pbkdf2.c 
 nodist_grub_mkpasswd_pbkdf2_SOURCES  = 
-grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkpasswd_pbkdf2_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_mkpasswd_pbkdf2_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkpasswd_pbkdf2_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -1644,7 +1644,7 @@ CLEANFILES += grub-mkpasswd-pbkdf2.1
 endif
 grub_mkpasswd_pbkdf2_SOURCES  = util/grub-mkpasswd-pbkdf2.c 
 nodist_grub_mkpasswd_pbkdf2_SOURCES  = 
-grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkpasswd_pbkdf2_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_mkpasswd_pbkdf2_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkpasswd_pbkdf2_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -1667,7 +1667,7 @@ CLEANFILES += grub-mkpasswd-pbkdf2.1
 endif
 grub_mkpasswd_pbkdf2_SOURCES  = util/grub-mkpasswd-pbkdf2.c 
 nodist_grub_mkpasswd_pbkdf2_SOURCES  = 
-grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkpasswd_pbkdf2_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_mkpasswd_pbkdf2_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkpasswd_pbkdf2_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -1690,7 +1690,7 @@ CLEANFILES += grub-mkpasswd-pbkdf2.1
 endif
 grub_mkpasswd_pbkdf2_SOURCES  = util/grub-mkpasswd-pbkdf2.c 
 nodist_grub_mkpasswd_pbkdf2_SOURCES  = 
-grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkpasswd_pbkdf2_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_mkpasswd_pbkdf2_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkpasswd_pbkdf2_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -1713,7 +1713,7 @@ CLEANFILES += grub-mkpasswd-pbkdf2.1
 endif
 grub_mkpasswd_pbkdf2_SOURCES  = util/grub-mkpasswd-pbkdf2.c 
 nodist_grub_mkpasswd_pbkdf2_SOURCES  = 
-grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkpasswd_pbkdf2_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_mkpasswd_pbkdf2_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkpasswd_pbkdf2_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -1736,7 +1736,7 @@ CLEANFILES += grub-mkpasswd-pbkdf2.1
 endif
 grub_mkpasswd_pbkdf2_SOURCES  = util/grub-mkpasswd-pbkdf2.c 
 nodist_grub_mkpasswd_pbkdf2_SOURCES  = 
-grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkpasswd_pbkdf2_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_mkpasswd_pbkdf2_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkpasswd_pbkdf2_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -1759,7 +1759,7 @@ CLEANFILES += grub-mkpasswd-pbkdf2.1
 endif
 grub_mkpasswd_pbkdf2_SOURCES  = util/grub-mkpasswd-pbkdf2.c 
 nodist_grub_mkpasswd_pbkdf2_SOURCES  = 
-grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkpasswd_pbkdf2_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_mkpasswd_pbkdf2_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkpasswd_pbkdf2_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -1782,7 +1782,7 @@ CLEANFILES += grub-mkpasswd-pbkdf2.1
 endif
 grub_mkpasswd_pbkdf2_SOURCES  = util/grub-mkpasswd-pbkdf2.c 
 nodist_grub_mkpasswd_pbkdf2_SOURCES  = 
-grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkpasswd_pbkdf2_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkpasswd_pbkdf2_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_mkpasswd_pbkdf2_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkpasswd_pbkdf2_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -2355,7 +2355,7 @@ CLEANFILES += grub-fstest.1
 endif
 grub_fstest_SOURCES  = util/grub-fstest.c grub-core/kern/emu/hostfs.c grub-core/disk/host.c 
 nodist_grub_fstest_SOURCES  = grub_fstest_init.c 
-grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_fstest_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_fstest_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_fstest_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -2378,7 +2378,7 @@ CLEANFILES += grub-fstest.1
 endif
 grub_fstest_SOURCES  = util/grub-fstest.c grub-core/kern/emu/hostfs.c grub-core/disk/host.c 
 nodist_grub_fstest_SOURCES  = grub_fstest_init.c 
-grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_fstest_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_fstest_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_fstest_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -2401,7 +2401,7 @@ CLEANFILES += grub-fstest.1
 endif
 grub_fstest_SOURCES  = util/grub-fstest.c grub-core/kern/emu/hostfs.c grub-core/disk/host.c 
 nodist_grub_fstest_SOURCES  = grub_fstest_init.c 
-grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_fstest_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_fstest_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_fstest_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -2424,7 +2424,7 @@ CLEANFILES += grub-fstest.1
 endif
 grub_fstest_SOURCES  = util/grub-fstest.c grub-core/kern/emu/hostfs.c grub-core/disk/host.c 
 nodist_grub_fstest_SOURCES  = grub_fstest_init.c 
-grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_fstest_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_fstest_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_fstest_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -2447,7 +2447,7 @@ CLEANFILES += grub-fstest.1
 endif
 grub_fstest_SOURCES  = util/grub-fstest.c grub-core/kern/emu/hostfs.c grub-core/disk/host.c 
 nodist_grub_fstest_SOURCES  = grub_fstest_init.c 
-grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_fstest_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_fstest_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_fstest_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -2470,7 +2470,7 @@ CLEANFILES += grub-fstest.1
 endif
 grub_fstest_SOURCES  = util/grub-fstest.c grub-core/kern/emu/hostfs.c grub-core/disk/host.c 
 nodist_grub_fstest_SOURCES  = grub_fstest_init.c 
-grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_fstest_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_fstest_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_fstest_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -2493,7 +2493,7 @@ CLEANFILES += grub-fstest.1
 endif
 grub_fstest_SOURCES  = util/grub-fstest.c grub-core/kern/emu/hostfs.c grub-core/disk/host.c 
 nodist_grub_fstest_SOURCES  = grub_fstest_init.c 
-grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_fstest_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_fstest_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_fstest_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -2516,7 +2516,7 @@ CLEANFILES += grub-fstest.1
 endif
 grub_fstest_SOURCES  = util/grub-fstest.c grub-core/kern/emu/hostfs.c grub-core/disk/host.c 
 nodist_grub_fstest_SOURCES  = grub_fstest_init.c 
-grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_fstest_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_fstest_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_fstest_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -2539,7 +2539,7 @@ CLEANFILES += grub-fstest.1
 endif
 grub_fstest_SOURCES  = util/grub-fstest.c grub-core/kern/emu/hostfs.c grub-core/disk/host.c 
 nodist_grub_fstest_SOURCES  = grub_fstest_init.c 
-grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_fstest_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_fstest_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_fstest_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -2562,7 +2562,7 @@ CLEANFILES += grub-fstest.1
 endif
 grub_fstest_SOURCES  = util/grub-fstest.c grub-core/kern/emu/hostfs.c grub-core/disk/host.c 
 nodist_grub_fstest_SOURCES  = grub_fstest_init.c 
-grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_fstest_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_fstest_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_fstest_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -2585,7 +2585,7 @@ CLEANFILES += grub-fstest.1
 endif
 grub_fstest_SOURCES  = util/grub-fstest.c grub-core/kern/emu/hostfs.c grub-core/disk/host.c 
 nodist_grub_fstest_SOURCES  = grub_fstest_init.c 
-grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_fstest_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_fstest_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(CFLAGS_GCRY) 
 grub_fstest_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_fstest_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) $(CPPFLAGS_GCRY) 
@@ -2609,7 +2609,7 @@ CLEANFILES += grub-mkfont.1
 endif
 grub_mkfont_SOURCES  = util/grub-mkfont.c grub-core/unidata.c 
 nodist_grub_mkfont_SOURCES  = 
-grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkfont_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(freetype_cflags) 
 grub_mkfont_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkfont_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -2634,7 +2634,7 @@ CLEANFILES += grub-mkfont.1
 endif
 grub_mkfont_SOURCES  = util/grub-mkfont.c grub-core/unidata.c 
 nodist_grub_mkfont_SOURCES  = 
-grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkfont_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(freetype_cflags) 
 grub_mkfont_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkfont_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -2659,7 +2659,7 @@ CLEANFILES += grub-mkfont.1
 endif
 grub_mkfont_SOURCES  = util/grub-mkfont.c grub-core/unidata.c 
 nodist_grub_mkfont_SOURCES  = 
-grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkfont_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(freetype_cflags) 
 grub_mkfont_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkfont_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -2684,7 +2684,7 @@ CLEANFILES += grub-mkfont.1
 endif
 grub_mkfont_SOURCES  = util/grub-mkfont.c grub-core/unidata.c 
 nodist_grub_mkfont_SOURCES  = 
-grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkfont_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(freetype_cflags) 
 grub_mkfont_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkfont_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -2709,7 +2709,7 @@ CLEANFILES += grub-mkfont.1
 endif
 grub_mkfont_SOURCES  = util/grub-mkfont.c grub-core/unidata.c 
 nodist_grub_mkfont_SOURCES  = 
-grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkfont_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(freetype_cflags) 
 grub_mkfont_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkfont_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -2734,7 +2734,7 @@ CLEANFILES += grub-mkfont.1
 endif
 grub_mkfont_SOURCES  = util/grub-mkfont.c grub-core/unidata.c 
 nodist_grub_mkfont_SOURCES  = 
-grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkfont_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(freetype_cflags) 
 grub_mkfont_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkfont_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -2759,7 +2759,7 @@ CLEANFILES += grub-mkfont.1
 endif
 grub_mkfont_SOURCES  = util/grub-mkfont.c grub-core/unidata.c 
 nodist_grub_mkfont_SOURCES  = 
-grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkfont_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(freetype_cflags) 
 grub_mkfont_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkfont_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -2784,7 +2784,7 @@ CLEANFILES += grub-mkfont.1
 endif
 grub_mkfont_SOURCES  = util/grub-mkfont.c grub-core/unidata.c 
 nodist_grub_mkfont_SOURCES  = 
-grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkfont_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(freetype_cflags) 
 grub_mkfont_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkfont_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -2809,7 +2809,7 @@ CLEANFILES += grub-mkfont.1
 endif
 grub_mkfont_SOURCES  = util/grub-mkfont.c grub-core/unidata.c 
 nodist_grub_mkfont_SOURCES  = 
-grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkfont_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(freetype_cflags) 
 grub_mkfont_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkfont_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -2834,7 +2834,7 @@ CLEANFILES += grub-mkfont.1
 endif
 grub_mkfont_SOURCES  = util/grub-mkfont.c grub-core/unidata.c 
 nodist_grub_mkfont_SOURCES  = 
-grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkfont_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(freetype_cflags) 
 grub_mkfont_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkfont_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -2859,7 +2859,7 @@ CLEANFILES += grub-mkfont.1
 endif
 grub_mkfont_SOURCES  = util/grub-mkfont.c grub-core/unidata.c 
 nodist_grub_mkfont_SOURCES  = 
-grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkfont_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(freetype_libs) $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkfont_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) $(freetype_cflags) 
 grub_mkfont_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkfont_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -2883,7 +2883,7 @@ CLEANFILES += grub-mkdevicemap.8
 endif
 grub_mkdevicemap_SOURCES  = util/devicemap.c util/grub-mkdevicemap.c util/deviceiter.c 
 nodist_grub_mkdevicemap_SOURCES  = 
-grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkdevicemap_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkdevicemap_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkdevicemap_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -2906,7 +2906,7 @@ CLEANFILES += grub-mkdevicemap.8
 endif
 grub_mkdevicemap_SOURCES  = util/devicemap.c util/grub-mkdevicemap.c util/deviceiter.c 
 nodist_grub_mkdevicemap_SOURCES  = 
-grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkdevicemap_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkdevicemap_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkdevicemap_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -2929,7 +2929,7 @@ CLEANFILES += grub-mkdevicemap.8
 endif
 grub_mkdevicemap_SOURCES  = util/devicemap.c util/grub-mkdevicemap.c util/deviceiter.c 
 nodist_grub_mkdevicemap_SOURCES  = 
-grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkdevicemap_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkdevicemap_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkdevicemap_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -2952,7 +2952,7 @@ CLEANFILES += grub-mkdevicemap.8
 endif
 grub_mkdevicemap_SOURCES  = util/devicemap.c util/grub-mkdevicemap.c util/deviceiter.c 
 nodist_grub_mkdevicemap_SOURCES  = 
-grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkdevicemap_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkdevicemap_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkdevicemap_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -2975,7 +2975,7 @@ CLEANFILES += grub-mkdevicemap.8
 endif
 grub_mkdevicemap_SOURCES  = util/devicemap.c util/grub-mkdevicemap.c util/deviceiter.c 
 nodist_grub_mkdevicemap_SOURCES  = 
-grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkdevicemap_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkdevicemap_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkdevicemap_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -2998,7 +2998,7 @@ CLEANFILES += grub-mkdevicemap.8
 endif
 grub_mkdevicemap_SOURCES  = util/devicemap.c util/grub-mkdevicemap.c util/deviceiter.c 
 nodist_grub_mkdevicemap_SOURCES  = 
-grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkdevicemap_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkdevicemap_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkdevicemap_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3021,7 +3021,7 @@ CLEANFILES += grub-mkdevicemap.8
 endif
 grub_mkdevicemap_SOURCES  = util/devicemap.c util/grub-mkdevicemap.c util/deviceiter.c 
 nodist_grub_mkdevicemap_SOURCES  = 
-grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkdevicemap_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkdevicemap_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkdevicemap_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3044,7 +3044,7 @@ CLEANFILES += grub-mkdevicemap.8
 endif
 grub_mkdevicemap_SOURCES  = util/devicemap.c util/grub-mkdevicemap.c util/deviceiter.c 
 nodist_grub_mkdevicemap_SOURCES  = 
-grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkdevicemap_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkdevicemap_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkdevicemap_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3067,7 +3067,7 @@ CLEANFILES += grub-mkdevicemap.8
 endif
 grub_mkdevicemap_SOURCES  = util/devicemap.c util/grub-mkdevicemap.c util/deviceiter.c 
 nodist_grub_mkdevicemap_SOURCES  = 
-grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkdevicemap_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkdevicemap_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkdevicemap_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3090,7 +3090,7 @@ CLEANFILES += grub-mkdevicemap.8
 endif
 grub_mkdevicemap_SOURCES  = util/ieee1275/ofpath.c util/ieee1275/devicemap.c util/grub-mkdevicemap.c util/deviceiter.c 
 nodist_grub_mkdevicemap_SOURCES  = 
-grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkdevicemap_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkdevicemap_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkdevicemap_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3113,7 +3113,7 @@ CLEANFILES += grub-mkdevicemap.8
 endif
 grub_mkdevicemap_SOURCES  = util/devicemap.c util/grub-mkdevicemap.c util/deviceiter.c 
 nodist_grub_mkdevicemap_SOURCES  = 
-grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_mkdevicemap_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mkdevicemap_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mkdevicemap_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mkdevicemap_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3136,7 +3136,7 @@ CLEANFILES += grub-probe.8
 endif
 grub_probe_SOURCES  = util/grub-probe.c 
 nodist_grub_probe_SOURCES  = 
-grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_probe_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_probe_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_probe_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3159,7 +3159,7 @@ CLEANFILES += grub-probe.8
 endif
 grub_probe_SOURCES  = util/grub-probe.c 
 nodist_grub_probe_SOURCES  = 
-grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_probe_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_probe_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_probe_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3182,7 +3182,7 @@ CLEANFILES += grub-probe.8
 endif
 grub_probe_SOURCES  = util/grub-probe.c 
 nodist_grub_probe_SOURCES  = 
-grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_probe_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_probe_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_probe_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3205,7 +3205,7 @@ CLEANFILES += grub-probe.8
 endif
 grub_probe_SOURCES  = util/grub-probe.c 
 nodist_grub_probe_SOURCES  = 
-grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_probe_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_probe_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_probe_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3228,7 +3228,7 @@ CLEANFILES += grub-probe.8
 endif
 grub_probe_SOURCES  = util/grub-probe.c 
 nodist_grub_probe_SOURCES  = 
-grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_probe_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_probe_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_probe_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3251,7 +3251,7 @@ CLEANFILES += grub-probe.8
 endif
 grub_probe_SOURCES  = util/grub-probe.c 
 nodist_grub_probe_SOURCES  = 
-grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_probe_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_probe_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_probe_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3274,7 +3274,7 @@ CLEANFILES += grub-probe.8
 endif
 grub_probe_SOURCES  = util/grub-probe.c 
 nodist_grub_probe_SOURCES  = 
-grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_probe_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_probe_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_probe_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3297,7 +3297,7 @@ CLEANFILES += grub-probe.8
 endif
 grub_probe_SOURCES  = util/grub-probe.c 
 nodist_grub_probe_SOURCES  = 
-grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_probe_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_probe_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_probe_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3320,7 +3320,7 @@ CLEANFILES += grub-probe.8
 endif
 grub_probe_SOURCES  = util/grub-probe.c 
 nodist_grub_probe_SOURCES  = 
-grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_probe_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_probe_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_probe_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3343,7 +3343,7 @@ CLEANFILES += grub-probe.8
 endif
 grub_probe_SOURCES  = util/grub-probe.c 
 nodist_grub_probe_SOURCES  = 
-grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_probe_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_probe_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_probe_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3366,7 +3366,7 @@ CLEANFILES += grub-probe.8
 endif
 grub_probe_SOURCES  = util/grub-probe.c 
 nodist_grub_probe_SOURCES  = 
-grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_probe_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_probe_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_probe_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_probe_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3389,7 +3389,7 @@ CLEANFILES += grub-setup.8
 endif
 grub_setup_SOURCES  = util/grub-setup.c util/raid.c util/lvm.c grub-core/lib/reed_solomon.c 
 nodist_grub_setup_SOURCES  = 
-grub_setup_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_setup_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_setup_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_setup_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_setup_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3412,7 +3412,7 @@ CLEANFILES += grub-setup.8
 endif
 grub_setup_SOURCES  = util/ieee1275/ofpath.c util/grub-setup.c util/raid.c util/lvm.c grub-core/lib/reed_solomon.c 
 nodist_grub_setup_SOURCES  = 
-grub_setup_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) 
+grub_setup_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_setup_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_setup_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_setup_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3426,7 +3426,7 @@ if COND_sparc64_ieee1275
 sbin_PROGRAMS += grub-ofpathname
 grub_ofpathname_SOURCES  = util/ieee1275/grub-ofpathname.c util/ieee1275/ofpath.c 
 nodist_grub_ofpathname_SOURCES  = 
-grub_ofpathname_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) 
+grub_ofpathname_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBGEOM) 
 grub_ofpathname_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_ofpathname_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_ofpathname_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3449,7 +3449,7 @@ CLEANFILES += grub-mklayout.1
 endif
 grub_mklayout_SOURCES  = util/grub-mklayout.c 
 nodist_grub_mklayout_SOURCES  = 
-grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mklayout_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mklayout_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mklayout_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3472,7 +3472,7 @@ CLEANFILES += grub-mklayout.1
 endif
 grub_mklayout_SOURCES  = util/grub-mklayout.c 
 nodist_grub_mklayout_SOURCES  = 
-grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mklayout_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mklayout_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mklayout_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3495,7 +3495,7 @@ CLEANFILES += grub-mklayout.1
 endif
 grub_mklayout_SOURCES  = util/grub-mklayout.c 
 nodist_grub_mklayout_SOURCES  = 
-grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mklayout_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mklayout_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mklayout_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3518,7 +3518,7 @@ CLEANFILES += grub-mklayout.1
 endif
 grub_mklayout_SOURCES  = util/grub-mklayout.c 
 nodist_grub_mklayout_SOURCES  = 
-grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mklayout_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mklayout_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mklayout_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3541,7 +3541,7 @@ CLEANFILES += grub-mklayout.1
 endif
 grub_mklayout_SOURCES  = util/grub-mklayout.c 
 nodist_grub_mklayout_SOURCES  = 
-grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mklayout_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mklayout_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mklayout_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3564,7 +3564,7 @@ CLEANFILES += grub-mklayout.1
 endif
 grub_mklayout_SOURCES  = util/grub-mklayout.c 
 nodist_grub_mklayout_SOURCES  = 
-grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mklayout_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mklayout_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mklayout_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3587,7 +3587,7 @@ CLEANFILES += grub-mklayout.1
 endif
 grub_mklayout_SOURCES  = util/grub-mklayout.c 
 nodist_grub_mklayout_SOURCES  = 
-grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mklayout_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mklayout_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mklayout_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3610,7 +3610,7 @@ CLEANFILES += grub-mklayout.1
 endif
 grub_mklayout_SOURCES  = util/grub-mklayout.c 
 nodist_grub_mklayout_SOURCES  = 
-grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mklayout_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mklayout_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mklayout_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3633,7 +3633,7 @@ CLEANFILES += grub-mklayout.1
 endif
 grub_mklayout_SOURCES  = util/grub-mklayout.c 
 nodist_grub_mklayout_SOURCES  = 
-grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mklayout_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mklayout_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mklayout_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3656,7 +3656,7 @@ CLEANFILES += grub-mklayout.1
 endif
 grub_mklayout_SOURCES  = util/grub-mklayout.c 
 nodist_grub_mklayout_SOURCES  = 
-grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mklayout_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mklayout_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mklayout_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3679,7 +3679,7 @@ CLEANFILES += grub-mklayout.1
 endif
 grub_mklayout_SOURCES  = util/grub-mklayout.c 
 nodist_grub_mklayout_SOURCES  = 
-grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_mklayout_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_mklayout_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_mklayout_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_mklayout_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3694,7 +3694,7 @@ check_PROGRAMS += example_unit_test
 TESTS += example_unit_test
 example_unit_test_SOURCES  = tests/example_unit_test.c tests/lib/unit_test.c grub-core/kern/list.c grub-core/kern/misc.c grub-core/tests/lib/test.c 
 nodist_example_unit_test_SOURCES  = 
-example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 example_unit_test_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) -Wno-format 
 example_unit_test_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 example_unit_test_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3709,7 +3709,7 @@ check_PROGRAMS += example_unit_test
 TESTS += example_unit_test
 example_unit_test_SOURCES  = tests/example_unit_test.c tests/lib/unit_test.c grub-core/kern/list.c grub-core/kern/misc.c grub-core/tests/lib/test.c 
 nodist_example_unit_test_SOURCES  = 
-example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 example_unit_test_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) -Wno-format 
 example_unit_test_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 example_unit_test_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3724,7 +3724,7 @@ check_PROGRAMS += example_unit_test
 TESTS += example_unit_test
 example_unit_test_SOURCES  = tests/example_unit_test.c tests/lib/unit_test.c grub-core/kern/list.c grub-core/kern/misc.c grub-core/tests/lib/test.c 
 nodist_example_unit_test_SOURCES  = 
-example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 example_unit_test_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) -Wno-format 
 example_unit_test_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 example_unit_test_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3739,7 +3739,7 @@ check_PROGRAMS += example_unit_test
 TESTS += example_unit_test
 example_unit_test_SOURCES  = tests/example_unit_test.c tests/lib/unit_test.c grub-core/kern/list.c grub-core/kern/misc.c grub-core/tests/lib/test.c 
 nodist_example_unit_test_SOURCES  = 
-example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 example_unit_test_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) -Wno-format 
 example_unit_test_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 example_unit_test_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3754,7 +3754,7 @@ check_PROGRAMS += example_unit_test
 TESTS += example_unit_test
 example_unit_test_SOURCES  = tests/example_unit_test.c tests/lib/unit_test.c grub-core/kern/list.c grub-core/kern/misc.c grub-core/tests/lib/test.c 
 nodist_example_unit_test_SOURCES  = 
-example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 example_unit_test_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) -Wno-format 
 example_unit_test_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 example_unit_test_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3769,7 +3769,7 @@ check_PROGRAMS += example_unit_test
 TESTS += example_unit_test
 example_unit_test_SOURCES  = tests/example_unit_test.c tests/lib/unit_test.c grub-core/kern/list.c grub-core/kern/misc.c grub-core/tests/lib/test.c 
 nodist_example_unit_test_SOURCES  = 
-example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 example_unit_test_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) -Wno-format 
 example_unit_test_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 example_unit_test_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3784,7 +3784,7 @@ check_PROGRAMS += example_unit_test
 TESTS += example_unit_test
 example_unit_test_SOURCES  = tests/example_unit_test.c tests/lib/unit_test.c grub-core/kern/list.c grub-core/kern/misc.c grub-core/tests/lib/test.c 
 nodist_example_unit_test_SOURCES  = 
-example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 example_unit_test_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) -Wno-format 
 example_unit_test_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 example_unit_test_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3799,7 +3799,7 @@ check_PROGRAMS += example_unit_test
 TESTS += example_unit_test
 example_unit_test_SOURCES  = tests/example_unit_test.c tests/lib/unit_test.c grub-core/kern/list.c grub-core/kern/misc.c grub-core/tests/lib/test.c 
 nodist_example_unit_test_SOURCES  = 
-example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 example_unit_test_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) -Wno-format 
 example_unit_test_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 example_unit_test_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3814,7 +3814,7 @@ check_PROGRAMS += example_unit_test
 TESTS += example_unit_test
 example_unit_test_SOURCES  = tests/example_unit_test.c tests/lib/unit_test.c grub-core/kern/list.c grub-core/kern/misc.c grub-core/tests/lib/test.c 
 nodist_example_unit_test_SOURCES  = 
-example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 example_unit_test_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) -Wno-format 
 example_unit_test_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 example_unit_test_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3829,7 +3829,7 @@ check_PROGRAMS += example_unit_test
 TESTS += example_unit_test
 example_unit_test_SOURCES  = tests/example_unit_test.c tests/lib/unit_test.c grub-core/kern/list.c grub-core/kern/misc.c grub-core/tests/lib/test.c 
 nodist_example_unit_test_SOURCES  = 
-example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 example_unit_test_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) -Wno-format 
 example_unit_test_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 example_unit_test_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3844,7 +3844,7 @@ check_PROGRAMS += example_unit_test
 TESTS += example_unit_test
 example_unit_test_SOURCES  = tests/example_unit_test.c tests/lib/unit_test.c grub-core/kern/list.c grub-core/kern/misc.c grub-core/tests/lib/test.c 
 nodist_example_unit_test_SOURCES  = 
-example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+example_unit_test_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 example_unit_test_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) -Wno-format 
 example_unit_test_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 example_unit_test_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3867,7 +3867,7 @@ CLEANFILES += grub-menulst2cfg.1
 endif
 grub_menulst2cfg_SOURCES  = util/grub-menulst2cfg.c grub-core/lib/legacy_parse.c grub-core/lib/i386/pc/vesa_modes_table.c 
 nodist_grub_menulst2cfg_SOURCES  = 
-grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_menulst2cfg_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_menulst2cfg_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_menulst2cfg_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3890,7 +3890,7 @@ CLEANFILES += grub-menulst2cfg.1
 endif
 grub_menulst2cfg_SOURCES  = util/grub-menulst2cfg.c grub-core/lib/legacy_parse.c grub-core/lib/i386/pc/vesa_modes_table.c 
 nodist_grub_menulst2cfg_SOURCES  = 
-grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_menulst2cfg_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_menulst2cfg_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_menulst2cfg_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3913,7 +3913,7 @@ CLEANFILES += grub-menulst2cfg.1
 endif
 grub_menulst2cfg_SOURCES  = util/grub-menulst2cfg.c grub-core/lib/legacy_parse.c grub-core/lib/i386/pc/vesa_modes_table.c 
 nodist_grub_menulst2cfg_SOURCES  = 
-grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_menulst2cfg_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_menulst2cfg_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_menulst2cfg_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3936,7 +3936,7 @@ CLEANFILES += grub-menulst2cfg.1
 endif
 grub_menulst2cfg_SOURCES  = util/grub-menulst2cfg.c grub-core/lib/legacy_parse.c grub-core/lib/i386/pc/vesa_modes_table.c 
 nodist_grub_menulst2cfg_SOURCES  = 
-grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_menulst2cfg_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_menulst2cfg_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_menulst2cfg_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3959,7 +3959,7 @@ CLEANFILES += grub-menulst2cfg.1
 endif
 grub_menulst2cfg_SOURCES  = util/grub-menulst2cfg.c grub-core/lib/legacy_parse.c grub-core/lib/i386/pc/vesa_modes_table.c 
 nodist_grub_menulst2cfg_SOURCES  = 
-grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_menulst2cfg_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_menulst2cfg_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_menulst2cfg_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -3982,7 +3982,7 @@ CLEANFILES += grub-menulst2cfg.1
 endif
 grub_menulst2cfg_SOURCES  = util/grub-menulst2cfg.c grub-core/lib/legacy_parse.c grub-core/lib/i386/pc/vesa_modes_table.c 
 nodist_grub_menulst2cfg_SOURCES  = 
-grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_menulst2cfg_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_menulst2cfg_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_menulst2cfg_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -4005,7 +4005,7 @@ CLEANFILES += grub-menulst2cfg.1
 endif
 grub_menulst2cfg_SOURCES  = util/grub-menulst2cfg.c grub-core/lib/legacy_parse.c grub-core/lib/i386/pc/vesa_modes_table.c 
 nodist_grub_menulst2cfg_SOURCES  = 
-grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_menulst2cfg_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_menulst2cfg_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_menulst2cfg_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -4028,7 +4028,7 @@ CLEANFILES += grub-menulst2cfg.1
 endif
 grub_menulst2cfg_SOURCES  = util/grub-menulst2cfg.c grub-core/lib/legacy_parse.c grub-core/lib/i386/pc/vesa_modes_table.c 
 nodist_grub_menulst2cfg_SOURCES  = 
-grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_menulst2cfg_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_menulst2cfg_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_menulst2cfg_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -4051,7 +4051,7 @@ CLEANFILES += grub-menulst2cfg.1
 endif
 grub_menulst2cfg_SOURCES  = util/grub-menulst2cfg.c grub-core/lib/legacy_parse.c grub-core/lib/i386/pc/vesa_modes_table.c 
 nodist_grub_menulst2cfg_SOURCES  = 
-grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_menulst2cfg_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_menulst2cfg_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_menulst2cfg_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -4074,7 +4074,7 @@ CLEANFILES += grub-menulst2cfg.1
 endif
 grub_menulst2cfg_SOURCES  = util/grub-menulst2cfg.c grub-core/lib/legacy_parse.c grub-core/lib/i386/pc/vesa_modes_table.c 
 nodist_grub_menulst2cfg_SOURCES  = 
-grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_menulst2cfg_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_menulst2cfg_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_menulst2cfg_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 
@@ -4097,7 +4097,7 @@ CLEANFILES += grub-menulst2cfg.1
 endif
 grub_menulst2cfg_SOURCES  = util/grub-menulst2cfg.c grub-core/lib/legacy_parse.c grub-core/lib/i386/pc/vesa_modes_table.c 
 nodist_grub_menulst2cfg_SOURCES  = 
-grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) 
+grub_menulst2cfg_LDADD  = libgrubmods.a libgrubkern.a grub-core/gnulib/libgnu.a $(LIBINTL) $(LIBDEVMAPPER) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM) 
 grub_menulst2cfg_CFLAGS  = $(AM_CFLAGS) $(CFLAGS_PROGRAM) 
 grub_menulst2cfg_LDFLAGS  = $(AM_LDFLAGS) $(LDFLAGS_PROGRAM) 
 grub_menulst2cfg_CPPFLAGS  = $(AM_CPPFLAGS) $(CPPFLAGS_PROGRAM) 

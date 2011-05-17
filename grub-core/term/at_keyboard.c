@@ -26,6 +26,8 @@
 #include <grub/time.h>
 #include <grub/loader.h>
 
+GRUB_MOD_LICENSE ("GPLv3+");
+
 static short at_keyboard_status = 0;
 static int e0_received = 0;
 static int f0_received = 0;
@@ -109,12 +111,12 @@ static const struct
     {0x38, GRUB_KEYBOARD_KEY_RIGHT_ALT},
     {0x47, GRUB_KEYBOARD_KEY_HOME}, 
     {0x48, GRUB_KEYBOARD_KEY_UP},
-    {0x49, GRUB_KEYBOARD_KEY_NPAGE},
+    {0x49, GRUB_KEYBOARD_KEY_PPAGE}, 
     {0x4b, GRUB_KEYBOARD_KEY_LEFT},
     {0x4d, GRUB_KEYBOARD_KEY_RIGHT},
     {0x4f, GRUB_KEYBOARD_KEY_END}, 
     {0x50, GRUB_KEYBOARD_KEY_DOWN},
-    {0x51, GRUB_KEYBOARD_KEY_PPAGE}, 
+    {0x51, GRUB_KEYBOARD_KEY_NPAGE},
     {0x52, GRUB_KEYBOARD_KEY_INSERT},
     {0x53, GRUB_KEYBOARD_KEY_DELETE}, 
   };
@@ -330,6 +332,11 @@ set_scancodes (void)
       return;
     }
 
+#if !(defined (GRUB_MACHINE_MIPS_YEELOONG) || defined (GRUB_MACHINE_QEMU))
+  current_set = 1;
+  return;
+#endif
+
   grub_keyboard_controller_write (grub_keyboard_controller_orig
 				  & ~KEYBOARD_AT_TRANSLATE);
 
@@ -424,11 +431,11 @@ fetch_key (int *is_break)
   if (!ret)
     {
       if (was_ext)
-	grub_printf ("Unknown key 0xe0+0x%02x from set %d\n",
-		     at_key, current_set);
+	grub_dprintf ("atkeyb", "Unknown key 0xe0+0x%02x from set %d\n",
+		      at_key, current_set);
       else
-	grub_printf ("Unknown key 0x%02x from set %d\n",
-		     at_key, current_set);
+	grub_dprintf ("atkeyb", "Unknown key 0x%02x from set %d\n",
+		      at_key, current_set);
       return -1;
     }
   return ret;

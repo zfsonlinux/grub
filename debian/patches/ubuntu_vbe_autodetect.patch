@@ -45,13 +45,13 @@ Index: b/docs/grub.texi
 ===================================================================
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
-@@ -1142,7 +1142,8 @@
+@@ -1197,7 +1197,8 @@
  Set the resolution used on the @samp{gfxterm} graphical terminal.  Note that
  you can only use modes which your graphics card supports via VESA BIOS
  Extensions (VBE), so for example native LCD panel resolutions may not be
--available.  The default is @samp{640x480}.
+-available.  The default is @samp{640x480}.  @xref{gfxmode}.
 +available.  The default is @samp{auto}, which tries to select a preferred
-+resolution.
++resolution.  @xref{gfxmode}.
  
  @item GRUB_BACKGROUND
  Set a background image for use with the @samp{gfxterm} graphical terminal.
@@ -59,7 +59,7 @@ Index: b/grub-core/commands/videoinfo.c
 ===================================================================
 --- a/grub-core/commands/videoinfo.c
 +++ b/grub-core/commands/videoinfo.c
-@@ -77,6 +77,30 @@
+@@ -79,6 +79,30 @@
    return 0;
  }
  
@@ -90,7 +90,7 @@ Index: b/grub-core/commands/videoinfo.c
  static grub_err_t
  grub_cmd_videoinfo (grub_command_t cmd __attribute__ ((unused)),
  		    int argc, char **args)
-@@ -120,6 +144,8 @@
+@@ -122,6 +146,8 @@
  
    FOR_VIDEO_ADAPTERS (adapter)
    {
@@ -99,7 +99,7 @@ Index: b/grub-core/commands/videoinfo.c
      grub_printf ("Adapter '%s':\n", adapter->name);
  
      if (!adapter->iterate)
-@@ -143,6 +169,11 @@
+@@ -145,6 +171,11 @@
  
      adapter->iterate (hook);
  
@@ -115,7 +115,7 @@ Index: b/grub-core/video/i386/pc/vbe.c
 ===================================================================
 --- a/grub-core/video/i386/pc/vbe.c
 +++ b/grub-core/video/i386/pc/vbe.c
-@@ -273,6 +273,56 @@
+@@ -275,6 +275,56 @@
    return regs.eax & 0xffff;
  }
  
@@ -172,7 +172,7 @@ Index: b/grub-core/video/i386/pc/vbe.c
  
  grub_err_t
  grub_vbe_probe (struct grub_vbe_info_block *info_block)
-@@ -327,6 +377,61 @@
+@@ -329,6 +379,61 @@
    return GRUB_ERR_NONE;
  }
  
@@ -234,7 +234,7 @@ Index: b/grub-core/video/i386/pc/vbe.c
  grub_err_t
  grub_vbe_set_video_mode (grub_uint32_t vbe_mode,
  			 struct grub_vbe_mode_info_block *vbe_mode_info)
-@@ -695,11 +800,28 @@
+@@ -698,11 +803,28 @@
    struct grub_vbe_mode_info_block best_vbe_mode_info;
    grub_uint32_t best_vbe_mode = 0;
    int depth;
@@ -263,7 +263,7 @@ Index: b/grub-core/video/i386/pc/vbe.c
    /* Walk thru mode list and try to find matching mode.  */
    for (p = vbe_mode_list; *p != 0xFFFF; p++)
      {
-@@ -742,10 +864,21 @@
+@@ -745,10 +867,21 @@
  	/* Unsupported bitdepth . */
          continue;
  
@@ -289,7 +289,7 @@ Index: b/grub-core/video/i386/pc/vbe.c
  
        /* Check if user requested RGB or index color mode.  */
        if ((mode_mask & GRUB_VIDEO_MODE_TYPE_COLOR_MASK) != 0)
-@@ -899,6 +1032,7 @@
+@@ -902,6 +1035,7 @@
      .set_active_render_target = grub_video_fb_set_active_render_target,
      .get_active_render_target = grub_video_fb_get_active_render_target,
      .iterate = grub_video_vbe_iterate,
@@ -301,7 +301,7 @@ Index: b/grub-core/video/video.c
 ===================================================================
 --- a/grub-core/video/video.c
 +++ b/grub-core/video/video.c
-@@ -374,6 +374,50 @@
+@@ -376,6 +376,50 @@
    return grub_video_adapter_active->get_active_render_target (target);
  }
  

@@ -40,7 +40,7 @@ Index: b/grub-core/normal/menu.c
 ===================================================================
 --- a/grub-core/normal/menu.c
 +++ b/grub-core/normal/menu.c
-@@ -640,12 +640,9 @@
+@@ -668,12 +668,9 @@
  
  /* Callback invoked immediately before a menu entry is executed.  */
  static void

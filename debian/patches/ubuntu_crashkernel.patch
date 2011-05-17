@@ -11,7 +11,7 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -59,6 +59,11 @@
+@@ -64,6 +64,11 @@
    fi
  fi
  
@@ -23,7 +23,7 @@ Index: b/util/grub.d/10_linux.in
  linux_entry ()
  {
    os="$1"
-@@ -152,7 +157,7 @@
+@@ -184,7 +189,7 @@
    fi
  
    linux_entry "${OS}" "${version}" false \

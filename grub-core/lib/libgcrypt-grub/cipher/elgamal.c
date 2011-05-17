@@ -1,5 +1,7 @@
 /* This file was automatically imported with 
    import_gcry.py. Please don't modify it */
+#include <grub/dl.h>
+GRUB_MOD_LICENSE ("GPLv3+");
 /* Elgamal.c  -  Elgamal Public Key encryption
  * Copyright (C) 1998, 2000, 2001, 2002, 2003,
  *               2008  Free Software Foundation, Inc.

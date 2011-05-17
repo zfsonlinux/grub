@@ -8,7 +8,7 @@ Index: b/grub-core/video/i386/pc/vbe.c
 ===================================================================
 --- a/grub-core/video/i386/pc/vbe.c
 +++ b/grub-core/video/i386/pc/vbe.c
-@@ -870,6 +870,15 @@
+@@ -873,6 +873,15 @@
  	      || vbe_mode_info.y_resolution > height)
  	    /* Resolution exceeds that of preferred mode.  */
  	    continue;

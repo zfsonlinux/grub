@@ -1,5 +1,6 @@
 /* This file was automatically imported with 
    import_gcry.py. Please don't modify it */
+#include <grub/dl.h>
 /* camellia.h	ver 1.2.0
  *
  * Copyright (C) 2006,2007

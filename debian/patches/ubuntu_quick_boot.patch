@@ -16,7 +16,7 @@ Index: b/util/grub.d/00_header.in
 ===================================================================
 --- a/util/grub.d/00_header.in
 +++ b/util/grub.d/00_header.in
-@@ -222,22 +222,9 @@
+@@ -225,22 +225,9 @@
  
  make_timeout ()
  {
