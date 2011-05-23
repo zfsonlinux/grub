@@ -1,3 +1,56 @@
+grub2 (1.99-4ubuntu1) oneiric; urgency=low
+
+  * Resynchronise with Debian.  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme and an appropriate background for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel option.
+    - Bypass menu unless other OSes are installed or Shift is pressed.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Reduce visual clutter in normal mode.
+    - Remove verbose messages printed before reading configuration.
+    - Suppress kernel/initrd progress messages, except in recovery mode.
+    - Show the boot menu if the previous boot failed.
+    - Don't generate device.map during grub-install or grub-mkconfig.
+    - Adjust upgrade version checks for Ubuntu.
+    - Suppress "GRUB loading" message unless Shift is held down.
+    - Adjust versions of grub-doc and grub-legacy-doc conflicts.
+    - Fix LVM/RAID probing in the absence of /boot/grub/device.map.
+    - Look for .mo files in /usr/share/locale-langpack first.
+    - Build-depend on qemu-kvm rather than qemu-system for grub-pc tests.
+    - Check hardware support before using gfxpayload=keep.
+    - Put second and subsequent Linux menu entries in a submenu.
+    - Preferred resolution detection for VBE.
+    - Set vt.handoff=7 for smooth handoff to kernel graphical mode.
+    - Update default/grub.md5sum to include maverick's default md5sum.
+  * Add nomodeset to Linux kernel arguments in recovery mode, by request of
+    the X team.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 23 May 2011 13:55:34 +0100
+
+grub2 (1.99-4) unstable; urgency=low
+
+  * Make grub-<platform>-bin packages depend on grub-common rather than
+    grub2-common, and add grub2-common dependencies to grub-<platform>.
+    This ensures that grub-<platform>-bin packages are coinstallable with
+    grub-legacy, making it easier to use them as build-dependencies.
+  * Stop trying to install the non-existent grub-ofpathname(8) on sparc for
+    now.  It will exist in the next upstream snapshot.
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 19 May 2011 12:38:45 +0100
+
+grub2 (1.99-3) unstable; urgency=low
+
+  * Ship grub-mkrescue on non-Linux amd64/i386 architectures.
+  * Don't try to ship grub-mkrescue on sparc.
+  * Drop boot_blocklist_hack.patch, fixed differently upstream some time ago
+    by being smarter about filesystem-root-relative path conversion.
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 18 May 2011 14:06:51 +0100
+
 grub2 (1.99-2ubuntu1) oneiric; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:

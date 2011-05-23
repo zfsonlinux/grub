@@ -1,7 +1,6 @@
 olpc_prefix_hack.patch
 core_in_fs.patch
 dpkg_version_comparison.patch
-boot_blocklist_hack.patch
 grub_legacy_0_based_partitions.patch
 disable_floppies.patch
 grub.cfg_400.patch
@@ -35,3 +34,4 @@ ubuntu_linux_submenus.patch
 ubuntu_vt_handoff.patch
 ubuntu_vbe_autodetect.patch
 ubuntu_blacklist_1440x900x32.patch
+ubuntu_recovery_nomodeset.patch
