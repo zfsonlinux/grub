@@ -1,4 +1,3 @@
-usr/bin/grub-mkrescue
 usr/sbin/grub-ofpathname
-usr/share/man/man1/grub-mkrescue.1
-usr/share/man/man8/grub-ofpathname.8
+# Restore this in the next upstream snapshot:
+#usr/share/man/man8/grub-ofpathname.8
