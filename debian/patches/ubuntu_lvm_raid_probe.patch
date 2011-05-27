@@ -150,7 +150,7 @@ Index: b/util/grub-setup.c
  #ifdef GRUB_MACHINE_IEEE1275
  #include <grub/util/ofpath.h>
  #endif
-@@ -876,6 +877,7 @@
+@@ -867,6 +868,7 @@
  int
  main (int argc, char *argv[])
  {
@@ -158,7 +158,7 @@ Index: b/util/grub-setup.c
    char *root_dev = NULL;
    char *dest_dev = NULL;
    int must_embed = 0;
-@@ -906,6 +908,9 @@
+@@ -897,6 +899,9 @@
    /* Initialize the emulated biosdisk driver.  */
    grub_util_biosdisk_init (arguments.dev_map ? : DEFAULT_DEVICE_MAP);
  
