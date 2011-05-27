@@ -35,3 +35,4 @@ ubuntu_vt_handoff.patch
 ubuntu_vbe_autodetect.patch
 ubuntu_blacklist_1440x900x32.patch
 ubuntu_recovery_nomodeset.patch
+ubuntu_partition_performance.patch
