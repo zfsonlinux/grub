@@ -36,9 +36,8 @@ Build-Depends: debhelper (>= 7.4.2~),
 Build-Conflicts: autoconf2.13 
 Standards-Version: 3.8.4
 Homepage: http://www.gnu.org/software/grub/
-Vcs-Bzr: https://alioth.debian.org/anonscm/bzr/pkg-grub/trunk/grub/
-Vcs-Browser: http://bzr.debian.org/loggerhead/pkg-grub/
-
+Vcs-Bzr: http://anonscm.debian.org/bzr/pkg-grub/trunk/grub/
+Vcs-Browser: http://anonscm.debian.org/loggerhead/pkg-grub/trunk/grub/
 
 Package: grub2
 Architecture: any-i386 any-amd64 any-powerpc any-ppc64 any-sparc
@@ -73,7 +72,7 @@ Recommends: os-prober (>= 1.33)
 Suggests: multiboot-doc, grub-emu, xorriso (>= 0.5.6.pl00), desktop-base (>= 4.0.6)
 # See bugs #435983 and #455746
 Conflicts: mdadm (<< 2.6.7-2)
-Breaks: lupin-support (<< 0.30), ${udev-Breaks}
+Breaks: lupin-support (<< 0.30)
 Multi-Arch: foreign
 Description: GRand Unified Bootloader (common files)
  This package contains common files shared by the distinct flavours of GRUB.
