@@ -1,3 +1,16 @@
+grub2 (1.99-6) unstable; urgency=low
+
+  [ Colin Watson ]
+  * Update Vcs-* fields for Alioth changes.
+  * Backport from upstream, removing the need for Breaks: udev (<< 168-1):
+    - Don't stat devices unless we have to.
+
+  [ Debconf translations ]
+  * Catalan (Jordi Mallach).
+  * Farsi (Behrad Eslamifar).  Closes: #628648
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 31 May 2011 09:20:54 +0100
+
 grub2 (1.99-5) unstable; urgency=low
 
   [ Colin Watson ]
