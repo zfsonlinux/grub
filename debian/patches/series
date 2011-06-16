@@ -17,6 +17,9 @@ branch_embed-sectors.patch
 branch_fuse.patch
 mkrescue_efi_modules.patch
 mkconfig_loopback.patch
+lazy_stat.patch
+btrfs_stat.patch
+partition_performance.patch
 ubuntu_grub_standards.patch
 ubuntu_crashkernel.patch
 ubuntu_quick_boot.patch
@@ -35,4 +38,3 @@ ubuntu_vt_handoff.patch
 ubuntu_vbe_autodetect.patch
 ubuntu_blacklist_1440x900x32.patch
 ubuntu_recovery_nomodeset.patch
-ubuntu_partition_performance.patch

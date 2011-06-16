@@ -1,3 +1,85 @@
+grub2 (1.99-7ubuntu1) oneiric; urgency=low
+
+  * Resynchronise with Debian.  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme and an appropriate background for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel option.
+    - Bypass menu unless other OSes are installed or Shift is pressed.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Reduce visual clutter in normal mode.
+    - Remove verbose messages printed before reading configuration.
+    - Suppress kernel/initrd progress messages, except in recovery mode.
+    - Show the boot menu if the previous boot failed.
+    - Don't generate device.map during grub-install or grub-mkconfig.
+    - Adjust upgrade version checks for Ubuntu.
+    - Suppress "GRUB loading" message unless Shift is held down.
+    - Adjust versions of grub-doc and grub-legacy-doc conflicts.
+    - Fix LVM/RAID probing in the absence of /boot/grub/device.map.
+    - Look for .mo files in /usr/share/locale-langpack first.
+    - Build-depend on qemu-kvm rather than qemu-system for grub-pc tests.
+    - Check hardware support before using gfxpayload=keep.
+    - Put second and subsequent Linux menu entries in a submenu.
+    - Preferred resolution detection for VBE.
+    - Set vt.handoff=7 for smooth handoff to kernel graphical mode.
+    - Update default/grub.md5sum to include maverick's default md5sum.
+    - Add nomodeset to Linux kernel arguments in recovery mode.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 16 Jun 2011 01:31:01 +0100
+
+grub2 (1.99-7) unstable; urgency=low
+
+  [ Debconf translations ]
+  * Basque (Iñaki Larrañaga Murgoitio).  Closes: #628716
+  * Swedish (Martin Bagge / brother).  Closes: #628866
+  * Czech (Miroslav Kure).  Closes: #628978
+  * Brazilian Portuguese (Flamarion Jorge).  Closes: #629135
+  * Spanish (Francisco Javier Cuadrado).  Closes: #629633
+
+  [ Colin Watson ]
+  * Cope with btrfs / inside an encrypted block device (thanks, alexeagar;
+    LP: #757631).
+  * Merge from Ubuntu:
+    - Give up scanning partitions after ten consecutive open failures
+      (LP: #787461).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 16 Jun 2011 00:13:14 +0100
+
+grub2 (1.99-6) unstable; urgency=low
+
+  [ Colin Watson ]
+  * Update Vcs-* fields for Alioth changes.
+  * Backport from upstream, removing the need for Breaks: udev (<< 168-1):
+    - Don't stat devices unless we have to.
+
+  [ Debconf translations ]
+  * Catalan (Jordi Mallach).
+  * Farsi (Behrad Eslamifar).  Closes: #628648
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 31 May 2011 09:20:54 +0100
+
+grub2 (1.99-5) unstable; urgency=low
+
+  [ Colin Watson ]
+  * Change grub2/linux_cmdline and grub2/kfreebsd_cmdline descriptions to
+    indicate that the command line is allowed to be empty, since this is a
+    common source of confusion (thanks, Jordan Uggla).
+  * On non-Ubuntu-derived systems, add Breaks: udev (<< 168-1) to
+    grub-common, for the sake of (some?) users without initrds (closes:
+    #627587).
+
+  [ Debconf translations ]
+  * French (Christian Perrier)
+  * Russian (Yuri Kozlov).  Closes: #628196
+  * Simplified Chinese (YunQiang Su).  Closes: #628210
+  * Japanese (Hideki Yamane).  Closes: #628382
+  * Danish (Joe Hansen).  Closes: #628427
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 29 May 2011 21:58:55 +0100
+
 grub2 (1.99-4ubuntu2) oneiric; urgency=low
 
   * Give up scanning partitions after ten consecutive open failures
