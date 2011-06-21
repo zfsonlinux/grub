@@ -8,7 +8,7 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -113,15 +113,23 @@
+@@ -114,15 +114,23 @@
      fi
      printf '%s\n' "${prepare_boot_cache}"
    fi
@@ -36,7 +36,7 @@ Index: b/util/grub.d/10_linux.in
  	initrd	${rel_dirname}/${initrd}
  EOF
    fi
-@@ -189,7 +197,8 @@
+@@ -190,7 +198,8 @@
    fi
  
    linux_entry "${OS}" "${version}" false \

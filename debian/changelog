@@ -1,3 +1,52 @@
+grub2 (1.99-8ubuntu1) oneiric; urgency=low
+
+  * Resynchronise with Debian.  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme and an appropriate background for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel option.
+    - Bypass menu unless other OSes are installed or Shift is pressed.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Reduce visual clutter in normal mode.
+    - Remove verbose messages printed before reading configuration.
+    - Suppress kernel/initrd progress messages, except in recovery mode.
+    - Show the boot menu if the previous boot failed.
+    - Don't generate device.map during grub-install or grub-mkconfig.
+    - Adjust upgrade version checks for Ubuntu.
+    - Suppress "GRUB loading" message unless Shift is held down.
+    - Adjust versions of grub-doc and grub-legacy-doc conflicts.
+    - Fix LVM/RAID probing in the absence of /boot/grub/device.map.
+    - Look for .mo files in /usr/share/locale-langpack first.
+    - Build-depend on qemu-kvm rather than qemu-system for grub-pc tests.
+    - Check hardware support before using gfxpayload=keep.
+    - Put second and subsequent Linux menu entries in a submenu.
+    - Preferred resolution detection for VBE.
+    - Set vt.handoff=7 for smooth handoff to kernel graphical mode.
+    - Update default/grub.md5sum to include maverick's default md5sum.
+    - Add nomodeset to Linux kernel arguments in recovery mode.
+  * Skip Windows os-prober entries on Wubi systems.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 21 Jun 2011 13:25:48 +0100
+
+grub2 (1.99-8) unstable; urgency=low
+
+  [ Robert Millan ]
+  * Avoid buggy versions of libgeom-dev (see #630107).  Closes: #630197
+  * Fix grub-probe detection for ATA devices using `ata' driver on kFreeBSD 9.
+    - kfreebsd-9_ada_devices.patch
+
+  [ Colin Watson ]
+  * Update ntldr-img from grub-extras:
+    - Handle ext3 inode sizes other than 128.
+
+  [ Debconf translations ]
+  * Kazakh (Baurzhan Muftakhidinov). Closes: #630915
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 21 Jun 2011 02:10:10 +0100
+
 grub2 (1.99-7ubuntu1) oneiric; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:

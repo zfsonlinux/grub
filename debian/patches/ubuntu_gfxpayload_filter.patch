@@ -175,7 +175,7 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -88,18 +88,9 @@
+@@ -89,18 +89,9 @@
        save_default_entry | sed -e "s/^/\t/"
    fi
  
@@ -196,7 +196,7 @@ Index: b/util/grub.d/10_linux.in
  
    cat << EOF
  	insmod gzio
-@@ -155,6 +146,36 @@
+@@ -156,6 +147,36 @@
  prepare_boot_cache=
  prepare_root_cache=
  
