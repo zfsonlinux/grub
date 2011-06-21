@@ -8,7 +8,7 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -176,6 +176,7 @@
+@@ -177,6 +177,7 @@
  if [ "\$linux_gfx_mode" != "text" ]; then load_video; fi
  EOF
  
@@ -16,7 +16,7 @@ Index: b/util/grub.d/10_linux.in
  while [ "x$list" != "x" ] ; do
    linux=`version_find_latest $list`
    echo "Found linux image: $linux" >&2
-@@ -229,4 +230,13 @@
+@@ -230,4 +231,13 @@
    fi
  
    list=`echo $list | tr ' ' '\n' | grep -vx $linux | tr '\n' ' '`

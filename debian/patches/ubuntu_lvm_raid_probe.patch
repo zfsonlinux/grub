@@ -45,7 +45,7 @@ Index: b/grub-core/kern/emu/hostdisk.c
 ===================================================================
 --- a/grub-core/kern/emu/hostdisk.c
 +++ b/grub-core/kern/emu/hostdisk.c
-@@ -1651,6 +1651,48 @@
+@@ -1659,6 +1659,48 @@
    return find_system_device (os_dev, &st, 1, 0) != -1;
  }
  
