@@ -1,3 +1,20 @@
+grub2 (1.99-9) unstable; urgency=low
+
+  [ Colin Watson ]
+  * Adjust apport hook to attach /boot/grub/device.map if it exists.
+  * Fix regression in gfxterm background_color handling.
+  * Improve detection of invalid shell syntax in apport hook.
+
+  [ Debconf translations ]
+  * Esperanto (Felipe E. F. de Castro).  Closes: #632157
+  * Slovak (Slavko).
+
+  [ Robert Millan ]
+  * Enable grub-mount on kfreebsd-any.
+  * Build grub-mount-udeb on kfreebsd-i386 and kfreebsd-amd64.
+
+ -- Robert Millan <rmh@debian.org>  Mon, 25 Jul 2011 15:36:31 +0200
+
 grub2 (1.99-8) unstable; urgency=low
 
   [ Robert Millan ]
