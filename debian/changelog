@@ -1,3 +1,70 @@
+grub2 (1.99-11ubuntu1) oneiric; urgency=low
+
+  * Resynchronise with Debian.  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme and an appropriate background for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel option.
+    - Bypass menu unless other OSes are installed or Shift is pressed.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Reduce visual clutter in normal mode.
+    - Remove verbose messages printed before reading configuration.
+    - Suppress kernel/initrd progress messages, except in recovery mode.
+    - Show the boot menu if the previous boot failed.
+    - Don't generate device.map during grub-install or grub-mkconfig.
+    - Adjust upgrade version checks for Ubuntu.
+    - Suppress "GRUB loading" message unless Shift is held down.
+    - Adjust versions of grub-doc and grub-legacy-doc conflicts.
+    - Fix LVM/RAID probing in the absence of /boot/grub/device.map.
+    - Look for .mo files in /usr/share/locale-langpack first.
+    - Build-depend on qemu-kvm rather than qemu-system for grub-pc tests.
+    - Check hardware support before using gfxpayload=keep.
+    - Put second and subsequent Linux menu entries in a submenu.
+    - Preferred resolution detection for VBE.
+    - Set vt.handoff=7 for smooth handoff to kernel graphical mode.
+    - Update default/grub.md5sum to include maverick's default md5sum.
+    - Add nomodeset to Linux kernel arguments in recovery mode.
+    - Skip Windows os-prober entries on Wubi systems.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 09 Aug 2011 13:13:26 +0100
+
+grub2 (1.99-11) unstable; urgency=low
+
+  * Backport from upstream:
+    - Honour GRUB_CMDLINE_LINUX_XEN_REPLACE and
+      GRUB_CMDLINE_LINUX_XEN_REPLACE_DEFAULT, which replace
+      GRUB_CMDLINE_LINUX and GRUB_CMDLINE_LINUX_DEFAULT (complementing the
+      existing options which append; closes: #617538).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 08 Aug 2011 17:55:21 +0100
+
+grub2 (1.99-10) unstable; urgency=high
+
+  * Mark la_array as packed.
+    - zfs_packed_la_array.patch
+
+ -- Robert Millan <rmh@debian.org>  Sun, 07 Aug 2011 20:16:31 +0000
+
+grub2 (1.99-9) unstable; urgency=low
+
+  [ Colin Watson ]
+  * Adjust apport hook to attach /boot/grub/device.map if it exists.
+  * Fix regression in gfxterm background_color handling.
+  * Improve detection of invalid shell syntax in apport hook.
+
+  [ Debconf translations ]
+  * Esperanto (Felipe E. F. de Castro).  Closes: #632157
+  * Slovak (Slavko).
+
+  [ Robert Millan ]
+  * Enable grub-mount on kfreebsd-any.
+  * Build grub-mount-udeb on kfreebsd-i386 and kfreebsd-amd64.
+
+ -- Robert Millan <rmh@debian.org>  Mon, 25 Jul 2011 15:36:31 +0200
+
 grub2 (1.99-8ubuntu1) oneiric; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:
