@@ -12,7 +12,7 @@ Index: b/util/grub.d/30_os-prober.in
 ===================================================================
 --- a/util/grub.d/30_os-prober.in
 +++ b/util/grub.d/30_os-prober.in
-@@ -146,6 +146,8 @@
+@@ -147,6 +147,8 @@
  EOF
  }
  
@@ -42,6 +42,6 @@ Index: b/util/grub.d/30_os-prober.in
 +	  ;;
 +      esac
 +
+       found_other_os=1
        cat << EOF
  menuentry "${LONGNAME} (on ${DEVICE})" --class windows --class os {
- EOF

@@ -45,7 +45,7 @@ Index: b/docs/grub.texi
 ===================================================================
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
-@@ -1197,7 +1197,8 @@
+@@ -1203,7 +1203,8 @@
  Set the resolution used on the @samp{gfxterm} graphical terminal.  Note that
  you can only use modes which your graphics card supports via VESA BIOS
  Extensions (VBE), so for example native LCD panel resolutions may not be
