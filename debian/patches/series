@@ -46,3 +46,4 @@ ubuntu_vbe_autodetect.patch
 ubuntu_blacklist_1440x900x32.patch
 ubuntu_recovery_nomodeset.patch
 ubuntu_wubi_no_windows.patch
+ubuntu_probe_dmraid.patch
