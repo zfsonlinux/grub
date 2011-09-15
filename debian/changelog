@@ -1,3 +1,11 @@
+grub2 (1.99-12ubuntu4) oneiric; urgency=low
+
+  * Add ubuntu_recovery_nosingle.patch:
+    - Replace "single" by "recovery" to trigger friendly-recovery (LP: #575469)
+  * Mark grub-common as breaking friendly-recovery << 0.2.13
+
+ -- Stéphane Graber <stgraber@ubuntu.com>  Thu, 15 Sep 2011 16:05:14 -0400
+
 grub2 (1.99-12ubuntu3) oneiric; urgency=low
 
   * Add a GRUB_MOD_LICENSE declaration to hwmatch (LP: #850202).
