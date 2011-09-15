@@ -5,7 +5,7 @@ Description: Check hardware support before using gfxpayload=keep
 Author: Evan Broder <evan@ebroder.net>
 Author: Colin Watson <cjwatson@ubuntu.com>
 Forwarded: no
-Last-Update: 2011-03-29
+Last-Update: 2011-09-15
 
 Index: b/grub-core/Makefile.core.def
 ===================================================================
@@ -31,7 +31,7 @@ Index: b/grub-core/commands/i386/pc/hwmatch.c
 ===================================================================
 --- /dev/null
 +++ b/grub-core/commands/i386/pc/hwmatch.c
-@@ -0,0 +1,139 @@
+@@ -0,0 +1,141 @@
 +/* hwmatch.c - Match hardware against a whitelist/blacklist.  */
 +/*
 + *  GRUB  --  GRand Unified Bootloader
@@ -60,6 +60,8 @@ Index: b/grub-core/commands/i386/pc/hwmatch.c
 +#include <grub/env.h>
 +#include <grub/i18n.h>
 +#include <regex.h>
++
++GRUB_MOD_LICENSE ("GPLv3+");
 +
 +static grub_err_t
 +grub_cmd_hwmatch (grub_command_t cmd __attribute__ ((unused)),
