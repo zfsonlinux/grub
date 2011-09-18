@@ -1,3 +1,19 @@
+grub2 (1.98+20100804-14+squeeze1) stable; urgency=low
+
+  [ Colin Watson ]
+  * Backport from upstream:
+    - Handle Xen split-partition disk image devices (closes: 601974).
+    - Ensure uniqueness of RAID array numbers even if some elements have a
+      name (closes: #609804).
+
+  [ Robert Millan ]
+  * Fix grub-probe detection for ATA devices using `ata' driver on kFreeBSD 9.
+    - kfreebsd-9_ada_devices.patch
+  * Mark la_array as packed.
+    - zfs_packed_la_array.patch
+
+ -- Robert Millan <rmh@debian.org>  Sun, 18 Sep 2011 18:53:13 +0200
+
 grub2 (1.98+20100804-14) unstable; urgency=low
 
   [ Updated translations ]

@@ -35,3 +35,7 @@ echo_utf-8_clean.patch
 multiboot_unaligned_pointer.patch
 pci_probe.patch
 raid_spurious_members.patch
+xen_disk_names.patch
+raid_number_uniqueness.patch
+kfreebsd-9_ada_devices.patch
+zfs_packed_la_array.patch

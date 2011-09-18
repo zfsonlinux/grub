@@ -1,0 +1,21 @@
+Description: Ensure uniqueness of RAID array numbers
+ ... even if some elements have a name.
+Author: Vladimir 'phcoder' Serbinenko <phcoder@gmail.com>
+Bug-Debian: http://bugs.debian.org/609804
+Forwarded: yes
+Applied-Upstream: http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/3076
+Last-Update: 2011-06-11
+
+Index: b/disk/raid.c
+===================================================================
+--- a/disk/raid.c
++++ b/disk/raid.c
+@@ -559,7 +559,7 @@
+ 	{
+ 	  for (p = array_list; p != NULL; p = p->next)
+ 	    {
+-	      if (! p->name && p->number == array->number) 
++	      if (p->number == array->number) 
+ 		break;
+ 	    }
+ 	}
