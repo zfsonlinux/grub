@@ -1,4 +1,6 @@
 Description: Set nomodeset for recovery mode
+ Also disable 'set gfxpayload=keep' even if the system normally supports it.
+ .
  https://launchpad.net/ubuntu/+spec/desktop-o-xorg-tools-and-processes
 Author: Colin Watson <cjwatson@ubuntu.com>
 Forwarded: no
@@ -8,6 +10,20 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
+@@ -93,11 +93,11 @@
+ EOF
+   if ! ${recovery} ; then
+       save_default_entry | sed -e "s/^/\t/"
+-  fi
+ 
+-  cat << EOF
++      cat << EOF
+ 	set gfxpayload=\$linux_gfx_mode
+ EOF
++  fi
+ 
+   cat << EOF
+ 	insmod gzio
 @@ -233,7 +233,7 @@
        quiet
    if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
