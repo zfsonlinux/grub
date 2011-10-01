@@ -23,4 +23,3 @@ Index: b/util/grub.d/10_linux.in
    fi
  
    list=`echo $list | tr ' ' '\n' | grep -vx $linux | tr '\n' ' '`
-
