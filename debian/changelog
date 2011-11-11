@@ -1,3 +1,20 @@
+grub2 (1.99-13) unstable; urgency=low
+
+  [ Debconf translations ]
+  * Portuguese (Miguel Figueiredo).  Closes: #641226
+  * German (Martin Eberhard Schauer).  Closes: #641630
+  * Sinhala (Danishka Navin).  Closes: #644080
+  * Uyghur (Gheyret Tohti).  Closes: #627011
+
+  [ Robert Millan ]
+  * LVM support for GNU/kFreeBSD.
+    - kfreebsd_lvm.patch
+  * Cherry-pick several ZFS updates from upstream Bazaar.
+    - zfs_update.patch
+  * Build without libzfs.
+
+ -- Robert Millan <rmh@debian.org>  Fri, 11 Nov 2011 23:04:58 +0100
+
 grub2 (1.99-12) unstable; urgency=low
 
   [ Robert Millan ]

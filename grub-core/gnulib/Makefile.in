@@ -753,6 +753,7 @@ enable_grub_emu_pci = @enable_grub_emu_pci@
 enable_grub_emu_sdl = @enable_grub_emu_sdl@
 enable_grub_emu_usb = @enable_grub_emu_usb@
 enable_grub_mkfont = @enable_grub_mkfont@
+enable_grub_mount = @enable_grub_mount@
 exec_prefix = @exec_prefix@
 freetype_cflags = @freetype_cflags@
 freetype_libs = @freetype_libs@
