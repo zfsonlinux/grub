@@ -25,20 +25,18 @@ Build-Depends: debhelper (>= 7.4.2~),
  gettext,
  libusb-dev [!hurd-any],
  libdevmapper-dev (>= 2:1.02.34) [linux-any],
- libzfs-dev [kfreebsd-any],
- libnvpair-dev [kfreebsd-any],
  libgeom-dev (>= 8.2+ds1-1) [kfreebsd-any] | libgeom-dev (<< 8.2) [kfreebsd-any],
  libsdl1.2-dev [!hurd-any],
  xorriso (>= 0.5.6.pl00),
  qemu-kvm [i386 kfreebsd-i386 kopensolaris-i386 any-amd64],
  parted [!hurd-any],
  libfuse-dev (>= 2.8.4-1.4) [linux-any kfreebsd-any],
-Build-Conflicts: autoconf2.13 
+Build-Conflicts: autoconf2.13, libzfs-dev, libnvpair-dev
 Standards-Version: 3.8.4
 Homepage: http://www.gnu.org/software/grub/
 XS-Debian-Vcs-Bzr: http://anonscm.debian.org/bzr/pkg-grub/trunk/grub/
 XS-Debian-Vcs-Browser: http://anonscm.debian.org/loggerhead/pkg-grub/trunk/grub/
-Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-core-dev/ubuntu/oneiric/grub2/oneiric
+Vcs-Bzr: http://bazaar.launchpad.net/~ubuntu-core-dev/ubuntu/precise/grub2/precise
 
 Package: grub2
 Architecture: any-i386 any-amd64 any-powerpc any-ppc64 any-sparc

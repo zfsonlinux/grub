@@ -27,6 +27,9 @@ xen_replace.patch
 kfreebsd_mfi_devices.patch
 probe_canonicalise.patch
 mkconfig_skip_readme.patch
+kfreebsd_lvm.patch
+zfs_update.patch
+no_libzfs.patch
 ubuntu_grub_standards.patch
 ubuntu_crashkernel.patch
 ubuntu_quick_boot.patch
