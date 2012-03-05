@@ -628,8 +628,6 @@ COND_GRUB_PE2ELF_FALSE
 COND_GRUB_PE2ELF_TRUE
 COND_HAVE_FONT_SOURCE_FALSE
 COND_HAVE_FONT_SOURCE_TRUE
-COND_GRUB_MOUNT_FALSE
-COND_GRUB_MOUNT_TRUE
 COND_GRUB_MKFONT_FALSE
 COND_GRUB_MKFONT_TRUE
 COND_GRUB_EMU_PCI_FALSE
@@ -691,7 +689,6 @@ LIBZFS
 LIBLZMA
 LIBGEOM
 LIBDEVMAPPER
-enable_grub_mount
 freetype_libs
 freetype_cflags
 enable_grub_mkfont
@@ -1322,7 +1319,6 @@ enable_grub_emu_usb
 enable_grub_emu_sdl
 enable_grub_emu_pci
 enable_grub_mkfont
-enable_grub_mount
 enable_device_mapper
 '
       ac_precious_vars='build_alias
@@ -1976,8 +1972,6 @@ Optional Features:
                           with PCI support (potentially dangerous)
                           (default=no)
   --enable-grub-mkfont    build and install the `grub-mkfont' utility
-                          (default=guessed)
-  --enable-grub-mount     build and install the `grub-mount' utility
                           (default=guessed)
   --enable-device-mapper  enable Linux device-mapper support (default=guessed)
 
@@ -21585,96 +21579,6 @@ fi
 
 
 
-# Check whether --enable-grub-mount was given.
-if test "${enable_grub_mount+set}" = set; then :
-  enableval=$enable_grub_mount;
-fi
-
-if test x"$enable_grub_mount" = xno ; then
-  grub_mount_excuse="explicitly disabled"
-fi
-
-if test x"$grub_mount_excuse" = x ; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for fuse_main_real in -lfuse" >&5
-$as_echo_n "checking for fuse_main_real in -lfuse... " >&6; }
-if ${ac_cv_lib_fuse_fuse_main_real+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lfuse  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char fuse_main_real ();
-int
-main (void)
-{
-return fuse_main_real ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_fuse_fuse_main_real=yes
-else
-  ac_cv_lib_fuse_fuse_main_real=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_fuse_fuse_main_real" >&5
-$as_echo "$ac_cv_lib_fuse_fuse_main_real" >&6; }
-if test "x$ac_cv_lib_fuse_fuse_main_real" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBFUSE 1
-_ACEOF
-
-  LIBS="-lfuse $LIBS"
-
-else
-  grub_mount_excuse="need FUSE library"
-fi
-
-fi
-
-if test x"$grub_mount_excuse" = x ; then
-  # Check for fuse headers.
-  SAVED_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$CPPFLAGS -D_FILE_OFFSET_BITS=64 -DFUSE_USE_VERSION=26"
-  for ac_header in fuse/fuse.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "fuse/fuse.h" "ac_cv_header_fuse_fuse_h" "$ac_includes_default"
-if test "x$ac_cv_header_fuse_fuse_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_FUSE_FUSE_H 1
-_ACEOF
-
-else
-  grub_mount_excuse="need FUSE headers"
-fi
-
-done
-
-  CPPFLAGS="$SAVED_CPPFLAGS"
-fi
-
-if test x"$enable_grub_mount" = xyes && test x"$grub_mount_excuse" != x ; then
-  as_fn_error $? "grub-mount was explicitly requested but can't be compiled" "$LINENO" 5
-fi
-if test x"$grub_mount_excuse" = x ; then
-enable_grub_mount=yes
-else
-enable_grub_mount=no
-fi
-
-
 # Check whether --enable-device-mapper was given.
 if test "${enable_device_mapper+set}" = set; then :
   enableval=$enable_device_mapper;
@@ -22211,14 +22115,6 @@ else
   COND_GRUB_MKFONT_FALSE=
 fi
 
- if test x$enable_grub_mount = xyes; then
-  COND_GRUB_MOUNT_TRUE=
-  COND_GRUB_MOUNT_FALSE='#'
-else
-  COND_GRUB_MOUNT_TRUE='#'
-  COND_GRUB_MOUNT_FALSE=
-fi
-
  if test x$FONT_SOURCE != x; then
   COND_HAVE_FONT_SOURCE_TRUE=
   COND_HAVE_FONT_SOURCE_FALSE='#'
@@ -22583,10 +22479,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${COND_GRUB_MKFONT_TRUE}" && test -z "${COND_GRUB_MKFONT_FALSE}"; then
   as_fn_error $? "conditional \"COND_GRUB_MKFONT\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${COND_GRUB_MOUNT_TRUE}" && test -z "${COND_GRUB_MOUNT_FALSE}"; then
-  as_fn_error $? "conditional \"COND_GRUB_MOUNT\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${COND_HAVE_FONT_SOURCE_TRUE}" && test -z "${COND_HAVE_FONT_SOURCE_FALSE}"; then
@@ -24155,11 +24047,6 @@ if [ x"$grub_mkfont_excuse" = x ]; then
 echo grub-mkfont: Yes
 else
 echo grub-mkfont: No "($grub_mkfont_excuse)"
-fi
-if [ x"$grub_mount_excuse" = x ]; then
-echo grub-mount: Yes
-else
-echo grub-mount: No "($grub_mount_excuse)"
 fi
 echo "*******************************************************"
 
