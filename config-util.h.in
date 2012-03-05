@@ -301,9 +301,6 @@
 /* Define to 1 if you have the `funlockfile' function. */
 #undef HAVE_FUNLOCKFILE
 
-/* Define to 1 if you have the <fuse/fuse.h> header file. */
-#undef HAVE_FUSE_FUSE_H
-
 /* Define to 1 if you have the `getdelim' function. */
 #undef HAVE_GETDELIM
 
@@ -355,9 +352,6 @@
 
 /* Define to 1 if you have the `devmapper' library (-ldevmapper). */
 #undef HAVE_LIBDEVMAPPER
-
-/* Define to 1 if you have the `fuse' library (-lfuse). */
-#undef HAVE_LIBFUSE
 
 /* Define to 1 if you have the `geom' library (-lgeom). */
 #undef HAVE_LIBGEOM
