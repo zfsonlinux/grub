@@ -30,6 +30,12 @@ mkconfig_skip_readme.patch
 kfreebsd_lvm.patch
 zfs_update.patch
 no_libzfs.patch
+xfs_invalid_bmap.patch
+handle_new_autotools.patch
+efi_disk_cache.patch
+bash-completion_identifiers.patch
+mkconfig_gnumach.patch
+gcc_4_6_space.patch
 ubuntu_grub_standards.patch
 ubuntu_crashkernel.patch
 ubuntu_quick_boot.patch
@@ -51,3 +57,4 @@ ubuntu_recovery_nomodeset.patch
 ubuntu_recovery_nosingle.patch
 ubuntu_wubi_no_windows.patch
 ubuntu_probe_dmraid.patch
+ubuntu_qemu_no_kvm.patch

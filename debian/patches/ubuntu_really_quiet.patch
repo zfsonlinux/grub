@@ -2,8 +2,11 @@ Description: Remove verbose messages printed before reading configuration
  In some ways this is awkward because it makes debugging harder, but it's a
  requirement for a smooth-looking boot process; we may be able to do better in
  future.  Upstream doesn't want this, though.
+ .
+ We disable the cursor as well, for similar reasons of tidiness.
 Author: Colin Watson <cjwatson@ubuntu.com>
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/386922
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/861048
 Forwarded: not-needed
 Last-Update: 2011-01-05
 
@@ -11,7 +14,12 @@ Index: b/grub-core/kern/main.c
 ===================================================================
 --- a/grub-core/kern/main.c
 +++ b/grub-core/kern/main.c
-@@ -173,11 +173,6 @@
+@@ -170,13 +170,14 @@
+ void
+ grub_main (void)
+ {
++  struct grub_term_output *term;
++
    /* First of all, initialize the machine.  */
    grub_machine_init ();
  
@@ -19,10 +27,23 @@ Index: b/grub-core/kern/main.c
 -  grub_setcolorstate (GRUB_TERM_COLOR_HIGHLIGHT);
 -  grub_printf ("Welcome to GRUB!\n\n");
 -  grub_setcolorstate (GRUB_TERM_COLOR_STANDARD);
--
++  /* Disable the cursor until we need it.  */
++  FOR_ACTIVE_TERM_OUTPUTS(term)
++    grub_term_setcursor (term, 0);
+ 
    /* Load pre-loaded modules and free the space.  */
    grub_register_exported_symbols ();
- #ifdef GRUB_LINKER_HAVE_INIT
+@@ -196,5 +197,10 @@
+ 
+   grub_load_config ();
+   grub_load_normal_mode ();
++
++  /* If we have to enter rescue mode, enable the cursor again.  */
++  FOR_ACTIVE_TERM_OUTPUTS(term)
++    grub_term_setcursor (term, 1);
++
+   grub_rescue_run ();
+ }
 Index: b/grub-core/kern/rescue_reader.c
 ===================================================================
 --- a/grub-core/kern/rescue_reader.c
