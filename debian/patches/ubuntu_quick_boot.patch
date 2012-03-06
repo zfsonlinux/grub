@@ -46,7 +46,7 @@ Index: b/util/grub.d/30_os-prober.in
 +++ b/util/grub.d/30_os-prober.in
 @@ -23,22 +23,80 @@
  
- . ${libdir}/grub/grub-mkconfig_lib
+ . "@datadir@/grub/grub-mkconfig_lib"
  
 +found_other_os=
 +

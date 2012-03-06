@@ -1,36 +1,33 @@
-# translation of grub_debian_po_he.po to Hebrew
+# Turkish messages for debian-installer.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the debian-installer package.
+# Atila KOÇ <akoc@artielektronik.com.tr>, 2012.
 #
-#
-# Omer Zak <w1@zak.co.il>, 2010, 2012.
-# Lior Kaplan <kaplan@debian.org>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: grub_debian_po_he\n"
+"Project-Id-Version: debian-installer\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
 "POT-Creation-Date: 2011-05-27 13:33+0100\n"
-"PO-Revision-Date: 2012-01-21 00:52+0200\n"
-"Last-Translator: Omer Zak <w1@zak.co.il>\n"
-"Language-Team: Hebrew <debian-hebrew-common@lists.alioth.debian.org>\n"
-"Language: he\n"
+"PO-Revision-Date: 2012-01-23 01:09+0200\n"
+"Last-Translator: Atila KOÇ <akoc@artielektronik.com.tr>\n"
+"Language-Team: Debian L10n Turkish <debian-l10n-turkish@lists.debian.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:2001
 msgid "Chainload from menu.lst?"
-msgstr "הטענה בשרשור מ-menu.lst?"
+msgstr "menu.lst dosyasından zincirleme yükleme yapılsın mı?"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:2001
 msgid "GRUB upgrade scripts have detected a GRUB Legacy setup in /boot/grub."
-msgstr "תסריטי העדכון של GRUB גילו הגדרות GRUB ישנות ב-‎‎/boot/grub."
+msgstr ""
+"GRUB güncelleme betikleri /boot/grub altında eski bir GRUB kurulumu algıladı."
 
 #. Type: boolean
 #. Description
@@ -41,9 +38,10 @@ msgid ""
 "from your existing GRUB Legacy setup. This step can be automatically "
 "performed now."
 msgstr ""
-"כדי להחליף את גירסת GRUB הישנה במערכת שלך, מומלץ לשנות את ‎/boot/grub/menu."
-"lst כך שיבצע הטענה משורשרת של קוד האיתחול של GRUB 2 מהגדרות GRUB הישנות שלך. "
-"ניתן לבצע פעולה זו באופן אוטומטי עכשיו."
+"Sisteminizdeki eski sürüm GRUB kurulumunu değiştirmek için, /boot/grub/menu."
+"lst dosyasının bir GRUB 2 önyükleme görüntüsünü varolan eski GRUB "
+"kurulumundan yüklenmesine olanak tanıyacak şekilde değiştirilmesi "
+"gerekmektedir. Bu adım şimdi kendiliğinden gerçekleştirilebilir."
 
 #. Type: boolean
 #. Description
@@ -53,8 +51,9 @@ msgid ""
 "verify that the new GRUB 2 setup works before it is written to the MBR "
 "(Master Boot Record)."
 msgstr ""
-"מומלץ שתסכים להטענה משורשרת של GRUB 2 מ-menu.lst ותוודא שהגדרות GRUB 2 "
-"החדשות עובדות עבורך, לפני שקוד האתחול נכתב ל-MBR (Master Boot Record)‎ שלך."
+"Yeni GRUB 2 kurulumu Ana Yükleme Kaydı'na (MBR) yazılmadan önce menu.lst'den "
+"GRUB 2 zincirleme önyüklemesini kabul etmeniz ve GRUB 2 kurulumunun "
+"çalıştığını doğrulamanız önerilir."
 
 #. Type: boolean
 #. Description
@@ -63,8 +62,8 @@ msgid ""
 "Whatever your decision, you can replace the old MBR image with GRUB 2 later "
 "by issuing the following command as root:"
 msgstr ""
-"לא משנה מהי החלטתך, ביכולתך להחליף יותר מאוחר את קוד האתחול הישן ב-MBR בקוד "
-"האתחול של  GRUB 2 ע\"י מתן הפקודה הבאה כמשתמש-על:"
+"Seçiminiz ne olursa olsun, root kimliği ile aşağıdaki komutu işleterek eski "
+"MBR görüntüsünü GRUB 2 ile değiştirebilirsiniz:"
 
 #. Type: multiselect
 #. Description
@@ -72,7 +71,7 @@ msgstr ""
 #. Description
 #: ../grub-pc.templates.in:3001 ../grub-pc.templates.in:4001
 msgid "GRUB install devices:"
-msgstr "התקנים להתקנת GRUB:"
+msgstr "GRUB kurulum aygıtları:"
 
 #. Type: multiselect
 #. Description
@@ -81,8 +80,9 @@ msgid ""
 "The grub-pc package is being upgraded. This menu allows you to select which "
 "devices you'd like grub-install to be automatically run for, if any."
 msgstr ""
-"חבילת grub-pc משתדרגת כעת. תפריט זה מאפשר לך לבחור בהתקנים שברצונך ש-grub-"
-"install ירוץ עליהם אוטומטית, באם יש כאלה."
+"grub-pc paketi yükseltiliyor. Bu menü, eğer varsa, grub-kur'un (grub-"
+"install) hangi aygıtlar için kendiliğinden çalışmasını seçmenize olanak "
+"tanır."
 
 #. Type: multiselect
 #. Description
@@ -92,8 +92,9 @@ msgid ""
 "prevent the installed GRUB core image from getting out of sync with GRUB "
 "modules or grub.cfg."
 msgstr ""
-"בדרך כלל מומלץ להריץ אוטומטית את grub-install כדי למנוע מליבת קוד האתחול "
-"המותקנת של GRUB מלהפסיק להיות מתואמת עם מודולי GRUB או עם grub.cfg."
+"GRUB çekirdek görüntüsünün kurulmuş GRUB modülleri ya da grub.cfg ile "
+"eşitliğinin/uyumunun bozulmasını engellemek için, çoğu durumda grub-kur'un "
+"(grub-install) kendiliğinden çalıştırılması önerilir."
 
 #. Type: multiselect
 #. Description
@@ -104,8 +105,9 @@ msgid ""
 "If you're unsure which drive is designated as boot drive by your BIOS, it is "
 "often a good idea to install GRUB to all of them."
 msgstr ""
-"אם אינך בטוח איזה התקן הוגדר כהתקן האתחול ע\"י ה-BIOS שלך, לעתים קרובות יהא "
-"זה רעיון טוב להתקין GRUB בכולם."
+"Eğer hangi sürücünün BIOS'unuz tarafından yükleme sürücüsü olarak "
+"belirlendiğinden emin değilseniz, GRUB'u tüm sürücülere kurmak yerinde "
+"olacaktır."
 
 #. Type: multiselect
 #. Description
@@ -118,9 +120,10 @@ msgid ""
 "use the blocklist mechanism, which makes it less reliable, and therefore is "
 "not recommended."
 msgstr ""
-"הערה: ניתן להתקין GRUB גם ברשומות האתחול של המחיצות, וכמה מחיצות מתאימות "
-"מוצעות להלן. עם זאת, התקנה כזו מכריחה את GRUB להשתמש בשיטת רשימת הבלוקים, "
-"שמורידה מאמינותו, ולכן לא מומלץ להתקין בשיטה זו."
+"Not: GRUB'u disk bölümlerinin yükleme kayıtlarına yüklemek de olanak "
+"dahilindedir ve duruma uygun bazı bölümler burada listelenmiştir. Öte "
+"yandan, bu seçim GRUB'u daha az güvenilir kılan engelleme listesi "
+"(blocklist) mekanizmasını kullanmaya zorlayacağından önerilmemektedir."
 
 #. Type: multiselect
 #. Description
@@ -132,9 +135,11 @@ msgid ""
 "GRUB modules and grub.cfg. Please check again to make sure that GRUB is "
 "written to the appropriate boot devices."
 msgstr ""
-"המאתחל של GRUB הותקן מקודם בדיסק שכבר אינו קיים, או שהמזהה הייחודי שלו השתנה "
-"מסיבה כלשהי. חשוב לוודא שקוד האתחול של ליבת GRUB נשאר מתואם עם מודולי GRUB ו-"
-"grub.cfg. אנא בדוק שוב כדי לוודא ש-GRUB נכתב להתקני האתחול המתאימים."
+"GRUB önyükleyici şu anda var olmayan ya da benzersiz tanımlayıcısı bir "
+"şekilde değişmiş bir diske kurulmuş durumdadır. Bu önyükleyicinin GRUB "
+"çekirdek görüntüsü ve grub.cfg ile uyum içinde olduğundan emin olmak "
+"önemlidir. Bu nedenle GRUB'un doğru önyükleme aygıtlarına yazılmış "
+"olduğundan emin olunuz."
 
 #. Type: text
 #. Description
@@ -155,7 +160,9 @@ msgstr "- ${DEVICE} (${SIZE} MB; ${PATH})"
 #. Description
 #: ../grub-pc.templates.in:7001
 msgid "Writing GRUB to boot device failed - continue?"
-msgstr "כשלון בכתיבת GRUB להתקן האתחול - להמשיך?"
+msgstr ""
+"GRUB'u önyükleme aygıtına yazma işlemi başarısız oldu. Yine de devam edilsin "
+"mi?"
 
 #. Type: boolean
 #. Description
@@ -163,7 +170,7 @@ msgstr "כשלון בכתיבת GRUB להתקן האתחול - להמשיך?"
 #. Description
 #: ../grub-pc.templates.in:7001 ../grub-pc.templates.in:8001
 msgid "GRUB failed to install to the following devices:"
-msgstr "כשלון בהתקנת GRUB בהתקנים הבאים:"
+msgstr "Aşağıdaki aygıtlara GRUB kurulumu başarısız oldu:"
 
 #. Type: boolean
 #. Description
@@ -171,13 +178,16 @@ msgstr "כשלון בהתקנת GRUB בהתקנים הבאים:"
 msgid ""
 "Do you want to continue anyway? If you do, your computer may not start up "
 "properly."
-msgstr "האם ברצונך להמשיך בכל זאת? אם כן, מחשבך עלול לא לאתחל כהלכה."
+msgstr ""
+"Yine de devam edilsin mi? Devam edilirse bilgisayarınız düzgün "
+"başlamayabilir."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:8001
 msgid "Writing GRUB to boot device failed - try again?"
-msgstr "כשלון בכתיבת GRUB להתקן האתחול - לנסות שוב?"
+msgstr ""
+"GRUB'u önyükleme aygıtına yazma işlemi başarısız oldu. Tekrar denensin mi?"
 
 #. Type: boolean
 #. Description
@@ -187,14 +197,15 @@ msgid ""
 "check that your system will boot from that device. Otherwise, the upgrade "
 "from GRUB Legacy will be canceled."
 msgstr ""
-"ייתכן שתוכל להתקין GRUB בהתקן אחר, למרות שעליך לוודא שמחשבך יאתחל מההתקן "
-"ההוא. אחרת, השדרוג מ-GRUB ישן יבוטל."
+"GRUB'u başka bir aygıta kurma seçeneğiniz olabilir, bununla birlikte "
+"sisteminizin o aygıttan başlayabileceğini denetlemeniz gerekmektedir. Aksi "
+"durumda, eski GRUB'un yükseltilmesi yapılmayacaktır."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:9001
 msgid "Continue without installing GRUB?"
-msgstr "להמשיך בלי להתקין GRUB?"
+msgstr "GRUB kurulmadan devam edilsin mi?"
 
 #. Type: boolean
 #. Description
@@ -206,10 +217,11 @@ msgid ""
 "earlier version of GRUB 2 in the boot sector, it may be unable to load "
 "modules or handle the current configuration file."
 msgstr ""
-"בחרת לא להתקין GRUB באף התקן. אם תמשיך, ייתכן שמנהל האתחול לא יהיה מוגדר "
-"כיאות, ובפעם הבאה שמחשבך יאותחל, הוא יאותחל ממה שהיה קודם ב-boot sector. אם "
-"יש גירסא מוקדמת יותר של GRUB 2 ב-boot sector, ייתכן שלא יהיה ביכולתה להטעין "
-"מודולים או להתמודד עם קובץ ההגדרות הנוכחי."
+"GRUB'u hiçbir aygıta kurmamayı seçtiniz. Devam ederseniz önyükleyici düzgün "
+"yapılandırılmayabilir ve bu bilgisayar bir sonraki açılışında önyükleme "
+"bölümünde daha önceden ne varsa onu kullanır. Eger önyükleme bölümünde GRUB "
+"2'nin daha önceki bir sürümü var ise, güncel yapılandırma dosyasını "
+"kullanamayabilir ya da birimleri yükleyemeyebilir."
 
 #. Type: boolean
 #. Description
@@ -220,34 +232,38 @@ msgid ""
 "then you should continue anyway. Otherwise, you should install GRUB "
 "somewhere."
 msgstr ""
-"אם הינך כבר משתמש במנהל אתחול אחר ומעוניין להמשיך להשתמש בו, או אם זו סביבה "
-"מיוחדת שבה לא דרוש לך מנהל אתחול, עליך להמשיך בכל זאת. אחרת, עליך להתקין "
-"GRUB במקום כלשהו."
+"Şu anda başka bir önyükleyici kullanıyorsanız ve kullanmaya da devam "
+"edecekseniz ya da bu sizin bir önyükleniciye gerek duymadığınız özel bir "
+"ortam ise bu şekilde devam edebilirsiniz. Aksi durumda, GRUB'u bir yere "
+"yüklemek zorundasınız."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:10001
 msgid "Remove GRUB 2 from /boot/grub?"
-msgstr "הסר GRUB 2 מ-/boot/grub?"
+msgstr "/boot/grub yolundan GRUB  2 kaldırılsın mı?"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:10001
 msgid "Do you want to have all GRUB 2 files removed from /boot/grub?"
-msgstr "האם ברצונך להסיר את כל קבצי GRUB 2 מ-/boot/grub?"
+msgstr ""
+"/boot/grub yolundan bütün GRUB 2 dosyalarının kaldırılmasını istiyor musunuz?"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:10001
 msgid ""
 "This will make the system unbootable unless another boot loader is installed."
-msgstr "פעולה זו תמנע מהמערכת מלאתחל אלא אם תתקין מנהל אתחול אחר."
+msgstr ""
+"Başka bir önyükleyici kurulmadıysa yapılan bu işlem sistemi başlatılamaz "
+"kılacaktır."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:11001
 msgid "Finish conversion to GRUB 2 now?"
-msgstr "לסיים עכשיו המרה ל-GRUB 2?"
+msgstr "GRUB 2'ye dönüşüm bitirilsin mi?"
 
 #. Type: boolean
 #. Description
@@ -256,8 +272,8 @@ msgid ""
 "This system still has files from the GRUB Legacy boot loader installed, but "
 "it now also has GRUB 2 boot records installed on these disks:"
 msgstr ""
-"יש במערכת זו עדיין קבצים מההתקנה הישנה של מנהל האתחול GRUB, אבל יש גם רשומות "
-"אתחול GRUB 2 מותקנות בדיסקים הבאים:"
+"Bu sistemde hala eski GRUB kurulumundan kalan önyükleme dosyaları var, aynı "
+"zamanda da şu disklere yazılmış GRUB 2 önyükleme kayıtlarına sahip:"
 
 #. Type: boolean
 #. Description
@@ -269,10 +285,11 @@ msgid ""
 "GRUB 2 images, then they may be incompatible with the new packages and cause "
 "your system to stop booting properly."
 msgstr ""
-"סביר שהתקנת GRUB הישנה כבר אינה בשימוש, ושעליך במקום זאת לשדרג את תמונות "
-"GRUB 2 בדיסקים אלה ולסיים את ההמרה ל-GRUB 2 על ידי הסרת קבצי GRUB הישנים. אם "
-"אינך משדרג תמונות GRUB 2 אלה, הן עלולות להיות בלתי תואמות את החבילות החדשות "
-"ולמנוע מהמערכת שלך מלאתחל כהלכה."
+"Göründüğü kadarı ile eski GRUB kurulumu artık kullanılmıyor, dolayısıyla bu "
+"disklerde eski GRUB dosyalarını kaldırıp GRUB 2 görüntülerine yükseltme "
+"yaparak dönüşümü tamamlamalısınız. Eğer bunları GRUB 2 görüntülerine "
+"yükseltmezseniz, yeni paketlerle uyum sorunları yaşanabilir ve bu durum "
+"sisteminizin gerektiği gibi başlamasına engel olabilir."
 
 #. Type: boolean
 #. Description
@@ -281,14 +298,14 @@ msgid ""
 "You should generally finish the conversion to GRUB 2 unless these boot "
 "records were created by a GRUB 2 installation on some other operating system."
 msgstr ""
-"בדרך כלל עליך לסיים את ההמרה ל-GRUB 2 אלא אם רשומות אתחול אלה נוצרו על ידי "
-"התקנת GRUB 2 במערכת הפעלה אחרת."
+"Bu önyükleme kayıtları başka bir işletim sistemindeki GRUB 2 kurulumu "
+"tarafından yaratılmadığı sürece GRUB 2 kurulumunu tamamlamanız gerekmektedir."
 
 #. Type: string
 #. Description
 #: ../templates.in:1001
 msgid "Linux command line:"
-msgstr "שורת הפקודה של Linux:"
+msgstr "Linux komut satırı:"
 
 #. Type: string
 #. Description
@@ -298,15 +315,15 @@ msgid ""
 "`kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
 "correct, and modify it if necessary. The command line is allowed to be empty."
 msgstr ""
-"שורת פקודת Linux הבאה נשלפה מ-‎/etc/default/grub או מפרמטר 'kopt' ב-menu.lst "
-"הישן של GRUB. נא לוודא ששורת פקודה זו נכונה ועדכן אותה אם צריך. ניתן להשאיר "
-"שורת פקודה זו ריקה."
+"Aşağıdaki Linux komut satırı /etc/default/grub'dan ya da eski GRUB menu.lst "
+"dosyasındaki 'kopt' parametresinden türetilmiştir. Doğruluğundan emin olun "
+"ya da düzeltin. Komut satırını boş bırakabilirsiniz."
 
 #. Type: string
 #. Description
 #: ../templates.in:2001
 msgid "Linux default command line:"
-msgstr "ברירת מחדל לשורת הפקודה של Linux:"
+msgstr "Öntanımlı Linux komut satırı:"
 
 #. Type: string
 #. Description
@@ -315,14 +332,14 @@ msgid ""
 "The following string will be used as Linux parameters for the default menu "
 "entry but not for the recovery mode."
 msgstr ""
-"המחרוזת הבאה תשמש כפרמטרי Linux עבור ברירת המחדל בתפריט אבל לא עבור מצב "
-"recovery."
+"Aşağıdaki dizge öntanımlı menü girişinin Linux parametreleri olarak "
+"kullanılacak fakat kurtarma kipi için kullanılmayacak."
 
 #. Type: string
 #. Description
 #: ../templates.in:3001
 msgid "kFreeBSD command line:"
-msgstr "שורת הפקודה של kFreeBSD:"
+msgstr "kFreeBSD komut satırı:"
 
 #. Type: string
 #. Description
@@ -332,15 +349,15 @@ msgid ""
 "the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
 "correct, and modify it if necessary. The command line is allowed to be empty."
 msgstr ""
-"שורת פקודת kFreeBSD הבאה נשלפה מ-‎/etc/default/grub או מפרמטר'kopt' ב-menu."
-"lst הישן של GRUB. בבקשה לוודא ששורת פקודה זו נכונה ועדכן אותה אם צריך. ניתן "
-"להשאיר שורת פקודה זו ריקה."
+"Aşağıdaki kFreeBSD komut satırı /etc/default/grub'dan ya da eski GRUB menu."
+"lst dosyasındaki 'kopt' parametresinden türetilmiştir. Doğruluğundan emin "
+"olun ya da düzeltin. Komut satırını boş bırakabilirsiniz."
 
 #. Type: string
 #. Description
 #: ../templates.in:4001
 msgid "kFreeBSD default command line:"
-msgstr "ברירת מחדל לשורת הפקודה של kFreeBSD:"
+msgstr "Öntanımlı kFreeBSD komut satırı:"
 
 #. Type: string
 #. Description
@@ -349,14 +366,14 @@ msgid ""
 "The following string will be used as kFreeBSD parameters for the default "
 "menu entry but not for the recovery mode."
 msgstr ""
-"המחרוזת הבאה תשמש כפרמטרי kFreeBSD עבור ברירת המחדל בתפריט אבל לא עבור מצב "
-"recovery."
+"Aşağıdaki dizge öntanımlı menü girişinin kFreeBSD parametreleri olarak "
+"kullanılacak fakat kurtarma kipi için kullanılmayacak."
 
 #. Type: note
 #. Description
 #: ../templates.in:5001
 msgid "/boot/grub/device.map has been regenerated"
-msgstr "הקובץ ‎/boot/grub/device.map נוצר מחדש"
+msgstr "/boot/grub/device.map dosyası yeniden oluşturuldu"
 
 #. Type: note
 #. Description
@@ -366,9 +383,10 @@ msgid ""
 "names. In most cases, this should significantly reduce the need to change it "
 "in future, and boot menu entries generated by GRUB should not be affected."
 msgstr ""
-"הקובץ ‎/boot/grub/device.map נכתב מחדש כדי להשתמש בשמות התקנים יציבים. ברוב "
-"המקרים, הדבר אמור לצמצם בצורה משמעותית את הצורך לשנותו בעתיד, והבחירות "
-"בתפריט האתחול הנוצר על ידי GRUB לא אמורות להיות מושפעות משינוי זה."
+"/boot/grub/device.map dosyası kararlı aygıt isimlerini kullanacak şekilde "
+"yeniden yazıldı. Bu işlem çoğu durumda ileride gerekebilecek bir düzenleme "
+"gereksinimini ciddi biçimde azaltır ve GRUB tarafından yaratılan önyükleme "
+"menüsü seçeneklerini etkilemez."
 
 #. Type: note
 #. Description
@@ -379,9 +397,10 @@ msgid ""
 "there are any custom boot menu entries that rely on GRUB's (hdN) drive "
 "numbering, and update them if necessary."
 msgstr ""
-"אבל, מכיוון שיש במערכת שלך יותר מדיסק אחד, ייתכן שהמערכת מסתמכת על קובץ "
-"מיפוי ההתקנים הישן. אנא בדוק אם יש לך בחירות מותאמות אישית בתפריט האתחול, "
-"שמשתמשות בשיטת מספור ההתקנים (hdN) של GRUB, ועדכן אותן אם צריך."
+"Öte yandan sistemde birden fazla disk olduğu için, sistemin eski aygıt "
+"eşlemine bağlı kalmış olması olasıdır. GRUB'un (hdN) sürücü "
+"numaralandırmasını kullanan herhangi bir özgün önyükleme menü şeçenegi olup "
+"olmadığını denetleyin ve gerekirse bunları güncelleyin."
 
 #. Type: note
 #. Description
@@ -390,5 +409,5 @@ msgid ""
 "If you do not understand this message, or if there are no custom boot menu "
 "entries, you can ignore this message."
 msgstr ""
-"אם אינך מבין הודעה זו, או אם אין לך ברירות מותאמות אישית בתפריט האתחול, אזי "
-"ניתן להתעלם מהודעה זו."
+"Bu uyarıyı anlayamazsanız ya da herhangi bir özgün önyükleme menü seçeneği "
+"yok ise, bu uyarıyı gözardı edebilirsiniz."

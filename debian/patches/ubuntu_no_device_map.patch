@@ -7,7 +7,7 @@ Index: b/util/grub-install.in
 ===================================================================
 --- a/util/grub-install.in
 +++ b/util/grub-install.in
-@@ -316,14 +316,6 @@
+@@ -318,14 +318,6 @@
      exit 1
  fi
  
@@ -22,7 +22,7 @@ Index: b/util/grub-install.in
  if [ x"$platform" = xefi ]; then
      # Find the EFI System Partition.
      efidir=
-@@ -413,22 +405,14 @@
+@@ -415,22 +407,14 @@
      rm -f "$device_map"
  fi
  
@@ -56,15 +56,15 @@ Index: b/util/grub-mkconfig.in
 ===================================================================
 --- a/util/grub-mkconfig.in
 +++ b/util/grub-mkconfig.in
-@@ -36,7 +36,6 @@
+@@ -37,7 +37,6 @@
  
  self=`basename $0`
  
--grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed "${transform}"`
- grub_probe=${sbindir}/`echo grub-probe | sed "${transform}"`
+-grub_mkdevicemap="${sbindir}/`echo grub-mkdevicemap | sed "${transform}"`"
+ grub_probe="${sbindir}/`echo grub-probe | sed "${transform}"`"
  grub_script_check="${bindir}/`echo grub-script-check | sed "${transform}"`"
  
-@@ -118,14 +117,6 @@
+@@ -119,14 +118,6 @@
    fi
  fi
  
@@ -79,7 +79,7 @@ Index: b/util/grub-mkconfig.in
  set $grub_probe dummy
  if test -f "$1"; then
      :
-@@ -136,10 +127,6 @@
+@@ -137,10 +128,6 @@
  
  mkdir -p ${GRUB_PREFIX}
  
