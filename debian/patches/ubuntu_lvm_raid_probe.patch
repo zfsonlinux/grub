@@ -25,7 +25,7 @@ Index: b/Makefile.util.def
 ===================================================================
 --- a/Makefile.util.def
 +++ b/Makefile.util.def
-@@ -269,6 +269,7 @@
+@@ -272,6 +272,7 @@
    installdir = sbin;
    mansection = 8;
    common = util/grub-probe.c;
@@ -33,7 +33,7 @@ Index: b/Makefile.util.def
  
    ldadd = libgrubmods.a;
    ldadd = libgrubkern.a;
-@@ -283,6 +284,7 @@
+@@ -286,6 +287,7 @@
    common = util/grub-setup.c;
    common = util/raid.c;
    common = util/lvm.c;
