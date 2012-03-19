@@ -1,3 +1,24 @@
+grub2 (1.99-18) unstable; urgency=low
+
+  [ Colin Watson ]
+  * Ensure that /sbin and /usr/sbin are in $PATH when running tests (closes:
+    #662916).
+  * mkconfig_loopback.patch: Use different GRUB loop devices for different
+    OS loop devices (thanks, bcbc; LP: #888281).
+  * Backport from upstream:
+    - Add support for LZO compression in btrfs (LP: #727535).
+    - Fix efiemu configure check.
+
+  [ Ilya Yanok ]
+  * Backport from upstream:
+    - Make FAT UUID uppercase to match Linux (LP: #948716).
+
+  [ Debconf translations ]
+  * Norwegian Bokmål (Hans Fredrik Nordhaug). 
+  * Gujarati (Kartik Mistry).  Closes: #663542
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 19 Mar 2012 18:24:33 +0000
+
 grub2 (1.99-17) unstable; urgency=low
 
   * efi_disk_cache.patch: Fix incorrect GRUB_DISK_CACHE_BITS (LP: #944347).
