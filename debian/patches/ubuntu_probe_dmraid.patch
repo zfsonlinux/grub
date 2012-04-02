@@ -8,7 +8,7 @@ Index: b/grub-core/kern/emu/hostdisk.c
 ===================================================================
 --- a/grub-core/kern/emu/hostdisk.c
 +++ b/grub-core/kern/emu/hostdisk.c
-@@ -457,9 +457,15 @@
+@@ -471,9 +471,15 @@
  	grub_dprintf ("hostdisk", "no dm target\n");
  	goto devmapper_fail;
        }
@@ -26,7 +26,7 @@ Index: b/grub-core/kern/emu/hostdisk.c
  		      target_type);
  	goto devmapper_fail;
        }
-@@ -1469,6 +1475,11 @@
+@@ -1484,6 +1490,11 @@
  	      grub_dprintf ("hostdisk", "%s child has no DM name\n", path);
  	      goto devmapper_out;
  	    }
@@ -38,7 +38,7 @@ Index: b/grub-core/kern/emu/hostdisk.c
  	  mapper_name = child_name;
  
  devmapper_out:
-@@ -1575,6 +1586,16 @@
+@@ -1590,6 +1601,16 @@
  
    if (os_dev[len - 1] < '0' || os_dev[len - 1] > '9')
      return 1;
