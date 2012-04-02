@@ -1,3 +1,18 @@
+grub2 (1.99-19) unstable; urgency=low
+
+  [ Colin Watson ]
+  * Add grub-probe to grub-mount-udeb (LP: #963471).
+  * Backport from upstream:
+    - Restore CFLAGS after efiemu check (closes: #665772).
+    - Include __ctzdi2 and __ctzsi2 from libgcc if present (closes:
+      #665993).
+    - Support non-512B sectors and agglomerate reads.
+
+  [ Debconf translations ]
+  * Croatian (Tomislav Krznar).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 02 Apr 2012 18:26:09 +0100
+
 grub2 (1.99-18) unstable; urgency=low
 
   [ Colin Watson ]
