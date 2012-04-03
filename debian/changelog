@@ -1,3 +1,50 @@
+grub2 (1.99-21ubuntu1) precise; urgency=low
+
+  * Resynchronise with Debian.  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme and an appropriate background for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel option.
+    - Bypass menu unless other OSes are installed or Shift is pressed.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Reduce visual clutter in normal mode.
+    - Remove verbose messages printed before reading configuration.
+    - Suppress kernel/initrd progress messages, except in recovery mode.
+    - Show the boot menu if the previous boot failed.
+    - Don't generate device.map during grub-install or grub-mkconfig.
+    - Adjust upgrade version checks for Ubuntu.
+    - Suppress "GRUB loading" message unless Shift is held down.
+    - Adjust versions of grub-doc and grub-legacy-doc conflicts.
+    - Fix LVM/RAID probing in the absence of /boot/grub/device.map.
+    - Look for .mo files in /usr/share/locale-langpack first.
+    - Build-depend on qemu-kvm rather than qemu-system for grub-pc tests.
+    - Check hardware support before using gfxpayload=keep.
+    - Put second and subsequent Linux menu entries in a submenu.
+    - Preferred resolution detection for VBE.
+    - Set vt.handoff=7 for smooth handoff to kernel graphical mode.
+    - Update default/grub.md5sum to include maverick's default md5sum.
+    - In recovery mode, add nomodeset to the Linux kernel arguments, and
+      remove the 'set gfxpayload=keep' command.
+    - Skip Windows os-prober entries on Wubi systems, and suppress the menu
+      by default if those are the only other-OS entries.
+    - Handle probing striped DM-RAID devices.
+    - Replace 'single' by 'recovery' when friendly-recovery is installed.
+    - Use qemu -no-kvm in tests for now to work around LP #947597.
+    - Disable cursor as early as possible in grub_main.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 03 Apr 2012 18:15:58 +0100
+
+grub2 (1.99-21) unstable; urgency=low
+
+  * Backport from upstream:
+    - Fix hook calling for unaligned segments (closes: #666992,
+      LP: #972250).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 03 Apr 2012 14:19:18 +0100
+
 grub2 (1.99-20ubuntu1) precise; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:

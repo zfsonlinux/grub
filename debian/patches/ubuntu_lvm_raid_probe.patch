@@ -45,7 +45,7 @@ Index: b/grub-core/kern/emu/hostdisk.c
 ===================================================================
 --- a/grub-core/kern/emu/hostdisk.c
 +++ b/grub-core/kern/emu/hostdisk.c
-@@ -1023,6 +1023,24 @@
+@@ -1027,6 +1027,24 @@
      .next = 0
    };
  
@@ -70,7 +70,7 @@ Index: b/grub-core/kern/emu/hostdisk.c
  static void
  read_device_map (const char *dev_map)
  {
-@@ -1117,19 +1135,7 @@
+@@ -1121,19 +1139,7 @@
  	    }
  	}
  
@@ -91,7 +91,7 @@ Index: b/grub-core/kern/emu/hostdisk.c
      }
  
    fclose (fp);
-@@ -1638,7 +1644,7 @@
+@@ -1642,7 +1648,7 @@
    if (convert)
      os_disk = convert_system_partition_to_system_disk (os_dev, st);
    else
@@ -100,7 +100,7 @@ Index: b/grub-core/kern/emu/hostdisk.c
    if (! os_disk)
      return -1;
  
-@@ -1674,6 +1680,51 @@
+@@ -1678,6 +1684,51 @@
    return find_system_device (os_dev, &st, 1, 0) != -1;
  }
  
