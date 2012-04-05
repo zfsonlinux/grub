@@ -1,0 +1,59 @@
+Description: Don't crash on canonicalize_file_name failure
+ Also amend os-prober handling a bit to avoid getting confused by
+ inaccessible loop device backing paths.  This is probably incomplete.
+Author: Richard Laager <rlaager@wiktel.com>
+Author: Colin Watson <cjwatson@ubuntu.com>
+Origin: backport, http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/3824
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/938724
+Forwarded: no
+Last-Update: 2012-04-05
+
+Index: b/util/grub-probe.c
+===================================================================
+--- a/util/grub-probe.c
++++ b/util/grub-probe.c
+@@ -111,6 +111,8 @@
+   else
+     {
+       grub_path = canonicalize_file_name (path);
++      if (! grub_path)
++	grub_util_error (_("failed to get canonical path of %s"), path);
+       device_name = grub_guess_root_device (grub_path);
+     }
+ 
+Index: b/util/grub-mkconfig_lib.in
+===================================================================
+--- a/util/grub-mkconfig_lib.in
++++ b/util/grub-mkconfig_lib.in
+@@ -114,7 +114,7 @@
+         /dev/*) ;;
+         *)
+           loop_device="${device}"
+-          device=`"${grub_probe}" --target=device "${loop_file}"`
++          device=`"${grub_probe}" --target=device "${loop_file}"` || return 0
+         ;;
+       esac
+     ;;
+Index: b/util/grub.d/30_os-prober.in
+===================================================================
+--- a/util/grub.d/30_os-prober.in
++++ b/util/grub.d/30_os-prober.in
+@@ -224,14 +224,15 @@
+ 	  LINITRD="${LINITRD#/boot}"
+ 	fi
+ 
++	if [ -z "${prepare_boot_cache}" ]; then
++	  prepare_boot_cache="$(prepare_grub_to_access_device ${LBOOT} | sed -e "s/^/\t/")"
++	  [ "${prepare_boot_cache}" ] || continue
++	fi
+ 	found_other_os=1
+         cat << EOF
+ menuentry "${LLABEL} (on ${DEVICE})" --class gnu-linux --class gnu --class os {
+ EOF
+ 	save_default_entry | sed -e "s/^/\t/"
+-	if [ -z "${prepare_boot_cache}" ]; then
+-	  prepare_boot_cache="$(prepare_grub_to_access_device ${LBOOT} | sed -e "s/^/\t/")"
+-	fi
+ 	printf '%s\n' "${prepare_boot_cache}"
+ 	cat <<  EOF
+ 	linux ${LKERNEL} ${LPARAMS}

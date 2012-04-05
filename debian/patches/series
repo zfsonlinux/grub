@@ -62,3 +62,4 @@ ubuntu_recovery_nosingle.patch
 ubuntu_wubi_no_windows.patch
 ubuntu_probe_dmraid.patch
 ubuntu_qemu_no_kvm.patch
+ubuntu_probe_nonexistent_loopback.patch
