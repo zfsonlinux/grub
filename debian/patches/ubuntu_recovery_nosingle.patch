@@ -7,7 +7,7 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -232,8 +232,13 @@
+@@ -243,8 +243,13 @@
        "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}" \
        quiet
    if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then

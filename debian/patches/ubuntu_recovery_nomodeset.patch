@@ -18,13 +18,13 @@ Index: b/util/grub.d/10_linux.in
  
 -  cat << EOF
 +      cat << EOF
- 	set gfxpayload=\$linux_gfx_mode
+ 	gfxmode \$linux_gfx_mode
  EOF
 +  fi
  
    cat << EOF
  	insmod gzio
-@@ -233,7 +233,7 @@
+@@ -244,7 +244,7 @@
        quiet
    if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
      linux_entry "${OS}" "${version}" true \

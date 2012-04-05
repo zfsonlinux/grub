@@ -1,3 +1,14 @@
+grub2 (1.99-21ubuntu2) precise; urgency=low
+
+  [ Andy Whitcroft ]
+  * Only supply vt.handoff=7 when we are using gfxpayload=keep.  Do this
+    even when the command line is modified before execution.  (LP: #942846)
+
+  [ Colin Watson ]
+  * Don't crash on inaccessible loop device backing paths (LP: #938724).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 05 Apr 2012 13:36:57 +0100
+
 grub2 (1.99-21ubuntu1) precise; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:
