@@ -208,7 +208,7 @@ Index: b/util/grub.d/10_linux.in
 +  echo "set linux_gfx_mode=$GRUB_GFXPAYLOAD_LINUX"
 +else
 +  cat << EOF
-+if [ \${recordfail} != 1 ]; then
++if [ "\${recordfail}" != 1 ]; then
 +  if [ -e \${prefix}/gfxblacklist.txt ]; then
 +    if hwmatch \${prefix}/gfxblacklist.txt 3; then
 +      if [ \${match} = 0 ]; then
@@ -229,7 +229,7 @@ Index: b/util/grub.d/10_linux.in
 +fi
 +cat << EOF
 +export linux_gfx_mode
-+if [ "\$linux_gfx_mode" != "text" ]; then load_video; fi
++if [ "\${linux_gfx_mode}" != "text" ]; then load_video; fi
 +EOF
 +
  while [ "x$list" != "x" ] ; do
