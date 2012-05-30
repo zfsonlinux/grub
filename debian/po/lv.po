@@ -1,36 +1,36 @@
-# Vietnamese translation for Grub2_Debian.
-# Copyright © 2010 Free Software Foundation, Inc.
-# Clytie Siddall <clytie@riverland.net.au>, 2010.
-# Hai Lang <hailangvn@gmail.com>, 2012.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 #
+# Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: grub2\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
 "POT-Creation-Date: 2011-05-27 13:33+0100\n"
-"PO-Revision-Date: 2012-04-23 20:48+0700\n"
-"Last-Translator: Hai Lang <hailangvn@gmail.com>\n"
-"Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
-"Language: vi\n"
+"PO-Revision-Date: 2012-05-25 12:10+0300\n"
+"Last-Translator: Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>\n"
+"Language-Team: Latvian <lata-l10n@googlegroups.com>\n"
+"Language: lv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: LocFactoryEditor 1.8\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
+"2);\n"
+"X-Generator: Lokalize 1.4\n"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:2001
 msgid "Chainload from menu.lst?"
-msgstr "Nạp dãy từ menu.lst ?"
+msgstr "Secīgi ielādēt no menu.lst?"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:2001
 msgid "GRUB upgrade scripts have detected a GRUB Legacy setup in /boot/grub."
 msgstr ""
-"Văn lệnh nâng cấp GRUB phát hiện được một thiết lập GRUB Thừa Tự (GRUB "
-"Legacy) trong « /boot/grub »."
+"GRUB uzlabošanas skripti ir atklājuši GRUB mantotos iestatījumus mapē /boot/"
+"grub."
 
 #. Type: boolean
 #. Description
@@ -41,9 +41,9 @@ msgid ""
 "from your existing GRUB Legacy setup. This step can be automatically "
 "performed now."
 msgstr ""
-"Để thay thế phiên bản Thừa Tự của GRUB trong hệ thống này, nên điều chỉnh /"
-"boot/grub/menu.lst để nạp ảnh khởi động GRUB 2 từ thiết lập GRUB Thừa Tự đã "
-"có. Bước này có thể được tự động thực hiện ngay bây giờ."
+"Lai aizvietotu mantoto GRUB versiju savā sistēmā, iesakām pielāgot /boot/"
+"grub/menu.lst, lai tā ielādē GRUB 2 palaišanas attēlu no esošās GRUB "
+"mantotās instalācijas. Tagad šo soli var veikt automātiski."
 
 #. Type: boolean
 #. Description
@@ -53,9 +53,9 @@ msgid ""
 "verify that the new GRUB 2 setup works before it is written to the MBR "
 "(Master Boot Record)."
 msgstr ""
-"Bạn nên đồng ý việc nạp dãy GRUB 2 từ menu.lst, và kiểm tra rằng thiết lập "
-"GRUB 2 mới có thể làm việc được trước khi nó được ghi vào MBR (Mục ghi Khởi "
-"động Chủ)."
+"Ieteicams pieņemt secīgās ielādes (chainloading) GRUB 2 no menu.lst un "
+"pārliecināties, ka jaunais GRUB 2 darbojas, pirms no ierakstīt MBR "
+"(galvenajā palaišanas ierakstā)."
 
 #. Type: boolean
 #. Description
@@ -64,8 +64,8 @@ msgid ""
 "Whatever your decision, you can replace the old MBR image with GRUB 2 later "
 "by issuing the following command as root:"
 msgstr ""
-"Dù bạn quyết định thế nào, sau này bạn vẫn có thể thay thế ảnh MBR cũ bởi "
-"GRUB 2 bằng cách thực hiện câu lệnh sau với quyền root:"
+"Lai kāds būtu lēmums, jūs varat aizvietot veco MBR attēlu ar GRUB 2 vēlāk, "
+"dodot sekojošās komandas ar root tiesībām:"
 
 #. Type: multiselect
 #. Description
@@ -73,7 +73,7 @@ msgstr ""
 #. Description
 #: ../grub-pc.templates.in:3001 ../grub-pc.templates.in:4001
 msgid "GRUB install devices:"
-msgstr "Những thiết bị cài đặt GRUB:"
+msgstr "GRUB instalēšanas ierīces:"
 
 #. Type: multiselect
 #. Description
@@ -82,8 +82,8 @@ msgid ""
 "The grub-pc package is being upgraded. This menu allows you to select which "
 "devices you'd like grub-install to be automatically run for, if any."
 msgstr ""
-"Gói grub-pc sắp được cập nhật. Trình đơn này cho bạn chọn thiết bị nào, nếu "
-"có, mà bạn muốn grub-install tự động chạy trên đó."
+"Tiek uzlabota grub-pc pakotne. Šī izvēlne ļauj jums izvēlēties ierīces, "
+"kuras grub-install vajadzētu palaists (ja vajag)."
 
 #. Type: multiselect
 #. Description
@@ -93,9 +93,9 @@ msgid ""
 "prevent the installed GRUB core image from getting out of sync with GRUB "
 "modules or grub.cfg."
 msgstr ""
-"Nên chạy grub-install một cách tự động trong hầu hết các trường hợp, để "
-"tránh sự mất đồng bộ giữa ảnh lõi GRUB đã được cài đặt với các mô-đun GRUB "
-"hay grub.cfg."
+"Automātiska grub-install palaišana ir ieteicama vairumā gadījumu, lai "
+"nepieļautu, ka instalētais GRUB attēls būtu asinhrons ar GRUB moduļiem vai "
+"grub.cfg."
 
 #. Type: multiselect
 #. Description
@@ -106,8 +106,8 @@ msgid ""
 "If you're unsure which drive is designated as boot drive by your BIOS, it is "
 "often a good idea to install GRUB to all of them."
 msgstr ""
-"Nếu bạn không chắc ổ đĩa nào được chỉ định làm ổ đĩa khởi trọng trong BIOS "
-"của bạn, tốt nhất là cài đặt GRUB vào tất cả các ổ đĩa."
+"Ja nezināt, kuru dzini BIOS ir nozīmējis kā palaišanas dzini, tad bieži ir "
+"ieteicams instalēt GRUB uz visiem dziņiem."
 
 #. Type: multiselect
 #. Description
@@ -120,10 +120,10 @@ msgid ""
 "use the blocklist mechanism, which makes it less reliable, and therefore is "
 "not recommended."
 msgstr ""
-"Ghi chú: vẫn có thể cài GRUB vào các bản ghi khởi động của phân vùng, và một "
-"vài phân vùng phù hợp được đưa ra ở đây. Tuy nhiên, việc này bắt buộc GRUB "
-"dùng cơ chế danh sách ngăn chặn, làm cho nó ít tin cậy hơn, và do đó không "
-"nên dùng."
+"Ņemiet vērā — ir iespējams uzinstalēt GRUB arī uz nodalījuma palaišanas "
+"ierakstiem, un šeit tiek piedāvāti daži noderīgi nodalījumi. Bet tas liek "
+"GRUB izmantot bloķēšanas saraksta mehānismu, kas padara to mazāk uzticamu, "
+"tātad nerekomendējamu."
 
 #. Type: multiselect
 #. Description
@@ -135,13 +135,12 @@ msgid ""
 "GRUB modules and grub.cfg. Please check again to make sure that GRUB is "
 "written to the appropriate boot devices."
 msgstr ""
-"Trình nạp khởi động GRUB trước đây đã được cài đặt trên một đĩa không còn "
-"tồn tại, hay số định danh duy nhất của đĩa đó đã thay đổi vì lý do nào đó. "
-"Quan trọng là phải chắc chắn rằng ảnh lõi GRUB đã được cài còn đồng bộ với "
-"các mô-đun GRUB và grub.cfg. Vui lòng kiểm tra lại để chắc chắn rằng GRUB "
-"được ghi vào các thiết bị khởi động phù hợp."
+"GRUB palaidējs iepriekš bija uzinstalēts uz diska, kas vairs nav šeit, vai "
+"kaut kāda iemesla dēļ tika mainīts tā unikālais identifikators. Ir svarīgi "
+"nodrošināt, ka instalētais GRUB pamata attēls ir sinhrons ar GRUB moduļiem "
+"un grub.cfg. Lūdzu, vēlreiz pārliecinieties, ka GRUB ir uzrakstīts uz "
+"atbilstošām palaišanas ierīcēm."
 
-# Variable: don't translate; Biến: đừng dịch
 #. Type: text
 #. Description
 #. Disk sizes are in decimal megabytes, to match how disk manufacturers
@@ -150,7 +149,6 @@ msgstr ""
 msgid "${DEVICE} (${SIZE} MB; ${MODEL})"
 msgstr "${DEVICE} (${SIZE} MB; ${MODEL})"
 
-# Variable: don't translate; Biến: đừng dịch
 #. Type: text
 #. Description
 #. The "-" is used to indicate indentation. Leading spaces may not work.
@@ -162,7 +160,7 @@ msgstr "- ${DEVICE} (${SIZE} MB; ${PATH})"
 #. Description
 #: ../grub-pc.templates.in:7001
 msgid "Writing GRUB to boot device failed - continue?"
-msgstr "Việc ghi GRUB vào thiết bị khởi động bị lỗi - tiếp tục không?"
+msgstr "Neizdevās ierakstīt GRUB uz palaišanas ierīces — turpināt?"
 
 #. Type: boolean
 #. Description
@@ -170,7 +168,7 @@ msgstr "Việc ghi GRUB vào thiết bị khởi động bị lỗi - tiếp t�
 #. Description
 #: ../grub-pc.templates.in:7001 ../grub-pc.templates.in:8001
 msgid "GRUB failed to install to the following devices:"
-msgstr "GRUB không cài đặt được vào những thiết bị theo đây:"
+msgstr "Neizdevās uzinstalēt GRUB uz šīm ierīcēm:"
 
 #. Type: boolean
 #. Description
@@ -179,13 +177,13 @@ msgid ""
 "Do you want to continue anyway? If you do, your computer may not start up "
 "properly."
 msgstr ""
-"Bạn vẫn muốn tiếp tục không? Nếu có thì máy tính có thể không khởi động đúng."
+"Vai tomēr vēlaties turpināt? Ja tā, dators varētu nespēt pareizi palaisties."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:8001
 msgid "Writing GRUB to boot device failed - try again?"
-msgstr "Lỗi khi ghi GRUB vào thiế bị khởi động - thử lại nhé?"
+msgstr "Neizdevās ierakstīt GRUB uz palaišanas ierīces — mēģināt atkal?"
 
 #. Type: boolean
 #. Description
@@ -195,15 +193,15 @@ msgid ""
 "check that your system will boot from that device. Otherwise, the upgrade "
 "from GRUB Legacy will be canceled."
 msgstr ""
-"Có thể là bạn cài đặt được GRUB vào một thiết bị khác (trước tiên nên kiểm "
-"tra nếu hệ thống sẽ khởi động từ thiết bị đó). Không thì tiến trình nâng cấp "
-"từ GRUB Cũ (Legacy) sẽ bị thôi."
+"Iespējams, jūs varat uzinstalēt GRUB uz kādas citas ierīces, bet jums "
+"jāpārliecinās, ka sistēma varēs no tās ierīces palaisties. Citādi uzlabošana "
+"no GRUB mantojuma tiks atcelta."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:9001
 msgid "Continue without installing GRUB?"
-msgstr "Tiếp tục lại mà không cài đặt GRUB ?"
+msgstr "Turpināt bez GRUB instalēšanas?"
 
 #. Type: boolean
 #. Description
@@ -215,11 +213,11 @@ msgid ""
 "earlier version of GRUB 2 in the boot sector, it may be unable to load "
 "modules or handle the current configuration file."
 msgstr ""
-"Bạn đã chọn không cài đặt GRUB vào thiết bị nào. Nếu tiếp tục thì bộ nạp "
-"khởi động có thể bị cấu hình sai, và khi máy tính khởi động lại nó sẽ sử "
-"dụng dữ liệu bất kỳ trước đây có trong rãnh ghi khởi động. Nếu rãnh ghi khởi "
-"động chứa một phiên bản GRUB 2 cũ, nó có thể không nạp được mô-đun hoặc "
-"không xử lý được tập tin cấu hình hiện thời."
+"Jūs varat izvēlēties neinstalēt GRUB uz nevienas ierīces. Ja turpināsiet, "
+"palaidējs varētu nebūt pareizi konfigurēts, un kad dators tiks palaists, tas "
+"izmantos to konfigurāciju, kas jau atrodas palaišanas sektorā. Ja palaišanas "
+"sektorā jau ir vecāka GRUB 2 versija, tā varētu nespēt ielādēt moduļus vai "
+"apstrādāt esošo konfigurācijas datni."
 
 #. Type: boolean
 #. Description
@@ -230,21 +228,21 @@ msgid ""
 "then you should continue anyway. Otherwise, you should install GRUB "
 "somewhere."
 msgstr ""
-"Nếu bạn đã dùng một bộ nạp khởi động khác và muốn tiếp tục dùng, hoặc nếu "
-"đây là một môi trường đặc biệt mà không cần thiết bộ nạp khởi động, thì bạn "
-"nên tiếp tục. Nếu không thì bạn nên cài đặt GRUB vào một nơi nào đó."
+"Ja jūs jau izmantojat citu palaidēju un vēlaties to turpināt izmantot, vai "
+"arī šī ir īpaša vide, kur nav vajadzīgs palaidējs, jums vajadzētu turpināt. "
+"Citādi, jums vajadzētu kaut kur uzinstalēt GRUB."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:10001
 msgid "Remove GRUB 2 from /boot/grub?"
-msgstr "Gỡ bỏ GRUB 2 khỏi /boot/grub không?"
+msgstr "Izņemt GRUB 2 no /boot/grub?"
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:10001
 msgid "Do you want to have all GRUB 2 files removed from /boot/grub?"
-msgstr "Bạn có muốn gỡ bỏ tất cả tập tin GRUB 2 khỏi /boot/grub không?"
+msgstr "Vai vēlaties, lai visi GRUB 2 faili tiktu izņemti no /boot/grub?"
 
 #. Type: boolean
 #. Description
@@ -252,14 +250,13 @@ msgstr "Bạn có muốn gỡ bỏ tất cả tập tin GRUB 2 khỏi /boot/grub
 msgid ""
 "This will make the system unbootable unless another boot loader is installed."
 msgstr ""
-"Việc này làm cho hệ thống không khởi động được trừ khi trình nạp khởi động "
-"khác được cài đặt."
+"Tas padarīs sistēmu nepalaižamu, ja vien nav uzinstalēts kāds cits palaidējs."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:11001
 msgid "Finish conversion to GRUB 2 now?"
-msgstr "Kết thúc chuyển đổi sang GRUB2 ngay bây giờ ?"
+msgstr "Pabeigt pārveidošanu uz GRUB 2 tagad?"
 
 #. Type: boolean
 #. Description
@@ -268,8 +265,9 @@ msgid ""
 "This system still has files from the GRUB Legacy boot loader installed, but "
 "it now also has GRUB 2 boot records installed on these disks:"
 msgstr ""
-"Hệ thống này vẫn còn có tập tin được cài đặt bởi bộ nạp khởi động GRUB Cũ "
-"(Legacy), nhưng mà cũng có mục ghi GRUB2 được cài đặt vào những đĩa này:"
+"Šajā sistēmā vēl aizvien ir uzinstalētas datnes no GRUB mantojuma palaidēja, "
+"bet tam tagad ir arī GRUB 2 palaišanas ieraksti, kas ir uzinstalēti uz šiem "
+"diskiem:"
 
 #. Type: boolean
 #. Description
@@ -281,11 +279,11 @@ msgid ""
 "GRUB 2 images, then they may be incompatible with the new packages and cause "
 "your system to stop booting properly."
 msgstr ""
-"Rất có thể là GRUB Cũ (Legacy) không còn được sử dụng, vì thế bạn nên nâng "
-"cấp các ảnh GRUB2 trên những đĩa này và kết thúc chuyển đổi sang GRUB2 bằng "
-"cách gỡ bỏ tất cả các tập tin GRUB Cũ. Không nâng cấp các ảnh GRUB2 thì "
-"chúng có thể không tương thích với gói mới và gây ra hệ thống này không khởi "
-"động đúng."
+"Izskatās, ka GRUB mantojums vairs netiek izmantots, un jums vajadzētu "
+"pabeigt GRUB 2 attēlu uzlabošanu uz šiem diskiem un pabeigt pāreju uz GRUB "
+"2, izdzēšot vecās GRUB mantojuma datnes. Ja nevēlaties uzlabot šos GRUB 2 "
+"attēlus, tad tie varētu nebūt savietojami ar jaunajām pakotnēm un var neļaut "
+"sistēmai pareizi palaisties."
 
 #. Type: boolean
 #. Description
@@ -294,14 +292,14 @@ msgid ""
 "You should generally finish the conversion to GRUB 2 unless these boot "
 "records were created by a GRUB 2 installation on some other operating system."
 msgstr ""
-"Nói chung bạn nên kết thúc chuyển đổi sang GRUB2 nếu các mục ghi khởi động "
-"này không được tạo bởi một bản cài đặt GRUB2 trên một hệ điều hành khác."
+"Jums vajadzētu pabeigt pāreju uz GRUB 2, izņemot, ja šos palaišanas "
+"ierakstus izveidoja GRUB 2 instalācija no kādas citas operētājsistēmas."
 
 #. Type: string
 #. Description
 #: ../templates.in:1001
 msgid "Linux command line:"
-msgstr "Dòng lệnh Linux:"
+msgstr "Linux komandrinda:"
 
 #. Type: string
 #. Description
@@ -311,15 +309,15 @@ msgid ""
 "`kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
 "correct, and modify it if necessary. The command line is allowed to be empty."
 msgstr ""
-"Dòng lệnh Linux theo đây đã được trích ra từ /etc/default/grub hoặc từ tham "
-"số `kopt' trong menu.lst của GRUB Thừa Tự. Hãy kiểm tra rằng nó vẫn đúng, và "
-"sửa đổi nó nếu cần. Dòng lệnh có thể được để trống."
+"Sekojošā Linux komandrinda tika izvilkta no /etc/default/grub vai `kopt' "
+"parametra GRUB mantojuma menu.lst. Lūdzu, pārliecinieties, ka tā ir pareiza "
+"un, ja vajag, mainiet to. Komandrinda drīkst būt tukša."
 
 #. Type: string
 #. Description
 #: ../templates.in:2001
 msgid "Linux default command line:"
-msgstr "Dòng lệnh Linux mặc định:"
+msgstr "Linux noklusējuma komandrinda:"
 
 #. Type: string
 #. Description
@@ -328,14 +326,14 @@ msgid ""
 "The following string will be used as Linux parameters for the default menu "
 "entry but not for the recovery mode."
 msgstr ""
-"Chuỗi theo đây sẽ được sử dụng làm các tham số Linux cho mục nhập trình đơn "
-"mặc định, mà không phải cho chế độ phục hồi."
+"Sekojošā virkne tiks izmantota kā Linux parametri izvēlnes noklusējuma "
+"ierakstam, bet ne sistēmas atgūšanas režīmā."
 
 #. Type: string
 #. Description
 #: ../templates.in:3001
 msgid "kFreeBSD command line:"
-msgstr "Dòng lệnh kFreeBSD:"
+msgstr "kFreeBSD komandrinda:"
 
 #. Type: string
 #. Description
@@ -345,15 +343,15 @@ msgid ""
 "the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
 "correct, and modify it if necessary. The command line is allowed to be empty."
 msgstr ""
-"Dòng lệnh kFreeBSD sau đây đã được trích ra từ /etc/default/grub hoặc từ "
-"tham số `kopt' trong menu.lst của GRUB Thừa Tự. Hãy kiểm tra rằng nó vẫn "
-"đúng, và sửa đổi nó nếu cần. Dòng lệnh có thể được để trống."
+"Sekojošā kFreeBSD komandrinda tika izvilkta no /etc/default/grub vai `kopt' "
+"parametra GRUB mantojuma menu.lst. Lūdzu, pārliecinieties, ka tā ir pareiza "
+"un, ja vajag, mainiet to. Komandrinda drīkst būt tukša."
 
 #. Type: string
 #. Description
 #: ../templates.in:4001
 msgid "kFreeBSD default command line:"
-msgstr "Dòng lệnh kFreeBSD mặc định:"
+msgstr "kFreeBSD noklusējuma komandrinda:"
 
 #. Type: string
 #. Description
@@ -362,14 +360,14 @@ msgid ""
 "The following string will be used as kFreeBSD parameters for the default "
 "menu entry but not for the recovery mode."
 msgstr ""
-"Chuỗi theo đây sẽ được sử dụng làm các tham số kFreeBSD cho mục nhập trình "
-"đơn mặc định, mà không phải cho chế độ phục hồi."
+"Sekojošā virkne tiks izmantota kā kFreeBSD parametri izvēlnes noklusējuma "
+"ierakstam, bet ne sistēmas atgūšanas režīmā."
 
 #. Type: note
 #. Description
 #: ../templates.in:5001
 msgid "/boot/grub/device.map has been regenerated"
-msgstr "Tập tin /boot/grub/device.map đã được tạo lại."
+msgstr "/boot/grub/device.map tika reģistrēts"
 
 #. Type: note
 #. Description
@@ -379,10 +377,10 @@ msgid ""
 "names. In most cases, this should significantly reduce the need to change it "
 "in future, and boot menu entries generated by GRUB should not be affected."
 msgstr ""
-"Tập tin /boot/grub/device.map đã được ghi nhớ lại để sử dụng tên thiết bị "
-"kiểu ổn định. Trong phần lớn các trường hợp, bản cập nhật này nên giảm một "
-"cách đáng kể sự cần sửa đổi về sau, và không nên tác động trình đơn khởi "
-"động được GRUB tạo."
+"Fails /boot/grub/device.map tika pārrakstīts, lai izmantotu stabilos ierīču "
+"nosaukumus. Vairumā gadījumu tam vajadzētu būtiski samazināt vajadzību to "
+"mainīt nākotnē, un palaišanas izvēlnes ierakstiem, ko veidojis GRUB, "
+"nevajadzētu tikt skartiem."
 
 #. Type: note
 #. Description
@@ -393,10 +391,10 @@ msgid ""
 "there are any custom boot menu entries that rely on GRUB's (hdN) drive "
 "numbering, and update them if necessary."
 msgstr ""
-"Tuy nhiên, vì bạn có nhiều hơn một ổ đĩa trong hệ thống, có thể là hệ thống "
-"này vẫn còn phụ thuộc vào sơ đồ thiết bị cũ. Hãy kiểm tra xem có những mục "
-"trình đơn khởi động tùy thích nào dựa vào số thứ tự ổ đĩa của GRUB (hdN), và "
-"cập nhật chúng nếu cần."
+"Tomēr, tā kā sistēmā atrodas vairāki diski, iespējams, ka sistēma ir "
+"atkarīga no vecās ierīču kartes. Lūdzu, pārliecinieties, vai ir kādi "
+"pielāgoti palaišanas izvēlnes ieraksti, kas balstās uz GRUB (hdN) disku "
+"numurēšanas, un atjauniniet tos, ja tā ir."
 
 #. Type: note
 #. Description
@@ -405,15 +403,5 @@ msgid ""
 "If you do not understand this message, or if there are no custom boot menu "
 "entries, you can ignore this message."
 msgstr ""
-"Nếu bạn không hiểu thông điệp này, hoặc nếu không có mục trình đơn khởi động "
-"tùy thích nào, thì bạn có thể bỏ qua thông điệp này."
-
-#~ msgid ""
-#~ "In either case, whenever you want GRUB 2 to be loaded directly from MBR, "
-#~ "you can do so by issuing (as root) the following command:"
-#~ msgstr ""
-#~ "Trong cả hai trường hợp, khi nào bạn muốn nạp GRUB2 một cách trực tiếp từ "
-#~ "MBR, chỉ cần chạy (dưới người chủ) câu lệnh theo đây:"
-
-#~ msgid "GRUB installation failed. Continue?"
-#~ msgstr "Lỗi cài đặt GRUB. Tiếp tục ?"
+"Ja jūs nesaprotat šo ziņojumu, vai arī nav pielāgotu palaišanas izvēlnes "
+"ieraktu, jūs varat ignorēt šo ziņojumu."

@@ -1,3 +1,70 @@
+grub2 (1.99-22ubuntu1) quantal; urgency=low
+
+  [ Colin Watson ]
+  * Resynchronise with Debian.  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme and an appropriate background for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel option.
+    - Bypass menu unless other OSes are installed or Shift is pressed.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Reduce visual clutter in normal mode.
+    - Remove verbose messages printed before reading configuration.
+    - Suppress kernel/initrd progress messages, except in recovery mode.
+    - Show the boot menu if the previous boot failed.
+    - Don't generate device.map during grub-install or grub-mkconfig.
+    - Adjust upgrade version checks for Ubuntu.
+    - Suppress "GRUB loading" message unless Shift is held down.
+    - Adjust versions of grub-doc and grub-legacy-doc conflicts.
+    - Fix LVM/RAID probing in the absence of /boot/grub/device.map.
+    - Look for .mo files in /usr/share/locale-langpack first.
+    - Build-depend on qemu-kvm rather than qemu-system for grub-pc tests.
+    - Check hardware support before using gfxpayload=keep.
+    - Put second and subsequent Linux menu entries in a submenu.
+    - Preferred resolution detection for VBE.
+    - Set vt.handoff=7 for smooth handoff to kernel graphical mode.
+    - Update default/grub.md5sum to include maverick's default md5sum.
+    - In recovery mode, add nomodeset to the Linux kernel arguments, and
+      remove the 'set gfxpayload=keep' command.
+    - Skip Windows os-prober entries on Wubi systems, and suppress the menu
+      by default if those are the only other-OS entries.
+    - Handle probing striped DM-RAID devices.
+    - Replace 'single' by 'recovery' when friendly-recovery is installed.
+    - Use qemu -no-kvm in tests for now to work around LP #947597.
+    - Disable cursor as early as possible in grub_main.
+    - Don't crash on inaccessible loop device backing paths.
+    - Backport several upstream EFI device discovery patches.
+
+  [ Ben Howard ]
+  * Parameterization of recordfail setting. This allows users to define the
+    default time out of GRUB when recordfail has been set. The current
+    setting causes hangs on headless and appliances where access to the
+    console is limited or prohibited.  (LP: #669481)
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 30 May 2012 12:11:57 +0100
+
+grub2 (1.99-22) unstable; urgency=low
+
+  [ Debconf translations ]
+  * Khmer added (Khoem Sokhem)
+  * Slovenian (Vanja Cvelbar).  Closes: #670616
+  * Traditional Chinese (Vincent Chen).
+  * Vietnamese (Hai Lang).
+  * Marathi (Sampada Nakhare)
+  * Finnish (Timo Jyrinki).  Closes: #673976
+  * Latvian (Rūdolfs Mazurs).  Closes: #674697
+
+  [ Colin Watson ]
+  * Make apport hook compatible with Python 3.
+  * Add upstream r3476 (fix memory leak in grub_disk_read_small) to
+    4k_sectors.patch, otherwise the larger disk cache due to
+    efi_disk_cache.patch can cause EFI systems to run out of memory.
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 30 May 2012 10:38:40 +0100
+
 grub2 (1.99-21ubuntu4) quantal; urgency=low
 
   * Switch to backwards compatible ${} syntax for grub.cfg (LP: #978464)
