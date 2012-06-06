@@ -1,3 +1,12 @@
+grub2 (1.99-21ubuntu3.2) precise-proposed; urgency=low
+
+  * Revert previous SRU. This caused AMI cloud images to prompt about the
+    changed configuration file, breaking automated upgrades. (LP: #1009294)
+  * This reopens bug #978464, which will break Ubuntu 10.04->12.04 upgrades
+    if user does not opt-in to reinstall grub-pc bootloader when prompted.
+  
+ -- Christopher James Halse Rogers <raof@ubuntu.com>  Wed, 06 Jun 2012 14:14:48 +1000
+
 grub2 (1.99-21ubuntu3.1) precise-proposed; urgency=low
 
   * Switch to backwards compatible ${} syntax for grub.cfg (LP: #978464)

@@ -40,8 +40,8 @@ Index: b/util/grub.d/10_linux.in
  
 +cat << 'EOF'
 +function gfxmode {
-+	set gfxpayload="${1}"
-+	if [ "${1}" = "keep" ]; then
++	set gfxpayload="$1"
++	if [ "$1" = "keep" ]; then
 +		set vt_handoff=vt.handoff=7
 +	else
 +		set vt_handoff=
