@@ -43,7 +43,6 @@ grub2 (1.99-21ubuntu2) precise; urgency=low
 
 grub2 (1.99-21ubuntu1) precise; urgency=low
 
-  [ Colin Watson ]
   * Resynchronise with Debian.  Remaining changes:
     - Adjust for default Ubuntu boot options ("quiet splash").
     - Default to hiding the menu; holding down Shift at boot will show it.
