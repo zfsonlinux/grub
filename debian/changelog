@@ -1,3 +1,13 @@
+grub2 (1.99-21ubuntu3.3) UNRELEASED; urgency=low
+
+  [ Ben Howard ]
+  * Parameterization of recordfail setting. This allows users to define the
+    default time out of GRUB when recordfail has been set. The current
+    setting causes hangs on headless and appliances where access to the
+    console is limited or prohibited.  (LP: #669481)
+
+ -- Louis Bouchard <louis.bouchard@canonical.com>  Tue, 21 Aug 2012 10:51:58 +0200
+
 grub2 (1.99-21ubuntu3.2) precise-proposed; urgency=low
 
   * Revert previous SRU. This caused AMI cloud images to prompt about the
@@ -33,6 +43,7 @@ grub2 (1.99-21ubuntu2) precise; urgency=low
 
 grub2 (1.99-21ubuntu1) precise; urgency=low
 
+  [ Colin Watson ]
   * Resynchronise with Debian.  Remaining changes:
     - Adjust for default Ubuntu boot options ("quiet splash").
     - Default to hiding the menu; holding down Shift at boot will show it.
