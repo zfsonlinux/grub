@@ -1,3 +1,12 @@
+grub2 (1.99-22ubuntu2) quantal; urgency=low
+
+  [ Brian Murray ]
+  * source_grub2.py: use attach_default_grub from apport's hookutils
+    This also fixes the missing encoding statement if the file contains
+    non-ASCII characters. (LP: #919956)
+
+ -- Brian Murray <brian@ubuntu.com>  Tue, 04 Sep 2012 08:59:05 -0700
+
 grub2 (1.99-22ubuntu1) quantal; urgency=low
 
   [ Colin Watson ]
