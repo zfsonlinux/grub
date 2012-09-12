@@ -35,7 +35,7 @@ Index: b/util/grub.d/00_header.in
      cat << EOF
 -set timeout=${2}
 +if [ "\${recordfail}" = 1 ]; then
-+  set timeout=-1
++  set timeout=${GRUB_RECORDFAIL_TIMEOUT:--1}
 +else
 +  set timeout=${2}
 +fi
@@ -56,3 +56,34 @@ Index: b/util/grub.d/10_linux.in
    if ! ${recovery} ; then
        save_default_entry | sed -e "s/^/\t/"
    fi
+Index: b/docs/grub.texi
+===================================================================
+--- a/docs/grub.texi
++++ b/docs/grub.texi
+@@ -1250,6 +1250,12 @@
+ Each module will be loaded as early as possible, at the start of
+ @file{grub.cfg}.
+ 
++@item GRUB_RECORDFAIL_TIMEOUT
++If this option is set, it overrides the default recordfail setting. The
++default setting is -1, which causes GRUB to wait for user input. This option
++should be set on headless and appliance systems where access to a console is
++restricted or limited.
++
+ @end table
+ 
+ For more detailed customisation of @command{grub-mkconfig}'s output, you may
+Index: b/util/grub-mkconfig.in
+===================================================================
+--- a/util/grub-mkconfig.in
++++ b/util/grub-mkconfig.in
+@@ -258,7 +258,8 @@
+   GRUB_DISABLE_OS_PROBER \
+   GRUB_INIT_TUNE \
+   GRUB_SAVEDEFAULT \
+-  GRUB_BADRAM
++  GRUB_BADRAM \
++  GRUB_RECORDFAIL_TIMEOUT
+ 
+ if test "x${grub_cfg}" != "x"; then
+   rm -f ${grub_cfg}.new
