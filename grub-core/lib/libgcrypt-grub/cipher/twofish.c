@@ -971,12 +971,20 @@ gcry_cipher_spec_t _gcry_cipher_spec_twofish =
   {
     "TWOFISH", NULL, NULL, 16, 256, sizeof (TWOFISH_context),
     twofish_setkey, twofish_encrypt, twofish_decrypt
+    ,
+#ifdef GRUB_UTIL
+    .modname = "gcry_twofish",
+#endif
   };
 
 gcry_cipher_spec_t _gcry_cipher_spec_twofish128 =
   {
     "TWOFISH128", NULL, NULL, 16, 128, sizeof (TWOFISH_context),
     twofish_setkey, twofish_encrypt, twofish_decrypt
+    ,
+#ifdef GRUB_UTIL
+    .modname = "gcry_twofish",
+#endif
   };
 
 

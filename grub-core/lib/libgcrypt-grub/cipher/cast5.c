@@ -572,6 +572,10 @@ gcry_cipher_spec_t _gcry_cipher_spec_cast5 =
   {
     "CAST5", NULL, NULL, CAST5_BLOCKSIZE, 128, sizeof (CAST5_context),
     cast_setkey, encrypt_block, decrypt_block
+    ,
+#ifdef GRUB_UTIL
+    .modname = "gcry_cast5",
+#endif
   };
 
 

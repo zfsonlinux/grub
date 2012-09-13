@@ -1,11 +1,11 @@
-This is /home/phcoder/grub2/bzr/grub-1.99/docs/grub.info, produced by
+This is /home/phcoder/grub2/bzr/mainline/docs/grub.info, produced by
 makeinfo version 4.13 from
-/home/phcoder/grub2/bzr/grub-1.99/docs/grub.texi.
+/home/phcoder/grub2/bzr/mainline/docs/grub.texi.
 
-This manual is for GNU GRUB (version 1.99, 14 May 2011).
+This manual is for GNU GRUB (version 2.00, 23 June 2012).
 
-   Copyright (C) 1999,2000,2001,2002,2004,2006,2008,2009,2010 Free
-Software Foundation, Inc.
+   Copyright (C) 1999,2000,2001,2002,2004,2006,2008,2009,2010,2011,2012
+Free Software Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
@@ -19,6 +19,7 @@ START-INFO-DIR-ENTRY
 * grub-mkconfig: (grub)Invoking grub-mkconfig.  Generate GRUB configuration
 * grub-mkpasswd-pbkdf2: (grub)Invoking grub-mkpasswd-pbkdf2.
 * grub-mkrescue: (grub)Invoking grub-mkrescue.  Make a GRUB rescue image
+* grub-probe: (grub)Invoking grub-probe.        Probe device information
 END-INFO-DIR-ENTRY
 
 
@@ -31,12 +32,12 @@ This is the documentation of GNU GRUB, the GRand Unified Bootloader, a
 flexible and powerful boot loader program for a wide range of
 architectures.
 
-   This edition documents version 1.99.
+   This edition documents version 2.00.
 
-   This manual is for GNU GRUB (version 1.99, 14 May 2011).
+   This manual is for GNU GRUB (version 2.00, 23 June 2012).
 
-   Copyright (C) 1999,2000,2001,2002,2004,2006,2008,2009,2010 Free
-Software Foundation, Inc.
+   Copyright (C) 1999,2000,2001,2002,2004,2006,2008,2009,2010,2011,2012
+Free Software Foundation, Inc.
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
@@ -59,7 +60,10 @@ Software Foundation, Inc.
 * Interface::                   The menu and the command-line
 * Environment::                 GRUB environment variables
 * Commands::                    The list of available builtin commands
+* Internationalisation::        Topics relating to language support
 * Security::                    Authentication and authorisation
+* Platform limitations::        The list of platform-specific limitations
+* Platform-specific operations:: Platform-specific operations
 * Supported kernels::           The list of supported kernels
 * Troubleshooting::             Error messages produced by GRUB
 * Invoking grub-install::       How to use the GRUB installer
@@ -67,6 +71,7 @@ Software Foundation, Inc.
 * Invoking grub-mkpasswd-pbkdf2::
                                 Generate GRUB password hashes
 * Invoking grub-mkrescue::      Make a GRUB rescue image
+* Invoking grub-probe::         Probe device information for GRUB
 * Obtaining and Building GRUB:: How to obtain and build GRUB
 * Reporting bugs::              Where you should send a bug report
 * Future::                      Some future plans on GRUB
@@ -308,10 +313,16 @@ Support multiple filesystem types
      Support multiple filesystem types transparently, plus a useful
      explicit blocklist notation. The currently supported filesystem
      types are "Amiga Fast FileSystem (AFFS)", "AtheOS fs", "BeFS",
-     "cpio", "Linux ext2/ext3/ext4", "DOS FAT12/FAT16/FAT32", "HFS",
-     "HFS+", "ISO9660", "JFS", "Minix fs", "nilfs2", "NTFS",
-     "ReiserFS", "Amiga Smart FileSystem (SFS)", "tar", "UDF", "BSD
-     UFS/UFS2", and "XFS". *Note Filesystem::, for more information.
+     "BtrFS" (including raid0, raid1, raid10, gzip and lzo), "cpio"
+     (little- and big-endian bin, odc and newc variants), "Linux
+     ext2/ext3/ext4", "DOS FAT12/FAT16/FAT32", "exFAT", "HFS", "HFS+",
+     "ISO9660" (including Joliet, Rock-ridge and multi-chunk files),
+     "JFS", "Minix fs" (versions 1, 2 and 3), "nilfs2", "NTFS"
+     (including compression), "ReiserFS", "ROMFS", "Amiga Smart
+     FileSystem (SFS)", "Squash4", "tar", "UDF", "BSD UFS/UFS2", "XFS",
+     and "ZFS" (including lzjb, gzip, zle, mirror, stripe, raidz1/2/3
+     and encryption in AES-CCM and AES-GCM).  *Note Filesystem::, for
+     more information.
 
 Support automatic decompression
      Can decompress files which were compressed by `gzip' or `xz'(1)
@@ -632,16 +643,11 @@ File: grub.info,  Node: Device map,  Next: BIOS installation,  Prev: Making a GR
 3.3 The map between BIOS drives and OS devices
 ==============================================
 
-The `grub-mkdevicemap' program can be used to create the "device map
-file".  It is often run automatically by tools such as `grub-install'
-if the device map file does not already exist.  The file name
-`/boot/grub/device.map' is preferred.
-
-   If the device map file exists, the GRUB utilities (`grub-probe',
+If the device map file exists, the GRUB utilities (`grub-probe',
 `grub-setup', etc.) read it to map BIOS drives to OS devices.  This
 file consists of lines like this:
 
-     DEVICE FILE
+     (DEVICE) FILE
 
    DEVICE is a drive specified in the GRUB syntax (*note Device
 syntax::), and FILE is an OS file, which is normally a device file.
@@ -665,11 +671,12 @@ exist, then the GRUB utilities will assume a temporary device map on
 the fly.  This is often good enough, particularly in the common case of
 single-disk systems.
 
-   However, the device map file is not entirely obsolete yet, and there
-are still some situations that require it to exist.  If necessary, you
-may edit the file if `grub-mkdevicemap' makes a mistake.  You can put
-any comments in the file if needed, as the GRUB utilities assume that a
-line is just a comment if the first character is `#'.
+   However, the device map file is not entirely obsolete yet, and it is
+used for overriding when current environment is different from the one
+on boot.  Most common case is if you use a partition or logical volume
+as a disk for virtual machine.  You can put any comments in the file if
+needed, as the GRUB utilities assume that a line is just a comment if
+the first character is `#'.
 
 
 File: grub.info,  Node: BIOS installation,  Prev: Device map,  Up: Installation
@@ -753,10 +760,11 @@ some free operating systems you need to use some OS-specific magic.
 * Menu:
 
 * General boot methods::        How to boot OSes with GRUB generally
+* Loopback booting::            Notes on booting from loopbacks
 * OS-specific notes::           Notes on some operating systems
 
 
-File: grub.info,  Node: General boot methods,  Next: OS-specific notes,  Up: Booting
+File: grub.info,  Node: General boot methods,  Next: Loopback booting,  Up: Booting
 
 4.1 How to boot operating systems
 =================================
@@ -825,9 +833,38 @@ required.  *Note DOS/Windows::.
    Chain-loading is only supported on PC BIOS and EFI platforms.
 
 
-File: grub.info,  Node: OS-specific notes,  Prev: General boot methods,  Up: Booting
+File: grub.info,  Node: Loopback booting,  Next: OS-specific notes,  Prev: General boot methods,  Up: Booting
 
-4.2 Some caveats on OS-specific issues
+4.2 Loopback booting
+====================
+
+GRUB is able to read from an image (be it one of CD or HDD) stored on
+any of its accessible storages (refer to *note loopback:: command).
+However the OS itself should be able to find its root. This usually
+involves running a userspace program running before the real root is
+discovered. This is achieved by GRUB loading a specially made small
+image and passing it as ramdisk to the kernel. This is achieved by
+commands `kfreebsd_module', `knetbsd_module_elf', `kopenbsd_ramdisk',
+`initrd' (*note initrd::), `initrd16' (*note initrd::),
+`multiboot_module', `multiboot2_module' or `xnu_ramdisk' depending on
+the loader. Note that for knetbsd the image must be put inside
+miniroot.kmod and the whole miniroot.kmod has to be loaded. In kopenbsd
+payload this is disabled by default. Aditionally behaviour of initial
+ramdisk depends on command line options. Several distributors provide
+the image for this purpose or it's integrated in their standard ramdisk
+and activated by special option. Consult your kernel and distribution
+manual for more details. Other loaders like appleloader, chainloader
+(BIOS, EFI, coreboot), freedos, ntldr and plan9 provide no possibility
+of loading initial ramdisk and as far as author is aware the payloads
+in question don't support either initial ramdisk or discovering
+loopback boot in other way and as such not bootable this way. Please
+consider alternative boot methods like copying all files from the image
+to actual partition. Consult your OS documentation for more details
+
+
+File: grub.info,  Node: OS-specific notes,  Prev: Loopback booting,  Up: Booting
+
+4.3 Some caveats on OS-specific issues
 ======================================
 
 Here, we describe some caveats on several operating systems.
@@ -841,7 +878,7 @@ Here, we describe some caveats on several operating systems.
 
 File: grub.info,  Node: GNU/Hurd,  Next: GNU/Linux,  Up: OS-specific notes
 
-4.2.1 GNU/Hurd
+4.3.1 GNU/Hurd
 --------------
 
 Since GNU/Hurd is Multiboot-compliant, it is easy to boot it; there is
@@ -849,8 +886,8 @@ nothing special about it. But do not forget that you have to specify a
 root partition to the kernel.
 
   1. Set GRUB's root device to the same drive as GNU/Hurd's.  The
-     command `search --file --set /boot/gnumach.gz' or similar may help
-     you (*note search::).
+     command `search --set=root --file /boot/gnumach.gz' or similar may
+     help you (*note search::).
 
   2. Load the kernel and the modules, like this:
 
@@ -868,14 +905,14 @@ root partition to the kernel.
 
 File: grub.info,  Node: GNU/Linux,  Next: DOS/Windows,  Prev: GNU/Hurd,  Up: OS-specific notes
 
-4.2.2 GNU/Linux
+4.3.2 GNU/Linux
 ---------------
 
 It is relatively easy to boot GNU/Linux from GRUB, because it somewhat
 resembles to boot a Multiboot-compliant OS.
 
   1. Set GRUB's root device to the same drive as GNU/Linux's.  The
-     command `search --file --set /vmlinuz' or similar may help you
+     command `search --set=root --file /vmlinuz' or similar may help you
      (*note search::).
 
   2. Load the kernel using the command `linux' (*note linux::):
@@ -916,7 +953,7 @@ for more information.
 
 File: grub.info,  Node: DOS/Windows,  Prev: GNU/Linux,  Up: OS-specific notes
 
-4.2.3 DOS/Windows
+4.3.3 DOS/Windows
 -----------------
 
 GRUB cannot boot DOS or Windows directly, so you must chain-load them
@@ -972,6 +1009,7 @@ need to write the whole thing by hand.
 
 * Simple configuration::        Recommended for most users
 * Shell-like scripting::        For power users and developers
+* Multi-boot manual config::    For non-standard multi-OS scenarios
 * Embedded configuration::      Embedding a configuration file into GRUB
 
 
@@ -1046,8 +1084,12 @@ then it must be quoted.  For example:
 
 `GRUB_HIDDEN_TIMEOUT'
      Wait this many seconds for a key to be pressed before displaying
-     the menu.  If no key is pressed during that time, boot
-     immediately.  Unset by default.
+     the menu.  If no key is pressed during that time, display the menu
+     for the number of seconds specified in GRUB_TIMEOUT before booting
+     the default entry. We expect that most people who use
+     GRUB_HIDDEN_TIMEOUT will want to have GRUB_TIMEOUT set to `0' so
+     that the menu is not displayed at all unless a key is pressed.
+     Unset by default.
 
 `GRUB_HIDDEN_TIMEOUT_QUIET'
      In conjunction with `GRUB_HIDDEN_TIMEOUT', set this to `true' to
@@ -1114,10 +1156,21 @@ then it must be quoted.  For example:
      As `GRUB_CMDLINE_LINUX' and `GRUB_CMDLINE_LINUX_DEFAULT', but for
      NetBSD.
 
+`GRUB_CMDLINE_GNUMACH'
+     As `GRUB_CMDLINE_LINUX', but for GNU Mach.
+
 `GRUB_CMDLINE_XEN'
 `GRUB_CMDLINE_XEN_DEFAULT'
-     As `GRUB_CMDLINE_LINUX' and `GRUB_CMDLINE_LINUX_DEFAULT', but for
-     Linux and Xen.
+     The values of these options are appended to the values of
+     `GRUB_CMDLINE_LINUX' and `GRUB_CMDLINE_LINUX_DEFAULT' for Linux
+     and Xen menu entries.
+
+`GRUB_CMDLINE_LINUX_XEN_REPLACE'
+
+`GRUB_CMDLINE_LINUX_XEN_REPLACE_DEFAULT'
+     The values of these options replace the values of
+     `GRUB_CMDLINE_LINUX' and `GRUB_CMDLINE_LINUX_DEFAULT' for Linux
+     and Xen menu entries.
 
 `GRUB_DISABLE_LINUX_UUID'
      Normally, `grub-mkconfig' will generate menu entries that use
@@ -1146,8 +1199,8 @@ then it must be quoted.  For example:
      Set the resolution used on the `gfxterm' graphical terminal.  Note
      that you can only use modes which your graphics card supports via
      VESA BIOS Extensions (VBE), so for example native LCD panel
-     resolutions may not be available.  The default is `640x480'.
-     *Note gfxmode::.
+     resolutions may not be available.  The default is `auto', which
+     tries to select a preferred resolution.  *Note gfxmode::.
 
 `GRUB_BACKGROUND'
      Set a background image for use with the `gfxterm' graphical
@@ -1200,7 +1253,7 @@ the menu entries you want to add at the end of that file, making sure
 to leave at least the first two lines intact.
 
 
-File: grub.info,  Node: Shell-like scripting,  Next: Embedded configuration,  Prev: Simple configuration,  Up: Configuration
+File: grub.info,  Node: Shell-like scripting,  Next: Multi-boot manual config,  Prev: Simple configuration,  Up: Configuration
 
 5.2 Writing full configuration files directly
 =============================================
@@ -1344,7 +1397,7 @@ function NAME { COMMAND; ... }
      status in `$?'.  When executed, the exit status of a function is
      the exit status of the last command executed in the body.
 
-menuentry TITLE [`--class=class' ...] [`--users=users'] [`--hotkey=key'] { COMMAND; ... }
+menuentry TITLE [`--class=class' ...] [`--users=users'] [`--unrestricted'] [`--hotkey=key'] { COMMAND; ... }
      *Note menuentry::.
 
 Built-in Commands
@@ -1394,9 +1447,105 @@ File: grub.info,  Node: Shell-like scripting-Footnotes,  Up: Shell-like scriptin
 handled properly, so use this feature with some care.
 
 
-File: grub.info,  Node: Embedded configuration,  Prev: Shell-like scripting,  Up: Configuration
+File: grub.info,  Node: Multi-boot manual config,  Next: Embedded configuration,  Prev: Shell-like scripting,  Up: Configuration
 
-5.3 Embedding a configuration file into GRUB
+5.3 Multi-boot manual config
+============================
+
+Currently autogenerating config files for multi-boot environments
+depends on os-prober and has several shortcomings. While fixing it is
+scheduled for the next release, meanwhile you can make use of the power
+of GRUB syntax and do it yourself. A possible configuration is detailed
+here, feel free to adjust to your needs.
+
+   First create a separate GRUB partition, big enough to hold GRUB.
+Some of the following entries show how to load OS installer images from
+this same partition, for that you obviously need to make the partition
+large enough to hold those images as well.  Mount this partition
+on/mnt/boot and disable GRUB in all OSes and manually install
+self-compiled latest GRUB with:
+
+   `grub-install --boot-directory=/mnt/boot /dev/sda'
+
+   In all the OSes install GRUB tools but disable installing GRUB in
+bootsector, so you'll have menu.lst and grub.cfg available for use.
+Also disable os-prober use by setting:
+
+   `GRUB_DISABLE_OS_PROBER=true'
+
+   in /etc/default/grub
+
+   Then write a grub.cfg (/mnt/boot/grub/grub.cfg):
+
+
+     menuentry "OS using grub2" {
+        insmod xfs
+        search --set=root --label OS1 --hint hd0,msdos8
+        configfile /boot/grub/grub.cfg
+     }
+
+     menuentry "OS using grub2-legacy" {
+        insmod ext2
+        search --set=root --label OS2 --hint hd0,msdos6
+        legacy_configfile /boot/grub/menu.lst
+     }
+
+     menuentry "Windows XP" {
+        insmod ntfs
+        search --set=root --label WINDOWS_XP --hint hd0,msdos1
+        ntldr /ntldr
+     }
+
+     menuentry "Windows 7" {
+        insmod ntfs
+        search --set=root --label WINDOWS_7 --hint hd0,msdos2
+        ntldr /bootmgr
+     }
+
+     menuentry "FreeBSD" {
+               insmod zfs
+               search --set=root --label freepool --hint hd0,msdos7
+               kfreebsd /freebsd@/boot/kernel/kernel
+               kfreebsd_module_elf /freebsd@/boot/kernel/opensolaris.ko
+               kfreebsd_module_elf /freebsd@/boot/kernel/zfs.ko
+               kfreebsd_module /freebsd@/boot/zfs/zpool.cache type=/boot/zfs/zpool.cache
+               set kFreeBSD.vfs.root.mountfrom=zfs:freepool/freebsd
+               set kFreeBSD.hw.psm.synaptics_support=1
+     }
+
+     menuentry "experimental GRUB" {
+               search --set=root --label GRUB --hint hd0,msdos5
+               multiboot /experimental/grub/i386-pc/core.img
+     }
+
+     menuentry "Fedora 16 installer" {
+               search --set=root --label GRUB --hint hd0,msdos5
+               linux /fedora/vmlinuz lang=en_US keymap=sg resolution=1280x800
+               initrd /fedora/initrd.img
+     }
+
+     menuentry "Fedora rawhide installer" {
+               search --set=root --label GRUB --hint hd0,msdos5
+               linux /fedora/vmlinuz repo=ftp://mirror.switch.ch/mirror/fedora/linux/development/rawhide/x86_64 lang=en_US keymap=sg resolution=1280x800
+               initrd /fedora/initrd.img
+     }
+
+     menuentry "Debian sid installer" {
+               search --set=root --label GRUB --hint hd0,msdos5
+               linux /debian/dists/sid/main/installer-amd64/current/images/hd-media/vmlinuz
+               initrd /debian/dists/sid/main/installer-amd64/current/images/hd-media/initrd.gz
+     }
+
+   Notes:
+   * Argument to search after -label is FS LABEL. You can also use
+     UUIDs with -fs-uuid UUID instead of -label LABEL. You could also
+     use direct `root=hd0,msdosX' but this is not recommened due to
+     device name instability.
+
+
+File: grub.info,  Node: Embedded configuration,  Prev: Multi-boot manual config,  Up: Configuration
+
+5.4 Embedding a configuration file into GRUB
 ============================================
 
 GRUB supports embedding a configuration file directly into the core
@@ -1512,11 +1661,12 @@ GRUB that the progress bar should be updated as time passes, and it
 should be made invisible if the countdown to automatic boot is
 interrupted by the user.
 
-   Progress bars may optionally have text displayed on them.  This is
-controlled through the "show_text" property, which can be set to either
-"true" or "false" to control whether text is displayed.  When GRUB is
-counting down to automatic boot, the text informs the user of the
-number of seconds remaining.
+   Progress bars may optionally have text displayed on them.  This text
+is controlled by variable "text" which contains a printf template with
+the only argument %d is the number of seconds remaining. Additionally
+special values "@TIMEOUT_NOTIFICATION_SHORT@",
+"@TIMEOUT_NOTIFICATION_MIDDLE@", "@TIMEOUT_NOTIFICATION_LONG@" are
+replaced with standard and translated templates.
 
 6.2.4 Circular Progress Indicator
 ---------------------------------
@@ -1964,17 +2114,10 @@ inspect or change the behaviour of the PXE device:
      The name of the DHCP server responsible for these boot parameters.
      Read-only.
 
-`pxe_blksize'
-     The PXE transfer block size.  Read-write, defaults to 512.
+`net_default_server'
+     The default server.  Read-write, although setting this is only
+     useful before opening a network device.
 
-`pxe_default_server'
-     The default PXE server.  Read-write, although setting this is only
-     useful before opening a PXE device.
-
-`pxe_default_gateway'
-     The default gateway to use when contacting the PXE server.
-     Read-write, although setting this is only useful before opening a
-     PXE device.
 
 
 File: grub.info,  Node: Serial terminal,  Next: Vendor power-on keys,  Prev: Network,  Up: Top
@@ -2220,37 +2363,62 @@ File: grub.info,  Node: Device syntax,  Next: File name syntax,  Up: Filesystem
 
 The device syntax is like this:
 
-     `(DEVICE[,PART-NUM][,BSD-SUBPART-LETTER])'
+     `(DEVICE[,PARTMAP-NAME1PART-NUM1[,PARTMAP-NAME2PART-NUM2[,...]]])'
 
-   `[]' means the parameter is optional. DEVICE should be either `fd'
-or `hd' followed by a digit, like `fd0'.  But you can also set DEVICE
-to a hexadecimal or a decimal number which is a BIOS drive number, so
-the following are equivalent:
+   `[]' means the parameter is optional. DEVICE depends on the disk
+driver in use. BIOS and EFI disks use either `fd' or `hd' followed by a
+digit, like `fd0', or `cd'.  AHCI, PATA (ata), crypto, USB use the name
+of driver followed by a number.  Memdisk and host are limited to one
+disk and so it's refered just by driver name.  RAID (md), ofdisk
+(ieee1275 and nand), LVM (lv), LDM and arcdisk (arc) use intrinsic name
+of disk prefixed by driver name. Additionally just "nand" refers to the
+disk aliased as "nand".  Conflicts are solved by suffixing a number if
+necessarry.  Commas need to be escaped.  Loopback uses whatever name
+specified to `loopback' command.  Hostdisk uses names specified in
+device.map as long as it's of the form [fhc]d[0-9]* or hostdisk/<OS
+DEVICE>.  For crypto and RAID (md) additionally you can use the syntax
+<driver name>uuid/<uuid>.
 
+     (fd0)
      (hd0)
-     (0x80)
-     (128)
+     (cd)
+     (ahci0)
+     (ata0)
+     (crypto0)
+     (usb0)
+     (cryptouuid/123456789abcdef0123456789abcdef0)
+     (mduuid/123456789abcdef0123456789abcdef0)
+     (lv/system-root)
+     (md/myraid)
+     (md/0)
+     (ieee1275/disk2)
+     (ieee1275//pci@1f\,0/ide@d/disk@2)
+     (nand)
+     (memdisk)
+     (host)
+     (myloop)
+     (hostdisk//dev/sda)
 
    PART-NUM represents the partition number of DEVICE, starting from
-one for primary partitions and from five for extended partitions, and
-BSD-SUBPART-LETTER represents the BSD disklabel subpartition, such as
-`a' or `e'.
-
-   A shortcut for specifying BSD subpartitions is
-`(DEVICE,BSD-SUBPART-LETTER)', in this case, GRUB searches for the
-first PC partition containing a BSD disklabel, then finds the
-subpartition BSD-SUBPART-LETTER. Here is an example:
-
-     (hd0,a)
+one. PARTNAME is optional but is recommended since disk may have
+several top-level partmaps. Specifying third and later component you
+can access to subpartitions.
 
    The syntax `(hd0)' represents using the entire disk (or the MBR when
 installing GRUB), while the syntax `(hd0,1)' represents using the first
 partition of the disk (or the boot sector of the partition when
 installing GRUB).
 
-   If you enabled the network support, the special drive `(pxe)' is
-also available. Before using the network drive, you must initialize the
-network. *Note Network::, for more information.
+     (hd0,msdos1)
+     (hd0,msdos1,msdos5)
+     (hd0,msdos1,bsd3)
+     (hd0,netbsd1)
+     (hd0,gpt1)
+     (hd0,1,3)
+
+   If you enabled the network support, the special drives `(tftp)',
+`(http)' and so on ars also available.  Before using the network drive,
+you must initialize the network.  *Note Network::, for more information.
 
    If you boot GRUB from a CD-ROM, `(cd)' is available. *Note Making a
 GRUB bootable CD-ROM::, for details.
@@ -2939,7 +3107,7 @@ ZFS), and using BIOS or EFI functions (no ATA, USB or IEEE1275).
 (*note Simple configuration::).
 
 
-File: grub.info,  Node: Commands,  Next: Security,  Prev: Environment,  Up: Top
+File: grub.info,  Node: Commands,  Next: Internationalisation,  Prev: Environment,  Up: Top
 
 14 The list of available commands
 *********************************
@@ -2994,7 +3162,7 @@ File: grub.info,  Node: menuentry,  Next: submenu,  Up: Menu-specific commands
 ----------------
 
  -- Command: menuentry TITLE [`--class=class' ...] [`--users=users']
-          [`--hotkey=key'] { COMMAND; ... }
+          [`--unrestricted'] [`--hotkey=key'] { COMMAND; ... }
      This defines a GRUB menu entry named TITLE.  When this entry is
      selected from the menu, GRUB will set the CHOSEN environment
      variable to TITLE, execute the list of commands given within
@@ -3008,6 +3176,9 @@ File: grub.info,  Node: menuentry,  Next: submenu,  Up: Menu-specific commands
      The `--users' option grants specific users access to specific menu
      entries.  *Note Security::.
 
+     The `--unrestricted' option grants all users access to specific
+     menu entries.  *Note Security::.
+
      The `--hotkey' option associates a hotkey with a menu entry.  KEY
      may be a single letter, or one of the aliases `backspace', `tab',
      or `delete'.
@@ -3019,7 +3190,7 @@ File: grub.info,  Node: submenu,  Prev: menuentry,  Up: Menu-specific commands
 --------------
 
  -- Command: submenu TITLE [`--class=class' ...] [`--users=users']
-          [`--hotkey=key'] { MENU ENTRIES ... }
+          [`--unrestricted'] [`--hotkey=key'] { MENU ENTRIES ... }
      This defines a submenu.  An entry called TITLE will be added to the
      menu; when that entry is selected, a new menu will be displayed
      showing all the entries within this submenu.
@@ -4012,9 +4183,134 @@ File: grub.info,  Node: uppermem,  Prev: unset,  Up: Command-line and menu entry
 This command is not yet implemented for GRUB 2, although it is planned.
 
 
-File: grub.info,  Node: Security,  Next: Supported kernels,  Prev: Commands,  Up: Top
+File: grub.info,  Node: Internationalisation,  Next: Security,  Prev: Commands,  Up: Top
 
-15 Authentication and authorisation
+15 Charset
+**********
+
+GRUB uses UTF-8 internally other than in rendering where some
+GRUB-specific appropriate representation is used. All text files
+(including config) are assumed to be encoded in UTF-8.
+
+16 Filesystems
+**************
+
+NTFS, JFS, UDF, HFS+, exFAT, long filenames in FAT, Joliet part of
+ISO9660 are treated as UTF-16 as per specification. AFS and BFS are read
+as UTF-8, again according to specification. BtrFS, cpio, tar, squash4,
+minix, minix2, minix3, ROMFS, ReiserFS, XFS, ext2, ext3, ext4, FAT
+(short names), RockRidge part of ISO9660, nilfs2, UFS1, UFS2 and ZFS
+are assumed to be UTF-8. This might be false on systems configured with
+legacy charset but as long as the charset used is superset of ASCII you
+should be able to access ASCII-named files. And it's recommended to
+configure your system to use UTF-8 to access the filesystem, convmv may
+help with migration. ISO9660 (plain) filenames are specified as being
+ASCII or being described with unspecified escape sequences. GRUB
+assumes that the ISO9660 names are UTF-8 (since any ASCII is valid
+UTF-8). There are some old CD-ROMs which use CP437 in non-compliant
+way. You're still able to access files with names containing only ASCII
+characters on such filesystems though. You're also able to access any
+file if the filesystem contains valid Joliet (UTF-16) or RockRidge
+(UTF-8).  AFFS, SFS and HFS never use unicode and GRUB assumes them to
+be in Latin1, Latin1 and MacRoman respectively. GRUB handles filesystem
+case-insensitivity however no attempt is performed at case conversion
+of international characters so e.g. a file named lowercase greek alpha
+is treated as different from the one named as uppercase alpha. The
+filesystems in questions are NTFS (except POSIX namespace), HFS+
+(configurable at mkfs time, default insensitive), SFS (configurable at
+mkfs time, default insensitive), JFS (configurable at mkfs time,
+default sensitive), HFS, AFFS, FAT, exFAT and ZFS (configurable on
+per-subvolume basis by property "casesensitivity", default sensitive).
+On ZFS subvolumes marked as case insensitive files containing lowercase
+international characters are inaccessible.  Also like all supported
+filesystems except HFS+ and ZFS (configurable on per-subvolume basis by
+property "normalization", default none) GRUB makes no attempt at check
+of canonical equivalence so a file name u-diaresis is treated as
+distinct from u+combining diaresis. This however means that in order to
+access file on HFS+ its name must be specified in normalisation form D.
+On normalized ZFS subvolumes filenames out of normalisation are
+inaccessible.
+
+17 Output terminal
+******************
+
+Firmware output console "console" on ARC and IEEE1275 are limited to
+ASCII.  BIOS firmware console and VGA text are limited to ASCII and
+some pseudographics.  None of above mentioned is appropriate for
+displaying international and any unsupported character is replaced with
+question mark except pseudographics which we attempt to approximate
+with ASCII. EFI console on the other hand nominally supports UTF-16 but
+actual language coverage depends on firmware and may be very limited.
+The encoding used on serial can be chosen with `terminfo' as either
+ASCII, UTF-8 or "visual UTF-8". Last one is against the specification
+but results in correct rendering of right-to-left on some readers which
+don't have own bidi implementation. When using gfxterm or gfxmenu GRUB
+itself is responsible for rendering the text. In this case GRUB is
+limited by loaded fonts. If fonts contain all required characters then
+bidirectional text, cursive variants and combining marks other than
+enclosing, half (e.g. left half tilde or combining overline) and double
+ones.  Ligatures aren't supported though. This should cover European,
+Middle Eastern (if you don't mind lack of lam-alif ligature in Arabic)
+and East Asian scripts.  Notable unsupported scripts are Brahmic family
+and derived as well as Mongolian, Tifinagh, Korean Jamo (precomposed
+characters have no problem) and tonal writing (2e5-2e9). GRUB also
+ignores deprecated (as specified in Unicode) characters (e.g. tags).
+GRUB also doesn't handle so called "annotation characters" If you can
+complete either of two lists or, better, propose a patch to improve
+rendering, please contact developper team.
+
+18 Input terminal
+*****************
+
+Firmware console on BIOS, IEEE1275 and ARC doesn't allow you to enter
+non-ASCII characters. EFI specification allows for such but author is
+unaware of any actual implementations. Serial input is currently
+limited for latin1 (unlikely to change). Own keyboard implementations
+(at_keyboard and usb_keyboard) supports any key but work on
+one-char-per-keystroke.  So no dead keys or advanced input method. Also
+there is no keymap change hotkey.  In practice it makes difficult to
+enter any text using non-Latin alphabet.  Moreover all current input
+consumers are limited to ASCII.
+
+19 Gettext
+**********
+
+GRUB supports being translated. For this you need to have language *.mo
+files in $prefix/locale, load gettext module and set "lang" variable.
+
+20 Regexp
+*********
+
+Regexps work on unicode characters, however no attempt at checking
+cannonical equivalence has been made. Moreover the classes like
+[:alpha:] match only ASCII subset.
+
+21 Other
+********
+
+Currently GRUB always uses YEAR-MONTH-DAY HOUR:MINUTE:SECOND [WEEKDAY]
+24-hour datetime format but weekdays are translated.  GRUB always uses
+the decimal number format with [0-9] as digits and . as descimal
+separator and no group separator.  IEEE1275 aliases are matched
+case-insensitively except non-ASCII which is matched as binary. Similar
+behaviour is for matching OSBundleRequired.  Since IEEE1275 aliases and
+OSBundleRequired don't contain any non-ASCII it should never be a
+problem in practice.  Case-sensitive identifiers are matched as raw
+strings, no canonical equivalence check is performed. Case-insenstive
+identifiers are matched as RAW but additionally [a-z] is equivalent to
+[A-Z]. GRUB-defined identifiers use only ASCII and so should
+user-defined ones.  Identifiers containing non-ASCII may work but
+aren't supported.  Only the ASCII space characters (space U+0020, tab
+U+000b, CR U+000d and LF U+000a) are recognised. Other unicode space
+characters aren't a valid field separator.  `test' tests <, >, <=, >=,
+-pgt and -plt compare the strings in the lexicographical order of
+unicode codepoints, replicating the behaviour of test from coreutils.
+environment variables and commands are listed in the same order.
+
+
+File: grub.info,  Node: Security,  Next: Platform limitations,  Prev: Internationalisation,  Up: Top
+
+22 Authentication and authorisation
 ***********************************
 
 By default, the boot loader interface is accessible to anyone with
@@ -4046,8 +4342,10 @@ command line is automatically restricted to superusers.
 
    Other users may be given access to specific menu entries by giving a
 list of usernames (as above) using the `--users' option to the
-`menuentry' command (*note menuentry::).  If the `--users' option is
-not used for a menu entry, then that entry is unrestricted.
+`menuentry' command (*note menuentry::).  If the `--unrestricted'
+option is used for a menu entry, then that entry is unrestricted.  If
+the `--users' option is not used for a menu entry, then that only
+superusers are able to use it.
 
    Putting this together, a typical `grub.cfg' fragment might look like
 this:
@@ -4056,7 +4354,7 @@ this:
      password_pbkdf2 root grub.pbkdf2.sha512.10000.biglongstring
      password user1 insecure
 
-     menuentry "May be run by any user" {
+     menuentry "May be run by any user" --unrestricted {
      	set root=(hd0,1)
      	linux /vmlinuz
      }
@@ -4077,9 +4375,178 @@ generating configuration files with authentication.  You can use
 adding `set superusers=' and `password' or `password_pbkdf2' commands.
 
 
-File: grub.info,  Node: Supported kernels,  Next: Troubleshooting,  Prev: Security,  Up: Top
+File: grub.info,  Node: Platform limitations,  Next: Platform-specific operations,  Prev: Security,  Up: Top
 
-16 Supported boot targets
+23 Platform limitations
+***********************
+
+GRUB2 is designed to be portable and is actually ported across
+platforms. We try to keep all platforms at the level. Unfortunately
+some platforms are better supported than others. This is detailed in
+current and 2 following sections.
+
+   ARC platform is unable to change datetime (firmware doesn't seem to
+provide a function for it).  EMU has similar limitation.
+
+   ARC platform no serial port is available.  EMU has similar
+limitation.
+
+   Console charset refers only to firmware-assisted console. gfxterm is
+always Unicode (see Internationalisation section for its limitations).
+Serial is configurable to UTF-8 or ASCII (see Internationalisation). In
+case of qemu and coreboot ports the refered console is vga_text.
+Loongson always uses gfxterm.
+
+   Most limited one is ASCII. CP437 provides additionally
+pseudographics.  GRUB2 doesn't use any language characters from CP437
+as often CP437 is replaced by national encoding compatible only in
+pseudographics.  Unicode is the most versatile charset which supports
+many languages. However the actual console may be much more limited
+depending on firmware
+
+   On BIOS network is supported only if the image is loaded through
+network.  On sparc64 GRUB is unable to determine which server it was
+booted from.
+
+   On platforms not having direct serial support (as indicated in the
+line serial) you can still redirect firmware console to serial if it
+allows so.
+
+   Direct ATA/AHCI support allows to circumvent various firmware
+limitations but isn't needed for normal operation except on baremetal
+ports.
+
+   AT keyboard support allows keyboard layout remapping and support for
+keys not available through firmware. It isn't needed for normal
+operation except baremetal ports.
+
+   USB support provides benefits similar to ATA (for USB disks) or AT
+(for USB keyboards). In addition it allows USBserial.
+
+   Chainloading refers to the ability to load another bootloader
+through the same protocol
+
+   Hints allow faster disk discovery by already knowing in advance
+which is the disk in question. On some platforms hints are correct
+unless you move the disk between boots.  On other platforms it's just
+an educated guess.  Note that hint failure results in just reduced
+performance, not a failure
+
+   BadRAM is the ability to mark some of the RAM as "bad". Note: due to
+protocol limitations mips-loongson (with Linux protocol) and
+mips-qemu_mips can use only memory up to first hole.
+
+               BIOS           Coreboot       Multiboot      Qemu
+video          yes            yes            yes            yes
+console        CP437          CP437          CP437          CP437
+charset                                                     
+network        yes (*)        no             no             no
+ATA/AHCI       yes            yes            yes            yes
+AT keyboard    yes            yes            yes            yes
+USB            yes            yes            yes            yes
+chainloader    local          yes            yes            no
+cpuid          partial        partial        partial        partial
+hints          guess          guess          guess          guess
+PCI            yes            yes            yes            yes
+badram         yes            yes            yes            yes
+compression    always         pointless      no             no
+exit           yes            no             no             no
+
+               ia32 EFI       amd64 EFI      ia32 IEEE1275  Itanium
+video          yes            yes            no             no
+console        Unicode        Unicode        ASCII          Unicode
+charset                                                     
+network        yes            yes            yes            yes
+ATA/AHCI       yes            yes            yes            no
+AT keyboard    yes            yes            yes            no
+USB            yes            yes            yes            no
+chainloader    local          local          no             local
+cpuid          partial        partial        partial        no
+hints          guess          guess          good           guess
+PCI            yes            yes            yes            no
+badram         yes            yes            no             yes
+compression    no             no             no             no
+exit           yes            yes            yes            yes
+
+               Loongson       sparc64        Powerpc        ARC
+video          yes            no             yes            no
+console        N/A            ASCII          ASCII          ASCII
+charset                                                     
+network        no             yes (*)        yes            no
+ATA/AHCI       yes            no             no             no
+AT keyboard    yes            no             no             no
+USB            yes            no             no             no
+chainloader    yes            no             no             no
+cpuid          no             no             no             no
+hints          good           good           good           no
+PCI            yes            no             no             no
+badram         yes (*)        no             no             no
+compression    configurable   no             no             configurable
+exit           no             yes            yes            yes
+
+               MIPS qemu      emu                           
+video          no             yes                           
+console        CP437          ASCII                         
+charset                                                     
+network        no             yes                           
+ATA/AHCI       yes            no                            
+AT keyboard    yes            no                            
+USB            N/A            yes                           
+chainloader    yes            no                            
+cpuid          no             no                            
+hints          guess          no                            
+PCI            no             no                            
+badram         yes (*)        no                            
+compression    configurable   no                            
+exit           no             yes                           
+
+
+File: grub.info,  Node: Platform-specific operations,  Next: Supported kernels,  Prev: Platform limitations,  Up: Top
+
+24 Outline
+**********
+
+Some platforms have features which allows to implement some commands
+useless or not implementable on others.
+
+   Quick summary:
+
+   Information retrieval:
+
+   * mipsel-loongson: lsspd
+
+   * mips-arc: lsdev
+
+   * efi: lsefisystab, lssal, lsefimmap
+
+   * i386-pc: lsapm
+
+   * acpi-enabled (i386-pc, i386-coreboot, i386-multiboot, *-efi):
+     lsacpi
+
+   Workarounds for platform-specific issues:
+   * i386-efi/x86_64-efi: loadbios, fixvideo
+
+   * acpi-enabled (i386-pc, i386-coreboot, i386-multiboot, *-efi):
+     acpi (override ACPI tables)
+
+   * i386-pc: drivemap
+
+   * i386-pc: sendkey
+
+   Advanced operations for power users:
+   * x86: iorw (direct access to I/O ports)
+
+   Miscelaneous:
+   * cmos (x86-*, ieee1275, mips-qemu_mips, mips-loongson): cmostest
+     (used on some laptops to check for special power-on key)
+
+   * i386-pc: play
+
+
+File: grub.info,  Node: Supported kernels,  Next: Troubleshooting,  Prev: Platform-specific operations,  Up: Top
+
+25 Supported boot targets
 *************************
 
 X86 support is summarised in the following table. "Yes" means that the
@@ -4092,6 +4559,8 @@ can still use serial or network console).  In case of "no" and
                                      BIOS             Coreboot
 BIOS chainloading                    yes              no (1)
 NTLDR                                yes              no (1)
+Plan9                                yes              no (1)
+Freedos                              yes              no (1)
 FreeBSD bootloader                   yes              crashes (1)
 32-bit kFreeBSD                      yes              crashes (2,6)
 64-bit kFreeBSD                      yes              crashes (2,6)
@@ -4114,6 +4583,8 @@ Appleloader                          no (3)           no (3)
                                      Multiboot        Qemu
 BIOS chainloading                    no (1)           no (1)
 NTLDR                                no (1)           no (1)
+Plan9                                no (1)           no (1)
+FreeDOS                              no (1)           no (1)
 FreeBSD bootloader                   crashes (1)      crashes (1)
 32-bit kFreeBSD                      crashes (6)      crashes (6)
 64-bit kFreeBSD                      crashes (6)      crashes (6)
@@ -4133,9 +4604,11 @@ Multiboot2                           yes              yes
 64-bit EFI chainloader               no (3)           no (3)
 Appleloader                          no (3)           no (3)
 
-                                     32-bit EFI       64-bit EFI
+                                     ia32 EFI         amd64 EFI
 BIOS chainloading                    no (1)           no (1)
 NTLDR                                no (1)           no (1)
+Plan9                                no (1)           no (1)
+FreeDOS                              no (1)           no (1)
 FreeBSD bootloader                   crashes (1)      crashes (1)
 32-bit kFreeBSD                      headless         headless
 64-bit kFreeBSD                      headless         headless
@@ -4155,9 +4628,11 @@ Multiboot2                           yes              yes
 64-bit EFI chainloader               no (4)           yes
 Appleloader                          yes              yes
 
-                                     IEEE1275         
+                                     ia32 IEEE1275    
 BIOS chainloading                    no (1)           
 NTLDR                                no (1)           
+Plan9                                no (1)           
+FreeDOS                              no (1)           
 FreeBSD bootloader                   crashes (1)      
 32-bit kFreeBSD                      crashes (6)      
 64-bit kFreeBSD                      crashes (6)      
@@ -4191,10 +4666,10 @@ Appleloader                          no (3)
 
   6. Requires ACPI
 
-   PowerPC and Sparc ports support only Linux. MIPS port supports Linux
-and multiboot2.
+   PowerPC, IA64 and Sparc64 ports support only Linux. MIPS port
+supports Linux and multiboot2.
 
-17 Boot tests
+26 Boot tests
 *************
 
 As you have seen in previous chapter the support matrix is pretty big
@@ -4232,7 +4707,7 @@ linux.x86_64                  64-bit Linux
 
 File: grub.info,  Node: Troubleshooting,  Next: Invoking grub-install,  Prev: Supported kernels,  Up: Top
 
-18 Error messages produced by GRUB
+27 Error messages produced by GRUB
 **********************************
 
 * Menu:
@@ -4242,7 +4717,7 @@ File: grub.info,  Node: Troubleshooting,  Next: Invoking grub-install,  Prev: Su
 
 File: grub.info,  Node: GRUB only offers a rescue shell,  Up: Troubleshooting
 
-18.1 GRUB only offers a rescue shell
+27.1 GRUB only offers a rescue shell
 ====================================
 
 GRUB's normal start-up procedure involves setting the `prefix'
@@ -4305,7 +4780,7 @@ remember:
 
 File: grub.info,  Node: Invoking grub-install,  Next: Invoking grub-mkconfig,  Prev: Troubleshooting,  Up: Top
 
-19 Invoking grub-install
+28 Invoking grub-install
 ************************
 
 The program `grub-install' installs GRUB on your drive using
@@ -4350,7 +4825,7 @@ name.
 
 File: grub.info,  Node: Invoking grub-mkconfig,  Next: Invoking grub-mkpasswd-pbkdf2,  Prev: Invoking grub-install,  Up: Top
 
-20 Invoking grub-mkconfig
+29 Invoking grub-mkconfig
 *************************
 
 The program `grub-mkconfig' generates a configuration file for GRUB
@@ -4374,7 +4849,7 @@ The program `grub-mkconfig' generates a configuration file for GRUB
 
 File: grub.info,  Node: Invoking grub-mkpasswd-pbkdf2,  Next: Invoking grub-mkrescue,  Prev: Invoking grub-mkconfig,  Up: Top
 
-21 Invoking grub-mkpasswd-pbkdf2
+30 Invoking grub-mkpasswd-pbkdf2
 ********************************
 
 The program `grub-mkpasswd-pbkdf2' generates password hashes for GRUB
@@ -4398,9 +4873,9 @@ The program `grub-mkpasswd-pbkdf2' generates password hashes for GRUB
      Length of the salt.  Defaults to 64.
 
 
-File: grub.info,  Node: Invoking grub-mkrescue,  Next: Obtaining and Building GRUB,  Prev: Invoking grub-mkpasswd-pbkdf2,  Up: Top
+File: grub.info,  Node: Invoking grub-mkrescue,  Next: Invoking grub-probe,  Prev: Invoking grub-mkpasswd-pbkdf2,  Up: Top
 
-22 Invoking grub-mkrescue
+31 Invoking grub-mkrescue
 *************************
 
 The program `grub-mkrescue' generates a bootable GRUB rescue image
@@ -4452,7 +4927,105 @@ commonly used to add extra files to the image:
      default.
 
 
-File: grub.info,  Node: Obtaining and Building GRUB,  Next: Reporting bugs,  Prev: Invoking grub-mkrescue,  Up: Top
+File: grub.info,  Node: Invoking grub-probe,  Next: Obtaining and Building GRUB,  Prev: Invoking grub-mkrescue,  Up: Top
+
+32 Invoking grub-probe
+**********************
+
+The program `grub-probe' probes device information for a given path or
+device.
+
+     grub-probe --target=fs /boot/grub
+     grub-probe --target=drive --device /dev/sda1
+
+   `grub-probe' must be given a path or device as a non-option
+argument, and also accepts the following options:
+
+`--help'
+     Print a summary of the command-line options and exit.
+
+`--version'
+     Print the version number of GRUB and exit.
+
+`-d'
+`--device'
+     If this option is given, then the non-option argument is a system
+     device name (such as `/dev/sda1'), and `grub-probe' will print
+     information about that device.  If it is not given, then the
+     non-option argument is a filesystem path (such as `/boot/grub'),
+     and `grub-probe' will print information about the device
+     containing that part of the filesystem.
+
+`-m FILE'
+`--device-map=FILE'
+     Use FILE as the device map (*note Device map::) rather than the
+     default, usually `/boot/grub/device.map'.
+
+`-t TARGET'
+`--target=TARGET'
+     Print information about the given path or device as defined by
+     TARGET.  The available targets and their meanings are:
+
+    `fs'
+          GRUB filesystem module.
+
+    `fs_uuid'
+          Filesystem Universally Unique Identifier (UUID).
+
+    `fs_label'
+          Filesystem label.
+
+    `drive'
+          GRUB device name.
+
+    `device'
+          System device name.
+
+    `partmap'
+          GRUB partition map module.
+
+    `abstraction'
+          GRUB abstraction module (e.g. `lvm').
+
+    `cryptodisk_uuid'
+          Crypto device UUID.
+
+    `msdos_parttype'
+          MBR partition type code (two hexadecimal digits).
+
+    `hints_string'
+          A string of platform search hints suitable for passing to the
+          `search' command (*note search::).
+
+    `bios_hints'
+          Search hints for the PC BIOS platform.
+
+    `ieee1275_hints'
+          Search hints for the IEEE1275 platform.
+
+    `baremetal_hints'
+          Search hints for platforms where disks are addressed directly
+          rather than via firmware.
+
+    `efi_hints'
+          Search hints for the EFI platform.
+
+    `arc_hints'
+          Search hints for the ARC platform.
+
+    `compatibility_hint'
+          A guess at a reasonable GRUB drive name for this device,
+          which may be used as a fallback if the `search' command fails.
+
+    `disk'
+          System device name for the whole disk.
+
+`-v'
+`--verbose'
+     Print verbose messages.
+
+
+File: grub.info,  Node: Obtaining and Building GRUB,  Next: Reporting bugs,  Prev: Invoking grub-probe,  Up: Top
 
 Appendix A How to obtain and build GRUB
 ***************************************
@@ -4464,21 +5037,21 @@ Appendix A How to obtain and build GRUB
      how to get the latest version.
 
    GRUB is available from the GNU alpha archive site
-`ftp://alpha.gnu.org/gnu/grub' or any of its mirrors. The file will be
-named grub-version.tar.gz. The current version is 1.99, so the file you
+`ftp://ftp.gnu.org/gnu/grub' or any of its mirrors. The file will be
+named grub-version.tar.gz. The current version is 2.00, so the file you
 should grab is:
 
-   `ftp://alpha.gnu.org/gnu/grub/grub-1.99.tar.gz'
+   `ftp://ftp.gnu.org/gnu/grub/grub-2.00.tar.gz'
 
    To unbundle GRUB use the instruction:
 
-     zcat grub-1.99.tar.gz | tar xvf -
+     zcat grub-2.00.tar.gz | tar xvf -
 
-   which will create a directory called `grub-1.99' with all the
+   which will create a directory called `grub-2.00' with all the
 sources. You can look at the file `INSTALL' for detailed instructions
 on how to build and install GRUB, but you should be able to just do:
 
-     cd grub-1.99
+     cd grub-2.00
      ./configure
      make install
 
@@ -5066,163 +5639,169 @@ Index
 
 
 Tag Table:
-Node: Top961
-Node: Introduction3282
-Node: Overview3726
-Node: Overview-Footnotes5710
-Ref: Overview-Footnote-15771
-Node: History5932
-Node: Changes from GRUB Legacy8020
-Node: Features10496
-Node: Features-Footnotes16487
-Ref: Features-Footnote-116548
-Ref: Features-Footnote-216694
-Node: Role of a boot loader16839
-Node: Role of a boot loader-Footnotes18177
-Ref: Role of a boot loader-Footnote-118264
-Node: Naming convention18343
-Node: Installation21218
-Node: Installing GRUB using grub-install22321
-Node: Making a GRUB bootable CD-ROM24492
-Node: Making a GRUB bootable CD-ROM-Footnotes26346
-Ref: Making a GRUB bootable CD-ROM-Footnote-126449
-Node: Device map26524
-Node: BIOS installation28701
-Node: Booting32078
-Node: General boot methods32470
-Node: Loading an operating system directly33211
-Node: Chain-loading33942
-Node: OS-specific notes34913
-Node: GNU/Hurd35195
-Node: GNU/Linux36312
-Node: DOS/Windows37935
-Node: Configuration39708
-Node: Simple configuration40250
-Node: Shell-like scripting49686
-Node: Shell-like scripting-Footnotes57596
-Ref: Shell-like scripting-Footnote-157681
-Node: Embedded configuration57808
-Node: Theme file format60641
-Ref: Pixmap-styled progress bar62064
-Ref: Plain progress bar62076
-Ref: An example of the slices (in red) used for a terminal window. This drawing was created and sliced in Inkscape_65505
-Node: Network79727
-Node: Serial terminal82130
-Node: Vendor power-on keys84357
-Node: Images86187
-Node: Filesystem91147
-Node: Device syntax91834
-Node: File name syntax93326
-Node: Block list syntax94080
-Node: Interface94813
-Node: Command-line interface95635
-Node: Command-line interface-Footnotes97576
-Ref: Command-line interface-Footnote-197665
-Node: Menu interface97760
-Node: Menu entry editor98770
-Node: Environment99508
-Node: Special environment variables100212
-Node: biosnum100963
-Node: chosen101477
-Node: color_highlight101919
-Node: color_normal102325
-Node: debug102947
-Node: default103294
-Node: fallback104221
-Node: gfxmode104552
-Node: gfxpayload105285
-Node: gfxterm_font106437
-Node: icondir106736
-Node: lang107052
-Node: locale_dir107521
-Node: menu_color_highlight108030
-Node: menu_color_normal108526
-Node: net_pxe_boot_file109019
-Node: net_pxe_dhcp_server_name109230
-Node: net_pxe_domain109452
-Node: net_pxe_extensionspath109659
-Node: net_pxe_hostname109874
-Node: net_pxe_ip110073
-Node: net_pxe_mac110249
-Node: net_pxe_rootpath110427
-Node: pager110610
-Node: prefix110864
-Node: pxe_blksize111313
-Node: pxe_default_gateway111490
-Node: pxe_default_server111695
-Node: root111891
-Node: superusers112432
-Node: theme112680
-Node: timeout113001
-Node: Environment block113498
-Node: Commands114930
-Node: Menu-specific commands115763
-Node: menuentry116490
-Node: submenu117497
-Node: General commands118005
-Node: serial118501
-Node: terminal_input119546
-Node: terminal_output120212
-Node: terminfo120879
-Node: Command-line and menu entry commands122014
-Node: acpi124985
-Node: badram126024
-Node: blocklist127066
-Node: boot127300
-Node: cat127621
-Node: chainloader128256
-Node: cmp128878
-Node: configfile129429
-Node: cpuid129729
-Node: crc130194
-Node: date130384
-Node: drivemap130923
-Node: echo131726
-Node: export132663
-Node: false132973
-Node: gettext133269
-Node: gptsync133716
-Node: halt134661
-Node: help134987
-Node: initrd135450
-Node: initrd16135862
-Node: insmod136367
-Node: keystatus136589
-Node: linux137227
-Node: linux16138130
-Node: list_env138844
-Node: load_env139198
-Node: loopback139576
-Node: ls140024
-Node: normal140569
-Node: normal_exit141328
-Node: parttool141650
-Node: password143155
-Node: password_pbkdf2143437
-Node: play143845
-Node: pxe_unload144597
-Node: read144876
-Node: reboot145225
-Node: save_env145410
-Node: search145796
-Node: sendkey146574
-Node: set152848
-Node: true153146
-Node: unset153431
-Node: uppermem153637
-Node: Security153838
-Node: Supported kernels156526
-Node: Troubleshooting164014
-Node: GRUB only offers a rescue shell164240
-Node: Invoking grub-install167166
-Node: Invoking grub-mkconfig168544
-Node: Invoking grub-mkpasswd-pbkdf2169181
-Node: Invoking grub-mkrescue169839
-Node: Obtaining and Building GRUB171602
-Node: Reporting bugs172846
-Node: Future175649
-Node: Copying This Manual176049
-Node: GNU Free Documentation License176277
-Node: Index198685
+Node: Top1043
+Node: Introduction3645
+Node: Overview4089
+Node: Overview-Footnotes6073
+Ref: Overview-Footnote-16134
+Node: History6295
+Node: Changes from GRUB Legacy8383
+Node: Features10859
+Node: Features-Footnotes17218
+Ref: Features-Footnote-117279
+Ref: Features-Footnote-217425
+Node: Role of a boot loader17570
+Node: Role of a boot loader-Footnotes18908
+Ref: Role of a boot loader-Footnote-118995
+Node: Naming convention19074
+Node: Installation21949
+Node: Installing GRUB using grub-install23052
+Node: Making a GRUB bootable CD-ROM25223
+Node: Making a GRUB bootable CD-ROM-Footnotes27077
+Ref: Making a GRUB bootable CD-ROM-Footnote-127180
+Node: Device map27255
+Node: BIOS installation29236
+Node: Booting32613
+Node: General boot methods33069
+Node: Loading an operating system directly33809
+Node: Chain-loading34540
+Node: Loopback booting35511
+Node: OS-specific notes37174
+Node: GNU/Hurd37452
+Node: GNU/Linux38574
+Node: DOS/Windows40202
+Node: Configuration41975
+Node: Simple configuration42585
+Node: Shell-like scripting52699
+Node: Shell-like scripting-Footnotes60630
+Ref: Shell-like scripting-Footnote-160715
+Node: Multi-boot manual config60842
+Node: Embedded configuration64467
+Node: Theme file format67304
+Ref: Pixmap-styled progress bar68727
+Ref: Plain progress bar68739
+Ref: An example of the slices (in red) used for a terminal window. This drawing was created and sliced in Inkscape_72237
+Node: Network86459
+Node: Serial terminal88609
+Node: Vendor power-on keys90836
+Node: Images92666
+Node: Filesystem97626
+Node: Device syntax98313
+Node: File name syntax100696
+Node: Block list syntax101450
+Node: Interface102183
+Node: Command-line interface103005
+Node: Command-line interface-Footnotes104946
+Ref: Command-line interface-Footnote-1105035
+Node: Menu interface105130
+Node: Menu entry editor106140
+Node: Environment106878
+Node: Special environment variables107582
+Node: biosnum108333
+Node: chosen108847
+Node: color_highlight109289
+Node: color_normal109695
+Node: debug110317
+Node: default110664
+Node: fallback111591
+Node: gfxmode111922
+Node: gfxpayload112655
+Node: gfxterm_font113807
+Node: icondir114106
+Node: lang114422
+Node: locale_dir114891
+Node: menu_color_highlight115400
+Node: menu_color_normal115896
+Node: net_pxe_boot_file116389
+Node: net_pxe_dhcp_server_name116600
+Node: net_pxe_domain116822
+Node: net_pxe_extensionspath117029
+Node: net_pxe_hostname117244
+Node: net_pxe_ip117443
+Node: net_pxe_mac117619
+Node: net_pxe_rootpath117797
+Node: pager117980
+Node: prefix118234
+Node: pxe_blksize118683
+Node: pxe_default_gateway118860
+Node: pxe_default_server119065
+Node: root119261
+Node: superusers119802
+Node: theme120050
+Node: timeout120371
+Node: Environment block120868
+Node: Commands122300
+Node: Menu-specific commands123145
+Node: menuentry123872
+Node: submenu125006
+Node: General commands125533
+Node: serial126029
+Node: terminal_input127074
+Node: terminal_output127740
+Node: terminfo128407
+Node: Command-line and menu entry commands129542
+Node: acpi132513
+Node: badram133552
+Node: blocklist134594
+Node: boot134828
+Node: cat135149
+Node: chainloader135784
+Node: cmp136406
+Node: configfile136957
+Node: cpuid137257
+Node: crc137722
+Node: date137912
+Node: drivemap138451
+Node: echo139254
+Node: export140191
+Node: false140501
+Node: gettext140797
+Node: gptsync141244
+Node: halt142189
+Node: help142515
+Node: initrd142978
+Node: initrd16143390
+Node: insmod143895
+Node: keystatus144117
+Node: linux144755
+Node: linux16145658
+Node: list_env146372
+Node: load_env146726
+Node: loopback147104
+Node: ls147552
+Node: normal148097
+Node: normal_exit148856
+Node: parttool149178
+Node: password150683
+Node: password_pbkdf2150965
+Node: play151373
+Node: pxe_unload152125
+Node: read152404
+Node: reboot152753
+Node: save_env152938
+Node: search153324
+Node: sendkey154102
+Node: set160376
+Node: true160674
+Node: unset160959
+Node: uppermem161165
+Node: Internationalisation161366
+Node: Security167965
+Node: Platform limitations170787
+Node: Platform-specific operations177174
+Node: Supported kernels178160
+Node: Troubleshooting186151
+Node: GRUB only offers a rescue shell186377
+Node: Invoking grub-install189303
+Node: Invoking grub-mkconfig190681
+Node: Invoking grub-mkpasswd-pbkdf2191318
+Node: Invoking grub-mkrescue191976
+Node: Invoking grub-probe193731
+Node: Obtaining and Building GRUB196327
+Node: Reporting bugs197564
+Node: Future200367
+Node: Copying This Manual200767
+Node: GNU Free Documentation License200995
+Node: Index223403
 
 End Tag Table

@@ -847,6 +847,9 @@ gcry_md_spec_t _gcry_digest_spec_tiger =
     tiger_init, tiger_write, tiger_final, tiger_read,
     sizeof (TIGER_CONTEXT)
     ,
+#ifdef GRUB_UTIL
+    .modname = "gcry_tiger",
+#endif
     .blocksize = 64
   };
 

@@ -399,6 +399,9 @@ gcry_md_spec_t _gcry_digest_spec_sha512 =
     "SHA512", sha512_asn, DIM (sha512_asn), oid_spec_sha512, 64,
     sha512_init, sha512_write, sha512_final, sha512_read,
     sizeof (SHA512_CONTEXT),
+#ifdef GRUB_UTIL
+    .modname = "gcry_sha512",
+#endif
     .blocksize = 128
   };
 
@@ -424,6 +427,9 @@ gcry_md_spec_t _gcry_digest_spec_sha384 =
     "SHA384", sha384_asn, DIM (sha384_asn), oid_spec_sha384, 48,
     sha384_init, sha512_write, sha512_final, sha512_read,
     sizeof (SHA512_CONTEXT),
+#ifdef GRUB_UTIL
+    .modname = "gcry_sha512",
+#endif
     .blocksize = 128
   };
 

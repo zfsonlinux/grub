@@ -444,6 +444,9 @@ gcry_cipher_spec_t _gcry_cipher_spec_seed =
   {
     "SEED", NULL, seed_oids, 16, 128, sizeof (SEED_context),
     seed_setkey, seed_encrypt, seed_decrypt,
+#ifdef GRUB_UTIL
+    .modname = "gcry_seed",
+#endif
   };
 
 

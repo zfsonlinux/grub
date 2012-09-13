@@ -362,6 +362,9 @@ gcry_md_spec_t _gcry_digest_spec_sha224 =
     sha224_init, sha256_write, sha256_final, sha256_read,
     sizeof (SHA256_CONTEXT)
     ,
+#ifdef GRUB_UTIL
+    .modname = "gcry_sha256",
+#endif
     .blocksize = 64
   };
 
@@ -371,6 +374,9 @@ gcry_md_spec_t _gcry_digest_spec_sha256 =
     sha256_init, sha256_write, sha256_final, sha256_read,
     sizeof (SHA256_CONTEXT)
     ,
+#ifdef GRUB_UTIL
+    .modname = "gcry_sha256",
+#endif
     .blocksize = 64
   };
 
