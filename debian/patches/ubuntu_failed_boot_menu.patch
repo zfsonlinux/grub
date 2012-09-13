@@ -3,13 +3,13 @@ Description: Show the boot menu if the previous boot failed
  runlevels.
 Author: Colin Watson <cjwatson@ubuntu.com>
 Forwarded: no
-Last-Update: 2011-01-05
+Last-Update: 2012-09-06
 
 Index: b/util/grub.d/00_header.in
 ===================================================================
 --- a/util/grub.d/00_header.in
 +++ b/util/grub.d/00_header.in
-@@ -44,6 +44,7 @@
+@@ -46,6 +46,7 @@
  
  cat << EOF
  if [ -s \$prefix/grubenv ]; then
@@ -17,7 +17,7 @@ Index: b/util/grub.d/00_header.in
    load_env
  fi
  EOF
-@@ -76,6 +77,11 @@
+@@ -87,6 +88,11 @@
    fi
  }
  
@@ -29,7 +29,7 @@ Index: b/util/grub.d/00_header.in
  function load_video {
  EOF
  if [ -n "${GRUB_VIDEO_BACKEND}" ]; then
-@@ -226,7 +232,11 @@
+@@ -273,7 +279,11 @@
  make_timeout ()
  {
      cat << EOF
@@ -46,21 +46,19 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -82,6 +82,9 @@
-     title="$(gettext_quoted "%s, with Linux %s")"
-   fi
-   printf "menuentry '${title}' ${CLASS} {\n" "${os}" "${version}"
-+  cat << EOF
-+	recordfail
-+EOF
-   if ! ${recovery} ; then
+@@ -110,6 +110,7 @@
+   else
+       echo "menuentry '$(echo "$os" | grub_quote)' ${CLASS} \$menuentry_id_option 'gnulinux-simple-$boot_device_id' {" | sed "s/^/$submenu_indentation/"
+   fi      
++  echo "recordfail" | sed "s/^/$submenu_indentation/"
+   if [ x$type != xrecovery ] ; then
        save_default_entry | sed -e "s/^/\t/"
    fi
 Index: b/docs/grub.texi
 ===================================================================
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
-@@ -1250,6 +1250,12 @@
+@@ -1289,6 +1289,12 @@
  Each module will be loaded as early as possible, at the start of
  @file{grub.cfg}.
  
@@ -77,13 +75,13 @@ Index: b/util/grub-mkconfig.in
 ===================================================================
 --- a/util/grub-mkconfig.in
 +++ b/util/grub-mkconfig.in
-@@ -258,7 +258,8 @@
-   GRUB_DISABLE_OS_PROBER \
+@@ -223,7 +223,8 @@
    GRUB_INIT_TUNE \
    GRUB_SAVEDEFAULT \
+   GRUB_ENABLE_CRYPTODISK \
 -  GRUB_BADRAM
 +  GRUB_BADRAM \
 +  GRUB_RECORDFAIL_TIMEOUT
  
  if test "x${grub_cfg}" != "x"; then
-   rm -f ${grub_cfg}.new
+   rm -f "${grub_cfg}.new"

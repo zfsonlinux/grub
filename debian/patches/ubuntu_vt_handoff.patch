@@ -6,15 +6,15 @@ Description: Add vt.handoff=7 to non-recovery Linux entries
 Author: Colin Watson <cjwatson@ubuntu.com>
 Author: Andy Whitcroft <apw@canonical.com>
 Forwarded: not-needed
-Last-Update: 2012-04-05
+Last-Update: 2012-09-06
 
 Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -65,6 +65,12 @@
-   fi
- fi
+@@ -78,6 +78,12 @@
+ 
+ title_correction_code=
  
 +for word in $GRUB_CMDLINE_LINUX_DEFAULT; do
 +  if [ "$word" = splash ]; then
@@ -25,18 +25,18 @@ Index: b/util/grub.d/10_linux.in
  # add crashkernel option if we have the required tools
  if [ -x "/usr/bin/makedumpfile" ] && [ -x "/sbin/kexec" ]; then
      GRUB_CMDLINE_EXTRA="$GRUB_CMDLINE_EXTRA crashkernel=384M-2G:64M,2G-:128M"
-@@ -90,7 +96,7 @@
+@@ -115,7 +121,7 @@
+       save_default_entry | sed -e "s/^/\t/"
    fi
  
-   cat << EOF
--	set gfxpayload=\$linux_gfx_mode
-+	gfxmode \$linux_gfx_mode
- EOF
+-  echo "	set gfxpayload=\$linux_gfx_mode" | sed "s/^/$submenu_indentation/"
++  echo "	gfxmode \$linux_gfx_mode" | sed "s/^/$submenu_indentation/"
  
-   cat << EOF
-@@ -147,6 +153,17 @@
- prepare_boot_cache=
- prepare_root_cache=
+   echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
+ 
+@@ -181,6 +187,17 @@
+ boot_device_id=
+ title_correction_code=
  
 +cat << 'EOF'
 +function gfxmode {

@@ -2,13 +2,13 @@ Description: Prefer translations from language packs
 Author: Colin Watson <cjwatson@ubuntu.com>
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/537998
 Forwarded: not-needed
-Last-Update: 2010-03-22
+Last-Update: 2012-09-06
 
 Index: b/util/grub-install.in
 ===================================================================
 --- a/util/grub-install.in
 +++ b/util/grub-install.in
-@@ -436,7 +436,7 @@
+@@ -541,7 +541,7 @@
  
  # Copy gettext files
  mkdir -p "${grubdir}"/locale/

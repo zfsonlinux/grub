@@ -10,13 +10,13 @@ Description: Bypass menu unless other OSes are installed or Shift is pressed
  https://wiki.ubuntu.com/DesktopExperienceTeam/KarmicBootExperienceDesignSpec#Bootloader.
 Author: Colin Watson <cjwatson@ubuntu.com>
 Forwarded: no
-Last-Update: 2011-01-05
+Last-Update: 2012-09-06
 
 Index: b/util/grub.d/00_header.in
 ===================================================================
 --- a/util/grub.d/00_header.in
 +++ b/util/grub.d/00_header.in
-@@ -225,22 +225,9 @@
+@@ -272,22 +272,9 @@
  
  make_timeout ()
  {
@@ -44,9 +44,9 @@ Index: b/util/grub.d/30_os-prober.in
 ===================================================================
 --- a/util/grub.d/30_os-prober.in
 +++ b/util/grub.d/30_os-prober.in
-@@ -23,22 +23,80 @@
+@@ -26,22 +26,80 @@
  
- . "@datadir@/grub/grub-mkconfig_lib"
+ . "@datadir@/@PACKAGE@/grub-mkconfig_lib"
  
 +found_other_os=
 +
@@ -121,35 +121,35 @@ Index: b/util/grub.d/30_os-prober.in
  fi
  
  osx_entry() {
-+	found_other_os=1
-         cat << EOF
- menuentry "${LONGNAME} (${2}-bit) (on ${DEVICE})" --class osx --class darwin --class os {
- EOF
-@@ -104,6 +162,7 @@
++    found_other_os=1
+     if [ x$2 = x32 ]; then
+         # TRANSLATORS: it refers to kernel architecture (32-bit)
+ 	bitstr="$(gettext "(32-bit)")"
+@@ -122,6 +180,7 @@
    case ${BOOT} in
      chain)
  
 +      found_other_os=1
+ 	  onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
        cat << EOF
- menuentry "${LONGNAME} (on ${DEVICE})" --class windows --class os {
- EOF
-@@ -146,6 +205,7 @@
+ menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' --class windows --class os \$menuentry_id_option 'osprober-chain-$(grub_get_device_id "${DEVICE}")' {
+@@ -169,6 +228,7 @@
  	  LINITRD="${LINITRD#/boot}"
  	fi
  
 +	found_other_os=1
-         cat << EOF
- menuentry "${LLABEL} (on ${DEVICE})" --class gnu-linux --class gnu --class os {
- EOF
-@@ -173,6 +233,7 @@
+ 	onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
+ 	recovery_params="$(echo "${LPARAMS}" | grep single)" || true
+ 	counter=1
+@@ -239,6 +299,7 @@
        osx_entry xnu_kernel64 64
      ;;
      hurd)
 +      found_other_os=1
+       onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
        cat << EOF
- menuentry "${LONGNAME} (on ${DEVICE})" --class hurd --class gnu --class os {
- EOF
-@@ -202,3 +263,5 @@
+ menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' --class hurd --class gnu --class os \$menuentry_id_option 'osprober-gnuhurd-/boot/gnumach.gz-false-$(grub_get_device_id "${DEVICE}")' {
+@@ -271,3 +332,5 @@
      ;;
    esac
  done

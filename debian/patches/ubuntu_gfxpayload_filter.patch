@@ -5,13 +5,13 @@ Description: Check hardware support before using gfxpayload=keep
 Author: Evan Broder <evan@ebroder.net>
 Author: Colin Watson <cjwatson@ubuntu.com>
 Forwarded: no
-Last-Update: 2011-09-15
+Last-Update: 2012-09-06
 
 Index: b/grub-core/Makefile.core.def
 ===================================================================
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
-@@ -596,6 +596,15 @@
+@@ -698,6 +698,15 @@
  };
  
  module = {
@@ -177,7 +177,7 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -89,18 +89,9 @@
+@@ -115,14 +115,7 @@
        save_default_entry | sed -e "s/^/\t/"
    fi
  
@@ -185,22 +185,17 @@ Index: b/util/grub.d/10_linux.in
 -  # FIXME: We need an interface to select vesafb in case efifb can't be used.
 -  if [ "x$GRUB_GFXPAYLOAD_LINUX" != x ]; then
 -      if [ "x$GRUB_GFXPAYLOAD_LINUX" != xtext ]; then
--	  cat << EOF
--	load_video
--EOF
+-	  echo "	load_video" | sed "s/^/$submenu_indentation/"
 -      fi
--	  cat << EOF
--	set gfxpayload=$GRUB_GFXPAYLOAD_LINUX
-+  cat << EOF
-+	set gfxpayload=\$linux_gfx_mode
- EOF
+-      echo "	set gfxpayload=$GRUB_GFXPAYLOAD_LINUX" | sed "s/^/$submenu_indentation/"
 -  fi
++  echo "	set gfxpayload=\$linux_gfx_mode" | sed "s/^/$submenu_indentation/"
  
-   cat << EOF
- 	insmod gzio
-@@ -156,6 +147,36 @@
- prepare_boot_cache=
- prepare_root_cache=
+   echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
+ 
+@@ -188,6 +181,36 @@
+ boot_device_id=
+ title_correction_code=
  
 +# Use ELILO's generic "efifb" when it's known to be available.
 +# FIXME: We need an interface to select vesafb in case efifb can't be used.
@@ -232,6 +227,6 @@ Index: b/util/grub.d/10_linux.in
 +if [ "\${linux_gfx_mode}" != "text" ]; then load_video; fi
 +EOF
 +
- while [ "x$list" != "x" ] ; do
-   linux=`version_find_latest $list`
-   echo "Found linux image: $linux" >&2
+ # Extra indentation to add to menu entries in a submenu. We're not in a submenu
+ # yet, so it's empty. In a submenu it will be equal to '\t' (one tab).
+ submenu_indentation=""

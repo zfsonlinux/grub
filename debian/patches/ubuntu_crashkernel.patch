@@ -5,15 +5,15 @@ Description: Add crashkernel option
  This requires several fairly distribution-specific pieces to work properly.
 Author: Michael Vogt <michael.vogt@ubuntu.com>
 Forwarded: not-needed
-Last-Update: 2011-01-05
+Last-Update: 2012-09-06
 
 Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -65,6 +65,11 @@
-   fi
- fi
+@@ -78,6 +78,11 @@
+ 
+ title_correction_code=
  
 +# add crashkernel option if we have the required tools
 +if [ -x "/usr/bin/makedumpfile" ] && [ -x "/sbin/kexec" ]; then
@@ -23,12 +23,21 @@ Index: b/util/grub.d/10_linux.in
  linux_entry ()
  {
    os="$1"
-@@ -185,7 +190,7 @@
+@@ -227,7 +232,7 @@
+ 
+   if [ "x$is_first_entry" = xtrue ]; then
+     linux_entry "${OS}" "${version}" simple \
+-    "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
++    "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}"
+ 
+     submenu_indentation="\t"
+     
+@@ -239,7 +244,7 @@
    fi
  
-   linux_entry "${OS}" "${version}" false \
--      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
-+      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}"
+   linux_entry "${OS}" "${version}" advanced \
+-              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
++              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}"
    if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
-     linux_entry "${OS}" "${version}" true \
- 	"single ${GRUB_CMDLINE_LINUX}"
+     linux_entry "${OS}" "${version}" recovery \
+                 "single ${GRUB_CMDLINE_LINUX}"

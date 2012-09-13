@@ -17,6 +17,7 @@
  */
 
 #include <grub/symbol.h>
+#include <grub/machine/memory.h>
 #include <grub/machine/boot.h>
 
 /*
@@ -24,6 +25,7 @@
  */
 
 #define MSG(x)	movw $x, %si; call LOCAL(message)
+#define SILENT(x)	call LOCAL(check_silent); jz LOCAL(x)
 
 	.file	"diskboot.S"
 
@@ -50,13 +52,16 @@ _start:
 	/* save drive reference first thing! */
 	pushw	%dx
 
+	SILENT(after_notification_string)
+
 	/* print a notification message on the screen */
 	pushw	%si
 	MSG(notification_string)
 	popw	%si
 
+LOCAL(after_notification_string):
 	/* this sets up for the first run through "bootloop" */
-	movw	$(firstlist - GRUB_BOOT_MACHINE_LIST_SIZE), %di
+	movw	$LOCAL(firstlist), %di
 
 	/* save the sector number of the second sector in %ebp */
 	movl	(%di), %ebp
@@ -279,7 +284,10 @@ LOCAL(copy_buffer):
 	/* restore addressing regs and print a dot with correct DS
 	   (MSG modifies SI, which is saved, and unused AX and BX) */
 	popw	%ds
+	SILENT(after_notification_step)
 	MSG(notification_step)
+
+LOCAL(after_notification_step):
 	popa
 
 	/* check if finished with this dataset */
@@ -295,8 +303,11 @@ LOCAL(copy_buffer):
 /* END OF MAIN LOOP */
 
 LOCAL(bootit):
+	SILENT(after_notification_done)
 	/* print a newline */
 	MSG(notification_done)
+
+LOCAL(after_notification_done):
 	popw	%dx	/* this makes sure %dl is our "boot" drive */
 	ljmp	$0, $(GRUB_BOOT_MACHINE_KERNEL_ADDR + 0x200)
 
@@ -319,6 +330,12 @@ LOCAL(general_error):
 
 /* go here when you need to stop the machine hard after an error condition */
 LOCAL(stop):	jmp	LOCAL(stop)
+
+LOCAL(check_silent):
+	/* is either shift key held down? */
+	movw	$(GRUB_MEMORY_MACHINE_BIOS_DATA_AREA_ADDR + 0x17), %bx
+	andb	$3, (%bx)
+	ret
 
 notification_string:	.asciz "loading"
 
@@ -363,7 +380,7 @@ LOCAL(message):
 	.word 0
 
 	. = _start + 0x200 - GRUB_BOOT_MACHINE_LIST_SIZE
-
+LOCAL(firstlist):	/* this label has to be before the first list entry!!! */
         /* fill the first data listing with the default */
 blocklist_default_start:
 	/* this is the sector start parameter, in logical sectors from
@@ -376,5 +393,3 @@ blocklist_default_len:
 blocklist_default_seg:
 	/* this is the segment of the starting address to load the data into */
 	.word (GRUB_BOOT_MACHINE_KERNEL_SEG + 0x20)
-
-firstlist:	/* this label has to be after the list data!!! */

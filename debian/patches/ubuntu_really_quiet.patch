@@ -8,14 +8,14 @@ Author: Colin Watson <cjwatson@ubuntu.com>
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/386922
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/861048
 Forwarded: not-needed
-Last-Update: 2011-01-05
+Last-Update: 2012-09-06
 
 Index: b/grub-core/kern/main.c
 ===================================================================
 --- a/grub-core/kern/main.c
 +++ b/grub-core/kern/main.c
-@@ -170,13 +170,14 @@
- void
+@@ -207,13 +207,14 @@
+ void __attribute__ ((noreturn))
  grub_main (void)
  {
 +  struct grub_term_output *term;
@@ -33,7 +33,7 @@ Index: b/grub-core/kern/main.c
  
    /* Load pre-loaded modules and free the space.  */
    grub_register_exported_symbols ();
-@@ -196,5 +197,10 @@
+@@ -232,5 +233,10 @@
  
    grub_load_config ();
    grub_load_normal_mode ();
@@ -49,7 +49,7 @@ Index: b/grub-core/kern/rescue_reader.c
 --- a/grub-core/kern/rescue_reader.c
 +++ b/grub-core/kern/rescue_reader.c
 @@ -77,8 +77,6 @@
- void
+ void __attribute__ ((noreturn))
  grub_rescue_run (void)
  {
 -  grub_printf ("Entering rescue mode...\n");
@@ -61,7 +61,7 @@ Index: b/grub-core/normal/menu.c
 ===================================================================
 --- a/grub-core/normal/menu.c
 +++ b/grub-core/normal/menu.c
-@@ -668,12 +668,9 @@
+@@ -669,12 +669,9 @@
  
  /* Callback invoked immediately before a menu entry is executed.  */
  static void
@@ -70,7 +70,7 @@ Index: b/grub-core/normal/menu.c
  		void *userdata __attribute__((unused)))
  {
 -  grub_printf ("  ");
--  grub_printf_ (N_("Booting \'%s\'"), entry->title);
+-  grub_printf_ (N_("Booting `%s'"), entry->title);
 -  grub_printf ("\n\n");
  }
  

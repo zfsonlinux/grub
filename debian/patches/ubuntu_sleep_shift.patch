@@ -4,14 +4,14 @@ Description: Allow Shift to interrupt 'sleep --interruptible'
  rest of the thread for context.
 Author: Colin Watson <cjwatson@ubuntu.com>
 Forwarded: http://lists.gnu.org/archive/html/grub-devel/2009-08/msg00694.html
-Last-Update: 2011-01-05
+Last-Update: 2012-09-06
 
 Index: b/grub-core/commands/sleep.c
 ===================================================================
 --- a/grub-core/commands/sleep.c
 +++ b/grub-core/commands/sleep.c
-@@ -45,6 +45,31 @@
-   grub_printf ("%d    ", n);
+@@ -46,6 +46,31 @@
+   grub_refresh ();
  }
  
 +static int
@@ -33,7 +33,7 @@ Index: b/grub-core/commands/sleep.c
 +      (mods & (GRUB_TERM_STATUS_LSHIFT | GRUB_TERM_STATUS_RSHIFT)) != 0)
 +    return 1;
 +
-+  if (grub_checkkey () >= 0 && grub_getkey () == GRUB_TERM_ESC)
++  if (grub_getkey_noblock () == GRUB_TERM_ESC)
 +    return 1;
 +
 +  return 0;
@@ -42,11 +42,11 @@ Index: b/grub-core/commands/sleep.c
  /* Based on grub_millisleep() from kern/generic/millisleep.c.  */
  static int
  grub_interruptible_millisleep (grub_uint32_t ms)
-@@ -54,7 +79,7 @@
+@@ -55,7 +80,7 @@
    start = grub_get_time_ms ();
  
    while (grub_get_time_ms () - start < ms)
--    if (grub_checkkey () >= 0 && grub_getkey () == GRUB_TERM_ESC)
+-    if (grub_getkey_noblock () == GRUB_TERM_ESC)
 +    if (grub_check_keyboard ())
        return 1;
  

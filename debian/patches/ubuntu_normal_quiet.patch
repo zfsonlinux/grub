@@ -8,13 +8,13 @@ Description: Reduce visual clutter in normal mode
  first place.
 Author: Colin Watson <cjwatson@ubuntu.com>
 Forwarded: http://lists.gnu.org/archive/html/grub-devel/2009-09/msg00056.html
-Last-Update: 2011-01-05
+Last-Update: 2012-09-06
 
 Index: b/grub-core/normal/main.c
 ===================================================================
 --- a/grub-core/normal/main.c
 +++ b/grub-core/normal/main.c
-@@ -384,6 +384,13 @@
+@@ -399,6 +399,13 @@
  grub_normal_read_line_real (char **line, int cont, int nested)
  {
    const char *prompt;
@@ -27,8 +27,8 @@ Index: b/grub-core/normal/main.c
 +    }
  
    if (cont)
-     prompt = ">";
-@@ -430,8 +437,6 @@
+     /* TRANSLATORS: it's command line prompt.  */
+@@ -446,8 +453,6 @@
        return;
      }
  
@@ -41,7 +41,7 @@ Index: b/grub-core/normal/menu.c
 ===================================================================
 --- a/grub-core/normal/menu.c
 +++ b/grub-core/normal/menu.c
-@@ -721,6 +721,7 @@
+@@ -722,6 +722,7 @@
        int boot_entry;
        grub_menu_entry_t e;
        int auto_boot;
@@ -49,7 +49,7 @@ Index: b/grub-core/normal/menu.c
  
        boot_entry = run_menu (menu, nested, &auto_boot);
        if (boot_entry < 0)
-@@ -730,7 +731,9 @@
+@@ -731,7 +732,9 @@
        if (! e)
  	continue; /* Menu is empty.  */
  
