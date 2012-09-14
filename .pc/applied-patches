@@ -16,6 +16,8 @@ restore_mkdevicemap.patch
 efi_mmap_size.patch
 gettext_quiet.patch
 mkconfig_mid_upgrade.patch
+fix_powerpc_emu.patch
+install_efi_fallback.patch
 ubuntu_grub_standards.patch
 ubuntu_crashkernel.patch
 ubuntu_quick_boot.patch

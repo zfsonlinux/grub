@@ -292,8 +292,7 @@ if [ x$source_dir = x ]; then
 		    linux*)
 			modprobe -q efivars 2>/dev/null || true ;;
 		esac
-		if [ -d /sys/firmware/efi ] && \
-		   [ -d "${libdir}/@PACKAGE@/x86_64-efi" ]; then
+		if [ -d /sys/firmware/efi ]; then
 		    target="x86_64-efi"
 		else
 		    target=i386-pc
@@ -309,8 +308,7 @@ if [ x$source_dir = x ]; then
 		    linux*)
 			modprobe -q efivars 2>/dev/null || true ;;
 		esac
-		if [ -d /sys/firmware/efi ] && \
-		   [ -d "${libdir}/@PACKAGE@/i386-efi" ]; then
+		if [ -d /sys/firmware/efi ]; then
 		    target="i386-efi"
 		elif [ -e /proc/device-tree ]; then
 		    target=i386-pc
@@ -543,7 +541,7 @@ fi
 
 # Copy gettext files
 mkdir -p "${grubdir}"/locale/
-for dir in "${localedir}"/* "${localedir}-langpack"/*; do
+for dir in "${localedir}"/*; do
     if test -f "$dir/LC_MESSAGES/grub.mo"; then
         cp -f "$dir/LC_MESSAGES/grub.mo" "${grubdir}/locale/${dir##*/}.mo"
     fi

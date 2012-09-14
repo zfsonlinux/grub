@@ -1,3 +1,53 @@
+grub2 (2.00-4ubuntu1) quantal; urgency=low
+
+  * Resynchronise with Debian.  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme and an appropriate background for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script.
+    - Fix backslash-escaping in merge_debconf_into_conf.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel option.
+    - Bypass menu unless other OSes are installed or Shift is pressed.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Reduce visual clutter in normal mode.
+    - Remove verbose messages printed before reading configuration.
+    - Suppress kernel/initrd progress messages, except in recovery mode.
+    - Show the boot menu if the previous boot failed.
+    - Adjust upgrade version checks for Ubuntu.
+    - Suppress "GRUB loading" message unless Shift is held down.
+    - Adjust versions of grub-doc and grub-legacy-doc conflicts.
+    - Look for .mo files in /usr/share/locale-langpack first.
+    - Build-depend on qemu-kvm rather than qemu-system for grub-pc tests.
+    - Check hardware support before using gfxpayload=keep.
+    - Set vt.handoff=7 for smooth handoff to kernel graphical mode.
+    - In recovery mode, add nomodeset to the Linux kernel arguments, and
+      remove the 'set gfxpayload=keep' command.
+    - Skip Windows os-prober entries on Wubi systems, and suppress the menu
+      by default if those are the only other-OS entries.
+    - Handle probing striped DM-RAID devices.
+    - Replace 'single' by 'recovery' when friendly-recovery is installed.
+    - Disable cursor as early as possible in grub_main.
+    - Avoid getting confused by inaccessible loop device backing paths.
+    - Apply patch from Fedora to forbid insmod on UEFI secure boot.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 14 Sep 2012 14:58:15 +0100
+
+grub2 (2.00-4) experimental; urgency=low
+
+  * Fix platform postinsts to handle new core.img location.
+  * Only fix up powerpc key repeat on IEEE1275 machines.  Fixes powerpc-emu
+    compilation.
+  * Move grub-install to grub2-common, since it's now common across
+    platforms but clashes with grub-legacy.
+  * Move grub-mknetdir to grub-common, since it's now common across
+    platforms.
+  * Make grub-install fall back to i386-pc if booted using EFI but the
+    relevant *-efi target is not available (because only grub-pc is
+    installed).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 14 Sep 2012 13:38:37 +0100
+
 grub2 (2.00-3ubuntu1) quantal; urgency=low
 
   * Resynchronise with Debian (LP: #1046890).  Remaining changes:

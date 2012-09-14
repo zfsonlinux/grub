@@ -70,7 +70,7 @@ Package: grub-common
 Priority: optional
 Architecture: any-i386 any-amd64 any-powerpc any-ppc64 any-sparc any-mipsel any-ia64
 Depends: ${shlibs:Depends}, ${misc:Depends}, gettext-base, lsb-base (>= 3.0-6)
-Replaces: grub-pc (<< 1.99-1), grub-ieee1275 (<< 1.99-1), grub-efi (<< 1.99-1), grub-coreboot (<< 1.99-1), grub-linuxbios (<< 1.96+20080831-1), grub-efi-ia32 (<< 1.99-1), grub-efi-amd64 (<< 1.99-1), grub-yeeloong (<< 1.99-1)
+Replaces: grub-pc (<< 2.00-4), grub-ieee1275 (<< 2.00-4), grub-efi (<< 1.99-1), grub-coreboot (<< 2.00-4), grub-linuxbios (<< 1.96+20080831-1), grub-efi-ia32 (<< 2.00-4), grub-efi-amd64 (<< 2.00-4), grub-efi-ia64 (<< 2.00-4), grub-yeeloong (<< 2.00-4)
 Recommends: os-prober (>= 1.33)
 Suggests: multiboot-doc, grub-emu, xorriso (>= 0.5.6.pl00), desktop-base (>= 4.0.6), console-setup
 # See bugs #435983 and #455746
@@ -86,7 +86,7 @@ Package: grub2-common
 Priority: optional
 Architecture: any-i386 any-amd64 any-powerpc any-ppc64 any-sparc any-mipsel any-ia64
 Depends: grub-common (= ${binary:Version}), dpkg (>= 1.15.4) | install-info, ${shlibs:Depends}, ${misc:Depends}
-Replaces: grub, grub-legacy, grub-common (<< 1.99-1), grub-pc (<< 1.99-1), grub-ieee1275 (<< 1.99-1), grub-efi (<< 1.99-1), grub-coreboot (<< 1.99-1), grub-linuxbios (<< 1.99-1), grub-efi-ia32 (<< 1.99-1), grub-efi-amd64 (<< 1.99-1), grub-yeeloong (<< 1.99-1)
+Replaces: grub, grub-legacy, grub-common (<< 1.99-1), grub-pc (<< 2.00-4), grub-ieee1275 (<< 2.00-4), grub-efi (<< 1.99-1), grub-coreboot (<< 2.00-4), grub-linuxbios (<< 1.99-1), grub-efi-ia32 (<< 2.00-4), grub-efi-amd64 (<< 2.00-4), grub-efi-ia64 (<< 2.00-4), grub-ieee1275 (<< 2.00-4), grub-yeeloong (<< 2.00-4)
 Conflicts: grub (<< 0.97-54), grub-legacy, grub-doc (<< 0.97-29ubuntu60), grub-legacy-doc (<< 0.97-29ubuntu60)
 Multi-Arch: foreign
 Description: GRand Unified Bootloader (common files for version 2)
