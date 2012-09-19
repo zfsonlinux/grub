@@ -398,8 +398,9 @@ GetMenuOpt()
 # 2.4.14-pre1 > 2.4.13-ac99
 CompareVersions()
 {  
-	local a=`echo $1 | sed -e "s,.*/vmlinu[zx]-,,g;s/[._-]\(pre\|rc\|test\|git\)/~\1/g"`
-	local b=`echo $2 | sed -e "s,.*/vmlinu[zx]-,,g;s/[._-]\(pre\|rc\|test\|git\)/~\1/g"`
+	local sedexp="s,.*/vmlinu[zx]-,,g;s/[._-]\(pre\|rc\|test\|git\|trunk\)/~\1/g"
+	local a=`echo $1 | sed -e "$sedexp"`
+	local b=`echo $2 | sed -e "$sedexp"`
 	if [ "$a" = "$b" ] ; then
 		echo 0
 	elif dpkg --compare-versions "$a" gt "$b" ; then

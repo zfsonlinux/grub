@@ -2,15 +2,15 @@
 # Copyright (C) 2007 Miguel Figueiredo
 # This file is distributed under the same license as the grub2 package.
 #
-# Miguel Figueiredo <elmig@debianpt.org>, 2007, 2010.
+# Miguel Figueiredo <elmig@debianpt.org>, 2007, 2010, 2011.
 # Ricardo Silva <ardoric@gmail.com>, 2008.
 # Tiago Fernandes <tjg.fernandes@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: grub2 1.98-1\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2010-12-08 21:22+0000\n"
-"PO-Revision-Date: 2010-12-12 21:57+0000\n"
+"POT-Creation-Date: 2011-05-27 13:33+0100\n"
+"PO-Revision-Date: 2011-09-11 20:39+0100\n"
 "Last-Translator: Miguel Figueiredo <elmig@debianpt.org>\n"
 "Language-Team: Portuguese <traduz@debianpt.org>\n"
 "Language: pt\n"
@@ -316,11 +316,12 @@ msgstr "Linha de comandos do Linux:"
 msgid ""
 "The following Linux command line was extracted from /etc/default/grub or the "
 "`kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary."
+"correct, and modify it if necessary. The command line is allowed to be empty."
 msgstr ""
-"A seguinte linha de comandos Linux foi extraída a partir de /etc/default/"
-"grub ou do parâmetro `kopt' no menu.lst do GRUB Legacy. Por favor verifique "
-"que está correcta, e modifique se necessário."
+"A seguinte linha de comandos Linux foi extraída de /etc/default/grub ou do "
+"parâmetro `kopt' no menu.lst do GRUB Legacy. Por favor verifique que está "
+"correcta, e modifique se necessário. É permitido que a linha de comandos "
+"esteja vazia."
 
 #. Type: string
 #. Description
@@ -350,11 +351,12 @@ msgstr "linha de comandos kFreeBSD:"
 msgid ""
 "The following kFreeBSD command line was extracted from /etc/default/grub or "
 "the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary."
+"correct, and modify it if necessary. The command line is allowed to be empty."
 msgstr ""
 "A seguinte linha de comandos kFreeBSD foi extraída a partir de /etc/default/"
 "grub ou do parâmetro `kopt' no menu.lst do GRUB Legacy. Por favor verifique "
-"que está correcta, e modifique se necessário."
+"que está correcta, e modifique se necessário. É permitido que a linha esteja "
+"vazia."
 
 #. Type: string
 #. Description

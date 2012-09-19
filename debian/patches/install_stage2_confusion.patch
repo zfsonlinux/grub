@@ -8,16 +8,17 @@ Index: b/util/grub-install.in
 ===================================================================
 --- a/util/grub-install.in
 +++ b/util/grub-install.in
-@@ -653,6 +653,12 @@
-     fi
+@@ -863,6 +863,13 @@
+     echo 1>&2
  fi
  
 +# If vestiges of GRUB Legacy still exist, tell the Debian packaging that
 +# they can ignore them.
-+if test -e /boot/grub/stage2 && test -e /boot/grub/menu.lst; then
++if test -z "$rootdir" && \
++   test -e /boot/grub/stage2 && test -e /boot/grub/menu.lst; then
 +    touch /boot/grub/grub2-installed
 +fi
 +
- echo "Installation finished. No error reported."
+ gettext "Installation finished. No error reported." 1>&2
+ echo 1>&2
  
- # Bye.

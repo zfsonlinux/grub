@@ -343,7 +343,7 @@ int install(char* fn)
       r2=valueat(grub_mbr[0x1FFA],0,unsigned short);
       if (r1!=r2)
         {
-          char buf[30];
+          char buf[80];
 
           sprintf(buf,"Version number mismatched (old=%d new=%d)",r2,r1);
           print_apperr(buf);
@@ -726,6 +726,11 @@ int install(char* fn)
               if (def_tsc!=-1)
                 valueat(grub_mbr,0x20,unsigned long)=def_tsc;
               valueat(grub_mbr,0x1C,unsigned long)=ssec;
+              // s_inode_size
+              if (prev_mbr[1024+0x4C]) // s_rev_level
+                valueat(grub_mbr,0x26,unsigned short)=valueat(prev_mbr[1024],0x58,unsigned short);
+              else
+                valueat(grub_mbr,0x26,unsigned short)=0x80;
               // s_inodes_per_group
               valueat(grub_mbr,0x28,unsigned long)=valueat(prev_mbr[1024],0x28,unsigned long);
               // s_first_data_block+1

@@ -1,7 +1,7 @@
 /* deviceiter.c - iterate over system devices */
 /*
  *  GRUB  --  GRand Unified Bootloader
- *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2007,2008 Free Software Foundation, Inc.
+ *  Copyright (C) 1999,2000,2001,2002,2003,2004,2005,2007,2008,2011 Free Software Foundation, Inc.
  *
  *  GRUB is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -82,6 +82,7 @@ struct hd_geometry
 
 #ifdef HAVE_DEVICE_MAPPER
 # include <libdevmapper.h>
+# pragma GCC diagnostic ignored "-Wcast-align"
 #endif
 #endif /* __linux__ */
 
@@ -286,6 +287,26 @@ get_scsi_disk_name (char *name, int unit)
 #endif
 }
 
+#ifdef __FreeBSD_kernel__
+static void
+get_ada_disk_name (char *name, int unit)
+{
+  sprintf (name, "/dev/ada%d", unit);
+}
+
+static void
+get_ataraid_disk_name (char *name, int unit)
+{
+  sprintf (name, "/dev/ar%d", unit);
+}
+
+static void
+get_mfi_disk_name (char *name, int unit)
+{
+  sprintf (name, "/dev/mfid%d", unit);
+}
+#endif
+
 #ifdef __linux__
 static void
 get_virtio_disk_name (char *name, int unit)
@@ -349,6 +370,7 @@ get_xvd_disk_name (char *name, int unit)
 static struct seen_device
 {
   struct seen_device *next;
+  struct seen_device **prev;
   const char *name;
 } *seen;
 
@@ -528,7 +550,7 @@ grub_util_iterate_devices (int NESTED_FUNC_ATTR (*hook) (const char *, int),
       {
 	struct dirent *entry;
 	struct device *devs;
-	size_t devs_len = 0, devs_max = 1024, i;
+	size_t devs_len = 0, devs_max = 1024, dev;
 
 	devs = xmalloc (devs_max * sizeof (*devs));
 
@@ -567,15 +589,15 @@ grub_util_iterate_devices (int NESTED_FUNC_ATTR (*hook) (const char *, int),
 	closedir (dir);
 
 	/* Now add all the devices in sorted order.  */
-	for (i = 0; i < devs_len; ++i)
+	for (dev = 0; dev < devs_len; ++dev)
 	  {
-	    if (check_device_readable_unique (devs[i].stable))
+	    if (check_device_readable_unique (devs[dev].stable))
 	      {
-		if (hook (devs[i].stable, 0))
+		if (hook (devs[dev].stable, 0))
 		  goto out;
 	      }
-	    free (devs[i].stable);
-	    free (devs[i].kernel);
+	    free (devs[dev].stable);
+	    free (devs[dev].kernel);
 	  }
 	free (devs);
       }
@@ -619,6 +641,48 @@ grub_util_iterate_devices (int NESTED_FUNC_ATTR (*hook) (const char *, int),
 	    goto out;
 	}
     }
+
+#ifdef __FreeBSD_kernel__
+  /* IDE disks using ATA Direct Access driver.  */
+  if (get_kfreebsd_version () >= 800000)
+    for (i = 0; i < 96; i++)
+      {
+	char name[16];
+
+	get_ada_disk_name (name, i);
+	if (check_device_readable_unique (name))
+	  {
+	    if (hook (name, 0))
+	      goto out;
+	  }
+      }
+
+  /* ATARAID disks.  */
+  for (i = 0; i < 8; i++)
+    {
+      char name[20];
+
+      get_ataraid_disk_name (name, i);
+      if (check_device_readable_unique (name))
+	{
+	  if (hook (name, 0))
+	    goto out;
+        }
+    }
+
+  /* LSI MegaRAID SAS.  */
+  for (i = 0; i < 32; i++)
+    {
+      char name[20];
+
+      get_mfi_disk_name (name, i);
+      if (check_device_readable_unique (name))
+	{
+	  if (hook (name, 0))
+	    goto out;
+        }
+    }
+#endif
 
 #ifdef __linux__
   /* Virtio disks.  */
@@ -821,7 +885,7 @@ grub_util_iterate_devices (int NESTED_FUNC_ATTR (*hook) (const char *, int),
       dmraid_check (names->dev, "No DM devices found\n");
       do
 	{
-	  names = (void *) names + next;
+	  names = (struct dm_names *) ((char *) names + next);
 	  dmraid_check (dm_tree_add_dev (tree, MAJOR (names->dev),
 					 MINOR (names->dev)),
 			   "dm_tree_add_dev (%s) failed\n", names->name);

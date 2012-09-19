@@ -3,11 +3,12 @@
 #
 # Олександр Яценко, 2010.
 # Yatsenko Alexandr <yatsenko.alexandr@gmail.com>, 2010.
+# Anton Gladky <gladky.anton@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2010-12-09 19:36-0400\n"
+"POT-Creation-Date: 2011-05-27 13:33+0100\n"
 "PO-Revision-Date: 2010-12-09 23:57+0200\n"
 "Last-Translator: Yatsenko Alexandr <yatsenko.alexandr@gmail.com>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
@@ -308,11 +309,12 @@ msgstr "Рядок параметрів ядра Linux:"
 msgid ""
 "The following Linux command line was extracted from /etc/default/grub or the "
 "`kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary."
+"correct, and modify it if necessary. The command line is allowed to be empty."
 msgstr ""
 "Наступний рядок параметрів ядра Linux було взято із /etc/default/grub чи з "
 "параметру 'kopt' в menu.lst із GRUB Legacy. Перевірте будь ласка його "
-"правильність і, за потреби, внесіть зміни."
+"правильність і, за потреби, внесіть зміни. Рядок параметрів ядра може бути "
+"порожнім."
 
 #. Type: string
 #. Description
@@ -342,11 +344,12 @@ msgstr "Рядок параметрів ядра kFreeBSD:"
 msgid ""
 "The following kFreeBSD command line was extracted from /etc/default/grub or "
 "the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary."
+"correct, and modify it if necessary. The command line is allowed to be empty."
 msgstr ""
 "Наступний рядок параметрів ядра kFreeBSD було взято із /etc/default/grub чи "
 "з параметру 'kopt' в menu.lst із GRUB Legacy. Перевірте будь ласка його "
-"правильність і, за потреби, внесіть зміни."
+"правильність і, за потреби, внесіть зміни.  Рядок параметрів ядра може бути "
+"порожнім."
 
 #. Type: string
 #. Description

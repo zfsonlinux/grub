@@ -30,6 +30,8 @@
 #include <grub/i18n.h>
 #include <grub/term.h>
 #include <grub/script_sh.h>
+#include <grub/gfxterm.h>
+#include <grub/dl.h>
 
 /* Time to delay after displaying an error message about a default/fallback
    entry failing to boot.  */
@@ -50,12 +52,8 @@ grub_wait_after_message (void)
 
   endtime = grub_get_time_ms () + 10000;
 
-  while (grub_get_time_ms () < endtime)
-    if (grub_checkkey () >= 0)
-      {
-	grub_getkey ();
-	break;
-      }
+  while (grub_get_time_ms () < endtime
+	 && grub_getkey_noblock () == GRUB_TERM_NO_KEY);
 
   grub_xputs ("\n");
 }
@@ -77,7 +75,7 @@ grub_menu_get_entry (grub_menu_t menu, int no)
 int
 grub_menu_get_timeout (void)
 {
-  char *val;
+  const char *val;
   int timeout;
 
   val = grub_env_get ("timeout");
@@ -122,7 +120,7 @@ grub_menu_set_timeout (int timeout)
 static int
 get_and_remove_first_entry_number (const char *name)
 {
-  char *val;
+  const char *val;
   char *tail;
   int entry;
 
@@ -190,7 +188,7 @@ grub_menu_execute_entry(grub_menu_entry_t entry, int auto_boot)
 	grub_env_set ("timeout", "0");
     }
 
-  for (ptr = entry->title; *ptr; ptr++)
+  for (ptr = entry->id; *ptr; ptr++)
     sz += (*ptr == '>') ? 2 : 1;
   if (chosen)
     {
@@ -219,7 +217,7 @@ grub_menu_execute_entry(grub_menu_entry_t entry, int auto_boot)
 	  optr = grub_stpcpy (optr, chosen);
 	  *optr++ = '>';
 	}
-      for (ptr = entry->title; *ptr; ptr++)
+      for (ptr = entry->id; *ptr; ptr++)
 	{
 	  if (*ptr == '>')
 	    *optr++ = '>';
@@ -230,7 +228,8 @@ grub_menu_execute_entry(grub_menu_entry_t entry, int auto_boot)
       grub_env_export ("chosen");
       grub_free (buf);
     }
-  for (ptr = def; *ptr; ptr++)
+
+  for (ptr = def; ptr && *ptr; ptr++)
     {
       if (ptr[0] == '>' && ptr[1] == '>')
 	{
@@ -240,10 +239,12 @@ grub_menu_execute_entry(grub_menu_entry_t entry, int auto_boot)
       if (ptr[0] == '>')
 	break;
     }
-  if (ptr[0] && ptr[1])
+
+  if (ptr && ptr[0] && ptr[1])
     grub_env_set ("default", ptr + 1);
   else
     grub_env_unset ("default");
+
   grub_script_execute_sourcecode (entry->sourcecode, entry->argc, entry->args);
 
   if (errs_before != grub_err_printed_errors)
@@ -345,18 +346,46 @@ static void
 menu_init (int entry, grub_menu_t menu, int nested)
 {
   struct grub_term_output *term;
+  int gfxmenu = 0;
+
+  FOR_ACTIVE_TERM_OUTPUTS(term)
+    if (term->fullscreen)
+      {
+	if (grub_env_get ("theme"))
+	  {
+	    if (!grub_gfxmenu_try_hook)
+	      {
+		grub_dl_load ("gfxmenu");
+		grub_print_error ();
+	      }
+	    if (grub_gfxmenu_try_hook)
+	      {
+		grub_err_t err;
+		err = grub_gfxmenu_try_hook (entry, menu, nested);
+		if(!err)
+		  {
+		    gfxmenu = 1;
+		    break;
+		  }
+	      }
+	    else
+	      grub_error (GRUB_ERR_BAD_MODULE,
+			  N_("module `%s' isn't loaded"),
+			  "gfxmenu");
+	    grub_print_error ();
+	    grub_wait_after_message ();
+	  }
+	grub_errno = GRUB_ERR_NONE;
+	term->fullscreen ();
+	break;
+      }
 
   FOR_ACTIVE_TERM_OUTPUTS(term)
   {
     grub_err_t err;
 
-    if (grub_gfxmenu_try_hook && grub_strcmp (term->name, "gfxterm") == 0)
-      {
-	err = grub_gfxmenu_try_hook (entry, menu, nested);
-	if(!err)
-	  continue;
-	grub_errno = GRUB_ERR_NONE;
-      }
+    if (grub_strcmp (term->name, "gfxterm") == 0 && gfxmenu)
+      continue;
 
     err = grub_menu_try_text (term, entry, menu, nested);
     if(!err)
@@ -382,10 +411,10 @@ grub_menu_register_viewer (struct grub_menu_viewer *viewer)
 }
 
 static int
-menuentry_eq (const char *title, const char *spec)
+menuentry_eq (const char *id, const char *spec)
 {
   const char *ptr1, *ptr2;
-  ptr1 = title;
+  ptr1 = id;
   ptr2 = spec;
   while (1)
     {
@@ -430,7 +459,8 @@ get_entry_number (grub_menu_t menu, const char *name)
 
       for (i = 0; e; i++)
 	{
-	  if (menuentry_eq (e->title, val))
+	  if (menuentry_eq (e->title, val)
+	      || menuentry_eq (e->id, val))
 	    {
 	      entry = i;
 	      break;
@@ -527,10 +557,10 @@ run_menu (grub_menu_t menu, int nested, int *auto_boot)
 	  return default_entry;
 	}
 
-      if (grub_checkkey () >= 0 || timeout < 0)
-	{
-	  c = grub_getkey ();
+      c = grub_getkey_noblock ();
 
+      if (c != GRUB_TERM_NO_KEY)
+	{
 	  if (timeout >= 0)
 	    {
 	      grub_env_unset ("timeout");
@@ -635,7 +665,6 @@ run_menu (grub_menu_t menu, int nested, int *auto_boot)
     }
 
   /* Never reach here.  */
-  return -1;
 }
 
 /* Callback invoked immediately before a menu entry is executed.  */
@@ -644,7 +673,7 @@ notify_booting (grub_menu_entry_t entry,
 		void *userdata __attribute__((unused)))
 {
   grub_printf ("  ");
-  grub_printf_ (N_("Booting \'%s\'"), entry->title);
+  grub_printf_ (N_("Booting `%s'"), entry->title);
   grub_printf ("\n\n");
 }
 
@@ -656,7 +685,7 @@ notify_fallback (grub_menu_entry_t entry,
 		 void *userdata __attribute__((unused)))
 {
   grub_printf ("\n   ");
-  grub_printf_ (N_("Falling back to \'%s\'"), entry->title);
+  grub_printf_ (N_("Falling back to `%s'"), entry->title);
   grub_printf ("\n\n");
   grub_millisleep (DEFAULT_ENTRY_ERROR_DELAY_MS);
 }
