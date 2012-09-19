@@ -2,7 +2,7 @@ Description: Suppress kernel/initrd progress messages, except in recovery mode
 Author: Colin Watson <cjwatson@ubuntu.com>
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/386922
 Forwarded: no
-Last-Update: 2012-09-06
+Last-Update: 2012-09-19
 
 Index: b/util/grub.d/10_linux.in
 ===================================================================
@@ -17,7 +17,7 @@ Index: b/util/grub.d/10_linux.in
 +  if [ x$type != xsimple ]; then
 +    message="$(gettext_printf "Loading Linux %s ..." ${version})"
 +    sed "s/^/$submenu_indentation/" << EOF
- 	echo	'$message'
+ 	echo	'$(echo "$message" | grub_quote)'
 +EOF
 +  fi
 +  sed "s/^/$submenu_indentation/" << EOF
@@ -30,7 +30,7 @@ Index: b/util/grub.d/10_linux.in
 +    if [ x$type != xsimple ]; then
 +      message="$(gettext_printf "Loading initial ramdisk ...")"
 +      sed "s/^/$submenu_indentation/" << EOF
- 	echo	'$message'
+ 	echo	'$(echo "$message" | grub_quote)'
 +EOF
 +    fi
 +    sed "s/^/$submenu_indentation/" << EOF

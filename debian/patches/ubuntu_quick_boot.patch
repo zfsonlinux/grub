@@ -10,7 +10,7 @@ Description: Bypass menu unless other OSes are installed or Shift is pressed
  https://wiki.ubuntu.com/DesktopExperienceTeam/KarmicBootExperienceDesignSpec#Bootloader.
 Author: Colin Watson <cjwatson@ubuntu.com>
 Forwarded: no
-Last-Update: 2012-09-06
+Last-Update: 2012-09-19
 
 Index: b/util/grub.d/00_header.in
 ===================================================================
@@ -139,7 +139,7 @@ Index: b/util/grub.d/30_os-prober.in
  
 +	found_other_os=1
  	onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
- 	recovery_params="$(echo "${LPARAMS}" | grep single)" || true
+ 	recovery_params="$(echo "${LPARAMS}" | grep 'single\|recovery')" || true
  	counter=1
 @@ -239,6 +299,7 @@
        osx_entry xnu_kernel64 64

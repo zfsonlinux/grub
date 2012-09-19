@@ -2,7 +2,7 @@ Description: Don't permit insmod on UEFI secure boot
 Author: Matthew Garrett <mjg@redhat.com>
 Origin: vendor, http://pkgs.fedoraproject.org/cgit/grub2.git/tree/grub-2.00-no-insmod-on-sb.patch
 Forwarded: no
-Last-Update: 2012-09-09
+Last-Update: 2012-09-19
 
 Index: b/grub-core/kern/corecmd.c
 ===================================================================
@@ -35,7 +35,7 @@ Index: b/grub-core/kern/efi/efi.c
 ===================================================================
 --- a/grub-core/kern/efi/efi.c
 +++ b/grub-core/kern/efi/efi.c
-@@ -229,6 +229,34 @@
+@@ -259,6 +259,34 @@
    return NULL;
  }
  
@@ -74,10 +74,10 @@ Index: b/include/grub/efi/efi.h
 ===================================================================
 --- a/include/grub/efi/efi.h
 +++ b/include/grub/efi/efi.h
-@@ -64,6 +64,7 @@
- void *EXPORT_FUNC (grub_efi_get_variable) (const char *variable,
- 					   const grub_efi_guid_t *guid,
- 					   grub_size_t *datasize_out);
+@@ -69,6 +69,7 @@
+ 				     const grub_efi_guid_t *guid,
+ 				     void *data,
+ 				     grub_size_t datasize);
 +grub_efi_boolean_t EXPORT_FUNC (grub_efi_secure_boot) (void);
  int
  EXPORT_FUNC (grub_efi_compare_device_paths) (const grub_efi_device_path_t *dp1,

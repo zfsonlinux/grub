@@ -58,6 +58,8 @@
 #define GRUB_EFI_OPEN_PROTOCOL_BY_DRIVER		0x00000010
 #define GRUB_EFI_OPEN_PROTOCOL_BY_EXCLUSIVE		0x00000020
 
+#define GRUB_EFI_OS_INDICATIONS_BOOT_TO_FW_UI	0x0000000000000001ULL
+
 #define GRUB_EFI_VARIABLE_NON_VOLATILE		0x0000000000000001
 #define GRUB_EFI_VARIABLE_BOOTSERVICE_ACCESS	0x0000000000000002
 #define GRUB_EFI_VARIABLE_RUNTIME_ACCESS	0x0000000000000004
@@ -1066,7 +1068,7 @@ struct grub_efi_runtime_services
 
   grub_efi_status_t
   (*set_variable) (grub_efi_char16_t *variable_name,
-		   grub_efi_guid_t *vendor_guid,
+		   const grub_efi_guid_t *vendor_guid,
 		   grub_efi_uint32_t attributes,
 		   grub_efi_uintn_t data_size,
 		   void *data);

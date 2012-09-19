@@ -32,7 +32,7 @@ Index: b/util/grub.d/30_os-prober.in
 +
  	found_other_os=1
  	onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
- 	recovery_params="$(echo "${LPARAMS}" | grep single)" || true
+ 	recovery_params="$(echo "${LPARAMS}" | grep 'single\|recovery')" || true
 @@ -259,10 +264,6 @@
  	fi
  	used_osprober_linux_ids="$used_osprober_linux_ids 'osprober-gnulinux-$LKERNEL-${recovery_params}-$counter-$boot_device_id'"

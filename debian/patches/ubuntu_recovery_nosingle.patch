@@ -1,7 +1,7 @@
 Description: Replace single by recovery to trigger friendly-recovery
 Author: Stéphane Graber <stgraber@ubuntu.com>
 Forwarded: no
-Last-Update: 2012-09-06
+Last-Update: 2012-09-19
 
 Index: b/util/grub.d/10_linux.in
 ===================================================================
