@@ -1,3 +1,13 @@
+grub2 (2.00-5ubuntu2) quantal; urgency=low
+
+  * Apply patch from Fedora to add a "linuxefi" loader which boots kernels
+    with EFI handover patches, avoiding ExitBootServices.
+  * On amd64, add a raw-uefi custom upload tarball for signing.
+  * Temporarily make linuxefi refuse to validate kernels in the absence of a
+    shim, until we get some other details worked out.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 20 Sep 2012 18:31:48 +0100
+
 grub2 (2.00-5ubuntu1) quantal; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:
