@@ -1,3 +1,10 @@
+grub2 (2.00-5ubuntu3) quantal; urgency=low
+
+  * Rename raw-uefi custom upload tarball to grub2_* rather than
+    grub-efi-amd64_*, to produce a more sensible archive URL.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 21 Sep 2012 11:01:41 +0100
+
 grub2 (2.00-5ubuntu2) quantal; urgency=low
 
   * Apply patch from Fedora to add a "linuxefi" loader which boots kernels

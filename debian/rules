@@ -311,13 +311,13 @@ override_dh_shlibdeps:
 	dh_shlibdeps -X.module
 
 ifeq ($(DEB_HOST_ARCH),amd64)
-TARNAME := grub-efi-amd64_$(deb_version)_$(DEB_HOST_ARCH).tar.gz
+TARNAME := grub2_$(deb_version)_$(DEB_HOST_ARCH).tar.gz
 
 override_dh_builddeb:
 	dh_builddeb
-	mkdir -p debian/grub-efi-amd64-images/$(deb_version)
+	mkdir -p debian/grub2-images/$(deb_version)
 	build/grub-$(COMMON_PLATFORM)/grub-mkimage -O x86_64-efi \
-		-o debian/grub-efi-amd64-images/$(deb_version)/grubx64.efi \
+		-o debian/grub2-images/$(deb_version)/grubx64.efi \
 		-d build/grub-efi-amd64/grub-core \
 		-p /EFI/BOOT \
 		all_video boot btrfs cat chain configfile echo efifwsetup \
@@ -326,8 +326,8 @@ override_dh_builddeb:
 		part_gpt password_pbkdf2 png reboot search search_fs_uuid \
 		search_fs_file search_label test video
 	echo $(deb_version) \
-		> debian/grub-efi-amd64-images/$(deb_version)/version
-	cd debian/grub-efi-amd64-images && tar czvf ../../../$(TARNAME) .
+		> debian/grub2-images/$(deb_version)/version
+	cd debian/grub2-images && tar czvf ../../../$(TARNAME) .
 	dpkg-distaddfile $(TARNAME) raw-uefi -
 endif
 
@@ -346,7 +346,7 @@ override_dh_clean: debian/legacy/update-grub debian/grub-extras
 	done
 	rm -rf debian/tmp-*/
 ifeq ($(DEB_HOST_ARCH),amd64)
-	rm -rf debian/grub-efi-amd64-images
+	rm -rf debian/grub2-images
 endif
 
 	# make sure PO files are always up-to-date
