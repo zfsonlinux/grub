@@ -220,9 +220,6 @@ xgetcwd (void)
 
 #if !defined (__MINGW32__) && !defined (__CYGWIN__) && !defined (__GNU__)
 
-#if (defined (__linux__) || \
-     !defined (HAVE_LIBZFS) || !defined (HAVE_LIBNVPAIR))
-
 static pid_t
 exec_pipe (char **argv, int *fd)
 {
@@ -261,8 +258,6 @@ exec_pipe (char **argv, int *fd)
     }
 }
 
-#endif
-
 static char **
 find_root_devices_from_poolname (char *poolname)
 {
@@ -274,7 +269,7 @@ find_root_devices_from_poolname (char *poolname)
   zpool_handle_t *zpool;
   libzfs_handle_t *libzfs;
   nvlist_t *config, *vdev_tree;
-  nvlist_t **children;
+  nvlist_t **children, **path;
   unsigned int nvlist_count;
   unsigned int i;
   char *device = 0;
