@@ -111,7 +111,7 @@ grub_cmd_hwmatch (grub_command_t cmd __attribute__ ((unused)),
 
   matches_file = grub_file_open (args[0]);
   if (! matches_file)
-    return grub_error (GRUB_ERR_FILE_NOT_FOUND, "file not found");
+    return grub_errno;
 
   class_match = grub_strtol (args[1], 0, 10);
 

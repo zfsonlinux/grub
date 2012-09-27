@@ -3,13 +3,13 @@ Author: Robert Collins <robertc@robertcollins.net>
 Author: Colin Watson <cjwatson@ubuntu.com>
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/803658
 Forwarded: no
-Last-Update: 2012-09-07
+Last-Update: 2012-09-26
 
 Index: b/util/getroot.c
 ===================================================================
 --- a/util/getroot.c
 +++ b/util/getroot.c
-@@ -1924,6 +1924,12 @@
+@@ -1929,6 +1929,12 @@
  	      grub_util_info ("%s child has no DM name", path);
  	      goto devmapper_out;
  	    }

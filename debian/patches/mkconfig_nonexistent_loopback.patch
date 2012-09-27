@@ -21,7 +21,7 @@ Index: b/util/grub.d/30_os-prober.in
 ===================================================================
 --- a/util/grub.d/30_os-prober.in
 +++ b/util/grub.d/30_os-prober.in
-@@ -247,6 +247,11 @@
+@@ -169,6 +169,11 @@
  	  LINITRD="${LINITRD#/boot}"
  	fi
  
@@ -30,10 +30,10 @@ Index: b/util/grub.d/30_os-prober.in
 +	  [ "${prepare_boot_cache}" ] || continue
 +	fi
 +
- 	found_other_os=1
  	onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
  	recovery_params="$(echo "${LPARAMS}" | grep 'single\|recovery')" || true
-@@ -259,10 +264,6 @@
+ 	counter=1
+@@ -180,10 +185,6 @@
  	fi
  	used_osprober_linux_ids="$used_osprober_linux_ids 'osprober-gnulinux-$LKERNEL-${recovery_params}-$counter-$boot_device_id'"
  

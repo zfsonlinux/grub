@@ -22,6 +22,11 @@ mkconfig_overescaping.patch
 efifwsetup.patch
 mkconfig_ubuntu_recovery.patch
 msdos_embed_off_by_one.patch
+emu_freebsd.patch
+mkconfig_stderr_handling.patch
+tftp_endianness.patch
+install_locale_langpack.patch
+mkconfig_nonexistent_loopback.patch
 ubuntu_grub_standards.patch
 ubuntu_crashkernel.patch
 ubuntu_quick_boot.patch
@@ -31,7 +36,6 @@ ubuntu_really_quiet.patch
 ubuntu_linux_quiet.patch
 ubuntu_failed_boot_menu.patch
 ubuntu_quiet_grub_loading.patch
-ubuntu_langpacks.patch
 ubuntu_gfxpayload_filter.patch
 ubuntu_vt_handoff.patch
 ubuntu_blacklist_1440x900x32.patch
@@ -39,6 +43,6 @@ ubuntu_recovery_nomodeset.patch
 ubuntu_recovery_nosingle.patch
 ubuntu_wubi_no_windows.patch
 ubuntu_probe_dmraid.patch
-ubuntu_probe_nonexistent_loopback.patch
 ubuntu_no_insmod_on_sb.patch
 ubuntu_linuxefi.patch
+ubuntu_default_grub_d.patch

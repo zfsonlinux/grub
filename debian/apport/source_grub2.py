@@ -57,6 +57,15 @@ def add_info(report):
         attach_file(report, '/proc/cmdline','ProcCmdLine')
         attach_default_grub(report, 'EtcDefaultGrub')
         attach_file_if_exists(report, '/boot/grub/device.map', 'DeviceMap')
+        try:
+            grub_d = '/etc/default/grub.d'
+            for name in sorted(os.listdir(grub_d)):
+                if name.endswith('.cfg'):
+                    key = 'EtcDefaultGrubD.' + path_to_key(name)
+                    attach_file_if_exists(
+                        report, os.path.join(grub_d, name), key)
+        except OSError:
+            pass
 
         invalid_grub_script = []
         if not check_shell_syntax_harder('/etc/default/grub'):

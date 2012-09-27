@@ -2,7 +2,7 @@ Description: Prefer translations from language packs
 Author: Colin Watson <cjwatson@ubuntu.com>
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/537998
 Forwarded: not-needed
-Last-Update: 2012-09-06
+Last-Update: 2012-09-26
 
 Index: b/util/grub-install.in
 ===================================================================
