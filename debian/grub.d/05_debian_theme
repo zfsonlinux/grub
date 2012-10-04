@@ -163,10 +163,5 @@ if set_background_image "${WALLPAPER}" "${COLOR_NORMAL}" "${COLOR_HIGHLIGHT}"; t
 	exit 0
 fi
 
-# If we haven't found a background image yet, use the default from desktop-base.
-if set_background_image "/usr/share/images/desktop-base/desktop-grub.png"; then
-	exit 0
-fi
-
 # Finally, if all of the above fails, use the default theme.
 set_default_theme

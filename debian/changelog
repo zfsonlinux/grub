@@ -1,3 +1,12 @@
+grub2 (2.00-7ubuntu2) quantal; urgency=low
+
+  * For now, stop using the /usr/share/images/desktop-base/desktop-grub.png
+    alternative as the fallback background.  We should ultimately have some
+    Ubuntu branding here, but at the moment it just confuses people who
+    accidentally install desktop-base.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 04 Oct 2012 10:34:01 +0100
+
 grub2 (2.00-7ubuntu1) quantal; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:
