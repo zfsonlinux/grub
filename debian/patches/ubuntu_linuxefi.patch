@@ -2,19 +2,20 @@ Description: Add "linuxefi" loader which avoids ExitBootServices
 Author: Matthew Garrett <mjg@redhat.com>
 Origin: vendor, http://pkgs.fedoraproject.org/cgit/grub2.git/tree/grub2-linuxefi.patch
 Forwarded: no
-Last-Update: 2012-09-20
+Last-Update: 2012-10-05
 
 Index: b/grub-core/Makefile.core.def
 ===================================================================
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
-@@ -1430,6 +1430,13 @@
+@@ -1430,6 +1430,14 @@
  };
  
  module = {
 +  name = linuxefi;
 +  efi = loader/i386/efi/linux.c;
 +  efi = lib/cmdline.c;
++  enable = i386_efi;
 +  enable = x86_64_efi;
 +};
 +
@@ -130,7 +131,7 @@ Index: b/grub-core/loader/i386/efi/linux.c
 +  shim_lock = grub_efi_locate_protocol(&guid, NULL);
 +
 +  if (!shim_lock)
-+    return 0;
++    return 1;
 +
 +  if (shim_lock->verify(data, size) == GRUB_EFI_SUCCESS)
 +    return 1;

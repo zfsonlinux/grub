@@ -86,8 +86,10 @@ grub_core_cmd_insmod (struct grub_command *cmd __attribute__ ((unused)),
   grub_dl_t mod;
 
 #ifdef GRUB_MACHINE_EFI
-  if (grub_efi_secure_boot())
-    return grub_error (GRUB_ERR_ACCESS_DENIED, N_("Secure Boot forbids insmod"));
+  if (grub_efi_secure_boot()) {
+    /* grub_printf("%s\n", N_("Secure Boot forbids insmod")); */
+    return 0;
+  }
 #endif
 
   if (argc == 0)

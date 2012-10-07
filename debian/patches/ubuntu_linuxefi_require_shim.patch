@@ -1,0 +1,19 @@
+Description: Make linuxefi refuse to boot without shim
+ This is only intended as a temporary measure.
+Author: Colin Watson <cjwatson@ubuntu.com>
+Forwarded: not-needed
+Last-Update: 2012-10-05
+
+Index: b/grub-core/loader/i386/efi/linux.c
+===================================================================
+--- a/grub-core/loader/i386/efi/linux.c
++++ b/grub-core/loader/i386/efi/linux.c
+@@ -58,7 +58,7 @@
+   shim_lock = grub_efi_locate_protocol(&guid, NULL);
+ 
+   if (!shim_lock)
+-    return 1;
++    return 0;
+ 
+   if (shim_lock->verify(data, size) == GRUB_EFI_SUCCESS)
+     return 1;

@@ -45,4 +45,8 @@ ubuntu_wubi_no_windows.patch
 ubuntu_probe_dmraid.patch
 ubuntu_no_insmod_on_sb.patch
 ubuntu_linuxefi.patch
+ubuntu_linuxefi_amd64_only.patch
+ubuntu_linuxefi_require_shim.patch
+ubuntu_linuxefi_non_sb_fallback.patch
 ubuntu_default_grub_d.patch
+ubuntu_use_signed_kernel.patch

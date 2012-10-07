@@ -1,3 +1,31 @@
+grub2 (2.00-7ubuntu3) quantal; urgency=low
+
+  * If the postinst is running in a container, skip grub-install and all its
+    associated questions (LP: #1060404).
+  * Merge UEFI secure boot tweaks from Fedora:
+    - Don't error on insmod on UEFI/SB, but also don't do any insmodding.
+    - Add sleep to the list of modules in the signed image.
+  * Move Ubuntu modifications to the Fedora linuxefi patch into separate
+    patches, to ease maintenance.
+  * Implement secure boot handling policy as outlined by Steve Langasek:
+    - Make the linux module call linuxefi when necessary, simplifying
+      configuration.  Add the linux module to the signed image.
+    - If secure boot is enabled and the kernel is signed, linux will call
+      linuxefi to hand over to it without calling ExitBootServices.
+    - Otherwise, linux will fall through to previous code, call
+      ExitBootServices itself, and boot the kernel normally.
+    - Change linuxefi to return GRUB_ERR_ACCESS_DENIED rather than
+      GRUB_ERR_INVALID_COMMAND in the case of an invalid signature, to make
+      it easier to implement different handling of unsigned kernels in
+      future if necessary.
+  * Build two images for signing: one with prefix /EFI/BOOT for use on
+    removable media, and one with prefix /EFI/ubuntu (and with the lvm,
+    mdraid09, and mdraid1x modules added) for use on fixed disks.  Setup
+    mostly borrowed from Fedora.
+  * Generate configuration for signed UEFI kernels if available.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Sun, 07 Oct 2012 11:36:29 +0100
+
 grub2 (2.00-7ubuntu2) quantal; urgency=low
 
   * For now, stop using the /usr/share/images/desktop-base/desktop-grub.png

@@ -58,7 +58,7 @@ grub_linuxefi_secure_validate (void *data, grub_uint32_t size)
   shim_lock = grub_efi_locate_protocol(&guid, NULL);
 
   if (!shim_lock)
-    return 0;
+    return 1;
 
   if (shim_lock->verify(data, size) == GRUB_EFI_SUCCESS)
     return 1;
@@ -219,7 +219,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 
   if (! grub_linuxefi_secure_validate (kernel, filelen))
     {
-      grub_error (GRUB_ERR_ACCESS_DENIED, N_("%s has invalid signature"), argv[0]);
+      grub_error (GRUB_ERR_INVALID_COMMAND, N_("%s has invalid signature"), argv[0]);
       grub_free (kernel);
       goto fail;
     }
