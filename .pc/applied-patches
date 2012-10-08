@@ -50,3 +50,5 @@ ubuntu_linuxefi_require_shim.patch
 ubuntu_linuxefi_non_sb_fallback.patch
 ubuntu_default_grub_d.patch
 ubuntu_use_signed_kernel.patch
+ubuntu_install_signed.patch
+ubuntu_uefi_firmware_setup.patch
