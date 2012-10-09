@@ -318,27 +318,16 @@ override_dh_shlibdeps:
 
 ifeq ($(DEB_HOST_ARCH),amd64)
 TARNAME := grub2_$(deb_version)_$(DEB_HOST_ARCH).tar.gz
-CD_MODULES := \
-	all_video boot btrfs cat chain configfile echo efifwsetup \
-	efinet ext2 fat font gfxmenu gfxterm gzio halt hfsplus \
-	iso9660 jpeg linux linuxefi minicmd normal part_apple \
-	part_msdos part_gpt password_pbkdf2 png reboot search \
-	search_fs_uuid search_fs_file search_label sleep test video
-GRUB_MODULES := $(CD_MODULES) lvm mdraid09 mdraid1x
 endif
 
 override_dh_builddeb:
 	dh_builddeb -- -Zxz
 ifeq ($(DEB_HOST_ARCH),amd64)
-	mkdir -p debian/grub2-images/$(deb_version)
-	build/grub-$(COMMON_PLATFORM)/grub-mkimage -O x86_64-efi \
-		-o debian/grub2-images/$(deb_version)/gcdx64.efi \
-		-d build/grub-efi-amd64/grub-core \
-		-p /EFI/BOOT $(CD_MODULES)
-	build/grub-$(COMMON_PLATFORM)/grub-mkimage -O x86_64-efi \
-		-o debian/grub2-images/$(deb_version)/grubx64.efi \
-		-d build/grub-efi-amd64/grub-core \
-		-p /EFI/ubuntu $(GRUB_MODULES)
+	debian/build-efi-images \
+		build/grub-$(COMMON_PLATFORM)/grub-mkimage \
+		build/grub-efi-amd64/grub-core \
+		debian/grub2-images/$(deb_version) \
+		x86_64-efi x64
 	echo $(deb_version) \
 		> debian/grub2-images/$(deb_version)/version
 	cd debian/grub2-images && tar czvf ../../../$(TARNAME) .
