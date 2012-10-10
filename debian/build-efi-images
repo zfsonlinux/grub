@@ -54,7 +54,7 @@ set prefix=(\$root)/boot/grub
 source \$prefix/$platform/grub.cfg
 EOF
 
-mkfs.msdos -C "$workdir/memdisk.fat" 34
+mkfs.msdos -C "$workdir/memdisk.fat" 64
 mcopy -i "$workdir/memdisk.fat" "$workdir/grub.cfg" ::grub.cfg
 
 CD_MODULES="
