@@ -1,3 +1,13 @@
+grub2 (2.00-7ubuntu6) quantal; urgency=low
+
+  * GRUB's rescue parser doesn't understand 'if', so the embedded
+    configuration file in gcdx64.efi emitted errors.  Add the memdisk
+    module, embed a tiny FAT filesystem containing the grub.cfg with the
+    search-and-chain logic, and embed a bootstrap configuration file that
+    loads that using 'normal'.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 10 Oct 2012 12:19:10 +0100
+
 grub2 (2.00-7ubuntu5) quantal; urgency=low
 
   * Embed a configuration file in gcdx64.efi which looks for a real boot
