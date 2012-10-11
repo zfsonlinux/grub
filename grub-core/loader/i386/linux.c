@@ -697,6 +697,8 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
       grub_dl_t mod;
       grub_command_t linuxefi_cmd;
 
+      grub_dprintf ("linux", "Secure Boot enabled: trying linuxefi\n");
+
       mod = grub_dl_load ("linuxefi");
       if (mod)
 	{
@@ -708,9 +710,11 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 	      (linuxefi_cmd->func) (linuxefi_cmd, argc, argv);
 	      if (grub_errno == GRUB_ERR_NONE)
 		{
+		  grub_dprintf ("linux", "Handing off to linuxefi\n");
 		  using_linuxefi = 1;
-		  return grub_errno;
+		  return GRUB_ERR_NONE;
 		}
+	      grub_dprintf ("linux", "linuxefi failed (%d)\n", grub_errno);
 	      grub_errno = GRUB_ERR_NONE;
 	    }
 	}

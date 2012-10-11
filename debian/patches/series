@@ -52,3 +52,4 @@ ubuntu_default_grub_d.patch
 ubuntu_use_signed_kernel.patch
 ubuntu_install_signed.patch
 ubuntu_uefi_firmware_setup.patch
+ubuntu_linuxefi_debug.patch
