@@ -1,38 +1,41 @@
-Description: Don't permit insmod on UEFI secure boot
+Description: Don't permit loading modules on UEFI secure boot
 Author: Matthew Garrett <mjg@redhat.com>
+Author: Colin Watson <cjwatson@ubuntu.com>
 Origin: vendor, http://pkgs.fedoraproject.org/cgit/grub2.git/tree/grub-2.00-no-insmod-on-sb.patch
 Forwarded: no
 Last-Update: 2012-09-19
 
-Index: b/grub-core/kern/corecmd.c
+Index: b/grub-core/kern/dl.c
 ===================================================================
---- a/grub-core/kern/corecmd.c
-+++ b/grub-core/kern/corecmd.c
-@@ -28,6 +28,10 @@
- #include <grub/command.h>
- #include <grub/i18n.h>
+--- a/grub-core/kern/dl.c
++++ b/grub-core/kern/dl.c
+@@ -42,6 +42,10 @@
+ #include <sys/mman.h>
+ #endif
  
 +#ifdef GRUB_MACHINE_EFI
 +#include <grub/efi/efi.h>
 +#endif
 +
- /* set ENVVAR=VALUE */
- static grub_err_t
- grub_core_cmd_set (struct grub_command *cmd __attribute__ ((unused)),
-@@ -81,6 +85,13 @@
- {
-   grub_dl_t mod;
+ 
+ 
+ #pragma GCC diagnostic ignored "-Wcast-align"
+@@ -668,6 +672,15 @@
+   void *core = 0;
+   grub_dl_t mod = 0;
  
 +#ifdef GRUB_MACHINE_EFI
-+  if (grub_efi_secure_boot()) {
-+    /* grub_printf("%s\n", N_("Secure Boot forbids insmod")); */
-+    return 0;
-+  }
++  if (grub_efi_secure_boot ())
++    {
++      grub_error (GRUB_ERR_ACCESS_DENIED,
++		  "Secure Boot forbids loading module from %s", filename);
++      return 0;
++    }
 +#endif
 +
-   if (argc == 0)
-     return grub_error (GRUB_ERR_BAD_ARGUMENT, N_("one argument expected"));
- 
+   file = grub_file_open (filename);
+   if (! file)
+     return 0;
 Index: b/grub-core/kern/efi/efi.c
 ===================================================================
 --- a/grub-core/kern/efi/efi.c
