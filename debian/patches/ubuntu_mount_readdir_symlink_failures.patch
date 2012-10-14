@@ -1,6 +1,6 @@
 Description: Ignore symlink traversal failures in grub-mount readdir
 Author: Colin Watson <cjwatson@ubuntu.com>
-Forwarded: Message-ID: <20121012160954.GH17188@riva.dynamic.greenend.org.uk>
+Forwarded: https://lists.gnu.org/archive/html/grub-devel/2012-10/msg00021.html
 Last-Update: 2012-10-12
 
 Index: b/util/grub-mount.c
