@@ -1,3 +1,9 @@
+grub2 (2.00-7ubuntu13) raring; urgency=low
+
+  * Avoid assuming that gets is declared.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 31 Oct 2012 10:36:57 +0000
+
 grub2 (2.00-7ubuntu12) raring; urgency=low
 
   * Add a little bit more debugging to signed/unsigned kernel logic.

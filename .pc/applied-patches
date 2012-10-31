@@ -55,3 +55,4 @@ ubuntu_uefi_firmware_setup.patch
 ubuntu_linuxefi_debug.patch
 ubuntu_mount_readdir_symlink_failures.patch
 ubuntu_initrd_addr_min.patch
+ubuntu_gnulib_gets.patch
