@@ -1,3 +1,9 @@
+grub2 (2.00-7ubuntu12) raring; urgency=low
+
+  * Add a little bit more debugging to signed/unsigned kernel logic.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 31 Oct 2012 06:59:10 +0000
+
 grub2 (2.00-7ubuntu11) quantal-proposed; urgency=low
 
   * Fix incorrect initrd minimum address calculation (LP: #1055686).

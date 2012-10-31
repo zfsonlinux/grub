@@ -66,6 +66,7 @@ grub_linuxefi_secure_validate (void *data, grub_uint32_t size)
       return 0;
     }
 
+  grub_dprintf ("linuxefi", "Asking shim to verify kernel signature\n");
   status = shim_lock->verify(data, size);
   if (status == GRUB_EFI_SUCCESS)
     {
