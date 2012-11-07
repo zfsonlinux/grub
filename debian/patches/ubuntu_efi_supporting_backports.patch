@@ -1,0 +1,730 @@
+Description: Backport several changes to support Secure Boot patches
+ Improve Unicode compliance and unify some UTF-8 code paths.
+ .
+ Add grub_efi_get_variable function.
+ .
+ Update Linux boot protocol headers to 2.10.
+ .
+ Define ALIGN_UP_OVERHEAD.
+Author: Vladimir Serbinenko <phcoder@gmail.com>
+Author: Matthew Garrett <mjg@redhat.com>
+Origin: backport, http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/3620
+Origin: upstream, http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/3720
+Origin: backport, http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/3722
+Origin: upstream, http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/3736
+Origin: backport, http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/3858
+Origin: backport, http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/4017
+Origin: upstream, http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/4019
+Origin: upstream, http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/4020
+Origin: backport, http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/4104
+Origin: backport, http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/4105
+Origin: backport, http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/4107
+Origin: backport, http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/4115
+Forwarded: not-needed
+Last-Update: 2012-11-05
+
+Index: b/grub-core/efiemu/runtime/efiemu.c
+===================================================================
+--- a/grub-core/efiemu/runtime/efiemu.c
++++ b/grub-core/efiemu/runtime/efiemu.c
+@@ -66,7 +66,7 @@
+ 
+ grub_efi_status_t
+ efiemu_get_variable (grub_efi_char16_t *variable_name,
+-		     grub_efi_guid_t *vendor_guid,
++		     const grub_efi_guid_t *vendor_guid,
+ 		     grub_efi_uint32_t *attributes,
+ 		     grub_efi_uintn_t *data_size,
+ 		     void *data);
+@@ -155,7 +155,7 @@
+ }
+ 
+ static int
+-efiemu_memequal (void *a, void *b, grub_size_t n)
++efiemu_memequal (const void *a, const void *b, grub_size_t n)
+ {
+   grub_uint8_t *ptr1, *ptr2;
+   for (ptr1 = (grub_uint8_t *) a, ptr2 = (grub_uint8_t *)b;
+@@ -416,7 +416,7 @@
+ 
+ /* Find variable by name and GUID. */
+ static struct efi_variable *
+-find_variable (grub_efi_guid_t *vendor_guid,
++find_variable (const grub_efi_guid_t *vendor_guid,
+ 	       grub_efi_char16_t *variable_name)
+ {
+   grub_uint8_t *ptr;
+@@ -438,10 +438,10 @@
+ 
+ grub_efi_status_t
+ EFI_FUNC (efiemu_get_variable) (grub_efi_char16_t *variable_name,
+-				   grub_efi_guid_t *vendor_guid,
+-				   grub_efi_uint32_t *attributes,
+-				   grub_efi_uintn_t *data_size,
+-				   void *data)
++				const grub_efi_guid_t *vendor_guid,
++				grub_efi_uint32_t *attributes,
++				grub_efi_uintn_t *data_size,
++				void *data)
+ {
+   struct efi_variable *efivar;
+   LOG ('g');
+Index: b/grub-core/kern/efi/efi.c
+===================================================================
+--- a/grub-core/kern/efi/efi.c
++++ b/grub-core/kern/efi/efi.c
+@@ -193,6 +193,54 @@
+   return grub_error (GRUB_ERR_IO, "set_virtual_address_map failed");
+ }
+ 
++void *
++grub_efi_get_variable (const char *var, const grub_efi_guid_t *guid,
++		       grub_size_t *datasize_out)
++{
++  grub_efi_status_t status;
++  grub_efi_uintn_t datasize = 0;
++  grub_efi_runtime_services_t *r;
++  grub_efi_char16_t *var16;
++  void *data;
++  grub_size_t len, len16;
++
++  *datasize_out = 0;
++
++  len = grub_strlen (var);
++  len16 = len * GRUB_MAX_UTF16_PER_UTF8;
++  var16 = grub_malloc ((len16 + 1) * sizeof (var16[0]));
++  if (!var16)
++    return NULL;
++  len16 = grub_utf8_to_utf16 (var16, len16, (grub_uint8_t *) var, len, NULL);
++  var16[len16] = 0;
++
++  r = grub_efi_system_table->runtime_services;
++
++  status = efi_call_5 (r->get_variable, var16, guid, NULL, &datasize, NULL);
++
++  if (!datasize)
++    return NULL;
++
++  data = grub_malloc (datasize);
++  if (!data)
++    {
++      grub_free (var16);
++      return NULL;
++    }
++
++  status = efi_call_5 (r->get_variable, var16, guid, NULL, &datasize, data);
++  grub_free (var16);
++
++  if (status == GRUB_EFI_SUCCESS)
++    {
++      *datasize_out = datasize;
++      return data;
++    }
++
++  grub_free (data);
++  return NULL;
++}
++
+ grub_uint32_t
+ grub_get_rtc (void)
+ {
+Index: b/grub-core/normal/charset.c
+===================================================================
+--- a/grub-core/normal/charset.c
++++ b/grub-core/normal/charset.c
+@@ -42,13 +42,6 @@
+   Most underline diacritics aren't displayed in gfxterm
+  */
+ 
+-/* Convert a (possibly null-terminated) UTF-8 string of at most SRCSIZE
+-   bytes (if SRCSIZE is -1, it is ignored) in length to a UTF-16 string.
+-   Return the number of characters converted. DEST must be able to hold
+-   at least DESTSIZE characters. If an invalid sequence is found, return -1.
+-   If SRCEND is not NULL, then *SRCEND is set to the next byte after the
+-   last byte used in SRC.  */
+-
+ #include <grub/charset.h>
+ #include <grub/mm.h>
+ #include <grub/misc.h>
+@@ -60,84 +53,51 @@
+ #include "widthspec.h"
+ #endif
+ 
++/* Returns -2 if not enough space, -1 on invalid character.  */
+ grub_ssize_t
+-grub_utf8_to_utf16 (grub_uint16_t *dest, grub_size_t destsize,
+-		    const grub_uint8_t *src, grub_size_t srcsize,
+-		    const grub_uint8_t **srcend)
++grub_encode_utf8_character (grub_uint8_t *dest, grub_uint8_t *destend,
++			    grub_uint32_t code)
+ {
+-  grub_uint16_t *p = dest;
+-  int count = 0;
+-  grub_uint32_t code = 0;
+-
+-  if (srcend)
+-    *srcend = src;
+-
+-  while (srcsize && destsize)
++  if (dest >= destend)
++    return -2;
++  if (code <= 0x007F)
+     {
+-      grub_uint32_t c = *src++;
+-      if (srcsize != (grub_size_t)-1)
+-	srcsize--;
+-      if (count)
+-	{
+-	  if ((c & GRUB_UINT8_2_LEADINGBITS) != GRUB_UINT8_1_LEADINGBIT)
+-	    {
+-	      /* invalid */
+-	      return -1;
+-	    }
+-	  else
+-	    {
+-	      code <<= 6;
+-	      code |= (c & GRUB_UINT8_6_TRAILINGBITS);
+-	      count--;
+-	    }
+-	}
+-      else
+-	{
+-	  if (c == 0)
+-	    break;
+-
+-	  if ((c & GRUB_UINT8_1_LEADINGBIT) == 0)
+-	    code = c;
+-	  else if ((c & GRUB_UINT8_3_LEADINGBITS) == GRUB_UINT8_2_LEADINGBITS)
+-	    {
+-	      count = 1;
+-	      code = c & GRUB_UINT8_5_TRAILINGBITS;
+-	    }
+-	  else if ((c & GRUB_UINT8_4_LEADINGBITS) == GRUB_UINT8_3_LEADINGBITS)
+-	    {
+-	      count = 2;
+-	      code = c & GRUB_UINT8_4_TRAILINGBITS;
+-	    }
+-	  else if ((c & GRUB_UINT8_5_LEADINGBITS) == GRUB_UINT8_4_LEADINGBITS)
+-	    {
+-	      count = 3;
+-	      code = c & GRUB_UINT8_3_TRAILINGBITS;
+-	    }
+-	  else
+-	    return -1;
+-	}
+-
+-      if (count == 0)
+-	{
+-	  if (destsize < 2 && code >= GRUB_UCS2_LIMIT)
+-	    break;
+-	  if (code >= GRUB_UCS2_LIMIT)
+-	    {
+-	      *p++ = GRUB_UTF16_UPPER_SURROGATE (code);
+-	      *p++ = GRUB_UTF16_LOWER_SURROGATE (code);
+-	      destsize -= 2;
+-	    }
+-	  else
+-	    {
+-	      *p++ = code;
+-	      destsize--;
+-	    }
+-	}
++      *dest++ = code;
++      return 1;
+     }
++  if (code <= 0x07FF)
++    {
++      if (dest + 1 >= destend)
++	return -2;
++      *dest++ = (code >> 6) | 0xC0;
++      *dest++ = (code & 0x3F) | 0x80;
++      return 2;
++    }
++  if ((code >= 0xDC00 && code <= 0xDFFF)
++      || (code >= 0xD800 && code <= 0xDBFF))
++    {
++      /* No surrogates in UCS-4... */
++      return -1;
++    }
++  if (code < 0x10000)
++    {
++      if (dest + 2 >= destend)
++	return -2;
++      *dest++ = (code >> 12) | 0xE0;
++      *dest++ = ((code >> 6) & 0x3F) | 0x80;
++      *dest++ = (code & 0x3F) | 0x80;
++      return 3;
++    }
++  {
++    if (dest + 3 >= destend)
++      return -2;
++    *dest++ = (code >> 18) | 0xF0;
++    *dest++ = ((code >> 12) & 0x3F) | 0x80;
++    *dest++ = ((code >> 6) & 0x3F) | 0x80;
++    *dest++ = (code & 0x3F) | 0x80;
++    return 4;
++  }
+ 
+-  if (srcend)
+-    *srcend = src;
+-  return p - dest;
+ }
+ 
+ /* Convert UCS-4 to UTF-8.  */
+@@ -151,39 +111,16 @@
+   while (size-- && dest < destend)
+     {
+       grub_uint32_t code = *src++;
+-
+-      if (code <= 0x007F)
+-	*dest++ = code;
+-      else if (code <= 0x07FF)
+-	{
+-	  if (dest + 1 >= destend)
+-	    break;
+-	  *dest++ = (code >> 6) | 0xC0;
+-	  *dest++ = (code & 0x3F) | 0x80;
+-	}
+-      else if ((code >= 0xDC00 && code <= 0xDFFF)
+-	       || (code >= 0xD800 && code <= 0xDBFF))
++      grub_ssize_t s;
++      s = grub_encode_utf8_character (dest, destend, code);
++      if (s == -2)
++	break;
++      if (s == -1)
+ 	{
+-	  /* No surrogates in UCS-4... */
+ 	  *dest++ = '?';
++	  continue;
+ 	}
+-      else if (code < 0x10000)
+-	{
+-	  if (dest + 2 >= destend)
+-	    break;
+-	  *dest++ = (code >> 12) | 0xE0;
+-	  *dest++ = ((code >> 6) & 0x3F) | 0x80;
+-	  *dest++ = (code & 0x3F) | 0x80;
+-	}
+-      else
+-	{
+-	  if (dest + 3 >= destend)
+-	    break;
+-	  *dest++ = (code >> 18) | 0xF0;
+-	  *dest++ = ((code >> 12) & 0x3F) | 0x80;
+-	  *dest++ = ((code >> 6) & 0x3F) | 0x80;
+-	  *dest++ = (code & 0x3F) | 0x80;
+-	}
++      dest += s;
+     }
+   *dest = 0;
+ }
+@@ -230,53 +167,21 @@
+ int
+ grub_is_valid_utf8 (const grub_uint8_t *src, grub_size_t srcsize)
+ {
+-  grub_uint32_t code = 0;
+   int count = 0;
++  grub_uint32_t code = 0;
+ 
+   while (srcsize)
+     {
+-      grub_uint32_t c = *src++;
+       if (srcsize != (grub_size_t)-1)
+ 	srcsize--;
+-      if (count)
+-	{
+-	  if ((c & 0xc0) != 0x80)
+-	    {
+-	      /* invalid */
+-	      return 0;
+-	    }
+-	  else
+-	    {
+-	      code <<= 6;
+-	      code |= (c & 0x3f);
+-	      count--;
+-	    }
+-	}
+-      else
+-	{
+-	  if (c == 0)
+-	    break;
+-
+-	  if ((c & 0x80) == 0x00)
+-	    code = c;
+-	  else if ((c & 0xe0) == 0xc0)
+-	    {
+-	      count = 1;
+-	      code = c & 0x1f;
+-	    }
+-	  else if ((c & 0xf0) == 0xe0)
+-	    {
+-	      count = 2;
+-	      code = c & 0x0f;
+-	    }
+-	  else if ((c & 0xf8) == 0xf0)
+-	    {
+-	      count = 3;
+-	      code = c & 0x07;
+-	    }
+-	  else
+-	    return 0;
+-	}
++      if (!grub_utf8_process (*src++, &code, &count))
++	return 0;
++      if (count != 0)
++	continue;
++      if (code == 0)
++	return 1;
++      if (code > GRUB_UNICODE_LAST_VALID)
++	return 0;
+     }
+ 
+   return 1;
+@@ -322,63 +227,23 @@
+ 
+   while (srcsize && destsize)
+     {
+-      grub_uint32_t c = *src++;
++      int was_count = count;
+       if (srcsize != (grub_size_t)-1)
+ 	srcsize--;
+-      if (count)
++      if (!grub_utf8_process (*src++, &code, &count))
+ 	{
+-	  if ((c & 0xc0) != 0x80)
+-	    {
+-	      /* invalid */
+-	      code = '?';
+-	      /* Character c may be valid, don't eat it.  */
+-	      src--;
+-	      if (srcsize != (grub_size_t)-1)
+-		srcsize++;
+-	      count = 0;
+-	    }
+-	  else
+-	    {
+-	      code <<= 6;
+-	      code |= (c & 0x3f);
+-	      count--;
+-	    }
+-	}
+-      else
+-	{
+-	  if (c == 0)
+-	    break;
+-
+-	  if ((c & 0x80) == 0x00)
+-	    code = c;
+-	  else if ((c & 0xe0) == 0xc0)
+-	    {
+-	      count = 1;
+-	      code = c & 0x1f;
+-	    }
+-	  else if ((c & 0xf0) == 0xe0)
+-	    {
+-	      count = 2;
+-	      code = c & 0x0f;
+-	    }
+-	  else if ((c & 0xf8) == 0xf0)
+-	    {
+-	      count = 3;
+-	      code = c & 0x07;
+-	    }
+-	  else
+-	    {
+-	      /* invalid */
+-	      code = '?';
+-	      count = 0;
+-	    }
+-	}
+-
+-      if (count == 0)
+-	{
+-	  *p++ = code;
+-	  destsize--;
+-	}
++	  code = '?';
++	  count = 0;
++	  /* Character c may be valid, don't eat it.  */
++	  if (was_count)
++	    src--;
++	}
++      if (count != 0)
++	continue;
++      if (code == 0)
++	break;
++      *p++ = code;
++      destsize--;
+     }
+ 
+   if (srcend)
+Index: b/include/grub/charset.h
+===================================================================
+--- a/include/grub/charset.h
++++ b/include/grub/charset.h
+@@ -36,16 +36,121 @@
+ #define GRUB_UINT8_5_TRAILINGBITS 0x1f
+ #define GRUB_UINT8_6_TRAILINGBITS 0x3f
+ 
++/* You need at least one UTF-8 byte to have one UTF-16 word.
++   You need at least three UTF-8 bytes to have 2 UTF-16 words (surrogate pairs).
++ */
++#define GRUB_MAX_UTF16_PER_UTF8 1
++
+ #define GRUB_UCS2_LIMIT 0x10000
+ #define GRUB_UTF16_UPPER_SURROGATE(code) \
+   (0xD800 + ((((code) - GRUB_UCS2_LIMIT) >> 12) & 0xfff))
+ #define GRUB_UTF16_LOWER_SURROGATE(code) \
+   (0xDC00 + (((code) - GRUB_UCS2_LIMIT) & 0xfff))
+ 
+-grub_ssize_t
++/* Process one character from UTF8 sequence. 
++   At beginning set *code = 0, *count = 0. Returns 0 on failure and
++   1 on success. *count holds the number of trailing bytes.  */
++static inline int
++grub_utf8_process (grub_uint8_t c, grub_uint32_t *code, int *count)
++{
++  if (*count)
++    {
++      if ((c & GRUB_UINT8_2_LEADINGBITS) != GRUB_UINT8_1_LEADINGBIT)
++	{
++	  *count = 0;
++	  /* invalid */
++	  return 0;
++	}
++      else
++	{
++	  *code <<= 6;
++	  *code |= (c & GRUB_UINT8_6_TRAILINGBITS);
++	  (*count)--;
++	  return 1;
++	}
++    }
++
++  if ((c & GRUB_UINT8_1_LEADINGBIT) == 0)
++    {
++      *code = c;
++      return 1;
++    }
++  if ((c & GRUB_UINT8_3_LEADINGBITS) == GRUB_UINT8_2_LEADINGBITS)
++    {
++      *count = 1;
++      *code = c & GRUB_UINT8_5_TRAILINGBITS;
++      return 1;
++    }
++  if ((c & GRUB_UINT8_4_LEADINGBITS) == GRUB_UINT8_3_LEADINGBITS)
++    {
++      *count = 2;
++      *code = c & GRUB_UINT8_4_TRAILINGBITS;
++      return 1;
++    }
++  if ((c & GRUB_UINT8_5_LEADINGBITS) == GRUB_UINT8_4_LEADINGBITS)
++    {
++      *count = 3;
++      *code = c & GRUB_UINT8_3_TRAILINGBITS;
++      return 1;
++    }
++  return 0;
++}
++
++
++/* Convert a (possibly null-terminated) UTF-8 string of at most SRCSIZE
++   bytes (if SRCSIZE is -1, it is ignored) in length to a UTF-16 string.
++   Return the number of characters converted. DEST must be able to hold
++   at least DESTSIZE characters. If an invalid sequence is found, return -1.
++   If SRCEND is not NULL, then *SRCEND is set to the next byte after the
++   last byte used in SRC.  */
++static inline grub_size_t
+ grub_utf8_to_utf16 (grub_uint16_t *dest, grub_size_t destsize,
+ 		    const grub_uint8_t *src, grub_size_t srcsize,
+-		    const grub_uint8_t **srcend);
++		    const grub_uint8_t **srcend)
++{
++  grub_uint16_t *p = dest;
++  int count = 0;
++  grub_uint32_t code = 0;
++
++  if (srcend)
++    *srcend = src;
++
++  while (srcsize && destsize)
++    {
++      int was_count = count;
++      if (srcsize != (grub_size_t)-1)
++	srcsize--;
++      if (!grub_utf8_process (*src++, &code, &count))
++	{
++	  code = '?';
++	  count = 0;
++	  /* Character c may be valid, don't eat it.  */
++	  if (was_count)
++	    src--;
++	}
++      if (count != 0)
++	continue;
++      if (code == 0)
++	break;
++      if (destsize < 2 && code >= GRUB_UCS2_LIMIT)
++	break;
++      if (code >= GRUB_UCS2_LIMIT)
++	{
++	  *p++ = GRUB_UTF16_UPPER_SURROGATE (code);
++	  *p++ = GRUB_UTF16_LOWER_SURROGATE (code);
++	  destsize -= 2;
++	}
++      else
++	{
++	  *p++ = code;
++	  destsize--;
++	}
++    }
++
++  if (srcend)
++    *srcend = src;
++  return p - dest;
++}
+ 
+ /* Convert UTF-16 to UTF-8.  */
+ static inline grub_uint8_t *
+@@ -74,6 +179,8 @@
+ 	    {
+ 	      /* Error...  */
+ 	      *dest++ = '?';
++	      /* *src may be valid. Don't eat it.  */
++	      src--;
+ 	    }
+ 
+ 	  code_high = 0;
+@@ -124,11 +231,16 @@
+ 
+ int grub_utf8_to_ucs4_alloc (const char *msg, grub_uint32_t **unicode_msg,
+ 			     grub_uint32_t **last_position);
++
+ void
+ grub_ucs4_to_utf8 (grub_uint32_t *src, grub_size_t size,
+ 		   grub_uint8_t *dest, grub_size_t destsize);
+ grub_size_t grub_utf8_to_ucs4 (grub_uint32_t *dest, grub_size_t destsize,
+ 			       const grub_uint8_t *src, grub_size_t srcsize,
+ 			       const grub_uint8_t **srcend);
++/* Returns -2 if not enough space, -1 on invalid character.  */
++grub_ssize_t
++grub_encode_utf8_character (grub_uint8_t *dest, grub_uint8_t *destend,
++			    grub_uint32_t code);
+ 
+ #endif
+Index: b/include/grub/efi/api.h
+===================================================================
+--- a/include/grub/efi/api.h
++++ b/include/grub/efi/api.h
+@@ -1015,9 +1015,13 @@
+   grub_efi_status_t
+   (*convert_pointer) (grub_efi_uintn_t debug_disposition, void **address);
+ 
++#define GRUB_EFI_GLOBAL_VARIABLE_GUID \
++  { 0x8BE4DF61, 0x93CA, 0x11d2, { 0xAA, 0x0D, 0x00, 0xE0, 0x98, 0x03, 0x2B,0x8C }}
++
++
+   grub_efi_status_t
+   (*get_variable) (grub_efi_char16_t *variable_name,
+-		   grub_efi_guid_t *vendor_guid,
++		   const grub_efi_guid_t *vendor_guid,
+ 		   grub_efi_uint32_t *attributes,
+ 		   grub_efi_uintn_t *data_size,
+ 		   void *data);
+Index: b/include/grub/efi/efi.h
+===================================================================
+--- a/include/grub/efi/efi.h
++++ b/include/grub/efi/efi.h
+@@ -61,7 +61,9 @@
+ 							   grub_efi_uintn_t descriptor_size,
+ 							   grub_efi_uint32_t descriptor_version,
+ 							   grub_efi_memory_descriptor_t *virtual_map);
+-
++void *EXPORT_FUNC (grub_efi_get_variable) (const char *variable,
++					   const grub_efi_guid_t *guid,
++					   grub_size_t *datasize_out);
+ int
+ EXPORT_FUNC (grub_efi_compare_device_paths) (const grub_efi_device_path_t *dp1,
+ 					     const grub_efi_device_path_t *dp2);
+Index: b/include/grub/i386/linux.h
+===================================================================
+--- a/include/grub/i386/linux.h
++++ b/include/grub/i386/linux.h
+@@ -86,7 +86,7 @@
+     GRUB_VIDEO_LINUX_TYPE_SIMPLE = 0x70    /* Linear framebuffer without any additional functions.  */
+   };
+ 
+-/* For the Linux/i386 boot protocol version 2.03.  */
++/* For the Linux/i386 boot protocol version 2.10.  */
+ struct linux_kernel_header
+ {
+   grub_uint8_t code1[0x0020];
+@@ -131,8 +131,16 @@
+   grub_uint32_t initrd_addr_max;        /* Highest address for initrd */
+   grub_uint32_t kernel_alignment;
+   grub_uint8_t relocatable;
+-  grub_uint8_t pad[3];
++  grub_uint8_t min_alignment;
++  grub_uint8_t pad[2];
+   grub_uint32_t cmdline_size;
++  grub_uint32_t hardware_subarch;
++  grub_uint64_t hardware_subarch_data;
++  grub_uint32_t payload_offset;
++  grub_uint32_t payload_length;
++  grub_uint64_t setup_data;
++  grub_uint64_t pref_address;
++  grub_uint32_t init_size;
+ } __attribute__ ((packed));
+ 
+ /* Boot parameters for Linux based on 2.6.12. This is used by the setup
+@@ -276,10 +284,20 @@
+   grub_uint32_t ramdisk_size;		/* initrd size */
+   grub_uint32_t bootsect_kludge;	/* obsolete */
+   grub_uint16_t heap_end_ptr;		/* Free memory after setup end */
+-  grub_uint16_t pad1;			/* Unused */
++  grub_uint8_t ext_loader_ver;		/* Extended loader version */
++  grub_uint8_t ext_loader_type;		/* Extended loader type */  
+   grub_uint32_t cmd_line_ptr;		/* Points to the kernel command line */
+-
+-  grub_uint8_t pad2[164];		/* 22c */
++  grub_uint32_t initrd_addr_max;	/* Maximum initrd address */
++  grub_uint32_t kernel_alignment;	/* Alignment of the kernel */
++  grub_uint8_t relocatable_kernel;	/* Is the kernel relocatable */
++  grub_uint8_t pad1[3];
++  grub_uint32_t cmdline_size;		/* Size of the kernel command line */
++  grub_uint32_t hardware_subarch;
++  grub_uint64_t hardware_subarch_data;
++  grub_uint32_t payload_offset;
++  grub_uint32_t payload_length;
++  grub_uint64_t setup_data;
++  grub_uint8_t pad2[120];		/* 258 */
+   struct grub_e820_mmap e820_map[GRUB_E820_MAX_ENTRY];	/* 2d0 */
+ 
+ } __attribute__ ((packed));
+Index: b/include/grub/misc.h
+===================================================================
+--- a/include/grub/misc.h
++++ b/include/grub/misc.h
+@@ -43,6 +43,7 @@
+ 
+ #define ALIGN_UP(addr, align) \
+ 	((addr + (typeof (addr)) align - 1) & ~((typeof (addr)) align - 1))
++#define ALIGN_UP_OVERHEAD(addr, align) ((-(addr)) & ((typeof (addr)) (align) - 1))
+ #define ALIGN_DOWN(addr, align) \
+ 	((addr) & ~((typeof (addr)) align - 1))
+ #define ARRAY_SIZE(array) (sizeof (array) / sizeof (array[0]))
+Index: b/include/grub/unicode.h
+===================================================================
+--- a/include/grub/unicode.h
++++ b/include/grub/unicode.h
+@@ -207,7 +207,8 @@
+     GRUB_UNICODE_VARIATION_SELECTOR_1      = 0xfe00,
+     GRUB_UNICODE_VARIATION_SELECTOR_16     = 0xfe0f,
+     GRUB_UNICODE_VARIATION_SELECTOR_17     = 0xe0100,
+-    GRUB_UNICODE_VARIATION_SELECTOR_256    = 0xe01ef
++    GRUB_UNICODE_VARIATION_SELECTOR_256    = 0xe01ef,
++    GRUB_UNICODE_LAST_VALID                = 0x10ffff
+   };
+ 
+ extern struct grub_unicode_compact_range grub_unicode_compact[];

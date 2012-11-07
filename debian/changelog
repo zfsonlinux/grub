@@ -1,3 +1,32 @@
+grub2 (1.99-21ubuntu3.5) precise-proposed; urgency=low
+
+  * Backport several changes to support Secure Boot patches.
+  * Add Secure Boot patches from Ubuntu 12.10 and Fedora (LP: #1075181):
+    - Don't permit loading modules on UEFI secure boot.
+    - Add efifwsetup module to reboot into firmware setup menu.
+    - Add "linuxefi" loader which avoids ExitBootServices.
+    - Only build linuxefi on amd64.
+    - Make linuxefi refuse to boot without shim.
+    - Make the linux module call linuxefi when necessary, simplifying
+      configuration.
+    - If secure boot is enabled and the kernel is signed, linux will call
+      linuxefi to hand over to it without calling ExitBootServices.
+    - Otherwise, linux will fall through to previous code, call
+      ExitBootServices itself, and boot the kernel normally.
+    - Change linuxefi to return GRUB_ERR_ACCESS_DENIED rather than
+      GRUB_ERR_INVALID_COMMAND in the case of an invalid signature, to make
+      it easier to implement different handling of unsigned kernels in
+      future if necessary.
+    - Generate configuration for signed UEFI kernels if available.
+    - Install signed images if UEFI Secure Boot is enabled.
+    - Output a menu entry for firmware setup on UEFI FastBoot systems.
+    - Add some extra debugging to signed/unsigned kernel logic.
+    - On amd64, build two images for signing: one with prefix /EFI/BOOT for
+      use on removable media, and one with prefix /EFI/ubuntu (and with the
+      lvm, mdraid09, and mdraid1x modules added) for use on fixed disks.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 07 Nov 2012 10:01:33 +0000
+
 grub2 (1.99-21ubuntu3.4) precise-proposed; urgency=low
 
   * Revert 1.99-21ubuntu3.2 again,as it was erroneously included again
