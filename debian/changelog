@@ -1,3 +1,15 @@
+grub2 (1.99-21ubuntu3.7) precise-proposed; urgency=low
+
+  * Fix backport mistake that caused grub.cfg not to be created in $efidir
+    if UEFI Secure Boot is enabled.
+  * When installing to removable media with UEFI Secure Boot, install
+    gcdx64.efi.signed rather than grubx64.efi.signed.
+  * Make gcdx64.efi.signed fall back to sourcing $prefix/grub.cfg if
+    $prefix/x86_64-efi/grub.cfg is missing, as is likely when using
+    'grub-install --removable'.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 10 Dec 2012 11:31:09 +0000
+
 grub2 (1.99-21ubuntu3.6) precise-proposed; urgency=low
 
   * Fix backport mistake in patch to install signed images if UEFI Secure

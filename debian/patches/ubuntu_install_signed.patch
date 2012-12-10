@@ -1,7 +1,7 @@
 Description: Install signed images if UEFI Secure Boot is enabled
 Author: Colin Watson <cjwatson@ubuntu.com>
 Forwarded: no
-Last-Update: 2012-12-05
+Last-Update: 2012-12-10
 
 Index: b/util/grub-install.in
 ===================================================================
@@ -102,6 +102,22 @@ Index: b/util/grub-install.in
  	   # TODO: We should also use efibootmgr, if available, to add a Boot
  	   # entry for ourselves.
  	fi
+@@ -485,13 +495,13 @@
+ fi
+ 
+ prefix_drive=
+-config_opt=
++config_opt_file=
+ 
+ rm -f "${grubdir}/load.cfg"
+ 
+ if [ "x${debug_image}" != x ]; then
+     echo "set debug='${debug_image}'" >> "${grubdir}/load.cfg"
+-    config_opt="-c ${grubdir}/load.cfg "
++    config_opt_file="${grubdir}/load.cfg"
+ fi
+ 
+ if [ "x${devabstraction_module}" = "x" ] ; then
 @@ -508,7 +518,7 @@
      # Strip partition number
      grub_partition="`echo "${grub_drive}" | sed -e 's/^[^,]*[,)]//; s/)$//'`"
@@ -111,7 +127,42 @@ Index: b/util/grub-install.in
          # generic method (used on coreboot and ata mod)
          uuid="`"$grub_probe" --device-map="${device_map}" --target=fs_uuid --device "${grub_device}"`"
          if [ "x${uuid}" = "x" ] ; then
-@@ -606,10 +616,28 @@
+@@ -524,7 +534,7 @@
+         fi
+         echo "search.fs_uuid ${uuid} root " >> "${grubdir}/load.cfg"
+ 	echo 'set prefix=($root)'"${relative_grubdir}" >> "${grubdir}/load.cfg"
+-	config_opt="-c ${grubdir}/load.cfg "
++	config_opt_file="${grubdir}/load.cfg"
+         modules="$modules search_fs_uuid"
+     elif [ "x$platform" = xefi ] || [ "x$platform" = xpc ]; then
+         # we need to hardcode the partition number in the core image's prefix.
+@@ -552,7 +562,11 @@
+ esac
+ 
+ 
+-"$grub_mkimage" ${config_opt} -d "${pkglibdir}" -O ${mkimage_target} --output="${grubdir}/core.${imgext}" --prefix="${prefix_drive}${relative_grubdir}" $modules || exit 1
++if [ x"$config_opt_file" = x ]; then
++    "$grub_mkimage" -d "${pkglibdir}" -O ${mkimage_target} --output="${grubdir}/core.${imgext}" --prefix="${prefix_drive}${relative_grubdir}" $modules || exit 1
++else
++    "$grub_mkimage" -c "${config_opt_file}" -d "${pkglibdir}" -O ${mkimage_target} --output="${grubdir}/core.${imgext}" --prefix="${prefix_drive}${relative_grubdir}" $modules || exit 1
++fi
+ 
+ # Backward-compatibility kludges
+ if [ "${target_cpu}-${platform}" = "mips-yeeloong" ]; then
+@@ -560,7 +574,11 @@
+ elif [ "${target_cpu}-${platform}" = "i386-ieee1275" ] || [ "${target_cpu}-${platform}" = "powerpc-ieee1275" ]; then
+     cp "${grubdir}/core.${imgext}" "${grubdir}/grub"
+ elif [ "${target_cpu}-${platform}" = "i386-efi" ] || [ "${target_cpu}-${platform}" = "x86_64-efi" ]; then
+-    "$grub_mkimage" ${config_opt} -d "${pkglibdir}" -O ${mkimage_target} --output="${grubdir}/grub.efi" --prefix="" $modules || exit 1
++    if [ x"$config_opt_file" = x ]; then
++	"$grub_mkimage" -d "${pkglibdir}" -O ${mkimage_target} --output="${grubdir}/grub.efi" --prefix="" $modules || exit 1
++    else
++	"$grub_mkimage" -c "${config_opt_file}" -d "${pkglibdir}" -O ${mkimage_target} --output="${grubdir}/grub.efi" --prefix="" $modules || exit 1
++    fi
+ fi
+ 
+ 
+@@ -606,10 +624,32 @@
  	}
      fi
  elif [ x"$platform" = xefi ]; then
@@ -119,7 +170,11 @@ Index: b/util/grub-install.in
 -    # For old macs. Suggested by Peter Jones.
 -    if [ x$target_cpu = xi386 ]; then
 -	cp "${grubdir}/core.${imgext}" "${efidir}/boot.efi"
-+    efi_signed="${pkglibdir}-signed/grub$efi_suffix.efi.signed"
++    if [ $removable = yes ]; then
++	efi_signed="${pkglibdir}-signed/gcd$efi_suffix.efi.signed"
++    else
++	efi_signed="${pkglibdir}-signed/grub$efi_suffix.efi.signed"
++    fi
 +    if [ "$uefi_secure_boot" = yes ] && [ -e "$efi_signed" ]; then
 +	shim_signed=/usr/lib/shim/shim.efi.signed
 +	if [ -e "$shim_signed" ]; then
