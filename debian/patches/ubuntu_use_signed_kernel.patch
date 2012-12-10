@@ -1,0 +1,40 @@
+Description: Generate configuration for signed UEFI kernels if available
+Author: Colin Watson <cjwatson@ubuntu.com>
+Forwarded: no
+Last-Update: 2012-11-05
+
+Index: b/util/grub.d/10_linux.in
+===================================================================
+--- a/util/grub.d/10_linux.in
++++ b/util/grub.d/10_linux.in
+@@ -120,9 +120,15 @@
+ 	echo	'$message'
+ EOF
+   fi
+-  cat << EOF
++  if test -d /sys/firmware/efi && test -e "${linux}.efi.signed"; then
++    cat << EOF
++	linux	${rel_dirname}/${basename}.efi.signed root=${linux_root_device_thisversion} ro ${args}
++EOF
++  else
++    cat << EOF
+ 	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args}
+ EOF
++  fi
+   if test -n "${initrd}" ; then
+     if [ "x$5" != "xquiet" ]; then
+       message="$(gettext_printf "Loading initial ramdisk ...")"
+@@ -197,6 +203,13 @@
+ in_submenu=false
+ while [ "x$list" != "x" ] ; do
+   linux=`version_find_latest $list`
++  case $linux in
++    *.efi.signed)
++      # We handle these in linux_entry.
++      list=`echo $list | tr ' ' '\n' | grep -vx $linux | tr '\n' ' '`
++      continue
++      ;;
++  esac
+   echo "Found linux image: $linux" >&2
+   basename=`basename $linux`
+   dirname=`dirname $linux`

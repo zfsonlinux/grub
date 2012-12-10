@@ -64,3 +64,14 @@ ubuntu_probe_dmraid.patch
 ubuntu_qemu_no_kvm.patch
 ubuntu_probe_nonexistent_loopback.patch
 ubuntu_efi_device_discovery.patch
+ubuntu_efi_supporting_backports.patch
+ubuntu_efifwsetup.patch
+ubuntu_no_insmod_on_sb.patch
+ubuntu_linuxefi.patch
+ubuntu_linuxefi_amd64_only.patch
+ubuntu_linuxefi_require_shim.patch
+ubuntu_linuxefi_non_sb_fallback.patch
+ubuntu_use_signed_kernel.patch
+ubuntu_install_signed.patch
+ubuntu_uefi_firmware_setup.patch
+ubuntu_linuxefi_debug.patch
