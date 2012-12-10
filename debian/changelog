@@ -1,3 +1,13 @@
+grub2 (2.00-7ubuntu14) raring; urgency=low
+
+  * When installing to removable media with UEFI Secure Boot, install
+    gcdx64.efi.signed rather than grubx64.efi.signed (LP: #1087653).
+  * Make gcdx64.efi.signed fall back to sourcing $prefix/grub.cfg if
+    $prefix/x86_64-efi/grub.cfg is missing, as is likely when using
+    'grub-install --removable'.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 10 Dec 2012 11:29:04 +0000
+
 grub2 (2.00-7ubuntu13) raring; urgency=low
 
   * Avoid assuming that gets is declared.

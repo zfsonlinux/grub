@@ -51,7 +51,11 @@ if ! search --file --set=root /.disk/info; then
 	search --file --set=root /.disk/mini-info
 fi
 set prefix=(\$root)/boot/grub
-source \$prefix/$platform/grub.cfg
+if [ -e \$prefix/$platform/grub.cfg ]; then
+	source \$prefix/$platform/grub.cfg
+else
+	source \$prefix/grub.cfg
+fi
 EOF
 
 mkfs.msdos -C "$workdir/memdisk.fat" 64

@@ -834,7 +834,11 @@ elif [ x"${grub_modinfo_target_cpu}-${grub_modinfo_platform}" = xmips-arc ]; the
     gettext "You will have to set \`SystemPartition' and \`OSLoader' manually." 1>&2
     echo 1>&2
 elif [ x"$grub_modinfo_platform" = xefi ]; then
-    efi_signed="${source_dir}-signed/grub$efi_suffix.efi.signed"
+    if [ $removable = yes ]; then
+	efi_signed="${source_dir}-signed/gcd$efi_suffix.efi.signed"
+    else
+	efi_signed="${source_dir}-signed/grub$efi_suffix.efi.signed"
+    fi
     if [ "$uefi_secure_boot" = yes ] && [ -e "$efi_signed" ]; then
 	shim_signed=/usr/lib/shim/shim.efi.signed
 	if [ -e "$shim_signed" ]; then
