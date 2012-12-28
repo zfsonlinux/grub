@@ -43,4 +43,6 @@ efi_disk_cache.patch
 dirlen.patch
 hurd.patch
 userland-part.patch
-ubuntu_efi_device_discovery.patch
+efi_device_discovery.patch
+gettext_error_handling.patch
+l10n_fi.patch
