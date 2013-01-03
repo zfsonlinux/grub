@@ -268,12 +268,12 @@ grub_efi_secure_boot (void)
   char *setup_mode = NULL;
   grub_efi_boolean_t ret = 0;
 
-  secure_boot = grub_efi_get_variable("SecureBoot", &efi_var_guid, &datasize);
+  secure_boot = grub_efi_get_variable ("SecureBoot", &efi_var_guid, &datasize);
 
   if (datasize != 1 || !secure_boot)
     goto out;
 
-  setup_mode = grub_efi_get_variable("SetupMode", &efi_var_guid, &datasize);
+  setup_mode = grub_efi_get_variable ("SetupMode", &efi_var_guid, &datasize);
 
   if (datasize != 1 || !setup_mode)
     goto out;

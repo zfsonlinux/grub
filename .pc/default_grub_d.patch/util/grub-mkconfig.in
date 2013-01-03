@@ -223,8 +223,7 @@ export GRUB_DEFAULT \
   GRUB_INIT_TUNE \
   GRUB_SAVEDEFAULT \
   GRUB_ENABLE_CRYPTODISK \
-  GRUB_BADRAM \
-  GRUB_RECORDFAIL_TIMEOUT
+  GRUB_BADRAM
 
 if test "x${grub_cfg}" != "x"; then
   rm -f "${grub_cfg}.new"

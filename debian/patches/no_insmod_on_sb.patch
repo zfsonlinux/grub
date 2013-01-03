@@ -3,7 +3,7 @@ Author: Matthew Garrett <mjg@redhat.com>
 Author: Colin Watson <cjwatson@ubuntu.com>
 Origin: vendor, http://pkgs.fedoraproject.org/cgit/grub2.git/tree/grub-2.00-no-insmod-on-sb.patch
 Forwarded: no
-Last-Update: 2012-09-19
+Last-Update: 2013-01-02
 
 Index: b/grub-core/kern/dl.c
 ===================================================================
@@ -53,12 +53,12 @@ Index: b/grub-core/kern/efi/efi.c
 +  char *setup_mode = NULL;
 +  grub_efi_boolean_t ret = 0;
 +
-+  secure_boot = grub_efi_get_variable("SecureBoot", &efi_var_guid, &datasize);
++  secure_boot = grub_efi_get_variable ("SecureBoot", &efi_var_guid, &datasize);
 +
 +  if (datasize != 1 || !secure_boot)
 +    goto out;
 +
-+  setup_mode = grub_efi_get_variable("SetupMode", &efi_var_guid, &datasize);
++  setup_mode = grub_efi_get_variable ("SetupMode", &efi_var_guid, &datasize);
 +
 +  if (datasize != 1 || !setup_mode)
 +    goto out;

@@ -1,3 +1,9 @@
+Description: Read /etc/default/grub.d/*.cfg after /etc/default/grub
+Author: Colin Watson <cjwatson@ubuntu.com>
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/901600
+Forwarded: no
+Last-Update: 2013-01-02
+
 Index: b/util/grub-install.in
 ===================================================================
 --- a/util/grub-install.in

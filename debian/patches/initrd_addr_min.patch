@@ -12,7 +12,7 @@ Index: b/grub-core/loader/i386/linux.c
 ===================================================================
 --- a/grub-core/loader/i386/linux.c
 +++ b/grub-core/loader/i386/linux.c
-@@ -1144,8 +1144,7 @@
+@@ -1101,8 +1101,7 @@
       worse than that of Linux 2.3.xx, so avoid the last 64kb.  */
    addr_max -= 0x10000;
  
