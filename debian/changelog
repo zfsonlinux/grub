@@ -1,3 +1,19 @@
+grub2 (2.00-10) experimental; urgency=low
+
+  * Support parallel builds.
+  * Remove /boot/grub/unicode.pf2 on purge of grub-efi-{amd64,i386} (closes:
+    #697183).
+  * Build with GCC 4.7.
+  * Merge from Ubuntu:
+    - Don't permit loading modules on UEFI Secure Boot (since in such a
+      setup the GRUB core image must be signed but it has no provision for
+      verifying module signatures).
+    - Read /etc/default/grub.d/*.cfg after /etc/default/grub (LP: #901600).
+    - Blacklist 1440x900x32 from VBE preferred mode handling until a better
+      solution is available (LP: #701111).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 03 Jan 2013 09:38:25 +0000
+
 grub2 (2.00-9) experimental; urgency=low
 
   * Ensure /boot/grub exists before copying files to it for EFI installs
