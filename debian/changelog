@@ -1,3 +1,12 @@
+grub2 (1.99-21ubuntu3.8) precise; urgency=low
+
+  * Read /etc/default/grub.d/*.cfg after /etc/default/grub (LP: #901600).
+  * Fix EFI memory map handling in Linux loader (LP: #1046429).
+  * If the postinst is running in a container, skip grub-install and all its
+    associated questions (LP: #1060404).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 08 Jan 2013 17:07:42 +0000
+
 grub2 (1.99-21ubuntu3.7) precise-proposed; urgency=low
 
   * Fix backport mistake that caused grub.cfg not to be created in $efidir
