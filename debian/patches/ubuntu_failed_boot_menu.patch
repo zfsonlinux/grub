@@ -75,7 +75,7 @@ Index: b/util/grub-mkconfig.in
 ===================================================================
 --- a/util/grub-mkconfig.in
 +++ b/util/grub-mkconfig.in
-@@ -223,7 +223,8 @@
+@@ -228,7 +228,8 @@
    GRUB_INIT_TUNE \
    GRUB_SAVEDEFAULT \
    GRUB_ENABLE_CRYPTODISK \

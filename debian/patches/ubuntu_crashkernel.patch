@@ -5,7 +5,7 @@ Description: Add crashkernel option
  This requires several fairly distribution-specific pieces to work properly.
 Author: Michael Vogt <michael.vogt@ubuntu.com>
 Forwarded: not-needed
-Last-Update: 2012-09-06
+Last-Update: 2013-01-21
 
 Index: b/util/grub.d/10_linux.in
 ===================================================================
@@ -23,7 +23,7 @@ Index: b/util/grub.d/10_linux.in
  linux_entry ()
  {
    os="$1"
-@@ -227,7 +232,7 @@
+@@ -229,7 +234,7 @@
  
    if [ "x$is_first_entry" = xtrue ]; then
      linux_entry "${OS}" "${version}" simple \
@@ -32,12 +32,12 @@ Index: b/util/grub.d/10_linux.in
  
      submenu_indentation="\t"
      
-@@ -239,7 +244,7 @@
+@@ -241,7 +246,7 @@
    fi
  
    linux_entry "${OS}" "${version}" advanced \
 -              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
 +              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}"
    if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
-     linux_entry "${OS}" "${version}" recovery \
-                 "single ${GRUB_CMDLINE_LINUX}"
+     if [ -x /lib/recovery-mode/recovery-menu ]; then
+       linux_entry "${OS}" "${version}" recovery \

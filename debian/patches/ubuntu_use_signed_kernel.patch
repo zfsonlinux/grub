@@ -7,7 +7,7 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -142,9 +142,15 @@
+@@ -153,9 +153,15 @@
  	echo	'$(echo "$message" | grub_quote)'
  EOF
    fi
@@ -24,7 +24,7 @@ Index: b/util/grub.d/10_linux.in
    if test -n "${initrd}" ; then
      # TRANSLATORS: ramdisk isn't identifier. Should be translated.
      if [ x$type != xsimple ]; then
-@@ -235,6 +241,13 @@
+@@ -245,6 +251,13 @@
  is_first_entry=true
  while [ "x$list" != "x" ] ; do
    linux=`version_find_latest $list`

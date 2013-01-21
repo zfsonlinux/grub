@@ -5,7 +5,7 @@ Description: Check hardware support before using gfxpayload=keep
 Author: Evan Broder <evan@ebroder.net>
 Author: Colin Watson <cjwatson@ubuntu.com>
 Forwarded: no
-Last-Update: 2012-09-06
+Last-Update: 2013-01-21
 
 Index: b/grub-core/Makefile.core.def
 ===================================================================
@@ -177,23 +177,17 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -115,14 +115,7 @@
-       save_default_entry | sed -e "s/^/\t/"
-   fi
- 
--  # Use ELILO's generic "efifb" when it's known to be available.
--  # FIXME: We need an interface to select vesafb in case efifb can't be used.
--  if [ "x$GRUB_GFXPAYLOAD_LINUX" != x ]; then
--      if [ "x$GRUB_GFXPAYLOAD_LINUX" != xtext ]; then
--	  echo "	load_video" | sed "s/^/$submenu_indentation/"
--      fi
+@@ -123,8 +123,8 @@
+       if [ "x$GRUB_GFXPAYLOAD_LINUX" != xtext ]; then
+ 	  echo "	load_video" | sed "s/^/$submenu_indentation/"
+       fi
 -      echo "	set gfxpayload=$GRUB_GFXPAYLOAD_LINUX" | sed "s/^/$submenu_indentation/"
--  fi
+   fi
 +  echo "	set gfxpayload=\$linux_gfx_mode" | sed "s/^/$submenu_indentation/"
  
    echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
  
-@@ -188,6 +181,36 @@
+@@ -190,6 +190,35 @@
  boot_device_id=
  title_correction_code=
  
@@ -224,7 +218,6 @@ Index: b/util/grub.d/10_linux.in
 +fi
 +cat << EOF
 +export linux_gfx_mode
-+if [ "\${linux_gfx_mode}" != "text" ]; then load_video; fi
 +EOF
 +
  # Extra indentation to add to menu entries in a submenu. We're not in a submenu

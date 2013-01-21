@@ -6,7 +6,7 @@ Description: Add vt.handoff=7 to non-recovery Linux entries
 Author: Colin Watson <cjwatson@ubuntu.com>
 Author: Andy Whitcroft <apw@canonical.com>
 Forwarded: not-needed
-Last-Update: 2012-09-06
+Last-Update: 2013-01-21
 
 Index: b/util/grub.d/10_linux.in
 ===================================================================
@@ -25,16 +25,16 @@ Index: b/util/grub.d/10_linux.in
  # add crashkernel option if we have the required tools
  if [ -x "/usr/bin/makedumpfile" ] && [ -x "/sbin/kexec" ]; then
      GRUB_CMDLINE_EXTRA="$GRUB_CMDLINE_EXTRA crashkernel=384M-2G:64M,2G-:128M"
-@@ -115,7 +121,7 @@
-       save_default_entry | sed -e "s/^/\t/"
+@@ -124,7 +130,7 @@
+ 	  echo "	load_video" | sed "s/^/$submenu_indentation/"
+       fi
    fi
- 
 -  echo "	set gfxpayload=\$linux_gfx_mode" | sed "s/^/$submenu_indentation/"
 +  echo "	gfxmode \$linux_gfx_mode" | sed "s/^/$submenu_indentation/"
  
    echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
  
-@@ -181,6 +187,17 @@
+@@ -190,6 +196,17 @@
  boot_device_id=
  title_correction_code=
  

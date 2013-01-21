@@ -119,7 +119,18 @@ linux_entry ()
   echo "recordfail" | sed "s/^/$submenu_indentation/"
   if [ x$type != xrecovery ] ; then
       save_default_entry | sed -e "s/^/\t/"
+  fi
 
+  # Use ELILO's generic "efifb" when it's known to be available.
+  # FIXME: We need an interface to select vesafb in case efifb can't be used.
+  if [ "x$GRUB_GFXPAYLOAD_LINUX" = x ]; then
+      echo "	load_video" | sed "s/^/$submenu_indentation/"
+  else
+      if [ "x$GRUB_GFXPAYLOAD_LINUX" != xtext ]; then
+	  echo "	load_video" | sed "s/^/$submenu_indentation/"
+      fi
+  fi
+  if [ x$type != xrecovery ] ; then
       echo "	gfxmode \$linux_gfx_mode" | sed "s/^/$submenu_indentation/"
   fi
 
@@ -231,7 +242,6 @@ EOF
 fi
 cat << EOF
 export linux_gfx_mode
-if [ "\${linux_gfx_mode}" != "text" ]; then load_video; fi
 EOF
 
 # Extra indentation to add to menu entries in a submenu. We're not in a submenu
@@ -310,10 +320,10 @@ while [ "x$list" != "x" ] ; do
   if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
     if [ -x /lib/recovery-mode/recovery-menu ]; then
       linux_entry "${OS}" "${version}" recovery \
-		  "recovery nomodeset ${GRUB_CMDLINE_LINUX}"
+                  "recovery nomodeset ${GRUB_CMDLINE_LINUX}"
     else
       linux_entry "${OS}" "${version}" recovery \
-		  "single nomodeset ${GRUB_CMDLINE_LINUX}"
+                  "single nomodeset ${GRUB_CMDLINE_LINUX}"
     fi
   fi
 
