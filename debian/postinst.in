@@ -8,8 +8,9 @@ merge_debconf_into_conf()
   local template; template="$3"
 
   db_get "$template"
-  local value; value="$(echo "$RET" | sed -e 's,[$`"\@],\\&,g')"
+  local value; value="$(echo "$RET" | sed -e 's,[$`"\],\\&,g')"
   if grep -q "^${setting}=" "$tmpfile"; then
+    value="$(echo "$value" | sed -e 's,[\@],\\&,g')"
     sed -i -re "s@^(${setting}=).*@\1\"${value}\"@" "$tmpfile"
   else
     echo >> "$tmpfile"
@@ -281,15 +282,17 @@ get_mountpoint()
 
 config_item()
 {
-  if [ -f /etc/default/grub ]; then
-    . /etc/default/grub || return
-    for x in /etc/default/grub.d/*.cfg; do
-      if [ -e "$x" ]; then
-        . "$x"
-      fi
-    done
+  for x in /etc/default/grub /etc/default/grub.d/*.cfg; do
+    if [ -e "$x" ]; then
+      DEFAULT_FOUND="yes"
+      . "$x"
+    fi
+  done
+  if [ "$DEFAULT_FOUND" = "yes" ]; then
+    eval echo "\$$1"
+  else
+    return
   fi
-  eval echo "\$$1"
 }
 
 case "$1" in
@@ -438,6 +441,10 @@ case "$1" in
             # We just hooked GRUB 2 in menu.lst; then also generate grub.cfg.
             touch /boot/grub/grub.cfg
           fi
+        elif type running-in-container >/dev/null 2>&1 && \
+             running-in-container; then
+          # Skip grub-install in containers.
+          :
         elif test -z "$2" || test -e /boot/grub/core.img || \
              test -e /boot/grub/@CPU_PLATFORM@/core.img || \
              test "$UPGRADE_FROM_GRUB_LEGACY" || test "$wubi_device"; then
