@@ -1,3 +1,46 @@
+grub2 (2.00-12ubuntu1) raring; urgency=low
+
+  * Resynchronise with Debian.  Remaining changes:
+    - Adjust for default Ubuntu boot options ("quiet splash").
+    - Default to hiding the menu; holding down Shift at boot will show it.
+    - Set a monochromatic theme and an appropriate background for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script.
+    - Remove "GNU/Linux" from default distributor string.
+    - Add crashkernel option.
+    - Bypass menu unless other OSes are installed or Shift is pressed.
+    - Allow Shift to interrupt 'sleep --interruptible'.
+    - Reduce visual clutter in normal mode.
+    - Remove verbose messages printed before reading configuration.
+    - Suppress kernel/initrd progress messages, except in recovery mode.
+    - Show the boot menu if the previous boot failed.
+    - Adjust upgrade version checks for Ubuntu.
+    - Suppress "GRUB loading" message unless Shift is held down.
+    - Check hardware support before using gfxpayload=keep.
+    - Set vt.handoff=7 for smooth handoff to kernel graphical mode.
+    - In recovery mode, add nomodeset to the Linux kernel arguments, and
+      remove the 'set gfxpayload=keep' command.
+    - Skip Windows os-prober entries on Wubi systems, and suppress the menu
+      by default if those are the only other-OS entries.
+    - Handle probing striped DM-RAID devices.
+    - Disable cursor as early as possible in grub_main.
+    - Apply patch from Fedora to add a "linuxefi" loader.
+    - Automatically call linuxefi from linux when necessary.
+    - On amd64, add raw-uefi custom upload tarballs for signing.
+    - Generate configuration for signed UEFI kernels if available.
+    - Install signed images if UEFI Secure Boot is enabled.
+    - Output a menu entry for firmware setup on UEFI FastBoot systems.
+    - Stop using the /usr/share/images/desktop-base/desktop-grub.png
+      alternative as the fallback background.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 25 Jan 2013 00:36:50 +0000
+
+grub2 (2.00-12) experimental; urgency=low
+
+  * Silence output from running-in-container.
+  * Also skip update-grub when running in a container (LP: #1060404).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 24 Jan 2013 23:21:48 +0000
+
 grub2 (2.00-11ubuntu1) raring; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:
