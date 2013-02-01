@@ -1,3 +1,31 @@
+grub2 (2.00-13) experimental; urgency=low
+
+  * Backport from upstream:
+    - Fix booting FreeBSD >= 9.1 amd64 kernels (closes: #699002).
+  * Merge from Ubuntu:
+    - Stop using the /usr/share/images/desktop-base/desktop-grub.png
+      alternative as the fallback background if GRUB_DISTRIBUTOR is
+      "Ubuntu".
+    - source_grub2.py: Use attach_default_grub from apport's hookutils.
+    - Output a menu entry for firmware setup on UEFI FastBoot systems.
+    - Set a monochromatic theme and an appropriate background for Ubuntu.
+    - Remove "GNU/Linux" from default distributor string for Ubuntu.
+    - Apply Ubuntu GRUB Legacy changes to legacy update-grub script.
+    - Apply patch from Fedora to add a "linuxefi" loader which boots kernels
+      with EFI handover patches, avoiding ExitBootServices.
+    - Temporarily make linuxefi refuse to validate kernels in the absence of
+      a shim, until we get some other details worked out.
+    - Automatically call linuxefi from linux if secure boot is enabled and
+      the kernel is signed, to hand over to the kernel without calling
+      ExitBootServices.  Otherwise, linux will fall through to previous
+      code, call ExitBootServices itself, and boot the kernel normally.
+    - Generate configuration for signed UEFI kernels if available.
+    - On Ubuntu amd64, add a raw-uefi custom upload tarball for signing.
+    - Install signed images if available and UEFI Secure Boot is enabled.
+    - Add "splash" to default boot options on Ubuntu.
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 01 Feb 2013 15:44:25 +0000
+
 grub2 (2.00-12) experimental; urgency=low
 
   * Silence output from running-in-container.
