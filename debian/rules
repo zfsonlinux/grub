@@ -260,6 +260,24 @@ override_dh_installinit:
 override_dh_strip:
 	dh_strip -X/usr/bin/grub-emu
 
+ifeq ($(DEB_HOST_ARCH),amd64)
+TARNAME := grub2_$(deb_version)_$(DEB_HOST_ARCH).tar.gz
+endif
+
+override_dh_builddeb:
+	dh_builddeb
+ifeq ($(DEB_HOST_ARCH),amd64)
+	sh debian/build-efi-images \
+		build/grub-$(COMMON_PLATFORM)/grub-mkimage \
+		build/grub-efi-amd64/grub-core \
+		debian/grub2-images/$(deb_version) \
+		x86_64-efi x64
+	echo $(deb_version) \
+		> debian/grub2-images/$(deb_version)/version
+	cd debian/grub2-images && tar czvf ../../../$(TARNAME) .
+	dpkg-distaddfile $(TARNAME) raw-uefi -
+endif
+
 override_dh_auto_clean:
 	-rm -rf build
 	-rm -f contrib grub-core/contrib
@@ -273,6 +291,9 @@ override_dh_clean: debian/legacy/update-grub debian/grub-extras
 		rm -f debian/grub-{pc,efi-*,ieee1275,coreboot,yeeloong}{,-bin}.$$i ; \
 	done
 	rm -rf debian/tmp-*/
+ifeq ($(DEB_HOST_ARCH),amd64)
+	rm -rf debian/grub2-images
+endif
 
 	# make sure PO files are always up-to-date
 	debconf-updatepo
