@@ -5,7 +5,7 @@ Description: Check hardware support before using gfxpayload=keep
 Author: Evan Broder <evan@ebroder.net>
 Author: Colin Watson <cjwatson@ubuntu.com>
 Forwarded: no
-Last-Update: 2013-01-21
+Last-Update: 2013-02-01
 
 Index: b/grub-core/Makefile.core.def
 ===================================================================
@@ -177,7 +177,7 @@ Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -123,8 +123,8 @@
+@@ -127,8 +127,8 @@
        if [ "x$GRUB_GFXPAYLOAD_LINUX" != xtext ]; then
  	  echo "	load_video" | sed "s/^/$submenu_indentation/"
        fi
@@ -187,7 +187,7 @@ Index: b/util/grub.d/10_linux.in
  
    echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
  
-@@ -190,6 +190,35 @@
+@@ -200,6 +200,35 @@
  boot_device_id=
  title_correction_code=
  

@@ -82,11 +82,6 @@ esac
 
 title_correction_code=
 
-# add crashkernel option if we have the required tools
-if [ -x "/usr/bin/makedumpfile" ] && [ -x "/sbin/kexec" ]; then
-    GRUB_CMDLINE_EXTRA="$GRUB_CMDLINE_EXTRA crashkernel=384M-2G:64M,2G-:128M"
-fi
-
 linux_entry ()
 {
   os="$1"
@@ -114,7 +109,6 @@ linux_entry ()
   else
       echo "menuentry '$(echo "$os" | grub_quote)' ${CLASS} \$menuentry_id_option 'gnulinux-simple-$boot_device_id' {" | sed "s/^/$submenu_indentation/"
   fi      
-  echo "recordfail" | sed "s/^/$submenu_indentation/"
   if [ x$type != xrecovery ] ; then
       save_default_entry | sed -e "s/^/\t/"
   fi
@@ -143,30 +137,16 @@ linux_entry ()
     fi
     printf '%s\n' "${prepare_boot_cache}" | sed "s/^/$submenu_indentation/"
   fi
-  if [ x$type != xsimple ]; then
-    message="$(gettext_printf "Loading Linux %s ..." ${version})"
-    sed "s/^/$submenu_indentation/" << EOF
+  message="$(gettext_printf "Loading Linux %s ..." ${version})"
+  sed "s/^/$submenu_indentation/" << EOF
 	echo	'$(echo "$message" | grub_quote)'
-EOF
-  fi
-  if test -d /sys/firmware/efi && test -e "${linux}.efi.signed"; then
-    sed "s/^/$submenu_indentation/" << EOF
-	linux	${rel_dirname}/${basename}.efi.signed root=${linux_root_device_thisversion} ro ${args}
-EOF
-  else
-    sed "s/^/$submenu_indentation/" << EOF
 	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args}
 EOF
-  fi
   if test -n "${initrd}" ; then
     # TRANSLATORS: ramdisk isn't identifier. Should be translated.
-    if [ x$type != xsimple ]; then
-      message="$(gettext_printf "Loading initial ramdisk ...")"
-      sed "s/^/$submenu_indentation/" << EOF
-	echo	'$(echo "$message" | grub_quote)'
-EOF
-    fi
+    message="$(gettext_printf "Loading initial ramdisk ...")"
     sed "s/^/$submenu_indentation/" << EOF
+	echo	'$(echo "$message" | grub_quote)'
 	initrd	${rel_dirname}/${initrd}
 EOF
   fi
@@ -207,13 +187,6 @@ submenu_indentation=""
 is_first_entry=true
 while [ "x$list" != "x" ] ; do
   linux=`version_find_latest $list`
-  case $linux in
-    *.efi.signed)
-      # We handle these in linux_entry.
-      list=`echo $list | tr ' ' '\n' | grep -vx $linux | tr '\n' ' '`
-      continue
-      ;;
-  esac
   gettext_printf "Found linux image: %s\n" "$linux" >&2
   basename=`basename $linux`
   dirname=`dirname $linux`
@@ -260,7 +233,7 @@ while [ "x$list" != "x" ] ; do
 
   if [ "x$is_first_entry" = xtrue ]; then
     linux_entry "${OS}" "${version}" simple \
-    "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}"
+    "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
 
     submenu_indentation="\t"
     
@@ -272,7 +245,7 @@ while [ "x$list" != "x" ] ; do
   fi
 
   linux_entry "${OS}" "${version}" advanced \
-              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}"
+              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
   if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
     if [ -x /lib/recovery-mode/recovery-menu ]; then
       linux_entry "${OS}" "${version}" recovery \

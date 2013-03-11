@@ -5,13 +5,13 @@ Description: Add crashkernel option
  This requires several fairly distribution-specific pieces to work properly.
 Author: Michael Vogt <michael.vogt@ubuntu.com>
 Forwarded: not-needed
-Last-Update: 2013-01-21
+Last-Update: 2013-02-01
 
 Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -78,6 +78,11 @@
+@@ -82,6 +82,11 @@
  
  title_correction_code=
  
@@ -23,7 +23,7 @@ Index: b/util/grub.d/10_linux.in
  linux_entry ()
  {
    os="$1"
-@@ -229,7 +234,7 @@
+@@ -248,7 +253,7 @@
  
    if [ "x$is_first_entry" = xtrue ]; then
      linux_entry "${OS}" "${version}" simple \
@@ -32,7 +32,7 @@ Index: b/util/grub.d/10_linux.in
  
      submenu_indentation="\t"
      
-@@ -241,7 +246,7 @@
+@@ -260,7 +265,7 @@
    fi
  
    linux_entry "${OS}" "${version}" advanced \

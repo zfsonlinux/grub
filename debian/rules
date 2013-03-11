@@ -52,6 +52,12 @@ else
 $(error COMMON_PLATFORM not set for $(DEB_HOST_ARCH_CPU))
 endif
 
+ifeq (yes,$(shell dpkg-vendor --derives-from Ubuntu && echo yes))
+DEFAULT_CMDLINE := quiet splash
+else
+DEFAULT_CMDLINE := quiet
+endif
+
 %:
 	dh $@ --parallel
 
@@ -168,6 +174,7 @@ platform_subst = \
 		sed debian/$(1) \
 			-e "s/@PACKAGE@/$(2)/g" \
 			-e "s/@CPU_PLATFORM@/$$cpu_platform/g" \
+			-e "s/@DEFAULT_CMDLINE@/$(DEFAULT_CMDLINE)/g" \
 			>> debian/$(2).$(3); \
 	fi
 
@@ -302,6 +309,14 @@ override_dh_install:
 	done
 	dh_install -pgrub-emu --sourcedir=debian/tmp-grub-emu
 	dh_install -pgrub-emu-dbg --sourcedir=debian/tmp-grub-emu
+	sed -i -e "s/@DEFAULT_CMDLINE@/$(DEFAULT_CMDLINE)/g" \
+		debian/grub2-common/usr/share/grub/default/grub
+ifeq (yes,$(shell dpkg-vendor --derives-from Ubuntu && echo yes))
+ifneq (,$(filter grub-pc,$(BUILD_PACKAGES)))
+	patch debian/grub-pc/usr/lib/grub-legacy/update-grub \
+		< debian/legacy/update-grub.ubuntu.patch
+endif
+endif
 
 override_dh_installdocs:
 	dh_installdocs -pgrub-common -pgrub-rescue-pc -pgrub-firmware-qemu -A AUTHORS NEWS README THANKS TODO
@@ -325,12 +340,11 @@ endif
 override_dh_gencontrol:
 	dh_gencontrol -- -Vlegacy-doc-conflicts="$(LEGACY_DOC_CONFLICTS)"
 
-ifeq ($(DEB_HOST_ARCH),amd64)
 TARNAME := grub2_$(deb_version)_$(DEB_HOST_ARCH).tar.gz
-endif
 
 override_dh_builddeb:
 	dh_builddeb -- -Zxz
+ifeq (yes,$(shell dpkg-vendor --derives-from Ubuntu && echo yes))
 ifeq ($(DEB_HOST_ARCH),amd64)
 	debian/build-efi-images \
 		build/grub-$(COMMON_PLATFORM)/grub-mkimage \
@@ -341,6 +355,7 @@ ifeq ($(DEB_HOST_ARCH),amd64)
 		> debian/grub2-images/$(deb_version)/version
 	cd debian/grub2-images && tar czvf ../../../$(TARNAME) .
 	dpkg-distaddfile $(TARNAME) raw-uefi -
+endif
 endif
 
 override_dh_auto_clean:
@@ -357,8 +372,10 @@ override_dh_clean: debian/legacy/update-grub debian/grub-extras
 		rm -f debian/grub-{pc,efi-*,ieee1275,coreboot,yeeloong,emu}{,-bin,-dbg}.$$i ; \
 	done
 	rm -rf debian/tmp-*/
+ifeq (yes,$(shell dpkg-vendor --derives-from Ubuntu && echo yes))
 ifeq ($(DEB_HOST_ARCH),amd64)
 	rm -rf debian/grub2-images
+endif
 endif
 
 	# make sure PO files are always up-to-date

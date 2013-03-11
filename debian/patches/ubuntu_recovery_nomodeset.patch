@@ -4,13 +4,13 @@ Description: Set nomodeset for recovery mode
  https://launchpad.net/ubuntu/+spec/desktop-o-xorg-tools-and-processes
 Author: Colin Watson <cjwatson@ubuntu.com>
 Forwarded: no
-Last-Update: 2013-01-21
+Last-Update: 2013-02-01
 
 Index: b/util/grub.d/10_linux.in
 ===================================================================
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
-@@ -130,7 +130,9 @@
+@@ -134,7 +134,9 @@
  	  echo "	load_video" | sed "s/^/$submenu_indentation/"
        fi
    fi
@@ -21,7 +21,7 @@ Index: b/util/grub.d/10_linux.in
  
    echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
  
-@@ -305,10 +307,10 @@
+@@ -322,10 +324,10 @@
    if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
      if [ -x /lib/recovery-mode/recovery-menu ]; then
        linux_entry "${OS}" "${version}" recovery \
