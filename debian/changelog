@@ -1,3 +1,10 @@
+grub2 (2.00-13ubuntu2) raring; urgency=low
+
+  * acpihalt: expand parser to handle SSDTs and some more opcodes.  Fixes
+    test suite hang with current seabios.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 13 Mar 2013 00:31:14 +0000
+
 grub2 (2.00-13ubuntu1) raring; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:
