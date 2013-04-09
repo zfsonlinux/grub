@@ -1,3 +1,10 @@
+grub2 (2.00-13ubuntu3) raring; urgency=low
+
+  * In 05_debian_theme treat 'Kubuntu' as Ubuntu alias in $GRUB_DISTRIBUTOR.
+    Kubuntu overrides the value to establish branding in the grub OS list.
+
+ -- Harald Sitter <apachelogger@kubuntu.org>  Tue, 09 Apr 2013 10:51:06 +0200
+
 grub2 (2.00-13ubuntu2) raring; urgency=low
 
   * acpihalt: expand parser to handle SSDTs and some more opcodes.  Fixes
