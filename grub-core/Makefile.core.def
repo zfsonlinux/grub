@@ -573,12 +573,6 @@ module = {
 };
 
 module = {
-  name = efifwsetup;
-  efi = commands/efi/efifwsetup.c;
-  enable = efi;
-};
-
-module = {
   name = blocklist;
   common = commands/blocklist.c;
 };
@@ -701,15 +695,6 @@ module = {
   name = hexdump;
   common = commands/hexdump.c;
   common = lib/hexdump.c;
-};
-
-module = {
-  name = hwmatch;
-  i386_pc = commands/i386/pc/hwmatch.c;
-  enable = i386_pc;
-  ldadd = libgnulib.a;
-  cflags = '$(CFLAGS_POSIX) $(CFLAGS_GNULIB)';
-  cppflags = '$(CPPFLAGS_POSIX) $(CPPFLAGS_GNULIB)';
 };
 
 module = {
@@ -1426,13 +1411,6 @@ module = {
   name = appleldr;
   common = loader/efi/appleloader.c;
   enable = i386_efi;
-  enable = x86_64_efi;
-};
-
-module = {
-  name = linuxefi;
-  efi = loader/i386/efi/linux.c;
-  efi = lib/cmdline.c;
   enable = x86_64_efi;
 };
 

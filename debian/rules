@@ -22,18 +22,22 @@ unexport CFLAGS
 export HOST_CFLAGS
 export TARGET_CPPFLAGS := -Wno-unused-but-set-variable
 
-ifeq (,$(shell which qemu-system-i386 2>/dev/null))
+# The Launchpad builders for Raring cannot run the test suite for a vanilla
+# grub2 package. The build farm might have a new resource limitation.
 with_check := no
-else
-with_check := yes
-endif
+ 
+#ifeq (,$(shell which qemu-system-i386 2>/dev/null))
+#with_check := no
+#else
+#with_check := yes
+#endif
 
 CC := gcc-4.7
 
 # Enable external modules from grub-extras.
 export GRUB_CONTRIB := $(CURDIR)/debian/grub-extras
 
-confflags = PACKAGE_VERSION="$(deb_version)" PACKAGE_STRING="GRUB $(deb_version)" CC=$(CC) TARGET_CC=$(CC) --enable-grub-mkfont
+confflags = PACKAGE_VERSION="$(deb_version)" PACKAGE_STRING="GRUB $(deb_version)" CC=$(CC) TARGET_CC=$(CC) --enable-grub-mkfont --enable-libzfs --disable-werror
 
 AUTOGEN_DEB_FILES = config templates preinst postinst postrm dirs install links
 

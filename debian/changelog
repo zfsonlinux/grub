@@ -1,3 +1,16 @@
+grub2 (2.00-13ubuntu3+zfs2~raring) raring; urgency=low
+
+  * Provide a virtual zfs-grub package.
+  * Add zfs-linux.patch for ZoL support.
+  * Set --enable-libzfs in the debian/rules file.
+  * Set --disable-werror in the debian/rules file.
+  * Enable restore_mkdevicemap.patch
+  * Import zfs-feature-flag-support.patch from Gentoo.
+    Thanks: Massimo Maggi for https://github.com/maxximino/grub2
+  * Disable with_check for dh_auto_test.
+
+ -- Darik Horn <dajhorn@vanadac.com>  Tue, 09 Apr 2013 13:41:12 -0500
+
 grub2 (2.00-13ubuntu3) raring; urgency=low
 
   * In 05_debian_theme treat 'Kubuntu' as Ubuntu alias in $GRUB_DISTRIBUTOR.

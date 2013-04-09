@@ -1,0 +1,127 @@
+Index: b/util/grub.d/10_linux.in
+===================================================================
+--- a/util/grub.d/10_linux.in
++++ b/util/grub.d/10_linux.in
+@@ -77,6 +77,8 @@
+ 	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || true`
+ 	bootfs="`make_system_path_relative_to_its_root / | sed -e "s,@$,,"`"
+ 	LINUX_ROOT_DEVICE="ZFS=${rpool}${bootfs}"
++	# Backwards compatibility for systems that expect Solaris parameters.
++	GRUB_CMDLINE_LINUX="boot=zfs \$bootfs ${GRUB_CMDLINE_LINUX}"
+ 	;;
+ esac
+ 
+@@ -140,6 +142,12 @@
+ 
+   echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
+ 
++  if [ x"$GRUBFS" = xzfs ]; then
++      # Backwards compatibility for systems that expect Solaris parameters.
++      echo "	insmod zfsinfo" | sed "s/^/$submenu_indentation/"
++      echo "	zfs-bootfs (\$root) bootfs" | sed "s/^/$submenu_indentation/"
++  fi
++
+   if [ x$dirname = x/ ]; then
+     if [ -z "${prepare_root_cache}" ]; then
+       prepare_root_cache="$(prepare_grub_to_access_device ${GRUB_DEVICE} | sed -e "s/^/\t/")"
+Index: b/grub-core/fs/zfs/zfs.c
+===================================================================
+--- a/grub-core/fs/zfs/zfs.c
++++ b/grub-core/fs/zfs/zfs.c
+@@ -416,7 +416,7 @@
+ 		    (unsigned long long) zc.zc_word[1],
+ 		    (unsigned long long) zc.zc_word[2], 
+ 		    (unsigned long long) zc.zc_word[3]);
+-      return grub_error (GRUB_ERR_BAD_FS, N_("checksum verification failed"));
++      /* return grub_error (GRUB_ERR_BAD_FS, N_("checksum verification failed")); */
+     }
+ 
+   return GRUB_ERR_NONE;
+Index: b/util/getroot.c
+===================================================================
+--- a/util/getroot.c
++++ b/util/getroot.c
+@@ -175,6 +175,17 @@
+ grub_util_is_imsm (const char *os_dev);
+ #endif
+ 
++#if defined(HAVE_LIBUUTIL)
++/*
++ * The Solaris Compatibility Layer provides getextmntent on Linux, which is
++ * required for grub-probe to recognize a native ZFS root filesystem on
++ * a Linux system. This typedef is required because including the SPL
++ * types.h here conflicts with an earlier Linux types.h inclusion.
++ */
++typedef unsigned int uint_t;
++#include <libspl/sys/mnttab.h>
++#endif
++
+ #if ! defined(__CYGWIN__) && !defined(__GNU__)
+ 
+ static void
+@@ -2739,7 +2750,15 @@
+     if (stat (dir, &st) != 0)
+       return;
+ 
+-    FILE *mnttab = fopen ("/etc/mnttab", "r");
++    FILE *mnttab;
++    mnttab = fopen ("/proc/mounts", "r");
++
++    if (! mnttab)
++      mnttab = fopen ("/etc/mtab", "r");
++
++    if (! mnttab)
++      mnttab = fopen ("/etc/mnttab", "r");
++
+     if (! mnttab)
+       return;
+ 
+Index: b/configure.ac
+===================================================================
+--- a/configure.ac
++++ b/configure.ac
+@@ -1048,6 +1048,14 @@
+ fi
+ 
+ if test x"$libzfs_excuse" = x ; then
++  AC_CHECK_LIB([uutil], [getextmntent], [
++    LIBUUTIL="-luutil"
++    AC_DEFINE([HAVE_LIBUUTIL], [1], [Define to 1 if you have the UUTIL library.])
++    AC_DEFINE([HAVE_GETEXTMNTENT], [1], [Define to 1 if you have the GETEXTMNTENT function.])
++  ],)
++fi
++
++if test x"$libzfs_excuse" = x ; then
+   AC_CHECK_LIB([zfs], [libzfs_init],
+                [],
+                [libzfs_excuse="need zfs library"])
+@@ -1065,7 +1073,7 @@
+ 
+ if test x"$libzfs_excuse" = x ; then
+   # We need both libzfs and libnvpair for a successful build.
+-  LIBZFS="-lzfs"
++  LIBZFS="-lzfs $LIBUUTIL"
+   AC_DEFINE([HAVE_LIBZFS], [1],
+             [Define to 1 if you have the ZFS library.])
+   LIBNVPAIR="-lnvpair"
+@@ -1075,6 +1083,7 @@
+ 
+ AC_SUBST([LIBZFS])
+ AC_SUBST([LIBNVPAIR])
++AC_SUBST([LIBUUTIL])
+ 
+ LIBS=""
+ 
+Index: b/Makefile.util.def
+===================================================================
+--- a/Makefile.util.def
++++ b/Makefile.util.def
+@@ -2,7 +2,7 @@
+ 
+ library = {
+   name = libgrubkern.a;
+-  cflags = '$(CFLAGS_GNULIB)';
++  cflags = '$(CFLAGS_GNULIB) $(LIBUUTIL)';
+   cppflags = '$(CPPFLAGS_GNULIB)';
+ 
+   common = util/misc.c;

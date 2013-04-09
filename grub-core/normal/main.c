@@ -399,13 +399,6 @@ static grub_err_t
 grub_normal_read_line_real (char **line, int cont, int nested)
 {
   const char *prompt;
-  static int displayed_intro;
-
-  if (! displayed_intro)
-    {
-      grub_normal_reader_init (nested);
-      displayed_intro = 1;
-    }
 
   if (cont)
     /* TRANSLATORS: it's command line prompt.  */
@@ -452,6 +445,8 @@ grub_cmdline_run (int nested)
       grub_errno = GRUB_ERR_NONE;
       return;
     }
+
+  grub_normal_reader_init (nested);
 
   while (1)
     {

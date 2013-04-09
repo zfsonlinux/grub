@@ -220,9 +220,6 @@ xgetcwd (void)
 
 #if !defined (__MINGW32__) && !defined (__CYGWIN__) && !defined (__GNU__)
 
-#if (defined (__linux__) || \
-     !defined (HAVE_LIBZFS) || !defined (HAVE_LIBNVPAIR))
-
 static pid_t
 exec_pipe (char **argv, int *fd)
 {
@@ -261,8 +258,6 @@ exec_pipe (char **argv, int *fd)
     }
 }
 
-#endif
-
 static char **
 find_root_devices_from_poolname (char *poolname)
 {
@@ -274,7 +269,7 @@ find_root_devices_from_poolname (char *poolname)
   zpool_handle_t *zpool;
   libzfs_handle_t *libzfs;
   nvlist_t *config, *vdev_tree;
-  nvlist_t **children;
+  nvlist_t **children, **path;
   unsigned int nvlist_count;
   unsigned int i;
   char *device = 0;
@@ -1929,12 +1924,6 @@ convert_system_partition_to_system_disk (const char *os_dev, struct stat *st,
 	      grub_util_info ("%s child has no DM name", path);
 	      goto devmapper_out;
 	    }
-	  if (strstr (child_name, "-") != 0)
-	    {
-	      grub_util_info ("%s child %s looks like a sub-layer\n",
-			      path, child_name);
-	      goto devmapper_out;
-	    }
 	  mapper_name = child_name;
 
 devmapper_out:
@@ -2155,7 +2144,7 @@ make_device_name (const char *drive, int dos_part, int bsd_part)
     }
   *ptr = 0;
   if (dos_part >= 0)
-    snprintf (ptr, end - ptr, ",%d", dos_part + (getenv ("GRUB_LEGACY_0_BASED_PARTITIONS") ? 0 : 1));
+    snprintf (ptr, end - ptr, ",%d", dos_part + 1);
   ptr += strlen (ptr);
   if (bsd_part >= 0)
     snprintf (ptr, end - ptr, ",%d", bsd_part + 1); 
@@ -2252,29 +2241,6 @@ grub_util_biosdisk_get_grub_dev (const char *os_dev)
 
 	if (start == part_start)
 	  {
-	    if (getenv ("GRUB_LEGACY_0_BASED_PARTITIONS"))
-	      {
-		int dos_part, bsd_part;
-		char *fullname, *comma;
-
-		if (partition->parent)
-		  {
-		    dos_part = partition->parent->number;
-		    bsd_part = partition->number;
-		  }
-		else
-		  {
-		    dos_part = partition->number;
-		    bsd_part = -1;
-		  }
-
-		fullname = make_device_name (drive, dos_part, bsd_part);
-		comma = strchr (fullname, ',');
-		partname = comma ? xstrdup (comma + 1) : NULL;
-		free (fullname);
-		return 1;
-	      }
-
 	    partname = grub_partition_get_name (partition);
 	    return 1;
 	  }

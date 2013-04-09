@@ -57,3 +57,5 @@ ubuntu_recovery_nomodeset.patch
 ubuntu_wubi_no_windows.patch
 ubuntu_probe_dmraid.patch
 ubuntu_acpihalt_improvements.patch
+zfs-feature-flag-support.patch
+zfs-linux.patch

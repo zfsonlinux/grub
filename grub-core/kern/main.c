@@ -207,14 +207,13 @@ grub_load_normal_mode (void)
 void __attribute__ ((noreturn))
 grub_main (void)
 {
-  struct grub_term_output *term;
-
   /* First of all, initialize the machine.  */
   grub_machine_init ();
 
-  /* Disable the cursor until we need it.  */
-  FOR_ACTIVE_TERM_OUTPUTS(term)
-    grub_term_setcursor (term, 0);
+  /* Hello.  */
+  grub_setcolorstate (GRUB_TERM_COLOR_HIGHLIGHT);
+  grub_printf ("Welcome to GRUB!\n\n");
+  grub_setcolorstate (GRUB_TERM_COLOR_STANDARD);
 
   /* Load pre-loaded modules and free the space.  */
   grub_register_exported_symbols ();
@@ -233,10 +232,5 @@ grub_main (void)
 
   grub_load_config ();
   grub_load_normal_mode ();
-
-  /* If we have to enter rescue mode, enable the cursor again.  */
-  FOR_ACTIVE_TERM_OUTPUTS(term)
-    grub_term_setcursor (term, 1);
-
   grub_rescue_run ();
 }
