@@ -1,3 +1,12 @@
+grub2 (1.99-27+deb7u1) testing-proposed-updates; urgency=medium
+
+  * NMU
+  * Add entries for Windows Boot Manager found via UEFI in
+    os-prober. Closes: #698914 before the Wheezy release.
+  * TPU upload to lose dependency blockage on LVM.
+
+ -- Steve McIntyre <93sam@debian.org>  Mon, 29 Apr 2013 00:32:07 +0100
+
 grub2 (1.99-27) unstable; urgency=low
 
   * Amend gfxpayload_keep_default.patch to no longer remove the call to
