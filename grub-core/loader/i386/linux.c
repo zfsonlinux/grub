@@ -75,8 +75,6 @@ static grub_size_t maximal_cmdline_size;
 static struct linux_kernel_params linux_params;
 static char *linux_cmdline;
 #ifdef GRUB_MACHINE_EFI
-static int using_linuxefi;
-static grub_command_t initrdefi_cmd;
 static grub_efi_uintn_t efi_mmap_size;
 #else
 static const grub_size_t efi_mmap_size = 0;
@@ -120,13 +118,12 @@ find_efi_mmap_size (void)
       int ret;
       grub_efi_memory_descriptor_t *mmap;
       grub_efi_uintn_t desc_size;
-      grub_efi_uintn_t cur_mmap_size = mmap_size;
 
-      mmap = grub_malloc (cur_mmap_size);
+      mmap = grub_malloc (mmap_size);
       if (! mmap)
 	return 0;
 
-      ret = grub_efi_get_memory_map (&cur_mmap_size, mmap, 0, &desc_size, 0);
+      ret = grub_efi_get_memory_map (&mmap_size, mmap, 0, &desc_size, 0);
       grub_free (mmap);
 
       if (ret < 0)
@@ -137,8 +134,6 @@ find_efi_mmap_size (void)
       else if (ret > 0)
 	break;
 
-      if (mmap_size < cur_mmap_size)
-	mmap_size = cur_mmap_size;
       mmap_size += (1 << 12);
     }
 
@@ -686,41 +681,6 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 
   grub_dl_ref (my_mod);
 
-#ifdef GRUB_MACHINE_EFI
-  using_linuxefi = 0;
-  if (grub_efi_secure_boot ())
-    {
-      /* Try linuxefi first, which will require a successful signature check
-	 and then hand over to the kernel without calling ExitBootServices.
-	 If that fails, however, fall back to calling ExitBootServices
-	 ourselves and then booting an unsigned kernel.  */
-      grub_dl_t mod;
-      grub_command_t linuxefi_cmd;
-
-      grub_dprintf ("linux", "Secure Boot enabled: trying linuxefi\n");
-
-      mod = grub_dl_load ("linuxefi");
-      if (mod)
-	{
-	  grub_dl_ref (mod);
-	  linuxefi_cmd = grub_command_find ("linuxefi");
-	  initrdefi_cmd = grub_command_find ("initrdefi");
-	  if (linuxefi_cmd && initrdefi_cmd)
-	    {
-	      (linuxefi_cmd->func) (linuxefi_cmd, argc, argv);
-	      if (grub_errno == GRUB_ERR_NONE)
-		{
-		  grub_dprintf ("linux", "Handing off to linuxefi\n");
-		  using_linuxefi = 1;
-		  return GRUB_ERR_NONE;
-		}
-	      grub_dprintf ("linux", "linuxefi failed (%d)\n", grub_errno);
-	      grub_errno = GRUB_ERR_NONE;
-	    }
-	}
-    }
-#endif
-
   if (argc == 0)
     {
       grub_error (GRUB_ERR_BAD_ARGUMENT, N_("filename expected"));
@@ -1087,12 +1047,6 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
   int nfiles = 0;
   grub_uint8_t *ptr;
 
-#ifdef GRUB_MACHINE_EFI
-  /* If we're using linuxefi, just forward to initrdefi.  */
-  if (using_linuxefi && initrdefi_cmd)
-    return (initrdefi_cmd->func) (initrdefi_cmd, argc, argv);
-#endif
-
   if (argc == 0)
     {
       grub_error (GRUB_ERR_BAD_ARGUMENT, N_("filename expected"));
@@ -1144,7 +1098,8 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
      worse than that of Linux 2.3.xx, so avoid the last 64kb.  */
   addr_max -= 0x10000;
 
-  addr_min = (grub_addr_t) prot_mode_target + prot_init_space;
+  addr_min = (grub_addr_t) prot_mode_target + prot_init_space
+             + page_align (size);
 
   /* Put the initrd as high as possible, 4KiB aligned.  */
   addr = (addr_max - size) & ~0xFFF;

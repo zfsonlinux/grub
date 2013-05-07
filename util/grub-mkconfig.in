@@ -99,13 +99,6 @@ do
     esac
 done
 
-if fgrep -qs '${GRUB_PREFIX}/video.lst' "${grub_mkconfig_dir}/00_header"; then
-  echo "GRUB >= 2.00 has been unpacked but not yet configured." >&2
-  echo "grub-mkconfig will not work until the upgrade is complete." >&2
-  echo "It should run later as part of configuring the new GRUB packages." >&2
-  exit 0
-fi
-
 if [ "x$EUID" = "x" ] ; then
   EUID=`id -u`
 fi
@@ -150,11 +143,6 @@ GRUB_FS="`${grub_probe} --device ${GRUB_DEVICE} --target=fs 2> /dev/null || echo
 if test -f ${sysconfdir}/default/grub ; then
   . ${sysconfdir}/default/grub
 fi
-for x in ${sysconfdir}/default/grub.d/*.cfg ; do
-  if [ -e "${x}" ]; then
-    . "${x}"
-  fi
-done
 
 # XXX: should this be deprecated at some point?
 if [ "x${GRUB_TERMINAL}" != "x" ] ; then
@@ -228,8 +216,7 @@ export GRUB_DEFAULT \
   GRUB_INIT_TUNE \
   GRUB_SAVEDEFAULT \
   GRUB_ENABLE_CRYPTODISK \
-  GRUB_BADRAM \
-  GRUB_RECORDFAIL_TIMEOUT
+  GRUB_BADRAM
 
 if test "x${grub_cfg}" != "x"; then
   rm -f "${grub_cfg}.new"
@@ -265,10 +252,6 @@ for i in ${grub_mkconfig_dir}/* ; do
     ;;
   esac
 done
-
-if [ "x${grub_cfg}" != "x" ] && ! grep "^password " ${grub_cfg}.new >/dev/null; then
-  chmod 444 ${grub_cfg}.new || true
-fi
 
 if test "x${grub_cfg}" != "x" ; then
   if ! ${grub_script_check} ${grub_cfg}.new; then

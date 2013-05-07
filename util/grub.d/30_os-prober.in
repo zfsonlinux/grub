@@ -26,80 +26,22 @@ export TEXTDOMAINDIR="@localedir@"
 
 . "@datadir@/@PACKAGE@/grub-mkconfig_lib"
 
-found_other_os=
-
-make_timeout () {
-  if [ "x${found_other_os}" = "x" ] ; then
-    if [ "x${1}" != "x" ] ; then
-      if [ "x${GRUB_HIDDEN_TIMEOUT_QUIET}" = "xtrue" ] ; then
-	verbose=
-      else
-	verbose=" --verbose"
-      fi
-
-      if [ "x${1}" = "x0" ] ; then
-	cat <<EOF
-if [ "x\${timeout}" != "x-1" ]; then
-  if keystatus; then
-    if keystatus --shift; then
-      set timeout=-1
-    else
-      set timeout=0
-    fi
-  else
-    if sleep$verbose --interruptible 3 ; then
-      set timeout=0
-    fi
-  fi
-fi
-EOF
-      else
-	cat << EOF
-if [ "x\${timeout}" != "x-1" ]; then
-  if sleep$verbose --interruptible ${GRUB_HIDDEN_TIMEOUT} ; then
-    set timeout=0
-  fi
-fi
-EOF
-      fi
-    fi
-  fi
-}
-
-adjust_timeout () {
-  if [ "x$GRUB_BUTTON_CMOS_ADDRESS" != "x" ]; then
-    cat <<EOF
-if cmostest $GRUB_BUTTON_CMOS_ADDRESS ; then
-EOF
-    make_timeout "${GRUB_HIDDEN_TIMEOUT_BUTTON}" "${GRUB_TIMEOUT_BUTTON}"
-    echo else
-    make_timeout "${GRUB_HIDDEN_TIMEOUT}" "${GRUB_TIMEOUT}"
-    echo fi
-  else
-    make_timeout "${GRUB_HIDDEN_TIMEOUT}" "${GRUB_TIMEOUT}"
-  fi
-}
-
 if [ "x${GRUB_DISABLE_OS_PROBER}" = "xtrue" ]; then
-  adjust_timeout
   exit 0
 fi
 
 if [ -z "`which os-prober 2> /dev/null`" -o -z "`which linux-boot-prober 2> /dev/null`" ] ; then
   # missing os-prober and/or linux-boot-prober
-  adjust_timeout
   exit 0
 fi
 
 OSPROBED="`os-prober | tr ' ' '^' | paste -s -d ' '`"
 if [ -z "${OSPROBED}" ] ; then
   # empty os-prober output, nothing doing
-  adjust_timeout
   exit 0
 fi
 
 osx_entry() {
-    found_other_os=1
     if [ x$2 = x32 ]; then
         # TRANSLATORS: it refers to kernel architecture (32-bit)
 	bitstr="$(gettext "(32-bit)")"
@@ -165,8 +107,6 @@ EOF
 
 used_osprober_linux_ids=
 
-wubi=
-
 for OS in ${OSPROBED} ; do
   DEVICE="`echo ${OS} | cut -d ':' -f 1`"
   LONGNAME="`echo ${OS} | cut -d ':' -f 2 | tr '^' ' '`"
@@ -182,24 +122,6 @@ for OS in ${OSPROBED} ; do
   case ${BOOT} in
     chain)
 
-      case ${LONGNAME} in
-	Windows*)
-	  if [ -z "$wubi" ]; then
-	    if [ -x /usr/share/lupin-support/grub-mkimage ] && \
-	       /usr/share/lupin-support/grub-mkimage --test; then
-	      wubi=yes
-	    else
-	      wubi=no
-	    fi
-	  fi
-	  if [ "$wubi" = yes ]; then
-	    echo "Skipping ${LONGNAME} on Wubi system" >&2
-	    continue
-	  fi
-	  ;;
-      esac
-
-      found_other_os=1
 	  onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
       cat << EOF
 menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' --class windows --class os \$menuentry_id_option 'osprober-chain-$(grub_get_device_id "${DEVICE}")' {
@@ -247,14 +169,8 @@ EOF
 	  LINITRD="${LINITRD#/boot}"
 	fi
 
-	if [ -z "${prepare_boot_cache}" ]; then
-	  prepare_boot_cache="$(prepare_grub_to_access_device ${LBOOT} | sed -e "s/^/\t/")"
-	  [ "${prepare_boot_cache}" ] || continue
-	fi
-
-	found_other_os=1
 	onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
-	recovery_params="$(echo "${LPARAMS}" | grep 'single\|recovery')" || true
+	recovery_params="$(echo "${LPARAMS}" | grep single)" || true
 	counter=1
 	while echo "$used_osprober_linux_ids" | grep 'osprober-gnulinux-$LKERNEL-${recovery_params}-$counter-$boot_device_id' > /dev/null; do
 	    counter=$((counter+1));
@@ -263,6 +179,10 @@ EOF
 	    boot_device_id="$(grub_get_device_id "${DEVICE}")"
 	fi
 	used_osprober_linux_ids="$used_osprober_linux_ids 'osprober-gnulinux-$LKERNEL-${recovery_params}-$counter-$boot_device_id'"
+
+	if [ -z "${prepare_boot_cache}" ]; then
+	  prepare_boot_cache="$(prepare_grub_to_access_device ${LBOOT} | sed -e "s/^/\t/")"
+	fi
 
 	if [ "x$is_first_entry" = xtrue ]; then
             cat << EOF
@@ -319,7 +239,6 @@ EOF
       osx_entry xnu_kernel64 64
     ;;
     hurd)
-      found_other_os=1
       onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
       cat << EOF
 menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' --class hurd --class gnu --class os \$menuentry_id_option 'osprober-gnuhurd-/boot/gnumach.gz-false-$(grub_get_device_id "${DEVICE}")' {
@@ -352,5 +271,3 @@ EOF
     ;;
   esac
 done
-
-adjust_timeout

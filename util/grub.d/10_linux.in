@@ -31,11 +31,7 @@ CLASS="--class gnu-linux --class gnu --class os"
 if [ "x${GRUB_DISTRIBUTOR}" = "x" ] ; then
   OS=GNU/Linux
 else
-  if [ "${GRUB_DISTRIBUTOR}" = "Ubuntu" ] ; then
-    OS="${GRUB_DISTRIBUTOR}"
-  else
-    OS="${GRUB_DISTRIBUTOR} GNU/Linux"
-  fi
+  OS="${GRUB_DISTRIBUTOR} GNU/Linux"
   CLASS="--class $(echo ${GRUB_DISTRIBUTOR} | tr 'A-Z' 'a-z' | cut -d' ' -f1) ${CLASS}"
 fi
 
@@ -44,11 +40,6 @@ fi
 case ${GRUB_DEVICE} in
   /dev/loop/*|/dev/loop[0-9])
     GRUB_DEVICE=`losetup ${GRUB_DEVICE} | sed -e "s/^[^(]*(\([^)]\+\)).*/\1/"`
-    # We can't cope with devices loop-mounted from files here.
-    case ${GRUB_DEVICE} in
-      /dev/*) ;;
-      *) exit 0 ;;
-    esac
   ;;
 esac
 
@@ -82,17 +73,6 @@ esac
 
 title_correction_code=
 
-for word in $GRUB_CMDLINE_LINUX_DEFAULT; do
-  if [ "$word" = splash ]; then
-    GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT \$vt_handoff"
-  fi
-done
-
-# add crashkernel option if we have the required tools
-if [ -x "/usr/bin/makedumpfile" ] && [ -x "/sbin/kexec" ]; then
-    GRUB_CMDLINE_EXTRA="$GRUB_CMDLINE_EXTRA crashkernel=384M-2G:64M,2G-:128M"
-fi
-
 linux_entry ()
 {
   os="$1"
@@ -120,7 +100,6 @@ linux_entry ()
   else
       echo "menuentry '$(echo "$os" | grub_quote)' ${CLASS} \$menuentry_id_option 'gnulinux-simple-$boot_device_id' {" | sed "s/^/$submenu_indentation/"
   fi      
-  echo "recordfail" | sed "s/^/$submenu_indentation/"
   if [ x$type != xrecovery ] ; then
       save_default_entry | sed -e "s/^/\t/"
   fi
@@ -129,13 +108,15 @@ linux_entry ()
   # FIXME: We need an interface to select vesafb in case efifb can't be used.
   if [ "x$GRUB_GFXPAYLOAD_LINUX" = x ]; then
       echo "	load_video" | sed "s/^/$submenu_indentation/"
+      if grep -qx "CONFIG_FB_EFI=y" "${config}" 2> /dev/null \
+	  && grep -qx "CONFIG_VT_HW_CONSOLE_BINDING=y" "${config}" 2> /dev/null; then
+	  echo "	set gfxpayload=keep" | sed "s/^/$submenu_indentation/"
+      fi
   else
       if [ "x$GRUB_GFXPAYLOAD_LINUX" != xtext ]; then
 	  echo "	load_video" | sed "s/^/$submenu_indentation/"
       fi
-  fi
-  if [ x$type != xrecovery ] ; then
-      echo "	gfxmode \$linux_gfx_mode" | sed "s/^/$submenu_indentation/"
+      echo "	set gfxpayload=$GRUB_GFXPAYLOAD_LINUX" | sed "s/^/$submenu_indentation/"
   fi
 
   echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
@@ -151,30 +132,16 @@ linux_entry ()
     fi
     printf '%s\n' "${prepare_boot_cache}" | sed "s/^/$submenu_indentation/"
   fi
-  if [ x$type != xsimple ]; then
-    message="$(gettext_printf "Loading Linux %s ..." ${version})"
-    sed "s/^/$submenu_indentation/" << EOF
-	echo	'$(echo "$message" | grub_quote)'
-EOF
-  fi
-  if test -d /sys/firmware/efi && test -e "${linux}.efi.signed"; then
-    sed "s/^/$submenu_indentation/" << EOF
-	linux	${rel_dirname}/${basename}.efi.signed root=${linux_root_device_thisversion} ro ${args}
-EOF
-  else
-    sed "s/^/$submenu_indentation/" << EOF
+  message="$(gettext_printf "Loading Linux %s ..." ${version})"
+  sed "s/^/$submenu_indentation/" << EOF
+	echo	'$message'
 	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args}
 EOF
-  fi
   if test -n "${initrd}" ; then
     # TRANSLATORS: ramdisk isn't identifier. Should be translated.
-    if [ x$type != xsimple ]; then
-      message="$(gettext_printf "Loading initial ramdisk ...")"
-      sed "s/^/$submenu_indentation/" << EOF
-	echo	'$(echo "$message" | grub_quote)'
-EOF
-    fi
+    message="$(gettext_printf "Loading initial ramdisk ...")"
     sed "s/^/$submenu_indentation/" << EOF
+	echo	'$message'
 	initrd	${rel_dirname}/${initrd}
 EOF
   fi
@@ -208,46 +175,6 @@ prepare_root_cache=
 boot_device_id=
 title_correction_code=
 
-cat << 'EOF'
-function gfxmode {
-	set gfxpayload="${1}"
-	if [ "${1}" = "keep" ]; then
-		set vt_handoff=vt.handoff=7
-	else
-		set vt_handoff=
-	fi
-}
-EOF
-
-# Use ELILO's generic "efifb" when it's known to be available.
-# FIXME: We need an interface to select vesafb in case efifb can't be used.
-if [ "x$GRUB_GFXPAYLOAD_LINUX" != x ]; then
-  echo "set linux_gfx_mode=$GRUB_GFXPAYLOAD_LINUX"
-else
-  cat << EOF
-if [ "\${recordfail}" != 1 ]; then
-  if [ -e \${prefix}/gfxblacklist.txt ]; then
-    if hwmatch \${prefix}/gfxblacklist.txt 3; then
-      if [ \${match} = 0 ]; then
-        set linux_gfx_mode=keep
-      else
-        set linux_gfx_mode=text
-      fi
-    else
-      set linux_gfx_mode=text
-    fi
-  else
-    set linux_gfx_mode=keep
-  fi
-else
-  set linux_gfx_mode=text
-fi
-EOF
-fi
-cat << EOF
-export linux_gfx_mode
-EOF
-
 # Extra indentation to add to menu entries in a submenu. We're not in a submenu
 # yet, so it's empty. In a submenu it will be equal to '\t' (one tab).
 submenu_indentation=""
@@ -255,13 +182,6 @@ submenu_indentation=""
 is_first_entry=true
 while [ "x$list" != "x" ] ; do
   linux=`version_find_latest $list`
-  case $linux in
-    *.efi.signed)
-      # We handle these in linux_entry.
-      list=`echo $list | tr ' ' '\n' | grep -vx $linux | tr '\n' ' '`
-      continue
-      ;;
-  esac
   gettext_printf "Found linux image: %s\n" "$linux" >&2
   basename=`basename $linux`
   dirname=`dirname $linux`
@@ -308,7 +228,7 @@ while [ "x$list" != "x" ] ; do
 
   if [ "x$is_first_entry" = xtrue ]; then
     linux_entry "${OS}" "${version}" simple \
-    "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}"
+    "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
 
     submenu_indentation="\t"
     
@@ -320,15 +240,10 @@ while [ "x$list" != "x" ] ; do
   fi
 
   linux_entry "${OS}" "${version}" advanced \
-              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}"
+              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
   if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
-    if [ -x /lib/recovery-mode/recovery-menu ]; then
-      linux_entry "${OS}" "${version}" recovery \
-                  "recovery nomodeset ${GRUB_CMDLINE_LINUX}"
-    else
-      linux_entry "${OS}" "${version}" recovery \
-                  "single nomodeset ${GRUB_CMDLINE_LINUX}"
-    fi
+    linux_entry "${OS}" "${version}" recovery \
+                "single ${GRUB_CMDLINE_LINUX}"
   fi
 
   list=`echo $list | tr ' ' '\n' | grep -vx $linux | tr '\n' ' '`
