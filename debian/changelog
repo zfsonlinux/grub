@@ -1,3 +1,10 @@
+grub2 (2.00-13ubuntu3+zfs2~raring.tf.1) raring; urgency=low
+
+  * Lower build depends on gcc from 4.7 to 4.4.
+  * Lower build depends on libfuse-dev from 2.8.4-1.4 to 2.8.4-1.1.
+
+ -- Turbo Fredriksson <turbo@bayour.com>  Wed, 15 May 2013 02:58:36 +0200
+
 grub2 (2.00-13ubuntu3+zfs2~raring) raring; urgency=low
 
   * Provide a virtual zfs-grub package.
