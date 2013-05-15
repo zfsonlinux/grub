@@ -98,6 +98,15 @@ Index: b/util/getroot.c
      if (! mnttab)
        return;
  
+@@ -2842,7 +2861,7 @@
+ 	      {
+ 		char *bind;
+ 		grub_free (grub_find_root_devices_from_mountinfo (buf2, &bind));
+-		if (bind && bind[0] && bind[1])
++		if (!poolfs && bind && bind[0] && bind[1])
+ 		  {
+ 		    buf3 = bind;
+ 		    goto parsedir;
 @@ -2875,7 +2894,7 @@
    {
      char *bind;
