@@ -59,3 +59,4 @@ ubuntu_probe_dmraid.patch
 ubuntu_acpihalt_improvements.patch
 zfs-feature-flag-support.patch
 zfs-linux.patch
+grub-mkconfig-first-device.patch
