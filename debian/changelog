@@ -1,3 +1,16 @@
+grub2 (2.00-13ubuntu3+zfs2~raring~2.gbp57c8a9) raring; urgency=low
+
+  ** SNAPSHOT build @57c8a901c1a8ba1182ee71b388bec46bfa75647d **
+
+  [ Turbo Fredriksson ]
+  * Fix second part of issue #1441.
+  * When running 'grub_probe --target=device ...' and it returns multiple results (as if device is a mirror), only take the first line/entry.
+
+  [ Darik Horn ]
+  * Add debian/gbp.conf for Raring snapshot builds.
+
+ -- Darik Horn <dajhorn@vanadac.com>  Wed, 15 May 2013 14:25:08 -0500
+
 grub2 (2.00-13ubuntu3+zfs2~raring.tf.2) raring; urgency=low
 
   * Add fix to find the correct system boot path for zfs.
