@@ -28,7 +28,7 @@ Index: b/grub-core/fs/zfs/zfs.c
 ===================================================================
 --- a/grub-core/fs/zfs/zfs.c
 +++ b/grub-core/fs/zfs/zfs.c
-@@ -416,7 +416,7 @@
+@@ -433,7 +433,7 @@
  		    (unsigned long long) zc.zc_word[1],
  		    (unsigned long long) zc.zc_word[2], 
  		    (unsigned long long) zc.zc_word[3]);
@@ -59,6 +59,28 @@ Index: b/util/getroot.c
  #if ! defined(__CYGWIN__) && !defined(__GNU__)
  
  static void
+@@ -1038,16 +1049,16 @@
+   struct stat st;
+   dev_t dev;
+ 
+-#ifdef __linux__
+-  if (!os_dev)
+-    os_dev = grub_find_root_devices_from_mountinfo (dir, NULL);
+-#endif /* __linux__ */
+-
+ #if !defined (__MINGW32__) && !defined (__CYGWIN__)
+   if (!os_dev)
+     os_dev = find_root_devices_from_libzfs (dir);
+ #endif
+ 
++#ifdef __linux__
++  if (!os_dev)
++    os_dev = grub_find_root_devices_from_mountinfo (dir, NULL);
++#endif /* __linux__ */
++
+   if (os_dev)
+     {
+       char **cur;
 @@ -2739,7 +2750,15 @@
      if (stat (dir, &st) != 0)
        return;
@@ -76,6 +98,42 @@ Index: b/util/getroot.c
      if (! mnttab)
        return;
  
+@@ -2842,7 +2861,7 @@
+ 	      {
+ 		char *bind;
+ 		grub_free (grub_find_root_devices_from_mountinfo (buf2, &bind));
+-		if (bind && bind[0] && bind[1])
++		if (!poolfs && bind && bind[0] && bind[1])
+ 		  {
+ 		    buf3 = bind;
+ 		    goto parsedir;
+@@ -2852,7 +2871,7 @@
+ #endif
+ 	      free (buf2);
+ 	      if (poolfs)
+-		return xasprintf ("/%s/@", poolfs);
++		return xasprintf ("/%s@", poolfs);
+ 	      return xstrdup ("");
+ 	    }
+ 	  else
+@@ -2875,7 +2894,7 @@
+   {
+     char *bind;
+     grub_free (grub_find_root_devices_from_mountinfo (buf2, &bind));
+-    if (bind && bind[0] && bind[1])
++    if (!poolfs && bind && bind[0] && bind[1])
+       {
+ 	char *temp = buf3;
+ 	buf3 = grub_xasprintf ("%s%s%s", bind, buf3[0] == '/' ?"":"/", buf3);
+@@ -2913,7 +2932,7 @@
+ 
+   if (poolfs)
+     {
+-      ret = xasprintf ("/%s/@%s", poolfs, buf3);
++      ret = xasprintf ("/%s@%s", poolfs, buf3);
+       free (buf3);
+     }
+   else
 Index: b/configure.ac
 ===================================================================
 --- a/configure.ac
