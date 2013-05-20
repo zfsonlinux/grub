@@ -1,3 +1,10 @@
+grub2 (2.00-13ubuntu3+zfs2~raring.tf.3) raring; urgency=low
+
+  * grub-pc provides zfs-grub-pc
+  * grub-pc-bin provides zfs-grub-pc-bin
+
+ -- Turbo Fredriksson <turbo@bayour.com>  Mon, 20 May 2013 04:09:18 +0200
+
 grub2 (2.00-13ubuntu3+zfs2~raring.tf.2) raring; urgency=low
 
   * Add fix to find the correct system boot path for zfs.
