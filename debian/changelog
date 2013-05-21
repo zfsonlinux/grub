@@ -1,3 +1,13 @@
+grub2 (2.00-13ubuntu3+zfs2~raring~3.gbp93155a) raring; urgency=low
+
+  ** SNAPSHOT build @93155a69891358dfc495e9a098ce1854b0d433ab **
+
+  [ Turbo Fredriksson ]
+  * Remove extra slash before the @ in two xasprintf() calls.
+  * * grub-pc provides zfs-grub-pc * grub-pc-bin provides zfs-grub-pc-bin
+
+ -- Darik Horn <dajhorn@vanadac.com>  Tue, 21 May 2013 15:37:38 -0500
+
 grub2 (2.00-13ubuntu3+zfs2~raring~2.gbp57c8a9) raring; urgency=low
 
   ** SNAPSHOT build @57c8a901c1a8ba1182ee71b388bec46bfa75647d **
