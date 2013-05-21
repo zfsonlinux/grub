@@ -107,6 +107,15 @@ Index: b/util/getroot.c
  		  {
  		    buf3 = bind;
  		    goto parsedir;
+@@ -2852,7 +2871,7 @@
+ #endif
+ 	      free (buf2);
+ 	      if (poolfs)
+-		return xasprintf ("/%s/@", poolfs);
++		return xasprintf ("/%s@", poolfs);
+ 	      return xstrdup ("");
+ 	    }
+ 	  else
 @@ -2875,7 +2894,7 @@
    {
      char *bind;
@@ -116,6 +125,15 @@ Index: b/util/getroot.c
        {
  	char *temp = buf3;
  	buf3 = grub_xasprintf ("%s%s%s", bind, buf3[0] == '/' ?"":"/", buf3);
+@@ -2913,7 +2932,7 @@
+ 
+   if (poolfs)
+     {
+-      ret = xasprintf ("/%s/@%s", poolfs, buf3);
++      ret = xasprintf ("/%s@%s", poolfs, buf3);
+       free (buf3);
+     }
+   else
 Index: b/configure.ac
 ===================================================================
 --- a/configure.ac
