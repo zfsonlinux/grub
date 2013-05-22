@@ -60,3 +60,5 @@ ubuntu_acpihalt_improvements.patch
 zfs-feature-flag-support.patch
 zfs-linux.patch
 grub-mkconfig-first-device.patch
+eglibc_2.16_build_fix.patch
+grub-dev.texi.patch
