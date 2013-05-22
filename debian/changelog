@@ -1,3 +1,15 @@
+grub2 (2.00-13ubuntu3+zfs2~raring~4.gbp959de7) raring; urgency=low
+
+  ** SNAPSHOT build @959de74bc2022a84ffc7beb7c59ee2ba70cf7c7d **
+
+  [ Turbo Fredriksson ]
+  * Add fix to find the correct system boot path for zfs. + https://github.com/zfsonlinux/zfs/issues/1441#issuecomment-17416105
+  * * When running 'grub_probe --target=device ...' and it returns multiple   results (as if device is a mirror), only take the first line/entry. * grub-pc provides zfs-grub-pc * grub-pc-bin provides zfs-grub-pc-bin
+  * Fix for grub-2.0 build on systems with eglibc-2.16 + http://lists.gnu.org/archive/html/grub-devel/2012-07/msg00007.html
+  * @subsection after @itemize fix in grub-dev.texi.
+
+ -- Darik Horn <dajhorn@vanadac.com>  Tue, 21 May 2013 21:14:50 -0500
+
 grub2 (2.00-13ubuntu3+zfs2~raring~3.gbp93155a) raring; urgency=low
 
   ** SNAPSHOT build @93155a69891358dfc495e9a098ce1854b0d433ab **
