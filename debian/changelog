@@ -1,3 +1,18 @@
+grub2 (2.00-13ubuntu3+zfs3~raring) raring; urgency=low
+
+  [ Darik Horn ]
+  * Add debian/gbp.conf file for Ubuntu 13.04 Raring.
+
+  [ Turbo Fredriksson ]
+  * Lower some build depends to build on squeeze.
+  * Fix second part of issue #1441.
+  * When running 'grub_probe --target=device ...' and it returns multiple results (as if device is a mirror), only take the first line/entry.
+  * Remove extra slash before the @ in two xasprintf() calls.
+  * Fix for grub-2.0 build on systems with eglibc-2.16 + http://lists.gnu.org/archive/html/grub-devel/2012-07/msg00007.html
+  * @subsection after @itemize fix in grub-dev.texi.
+
+ -- Darik Horn <dajhorn@vanadac.com>  Sat, 29 Jun 2013 16:02:25 -0500
+
 grub2 (2.00-13ubuntu3+zfs2~raring) raring; urgency=low
 
   * Provide a virtual zfs-grub package.
