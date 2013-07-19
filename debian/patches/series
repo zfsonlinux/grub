@@ -77,3 +77,4 @@ ubuntu_uefi_firmware_setup.patch
 ubuntu_linuxefi_debug.patch
 ubuntu_default_grub_d.patch
 ubuntu_efimm_late_malloc.patch
+ubuntu_shim_by_default.patch
