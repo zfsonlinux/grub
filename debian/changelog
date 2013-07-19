@@ -1,3 +1,10 @@
+grub2 (1.99-21ubuntu3.10) precise-proposed; urgency=low
+
+  * Add ubuntu_shim_by_default.patch that makes any EFI system boot into
+    the shim (if installed) even if SecureBoot is disabled. (LP: #1184297)
+
+ -- Stéphane Graber <stgraber@ubuntu.com>  Fri, 19 Jul 2013 14:14:16 -0400
+
 grub2 (1.99-21ubuntu3.9) precise; urgency=low
 
   * Also skip update-grub when running in a container (LP: #1060404).

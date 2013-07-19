@@ -1,0 +1,29 @@
+Description: Use the shim (secureboot) by default on EFI systems.
+ In order to facilitate people switching SecureBoot on an off after
+ installation, it's been decided that we'd always have EFI systems boot
+ through the shim even when SecureBoot is disabled.
+ .
+ This change very simply removes the SecureBoot variable check and makes
+ uefi_secure_boot=yes the default.
+Author: Stéphane Graber <stgraber@ubuntu.com>
+Forwarded: no
+Last-Update: 2013-07-18
+
+Index: grub2-1.99/util/grub-install.in
+===================================================================
+--- grub2-1.99.orig/util/grub-install.in	2013-07-19 14:15:03.314614601 -0400
++++ grub2-1.99/util/grub-install.in	2013-07-19 14:15:03.310614601 -0400
+@@ -60,12 +60,7 @@
+ 
+ removable=no
+ efi_quiet=
+-sb_var=/sys/firmware/efi/vars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c/data
+-if [ -e "$sb_var" ] && [ "$(printf %x \'"$(cat "$sb_var")")" = 1 ]; then
+-  uefi_secure_boot=yes
+-else
+-  uefi_secure_boot=no
+-fi
++uefi_secure_boot=yes
+ 
+ # Get GRUB_DISTRIBUTOR.
+ if test -f "${sysconfdir}/default/grub" ; then
