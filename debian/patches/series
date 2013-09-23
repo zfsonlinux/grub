@@ -29,7 +29,7 @@ probe_canonicalise.patch
 mkconfig_skip_readme.patch
 kfreebsd_lvm.patch
 zfs_update.patch
-#no_libzfs.patch
+no_libzfs.patch
 xfs_invalid_bmap.patch
 handle_new_autotools.patch
 bash-completion_identifiers.patch
@@ -77,5 +77,5 @@ ubuntu_uefi_firmware_setup.patch
 ubuntu_linuxefi_debug.patch
 ubuntu_default_grub_d.patch
 ubuntu_efimm_late_malloc.patch
-zfs-linux.patch
-zfs_accept_pool_5000.patch
+ubuntu_shim_by_default.patch
+ubuntu_efidisk_non_512_sectors.patch
