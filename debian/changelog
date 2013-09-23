@@ -1,3 +1,10 @@
+grub2 (1.99-21ubuntu3.11) precise; urgency=low
+
+  * Backport from upstream:
+    - Handle partitions on non-512B EFI disks (LP: #1065281).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 23 Sep 2013 14:32:50 +0100
+
 grub2 (1.99-21ubuntu3.10) precise-proposed; urgency=low
 
   * Add ubuntu_shim_by_default.patch that makes any EFI system boot into
