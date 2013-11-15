@@ -77,5 +77,7 @@ ubuntu_uefi_firmware_setup.patch
 ubuntu_linuxefi_debug.patch
 ubuntu_default_grub_d.patch
 ubuntu_efimm_late_malloc.patch
+ubuntu_shim_by_default.patch
+ubuntu_efidisk_non_512_sectors.patch
 zfs-linux.patch
 zfs_accept_pool_5000.patch
