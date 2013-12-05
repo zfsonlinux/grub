@@ -1,0 +1,65 @@
+Description: Probe FusionIO devices
+Author: Colin Watson <cjwatson@ubuntu.com>
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/1237519
+Forwarded: no
+Last-Update: 2013-12-05
+
+Index: b/grub-core/kern/emu/hostdisk.c
+===================================================================
+--- a/grub-core/kern/emu/hostdisk.c
++++ b/grub-core/kern/emu/hostdisk.c
+@@ -1389,6 +1389,17 @@
+ 	  return path;
+ 	}
+ 
++      /* If this is a FusionIO disk.  */
++      if ((strncmp ("fio", p, 3) == 0) && p[3] >= 'a' && p[3] <= 'z')
++	{
++	  char *pp = p + 3;
++	  while (*pp >= 'a' && *pp <= 'z')
++	    pp++;
++	  /* /dev/fio[a-z]+[0-9]* */
++	  *pp = '\0';
++	  return path;
++	}
++
+ #ifdef HAVE_DEVICE_MAPPER
+       /* If this is a DM-RAID device.
+          Compare os_dev rather than path here, since nodes under
+Index: b/util/deviceiter.c
+===================================================================
+--- a/util/deviceiter.c
++++ b/util/deviceiter.c
+@@ -364,6 +364,12 @@
+ {
+   sprintf (name, "/dev/xvd%c", unit + 'a');
+ }
++
++static void
++get_fio_disk_name (char *name, int unit)
++{
++  sprintf (name, "/dev/fio%c", unit + 'a');
++}
+ #endif
+ 
+ static struct seen_device
+@@ -850,6 +856,19 @@
+       if (check_device_readable_unique (name))
+ 	{
+ 	  if (hook (name, 0))
++	    goto out;
++	}
++    }
++
++  /* FusionIO.  */
++  for (i = 0; i < 26; i++)
++    {
++      char name[16];
++
++      get_fio_disk_name (name, i);
++      if (check_device_readable_unique (name))
++	{
++	  if (hook (name, 0))
+ 	    goto out;
+ 	}
+     }

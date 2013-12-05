@@ -8,7 +8,7 @@ Description: Reduce visual clutter in normal mode
  first place.
 Author: Colin Watson <cjwatson@ubuntu.com>
 Forwarded: http://lists.gnu.org/archive/html/grub-devel/2009-09/msg00056.html
-Last-Update: 2011-01-05
+Last-Update: 2013-12-04
 
 Index: b/grub-core/normal/main.c
 ===================================================================
@@ -41,7 +41,7 @@ Index: b/grub-core/normal/menu.c
 ===================================================================
 --- a/grub-core/normal/menu.c
 +++ b/grub-core/normal/menu.c
-@@ -721,6 +721,7 @@
+@@ -876,6 +876,7 @@
        int boot_entry;
        grub_menu_entry_t e;
        int auto_boot;
@@ -49,7 +49,7 @@ Index: b/grub-core/normal/menu.c
  
        boot_entry = run_menu (menu, nested, &auto_boot);
        if (boot_entry < 0)
-@@ -730,7 +731,9 @@
+@@ -885,7 +886,9 @@
        if (! e)
  	continue; /* Menu is empty.  */
  

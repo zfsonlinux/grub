@@ -1,3 +1,36 @@
+grub2 (1.99-21ubuntu3.14) precise; urgency=low
+
+  * Handle FAT filesystems on non-512B disks (LP: #1065281).
+  * Probe FusionIO devices (LP: #1237519).
+  * On Linux, read partition start offsets from sysfs if possible
+    (LP: #1237519).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 05 Dec 2013 16:53:48 +0000
+
+grub2 (1.99-21ubuntu3.13) precise; urgency=low
+
+  * Revamp hidden timeout handling by adding a new timeout_style environment
+    variable and a corresponding GRUB_TIMEOUT_STYLE configuration key for
+    grub-mkconfig.  This controls hidden-timeout handling more simply than
+    the previous arrangements, and pressing any hotkeys associated with menu
+    entries during the hidden timeout will now boot the corresponding menu
+    entry immediately (LP: #1178618).  As part of merging this, radically
+    simplify /etc/grub.d/30_os-prober; if it finds other OSes it can now
+    just set timeout_style=menu and make sure the timeout is non-zero.
+  * Fix mismerge of GRUB_RECOVERY_TITLE option in 1.99-21ubuntu3.12.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 04 Dec 2013 17:05:10 +0000
+
+grub2 (1.99-21ubuntu3.12) precise; urgency=low
+
+  * debian/build-efi-images: Where possible, make use of the device path
+    derived from the EFI Loaded Image Protocol to compute the prefix
+    (LP: #1097570).
+  * Add GRUB_RECOVERY_TITLE option, to allow the controversial "recovery
+    mode" text to be customised (LP: #1240360).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 28 Nov 2013 12:15:06 +0000
+
 grub2 (1.99-21ubuntu3.11) precise; urgency=low
 
   * Backport from upstream:

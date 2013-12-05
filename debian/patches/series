@@ -42,6 +42,7 @@ efiemu_fix.patch
 efi_disk_cache.patch
 ubuntu_grub_standards.patch
 ubuntu_crashkernel.patch
+ubuntu_timeout_style.patch
 ubuntu_quick_boot.patch
 ubuntu_sleep_shift.patch
 ubuntu_normal_quiet.patch
@@ -79,3 +80,7 @@ ubuntu_default_grub_d.patch
 ubuntu_efimm_late_malloc.patch
 ubuntu_shim_by_default.patch
 ubuntu_efidisk_non_512_sectors.patch
+ubuntu_mkconfig_recovery_title.patch
+ubuntu_fat_non_512_sectors.patch
+ubuntu_probe_fusionio.patch
+ubuntu_sysfs_partition_start.patch

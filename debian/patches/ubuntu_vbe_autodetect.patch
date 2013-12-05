@@ -1,7 +1,7 @@
 Description: Preferred resolution detection for VBE
 Author: Colin Watson <cjwatson@ubuntu.com>
 Forwarded: http://lists.gnu.org/archive/html/grub-devel/2010-12/msg00051.html
-Last-Update: 2010-12-15
+Last-Update: 2013-12-04
 
 Index: b/ChangeLog.vbe-autodetect
 ===================================================================
@@ -45,7 +45,7 @@ Index: b/docs/grub.texi
 ===================================================================
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
-@@ -1206,7 +1206,8 @@
+@@ -1214,7 +1214,8 @@
  Set the resolution used on the @samp{gfxterm} graphical terminal.  Note that
  you can only use modes which your graphics card supports via VESA BIOS
  Extensions (VBE), so for example native LCD panel resolutions may not be
