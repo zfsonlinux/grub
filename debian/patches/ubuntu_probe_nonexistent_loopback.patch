@@ -6,7 +6,7 @@ Author: Colin Watson <cjwatson@ubuntu.com>
 Origin: backport, http://bazaar.launchpad.net/~vcs-imports/grub/grub2-bzr/revision/3824
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/938724
 Forwarded: no
-Last-Update: 2012-04-05
+Last-Update: 2013-12-04
 
 Index: b/util/grub-probe.c
 ===================================================================
@@ -38,7 +38,7 @@ Index: b/util/grub.d/30_os-prober.in
 ===================================================================
 --- a/util/grub.d/30_os-prober.in
 +++ b/util/grub.d/30_os-prober.in
-@@ -224,14 +224,15 @@
+@@ -180,14 +180,15 @@
  	  LINITRD="${LINITRD#/boot}"
  	fi
  

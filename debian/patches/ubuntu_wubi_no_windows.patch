@@ -6,13 +6,13 @@ Description: Skip Windows os-prober entries on Wubi systems
  https://blueprints.launchpad.net/ubuntu/+spec/foundations-o-wubi
 Author: Colin Watson <cjwatson@ubuntu.com>
 Forwarded: not-needed
-Last-Update: 2011-06-17
+Last-Update: 2013-12-04
 
 Index: b/util/grub.d/30_os-prober.in
 ===================================================================
 --- a/util/grub.d/30_os-prober.in
 +++ b/util/grub.d/30_os-prober.in
-@@ -147,6 +147,8 @@
+@@ -103,6 +103,8 @@
  EOF
  }
  
@@ -21,7 +21,7 @@ Index: b/util/grub.d/30_os-prober.in
  for OS in ${OSPROBED} ; do
    DEVICE="`echo ${OS} | cut -d ':' -f 1`"
    LONGNAME="`echo ${OS} | cut -d ':' -f 2 | tr '^' ' '`"
-@@ -162,6 +164,23 @@
+@@ -118,6 +120,23 @@
    case ${BOOT} in
      chain)
  
