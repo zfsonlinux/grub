@@ -61,7 +61,6 @@ ubuntu_recovery_nomodeset.patch
 ubuntu_recovery_nosingle.patch
 ubuntu_wubi_no_windows.patch
 ubuntu_probe_dmraid.patch
-ubuntu_qemu_no_kvm.patch
 ubuntu_probe_nonexistent_loopback.patch
 ubuntu_efi_device_discovery.patch
 ubuntu_efi_supporting_backports.patch
