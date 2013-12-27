@@ -1,0 +1,19 @@
+Description: Fix build with FreeType 2.5.1
+Author: Colin Watson <cjwatson@ubuntu.com>
+Origin: backport, http://git.savannah.gnu.org/gitweb/?p=grub.git;a=commitdiff;h=fd0df6d098b1e6a4f60275c48a3ec88d15ba1fbb
+Applied-Upstream: http://git.savannah.gnu.org/gitweb/?p=grub.git;a=commitdiff;h=fd0df6d098b1e6a4f60275c48a3ec88d15ba1fbb
+Last-Update: 2013-12-03
+
+Index: b/util/grub-mkfont.c
+===================================================================
+--- a/util/grub-mkfont.c
++++ b/util/grub-mkfont.c
+@@ -39,7 +39,7 @@
+ #include FT_FREETYPE_H
+ #include FT_TRUETYPE_TAGS_H
+ #include FT_TRUETYPE_TABLES_H
+-#include <freetype/ftsynth.h>
++#include FT_SYNTHESIS_H
+ 
+ #undef __FTERRORS_H__
+ #define FT_ERROR_START_LIST   const char *ft_errmsgs[] = { 

@@ -1,0 +1,159 @@
+Description: Install signed images if UEFI Secure Boot is enabled
+Author: Colin Watson <cjwatson@ubuntu.com>
+Author: Stéphane Graber <stgraber@ubuntu.com>
+Author: Steve Langasek <steve.langasek@ubuntu.com>
+Forwarded: no
+Last-Update: 2013-11-12
+
+Index: b/util/grub-install.in
+===================================================================
+--- a/util/grub-install.in
++++ b/util/grub-install.in
+@@ -63,6 +63,7 @@
+ 
+ removable=no
+ efi_quiet=
++uefi_secure_boot=yes
+ 
+ # Get GRUB_DISTRIBUTOR.
+ if test -f "${sysconfdir}/default/grub" ; then
+@@ -117,6 +118,8 @@
+     print_option_help  "--removable" "$(gettext "the installation device is removable. This option is only available on EFI.")"
+     print_option_help  "--bootloader-id=$(gettext "ID")" "$(gettext "the ID of bootloader. This option is only available on EFI.")"
+     print_option_help "--efi-directory=$(gettext "DIR")" "$(gettext "use DIR as the EFI System Partition root.")"
++    print_option_help "--uefi-secure-boot" "$(gettext "install an image usable with UEFI Secure Boot. This option is only available on EFI and if the grub-efi-amd64-signed package is installed.")"
++    print_option_help "--no-uefi-secure-boot" "$(gettext "do not install an image usable with UEFI Secure Boot, even if the system was currently started using it. This option is only available on EFI.")"
+ echo
+ gettext "INSTALL_DEVICE must be system device filename.";echo
+ echo
+@@ -258,6 +261,11 @@
+     -f | --force)
+         setup_force="--force" ;;
+ 
++    --uefi-secure-boot)
++	uefi_secure_boot=yes ;;
++    --no-uefi-secure-boot)
++	uefi_secure_boot=no ;;
++
+     -*)
+ 	gettext_printf "Unrecognized option \`%s'\n" "$option" 1>&2
+ 	usage
+@@ -460,39 +468,32 @@
+         # not collide with other vendors.  To minimise collisions, we use the
+         # name of our distributor if possible.
+ 	efi_distributor="$bootloader_id"
++	# It is convenient for each architecture to have a different
++	# efi_file, so that different versions can be installed in parallel.
++	case "$grub_modinfo_target_cpu" in
++	    i386)
++		efi_suffix=ia32 ;;
++	    x86_64)
++		efi_suffix=x64 ;;
++	# GRUB does not yet support these architectures, but they're defined
++	# by the specification so we include them here to ease future
++	# expansion.
++	    ia64)
++		efi_suffix=ia64 ;;
++	    *)
++		efi_suffix= ;;
++	esac
+ 	if test $removable = yes; then
+       	   # The specification makes stricter requirements of removable
+ 	   # devices, in order that only one image can be automatically loaded
+ 	   # from them.  The image must always reside under /EFI/BOOT, and it
+ 	   # must have a specific file name depending on the architecture.
+ 	    efi_distributor=BOOT
+-	    case "$grub_modinfo_target_cpu" in
+-		i386)
+-		    efi_file=BOOTIA32.EFI ;;
+-		x86_64)
+-		    efi_file=BOOTX64.EFI ;;
+-	    # GRUB does not yet support these architectures, but they're defined
+-	    # by the specification so we include them here to ease future
+-	    # expansion.
+-		ia64)
+-		    efi_file=BOOTIA64.EFI ;;
+-	    esac
++	    efi_file="BOOT$(printf %s "$efi_suffix" | tr a-z A-Z).EFI"
+ 	else
+ 	    # It is convenient for each architecture to have a different
+ 	    # efi_file, so that different versions can be installed in parallel.
+-	    case "$grub_modinfo_target_cpu" in
+-		i386)
+-		    efi_file=grubia32.efi ;;
+-		x86_64)
+-		    efi_file=grubx64.efi ;;
+-	 # GRUB does not yet support these architectures, but they're defined
+- 	 # by the specification so we include them here to ease future
+-	 # expansion.
+-		ia64)
+-		    efi_file=grubia64.efi ;;
+-		*)
+-		    efi_file=grub.efi ;;
+-	    esac
++	    efi_file="grub$efi_suffix.efi"
+ 	   # TODO: We should also use efibootmgr, if available, to add a Boot
+ 	   # entry for ourselves.
+ 	fi
+@@ -634,7 +635,15 @@
+     config_opt_file="${grubdir}/${grub_modinfo_target_cpu}-$grub_modinfo_platform/load.cfg"
+ fi
+ 
+-if [ "x${devabstraction_module}" = "x" ] ; then
++if [ x"$grub_modinfo_platform" = xefi ]; then
++    if [ $removable = yes ]; then
++	efi_signed="${source_dir}-signed/gcd$efi_suffix.efi.signed"
++    else
++	efi_signed="${source_dir}-signed/grub$efi_suffix.efi.signed"
++    fi
++fi
++
++if [ "x${devabstraction_module}" = "x" ] || ([ x"$grub_modinfo_platform" = xefi ] && [ "$uefi_secure_boot" = yes ] && [ -e "$efi_signed" ]); then
+     if [ x"${install_device}" != x ]; then
+       if echo "${install_device}" | grep -qx "(.*)" ; then
+         install_drive="${install_device}"
+@@ -653,7 +662,7 @@
+ 	install_drive="$grub_drive"
+     fi
+ 
+-    if ([ "x$disk_module" != x ] && [ "x$disk_module" != xbiosdisk ]) || [ "x${grub_drive}" != "x${install_drive}" ] || ([ "x$grub_modinfo_platform" != xefi ] && [ "x$grub_modinfo_platform" != xpc ] && [ x"${grub_modinfo_platform}" != x"ieee1275" ]); then
++    if ([ "x$disk_module" != x ] && [ "x$disk_module" != xbiosdisk ]) || [ "x${grub_drive}" != "x${install_drive}" ] || ([ "x$grub_modinfo_platform" != xefi ] && [ "x$grub_modinfo_platform" != xpc ] && [ x"${grub_modinfo_platform}" != x"ieee1275" ]) || ([ "x$grub_modinfo_platform" = xefi ] && [ "$uefi_secure_boot" = yes ]); then
+         # generic method (used on coreboot and ata mod)
+ 	uuid=
+ 	if [ x"$force_file_id" != xy ]; then
+@@ -828,10 +837,31 @@
+     gettext "You will have to set \`SystemPartition' and \`OSLoader' manually." 1>&2
+     echo 1>&2
+ elif [ x"$grub_modinfo_platform" = xefi ]; then
+-    cp "${grubdir}/${grub_modinfo_target_cpu}-$grub_modinfo_platform/core.${imgext}" "${efidir}/${efi_file}"
+-    # For old macs. Suggested by Peter Jones.
+-    if [ x$grub_modinfo_target_cpu = xi386 ]; then
+-	cp "${grubdir}/${grub_modinfo_target_cpu}-$grub_modinfo_platform/core.${imgext}" "${efidir}/boot.efi"
++    if [ "$uefi_secure_boot" = yes ] && [ -e "$efi_signed" ]; then
++	shim_signed=/usr/lib/shim/shim.efi.signed
++	if [ -e "$shim_signed" ]; then
++	    if [ "$removable" != yes ]; then
++		efi_file="shim$efi_suffix.efi"
++	    fi
++	    cp "$shim_signed" "${efidir}/${efi_file}"
++	    cp "$efi_signed" "${efidir}/grub$efi_suffix.efi"
++	    # Not critical, so not an error if it's not present (as it won't
++	    # be for older releases); but if we have it, make sure it's
++	    # installed.
++	    if [ -e /usr/lib/shim/MokManager.efi.signed ]; then
++		cp /usr/lib/shim/MokManager.efi.signed "${efidir}/MokManager.efi"
++	    fi
++	else
++	    cp "$efi_signed" "${efidir}/${efi_file}"
++	fi
++	cp "${config_opt_file}" "${efidir}/grub.cfg"
++	echo 'configfile $prefix/grub.cfg' >> "${efidir}/grub.cfg"
++    else
++	cp "${grubdir}/${grub_modinfo_target_cpu}-$grub_modinfo_platform/core.${imgext}" "${efidir}/${efi_file}"
++	# For old macs. Suggested by Peter Jones.
++	if [ x$grub_modinfo_target_cpu = xi386 ]; then
++	    cp "${grubdir}/${grub_modinfo_target_cpu}-$grub_modinfo_platform/core.${imgext}" "${efidir}/boot.efi"
++	fi
+     fi
+ 
+     # Try to make this image bootable using the EFI Boot Manager, if available.

@@ -1,0 +1,492 @@
+Description: Revamp hidden timeout handling
+ Add a new timeout_style environment variable and a corresponding
+ GRUB_TIMEOUT_STYLE configuration key for grub-mkconfig.  This controls
+ hidden-timeout handling more simply than the previous arrangements, and
+ pressing any hotkeys associated with menu entries during the hidden timeout
+ will now boot the corresponding menu entry immediately.
+ .
+ GRUB_HIDDEN_TIMEOUT=<non-empty> + GRUB_TIMEOUT=<non-zero> now generates a
+ warning, and if it shows the menu it will do so as if the second timeout
+ were not present.  Other combinations are translated into reasonable
+ equivalents.
+Author: Colin Watson <cjwatson@ubuntu.com>
+Origin: backport, http://git.savannah.gnu.org/gitweb/?p=grub.git;a=commitdiff;h=44d488477902f0786d6bce44b74713f1713a34a9;hp=9e4e6ddfbfaad73e0c0f542c818c247135961c48
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/1178618
+Forwarded: https://lists.gnu.org/archive/html/grub-devel/2013-11/msg00388.html
+Applied-Upstream: http://git.savannah.gnu.org/gitweb/?p=grub.git;a=commitdiff;h=44d488477902f0786d6bce44b74713f1713a34a9;hp=9e4e6ddfbfaad73e0c0f542c818c247135961c48
+Last-Update: 2013-12-03
+
+Index: b/docs/grub.texi
+===================================================================
+--- a/docs/grub.texi
++++ b/docs/grub.texi
+@@ -1134,22 +1134,26 @@
+ immediately without displaying the menu, or to @samp{-1} to wait
+ indefinitely.
+ 
+-@item GRUB_HIDDEN_TIMEOUT
+-Wait this many seconds for a key to be pressed before displaying the menu.
+-If no key is pressed during that time, display the menu for the number of
+-seconds specified in GRUB_TIMEOUT before booting the default entry. We expect
+-that most people who use GRUB_HIDDEN_TIMEOUT will want to have GRUB_TIMEOUT set 
+-to @samp{0} so that the menu is not displayed at all unless a key is pressed.
+-Unset by default.
++If @samp{GRUB_TIMEOUT_STYLE} is set to @samp{countdown} or @samp{hidden},
++the timeout is instead counted before the menu is displayed.
+ 
+-@item GRUB_HIDDEN_TIMEOUT_QUIET
+-In conjunction with @samp{GRUB_HIDDEN_TIMEOUT}, set this to @samp{true} to
+-suppress the verbose countdown while waiting for a key to be pressed before
+-displaying the menu.  Unset by default.
++@item GRUB_TIMEOUT_STYLE
++If this option is unset or set to @samp{menu}, then GRUB will display the
++menu and then wait for the timeout set by @samp{GRUB_TIMEOUT} to expire
++before booting the default entry.  Pressing a key interrupts the timeout.
++
++If this option is set to @samp{countdown} or @samp{hidden}, then, before
++displaying the menu, GRUB will wait for the timeout set by
++@samp{GRUB_TIMEOUT} to expire.  If @key{ESC} is pressed during that time, it
++will display the menu and wait for input.  If a hotkey associated with a
++menu entry is pressed, it will boot the associated menu entry immediately.
++If the timeout expires before either of these happens, it will boot the
++default entry.  In the @samp{countdown} case, it will show a one-line
++indication of the remaining time.
+ 
+ @item GRUB_DEFAULT_BUTTON
+ @itemx GRUB_TIMEOUT_BUTTON
+-@itemx GRUB_HIDDEN_TIMEOUT_BUTTON
++@itemx GRUB_TIMEOUT_STYLE_BUTTON
+ @itemx GRUB_BUTTON_CMOS_ADDRESS
+ Variants of the corresponding variables without the @samp{_BUTTON} suffix,
+ used to support vendor-specific power buttons.  @xref{Vendor power-on keys}.
+@@ -1291,6 +1295,44 @@
+ 
+ @end table
+ 
++The following options are still accepted for compatibility with existing
++configurations, but have better replacements:
++
++@table @samp
++@item GRUB_HIDDEN_TIMEOUT
++Wait this many seconds before displaying the menu.  If @key{ESC} is pressed
++during that time, display the menu and wait for input according to
++@samp{GRUB_TIMEOUT}.  If a hotkey associated with a menu entry is pressed,
++boot the associated menu entry immediately.  If the timeout expires before
++either of these happens, display the menu for the number of seconds
++specified in @samp{GRUB_TIMEOUT} before booting the default entry.
++
++If you set @samp{GRUB_HIDDEN_TIMEOUT}, you should also set
++@samp{GRUB_TIMEOUT=0} so that the menu is not displayed at all unless
++@key{ESC} is pressed.
++
++This option is unset by default, and is deprecated in favour of the less
++confusing @samp{GRUB_TIMEOUT_STYLE=countdown} or
++@samp{GRUB_TIMEOUT_STYLE=hidden}.
++
++@item GRUB_HIDDEN_TIMEOUT_QUIET
++In conjunction with @samp{GRUB_HIDDEN_TIMEOUT}, set this to @samp{true} to
++suppress the verbose countdown while waiting for a key to be pressed before
++displaying the menu.
++
++This option is unset by default, and is deprecated in favour of the less
++confusing @samp{GRUB_TIMEOUT_STYLE=countdown}.
++
++@item GRUB_HIDDEN_TIMEOUT_BUTTON
++Variant of @samp{GRUB_HIDDEN_TIMEOUT}, used to support vendor-specific power
++buttons.  @xref{Vendor power-on keys}.
++
++This option is unset by default, and is deprecated in favour of the less
++confusing @samp{GRUB_TIMEOUT_STYLE=countdown} or
++@samp{GRUB_TIMEOUT_STYLE=hidden}.
++
++@end table
++
+ For more detailed customisation of @command{grub-mkconfig}'s output, you may
+ edit the scripts in @file{/etc/grub.d} directly.
+ @file{/etc/grub.d/40_custom} is particularly useful for adding entire custom
+@@ -2137,15 +2179,16 @@
+ @node Vendor power-on keys
+ @chapter Using GRUB with vendor power-on keys
+ 
+-Some laptop vendors provide an additional power-on button which boots another
+-OS.  GRUB supports such buttons with the @samp{GRUB_TIMEOUT_BUTTON},
+-@samp{GRUB_DEFAULT_BUTTON}, @samp{GRUB_HIDDEN_TIMEOUT_BUTTON} and
++Some laptop vendors provide an additional power-on button which boots
++another OS.  GRUB supports such buttons with the @samp{GRUB_TIMEOUT_BUTTON},
++@samp{GRUB_TIMEOUT_STYLE_BUTTON}, @samp{GRUB_DEFAULT_BUTTON}, and
+ @samp{GRUB_BUTTON_CMOS_ADDRESS} variables in default/grub (@pxref{Simple
+-configuration}).  @samp{GRUB_TIMEOUT_BUTTON}, @samp{GRUB_DEFAULT_BUTTON} and
+-@samp{GRUB_HIDDEN_TIMEOUT_BUTTON} are used instead of the corresponding
+-variables without the @samp{_BUTTON} suffix when powered on using the special
+-button.  @samp{GRUB_BUTTON_CMOS_ADDRESS} is vendor-specific and partially
+-model-specific.  Values known to the GRUB team are:
++configuration}).  @samp{GRUB_TIMEOUT_BUTTON},
++@samp{GRUB_TIMEOUT_STYLE_BUTTON}, and @samp{GRUB_DEFAULT_BUTTON} are used
++instead of the corresponding variables without the @samp{_BUTTON} suffix
++when powered on using the special button.  @samp{GRUB_BUTTON_CMOS_ADDRESS}
++is vendor-specific and partially model-specific.  Values known to the GRUB
++team are:
+ 
+ @table @key
+ @item Dell XPS M1530
+@@ -2629,6 +2672,7 @@
+ * superusers::
+ * theme::
+ * timeout::
++* timeout_style::
+ @end menu
+ 
+ 
+@@ -2966,8 +3010,21 @@
+ means to boot the default entry immediately without displaying the menu; a
+ timeout of @samp{-1} (or unset) means to wait indefinitely.
+ 
+-This variable is often set by @samp{GRUB_TIMEOUT} or
+-@samp{GRUB_HIDDEN_TIMEOUT} (@pxref{Simple configuration}).
++If @samp{timeout_style} (@pxref{timeout_style}) is set to @samp{countdown}
++or @samp{hidden}, the timeout is instead counted before the menu is
++displayed.
++
++This variable is often set by @samp{GRUB_TIMEOUT} (@pxref{Simple
++configuration}).
++
++
++@node timeout_style
++@subsection timeout_style
++
++This variable may be set to @samp{menu}, @samp{countdown}, or @samp{hidden}
++to control the way in which the timeout (@pxref{timeout}) interacts with
++displaying the menu.  See the documentation of @samp{GRUB_TIMEOUT_STYLE}
++(@pxref{Simple configuration}) for details.
+ 
+ 
+ @node Environment block
+Index: b/grub-core/normal/main.c
+===================================================================
+--- a/grub-core/normal/main.c
++++ b/grub-core/normal/main.c
+@@ -492,7 +492,8 @@
+ static const char *features[] = {
+   "feature_chainloader_bpb", "feature_ntldr", "feature_platform_search_hint",
+   "feature_default_font_path", "feature_all_video_module",
+-  "feature_menuentry_id", "feature_menuentry_options", "feature_200_final"
++  "feature_menuentry_id", "feature_menuentry_options", "feature_200_final",
++  "feature_timeout_style"
+ };
+ 
+ GRUB_MOD_INIT(normal)
+Index: b/grub-core/normal/menu.c
+===================================================================
+--- a/grub-core/normal/menu.c
++++ b/grub-core/normal/menu.c
+@@ -40,6 +40,22 @@
+ grub_err_t (*grub_gfxmenu_try_hook) (int entry, grub_menu_t menu,
+ 				     int nested) = NULL;
+ 
++enum timeout_style {
++  TIMEOUT_STYLE_MENU,
++  TIMEOUT_STYLE_COUNTDOWN,
++  TIMEOUT_STYLE_HIDDEN
++};
++
++struct timeout_style_name {
++  const char *name;
++  enum timeout_style style;
++} timeout_style_names[] = {
++  {"menu", TIMEOUT_STYLE_MENU},
++  {"countdown", TIMEOUT_STYLE_COUNTDOWN},
++  {"hidden", TIMEOUT_STYLE_HIDDEN},
++  {NULL, 0}
++};
++
+ /* Wait until the user pushes any key so that the user
+    can see what happened.  */
+ void
+@@ -70,6 +86,40 @@
+   return e;
+ }
+ 
++/* Get the index of a menu entry associated with a given hotkey, or -1.  */
++static int
++get_entry_index_by_hotkey (grub_menu_t menu, int hotkey)
++{
++  grub_menu_entry_t entry;
++  int i;
++
++  for (i = 0, entry = menu->entry_list; i < menu->size;
++       i++, entry = entry->next)
++    if (entry->hotkey == hotkey)
++      return i;
++
++  return -1;
++}
++
++/* Return the timeout style.  If the variable "timeout_style" is not set or
++   invalid, default to TIMEOUT_STYLE_MENU.  */
++static enum timeout_style
++get_timeout_style (void)
++{
++  const char *val;
++  struct timeout_style_name *style_name;
++
++  val = grub_env_get ("timeout_style");
++  if (!val)
++    return TIMEOUT_STYLE_MENU;
++
++  for (style_name = timeout_style_names; style_name->name; style_name++)
++    if (grub_strcmp (style_name->name, val) == 0)
++      return style_name->style;
++
++  return TIMEOUT_STYLE_MENU;
++}
++
+ /* Return the current timeout. If the variable "timeout" is not set or
+    invalid, return -1.  */
+ int
+@@ -483,6 +533,33 @@
+   return entry;
+ }
+ 
++/* Check whether a second has elapsed since the last tick.  If so, adjust
++   the timer and return 1; otherwise, return 0.  */
++static int
++has_second_elapsed (grub_uint64_t *saved_time)
++{
++  grub_uint64_t current_time;
++
++  current_time = grub_get_time_ms ();
++  if (current_time - *saved_time >= 1000)
++    {
++      *saved_time = current_time;
++      return 1;
++    }
++  else
++    return 0;
++}
++
++static void
++print_countdown (grub_uint16_t *pos, int n)
++{
++  grub_term_restore_pos (pos);
++  /* NOTE: Do not remove the trailing space characters.
++     They are required to clear the line.  */
++  grub_printf ("%d    ", n);
++  grub_refresh ();
++}
++
+ #define GRUB_MENU_PAGE_SIZE 10
+ 
+ /* Show the menu and handle menu entry selection.  Returns the menu entry
+@@ -497,6 +574,7 @@
+   grub_uint64_t saved_time;
+   int default_entry, current_entry;
+   int timeout;
++  enum timeout_style timeout_style;
+ 
+   default_entry = get_entry_number (menu, "default");
+ 
+@@ -505,8 +583,71 @@
+   if (default_entry < 0 || default_entry >= menu->size)
+     default_entry = 0;
+ 
++  timeout = grub_menu_get_timeout ();
++  if (timeout < 0)
++    /* If there is no timeout, the "countdown" and "hidden" styles result in
++       the system doing nothing and providing no or very little indication
++       why.  Technically this is what the user asked for, but it's not very
++       useful and likely to be a source of confusion, so we disallow this.  */
++    grub_env_unset ("timeout_style");
++
++  timeout_style = get_timeout_style ();
++
++  if (timeout_style == TIMEOUT_STYLE_COUNTDOWN
++      || timeout_style == TIMEOUT_STYLE_HIDDEN)
++    {
++      static grub_uint16_t *pos;
++      int entry = -1;
++
++      if (timeout_style == TIMEOUT_STYLE_COUNTDOWN && timeout)
++	{
++	  pos = grub_term_save_pos ();
++	  print_countdown (pos, timeout);
++	}
++
++      /* Enter interruptible sleep until Escape or a menu hotkey is pressed,
++         or the timeout expires.  */
++      saved_time = grub_get_time_ms ();
++      while (1)
++	{
++	  int key;
++
++	  key = grub_getkey_noblock ();
++	  if (key != GRUB_TERM_NO_KEY)
++	    {
++	      entry = get_entry_index_by_hotkey (menu, key);
++	      if (entry >= 0)
++		break;
++	    }
++	  if (key == GRUB_TERM_ESC)
++	    {
++	      timeout = -1;
++	      break;
++	    }
++
++	  if (timeout > 0 && has_second_elapsed (&saved_time))
++	    {
++	      timeout--;
++	      if (timeout_style == TIMEOUT_STYLE_COUNTDOWN)
++		print_countdown (pos, timeout);
++	    }
++
++	  if (timeout == 0)
++	    /* We will fall through to auto-booting the default entry.  */
++	    break;
++	}
++
++      grub_env_unset ("timeout");
++      grub_env_unset ("timeout_style");
++      if (entry >= 0)
++	{
++	  *auto_boot = 0;
++	  return entry;
++	}
++    }
++
+   /* If timeout is 0, drawing is pointless (and ugly).  */
+-  if (grub_menu_get_timeout () == 0)
++  if (timeout == 0)
+     {
+       *auto_boot = 1;
+       return default_entry;
+@@ -535,18 +676,11 @@
+       if (grub_normal_exit_level)
+ 	return -1;
+ 
+-      if (timeout > 0)
++      if (timeout > 0 && has_second_elapsed (&saved_time))
+ 	{
+-	  grub_uint64_t current_time;
+-
+-	  current_time = grub_get_time_ms ();
+-	  if (current_time - saved_time >= 1000)
+-	    {
+-	      timeout--;
+-	      grub_menu_set_timeout (timeout);
+-	      saved_time = current_time;
+-	      menu_print_timeout (timeout);
+-	    }
++	  timeout--;
++	  grub_menu_set_timeout (timeout);
++	  menu_print_timeout (timeout);
+ 	}
+ 
+       if (timeout == 0)
+@@ -648,16 +782,15 @@
+ 
+ 	    default:
+ 	      {
+-		grub_menu_entry_t entry;
+-		int i;
+-		for (i = 0, entry = menu->entry_list; i < menu->size;
+-		     i++, entry = entry->next)
+-		  if (entry->hotkey == c)
+-		    {
+-		      menu_fini ();
+-		      *auto_boot = 0;
+-		      return i;
+-		    }
++		int entry;
++
++		entry = get_entry_index_by_hotkey (menu, c);
++		if (entry >= 0)
++		  {
++		    menu_fini ();
++		    *auto_boot = 0;
++		    return entry;
++		  }
+ 	      }
+ 	      break;
+ 	    }
+Index: b/util/grub-mkconfig.in
+===================================================================
+--- a/util/grub-mkconfig.in
++++ b/util/grub-mkconfig.in
+@@ -199,9 +199,11 @@
+   GRUB_HIDDEN_TIMEOUT \
+   GRUB_HIDDEN_TIMEOUT_QUIET \
+   GRUB_TIMEOUT \
++  GRUB_TIMEOUT_STYLE \
+   GRUB_DEFAULT_BUTTON \
+   GRUB_HIDDEN_TIMEOUT_BUTTON \
+   GRUB_TIMEOUT_BUTTON \
++  GRUB_TIMEOUT_STYLE_BUTTON \
+   GRUB_BUTTON_CMOS_ADDRESS \
+   GRUB_BUTTON_CMOS_CLEAN \
+   GRUB_DISTRIBUTOR \
+Index: b/util/grub.d/00_header.in
+===================================================================
+--- a/util/grub.d/00_header.in
++++ b/util/grub.d/00_header.in
+@@ -272,15 +272,41 @@
+ 
+ make_timeout ()
+ {
+-    if [ "x${1}" != "x" ] ; then
+-	if [ "x${GRUB_HIDDEN_TIMEOUT_QUIET}" = "xtrue" ] ; then
+-	    verbose=
++    if [ "x${1}${3}" != "x" ] ; then
++	if [ "x${3}" != "x" ] ; then
++	    timeout="${2}"
++	    style="${3}"
+ 	else
++	    # Handle the deprecated GRUB_HIDDEN_TIMEOUT scheme.
++	    timeout="${1}"
++	    if [ "x${2}" != "x0" ] ; then
++		grub_warn "$(gettext "Setting GRUB_TIMEOUT to a non-zero value when GRUB_HIDDEN_TIMEOUT is set is no longer supported.")"
++	    fi
++	    if [ "x${GRUB_HIDDEN_TIMEOUT_QUIET}" = "xtrue" ] ; then
++		style="hidden"
++	    else
++		style="countdown"
++	    fi
++	fi
++	if [ "x${style}" = "xcountdown" ] ; then
+ 	    verbose=" --verbose"
++	else
++	    verbose=
++	fi
++	cat << EOF
++if [ x\$feature_timeout_style = xy ] ; then
++  set timeout_style=${style}
++  set timeout=${timeout}
++EOF
++	if [ "x${style}" != "xmenu" ] ; then
++	    cat << EOF
++# Fallback hidden-timeout code in case the timeout_style feature is
++# unavailable.
++elif sleep${verbose} --interruptible ${timeout} ; then
++  set timeout=0
++EOF
+ 	fi
+ 	cat << EOF
+-if sleep$verbose --interruptible ${1} ; then
+-  set timeout=${2}
+ fi
+ EOF
+     else
+@@ -294,12 +320,12 @@
+     cat <<EOF
+ if cmostest $GRUB_BUTTON_CMOS_ADDRESS ; then
+ EOF
+-make_timeout "${GRUB_HIDDEN_TIMEOUT_BUTTON}" "${GRUB_TIMEOUT_BUTTON}"
++make_timeout "${GRUB_HIDDEN_TIMEOUT_BUTTON}" "${GRUB_TIMEOUT_BUTTON}" "${GRUB_TIMEOUT_STYLE_BUTTON}"
+ echo else
+-make_timeout "${GRUB_HIDDEN_TIMEOUT}" "${GRUB_TIMEOUT}"
++make_timeout "${GRUB_HIDDEN_TIMEOUT}" "${GRUB_TIMEOUT}" "${GRUB_TIMEOUT_STYLE}"
+ echo fi
+ else
+-make_timeout "${GRUB_HIDDEN_TIMEOUT}" "${GRUB_TIMEOUT}"
++make_timeout "${GRUB_HIDDEN_TIMEOUT}" "${GRUB_TIMEOUT}" "${GRUB_TIMEOUT_STYLE}"
+ fi
+ 
+ if [ "x$GRUB_BUTTON_CMOS_ADDRESS" != "x" ] && [ "x$GRUB_BUTTON_CMOS_CLEAN" = "xyes" ]; then

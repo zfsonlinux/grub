@@ -1,0 +1,39 @@
+Description: Fix sector number when writing to non-512B disks
+Origin: upstream, http://git.savannah.gnu.org/gitweb/?p=grub.git;a=commitdiff;h=4dedb13f51bd467f00a2da9c3611f7c00519f889
+Author: Vladimir Serbinenko <phcoder@gmail.com>
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/1253443
+Forwarded: not-needed
+Last-Update: 2013-12-12
+
+Index: b/grub-core/kern/disk.c
+===================================================================
+--- a/grub-core/kern/disk.c
++++ b/grub-core/kern/disk.c
+@@ -658,7 +658,8 @@
+ 
+ 	  grub_disk_cache_invalidate (disk->dev->id, disk->id, sector);
+ 
+-	  if ((disk->dev->write) (disk, sector, 1, tmp_buf) != GRUB_ERR_NONE)
++	  if ((disk->dev->write) (disk, transform_sector (disk, sector),
++				  1, tmp_buf) != GRUB_ERR_NONE)
+ 	    goto finish;
+ 
+ 	  sector += (1 << (disk->log_sector_size - GRUB_DISK_SECTOR_BITS));
+@@ -674,11 +675,15 @@
+ 	  len = size & ~((1 << disk->log_sector_size) - 1);
+ 	  n = size >> disk->log_sector_size;
+ 
+-	  if ((disk->dev->write) (disk, sector, n, buf) != GRUB_ERR_NONE)
++	  if ((disk->dev->write) (disk, transform_sector (disk, sector),
++				  n, buf) != GRUB_ERR_NONE)
+ 	    goto finish;
+ 
+ 	  while (n--)
+-	    grub_disk_cache_invalidate (disk->dev->id, disk->id, sector++);
++	    {
++	      grub_disk_cache_invalidate (disk->dev->id, disk->id, sector);
++	      sector += (1 << (disk->log_sector_size - GRUB_DISK_SECTOR_BITS));
++	    }
+ 
+ 	  buf = (const char *) buf + len;
+ 	  size -= len;
