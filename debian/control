@@ -35,7 +35,8 @@ Build-Depends: debhelper (>= 7.4.2~),
  liblzma-dev,
  dosfstools [amd64],
  mtools [amd64],
-Build-Conflicts: autoconf2.13, libzfs-dev, libnvpair-dev
+ libzfs-dev [linux-any],
+Build-Conflicts: autoconf2.13
 Standards-Version: 3.8.4
 Homepage: http://www.gnu.org/software/grub/
 Vcs-Git: git://anonscm.debian.org/pkg-grub/grub.git
@@ -78,6 +79,7 @@ Suggests: multiboot-doc, grub-emu, xorriso (>= 0.5.6.pl00), desktop-base (>= 4.0
 # See bugs #435983 and #455746
 Conflicts: mdadm (<< 2.6.7-2)
 Breaks: lupin-support (<< 0.30), friendly-recovery (<< 0.2.13), apport (<< 2.1.1)
+Provides: zfs-grub
 Multi-Arch: foreign
 Description: GRand Unified Bootloader (common files)
  This package contains common files shared by the distinct flavours of GRUB.
@@ -119,6 +121,7 @@ Priority: optional
 Architecture: any-i386 any-amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version})
 Replaces: grub2 (<< ${source:Version}), grub-common (<= 1.97~beta2-1), grub-pc (<< 1.99-1)
+Provides: zfs-grub-pc-bin
 Suggests: desktop-base (>= 4.0.6)
 Multi-Arch: foreign
 Description: GRand Unified Bootloader, version 2 (PC/BIOS binaries)
@@ -155,6 +158,7 @@ Architecture: any-i386 any-amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}, grub2-common (= ${binary:Version}), grub-pc-bin (= ${binary:Version}), ucf, freebsd-utils (>= 8.0-4) [kfreebsd-any], ${gfxpayload-depends}
 Replaces: grub, grub-legacy, grub2 (<< ${source:Version}), grub-common (<= 1.97~beta2-1), grub-efi-amd64, grub-efi-ia32, grub-coreboot, grub-ieee1275
 Conflicts: grub (<< 0.97-54), grub-legacy, grub-efi-amd64, grub-efi-ia32, grub-coreboot, grub-ieee1275
+Provides: zfs-grub-pc
 Multi-Arch: foreign
 Description: GRand Unified Bootloader, version 2 (PC/BIOS version)
  GRUB is a portable, powerful bootloader.  This version of GRUB is based on a
