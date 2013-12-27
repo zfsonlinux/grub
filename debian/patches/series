@@ -67,3 +67,8 @@ mkconfig_recovery_title.patch
 freetype_includes.patch
 sysfs_partition_start.patch
 disk_write_non_512_sectors.patch
+zfs-feature-flag-support.patch
+zfs-linux.patch
+ubuntu_crashkernel.patch
+ubuntu_quick_boot.patch
+ubuntu_quiet_grub_loading.patch

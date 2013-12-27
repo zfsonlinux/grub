@@ -1,0 +1,185 @@
+Index: grub/Makefile.util.def
+===================================================================
+--- grub.orig/Makefile.util.def	2013-12-27 14:02:28.437699889 +0100
++++ grub/Makefile.util.def	2013-12-27 14:03:13.029693001 +0100
+@@ -2,7 +2,7 @@
+ 
+ library = {
+   name = libgrubkern.a;
+-  cflags = '$(CFLAGS_GNULIB)';
++  cflags = '$(CFLAGS_GNULIB) $(LIBUUTIL)';
+   cppflags = '$(CPPFLAGS_GNULIB)';
+ 
+   common = util/misc.c;
+Index: grub/configure.ac
+===================================================================
+--- grub.orig/configure.ac	2013-12-27 14:02:28.205699886 +0100
++++ grub/configure.ac	2013-12-27 14:03:13.025693960 +0100
+@@ -1048,6 +1048,14 @@
+ fi
+ 
+ if test x"$libzfs_excuse" = x ; then
++  AC_CHECK_LIB([uutil], [getextmntent], [
++    LIBUUTIL="-luutil"
++    AC_DEFINE([HAVE_LIBUUTIL], [1], [Define to 1 if you have the UUTIL library.])
++    AC_DEFINE([HAVE_GETEXTMNTENT], [1], [Define to 1 if you have the GETEXTMNTENT function.])
++  ],)
++fi
++
++if test x"$libzfs_excuse" = x ; then
+   AC_CHECK_LIB([zfs], [libzfs_init],
+                [],
+                [libzfs_excuse="need zfs library"])
+@@ -1065,7 +1073,7 @@
+ 
+ if test x"$libzfs_excuse" = x ; then
+   # We need both libzfs and libnvpair for a successful build.
+-  LIBZFS="-lzfs"
++  LIBZFS="-lzfs $LIBUUTIL"
+   AC_DEFINE([HAVE_LIBZFS], [1],
+             [Define to 1 if you have the ZFS library.])
+   LIBNVPAIR="-lnvpair"
+@@ -1075,6 +1083,7 @@
+ 
+ AC_SUBST([LIBZFS])
+ AC_SUBST([LIBNVPAIR])
++AC_SUBST([LIBUUTIL])
+ 
+ AC_ARG_ENABLE([ubuntu-recovery],
+               [AS_HELP_STRING([--enable-ubuntu-recovery],
+Index: grub/grub-core/fs/zfs/zfs.c
+===================================================================
+--- grub.orig/grub-core/fs/zfs/zfs.c	2013-12-27 14:02:28.437699889 +0100
++++ grub/grub-core/fs/zfs/zfs.c	2013-12-27 14:03:13.021694816 +0100
+@@ -434,7 +434,7 @@
+ 		    (unsigned long long) zc.zc_word[1],
+ 		    (unsigned long long) zc.zc_word[2], 
+ 		    (unsigned long long) zc.zc_word[3]);
+-      return grub_error (GRUB_ERR_BAD_FS, N_("checksum verification failed"));
++      /* return grub_error (GRUB_ERR_BAD_FS, N_("checksum verification failed")); */
+     }
+ 
+   return GRUB_ERR_NONE;
+Index: grub/util/getroot.c
+===================================================================
+--- grub.orig/util/getroot.c	2013-12-27 14:02:28.233699887 +0100
++++ grub/util/getroot.c	2013-12-27 14:03:13.025693960 +0100
+@@ -175,6 +175,17 @@
+ grub_util_is_imsm (const char *os_dev);
+ #endif
+ 
++#if defined(HAVE_LIBUUTIL)
++/*
++ * The Solaris Compatibility Layer provides getextmntent on Linux, which is
++ * required for grub-probe to recognize a native ZFS root filesystem on
++ * a Linux system. This typedef is required because including the SPL
++ * types.h here conflicts with an earlier Linux types.h inclusion.
++ */
++typedef unsigned int uint_t;
++#include <libspl/sys/mnttab.h>
++#endif
++
+ #if ! defined(__CYGWIN__) && !defined(__GNU__)
+ 
+ static void
+@@ -1038,16 +1049,16 @@
+   struct stat st;
+   dev_t dev;
+ 
+-#ifdef __linux__
+-  if (!os_dev)
+-    os_dev = grub_find_root_devices_from_mountinfo (dir, NULL);
+-#endif /* __linux__ */
+-
+ #if !defined (__MINGW32__) && !defined (__CYGWIN__)
+   if (!os_dev)
+     os_dev = find_root_devices_from_libzfs (dir);
+ #endif
+ 
++#ifdef __linux__
++  if (!os_dev)
++    os_dev = grub_find_root_devices_from_mountinfo (dir, NULL);
++#endif /* __linux__ */
++
+   if (os_dev)
+     {
+       char **cur;
+@@ -2753,7 +2764,15 @@
+     if (stat (dir, &st) != 0)
+       return;
+ 
+-    FILE *mnttab = fopen ("/etc/mnttab", "r");
++    FILE *mnttab;
++    mnttab = fopen ("/proc/mounts", "r");
++
++    if (! mnttab)
++      mnttab = fopen ("/etc/mtab", "r");
++
++    if (! mnttab)
++      mnttab = fopen ("/etc/mnttab", "r");
++
+     if (! mnttab)
+       return;
+ 
+@@ -2856,7 +2875,7 @@
+ 	      {
+ 		char *bind;
+ 		grub_free (grub_find_root_devices_from_mountinfo (buf2, &bind));
+-		if (bind && bind[0] && bind[1])
++		if (!poolfs && bind && bind[0] && bind[1])
+ 		  {
+ 		    buf3 = bind;
+ 		    goto parsedir;
+@@ -2866,7 +2885,7 @@
+ #endif
+ 	      free (buf2);
+ 	      if (poolfs)
+-		return xasprintf ("/%s/@", poolfs);
++		return xasprintf ("/%s@", poolfs);
+ 	      return xstrdup ("");
+ 	    }
+ 	  else
+@@ -2889,7 +2908,7 @@
+   {
+     char *bind;
+     grub_free (grub_find_root_devices_from_mountinfo (buf2, &bind));
+-    if (bind && bind[0] && bind[1])
++    if (!poolfs && bind && bind[0] && bind[1])
+       {
+ 	char *temp = buf3;
+ 	buf3 = grub_xasprintf ("%s%s%s", bind, buf3[0] == '/' ?"":"/", buf3);
+@@ -2927,7 +2946,7 @@
+ 
+   if (poolfs)
+     {
+-      ret = xasprintf ("/%s/@%s", poolfs, buf3);
++      ret = xasprintf ("/%s@%s", poolfs, buf3);
+       free (buf3);
+     }
+   else
+Index: grub/util/grub.d/10_linux.in
+===================================================================
+--- grub.orig/util/grub.d/10_linux.in	2013-12-27 14:02:28.297699888 +0100
++++ grub/util/grub.d/10_linux.in	2013-12-27 14:03:13.017695286 +0100
+@@ -85,6 +85,8 @@
+ 	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || true`
+ 	bootfs="`make_system_path_relative_to_its_root / | sed -e "s,@$,,"`"
+ 	LINUX_ROOT_DEVICE="ZFS=${rpool}${bootfs}"
++	# Backwards compatibility for systems that expect Solaris parameters.
++	GRUB_CMDLINE_LINUX="boot=zfs \$bootfs ${GRUB_CMDLINE_LINUX}"
+ 	;;
+ esac
+ 
+@@ -157,6 +159,12 @@
+ 
+   echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
+ 
++  if [ x"$GRUBFS" = xzfs ]; then
++      # Backwards compatibility for systems that expect Solaris parameters.
++      echo "	insmod zfsinfo" | sed "s/^/$submenu_indentation/"
++      echo "	zfs-bootfs (\$root) bootfs" | sed "s/^/$submenu_indentation/"
++  fi
++
+   if [ x$dirname = x/ ]; then
+     if [ -z "${prepare_root_cache}" ]; then
+       prepare_root_cache="$(prepare_grub_to_access_device ${GRUB_DEVICE} | sed -e "s/^/\t/")"

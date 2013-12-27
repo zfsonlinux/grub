@@ -1,3 +1,18 @@
+grub2 (2.00-22debian1+zfs3~wheezy) wheezy; urgency=low
+
+  * Remove build-conflicts on libzfs-dev and libnvpair-dev
+  * Add build-depend on libzfs-dev.
+  * Add provides prefix 'zfs-' to 'grub', 'grub-pc' and 'grub-pc-bin'.
+  * Add some external patches taken from 2.00-13debian1+zfs3_wheezy:
+    ubuntu_crashkernel, ubuntu_quick_boot, ubuntu_quiet_grub_loading,
+    zfs-feature-flag-support, zfs-linux
+    .
+    Patches not merged into this package:
+    ubuntu_acpihalt_improvements ubuntu_gfxpayload_filter ubuntu_probe_dmraid
+    ubuntu_recovery_nomodeset ubuntu_sleep_shift ubuntu_vt_handoff ubuntu_wubi_no_windows
+
+ -- Turbo Fredriksson <turbo@bayour.com>  Fri, 27 Dec 2013 14:23:26 +0100
+
 grub2 (2.00-22) unstable; urgency=low
 
   * Backport from upstream:

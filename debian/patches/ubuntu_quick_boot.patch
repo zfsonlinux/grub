@@ -1,0 +1,99 @@
+Description: Bypass menu unless other OSes are installed or Shift is pressed
+ If other operating systems are installed, then automatically unhide the
+ menu. Otherwise, if GRUB_HIDDEN_TIMEOUT is 0, then use keystatus if
+ available to check whether Shift is pressed. If it is, show the menu,
+ otherwise boot immediately. If keystatus is not available, then fall back
+ to a short delay interruptible with Escape.
+ .
+ This may or may not remain Ubuntu-specific, although it's not obviously
+ wanted upstream.  It implements a requirement of
+ https://wiki.ubuntu.com/DesktopExperienceTeam/KarmicBootExperienceDesignSpec#Bootloader.
+Author: Colin Watson <cjwatson@ubuntu.com>
+Forwarded: no
+Last-Update: 2012-09-26
+
+Index: grub/util/grub.d/30_os-prober.in
+===================================================================
+--- grub.orig/util/grub.d/30_os-prober.in	2013-12-27 14:50:17.942774709 +0100
++++ grub/util/grub.d/30_os-prober.in	2013-12-27 14:56:25.067090599 +0100
+@@ -29,23 +29,66 @@
+ 
+ found_other_os=
+ 
+-adjust_timeout () {
+-  if [ "$quick_boot" = 1 ] && [ "x${found_other_os}" != "x" ]; then
+-    cat << EOF
+-set timeout_style=menu
+-if [ "\${timeout}" = 0 ]; then
+-  set timeout=10
++make_timeout () {
++  if [ "x${found_other_os}" = "x" ] ; then
++    if [ "x${1}" != "x" ] ; then
++      if [ "x${GRUB_HIDDEN_TIMEOUT_QUIET}" = "xtrue" ] ; then
++	verbose=
++      else
++	verbose=" --verbose"
++      fi
++
++      if [ "x${1}" = "x0" ] ; then
++	cat <<EOF
++if [ "x\${timeout}" != "x-1" ]; then
++  if keystatus; then
++    if keystatus --shift; then
++      set timeout=-1
++    else
++      set timeout=0
++    fi
++  else
++    if sleep$verbose --interruptible 3 ; then
++      set timeout=0
++    fi
++  fi
++fi
++EOF
++      else
++	cat << EOF
++if [ "x\${timeout}" != "x-1" ]; then
++  if sleep$verbose --interruptible ${GRUB_HIDDEN_TIMEOUT} ; then
++    set timeout=0
++  fi
+ fi
+ EOF
++      fi
++    fi
++  fi
++}
++
++adjust_timeout () {
++  if [ "x$GRUB_BUTTON_CMOS_ADDRESS" != "x" ]; then
++    cat <<EOF
++if cmostest $GRUB_BUTTON_CMOS_ADDRESS ; then
++EOF
++    make_timeout "${GRUB_HIDDEN_TIMEOUT_BUTTON}" "${GRUB_TIMEOUT_BUTTON}"
++    echo else
++    make_timeout "${GRUB_HIDDEN_TIMEOUT}" "${GRUB_TIMEOUT}"
++    echo fi
++  else
++    make_timeout "${GRUB_HIDDEN_TIMEOUT}" "${GRUB_TIMEOUT}"
+   fi
+ }
+ 
+ if [ "x${GRUB_DISABLE_OS_PROBER}" = "xtrue" ]; then
++  adjust_timeout
+   exit 0
+ fi
+ 
+ if [ -z "`which os-prober 2> /dev/null`" -o -z "`which linux-boot-prober 2> /dev/null`" ] ; then
+   # missing os-prober and/or linux-boot-prober
++  adjust_timeout
+   exit 0
+ fi
+ 
+@@ -57,6 +100,7 @@
+ OSPROBED="`os-prober | tr ' ' '^' | paste -s -d ' '`"
+ if [ -z "${OSPROBED}" ] ; then
+   # empty os-prober output, nothing doing
++  adjust_timeout
+   exit 0
+ fi
+ 

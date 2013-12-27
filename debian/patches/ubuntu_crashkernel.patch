@@ -1,0 +1,43 @@
+Description: Add crashkernel option
+ Add crashkernel= option if kdump and makedumpfile are available. See
+ https://blueprints.launchpad.net/ubuntu/+spec/foundations-karmic-linux-kernel-crash-dump.
+ .
+ This requires several fairly distribution-specific pieces to work properly.
+Author: Michael Vogt <michael.vogt@ubuntu.com>
+Forwarded: not-needed
+Last-Update: 2013-02-01
+
+Index: grub/util/grub.d/10_linux.in
+===================================================================
+--- grub.orig/util/grub.d/10_linux.in	2013-12-27 14:30:23.000000000 +0100
++++ grub/util/grub.d/10_linux.in	2013-12-27 14:30:39.270346561 +0100
+@@ -109,6 +109,11 @@
+   done
+ fi
+ 
++# add crashkernel option if we have the required tools
++if [ -x "/usr/bin/makedumpfile" ] && [ -x "/sbin/kexec" ]; then
++    GRUB_CMDLINE_EXTRA="$GRUB_CMDLINE_EXTRA crashkernel=384M-2G:64M,2G-:128M"
++fi
++
+ linux_entry ()
+ {
+   os="$1"
+@@ -339,7 +344,7 @@
+ 
+   if [ "x$is_first_entry" = xtrue ]; then
+     linux_entry "${OS}" "${version}" simple \
+-    "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
++    "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}"
+ 
+     submenu_indentation="\t"
+     
+@@ -351,7 +356,7 @@
+   fi
+ 
+   linux_entry "${OS}" "${version}" advanced \
+-              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
++              "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}"
+   if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
+     linux_entry "${OS}" "${version}" recovery \
+                 "${GRUB_CMDLINE_LINUX_RECOVERY} ${GRUB_CMDLINE_LINUX}"
