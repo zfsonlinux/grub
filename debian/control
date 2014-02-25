@@ -35,7 +35,7 @@ Build-Depends: debhelper (>= 7.4.2~),
  liblzma-dev,
  dosfstools [amd64],
  mtools [amd64],
- libzfs-dev [linux-any],
+ libzfs-dev [linux-any] | zfs-devel [linux-any],
 Build-Conflicts: autoconf2.13
 Standards-Version: 3.8.4
 Homepage: http://www.gnu.org/software/grub/
@@ -72,7 +72,7 @@ Description: GRand Unified Bootloader, version 2 (dummy package)
 Package: grub-common
 Priority: optional
 Architecture: any-i386 any-amd64 any-powerpc any-ppc64 any-sparc any-mipsel any-ia64
-Depends: ${shlibs:Depends}, ${misc:Depends}, gettext-base, ${lsb-base-depends}
+Depends: ${libzfs-depends}, ${shlibs:Depends}, ${misc:Depends}, gettext-base, ${lsb-base-depends}
 Replaces: grub-pc (<< 2.00-4), grub-ieee1275 (<< 2.00-4), grub-efi (<< 1.99-1), grub-coreboot (<< 2.00-4), grub-linuxbios (<< 1.96+20080831-1), grub-efi-ia32 (<< 2.00-4), grub-efi-amd64 (<< 2.00-4), grub-efi-ia64 (<< 2.00-4), grub-yeeloong (<< 2.00-4)
 Recommends: os-prober (>= 1.33)
 Suggests: multiboot-doc, grub-emu, xorriso (>= 0.5.6.pl00), desktop-base (>= 4.0.6), console-setup
@@ -100,7 +100,7 @@ Description: GRand Unified Bootloader (common files for version 2)
 
 Package: grub-emu
 Architecture: any-i386 any-amd64 any-powerpc
-Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version})
+Depends: ${libzfs-depends}, ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version})
 Replaces: grub-common (<= 1.97~beta3-1)
 Multi-Arch: foreign
 Description: GRand Unified Bootloader, version 2 (emulated version)
@@ -119,7 +119,7 @@ Description: GRand Unified Bootloader, version 2 (emulated debug files)
 Package: grub-pc-bin
 Priority: optional
 Architecture: any-i386 any-amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version})
+Depends: ${libzfs-depends}, ${shlibs:Depends}, ${misc:Depends}, grub-common (= ${binary:Version})
 Replaces: grub2 (<< ${source:Version}), grub-common (<= 1.97~beta2-1), grub-pc (<< 1.99-1)
 Provides: zfs-grub-pc-bin
 Suggests: desktop-base (>= 4.0.6)
