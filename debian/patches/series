@@ -72,3 +72,4 @@ zfs-linux.patch
 ubuntu_crashkernel.patch
 ubuntu_quick_boot.patch
 ubuntu_quiet_grub_loading.patch
+mkconfig_root_device_head.patch

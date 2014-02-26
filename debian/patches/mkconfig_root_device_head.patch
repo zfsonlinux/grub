@@ -1,0 +1,13 @@
+Index: grub/util/grub-mkconfig.in
+===================================================================
+--- grub.orig/util/grub-mkconfig.in	2014-02-26 17:39:52.938821211 +0100
++++ grub/util/grub-mkconfig.in	2014-02-26 17:56:48.074828817 +0100
+@@ -136,7 +136,7 @@
+ fi
+ 
+ # Device containing our userland.  Typically used for root= parameter.
+-GRUB_DEVICE="`${grub_probe} --target=device /`"
++GRUB_DEVICE="`${grub_probe} --target=device / | head -n1`"
+ GRUB_DEVICE_UUID="`${grub_probe} --device ${GRUB_DEVICE} --target=fs_uuid 2> /dev/null`" || true
+ 
+ # Device containing our /boot partition.  Usually the same as GRUB_DEVICE.

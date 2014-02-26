@@ -1,3 +1,10 @@
+grub2 (2.01-22debian1+zfs3-0.6.3-2~wheezy) wheezy; urgency=low
+
+  * If root is mirrored, only return one of the entries to not confuse grub.
+    See https://github.com/zfsonlinux/grub/issues/6.
+
+ -- Turbo Fredriksson <turbo@bayour.com>  Wed, 26 Feb 2014 17:58:38 +0100
+
 grub2 (2.01-22debian1+zfs3-0.6.3-1~wheezy) wheezy; urgency=low
 
   * Correctly update the root device before attempting to probe the bootfs.
