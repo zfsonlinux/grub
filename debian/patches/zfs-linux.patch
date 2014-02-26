@@ -1,7 +1,7 @@
 Index: grub/Makefile.util.def
 ===================================================================
---- grub.orig/Makefile.util.def	2013-12-27 14:02:28.437699889 +0100
-+++ grub/Makefile.util.def	2013-12-27 14:03:13.029693001 +0100
+--- grub.orig/Makefile.util.def	2014-02-26 11:35:18.861064607 +0100
++++ grub/Makefile.util.def	2014-02-26 11:35:18.881064607 +0100
 @@ -2,7 +2,7 @@
  
  library = {
@@ -13,8 +13,8 @@ Index: grub/Makefile.util.def
    common = util/misc.c;
 Index: grub/configure.ac
 ===================================================================
---- grub.orig/configure.ac	2013-12-27 14:02:28.205699886 +0100
-+++ grub/configure.ac	2013-12-27 14:03:13.025693960 +0100
+--- grub.orig/configure.ac	2014-02-26 11:35:18.733064606 +0100
++++ grub/configure.ac	2014-02-26 11:35:18.881064607 +0100
 @@ -1048,6 +1048,14 @@
  fi
  
@@ -49,8 +49,8 @@ Index: grub/configure.ac
                [AS_HELP_STRING([--enable-ubuntu-recovery],
 Index: grub/grub-core/fs/zfs/zfs.c
 ===================================================================
---- grub.orig/grub-core/fs/zfs/zfs.c	2013-12-27 14:02:28.437699889 +0100
-+++ grub/grub-core/fs/zfs/zfs.c	2013-12-27 14:03:13.021694816 +0100
+--- grub.orig/grub-core/fs/zfs/zfs.c	2014-02-26 11:35:18.861064607 +0100
++++ grub/grub-core/fs/zfs/zfs.c	2014-02-26 11:35:18.885064607 +0100
 @@ -434,7 +434,7 @@
  		    (unsigned long long) zc.zc_word[1],
  		    (unsigned long long) zc.zc_word[2], 
@@ -62,8 +62,8 @@ Index: grub/grub-core/fs/zfs/zfs.c
    return GRUB_ERR_NONE;
 Index: grub/util/getroot.c
 ===================================================================
---- grub.orig/util/getroot.c	2013-12-27 14:02:28.233699887 +0100
-+++ grub/util/getroot.c	2013-12-27 14:03:13.025693960 +0100
+--- grub.orig/util/getroot.c	2014-02-26 11:35:18.749064606 +0100
++++ grub/util/getroot.c	2014-02-26 11:35:18.885064607 +0100
 @@ -175,6 +175,17 @@
  grub_util_is_imsm (const char *os_dev);
  #endif
@@ -159,8 +159,8 @@ Index: grub/util/getroot.c
    else
 Index: grub/util/grub.d/10_linux.in
 ===================================================================
---- grub.orig/util/grub.d/10_linux.in	2013-12-27 14:02:28.297699888 +0100
-+++ grub/util/grub.d/10_linux.in	2013-12-27 14:03:13.017695286 +0100
+--- grub.orig/util/grub.d/10_linux.in	2014-02-26 11:35:18.785064606 +0100
++++ grub/util/grub.d/10_linux.in	2014-02-26 11:37:31.833063560 +0100
 @@ -85,6 +85,8 @@
  	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || true`
  	bootfs="`make_system_path_relative_to_its_root / | sed -e "s,@$,,"`"
@@ -170,13 +170,15 @@ Index: grub/util/grub.d/10_linux.in
  	;;
  esac
  
-@@ -157,6 +159,12 @@
+@@ -157,6 +159,14 @@
  
    echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
  
 +  if [ x"$GRUBFS" = xzfs ]; then
 +      # Backwards compatibility for systems that expect Solaris parameters.
 +      echo "	insmod zfsinfo" | sed "s/^/$submenu_indentation/"
++      prepare_grub_to_access_device ${GRUB_DEVICE} | sed -e "s/^/\t/" -e "s/^/$submenu_indentation/"
++      echo
 +      echo "	zfs-bootfs (\$root) bootfs" | sed "s/^/$submenu_indentation/"
 +  fi
 +
