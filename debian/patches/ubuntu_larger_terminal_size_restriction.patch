@@ -1,0 +1,1209 @@
+Description: Support high-resolution terminals
+Author: Vladimir Serbinenko <phcoder@gmail.com>
+Origin: backport, http://git.savannah.gnu.org/gitweb/?p=grub.git;a=commitdiff;h=2b23074a0c082219fe4490fa05b13a481b34b41e
+Origin: upstream, http://git.savannah.gnu.org/gitweb/?p=grub.git;a=commitdiff;h=e89c2d48a991590c18c28ac867ccda67d4425187
+Origin: upstream, http://git.savannah.gnu.org/gitweb/?p=grub.git;a=commitdiff;h=44d47bbe6fe6ed0c8fc5855c07b2917a38371ae4
+Bug: https://savannah.gnu.org/bugs/?39682
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/1297128
+Forwarded: not-needed
+Last-Update: 2014-05-20
+
+Index: b/grub-core/commands/sleep.c
+===================================================================
+--- a/grub-core/commands/sleep.c
++++ b/grub-core/commands/sleep.c
+@@ -34,7 +34,7 @@
+     {0, 0, 0, 0, 0, 0}
+   };
+ 
+-static grub_uint16_t *pos;
++static struct grub_term_coordinate *pos;
+ 
+ static void
+ do_print (int n)
+Index: b/grub-core/kern/term.c
+===================================================================
+--- a/grub-core/kern/term.c
++++ b/grub-core/kern/term.c
+@@ -49,7 +49,7 @@
+     {
+       int n;
+ 
+-      n = 8 - ((term->getxy (term) >> 8) & 7);
++      n = 8 - ((term->getxy (term).x) & 7);
+       while (n--)
+ 	grub_putcode_dumb (' ', term);
+ 
+Index: b/grub-core/loader/i386/linux.c
+===================================================================
+--- a/grub-core/loader/i386/linux.c
++++ b/grub-core/loader/i386/linux.c
+@@ -493,9 +493,9 @@
+ 	    || grub_strcmp (term->name, "console") == 0
+ 	    || grub_strcmp (term->name, "ofconsole") == 0)
+ 	  {
+-	    grub_uint16_t pos = grub_term_getxy (term);
+-	    params->video_cursor_x = pos >> 8;
+-	    params->video_cursor_y = pos & 0xff;
++	    struct grub_term_coordinate pos = grub_term_getxy (term);
++	    params->video_cursor_x = pos.x;
++	    params->video_cursor_y = pos.y;
+ 	    params->video_width = grub_term_width (term);
+ 	    params->video_height = grub_term_height (term);
+ 	    found = 1;
+Index: b/grub-core/normal/cmdline.c
+===================================================================
+--- a/grub-core/normal/cmdline.c
++++ b/grub-core/normal/cmdline.c
+@@ -203,7 +203,8 @@
+ 
+ struct cmdline_term
+ {
+-  unsigned xpos, ypos, ystart, width, height;
++  struct grub_term_coordinate pos;
++  unsigned ystart, width, height;
+   struct grub_term_output *term;
+ };
+ 
+@@ -235,9 +236,9 @@
+ 
+   void cl_set_pos (struct cmdline_term *cl_term)
+   {
+-    cl_term->xpos = (plen + lpos) % (cl_term->width - 1);
+-    cl_term->ypos = cl_term->ystart + (plen + lpos) / (cl_term->width - 1);
+-    grub_term_gotoxy (cl_term->term, cl_term->xpos, cl_term->ypos);
++    cl_term->pos.x = (plen + lpos) % (cl_term->width - 1);
++    cl_term->pos.y = cl_term->ystart + (plen + lpos) / (cl_term->width - 1);
++    grub_term_gotoxy (cl_term->term, cl_term->pos);
+   }
+ 
+   void cl_set_pos_all (void)
+@@ -257,14 +258,14 @@
+ 	    grub_putcode (c, cl_term->term);
+ 	  else
+ 	    grub_putcode (*p, cl_term->term);
+-	  cl_term->xpos++;
+-	  if (cl_term->xpos >= cl_term->width - 1)
++	  cl_term->pos.x++;
++	  if (cl_term->pos.x >= cl_term->width - 1)
+ 	    {
+-	      cl_term->xpos = 0;
+-	      if (cl_term->ypos >= (unsigned) (cl_term->height - 1))
++	      cl_term->pos.x = 0;
++	      if (cl_term->pos.y >= (unsigned) (cl_term->height - 1))
+ 		cl_term->ystart--;
+ 	      else
+-		cl_term->ypos++;
++		cl_term->pos.y++;
+ 	      grub_putcode ('\n', cl_term->term);
+ 	    }
+ 	}
+@@ -332,9 +333,9 @@
+ 
+   void init_clterm (struct cmdline_term *cl_term_cur)
+   {
+-    cl_term_cur->xpos = plen;
+-    cl_term_cur->ypos = (grub_term_getxy (cl_term_cur->term) & 0xFF);
+-    cl_term_cur->ystart = cl_term_cur->ypos;
++    cl_term_cur->pos.x = plen;
++    cl_term_cur->pos.y = grub_term_getxy (cl_term_cur->term).y;
++    cl_term_cur->ystart = cl_term_cur->pos.y;
+     cl_term_cur->width = grub_term_width (cl_term_cur->term);
+     cl_term_cur->height = grub_term_height (cl_term_cur->term);
+   }
+@@ -358,7 +359,7 @@
+     grub_term_output_t term;
+ 
+     FOR_ACTIVE_TERM_OUTPUTS(term)
+-      if ((grub_term_getxy (term) >> 8) != 0)
++      if ((grub_term_getxy (term).x) != 0)
+ 	grub_putcode ('\n', term);
+   }
+   grub_printf ("%s ", prompt_translated);
+Index: b/grub-core/normal/main.c
+===================================================================
+--- a/grub-core/normal/main.c
++++ b/grub-core/normal/main.c
+@@ -233,7 +233,7 @@
+ 
+   posx = grub_getstringwidth (unicode_msg, last_position, term);
+   posx = (grub_term_width (term) - posx) / 2;
+-  grub_term_gotoxy (term, posx, 1);
++  grub_term_gotoxy (term, (struct grub_term_coordinate) { posx, 1 });
+ 
+   grub_print_ucs4 (unicode_msg, last_position, 0, 0, term);
+   grub_putcode ('\n', term);
+Index: b/grub-core/normal/menu_entry.c
+===================================================================
+--- a/grub-core/normal/menu_entry.c
++++ b/grub-core/normal/menu_entry.c
+@@ -124,8 +124,8 @@
+ 	    struct per_term_screen *term_screen)
+ {
+   grub_term_gotoxy (term_screen->term, 
+-		    GRUB_TERM_LEFT_BORDER_X + GRUB_TERM_MARGIN + start + 1,
+-		    y + GRUB_TERM_FIRST_ENTRY_Y);
++		    (struct grub_term_coordinate) {GRUB_TERM_LEFT_BORDER_X + GRUB_TERM_MARGIN + start + 1,
++		    y + GRUB_TERM_FIRST_ENTRY_Y });
+ 
+   if (linep->len >= offset + grub_term_entry_width (term_screen->term))
+     {
+@@ -162,8 +162,8 @@
+   int i;
+ 
+   grub_term_gotoxy (term_screen->term,
+-		    GRUB_TERM_LEFT_BORDER_X + GRUB_TERM_MARGIN + 1,
+-		    y + GRUB_TERM_FIRST_ENTRY_Y);
++		    (struct grub_term_coordinate) {GRUB_TERM_LEFT_BORDER_X + GRUB_TERM_MARGIN + 1,
++		    y + GRUB_TERM_FIRST_ENTRY_Y });
+ 
+   for (i = 0; i < grub_term_entry_width (term_screen->term) + 1; i++)
+     grub_putcode (' ', term_screen->term);
+@@ -173,9 +173,9 @@
+ static void
+ print_up (int flag, struct per_term_screen *term_screen)
+ {
+-  grub_term_gotoxy (term_screen->term, GRUB_TERM_LEFT_BORDER_X 
++  grub_term_gotoxy (term_screen->term, (struct grub_term_coordinate) { GRUB_TERM_LEFT_BORDER_X
+ 		    + grub_term_border_width (term_screen->term),
+-		    GRUB_TERM_FIRST_ENTRY_Y);
++		    GRUB_TERM_FIRST_ENTRY_Y });
+ 
+   if (flag)
+     grub_putcode (GRUB_UNICODE_UPARROW, term_screen->term);
+@@ -187,10 +187,10 @@
+ static void
+ print_down (int flag, struct per_term_screen *term_screen)
+ {
+-  grub_term_gotoxy (term_screen->term, GRUB_TERM_LEFT_BORDER_X
++  grub_term_gotoxy (term_screen->term, (struct grub_term_coordinate) { GRUB_TERM_LEFT_BORDER_X
+ 		    + grub_term_border_width (term_screen->term),
+ 		    GRUB_TERM_TOP_BORDER_Y 
+-		    + term_screen->num_entries);
++		    + term_screen->num_entries });
+ 
+   if (flag)
+     grub_putcode (GRUB_UNICODE_DOWNARROW, term_screen->term);
+@@ -298,9 +298,9 @@
+ 
+   /* Place the cursor.  */
+   grub_term_gotoxy (term_screen->term, 
+-		    GRUB_TERM_LEFT_BORDER_X + GRUB_TERM_MARGIN + 1
++		    (struct grub_term_coordinate) { GRUB_TERM_LEFT_BORDER_X + GRUB_TERM_MARGIN + 1
+ 		    + term_screen->x,
+-		    GRUB_TERM_FIRST_ENTRY_Y + term_screen->y);
++		    GRUB_TERM_FIRST_ENTRY_Y + term_screen->y });
+ 
+   grub_term_refresh (term_screen->term);
+ }
+@@ -1056,17 +1056,17 @@
+ 				/ (grub_term_width (screen->terms[i].term)
+ 				   - 8));
+ 	    grub_uint32_t *endp;
+-	    grub_uint16_t pos;
++	    struct grub_term_coordinate pos;
+ 	    grub_uint32_t *p = ucs4;
+ 
+ 	    pos = grub_term_getxy (screen->terms[i].term);
+-	    grub_term_gotoxy (screen->terms[i].term, 0,
+-			      grub_term_height (screen->terms[i].term) - 3);
++	    grub_term_gotoxy (screen->terms[i].term, (struct grub_term_coordinate) { 0,
++			      grub_term_height (screen->terms[i].term) - 3 });
+ 
+ 	    screen->completion_shown = 1;
+ 
+-	    grub_term_gotoxy (screen->terms[i].term, 0,
+-			      grub_term_height (screen->terms[i].term) - 3);
++	    grub_term_gotoxy (screen->terms[i].term, (struct grub_term_coordinate) { 0,
++			      grub_term_height (screen->terms[i].term) - 3 });
+ 	    grub_puts_terminal ("   ", screen->terms[i].term);
+ 	    switch (completion_type)
+ 	      {
+@@ -1112,7 +1112,7 @@
+ 
+ 	    if (ucs4 + ucs4len > endp)
+ 	      grub_putcode (GRUB_UNICODE_RIGHTARROW, screen->terms[i].term);
+-	    grub_term_gotoxy (screen->terms[i].term, pos >> 8, pos & 0xFF);
++	    grub_term_gotoxy (screen->terms[i].term, pos);
+ 	  }
+     }
+ 
+@@ -1133,12 +1133,12 @@
+ static void
+ clear_completions (struct per_term_screen *term_screen)
+ {
+-  grub_uint16_t pos;
++  struct grub_term_coordinate pos;
+   unsigned i, j;
+ 
+   pos = grub_term_getxy (term_screen->term);
+-  grub_term_gotoxy (term_screen->term, 0,
+-		    grub_term_height (term_screen->term) - 3);
++  grub_term_gotoxy (term_screen->term, (struct grub_term_coordinate) { 0,
++		    grub_term_height (term_screen->term) - 3 });
+ 
+   for (i = 0; i < 2; i++)
+     {
+@@ -1147,7 +1147,7 @@
+       grub_putcode ('\n', term_screen->term);
+     }
+ 
+-  grub_term_gotoxy (term_screen->term, pos >> 8, pos & 0xFF);
++  grub_term_gotoxy (term_screen->term, pos);
+   grub_term_refresh (term_screen->term);
+ }
+ 
+Index: b/grub-core/normal/menu_text.c
+===================================================================
+--- a/grub-core/normal/menu_text.c
++++ b/grub-core/normal/menu_text.c
+@@ -106,7 +106,7 @@
+ 
+   grub_term_setcolorstate (term, GRUB_TERM_COLOR_NORMAL);
+ 
+-  grub_term_gotoxy (term, GRUB_TERM_MARGIN, GRUB_TERM_TOP_BORDER_Y);
++  grub_term_gotoxy (term, (struct grub_term_coordinate) { GRUB_TERM_MARGIN, GRUB_TERM_TOP_BORDER_Y });
+   grub_putcode (GRUB_UNICODE_CORNER_UL, term);
+   for (i = 0; i < (unsigned) grub_term_border_width (term) - 2; i++)
+     grub_putcode (GRUB_UNICODE_HLINE, term);
+@@ -114,16 +114,16 @@
+ 
+   for (i = 0; i < (unsigned) num_entries; i++)
+     {
+-      grub_term_gotoxy (term, GRUB_TERM_MARGIN, GRUB_TERM_TOP_BORDER_Y + i + 1);
++      grub_term_gotoxy (term, (struct grub_term_coordinate) { GRUB_TERM_MARGIN, GRUB_TERM_TOP_BORDER_Y + i + 1 });
+       grub_putcode (GRUB_UNICODE_VLINE, term);
+-      grub_term_gotoxy (term, GRUB_TERM_MARGIN + grub_term_border_width (term)
++      grub_term_gotoxy (term, (struct grub_term_coordinate) { GRUB_TERM_MARGIN + grub_term_border_width (term)
+ 			- 1,
+-			GRUB_TERM_TOP_BORDER_Y + i + 1);
++			GRUB_TERM_TOP_BORDER_Y + i + 1 });
+       grub_putcode (GRUB_UNICODE_VLINE, term);
+     }
+ 
+-  grub_term_gotoxy (term, GRUB_TERM_MARGIN,
+-		    GRUB_TERM_TOP_BORDER_Y + num_entries + 1);
++  grub_term_gotoxy (term, (struct grub_term_coordinate) { GRUB_TERM_MARGIN,
++		    GRUB_TERM_TOP_BORDER_Y + num_entries + 1 });
+   grub_putcode (GRUB_UNICODE_CORNER_LL, term);
+   for (i = 0; i < (unsigned) grub_term_border_width (term) - 2; i++)
+     grub_putcode (GRUB_UNICODE_HLINE, term);
+@@ -131,9 +131,9 @@
+ 
+   grub_term_setcolorstate (term, GRUB_TERM_COLOR_NORMAL);
+ 
+-  grub_term_gotoxy (term, GRUB_TERM_MARGIN,
+-		    (GRUB_TERM_TOP_BORDER_Y + num_entries
+-		     + GRUB_TERM_MARGIN + 1));
++  grub_term_gotoxy (term, (struct grub_term_coordinate) { GRUB_TERM_MARGIN,
++		   (GRUB_TERM_TOP_BORDER_Y + num_entries
++		    + GRUB_TERM_MARGIN + 1) });
+ }
+ 
+ static int
+@@ -227,7 +227,7 @@
+ 			   ? GRUB_TERM_COLOR_HIGHLIGHT
+ 			   : GRUB_TERM_COLOR_NORMAL);
+ 
+-  grub_term_gotoxy (term, GRUB_TERM_LEFT_BORDER_X + GRUB_TERM_MARGIN, y);
++  grub_term_gotoxy (term, (struct grub_term_coordinate) { GRUB_TERM_LEFT_BORDER_X + GRUB_TERM_MARGIN, y });
+ 
+   int last_printed = 0;
+   for (x = GRUB_TERM_LEFT_BORDER_X + GRUB_TERM_MARGIN + 1, i = 0;
+@@ -281,7 +281,7 @@
+   grub_term_setcolorstate (term, GRUB_TERM_COLOR_NORMAL);
+   grub_putcode (' ', term);
+ 
+-  grub_term_gotoxy (term, grub_term_cursor_x (term), y);
++  grub_term_gotoxy (term, (struct grub_term_coordinate) { grub_term_cursor_x (term), y });
+ 
+   grub_term_setcolor (term, old_color_normal, old_color_highlight);
+   grub_term_setcolorstate (term, GRUB_TERM_COLOR_NORMAL);
+@@ -295,8 +295,8 @@
+   int i;
+ 
+   grub_term_gotoxy (data->term,
+-		    GRUB_TERM_LEFT_BORDER_X + grub_term_border_width (data->term),
+-		    GRUB_TERM_FIRST_ENTRY_Y);
++		   (struct grub_term_coordinate) { GRUB_TERM_LEFT_BORDER_X + grub_term_border_width (data->term),
++		   GRUB_TERM_FIRST_ENTRY_Y });
+ 
+   if (data->first)
+     grub_putcode (GRUB_UNICODE_UPARROW, data->term);
+@@ -313,17 +313,17 @@
+ 	e = e->next;
+     }
+ 
+-  grub_term_gotoxy (data->term, GRUB_TERM_LEFT_BORDER_X
+-		    + grub_term_border_width (data->term),
+-		    GRUB_TERM_TOP_BORDER_Y + data->num_entries);
++  grub_term_gotoxy (data->term, (struct grub_term_coordinate) { GRUB_TERM_LEFT_BORDER_X
++		   + grub_term_border_width (data->term),
++		   GRUB_TERM_TOP_BORDER_Y + data->num_entries });
+ 
+   if (e)
+     grub_putcode (GRUB_UNICODE_DOWNARROW, data->term);
+   else
+     grub_putcode (' ', data->term);
+ 
+-  grub_term_gotoxy (data->term, grub_term_cursor_x (data->term),
+-		    GRUB_TERM_FIRST_ENTRY_Y + data->offset);
++  grub_term_gotoxy (data->term, (struct grub_term_coordinate) { grub_term_cursor_x (data->term),
++		   GRUB_TERM_FIRST_ENTRY_Y + data->offset });
+ }
+ 
+ /* Initialize the screen.  If NESTED is non-zero, assume that this menu
+@@ -367,7 +367,7 @@
+   char *msg_translated;
+   int posx;
+ 
+-  grub_term_gotoxy (data->term, 0, grub_term_height (data->term) - 3);
++  grub_term_gotoxy (data->term, (struct grub_term_coordinate) { 0, grub_term_height (data->term) - 3 });
+ 
+   msg_translated = grub_xasprintf (msg, timeout);
+   if (!msg_translated)
+@@ -379,12 +379,12 @@
+ 
+   grub_print_message_indented (msg_translated, 3, 0, data->term);
+  
+-  posx = grub_term_getxy (data->term) >> 8;
++  posx = grub_term_getxy (data->term).x;
+   grub_print_spaces (data->term, grub_term_width (data->term) - posx - 1);
+ 
+   grub_term_gotoxy (data->term,
+-		    grub_term_cursor_x (data->term),
+-		    GRUB_TERM_FIRST_ENTRY_Y + data->offset);
++		   (struct grub_term_coordinate) { grub_term_cursor_x (data->term),
++		   GRUB_TERM_FIRST_ENTRY_Y + data->offset });
+   grub_term_refresh (data->term);
+ }
+ 
+@@ -437,10 +437,10 @@
+ {
+   struct menu_viewer_data *data = dataptr;
+ 
+-  grub_term_gotoxy (data->term, 0, grub_term_height (data->term) - 3);
++  grub_term_gotoxy (data->term, (struct grub_term_coordinate) { 0, grub_term_height (data->term) - 3 });
+   grub_print_spaces (data->term, grub_term_width (data->term) - 1);
+-  grub_term_gotoxy (data->term, grub_term_cursor_x (data->term),
+-		    GRUB_TERM_FIRST_ENTRY_Y + data->offset);
++  grub_term_gotoxy (data->term, (struct grub_term_coordinate) { grub_term_cursor_x (data->term),
++		   GRUB_TERM_FIRST_ENTRY_Y + data->offset });
+   grub_term_refresh (data->term);
+ }
+ 
+Index: b/grub-core/normal/term.c
+===================================================================
+--- a/grub-core/normal/term.c
++++ b/grub-core/normal/term.c
+@@ -57,7 +57,7 @@
+ print_more (void)
+ {
+   char key;
+-  grub_uint16_t *pos;
++  struct grub_term_coordinate *pos;
+   grub_term_output_t term;
+   grub_uint32_t *unicode_str, *unicode_last_position;
+ 
+@@ -236,12 +236,12 @@
+   grub_free (unicode_str);
+ }
+ 
+-grub_uint16_t *
++struct grub_term_coordinate *
+ grub_term_save_pos (void)
+ {
+   struct grub_term_output *cur;
+   unsigned cnt = 0;
+-  grub_uint16_t *ret, *ptr;
++  struct grub_term_coordinate *ret, *ptr;
+   
+   FOR_ACTIVE_TERM_OUTPUTS(cur)
+     cnt++;
+@@ -258,17 +258,17 @@
+ }
+ 
+ void
+-grub_term_restore_pos (grub_uint16_t *pos)
++grub_term_restore_pos (struct grub_term_coordinate *pos)
+ {
+   struct grub_term_output *cur;
+-  grub_uint16_t *ptr = pos;
++  struct grub_term_coordinate *ptr = pos;
+ 
+   if (!pos)
+     return;
+ 
+   FOR_ACTIVE_TERM_OUTPUTS(cur)
+   {
+-    grub_term_gotoxy (cur, (*ptr & 0xff00) >> 8, *ptr & 0xff);
++    grub_term_gotoxy (cur, *ptr);
+     ptr++;
+   }
+ }
+@@ -405,7 +405,7 @@
+     {
+       int n;
+ 
+-      n = 8 - ((term->getxy (term) >> 8) & 7);
++      n = 8 - ((term->getxy (term).x) & 7);
+       c2.base = ' ';
+       while (n--)
+ 	(term->putchar) (term, &c2);
+@@ -507,7 +507,7 @@
+ get_startwidth (struct grub_term_output *term,
+ 		int margin_left)
+ {
+-  return ((term->getxy (term) >> 8) & 0xff) - margin_left;
++  return (term->getxy (term).x) - margin_left;
+ }
+ 
+ static int
+@@ -727,8 +727,8 @@
+       if (backlog)
+ 	state = find_term_state (term);
+ 
+-      if (((term->getxy (term) >> 8) & 0xff) < margin_left)
+-	grub_print_spaces (term, margin_left - ((term->getxy (term) >> 8) & 0xff));
++      if ((term->getxy (term).x) < margin_left)
++	grub_print_spaces (term, margin_left - (term->getxy (term).x));
+     }
+ 
+   if ((term->flags & GRUB_TERM_CODE_TYPE_MASK) 
+Index: b/grub-core/term/efi/console.c
+===================================================================
+--- a/grub-core/term/efi/console.c
++++ b/grub-core/term/efi/console.c
+@@ -132,7 +132,7 @@
+   return GRUB_TERM_NO_KEY;
+ }
+ 
+-static grub_uint16_t
++static struct grub_term_coordinate
+ grub_console_getwh (struct grub_term_output *term __attribute__ ((unused)))
+ {
+   grub_efi_simple_text_output_interface_t *o;
+@@ -147,24 +147,24 @@
+       rows = 25;
+     }
+ 
+-  return ((columns << 8) | rows);
++  return (struct grub_term_coordinate) { columns, rows };
+ }
+ 
+-static grub_uint16_t
++static struct grub_term_coordinate
+ grub_console_getxy (struct grub_term_output *term __attribute__ ((unused)))
+ {
+   grub_efi_simple_text_output_interface_t *o;
+ 
+   if (grub_efi_is_finished)
+-    return 0;
++    return (struct grub_term_coordinate) { 0, 0 };
+ 
+   o = grub_efi_system_table->con_out;
+-  return ((o->mode->cursor_column << 8) | o->mode->cursor_row);
++  return (struct grub_term_coordinate) { o->mode->cursor_column, o->mode->cursor_row };
+ }
+ 
+ static void
+ grub_console_gotoxy (struct grub_term_output *term __attribute__ ((unused)),
+-		     grub_uint8_t x, grub_uint8_t y)
++		     struct grub_term_coordinate pos)
+ {
+   grub_efi_simple_text_output_interface_t *o;
+ 
+@@ -172,7 +172,7 @@
+     return;
+ 
+   o = grub_efi_system_table->con_out;
+-  efi_call_3 (o->set_cursor_position, o, x, y);
++  efi_call_3 (o->set_cursor_position, o, pos.x, pos.y);
+ }
+ 
+ static void
+Index: b/grub-core/term/gfxterm.c
+===================================================================
+--- a/grub-core/term/gfxterm.c
++++ b/grub-core/term/gfxterm.c
+@@ -978,34 +978,34 @@
+     / virtual_screen.normal_char_width;
+ }
+ 
+-static grub_uint16_t
++static struct grub_term_coordinate
+ grub_virtual_screen_getwh (struct grub_term_output *term __attribute__ ((unused)))
+ {
+-  return (virtual_screen.columns << 8) | virtual_screen.rows;
++  return (struct grub_term_coordinate) { virtual_screen.columns, virtual_screen.rows };
+ }
+ 
+-static grub_uint16_t
++static struct grub_term_coordinate
+ grub_virtual_screen_getxy (struct grub_term_output *term __attribute__ ((unused)))
+ {
+-  return ((virtual_screen.cursor_x << 8) | virtual_screen.cursor_y);
++  return (struct grub_term_coordinate) { virtual_screen.cursor_x, virtual_screen.cursor_y };
+ }
+ 
+ static void
+ grub_gfxterm_gotoxy (struct grub_term_output *term __attribute__ ((unused)),
+-		     grub_uint8_t x, grub_uint8_t y)
++		     struct grub_term_coordinate pos)
+ {
+-  if (x >= virtual_screen.columns)
+-    x = virtual_screen.columns - 1;
++  if (pos.x >= virtual_screen.columns)
++    pos.x = virtual_screen.columns - 1;
+ 
+-  if (y >= virtual_screen.rows)
+-    y = virtual_screen.rows - 1;
++  if (pos.y >= virtual_screen.rows)
++    pos.y = virtual_screen.rows - 1;
+ 
+   /* Erase current cursor, if any.  */
+   if (virtual_screen.cursor_state)
+     draw_cursor (0);
+ 
+-  virtual_screen.cursor_x = x;
+-  virtual_screen.cursor_y = y;
++  virtual_screen.cursor_x = pos.x;
++  virtual_screen.cursor_y = pos.y;
+ 
+   /* Draw cursor if visible.  */
+   if (virtual_screen.cursor_state)
+Index: b/grub-core/term/i386/pc/vga_text.c
+===================================================================
+--- a/grub-core/term/i386/pc/vga_text.c
++++ b/grub-core/term/i386/pc/vga_text.c
+@@ -27,7 +27,7 @@
+ #define COLS	80
+ #define ROWS	25
+ 
+-static int grub_curr_x, grub_curr_y;
++static struct grub_term_coordinate grub_curr_pos;
+ 
+ #define VGA_TEXT_SCREEN		((grub_uint16_t *) 0xb8000)
+ 
+@@ -46,7 +46,7 @@
+ static void
+ update_cursor (void)
+ {
+-  unsigned int pos = grub_curr_y * COLS + grub_curr_x;
++  unsigned int pos = grub_curr_pos.y * COLS + grub_curr_pos.x;
+   grub_vga_cr_write (pos >> 8, GRUB_VGA_CR_CURSOR_ADDR_HIGH);
+   grub_vga_cr_write (pos & 0xFF, GRUB_VGA_CR_CURSOR_ADDR_LOW);
+ }
+@@ -54,9 +54,9 @@
+ static void
+ inc_y (void)
+ {
+-  grub_curr_x = 0;
+-  if (grub_curr_y < ROWS - 1)
+-    grub_curr_y++;
++  grub_curr_pos.x = 0;
++  if (grub_curr_pos.y < ROWS - 1)
++    grub_curr_pos.y++;
+   else
+     {
+       int x, y;
+@@ -71,10 +71,10 @@
+ static void
+ inc_x (void)
+ {
+-  if (grub_curr_x >= COLS - 1)
++  if (grub_curr_pos.x >= COLS - 1)
+     inc_y ();
+   else
+-    grub_curr_x++;
++    grub_curr_pos.x++;
+ }
+ 
+ static void
+@@ -84,17 +84,17 @@
+   switch (c->base)
+     {
+       case '\b':
+-	if (grub_curr_x != 0)
+-	  screen_write_char (grub_curr_x--, grub_curr_y, ' ');
++	if (grub_curr_pos.x != 0)
++	  screen_write_char (grub_curr_pos.x--, grub_curr_pos.y, ' ');
+ 	break;
+       case '\n':
+ 	inc_y ();
+ 	break;
+       case '\r':
+-	grub_curr_x = 0;
++	grub_curr_pos.x = 0;
+ 	break;
+       default:
+-	screen_write_char (grub_curr_x, grub_curr_y,
++	screen_write_char (grub_curr_pos.x, grub_curr_pos.y,
+ 			   c->base | (grub_console_cur_color << 8));
+ 	inc_x ();
+     }
+@@ -102,18 +102,17 @@
+   update_cursor ();
+ }
+ 
+-static grub_uint16_t
++static struct grub_term_coordinate
+ grub_vga_text_getxy (struct grub_term_output *term __attribute__ ((unused)))
+ {
+-  return (grub_curr_x << 8) | grub_curr_y;
++  return grub_curr_pos;
+ }
+ 
+ static void
+ grub_vga_text_gotoxy (struct grub_term_output *term __attribute__ ((unused)),
+-		      grub_uint8_t x, grub_uint8_t y)
++		      struct grub_term_coordinate pos)
+ {
+-  grub_curr_x = x;
+-  grub_curr_y = y;
++  grub_curr_pos = pos;
+   update_cursor ();
+ }
+ 
+@@ -123,7 +122,7 @@
+   int i;
+   for (i = 0; i < ROWS * COLS; i++)
+     VGA_TEXT_SCREEN[i] = ' ' | (grub_console_cur_color << 8);
+-  grub_vga_text_gotoxy (term, 0, 0);
++  grub_vga_text_gotoxy (term, (struct grub_term_coordinate) { 0, 0 });
+ }
+ 
+ static void
+Index: b/grub-core/term/ieee1275/ofconsole.c
+===================================================================
+--- a/grub-core/term/ieee1275/ofconsole.c
++++ b/grub-core/term/ieee1275/ofconsole.c
+@@ -90,7 +90,7 @@
+ 
+ 	  if (! grub_ieee1275_get_property (options, "screen-#columns",
+ 					    val, lval, 0))
+-	    grub_ofconsole_terminfo_output.width
++	    grub_ofconsole_terminfo_output.size.x
+ 	      = (grub_uint8_t) grub_strtoul (val, 0, 10);
+ 	}
+       if (! grub_ieee1275_get_property_length (options, "screen-#rows", &lval)
+@@ -99,16 +99,16 @@
+ 	  char val[lval];
+ 	  if (! grub_ieee1275_get_property (options, "screen-#rows",
+ 					    val, lval, 0))
+-	    grub_ofconsole_terminfo_output.height
++	    grub_ofconsole_terminfo_output.size.y
+ 	      = (grub_uint8_t) grub_strtoul (val, 0, 10);
+ 	}
+     }
+ 
+   /* Use a small console by default.  */
+-  if (! grub_ofconsole_terminfo_output.width)
+-    grub_ofconsole_terminfo_output.width = 80;
+-  if (! grub_ofconsole_terminfo_output.height)
+-    grub_ofconsole_terminfo_output.height = 24;
++  if (! grub_ofconsole_terminfo_output.size.x)
++    grub_ofconsole_terminfo_output.size.x = 80;
++  if (! grub_ofconsole_terminfo_output.size.y)
++    grub_ofconsole_terminfo_output.size.y = 24;
+ }
+ 
+ static void
+@@ -185,8 +185,7 @@
+ struct grub_terminfo_output_state grub_ofconsole_terminfo_output =
+   {
+     .put = put,
+-    .width = 80,
+-    .height = 24
++    .size = { 80, 24 }
+   };
+ 
+ static struct grub_term_input grub_ofconsole_term_input =
+Index: b/grub-core/term/serial.c
+===================================================================
+--- a/grub-core/term/serial.c
++++ b/grub-core/term/serial.c
+@@ -84,8 +84,7 @@
+     .tinfo =
+     {
+       .put = serial_put,
+-      .width = 80,
+-      .height = 24
++      .size = { 80, 24 }
+     }
+   };
+ 
+Index: b/grub-core/term/terminfo.c
+===================================================================
+--- a/grub-core/term/terminfo.c
++++ b/grub-core/term/terminfo.c
+@@ -200,38 +200,37 @@
+     data->put (term, *str++);
+ }
+ 
+-grub_uint16_t
++struct grub_term_coordinate
+ grub_terminfo_getxy (struct grub_term_output *term)
+ {
+   struct grub_terminfo_output_state *data
+     = (struct grub_terminfo_output_state *) term->data;
+ 
+-  return ((data->xpos << 8) | data->ypos);
++  return data->pos;
+ }
+ 
+ void
+ grub_terminfo_gotoxy (struct grub_term_output *term,
+-		      grub_uint8_t x, grub_uint8_t y)
++		      struct grub_term_coordinate pos)
+ {
+   struct grub_terminfo_output_state *data
+     = (struct grub_terminfo_output_state *) term->data;
+ 
+-  if (x > grub_term_width (term) || y > grub_term_height (term))
++  if (pos.x > grub_term_width (term) || pos.y > grub_term_height (term))
+     {
+-      grub_error (GRUB_ERR_OUT_OF_RANGE, "invalid point (%u,%u)", x, y);
++      grub_error (GRUB_ERR_OUT_OF_RANGE, "invalid point (%u,%u)", pos.x, pos.y);
+       return;
+     }
+ 
+   if (data->gotoxy)
+-    putstr (term, grub_terminfo_tparm (data->gotoxy, y, x));
++    putstr (term, grub_terminfo_tparm (data->gotoxy, pos.y, pos.x));
+   else
+     {
+-      if ((y == data->ypos) && (x == data->xpos - 1))
++      if ((pos.y == data->pos.y) && (pos.x == data->pos.x - 1))
+ 	data->put (term, '\b');
+     }
+ 
+-  data->xpos = x;
+-  data->ypos = y;
++  data->pos = pos;
+ }
+ 
+ /* Clear the screen.  */
+@@ -243,7 +242,7 @@
+ 
+   putstr (term, grub_terminfo_tparm (data->cls));
+ 
+-  data->xpos = data->ypos = 0;
++  data->pos = (struct grub_term_coordinate) { 0, 0 };
+ }
+ 
+ void
+@@ -331,42 +330,42 @@
+ 
+     case '\b':
+     case 127:
+-      if (data->xpos > 0)
+-	data->xpos--;
++      if (data->pos.x > 0)
++	data->pos.x--;
+     break;
+ 
+     case '\n':
+-      if (data->ypos < grub_term_height (term) - 1)
+-	data->ypos++;
++      if (data->pos.y < grub_term_height (term) - 1)
++	data->pos.y++;
+       break;
+ 
+     case '\r':
+-      data->xpos = 0;
++      data->pos.x = 0;
+       break;
+ 
+     default:
+-      if (data->xpos + c->estimated_width >= grub_term_width (term) + 1)
++      if ((int) data->pos.x + c->estimated_width >= (int) grub_term_width (term) + 1)
+ 	{
+-	  data->xpos = 0;
+-	  if (data->ypos < grub_term_height (term) - 1)
+-	    data->ypos++;
++	  data->pos.x = 0;
++	  if (data->pos.y < grub_term_height (term) - 1)
++	    data->pos.y++;
+ 	  data->put (term, '\r');
+ 	  data->put (term, '\n');
+ 	}
+-      data->xpos += c->estimated_width;
++      data->pos.x += c->estimated_width;
+       break;
+     }
+ 
+   data->put (term, c->base);
+ }
+ 
+-grub_uint16_t
++struct grub_term_coordinate
+ grub_terminfo_getwh (struct grub_term_output *term)
+ {
+   struct grub_terminfo_output_state *data
+     = (struct grub_terminfo_output_state *) term->data;
+ 
+-  return (data->width << 8) | data->height;
++  return data->size;
+ }
+ 
+ #define ANSI_C0 0x9b
+@@ -621,8 +620,8 @@
+ 	  {
+ 	    struct grub_terminfo_output_state *data
+ 	      = (struct grub_terminfo_output_state *) cur->data;
+-	    data->width = w;
+-	    data->height = h;
++	    data->pos.x = w;
++	    data->pos.y = h;
+ 	  }
+ 
+ 	if (argc == 1)
+Index: b/include/grub/term.h
+===================================================================
+--- a/include/grub/term.h
++++ b/include/grub/term.h
+@@ -167,6 +167,13 @@
+ };
+ typedef struct grub_term_input *grub_term_input_t;
+ 
++/* Made in a way to fit into uint32_t and so be passed in a register.  */
++struct grub_term_coordinate
++{
++  grub_uint16_t x;
++  grub_uint16_t y;
++};
++
+ struct grub_term_output
+ {
+   /* The next terminal.  */
+@@ -190,15 +197,15 @@
+   grub_ssize_t (*getcharwidth) (struct grub_term_output *term,
+ 				const struct grub_unicode_glyph *c);
+ 
+-  /* Get the screen size. The return value is ((Width << 8) | Height).  */
+-  grub_uint16_t (*getwh) (struct grub_term_output *term);
++  /* Get the screen size. */
++  struct grub_term_coordinate (*getwh) (struct grub_term_output *term);
+ 
+-  /* Get the cursor position. The return value is ((X << 8) | Y).  */
+-  grub_uint16_t (*getxy) (struct grub_term_output *term);
++  /* Get the cursor position. */
++  struct grub_term_coordinate (*getxy) (struct grub_term_output *term);
+ 
+   /* Go to the position (X, Y).  */
+   void (*gotoxy) (struct grub_term_output *term,
+-		  grub_uint8_t x, grub_uint8_t y);
++		  struct grub_term_coordinate pos);
+ 
+   /* Clear the screen.  */
+   void (*cls) (struct grub_term_output *term);
+@@ -308,17 +315,17 @@
+ void grub_cls (void);
+ void EXPORT_FUNC(grub_refresh) (void);
+ void grub_puts_terminal (const char *str, struct grub_term_output *term);
+-grub_uint16_t *grub_term_save_pos (void);
+-void grub_term_restore_pos (grub_uint16_t *pos);
++struct grub_term_coordinate *grub_term_save_pos (void);
++void grub_term_restore_pos (struct grub_term_coordinate *pos);
+ 
+ static inline unsigned grub_term_width (struct grub_term_output *term)
+ {
+-  return ((term->getwh(term)&0xFF00)>>8);
++  return term->getwh(term).x;
+ }
+ 
+ static inline unsigned grub_term_height (struct grub_term_output *term)
+ {
+-  return (term->getwh(term)&0xFF);
++  return term->getwh(term).y;
+ }
+ 
+ /* The width of the border.  */
+@@ -336,7 +343,7 @@
+   return grub_term_border_width (term) - 2 - GRUB_TERM_MARGIN * 2 - 1;
+ }
+ 
+-static inline grub_uint16_t
++static inline struct grub_term_coordinate
+ grub_term_getxy (struct grub_term_output *term)
+ {
+   return term->getxy (term);
+@@ -350,9 +357,9 @@
+ }
+ 
+ static inline void
+-grub_term_gotoxy (struct grub_term_output *term, grub_uint8_t x, grub_uint8_t y)
++grub_term_gotoxy (struct grub_term_output *term, struct grub_term_coordinate pos)
+ {
+-  term->gotoxy (term, x, y);
++  term->gotoxy (term, pos);
+ }
+ 
+ static inline void 
+Index: b/include/grub/terminfo.h
+===================================================================
+--- a/include/grub/terminfo.h
++++ b/include/grub/terminfo.h
+@@ -49,18 +49,17 @@
+   char *cursor_off;
+   char *setcolor;
+ 
+-  unsigned int width, height;
+-
+-  unsigned int xpos, ypos;
++  struct grub_term_coordinate size;
++  struct grub_term_coordinate pos;
+ 
+   void (*put) (struct grub_term_output *term, const int c);
+ };
+ 
+ grub_err_t EXPORT_FUNC(grub_terminfo_output_init) (struct grub_term_output *term);
+ void EXPORT_FUNC(grub_terminfo_gotoxy) (grub_term_output_t term,
+-					grub_uint8_t x, grub_uint8_t y);
++					struct grub_term_coordinate pos);
+ void EXPORT_FUNC(grub_terminfo_cls) (grub_term_output_t term);
+-grub_uint16_t EXPORT_FUNC (grub_terminfo_getxy) (struct grub_term_output *term);
++struct grub_term_coordinate EXPORT_FUNC (grub_terminfo_getxy) (struct grub_term_output *term);
+ void EXPORT_FUNC (grub_terminfo_setcursor) (struct grub_term_output *term,
+ 					    const int on);
+ void EXPORT_FUNC (grub_terminfo_setcolorstate) (struct grub_term_output *term,
+@@ -71,7 +70,7 @@
+ int EXPORT_FUNC (grub_terminfo_getkey) (struct grub_term_input *term);
+ void EXPORT_FUNC (grub_terminfo_putchar) (struct grub_term_output *term,
+ 					  const struct grub_unicode_glyph *c);
+-grub_uint16_t EXPORT_FUNC (grub_terminfo_getwh) (struct grub_term_output *term);
++struct grub_term_coordinate EXPORT_FUNC (grub_terminfo_getwh) (struct grub_term_output *term);
+ 
+ 
+ grub_err_t EXPORT_FUNC (grub_terminfo_output_register) (struct grub_term_output *term,
+Index: b/grub-core/kern/emu/console.c
+===================================================================
+--- a/grub-core/kern/emu/console.c
++++ b/grub-core/kern/emu/console.c
+@@ -168,7 +168,7 @@
+   return c;
+ }
+ 
+-static grub_uint16_t
++static struct grub_term_coordinate
+ grub_ncurses_getxy (struct grub_term_output *term __attribute__ ((unused)))
+ {
+   int x;
+@@ -176,10 +176,10 @@
+ 
+   getyx (stdscr, y, x);
+ 
+-  return (x << 8) | y;
++  return (struct grub_term_coordinate) { x, y };
+ }
+ 
+-static grub_uint16_t
++static struct grub_term_coordinate
+ grub_ncurses_getwh (struct grub_term_output *term __attribute__ ((unused)))
+ {
+   int x;
+@@ -187,14 +187,14 @@
+ 
+   getmaxyx (stdscr, y, x);
+ 
+-  return (x << 8) | y;
++  return (struct grub_term_coordinate) { x, y };
+ }
+ 
+ static void
+ grub_ncurses_gotoxy (struct grub_term_output *term __attribute__ ((unused)),
+-		     grub_uint8_t x, grub_uint8_t y)
++		     struct grub_term_coordinate pos)
+ {
+-  move (y, x);
++  move (pos.y, pos.x);
+ }
+ 
+ static void
+Index: b/grub-core/term/i386/vga_common.c
+===================================================================
+--- a/grub-core/term/i386/vga_common.c
++++ b/grub-core/term/i386/vga_common.c
+@@ -22,10 +22,10 @@
+ 
+ grub_uint8_t grub_console_cur_color = 0x7;
+ 
+-grub_uint16_t
++struct grub_term_coordinate
+ grub_console_getwh (struct grub_term_output *term __attribute__ ((unused)))
+ {
+-  return (80 << 8) | 25;
++  return (struct grub_term_coordinate) { 80, 25 };
+ }
+ 
+ void
+Index: b/include/grub/i386/vga_common.h
+===================================================================
+--- a/include/grub/i386/vga_common.h
++++ b/include/grub/i386/vga_common.h
+@@ -25,7 +25,7 @@
+ 
+ extern grub_uint8_t grub_console_cur_color;
+ 
+-grub_uint16_t grub_console_getwh (struct grub_term_output *term);
++struct grub_term_coordinate grub_console_getwh (struct grub_term_output *term);
+ void grub_console_setcolorstate (struct grub_term_output *term,
+ 				 grub_term_color_state state);
+ 
+Index: b/include/grub/i386/pc/console.h
+===================================================================
+--- a/include/grub/i386/pc/console.h
++++ b/include/grub/i386/pc/console.h
+@@ -28,9 +28,6 @@
+ 
+ /* These are global to share code between C and asm.  */
+ int grub_console_getkey (struct grub_term_input *term);
+-grub_uint16_t grub_console_getxy (struct grub_term_output *term);
+-void grub_console_gotoxy (struct grub_term_output *term,
+-			  grub_uint8_t x, grub_uint8_t y);
+ void grub_console_cls (struct grub_term_output *term);
+ void grub_console_setcursor (struct grub_term_output *term, int on);
+ void grub_console_putchar (struct grub_term_output *term,
+Index: b/grub-core/kern/i386/pc/startup.S
+===================================================================
+--- a/grub-core/kern/i386/pc/startup.S
++++ b/grub-core/kern/i386/pc/startup.S
+@@ -678,72 +678,6 @@
+ 
+ 
+ /*
+- * grub_uint16_t grub_console_getxy (void)
+- * BIOS call "INT 10H Function 03h" to get cursor position
+- *	Call with	%ah = 0x03
+- *			%bh = page
+- *      Returns         %ch = starting scan line
+- *                      %cl = ending scan line
+- *                      %dh = row (0 is top)
+- *                      %dl = column (0 is left)
+- */
+-
+-
+-FUNCTION(grub_console_getxy)
+-	pushl	%ebp
+-	pushl	%ebx                    /* save EBX */
+-
+-	call	prot_to_real
+-	.code16
+-
+-        xorb	%bh, %bh                /* set page to 0 */
+-	movb	$0x3, %ah
+-	int	$0x10			/* get cursor position */
+-
+-	DATA32	call	real_to_prot
+-	.code32
+-
+-	movb	%dl, %ah
+-	movb	%dh, %al
+-
+-	popl	%ebx
+-	popl	%ebp
+-	ret
+-
+-
+-/*
+- * void grub_console_gotoxy(grub_uint8_t x, grub_uint8_t y)
+- * BIOS call "INT 10H Function 02h" to set cursor position
+- *	Call with	%ah = 0x02
+- *			%bh = page
+- *                      %dh = row (0 is top)
+- *                      %dl = column (0 is left)
+- */
+-
+-
+-FUNCTION(grub_console_gotoxy)
+-	pushl	%ebp
+-	pushl	%ebx                    /* save EBX */
+-
+-	movb	%cl, %dh	/* %dh = y */
+-	/* %dl = x */
+-
+-	call	prot_to_real
+-	.code16
+-
+-        xorb	%bh, %bh                /* set page to 0 */
+-	movb	$0x2, %ah
+-	int	$0x10			/* set cursor position */
+-
+-	DATA32	call	real_to_prot
+-	.code32
+-
+-	popl	%ebx
+-	popl	%ebp
+-	ret
+-
+-
+-/*
+  * void grub_console_cls (void)
+  * BIOS call "INT 10H Function 09h" to write character and attribute
+  *	Call with	%ah = 0x09
+Index: b/grub-core/term/i386/pc/console.c
+===================================================================
+--- a/grub-core/term/i386/pc/console.c
++++ b/grub-core/term/i386/pc/console.c
+@@ -20,10 +20,60 @@
+ #include <grub/machine/console.h>
+ #include <grub/term.h>
+ #include <grub/types.h>
++#include <grub/machine/int.h>
+ 
+ static const struct grub_machine_bios_data_area *bios_data_area =
+   (struct grub_machine_bios_data_area *) GRUB_MEMORY_MACHINE_BIOS_DATA_AREA_ADDR;
+ 
++/*
++ * BIOS call "INT 10H Function 03h" to get cursor position
++ *      Call with       %ah = 0x03
++ *                      %bh = page
++ *      Returns         %ch = starting scan line
++ *                      %cl = ending scan line
++ *                      %dh = row (0 is top)
++ *                      %dl = column (0 is left)
++ */
++
++
++static struct grub_term_coordinate
++grub_console_getxy (struct grub_term_output *term __attribute__ ((unused))
++)
++{
++  struct grub_bios_int_registers regs;
++
++  regs.eax = 0x0300;
++  regs.ebx = 0;
++  regs.flags = GRUB_CPU_INT_FLAGS_DEFAULT;
++  grub_bios_interrupt (0x10, &regs);
++
++  return (struct grub_term_coordinate) {
++    (regs.edx & 0xff), ((regs.edx & 0xff00) >> 8) };
++}
++
++/*
++ * BIOS call "INT 10H Function 02h" to set cursor position
++ *      Call with       %ah = 0x02
++ *                      %bh = page
++ *                      %dh = row (0 is top)
++ *                      %dl = column (0 is left)
++ */
++static void
++grub_console_gotoxy (struct grub_term_output *term __attribute__ ((unused)
++),
++                     struct grub_term_coordinate pos)
++{
++  struct grub_bios_int_registers regs;
++
++  /* set page to 0 */
++  regs.ebx = 0;
++  regs.eax = 0x0200;
++  regs.edx = (pos.y << 8) | pos.x;
++  regs.flags = GRUB_CPU_INT_FLAGS_DEFAULT;
++  grub_bios_interrupt (0x10, &regs);
++}
++
++
+ static int
+ grub_console_getkeystatus (struct grub_term_input *term __attribute__ ((unused)))
+ {

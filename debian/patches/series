@@ -84,5 +84,7 @@ ubuntu_mkconfig_recovery_title.patch
 ubuntu_fat_non_512_sectors.patch
 ubuntu_probe_fusionio.patch
 ubuntu_sysfs_partition_start.patch
+ubuntu_disk_write_non_512_sectors.patch
+ubuntu_larger_terminal_size_restriction.patch
 zfs-linux.patch
 zfs_accept_pool_5000.patch
