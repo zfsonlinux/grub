@@ -1,13 +1,14 @@
-grub2 (1.99-21ubuntu3.14+zfs1) precise; urgency=low
+grub2 (1.99-21ubuntu3.15) precise; urgency=low
 
-  * Disable no_libzfs.patch, which prevents linking ZFS.
-  * Add zfs-linux.patch for ZoL support.
-  * Provide a virtual zfs-grub package.
-  * Add zfs_accept_pool_5000.patch for basic feature flags support.
-    Thanks: Matus Kral <matuskral@icloud.com>
-  * Merge bzr::lp:ubuntu/precise-updates/grub2
+  [ Colin Watson ]
+  * Backport from upstream:
+    - Fix sector number when writing to non-512B disks (LP: #1253443).
 
- -- Darik Horn <dajhorn@vanadac.com>  Fri, 20 Jun 2014 19:02:49 -0500
+  [ Yang Bai ]
+  * Backport from upstream:
+    - Support high resolution for grub terminal (LP: #1297128).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 20 May 2014 10:52:20 +0100
 
 grub2 (1.99-21ubuntu3.14) precise; urgency=low
 

@@ -29,7 +29,7 @@ probe_canonicalise.patch
 mkconfig_skip_readme.patch
 kfreebsd_lvm.patch
 zfs_update.patch
-#no_libzfs.patch
+no_libzfs.patch
 xfs_invalid_bmap.patch
 handle_new_autotools.patch
 bash-completion_identifiers.patch
@@ -84,5 +84,5 @@ ubuntu_mkconfig_recovery_title.patch
 ubuntu_fat_non_512_sectors.patch
 ubuntu_probe_fusionio.patch
 ubuntu_sysfs_partition_start.patch
-zfs-linux.patch
-zfs_accept_pool_5000.patch
+ubuntu_disk_write_non_512_sectors.patch
+ubuntu_larger_terminal_size_restriction.patch
