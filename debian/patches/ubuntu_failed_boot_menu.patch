@@ -1,0 +1,127 @@
+Description: Show the boot menu if the previous boot failed
+ "Failure" here is defined as failing to get to the end of one of the normal
+ runlevels.
+Author: Colin Watson <cjwatson@ubuntu.com>
+Forwarded: no
+Last-Update: 2013-12-04
+
+Index: b/util/grub.d/00_header.in
+===================================================================
+--- a/util/grub.d/00_header.in
++++ b/util/grub.d/00_header.in
+@@ -44,6 +44,7 @@
+ 
+ cat << EOF
+ if [ -s \$prefix/grubenv ]; then
++  set have_grubenv=true
+   load_env
+ fi
+ EOF
+@@ -76,6 +77,11 @@
+   fi
+ }
+ 
++function recordfail {
++  set recordfail=1
++  if [ -n "\${have_grubenv}" ]; then if [ -z "\${boot_once}" ]; then save_env recordfail; fi; fi
++}
++
+ function load_video {
+ EOF
+ if [ -n "${GRUB_VIDEO_BACKEND}" ]; then
+@@ -225,6 +231,11 @@
+ 
+ make_timeout ()
+ {
++    cat << EOF
++if [ "\${recordfail}" = 1 ] ; then
++  set timeout=${GRUB_RECORDFAIL_TIMEOUT:--1}
++else
++EOF
+     if [ "x${1}${3}" != "x" ] ; then
+ 	if [ "x${3}" != "x" ] ; then
+ 	    timeout="${2}"
+@@ -247,26 +258,29 @@
+ 	    verbose=
+ 	fi
+ 	cat << EOF
+-if [ x\$feature_timeout_style = xy ] ; then
+-  set timeout_style=${style}
+-  set timeout=${timeout}
++  if [ x\$feature_timeout_style = xy ] ; then
++    set timeout_style=${style}
++    set timeout=${timeout}
+ EOF
+ 	if [ "x${style}" != "xmenu" ] ; then
+ 	    cat << EOF
+-# Fallback hidden-timeout code in case the timeout_style feature is
+-# unavailable.
+-elif sleep${verbose} --interruptible ${timeout} ; then
+-  set timeout=0
++  # Fallback hidden-timeout code in case the timeout_style feature is
++  # unavailable.
++  elif sleep${verbose} --interruptible ${timeout} ; then
++    set timeout=0
+ EOF
+ 	fi
+ 	cat << EOF
+-fi
++  fi
+ EOF
+     else
+ 	cat << EOF
+-set timeout=${2}
++  set timeout=${2}
+ EOF
+     fi
++    cat << EOF
++fi
++EOF
+ }
+ 
+ if [ "x$GRUB_BUTTON_CMOS_ADDRESS" != "x" ]; then
+Index: b/util/grub.d/10_linux.in
+===================================================================
+--- a/util/grub.d/10_linux.in
++++ b/util/grub.d/10_linux.in
+@@ -82,6 +82,9 @@
+     title="$(gettext_quoted "%s, with Linux %s")"
+   fi
+   printf "menuentry '${title}' ${CLASS} {\n" "${os}" "${version}"
++  cat << EOF
++	recordfail
++EOF
+   if ! ${recovery} ; then
+       save_default_entry | sed -e "s/^/\t/"
+   fi
+Index: b/docs/grub.texi
+===================================================================
+--- a/docs/grub.texi
++++ b/docs/grub.texi
+@@ -1258,6 +1258,12 @@
+ Each module will be loaded as early as possible, at the start of
+ @file{grub.cfg}.
+ 
++@item GRUB_RECORDFAIL_TIMEOUT
++If this option is set, it overrides the default recordfail setting. The
++default setting is -1, which causes GRUB to wait for user input. This option
++should be set on headless and appliance systems where access to a console is
++restricted or limited.
++
+ @end table
+ 
+ The following options are still accepted for compatibility with existing
+Index: b/util/grub-mkconfig.in
+===================================================================
+--- a/util/grub-mkconfig.in
++++ b/util/grub-mkconfig.in
+@@ -260,7 +260,8 @@
+   GRUB_DISABLE_OS_PROBER \
+   GRUB_INIT_TUNE \
+   GRUB_SAVEDEFAULT \
+-  GRUB_BADRAM
++  GRUB_BADRAM \
++  GRUB_RECORDFAIL_TIMEOUT
+ 
+ if test "x${grub_cfg}" != "x"; then
+   rm -f ${grub_cfg}.new

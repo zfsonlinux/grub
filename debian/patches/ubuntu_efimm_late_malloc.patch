@@ -1,0 +1,183 @@
+Description: Fix EFI memory map handling in Linux loader
+ This allocates space for the memory map just before calling
+ ExitBootServices, rather than trying to predict its size in advance.
+Author: Stuart Hayes <Stuart_Hayes@Dell.com>
+Bug: https://savannah.gnu.org/bugs/?36532
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/1046429
+Forwarded: yes
+Last-Update: 2013-01-03
+
+Index: b/grub-core/loader/i386/linux.c
+===================================================================
+--- a/grub-core/loader/i386/linux.c
++++ b/grub-core/loader/i386/linux.c
+@@ -72,14 +72,11 @@
+ static grub_uint32_t prot_mode_pages;
+ static grub_uint32_t initrd_pages;
+ static struct grub_relocator *relocator = NULL;
+-static void *efi_mmap_buf;
+ static grub_size_t maximal_cmdline_size;
+ #ifdef GRUB_MACHINE_EFI
+ static int using_linuxefi;
+ static grub_command_t initrdefi_cmd;
+-static grub_efi_uintn_t efi_mmap_size;
+ #else
+-static const grub_size_t efi_mmap_size = 0;
+ #endif
+ 
+ /* FIXME */
+@@ -110,31 +107,11 @@
+ find_efi_mmap_size (void)
+ {
+   static grub_efi_uintn_t mmap_size = 0;
++  void *mmap_buf = 0;
++  grub_efi_uintn_t desc_size;
+ 
+-  if (mmap_size != 0)
+-    return mmap_size;
+-
+-  mmap_size = (1 << 12);
+-  while (1)
+-    {
+-      int ret;
+-      grub_efi_memory_descriptor_t *mmap;
+-      grub_efi_uintn_t desc_size;
+-
+-      mmap = grub_malloc (mmap_size);
+-      if (! mmap)
+-	return 0;
+-
+-      ret = grub_efi_get_memory_map (&mmap_size, mmap, 0, &desc_size, 0);
+-      grub_free (mmap);
+-
+-      if (ret < 0)
+-	grub_fatal ("cannot get memory map");
+-      else if (ret > 0)
+-	break;
+-
+-      mmap_size += (1 << 12);
+-    }
++  if (grub_efi_get_memory_map (&mmap_size, mmap_buf, 0, &desc_size, 0) < 0)
++    return grub_error (GRUB_ERR_IO, "couldn't retrieve memory map");
+ 
+   /* Increase the size a bit for safety, because GRUB allocates more on
+      later, and EFI itself may allocate more.  */
+@@ -195,16 +172,12 @@
+   prot_size = page_align (prot_size);
+   mmap_size = find_mmap_size ();
+ 
+-#ifdef GRUB_MACHINE_EFI
+-  efi_mmap_size = find_efi_mmap_size ();
+-#endif
+-
+   grub_dprintf ("linux", "real_size = %x, prot_size = %x, mmap_size = %x\n",
+ 		(unsigned) real_size, (unsigned) prot_size, (unsigned) mmap_size);
+ 
+   /* Calculate the number of pages; Combine the real mode code with
+      the memory map buffer for simplicity.  */
+-  real_mode_pages = ((real_size + mmap_size + efi_mmap_size) >> 12);
++  real_mode_pages = ((real_size + mmap_size) >> 12);
+   prot_mode_pages = (prot_size >> 12);
+ 
+   /* Initialize the memory pointers with NULL for convenience.  */
+@@ -239,10 +212,10 @@
+ 	  if (addr + size > 0x90000)
+ 	    size = 0x90000 - addr;
+ 
+-	  if (real_size + mmap_size + efi_mmap_size > size)
++	  if (real_size + mmap_size > size)
+ 	    return 0;
+ 
+-	  real_mode_target = ((addr + size) - (real_size + mmap_size + efi_mmap_size));
++	  real_mode_target = ((addr + size) - (real_size + mmap_size));
+ 	  return 1;
+ 	}
+ 
+@@ -259,13 +232,11 @@
+     grub_relocator_chunk_t ch;
+     err = grub_relocator_alloc_chunk_addr (relocator, &ch,
+ 					   real_mode_target,
+-					   (real_size + mmap_size 
+-					    + efi_mmap_size));
++					   (real_size + mmap_size));
+     if (err)
+       goto fail;
+     real_mode_mem = get_virtual_current_address (ch);
+   }
+-  efi_mmap_buf = (grub_uint8_t *) real_mode_mem + real_size + mmap_size;
+ 
+   prot_mode_target = GRUB_LINUX_BZIMAGE_ADDR;
+ 
+@@ -550,17 +521,69 @@
+ 
+ #ifdef GRUB_MACHINE_EFI
+   {
++    /* Get buffer for final EFI memory map. */
+     grub_efi_uintn_t efi_desc_size;
++    grub_efi_uintn_t efi_mmap_size;
+     grub_size_t efi_mmap_target;
++    grub_addr_t addr_min, addr_max;
++    grub_addr_t addr;
++    void *efi_mmap_mem;
++
++    efi_mmap_size = find_efi_mmap_size ();
++
++    /* Get the highest address available for the buffer.  */
++    if (grub_le_to_cpu16 (params->version) >= 0x0203)
++      {
++        addr_max = grub_cpu_to_le32 (
++		    ((struct linux_kernel_header *)params)->initrd_addr_max);
++
++        /* XXX in reality, Linux specifies a bogus value, so
++	   it is necessary to make sure that ADDR_MAX does not exceed
++	   0x3fffffff.  */
++        if (addr_max > GRUB_LINUX_INITRD_MAX_ADDRESS)
++	  addr_max = GRUB_LINUX_INITRD_MAX_ADDRESS;
++      }
++    else
++      addr_max = GRUB_LINUX_INITRD_MAX_ADDRESS;
++
++    /* Put EFI memory map below initrd if there is one. */
++    if (initrd_mem_target && (addr_max > initrd_mem_target))
++      addr_max = initrd_mem_target;
++
++    if (linux_mem_size != 0 && linux_mem_size < addr_max)
++      addr_max = linux_mem_size;
++
++    /* Usually, the compression ratio is about 50%.  */
++    addr_min = (grub_addr_t) prot_mode_target + ((prot_mode_pages * 3) << 12)
++               + page_align (efi_mmap_size);
++
++    /* Put the EFI memory map as high as possible, 4KiB aligned.  */
++    addr = (addr_max - efi_mmap_size) & ~0xFFF;
++
++    if (addr < addr_min)
++      {
++        grub_error (GRUB_ERR_OUT_OF_RANGE, "the EFI memory map is too big");
++        return GRUB_ERR_OUT_OF_MEMORY;
++      }
++
++    {
++      grub_relocator_chunk_t ch;
++      err = grub_relocator_alloc_chunk_align (relocator, &ch, addr_min, addr,
++					      efi_mmap_size, 0x1000,
++					      GRUB_RELOCATOR_PREFERENCE_HIGH);
++      if (err)
++        return err;
++      efi_mmap_mem = get_virtual_current_address (ch);
++      efi_mmap_target = get_physical_target_address (ch);
++    }
++
+     grub_efi_uint32_t efi_desc_version;
+-    err = grub_efi_finish_boot_services (&efi_mmap_size, efi_mmap_buf, NULL,
++    err = grub_efi_finish_boot_services (&efi_mmap_size, efi_mmap_mem, NULL,
+ 					 &efi_desc_size, &efi_desc_version);
+     if (err)
+       return err;
+     
+     /* Note that no boot services are available from here.  */
+-    efi_mmap_target = real_mode_target 
+-      + ((grub_uint8_t *) efi_mmap_buf - (grub_uint8_t *) real_mode_mem);
+     /* Pass EFI parameters.  */
+     if (grub_le_to_cpu16 (params->version) >= 0x0206)
+       {

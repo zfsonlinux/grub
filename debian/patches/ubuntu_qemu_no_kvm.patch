@@ -1,0 +1,19 @@
+Description: Use -no-kvm to work around a qemu bug
+ https://bugs.launchpad.net/bugs/947597 causes test hangs on some systems.
+ Work around this using -no-kvm for now.
+Author: Colin Watson <cjwatson@ubuntu.com>
+Forwarded: not-needed
+Last-Update: 2012-03-06
+
+Index: b/tests/util/grub-shell.in
+===================================================================
+--- a/tests/util/grub-shell.in
++++ b/tests/util/grub-shell.in
+@@ -57,6 +57,7 @@
+ 
+ boot=hd
+ qemu=qemu-system-i386
++qemuopts=-no-kvm
+ 
+ # Check the arguments.
+ for option in "$@"; do

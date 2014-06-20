@@ -1,0 +1,57 @@
+Description: Handle probing striped DM-RAID devices
+Author: Robert Collins <robertc@robertcollins.net>
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/803658
+Forwarded: no
+Last-Update: 2011-09-14
+
+Index: b/grub-core/kern/emu/hostdisk.c
+===================================================================
+--- a/grub-core/kern/emu/hostdisk.c
++++ b/grub-core/kern/emu/hostdisk.c
+@@ -475,9 +475,15 @@
+ 	grub_dprintf ("hostdisk", "no dm target\n");
+ 	goto devmapper_fail;
+       }
+-    if (strcmp (target_type, "linear") != 0)
++    if (strcmp (target_type, "striped") == 0)
+       {
+-	grub_dprintf ("hostdisk", "ignoring dm target %s (not linear)\n",
++	grub_dprintf ("hostdisk", "treating dm target %s (striped) as real disk\n", dev);
++	return 0;
++      }
++    if (strcmp (target_type, "linear") != 0 &&
++	strcmp (target_type, "striped") != 0 )
++      {
++	grub_dprintf ("hostdisk", "ignoring dm target %s (not linear/striped)\n",
+ 		      target_type);
+ 	goto devmapper_fail;
+       }
+@@ -1488,6 +1494,11 @@
+ 	      grub_dprintf ("hostdisk", "%s child has no DM name\n", path);
+ 	      goto devmapper_out;
+ 	    }
++	  if (strstr (child_name, "-") != 0)
++	    {
++	      grub_dprintf ("hostdisk", "%s child %s looks like a sub-layer\n", path, child_name);
++	      goto devmapper_out;
++	    }
+ 	  mapper_name = child_name;
+ 
+ devmapper_out:
+@@ -1594,6 +1605,16 @@
+ 
+   if (os_dev[len - 1] < '0' || os_dev[len - 1] > '9')
+     return 1;
++  /* dmraid devices are enumerated - e.g. /dev/mapper/isw_myuuidNAME0 but
++     still whole disk.  An initial heuristic follows:
++     They are a whole disk device if and only if:
++       - the name starts with /dev/mapper/
++       - the name does not contain '-' (so "NAME0-0") will not count
++       - we ignore partitions ("NAME0p1") because they return non-zero
++	 partition offsets and device_is_wholedisk is not called.  */
++  if (strncmp (os_dev, "/dev/mapper/", sizeof ("/dev/mapper/") - 1) == 0 &&
++      strstr (os_dev + sizeof ("/dev/mapper/") - 1, "-") == 0)
++    return 1;
+   return 0;
+ }
+ #endif

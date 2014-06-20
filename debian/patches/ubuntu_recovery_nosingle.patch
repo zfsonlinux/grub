@@ -1,0 +1,25 @@
+Description: Replace single by recovery to trigger friendly-recovery
+Author: Stéphane Graber <stgraber@ubuntu.com>
+Forwarded: no
+Last-Update: 2011-09-13
+
+Index: b/util/grub.d/10_linux.in
+===================================================================
+--- a/util/grub.d/10_linux.in
++++ b/util/grub.d/10_linux.in
+@@ -243,8 +243,13 @@
+       "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_EXTRA} ${GRUB_CMDLINE_LINUX_DEFAULT}" \
+       quiet
+   if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
+-    linux_entry "${OS}" "${version}" true \
+-	"single nomodeset ${GRUB_CMDLINE_LINUX}"
++    if [ -x /lib/recovery-mode/recovery-menu ]; then
++      linux_entry "${OS}" "${version}" true \
++        "recovery nomodeset ${GRUB_CMDLINE_LINUX}"
++    else
++      linux_entry "${OS}" "${version}" true \
++        "single nomodeset ${GRUB_CMDLINE_LINUX}"
++    fi
+   fi
+ 
+   list=`echo $list | tr ' ' '\n' | grep -vx $linux | tr '\n' ' '`

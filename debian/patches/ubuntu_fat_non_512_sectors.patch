@@ -1,0 +1,38 @@
+Description: Handle FAT file systems on non-512B disks
+Author: Vladimir Serbinenko <phcoder@gmail.com>
+Origin: upstream, http://git.savannah.gnu.org/gitweb/?p=grub.git;a=commitdiff;h=daa59f47f6818d2a2c90526be5b2b38a11770dc1
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/1065281
+Applied-Upstream: http://git.savannah.gnu.org/gitweb/?p=grub.git;a=commitdiff;h=daa59f47f6818d2a2c90526be5b2b38a11770dc1
+Forwarded: not-needed
+Last-Update: 2013-12-05
+
+Index: b/grub-core/fs/fat.c
+===================================================================
+--- a/grub-core/fs/fat.c
++++ b/grub-core/fs/fat.c
+@@ -241,7 +241,7 @@
+ 
+   data->cluster_sector = data->root_sector + data->num_root_sectors;
+   data->num_clusters = (((data->num_sectors - data->cluster_sector)
+-			 >> (data->cluster_bits + data->logical_sector_bits))
++			 >> data->cluster_bits)
+ 			+ 2);
+ 
+   if (data->num_clusters <= 2)
+@@ -372,7 +372,6 @@
+ 
+   /* Calculate the logical cluster number and offset.  */
+   logical_cluster_bits = (data->cluster_bits
+-			  + data->logical_sector_bits
+ 			  + GRUB_DISK_SECTOR_BITS);
+   logical_cluster = offset >> logical_cluster_bits;
+   offset &= (1 << logical_cluster_bits) - 1;
+@@ -446,7 +445,7 @@
+       /* Read the data here.  */
+       sector = (data->cluster_sector
+ 		+ ((data->cur_cluster - 2)
+-		   << (data->cluster_bits + data->logical_sector_bits)));
++		   << data->cluster_bits));
+       size = (1 << logical_cluster_bits) - offset;
+       if (size > len)
+ 	size = len;
