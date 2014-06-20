@@ -9,7 +9,7 @@ Index: b/util/grub.d/10_linux.in
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -177,6 +177,7 @@
- if [ "\$linux_gfx_mode" != "text" ]; then load_video; fi
+ if [ "\${linux_gfx_mode}" != "text" ]; then load_video; fi
  EOF
  
 +in_submenu=false

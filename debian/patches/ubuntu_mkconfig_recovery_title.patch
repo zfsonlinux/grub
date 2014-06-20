@@ -1,0 +1,142 @@
+Description: Add GRUB_RECOVERY_TITLE option
+ This allows the controversial "recovery mode" text to be customised.
+Author: Colin Watson <cjwatson@ubuntu.com>
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/1240360
+Forwarded: no
+Last-Update: 2013-12-04
+
+Index: b/docs/grub.texi
+===================================================================
+--- a/docs/grub.texi
++++ b/docs/grub.texi
+@@ -1265,6 +1265,11 @@
+ should be set on headless and appliance systems where access to a console is
+ restricted or limited.
+ 
++@item GRUB_RECOVERY_TITLE
++This option sets the English text of the string that will be displayed in
++parentheses to indicate that a boot option is provided to help users recover
++a broken system.  The default is "recovery mode".
++
+ @end table
+ 
+ The following options are still accepted for compatibility with existing
+Index: b/util/grub-mkconfig.in
+===================================================================
+--- a/util/grub-mkconfig.in
++++ b/util/grub-mkconfig.in
+@@ -206,6 +206,10 @@
+     esac
+ done
+ 
++if [ "x${GRUB_RECOVERY_TITLE}" = "x" ]; then
++  GRUB_RECOVERY_TITLE="recovery mode"
++fi
++
+ # These are defined in this script, export them here so that user can
+ # override them.
+ export GRUB_DEVICE \
+@@ -253,7 +257,8 @@
+   GRUB_INIT_TUNE \
+   GRUB_SAVEDEFAULT \
+   GRUB_BADRAM \
+-  GRUB_RECORDFAIL_TIMEOUT
++  GRUB_RECORDFAIL_TIMEOUT \
++  GRUB_RECOVERY_TITLE
+ 
+ if test "x${grub_cfg}" != "x"; then
+   rm -f ${grub_cfg}.new
+Index: b/util/grub.d/10_hurd.in
+===================================================================
+--- a/util/grub.d/10_hurd.in
++++ b/util/grub.d/10_hurd.in
+@@ -102,7 +102,7 @@
+ EOF
+ 
+   cat << EOF
+-menuentry "${OS} ${KERNEL} (recovery mode)" ${CLASS} {
++menuentry "${OS} ${KERNEL} (${GRUB_RECOVERY_TITLE})" ${CLASS} {
+ EOF
+   prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/"
+   message="$(gettext_printf "Loading GNU Mach ...")"
+Index: b/util/grub.d/10_kfreebsd.in
+===================================================================
+--- a/util/grub.d/10_kfreebsd.in
++++ b/util/grub.d/10_kfreebsd.in
+@@ -70,11 +70,12 @@
+   recovery="$3"
+   args="$4"
+   if ${recovery} ; then
+-    title="$(gettext_quoted "%s, with kFreeBSD %s (recovery mode)")"
++    title="$(gettext_quoted "%s, with kFreeBSD %s (%s)")"
++    printf "menuentry '${title}' ${CLASS} {\n" "${os}" "${version}" "$(gettext "${GRUB_RECOVERY_TITLE}")"
+   else
+     title="$(gettext_quoted "%s, with kFreeBSD %s")"
++    printf "menuentry '${title}' ${CLASS} {\n" "${os}" "${version}"
+   fi
+-  printf "menuentry '${title}' ${CLASS} {\n" "${os}" "${version}"
+   if ! ${recovery} ; then
+       save_default_entry | sed -e "s/^/\t/"
+   fi
+Index: b/util/grub.d/10_linux.in
+===================================================================
+--- a/util/grub.d/10_linux.in
++++ b/util/grub.d/10_linux.in
+@@ -83,11 +83,12 @@
+   recovery="$3"
+   args="$4"
+   if ${recovery} ; then
+-    title="$(gettext_quoted "%s, with Linux %s (recovery mode)")"
++    title="$(gettext_quoted "%s, with Linux %s (%s)")"
++    printf "menuentry '${title}' ${CLASS} {\n" "${os}" "${version}" "$(gettext "${GRUB_RECOVERY_TITLE}")"
+   else
+     title="$(gettext_quoted "%s, with Linux %s")"
++    printf "menuentry '${title}' ${CLASS} {\n" "${os}" "${version}"
+   fi
+-  printf "menuentry '${title}' ${CLASS} {\n" "${os}" "${version}"
+   cat << EOF
+ 	recordfail
+ EOF
+Index: b/util/grub.d/10_netbsd.in
+===================================================================
+--- a/util/grub.d/10_netbsd.in
++++ b/util/grub.d/10_netbsd.in
+@@ -94,13 +94,16 @@
+ 
+   kroot_device="$(echo ${GRUB_DEVICE} | sed -e 's,^/dev/r,,')"
+   if ${recovery} ; then
+-    title="$(gettext_quoted "%s, with kernel %s (via %s, recovery mode)")"
++    title="$(gettext_quoted "%s, with kernel %s (via %s, %s)")"
++    printf "menuentry \"${title}\" {\n" \
++      "${OS}" "$(echo ${kernel} | sed -e 's,^.*/,,')" "${loader}" \
++      "$(gettext "${GRUB_RECOVERY_TITLE}")"
+   else
+     title="$(gettext_quoted "%s, with kernel %s (via %s)")"
++    printf "menuentry \"${title}\" {\n" \
++      "${OS}" "$(echo ${kernel} | sed -e 's,^.*/,,')" "${loader}"
+   fi
+ 
+-  printf "menuentry \"${title}\" {\n" \
+-    "${OS}" "$(echo ${kernel} | sed -e 's,^.*/,,')" "${loader}"
+   printf "%s\n" "${prepare_boot_cache}"
+   case "${loader}" in
+     knetbsd)
+Index: b/util/grub.d/20_linux_xen.in
+===================================================================
+--- a/util/grub.d/20_linux_xen.in
++++ b/util/grub.d/20_linux_xen.in
+@@ -82,11 +82,12 @@
+   args="$5"
+   xen_args="$6"
+   if ${recovery} ; then
+-    title="$(gettext_quoted "%s, with Xen %s and Linux %s (recovery mode)")"
++    title="$(gettext_quoted "%s, with Xen %s and Linux %s (%s)")"
++    printf "menuentry '${title}' ${CLASS} {\n" "${os}" "${xen_version}" "${version}" "$(gettext "${GRUB_RECOVERY_TITLE}")"
+   else
+     title="$(gettext_quoted "%s, with Xen %s and Linux %s")"
++    printf "menuentry '${title}' ${CLASS} {\n" "${os}" "${xen_version}" "${version}"
+   fi
+-  printf "menuentry '${title}' ${CLASS} {\n" "${os}" "${xen_version}" "${version}"
+   if ! ${recovery} ; then
+       save_default_entry | sed -e "s/^/\t/"
+   fi

@@ -8,7 +8,7 @@ Author: Colin Watson <cjwatson@ubuntu.com>
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/386922
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/861048
 Forwarded: not-needed
-Last-Update: 2011-01-05
+Last-Update: 2013-12-04
 
 Index: b/grub-core/kern/main.c
 ===================================================================
@@ -61,7 +61,7 @@ Index: b/grub-core/normal/menu.c
 ===================================================================
 --- a/grub-core/normal/menu.c
 +++ b/grub-core/normal/menu.c
-@@ -668,12 +668,9 @@
+@@ -823,12 +823,9 @@
  
  /* Callback invoked immediately before a menu entry is executed.  */
  static void
