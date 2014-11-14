@@ -1,0 +1,76 @@
+From bfc306550aef74d557c2838f5226cb87ee13bf8e Mon Sep 17 00:00:00 2001
+From: Colin Watson <cjwatson@ubuntu.com>
+Date: Mon, 13 Jan 2014 12:13:31 +0000
+Subject: Probe FusionIO devices
+
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/1237519
+Forwarded: no
+Last-Update: 2013-11-15
+
+Patch-Name: probe_fusionio.patch
+---
+ grub-core/osdep/linux/getroot.c | 13 +++++++++++++
+ util/deviceiter.c               | 19 +++++++++++++++++++
+ 2 files changed, 32 insertions(+)
+
+Index: grub.zol/grub-core/osdep/linux/getroot.c
+===================================================================
+--- grub.zol.orig/grub-core/osdep/linux/getroot.c	2014-11-16 19:47:02.405194040 +0100
++++ grub.zol/grub-core/osdep/linux/getroot.c	2014-11-16 19:48:56.223763152 +0100
+@@ -913,6 +913,19 @@
+ 	  *pp = '\0';
+ 	  return path;
+ 	}
++
++      /* If this is a FusionIO disk.  */
++      if ((strncmp ("fio", p, 3) == 0) && p[3] >= 'a' && p[3] <= 'z')
++	{
++	  char *pp = p + 3;
++	  while (*pp >= 'a' && *pp <= 'z')
++	    pp++;
++	  if (*pp)
++	    *is_part = 1;
++	  /* /dev/fio[a-z]+[0-9]* */
++	  *pp = '\0';
++	  return path;
++	}
+     }
+ 
+   return path;
+Index: grub.zol/util/deviceiter.c
+===================================================================
+--- grub.zol.orig/util/deviceiter.c	2014-11-16 19:47:43.972671468 +0100
++++ grub.zol/util/deviceiter.c	2014-11-16 19:48:56.227763101 +0100
+@@ -365,6 +365,12 @@
+ {
+   sprintf (name, "/dev/xvd%c", unit + 'a');
+ }
++
++static void
++get_fio_disk_name (char *name, int unit)
++{
++  sprintf (name, "/dev/fio%c", unit + 'a');
++}
+ #endif
+ 
+ static struct seen_device
+@@ -852,6 +858,19 @@
+       if (check_device_readable_unique (name))
+ 	{
+ 	  if (hook (name, 0, hook_data))
++	    goto out;
++	}
++    }
++
++  /* FusionIO.  */
++  for (i = 0; i < 26; i++)
++    {
++      char name[16];
++
++      get_fio_disk_name (name, i);
++      if (check_device_readable_unique (name))
++	{
++	  if (hook (name, 0, hook_data))
+ 	    goto out;
+ 	}
+     }

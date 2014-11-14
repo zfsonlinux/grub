@@ -1,0 +1,22 @@
+Index: grub.zol/tests/util/grub-fs-tester.in
+===================================================================
+--- grub.zol.orig/tests/util/grub-fs-tester.in	2014-11-17 12:34:49.981013665 +0100
++++ grub.zol/tests/util/grub-fs-tester.in	2014-11-17 12:35:22.344608614 +0100
+@@ -843,7 +843,7 @@
+ 	    GRUBDIR="($GRUBDEVICE)"
+ 	    case x"$fs" in
+ 		x"zfs"*)
+-		    OSDIR="grub fs/"
++		    OSDIR="$FSLABEL/grub fs/"
+ 		    GRUBDIR="($GRUBDEVICE)/grub fs@";;
+ 		x"tarfs" | x"cpio_"* | x"iso9660" | xjoliet | xrockridge | xrockridge_joliet | x"iso9660_1999" | xjoliet_1999 | xrockridge_1999 | xrockridge_joliet_1999 | x"ziso9660" | x"romfs" | x"squash4_"* | xafs)
+ 		    ;;
+@@ -1048,7 +1048,7 @@
+ 	    run_grubfstest ls -- -la
+ 	    case x"$fs" in
+ 		x"zfs"*)
+-		    LSROUT=$(run_grubfstest ls -- -la "($GRUBDEVICE)/grub fs@/");;
++		    LSROUT=$(run_grubfstest ls -- -la "($GRUBDEVICE)/$FSLABEL/grub fs@/");;
+ 		*)
+ 		    LSROUT=$(run_grubfstest ls -- -la "($GRUBDEVICE)/");;
+ 	    esac

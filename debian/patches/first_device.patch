@@ -1,0 +1,18 @@
+Index: grub.zol/util/grub-mkconfig.in
+===================================================================
+--- grub.zol.orig/util/grub-mkconfig.in	2014-11-15 02:34:47.732118532 +0100
++++ grub.zol/util/grub-mkconfig.in	2014-11-15 02:35:29.343597190 +0100
+@@ -136,11 +136,11 @@
+ fi
+ 
+ # Device containing our userland.  Typically used for root= parameter.
+-GRUB_DEVICE="`${grub_probe} --target=device /`"
++GRUB_DEVICE="`${grub_probe} --target=device / | head -n1`"
+ GRUB_DEVICE_UUID="`${grub_probe} --device ${GRUB_DEVICE} --target=fs_uuid 2> /dev/null`" || true
+ 
+ # Device containing our /boot partition.  Usually the same as GRUB_DEVICE.
+-GRUB_DEVICE_BOOT="`${grub_probe} --target=device /boot`"
++GRUB_DEVICE_BOOT="`${grub_probe} --target=device /boot | head -n1`"
+ GRUB_DEVICE_BOOT_UUID="`${grub_probe} --device ${GRUB_DEVICE_BOOT} --target=fs_uuid 2> /dev/null`" || true
+ 
+ # Filesystem for the device containing our userland.  Used for stuff like

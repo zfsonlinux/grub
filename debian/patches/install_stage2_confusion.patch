@@ -1,0 +1,46 @@
+From b8b97d8b852927ad913fb4c5c137bc30122329a5 Mon Sep 17 00:00:00 2001
+From: Colin Watson <cjwatson@debian.org>
+Date: Mon, 13 Jan 2014 12:12:58 +0000
+Subject: If GRUB Legacy is still around, tell packaging to ignore it
+
+Bug-Debian: http://bugs.debian.org/586143
+Forwarded: not-needed
+Last-Update: 2013-12-25
+
+Patch-Name: install_stage2_confusion.patch
+---
+ util/grub-install.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+Index: grub.zol/util/grub-install.c
+===================================================================
+--- grub.zol.orig/util/grub-install.c	2014-11-16 19:47:02.409193989 +0100
++++ grub.zol/util/grub-install.c	2014-11-16 19:47:18.284994403 +0100
+@@ -42,6 +42,7 @@
+ #include <grub/emu/config.h>
+ #include <grub/util/ofpath.h>
+ #include <grub/hfsplus.h>
++#include <grub/emu/hostfile.h>
+ 
+ #include <string.h>
+ 
+@@ -1674,6 +1675,19 @@
+ 	  grub_util_bios_setup (platdir, "boot.img", "core.img",
+ 				install_drive, force,
+ 				fs_probe, allow_floppy, add_rs_codes);
++
++	/* If vestiges of GRUB Legacy still exist, tell the Debian packaging
++	   that they can ignore them.  */
++	if (!rootdir && grub_util_is_regular ("/boot/grub/stage2") &&
++	    grub_util_is_regular ("/boot/grub/menu.lst"))
++	  {
++	    grub_util_fd_t fd;
++
++	    fd = grub_util_fd_open ("/boot/grub/grub2-installed",
++				    GRUB_UTIL_FD_O_WRONLY);
++	    grub_util_fd_close (fd);
++	  }
++
+ 	break;
+       }
+     case GRUB_INSTALL_PLATFORM_SPARC64_IEEE1275:
