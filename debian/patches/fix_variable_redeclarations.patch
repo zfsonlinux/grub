@@ -1,0 +1,88 @@
+Index: grub.zol/grub-core/tests/video_checksum.c
+===================================================================
+--- grub.zol.orig/grub-core/tests/video_checksum.c	2014-11-15 17:05:11.407577897 +0100
++++ grub.zol/grub-core/tests/video_checksum.c	2014-11-15 18:23:38.112406968 +0100
+@@ -35,7 +35,7 @@
+ 
+ static int ctr;
+ static int nchk;
+-static char *basename;
++static char *bname;
+ static const grub_uint32_t *checksums;
+ static struct grub_video_mode_info capt_mode_info;
+ 
+@@ -499,7 +499,7 @@
+ 
+   cur = grub_util_get_cpu_time_ms ();
+   grub_snprintf (buf, sizeof (buf), "%s_%dx%dx%s:%d: %" PRIuGRUB_UINT64_T " ms\n",
+-		 basename, 			
++		 bname, 			
+ 		 capt_mode_info.width,
+ 		 capt_mode_info.height, 
+ 		 grub_video_checksum_get_modename (), ctr,
+@@ -605,7 +605,7 @@
+   if (!checksums || ctr >= nchk)
+     {
+       grub_test_assert (0, "Unexpected checksum %s_%dx%dx%s:%d: 0x%x",
+-			basename, 			
++			bname, 			
+ 			capt_mode_info.width,
+ 			capt_mode_info.height, 
+ 			grub_video_checksum_get_modename (), ctr, crc);
+@@ -613,7 +613,7 @@
+   else if (crc != checksums[ctr])
+     {
+       grub_test_assert (0, "Checksum %s_%dx%dx%s:%d failed: 0x%x vs 0x%x",
+-			basename,
++			bname,
+ 			capt_mode_info.width,
+ 			capt_mode_info.height,
+ 			grub_video_checksum_get_modename (),
+@@ -628,7 +628,7 @@
+     }
+ #endif
+ #ifdef GRUB_MACHINE_EMU
+-  char *name = grub_xasprintf ("%s_%dx%dx%s_%d.bmp", basename, 
++  char *name = grub_xasprintf ("%s_%dx%dx%s_%d.bmp", bname, 
+ 			       capt_mode_info.width,
+ 			       capt_mode_info.height,
+ 			       grub_video_checksum_get_modename (),
+@@ -707,7 +707,7 @@
+     }
+ #endif
+ 
+-  basename = grub_strdup (basename_in);
++  bname = grub_strdup (basename_in);
+   nchk = 0;
+   checksums = 0;
+   /* FIXME: optimize this.  */
+@@ -749,13 +749,13 @@
+     }
+ #endif
+   grub_test_assert (ctr == nchk, "Not enough checksums %s_%dx%dx%s: %d vs %d",
+-		    basename,
++		    bname,
+ 		    capt_mode_info.width,
+ 		    capt_mode_info.height,
+ 		    grub_video_checksum_get_modename (),
+ 		    ctr, nchk);
+-  grub_free (basename);
+-  basename = 0;
++  grub_free (bname);
++  bname = 0;
+   nchk = 0;
+   checksums = 0;
+   ctr = 0;
+Index: grub.zol/include/grub/emu/misc.h
+===================================================================
+--- grub.zol.orig/include/grub/emu/misc.h	2014-11-15 17:05:11.407577897 +0100
++++ grub.zol/include/grub/emu/misc.h	2014-11-15 18:23:17.100670271 +0100
+@@ -61,7 +61,7 @@
+ 
+ grub_uint64_t EXPORT_FUNC (grub_util_get_cpu_time_ms) (void);
+ 
+-extern char * canonicalize_file_name (const char *path);
++//extern char * canonicalize_file_name (const char *path);
+ 
+ #ifdef HAVE_DEVICE_MAPPER
+ int grub_device_mapper_supported (void);

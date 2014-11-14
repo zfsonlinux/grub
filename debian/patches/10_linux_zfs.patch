@@ -1,0 +1,28 @@
+Index: grub.zol/util/grub.d/10_linux.in
+===================================================================
+--- grub.zol.orig/util/grub.d/10_linux.in	2014-11-15 03:22:29.544140538 +0100
++++ grub.zol/util/grub.d/10_linux.in	2014-11-15 03:24:01.850981030 +0100
+@@ -79,6 +79,8 @@
+ 	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || true`
+ 	bootfs="`make_system_path_relative_to_its_root / | sed -e "s,@$,,"`"
+ 	LINUX_ROOT_DEVICE="ZFS=${rpool}${bootfs}"
++	# Backwards compatibility for systems that expect Solaris parameters.
++	GRUB_CMDLINE_LINUX="boot=zfs \$bootfs ${GRUB_CMDLINE_LINUX}"
+ 	;;
+ esac
+ 
+@@ -151,6 +153,14 @@
+ 
+   echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
+ 
++  if [ x"$GRUBFS" = xzfs ]; then
++	# Backwards compatibility for systems that expect Solaris parameters.
++	echo "   insmod zfsinfo" | sed "s/^/$submenu_indentation/"
++	prepare_grub_to_access_device ${GRUB_DEVICE} | sed -e "s/^/\t/" -e "s/^/$submenu_indentation/"
++	echo
++	echo "   zfs-bootfs (\$root) bootfs" | sed "s/^/$submenu_indentation/"
++  fi
++
+   if [ x$dirname = x/ ]; then
+     if [ -z "${prepare_root_cache}" ]; then
+       prepare_root_cache="$(prepare_grub_to_access_device ${GRUB_DEVICE} | grub_add_tab)"

@@ -1,0 +1,13 @@
+Index: grub.zol/Makefile.util.def
+===================================================================
+--- grub.zol.orig/Makefile.util.def	2014-11-15 18:07:26.640619638 +0100
++++ grub.zol/Makefile.util.def	2014-11-15 18:08:20.307944458 +0100
+@@ -401,7 +401,7 @@
+   ldadd = libgrubgcry.a;
+   ldadd = libgrubkern.a;
+   ldadd = grub-core/gnulib/libgnu.a;
+-  ldadd = '$(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBGEOM)';
++  ldadd = '$(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBGEOM) $(LIBZFS) $(LIBNVPAIR)';
+ };
+ 
+ program = {

@@ -1,0 +1,15 @@
+Index: grub2-2.02~beta2/grub-core/fs/zfs/zfs.c
+===================================================================
+--- grub2-2.02~beta2.orig/grub-core/fs/zfs/zfs.c	2014-11-14 14:30:37.578358243 +0100
++++ grub2-2.02~beta2/grub-core/fs/zfs/zfs.c	2014-11-14 14:30:57.046116065 +0100
+@@ -281,7 +281,9 @@
+  */
+ #define MAX_SUPPORTED_FEATURE_STRLEN 50
+ static const char *spa_feature_names[] = {
+-  "org.illumos:lz4_compress",NULL
++  "org.illumos:lz4_compress",
++  "com.delphix:hole_birth",
++  NULL
+ };
+ 
+ static int

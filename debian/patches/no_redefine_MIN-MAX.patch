@@ -1,0 +1,24 @@
+Index: grub.zol/grub-core/fs/reiserfs.c
+===================================================================
+--- grub.zol.orig/grub-core/fs/reiserfs.c	2013-12-24 17:29:27.000000000 +0100
++++ grub.zol/grub-core/fs/reiserfs.c	2014-11-15 16:29:47.570278088 +0100
+@@ -42,15 +42,19 @@
+ 
+ GRUB_MOD_LICENSE ("GPLv3+");
+ 
++#ifndef MIN
+ #define MIN(a, b) \
+   ({ typeof (a) _a = (a); \
+      typeof (b) _b = (b); \
+      _a < _b ? _a : _b; })
++#endif
+ 
++#ifndef MAX
+ #define MAX(a, b) \
+   ({ typeof (a) _a = (a); \
+      typeof (b) _b = (b); \
+      _a > _b ? _a : _b; })
++#endif
+ 
+ #define REISERFS_SUPER_BLOCK_OFFSET 0x10000
+ #define REISERFS_MAGIC_LEN 12
