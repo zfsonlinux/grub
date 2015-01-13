@@ -1,3 +1,11 @@
+grub2 (2.02~beta2+git72ec3-9.ZOL2) unstable; urgency=medium
+
+  * Add additional feature flags: spacemap_histogram, enabled_txg,
+    extensible_dataset, async_destroy, empty_bpobj and bookmarks.
+  * Rename patch to indicate it's about ALL feature flags.
+
+ -- Turbo Fredriksson <turbo@bayour.com>  Thu, 15 Jan 2015 08:27:21 +0100
+
 grub2 (2.02~beta2+git72ec3-9.ZOL1) unstable; urgency=medium
 
   * Add patch by Richard Yao <ryao@gentoo.org> to detect multiple raidz devices.
