@@ -11,11 +11,11 @@ Patch-Name: dpkg_version_comparison.patch
  util/grub-mkconfig_lib.in | 7 ++++---
  1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/util/grub-mkconfig_lib.in b/util/grub-mkconfig_lib.in
-index 14fadbc..4f6c4fe 100644
---- a/util/grub-mkconfig_lib.in
-+++ b/util/grub-mkconfig_lib.in
-@@ -238,8 +238,9 @@ version_test_numeric ()
+Index: grub/util/grub-mkconfig_lib.in
+===================================================================
+--- grub.orig/util/grub-mkconfig_lib.in	2015-01-15 08:40:27.293296138 +0100
++++ grub/util/grub-mkconfig_lib.in	2015-01-15 08:40:39.229146085 +0100
+@@ -238,8 +238,9 @@
  
  version_test_gt ()
  {
@@ -27,9 +27,9 @@ index 14fadbc..4f6c4fe 100644
    version_test_gt_cmp=gt
    if [ "x$version_test_gt_b" = "x" ] ; then
      return 0
-@@ -249,7 +250,7 @@ version_test_gt ()
-     *.old:*) version_test_gt_a="`echo -n "$version_test_gt_a" | sed -e 's/\.old$//'`" ; version_test_gt_cmp=gt ;;
-     *:*.old) version_test_gt_b="`echo -n "$version_test_gt_b" | sed -e 's/\.old$//'`" ; version_test_gt_cmp=ge ;;
+@@ -249,7 +250,7 @@
+     *.old:*) version_test_gt_a="`echo "$version_test_gt_a" | sed -e 's/\.old$//'`" ; version_test_gt_cmp=gt ;;
+     *:*.old) version_test_gt_b="`echo "$version_test_gt_b" | sed -e 's/\.old$//'`" ; version_test_gt_cmp=ge ;;
    esac
 -  version_test_numeric "$version_test_gt_a" "$version_test_gt_cmp" "$version_test_gt_b"
 +  dpkg --compare-versions "$version_test_gt_a" "$version_test_gt_cmp" "$version_test_gt_b"
