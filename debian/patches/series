@@ -38,9 +38,9 @@ elf_bi_endian.patch
 grub-shell-no-pad.patch
 install_powerpc_machtypes.patch
 multiple-raidz-device-detection.txt
-feature_flags.patch
 first_device.patch
 10_linux_zfs.patch
 no_redefine_MIN-MAX.patch
 fix_variable_redeclarations.patch
+zfs.patch
 grub-tester-zfs.patch
