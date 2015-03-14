@@ -1,8 +1,26 @@
-Index: grub.zol/tests/util/grub-fs-tester.in
+Index: grub/tests/util/grub-fs-tester.in
 ===================================================================
---- grub.zol.orig/tests/util/grub-fs-tester.in	2014-11-17 12:34:49.981013665 +0100
-+++ grub.zol/tests/util/grub-fs-tester.in	2014-11-17 12:35:22.344608614 +0100
-@@ -843,7 +843,7 @@
+--- grub.orig/tests/util/grub-fs-tester.in	2015-03-14 15:57:26.253566490 +0100
++++ grub/tests/util/grub-fs-tester.in	2015-03-14 15:58:41.525567529 +0100
+@@ -426,6 +426,8 @@
+ 		x"vfat"* | xmsdos* | x"hfs" | x"exfat" | x"ntfs"* \
+ 		    | xiso9660 | xjoliet| xiso9660_1999 | xjoliet_1999)
+ 		    NOSYMLINK=y;;
++		x"zfs"*)
++		    NOSYMLINK=y;;
+ 	    esac
+ 	    NOHARDLINK=n
+ 	    case x"$fs" in
+@@ -480,6 +482,8 @@
+ 	# FS LIMITATION: romfs has no timestamps.
+ 		x"romfs")
+ 		    NOFILETIME=y; NOFSTIME=y;;
++		x"zfs"*)
++		    NOFILETIME=y; NOFSTIME=y;;
+ 	    esac
+ 
+ 	    NOFSLABEL=n
+@@ -843,7 +847,7 @@
  	    GRUBDIR="($GRUBDEVICE)"
  	    case x"$fs" in
  		x"zfs"*)
@@ -11,12 +29,3 @@ Index: grub.zol/tests/util/grub-fs-tester.in
  		    GRUBDIR="($GRUBDEVICE)/grub fs@";;
  		x"tarfs" | x"cpio_"* | x"iso9660" | xjoliet | xrockridge | xrockridge_joliet | x"iso9660_1999" | xjoliet_1999 | xrockridge_1999 | xrockridge_joliet_1999 | x"ziso9660" | x"romfs" | x"squash4_"* | xafs)
  		    ;;
-@@ -1048,7 +1048,7 @@
- 	    run_grubfstest ls -- -la
- 	    case x"$fs" in
- 		x"zfs"*)
--		    LSROUT=$(run_grubfstest ls -- -la "($GRUBDEVICE)/grub fs@/");;
-+		    LSROUT=$(run_grubfstest ls -- -la "($GRUBDEVICE)/$FSLABEL/grub fs@/");;
- 		*)
- 		    LSROUT=$(run_grubfstest ls -- -la "($GRUBDEVICE)/");;
- 	    esac
