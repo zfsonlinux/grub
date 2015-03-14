@@ -1,3 +1,10 @@
+grub2 (2.02-beta2-gitbac5d-9.ZOL1-jessie) unstable; urgency=medium
+
+  * Gcc 4.9 for Jessie.
+  * Change versioning.
+
+ -- Turbo Fredriksson <turbo@bayour.com>  Sat, 14 Mar 2015 04:47:42 +0100
+
 grub2 (2.02~beta2+gitbac5d-9.ZOL1) unstable; urgency=medium
 
   * Refresh to newer grub git version.
