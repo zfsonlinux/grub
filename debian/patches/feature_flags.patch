@@ -1,22 +1,271 @@
 Index: grub/grub-core/fs/zfs/zfs.c
 ===================================================================
---- grub.orig/grub-core/fs/zfs/zfs.c	2015-01-14 11:44:46.768454805 +0100
-+++ grub/grub-core/fs/zfs/zfs.c	2015-01-14 11:48:15.297833231 +0100
-@@ -281,7 +281,16 @@
+--- grub.orig/grub-core/fs/zfs/zfs.c	2015-03-15 23:57:31.503617603 +0100
++++ grub/grub-core/fs/zfs/zfs.c	2015-03-15 23:57:41.287617565 +0100
+@@ -78,6 +78,11 @@
+ 
+ #define	P2PHASE(x, align)		((x) & ((align) - 1))
+ 
++/* From illumos-gate:usr/src/grub/grub-0.97/stage2/defs.h */
++#ifndef NBBY
++#define	NBBY	8
++#endif
++
+ static inline grub_disk_addr_t
+ DVA_OFFSET_TO_PHYS_SECTOR (grub_disk_addr_t offset)
+ {
+@@ -281,7 +286,16 @@
   */
  #define MAX_SUPPORTED_FEATURE_STRLEN 50
  static const char *spa_feature_names[] = {
 -  "org.illumos:lz4_compress",NULL
-+  "org.illumos:lz4_compress",
-+  "com.delphix:hole_birth",
++  "com.delphix:async_destroy",
++  "com.delphix:bookmarks",
 +  "com.delphix:embedded_data",
-+  "spacemap_histogram",
-+  "enabled_txg",
-+  "extensible_dataset",
-+  "bookmarks",
-+  "async_destroy",
-+  "empty_bpobj",
++  "com.delphix:empty_bpobj",
++  "com.delphix:enabled_txg",
++  "com.delphix:extensible_dataset",
++  "com.delphix:hole_birth",
++  "org.illumos:lz4_compress",
++  "com.delphix:spacemap_histogram",
 +  NULL
  };
  
  static int
+@@ -1798,6 +1812,74 @@
+ }
+ 
+ /*
++ * buf must be at least BPE_GET_PSIZE(bp) bytes long (which will never be
++ * more than BPE_PAYLOAD_SIZE bytes).
++ */
++static void
++decode_embedded_bp_compressed (blkptr_t *bp, void *buf, grub_zfs_endian_t endian)
++{
++  grub_size_t psize, i;
++  grub_uint8_t *buf8 = buf;
++  grub_uint64_t w = 0;
++  grub_uint64_t *bp64 = (grub_uint64_t *)bp;
++
++  psize = get_psize (bp, endian);
++
++  /*
++   * Decode the words of the block pointer into the byte array.
++   * Low bits of first word are the first byte (little endian).
++   */
++  for (i = 0; i < psize; i++) {
++    if (i % sizeof (w) == 0) {
++      /* beginning of a word */
++      w = *bp64;
++      bp64++;
++      if (!BPE_IS_PAYLOADWORD(bp, bp64))
++	bp64++;
++    }
++
++    buf8[i] = BF64_GET(w, (i % sizeof (w)) * NBBY, NBBY);
++  }
++}
++
++/*
++ * Fill in the buffer with the (decompressed) payload of the embedded
++ * blkptr_t.  Takes into account compression and byteorder (the payload is
++ * treated as a stream of bytes).
++ * Return 0 on success, or ENOSPC if it won't fit in the buffer.
++ */
++static int
++decode_embedded_bp (blkptr_t *bp, void *buf, grub_zfs_endian_t endian)
++{
++  unsigned int comp;
++  grub_size_t lsize, psize;
++
++  lsize = BPE_GET_LSIZE(bp);
++  psize = get_psize (bp, endian);
++  comp = BP_GET_COMPRESS(bp);
++
++  if (comp != ZIO_COMPRESS_OFF) {
++    grub_dprintf("zfs", "decode_embedded_bp(): comp != ZIO_COMPRESS_OFF (comp=%d)\n", comp); // DEBUG
++    grub_uint8_t dstbuf[BPE_PAYLOAD_SIZE];
++
++    if (comp >= ZIO_COMPRESS_FUNCTIONS ||
++	decomp_table[comp].decomp_func == NULL) {
++      grub_dprintf("zfs", "decode_embedded_bp(): comp >= ZIO_COMPRESS_FUNCTIONS\n"); // DEBUG
++      return grub_error (GRUB_ERR_NOT_IMPLEMENTED_YET,
++			 "compression algorithm not supported\n");
++    }
++    
++    decode_embedded_bp_compressed(bp, dstbuf, endian);
++    decomp_table[comp].decomp_func(dstbuf, buf, psize, lsize);
++  } else {
++    grub_dprintf("zfs", "decode_embedded_bp(): comp == ZIO_COMPRESS_OFF (%d)\n", comp); // DEBUG
++    decode_embedded_bp_compressed(bp, buf, endian);
++  }
++
++  return GRUB_ERR_NONE;
++}
++
++/*
+  * Read in a block of data, verify its checksum, decompress if needed,
+  * and put the uncompressed data in buf.
+  */
+@@ -1812,33 +1894,51 @@
+   zio_cksum_t zc = bp->blk_cksum;
+   grub_uint32_t checksum;
+ 
++  if (BP_IS_EMBEDDED(bp)) {
++    grub_dprintf("zfs", "zio_read(): BP_IS_EMBEDDED()\n"); // DEBUG
++    if (BPE_GET_ETYPE(bp) != BP_EMBEDDED_TYPE_DATA) {
++      grub_dprintf("zfs", "zio_read(): BPE_GET_ETYPE(bp) != BP_EMBEDDED_TYPE_DATA\n"); // DEBUG
++      return grub_error (GRUB_ERR_NOT_IMPLEMENTED_YET,
++			 "unsupported embedded BP (type=%u)\n",
++			 (int)BPE_GET_ETYPE(bp));
++    }
++
++    return decode_embedded_bp (bp, buf, endian);
++  }
++  
+   *buf = NULL;
+ 
+   checksum = (grub_zfs_to_cpu64((bp)->blk_prop, endian) >> 40) & 0xff;
+-  comp = (grub_zfs_to_cpu64((bp)->blk_prop, endian)>>32) & 0xff;
++  comp = BP_GET_COMPRESS(bp);
+   encrypted = ((grub_zfs_to_cpu64((bp)->blk_prop, endian) >> 60) & 3);
+   lsize = (BP_IS_HOLE(bp) ? 0 :
+ 	   (((grub_zfs_to_cpu64 ((bp)->blk_prop, endian) & 0xffff) + 1)
+ 	    << SPA_MINBLOCKSHIFT));
+   psize = get_psize (bp, endian);
+-
++  
+   if (size)
+     *size = lsize;
+ 
+-  if (comp >= ZIO_COMPRESS_FUNCTIONS)
++  if (comp >= ZIO_COMPRESS_FUNCTIONS) {
++    grub_dprintf("zfs", "zio_read(0): comp >= ZIO_COMPRESS_FUNCTIONS (%d)\n", comp); // DEBUG
+     return grub_error (GRUB_ERR_NOT_IMPLEMENTED_YET,
+ 		       "compression algorithm %u not supported\n", (unsigned int) comp);
++  }
+ 
+-  if (comp != ZIO_COMPRESS_OFF && decomp_table[comp].decomp_func == NULL)
++  if (comp != ZIO_COMPRESS_OFF && decomp_table[comp].decomp_func == NULL) {
++    grub_dprintf("zfs", "zio_read(0): comp != ZIO_COMPRESS_OFF\n"); // DEBUG
+     return grub_error (GRUB_ERR_NOT_IMPLEMENTED_YET,
+ 		       "compression algorithm %s not supported\n", decomp_table[comp].name);
++  }
+ 
+   if (comp != ZIO_COMPRESS_OFF)
+     {
+       /* It's not really necessary to align to 16, just for safety.  */
+       compbuf = grub_malloc (ALIGN_UP (psize, 16));
+-      if (! compbuf)
++      if (! compbuf) {
++	grub_dprintf ("zfs", "zio_read(1): !compbuf. err = %d\n", grub_errno); // DEBUG
+ 	return grub_errno;
++      }
+     }
+   else
+     compbuf = *buf = grub_malloc (lsize);
+@@ -1849,6 +1949,7 @@
+     {
+       grub_free (compbuf);
+       *buf = NULL;
++      grub_dprintf("zfs", "zio_read(2): err = %d\n", err); // DEBUG
+       return err;
+     }
+   grub_memset (compbuf, 0, ALIGN_UP (psize, 16) - psize);
+@@ -1906,6 +2007,7 @@
+ 	{
+ 	  grub_free (compbuf);
+ 	  *buf = NULL;
++	  grub_dprintf("zfs", "zio_read(3): err = %d\n", err); // DEBUG
+ 	  return err;
+ 	}
+     }
+@@ -1916,6 +2018,7 @@
+       if (!*buf)
+ 	{
+ 	  grub_free (compbuf);
++	  grub_dprintf("zfs", "zio_read(4): err = %d\n", grub_errno); // DEBUG
+ 	  return grub_errno;
+ 	}
+ 
+@@ -1925,6 +2028,7 @@
+ 	{
+ 	  grub_free (*buf);
+ 	  *buf = NULL;
++	  grub_dprintf("zfs", "zio_read(5): err = %d\n", grub_errno); // DEBUG
+ 	  return err;
+ 	}
+     }
+@@ -1957,7 +2061,8 @@
+   endian = dn->endian;
+   for (level = dn->dn.dn_nlevels - 1; level >= 0; level--)
+     {
+-      grub_dprintf ("zfs", "endian = %d\n", endian);
++//      grub_dprintf ("zfs", "endian = %d\n", endian);
++      grub_dprintf ("zfs", "endian = %d (level = %d)\n", endian, level); // DEBUG
+       idx = (blkid >> (epbs * level)) & ((1 << epbs) - 1);
+       *bp = bp_array[idx];
+       if (bp_array != dn->dn.dn_blkptr)
+@@ -1986,6 +2091,7 @@
+ 	  grub_dprintf ("zfs", "endian = %d\n", endian);
+ 	  err = zio_read (bp, endian, buf, 0, data);
+ 	  endian = (grub_zfs_to_cpu64 (bp->blk_prop, endian) >> 63) & 1;
++	  grub_dprintf ("zfs", "level=0, err=%d, endian=%d\n", err, endian); // DEBUG
+ 	  break;
+ 	}
+       grub_dprintf ("zfs", "endian = %d\n", endian);
+@@ -2001,6 +2107,7 @@
+     *endian_out = endian;
+ 
+   grub_free (bp);
++  grub_dprintf ("zfs", "dmu_read(): err = %d\n", err); // DEBUG
+   return err;
+ }
+ 
+Index: grub/include/grub/zfs/spa.h
+===================================================================
+--- grub.orig/include/grub/zfs/spa.h	2015-03-15 23:57:18.311617654 +0100
++++ grub/include/grub/zfs/spa.h	2015-03-15 23:57:55.119617511 +0100
+@@ -203,8 +203,8 @@
+ #define	BP_SET_LSIZE(bp, x)	\
+ 	BF64_SET_SB((bp)->blk_prop, 0, 16, SPA_MINBLOCKSHIFT, 1, x)
+ 
+-#define	BP_GET_COMPRESS(bp)		BF64_GET((bp)->blk_prop, 32, 8)
+-#define	BP_SET_COMPRESS(bp, x)		BF64_SET((bp)->blk_prop, 32, 8, x)
++#define	BP_GET_COMPRESS(bp)		BF64_GET((bp)->blk_prop, 32, 7)
++#define	BP_SET_COMPRESS(bp, x)		BF64_SET((bp)->blk_prop, 32, 7, x)
+ 
+ #define	BP_GET_CHECKSUM(bp)		BF64_GET((bp)->blk_prop, 40, 8)
+ #define	BP_SET_CHECKSUM(bp, x)		BF64_SET((bp)->blk_prop, 40, 8, x)
+@@ -277,6 +277,8 @@
+ 	(zcp)->zc_word[3] = w3;			\
+ }
+ 
++#define	BP_IS_EMBEDDED(bp)	BF64_GET((bp)->blk_prop, 39, 1)
++
+ #define	BP_IDENTITY(bp)		(&(bp)->blk_dva[0])
+ #define	BP_IS_GANG(bp)		DVA_GET_GANG(BP_IDENTITY(bp))
+ #define	BP_IS_HOLE(bp)		((bp)->blk_birth == 0)
+@@ -302,6 +304,22 @@
+ 	ZIO_SET_CHECKSUM(&(bp)->blk_cksum, 0, 0, 0, 0);	\
+ }
+ 
++#define	BPE_GET_ETYPE(bp)	BP_GET_CHECKSUM(bp)
++#define	BPE_GET_LSIZE(bp)	\
++	BF64_GET_SB((bp)->blk_prop, 0, 25, 0, 1)
++#define	BPE_GET_PSIZE(bp)	\
++	BF64_GET_SB((bp)->blk_prop, 25, 7, 0, 1)
++
++typedef enum bp_embedded_type {
++	BP_EMBEDDED_TYPE_DATA,
++	NUM_BP_EMBEDDED_TYPES
++} bp_embedded_type_t;
++
++#define	BPE_NUM_WORDS		14
++#define	BPE_PAYLOAD_SIZE	(BPE_NUM_WORDS * sizeof (grub_uint64_t))
++#define	BPE_IS_PAYLOADWORD(bp, wp)	\
++	((wp) != &(bp)->blk_prop && (wp) != &(bp)->blk_birth)
++
+ #define	BP_SPRINTF_LEN	320
+ 
+ #endif	/* ! GRUB_ZFS_SPA_HEADER */
