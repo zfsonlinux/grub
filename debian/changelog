@@ -1,3 +1,11 @@
+grub2 (2.02~beta2+gitbac5d-9.ZOL2) unstable; urgency=medium
+
+  * Took the ZFS support files from https://github.com/tsoome/grub/tree/illumos.
+      by Toomas Soome (tsoome on IRC #zfsonlinux and #illumos).
+  * Rename feature patch, because it's no longer JUST feature flags.
+
+ -- Turbo Fredriksson <turbo@bayour.com>  Tue, 17 Mar 2015 03:37:59 +0100
+
 grub2 (2.02~beta2+gitbac5d-9.ZOL1) unstable; urgency=medium
 
   * Refresh to newer grub git version.
