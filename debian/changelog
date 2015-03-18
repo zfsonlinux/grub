@@ -1,3 +1,9 @@
+grub2 (2.02-beta2-gitbac5d-9.ZOL3-jessie) unstable; urgency=medium
+
+  * Add support for ZFS embedding - tsoome:8c67a6303174df444839a9bd891f7d19dc90404c.
+
+ -- Turbo Fredriksson <turbo@bayour.com>  Wed, 18 Mar 2015 18:27:11 +0100
+
 grub2 (2.02-beta2-gitbac5d-9.ZOL2-jessie) unstable; urgency=medium
 
   * Gcc 4.8 for Jessie.
