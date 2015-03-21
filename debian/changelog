@@ -1,6 +1,7 @@
 grub2 (2.02-beta2-gitbac5d-9.ZOL5) unstable; urgency=medium
 
   * Change versioning - remove strange chars (s3 can't handle them).
+  * Refresh zfs.patch from tsoome.
 
  -- Turbo Fredriksson <turbo@bayour.com>  Sat, 21 Mar 2015 15:32:53 +0100
 
