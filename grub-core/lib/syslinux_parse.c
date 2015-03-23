@@ -649,6 +649,8 @@ helptext (const char *line, grub_file_t file, struct syslinux_menu *menu)
   grub_size_t helplen, alloclen = 0;
 
   help = grub_strdup (line);
+  if (!help)
+    return grub_errno;
   helplen = grub_strlen (line);
   while ((grub_free (buf), buf = grub_file_getline (file)))
     {
@@ -682,6 +684,7 @@ helptext (const char *line, grub_file_t file, struct syslinux_menu *menu)
     }
 
   grub_free (buf);
+  grub_free (help);
   return grub_errno;
 }
 
@@ -717,7 +720,7 @@ syslinux_parse_real (struct syslinux_menu *menu)
       for (ptr3 = ptr2;  grub_isspace (*ptr3) && *ptr3; ptr3++);
       for (ptr4 = ptr3; !grub_isspace (*ptr4) && *ptr4; ptr4++);
       for (ptr5 = ptr4;  grub_isspace (*ptr5) && *ptr5; ptr5++);
-      for (i = 0; i < sizeof (commands) / sizeof (commands[0]); i++)
+      for (i = 0; i < ARRAY_SIZE(commands); i++)
 	if (grub_strlen (commands[i].name1) == (grub_size_t) (ptr2 - ptr1)
 	    && grub_strncasecmp (commands[i].name1, ptr1, ptr2 - ptr1) == 0
 	    && (commands[i].name2 == NULL
@@ -726,7 +729,7 @@ syslinux_parse_real (struct syslinux_menu *menu)
 		    && grub_strncasecmp (commands[i].name2, ptr3, ptr4 - ptr3)
 		    == 0)))
 	  break;
-      if (i == sizeof (commands) / sizeof (commands[0]))
+      if (i == ARRAY_SIZE(commands))
 	{
 	  if (sizeof ("text") - 1 == ptr2 - ptr1
 	      && grub_strncasecmp ("text", ptr1, ptr2 - ptr1) == 0
@@ -843,7 +846,12 @@ write_entry (struct output_buffer *outbuf,
 {
   grub_err_t err;
   if (curentry->comments)
-    print (outbuf, curentry->comments, grub_strlen (curentry->comments));
+    {
+      err = print (outbuf, curentry->comments,
+		   grub_strlen (curentry->comments));
+      if (err)
+	return err;
+    }
   {
     struct syslinux_say *say;
     for (say = curentry->say; say && say->next; say = say->next);
@@ -861,7 +869,6 @@ write_entry (struct output_buffer *outbuf,
     case KERNEL_LINUX:
       {
 	char *ptr;
-	char *cmdline;
 	char *initrd = NULL;
 	for (ptr = curentry->append; ptr && *ptr; ptr++)
 	  if ((ptr == curentry->append || grub_isspace (ptr[-1]))
@@ -871,31 +878,19 @@ write_entry (struct output_buffer *outbuf,
 	if (ptr && *ptr)
 	  {
 	    char *ptr2;
-	    grub_size_t totlen = grub_strlen (curentry->append);
-	    initrd = ptr + sizeof ("initrd=") - 1;
-	    for (ptr2 = ptr; *ptr2 && !grub_isspace (*ptr2); ptr2++);
-	    if (*ptr2)
-	      {
-		*ptr2 = 0;
-		ptr2++;
-	      }
-	    cmdline = grub_malloc (totlen + 1 - (ptr2 - ptr));
-	    if (!cmdline)
+	    initrd = grub_strdup(ptr + sizeof ("initrd=") - 1);
+	    if (!initrd)
 	      return grub_errno;
-	    grub_memcpy (cmdline, curentry->append, ptr - curentry->append);
-	    grub_memcpy (cmdline + (ptr - curentry->append),
-			 ptr2, totlen - (ptr2 - curentry->append));
-	    *(cmdline + totlen - (ptr2 - ptr)) = 0;
+	    for (ptr2 = initrd; *ptr2 && !grub_isspace (*ptr2); ptr2++);
+	    *ptr2 = 0;
 	  }
-	else
-	  cmdline = curentry->append;
 	print_string (" if test x$grub_platform = xpc; then "
 		      "linux_suffix=16; else linux_suffix= ; fi\n");
 	print_string ("  linux$linux_suffix ");
 	print_file (outbuf, menu, curentry->kernel_file, NULL);
 	print_string (" ");
-	if (cmdline)
-	  print (outbuf, cmdline, grub_strlen (cmdline));
+	if (curentry->append)
+	  print (outbuf, curentry->append, grub_strlen (curentry->append));
 	print_string ("\n");
 	if (initrd || curentry->initrds)
 	  {
@@ -914,6 +909,7 @@ write_entry (struct output_buffer *outbuf,
 
 	    print_string ("\n");
 	  }
+	grub_free (initrd);
       }
       break;
     case KERNEL_CHAINLOADER:
@@ -949,6 +945,7 @@ write_entry (struct output_buffer *outbuf,
 	    break;
 	  }
 	print_string ("  # UNSUPPORTED localboot type ");
+	print_string ("\ntrue;\n");
 	if (print_num (outbuf, n))
 	  return grub_errno;
 	print_string ("\n");
@@ -1420,6 +1417,13 @@ config_file (struct output_buffer *outbuf,
       print_string ("\n");
     }
 
+  if (menu.comments)
+    {
+      err = print (outbuf, menu.comments, grub_strlen (menu.comments));
+      if (err)
+	return err;
+    }
+
   if (menu.timeout == 0 && menu.entries && menu.def)
     {
       err = print_entry (outbuf, &menu, menu.def);
@@ -1436,12 +1440,6 @@ config_file (struct output_buffer *outbuf,
       if (err)
 	return err;
       print_string ("\n");
-      if (menu.comments)
-	{
-	  err = print (outbuf, menu.comments, grub_strlen (menu.comments));
-	  if (err)
-	    return err;
-	}
 
       if (menu.def)
 	{

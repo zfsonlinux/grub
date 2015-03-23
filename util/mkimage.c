@@ -937,8 +937,8 @@ grub_install_get_image_target (const char *arg)
 {
   unsigned i, j;
   for (i = 0; i < ARRAY_SIZE (image_targets); i++)
-    for (j = 0; image_targets[i].names[j]
-	   && j < ARRAY_SIZE (image_targets[i].names); j++)
+    for (j = 0; j < ARRAY_SIZE (image_targets[i].names) &&
+		    image_targets[i].names[j]; j++)
       if (strcmp (arg, image_targets[i].names[j]) == 0)
 	return &image_targets[i];
   return NULL;
@@ -1278,6 +1278,8 @@ grub_install_generate_image (const char *dir, const char *prefix,
       free (core_img);
       core_img = full_img;
       core_size = full_size;
+      free (decompress_img);
+      free (decompress_path);
     }
 
   switch (image_target->id)
@@ -1744,6 +1746,8 @@ grub_install_generate_image (const char *dir, const char *prefix,
       free (core_img);
       core_img = rom_img;
       core_size = rom_size;
+      free (boot_img);
+      free (boot_path);
     }
     break;
     case IMAGE_QEMU_MIPS_FLASH:
