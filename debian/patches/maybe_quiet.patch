@@ -44,24 +44,24 @@ Patch-Name: maybe_quiet.patch
  util/grub.d/10_linux.in           | 15 +++++++++++----
  9 files changed, 111 insertions(+), 6 deletions(-)
 
-Index: grub.zol/config.h.in
+Index: grub/config.h.in
 ===================================================================
---- grub.zol.orig/config.h.in	2014-11-16 19:47:02.397194141 +0100
-+++ grub.zol/config.h.in	2014-11-16 19:48:32.844057069 +0100
-@@ -11,6 +11,8 @@
+--- grub.orig/config.h.in	2015-03-23 17:05:28.149554921 +0100
++++ grub/config.h.in	2015-03-23 17:05:34.625473508 +0100
+@@ -12,6 +12,8 @@
  /* Define to 1 to enable disk cache statistics.  */
  #define DISK_CACHE_STATS @DISK_CACHE_STATS@
  #define BOOT_TIME_STATS @BOOT_TIME_STATS@
 +/* Define to 1 to make GRUB quieter at boot time.  */
 +#define QUIET_BOOT @QUIET_BOOT@
  
- #if defined (GRUB_BUILD)
- #undef ENABLE_NLS
-Index: grub.zol/configure.ac
+ /* We don't need those.  */
+ #define MINILZO_CFG_SKIP_LZO_PTR 1
+Index: grub/configure.ac
 ===================================================================
---- grub.zol.orig/configure.ac	2014-11-16 19:47:44.044670560 +0100
-+++ grub.zol/configure.ac	2014-11-16 19:48:32.844057069 +0100
-@@ -1602,6 +1602,17 @@
+--- grub.orig/configure.ac	2015-03-23 17:05:34.317477379 +0100
++++ grub/configure.ac	2015-03-23 17:05:34.629473458 +0100
+@@ -1667,6 +1667,17 @@
  fi
  AC_SUBST([UBUNTU_RECOVERY])
  
@@ -79,7 +79,7 @@ Index: grub.zol/configure.ac
  LIBS=""
  
  AC_SUBST([FONT_SOURCE])
-@@ -1864,5 +1875,10 @@
+@@ -1918,5 +1929,10 @@
  else
  echo "With liblzma from $LIBLZMA (support for XZ-compressed mips images)"
  fi
@@ -90,10 +90,10 @@ Index: grub.zol/configure.ac
 +fi
  echo "*******************************************************"
  ]
-Index: grub.zol/grub-core/boot/i386/pc/boot.S
+Index: grub/grub-core/boot/i386/pc/boot.S
 ===================================================================
---- grub.zol.orig/grub-core/boot/i386/pc/boot.S	2014-11-16 19:47:02.401194091 +0100
-+++ grub.zol/grub-core/boot/i386/pc/boot.S	2014-11-16 19:48:32.848057019 +0100
+--- grub.orig/grub-core/boot/i386/pc/boot.S	2015-03-23 17:05:28.153554872 +0100
++++ grub/grub-core/boot/i386/pc/boot.S	2015-03-23 17:05:34.629473458 +0100
 @@ -19,6 +19,9 @@
  
  #include <grub/symbol.h>
@@ -122,10 +122,10 @@ Index: grub.zol/grub-core/boot/i386/pc/boot.S
  	/* set %si to the disk address packet */
  	movw	$disk_address_packet, %si
  
-Index: grub.zol/grub-core/boot/i386/pc/diskboot.S
+Index: grub/grub-core/boot/i386/pc/diskboot.S
 ===================================================================
---- grub.zol.orig/grub-core/boot/i386/pc/diskboot.S	2014-11-16 19:47:02.401194091 +0100
-+++ grub.zol/grub-core/boot/i386/pc/diskboot.S	2014-11-16 19:48:32.848057019 +0100
+--- grub.orig/grub-core/boot/i386/pc/diskboot.S	2015-03-23 17:05:28.153554872 +0100
++++ grub/grub-core/boot/i386/pc/diskboot.S	2015-03-23 17:05:34.629473458 +0100
 @@ -18,6 +18,9 @@
  
  #include <grub/symbol.h>
@@ -202,10 +202,10 @@ Index: grub.zol/grub-core/boot/i386/pc/diskboot.S
  notification_string:	.asciz "loading"
  
  notification_step:	.asciz "."
-Index: grub.zol/grub-core/kern/main.c
+Index: grub/grub-core/kern/main.c
 ===================================================================
---- grub.zol.orig/grub-core/kern/main.c	2014-11-16 19:47:02.405194040 +0100
-+++ grub.zol/grub-core/kern/main.c	2014-11-16 19:48:32.848057019 +0100
+--- grub.orig/grub-core/kern/main.c	2015-03-23 17:05:28.157554822 +0100
++++ grub/grub-core/kern/main.c	2015-03-23 17:05:34.629473458 +0100
 @@ -264,15 +264,25 @@
  void __attribute__ ((noreturn))
  grub_main (void)
@@ -245,10 +245,10 @@ Index: grub.zol/grub-core/kern/main.c
 +
    grub_rescue_run ();
  }
-Index: grub.zol/grub-core/kern/rescue_reader.c
+Index: grub/grub-core/kern/rescue_reader.c
 ===================================================================
---- grub.zol.orig/grub-core/kern/rescue_reader.c	2014-11-16 19:47:02.405194040 +0100
-+++ grub.zol/grub-core/kern/rescue_reader.c	2014-11-16 19:48:32.848057019 +0100
+--- grub.orig/grub-core/kern/rescue_reader.c	2015-03-23 17:05:28.157554822 +0100
++++ grub/grub-core/kern/rescue_reader.c	2015-03-23 17:05:34.629473458 +0100
 @@ -78,7 +78,9 @@
  void __attribute__ ((noreturn))
  grub_rescue_run (void)
@@ -259,10 +259,10 @@ Index: grub.zol/grub-core/kern/rescue_reader.c
  
    while (1)
      {
-Index: grub.zol/grub-core/normal/main.c
+Index: grub/grub-core/normal/main.c
 ===================================================================
---- grub.zol.orig/grub-core/normal/main.c	2014-11-16 19:47:02.405194040 +0100
-+++ grub.zol/grub-core/normal/main.c	2014-11-16 19:48:32.848057019 +0100
+--- grub.orig/grub-core/normal/main.c	2015-03-23 17:05:28.157554822 +0100
++++ grub/grub-core/normal/main.c	2015-03-23 17:05:34.629473458 +0100
 @@ -389,6 +389,15 @@
  grub_normal_read_line_real (char **line, int cont, int nested)
  {
@@ -289,10 +289,10 @@ Index: grub.zol/grub-core/normal/main.c
  
    while (1)
      {
-Index: grub.zol/grub-core/normal/menu.c
+Index: grub/grub-core/normal/menu.c
 ===================================================================
---- grub.zol.orig/grub-core/normal/menu.c	2014-11-16 19:48:25.628147785 +0100
-+++ grub.zol/grub-core/normal/menu.c	2014-11-16 19:48:32.848057019 +0100
+--- grub.orig/grub-core/normal/menu.c	2015-03-23 17:05:34.589473961 +0100
++++ grub/grub-core/normal/menu.c	2015-03-23 17:05:34.629473458 +0100
 @@ -826,12 +826,18 @@
  
  /* Callback invoked immediately before a menu entry is executed.  */
@@ -336,10 +336,10 @@ Index: grub.zol/grub-core/normal/menu.c
  
        if (auto_boot)
  	grub_menu_execute_with_fallback (menu, e, autobooted,
-Index: grub.zol/util/grub.d/10_linux.in
+Index: grub/util/grub.d/10_linux.in
 ===================================================================
---- grub.zol.orig/util/grub.d/10_linux.in	2014-11-16 19:48:25.608148037 +0100
-+++ grub.zol/util/grub.d/10_linux.in	2014-11-16 19:48:32.848057019 +0100
+--- grub.orig/util/grub.d/10_linux.in	2015-03-23 17:05:34.569474211 +0100
++++ grub/util/grub.d/10_linux.in	2015-03-23 17:05:34.633473407 +0100
 @@ -21,6 +21,7 @@
  exec_prefix="@exec_prefix@"
  datarootdir="@datarootdir@"

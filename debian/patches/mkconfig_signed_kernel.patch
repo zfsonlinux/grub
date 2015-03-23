@@ -11,11 +11,11 @@ Patch-Name: mkconfig_signed_kernel.patch
  util/grub.d/10_linux.in | 15 +++++++++++++++
  1 file changed, 15 insertions(+)
 
-diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index d343263..1b55116 100644
---- a/util/grub.d/10_linux.in
-+++ b/util/grub.d/10_linux.in
-@@ -149,8 +149,16 @@ linux_entry ()
+Index: grub/util/grub.d/10_linux.in
+===================================================================
+--- grub.orig/util/grub.d/10_linux.in	2015-03-23 16:53:24.914647215 +0100
++++ grub/util/grub.d/10_linux.in	2015-03-23 16:53:46.538375367 +0100
+@@ -149,8 +149,16 @@
    message="$(gettext_printf "Loading Linux %s ..." ${version})"
    sed "s/^/$submenu_indentation/" << EOF
  	echo	'$(echo "$message" | grub_quote)'
@@ -32,7 +32,7 @@ index d343263..1b55116 100644
    if test -n "${initrd}" ; then
      # TRANSLATORS: ramdisk isn't identifier. Should be translated.
      message="$(gettext_printf "Loading initial ramdisk ...")"
-@@ -196,6 +204,13 @@ submenu_indentation=""
+@@ -198,6 +206,13 @@
  is_top_level=true
  while [ "x$list" != "x" ] ; do
    linux=`version_find_latest $list`

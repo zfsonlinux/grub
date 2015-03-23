@@ -17,11 +17,11 @@ Patch-Name: vt_handoff.patch
  util/grub.d/10_linux.in | 28 +++++++++++++++++++++++++++-
  2 files changed, 38 insertions(+), 1 deletion(-)
 
-Index: grub.zol/configure.ac
+Index: grub/configure.ac
 ===================================================================
---- grub.zol.orig/configure.ac	2014-11-16 19:48:41.519947996 +0100
-+++ grub.zol/configure.ac	2014-11-16 19:48:49.283850405 +0100
-@@ -1635,6 +1635,17 @@
+--- grub.orig/configure.ac	2015-03-23 16:54:12.082054236 +0100
++++ grub/configure.ac	2015-03-23 16:54:21.705933251 +0100
+@@ -1700,6 +1700,17 @@
  fi
  AC_SUBST([GFXPAYLOAD_DYNAMIC])
  
@@ -39,10 +39,10 @@ Index: grub.zol/configure.ac
  LIBS=""
  
  AC_SUBST([FONT_SOURCE])
-Index: grub.zol/util/grub.d/10_linux.in
+Index: grub/util/grub.d/10_linux.in
 ===================================================================
---- grub.zol.orig/util/grub.d/10_linux.in	2014-11-16 19:48:41.519947996 +0100
-+++ grub.zol/util/grub.d/10_linux.in	2014-11-16 19:48:49.283850405 +0100
+--- grub.orig/util/grub.d/10_linux.in	2015-03-23 16:54:12.082054236 +0100
++++ grub/util/grub.d/10_linux.in	2015-03-23 16:54:21.705933251 +0100
 @@ -24,6 +24,7 @@
  quiet_boot="@QUIET_BOOT@"
  quick_boot="@QUICK_BOOT@"
@@ -75,7 +75,7 @@ Index: grub.zol/util/grub.d/10_linux.in
    fi
  
    echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
-@@ -210,6 +219,23 @@
+@@ -212,6 +221,23 @@
  boot_device_id=
  title_correction_code=
  

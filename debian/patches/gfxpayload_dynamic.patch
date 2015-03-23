@@ -20,11 +20,11 @@ Patch-Name: gfxpayload_dynamic.patch
  4 files changed, 200 insertions(+), 3 deletions(-)
  create mode 100644 grub-core/commands/i386/pc/hwmatch.c
 
-Index: grub.zol/configure.ac
+Index: grub/configure.ac
 ===================================================================
---- grub.zol.orig/configure.ac	2014-11-16 19:48:41.491948357 +0100
-+++ grub.zol/configure.ac	2014-11-16 19:48:41.519947996 +0100
-@@ -1624,6 +1624,17 @@
+--- grub.orig/configure.ac	2015-03-23 16:54:04.114154407 +0100
++++ grub/configure.ac	2015-03-23 16:54:12.082054236 +0100
+@@ -1689,6 +1689,17 @@
  fi
  AC_SUBST([QUICK_BOOT])
  
@@ -42,11 +42,11 @@ Index: grub.zol/configure.ac
  LIBS=""
  
  AC_SUBST([FONT_SOURCE])
-Index: grub.zol/grub-core/Makefile.core.def
+Index: grub/grub-core/Makefile.core.def
 ===================================================================
---- grub.zol.orig/grub-core/Makefile.core.def	2014-11-16 19:48:16.352264398 +0100
-+++ grub.zol/grub-core/Makefile.core.def	2014-11-16 19:48:41.519947996 +0100
-@@ -897,6 +897,15 @@
+--- grub.orig/grub-core/Makefile.core.def	2015-03-23 16:53:35.166518332 +0100
++++ grub/grub-core/Makefile.core.def	2015-03-23 16:54:12.082054236 +0100
+@@ -885,6 +885,15 @@
  };
  
  module = {
@@ -62,10 +62,10 @@ Index: grub.zol/grub-core/Makefile.core.def
    name = keystatus;
    common = commands/keystatus.c;
  };
-Index: grub.zol/grub-core/commands/i386/pc/hwmatch.c
+Index: grub/grub-core/commands/i386/pc/hwmatch.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ grub.zol/grub-core/commands/i386/pc/hwmatch.c	2014-11-16 19:48:41.519947996 +0100
++++ grub/grub-core/commands/i386/pc/hwmatch.c	2015-03-23 16:54:12.082054236 +0100
 @@ -0,0 +1,146 @@
 +/* hwmatch.c - Match hardware against a whitelist/blacklist.  */
 +/*
@@ -213,10 +213,10 @@ Index: grub.zol/grub-core/commands/i386/pc/hwmatch.c
 +{
 +  grub_unregister_command (cmd);
 +}
-Index: grub.zol/util/grub.d/10_linux.in
+Index: grub/util/grub.d/10_linux.in
 ===================================================================
---- grub.zol.orig/util/grub.d/10_linux.in	2014-11-16 19:48:41.499948259 +0100
-+++ grub.zol/util/grub.d/10_linux.in	2014-11-16 19:48:41.519947996 +0100
+--- grub.orig/util/grub.d/10_linux.in	2015-03-23 16:54:04.118154359 +0100
++++ grub/util/grub.d/10_linux.in	2015-03-23 16:54:12.082054236 +0100
 @@ -23,6 +23,7 @@
  ubuntu_recovery="@UBUNTU_RECOVERY@"
  quiet_boot="@QUIET_BOOT@"
@@ -239,7 +239,7 @@ Index: grub.zol/util/grub.d/10_linux.in
    fi
  
    echo "	insmod gzio" | sed "s/^/$submenu_indentation/"
-@@ -208,6 +210,35 @@
+@@ -210,6 +212,35 @@
  boot_device_id=
  title_correction_code=
  

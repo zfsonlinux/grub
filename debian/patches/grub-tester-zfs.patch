@@ -1,7 +1,7 @@
 Index: grub/tests/util/grub-fs-tester.in
 ===================================================================
---- grub.orig/tests/util/grub-fs-tester.in	2015-03-17 12:58:06.960274531 +0100
-+++ grub/tests/util/grub-fs-tester.in	2015-03-17 12:58:51.583713537 +0100
+--- grub.orig/tests/util/grub-fs-tester.in	2015-03-23 16:51:47.419872891 +0100
++++ grub/tests/util/grub-fs-tester.in	2015-03-23 16:54:53.437534332 +0100
 @@ -426,6 +426,8 @@
  		x"vfat"* | xmsdos* | x"hfs" | x"exfat" | x"ntfs"* \
  		    | xiso9660 | xjoliet| xiso9660_1999 | xjoliet_1999)
@@ -20,7 +20,7 @@ Index: grub/tests/util/grub-fs-tester.in
  	    esac
  
  	    NOFSLABEL=n
-@@ -843,7 +847,7 @@
+@@ -852,7 +856,7 @@
  	    GRUBDIR="($GRUBDEVICE)"
  	    case x"$fs" in
  		x"zfs"*)

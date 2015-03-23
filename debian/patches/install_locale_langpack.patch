@@ -12,11 +12,11 @@ Patch-Name: install_locale_langpack.patch
  util/grub-install-common.c | 40 +++++++++++++++++++++++++++++++++-------
  1 file changed, 33 insertions(+), 7 deletions(-)
 
-Index: grub.zol/util/grub-install-common.c
+Index: grub/util/grub-install-common.c
 ===================================================================
---- grub.zol.orig/util/grub-install-common.c	2014-11-16 19:47:02.409193989 +0100
-+++ grub.zol/util/grub-install-common.c	2014-11-16 19:47:53.960545900 +0100
-@@ -594,17 +594,25 @@
+--- grub.orig/util/grub-install-common.c	2015-03-23 16:51:49.983840657 +0100
++++ grub/util/grub-install-common.c	2015-03-23 16:53:00.550951592 +0100
+@@ -595,17 +595,25 @@
  }
  
  static void
@@ -46,7 +46,7 @@ Index: grub.zol/util/grub-install-common.c
        return;
      }
  
-@@ -621,14 +629,14 @@
+@@ -622,14 +630,14 @@
        if (ext && (grub_strcmp (ext, ".mo") == 0
  		  || grub_strcmp (ext, ".gmo") == 0))
  	{
@@ -63,7 +63,7 @@ Index: grub.zol/util/grub-install-common.c
  					    "LC_MESSAGES", PACKAGE, ".mo");
  	  dstf = grub_util_path_concat_ext (2, dstd, de->d_name, ".mo");
  	}
-@@ -637,6 +645,7 @@
+@@ -638,6 +646,7 @@
        free (dstf);
      }
    grub_util_fd_closedir (d);
@@ -71,7 +71,7 @@ Index: grub.zol/util/grub-install-common.c
  }
  
  static struct
-@@ -790,12 +799,14 @@
+@@ -791,12 +800,14 @@
      {
        char *srcd = grub_util_path_concat (2, src, "po");
        copy_by_ext (srcd, dst_locale, ".mo", 0);
@@ -87,7 +87,7 @@ Index: grub.zol/util/grub-install-common.c
  
        for (i = 0; i < install_locales.n_entries; i++)
  	{
-@@ -814,6 +825,19 @@
+@@ -815,6 +826,19 @@
  	    }
  	  free (srcf);
  	  srcf = grub_util_path_concat_ext (4,
@@ -107,7 +107,7 @@ Index: grub.zol/util/grub-install-common.c
  						 locale_dir,
  						 install_locales.entries[i],
  						 "LC_MESSAGES",
-@@ -828,6 +852,8 @@
+@@ -829,6 +853,8 @@
  	  grub_util_error (_("cannot find locale `%s'"),
  			   install_locales.entries[i]);
  	}

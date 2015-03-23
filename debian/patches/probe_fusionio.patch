@@ -13,11 +13,11 @@ Patch-Name: probe_fusionio.patch
  util/deviceiter.c               | 19 +++++++++++++++++++
  2 files changed, 32 insertions(+)
 
-Index: grub.zol/grub-core/osdep/linux/getroot.c
+Index: grub/grub-core/osdep/linux/getroot.c
 ===================================================================
---- grub.zol.orig/grub-core/osdep/linux/getroot.c	2014-11-16 19:47:02.405194040 +0100
-+++ grub.zol/grub-core/osdep/linux/getroot.c	2014-11-16 19:48:56.223763152 +0100
-@@ -913,6 +913,19 @@
+--- grub.orig/grub-core/osdep/linux/getroot.c	2015-03-23 16:51:48.199863085 +0100
++++ grub/grub-core/osdep/linux/getroot.c	2015-03-23 16:54:37.273737538 +0100
+@@ -921,6 +921,19 @@
  	  *pp = '\0';
  	  return path;
  	}
@@ -37,10 +37,10 @@ Index: grub.zol/grub-core/osdep/linux/getroot.c
      }
  
    return path;
-Index: grub.zol/util/deviceiter.c
+Index: grub/util/deviceiter.c
 ===================================================================
---- grub.zol.orig/util/deviceiter.c	2014-11-16 19:47:43.972671468 +0100
-+++ grub.zol/util/deviceiter.c	2014-11-16 19:48:56.227763101 +0100
+--- grub.orig/util/deviceiter.c	2015-03-23 16:52:49.283095165 +0100
++++ grub/util/deviceiter.c	2015-03-23 16:54:37.273737538 +0100
 @@ -365,6 +365,12 @@
  {
    sprintf (name, "/dev/xvd%c", unit + 'a');

@@ -31,11 +31,11 @@ Patch-Name: quick_boot.patch
  util/grub.d/30_os-prober.in | 21 ++++++++++++++++
  7 files changed, 117 insertions(+), 13 deletions(-)
 
-Index: grub.zol/configure.ac
+Index: grub/configure.ac
 ===================================================================
---- grub.zol.orig/configure.ac	2014-11-16 19:00:44.000000000 +0100
-+++ grub.zol/configure.ac	2014-11-16 19:01:44.963356973 +0100
-@@ -1613,6 +1613,17 @@
+--- grub.orig/configure.ac	2015-03-23 16:53:55.970256793 +0100
++++ grub/configure.ac	2015-03-23 16:54:04.114154407 +0100
+@@ -1678,6 +1678,17 @@
  fi
  AC_SUBST([QUIET_BOOT])
  
@@ -53,10 +53,10 @@ Index: grub.zol/configure.ac
  LIBS=""
  
  AC_SUBST([FONT_SOURCE])
-Index: grub.zol/docs/grub.texi
+Index: grub/docs/grub.texi
 ===================================================================
---- grub.zol.orig/docs/grub.texi	2014-11-16 18:27:51.000000000 +0100
-+++ grub.zol/docs/grub.texi	2014-11-16 19:01:44.963356973 +0100
+--- grub.orig/docs/grub.texi	2015-03-23 16:51:48.527858959 +0100
++++ grub/docs/grub.texi	2015-03-23 16:54:04.114154407 +0100
 @@ -1490,6 +1490,15 @@
  Each module will be loaded as early as possible, at the start of
  @file{grub.cfg}.
@@ -73,10 +73,10 @@ Index: grub.zol/docs/grub.texi
  @end table
  
  The following options are still accepted for compatibility with existing
-Index: grub.zol/grub-core/normal/menu.c
+Index: grub/grub-core/normal/menu.c
 ===================================================================
---- grub.zol.orig/grub-core/normal/menu.c	2014-11-16 19:00:44.000000000 +0100
-+++ grub.zol/grub-core/normal/menu.c	2014-11-16 19:01:44.967356854 +0100
+--- grub.orig/grub-core/normal/menu.c	2015-03-23 16:53:55.974256743 +0100
++++ grub/grub-core/normal/menu.c	2015-03-23 16:54:04.114154407 +0100
 @@ -604,6 +604,30 @@
        static struct grub_term_coordinate *pos;
        int entry = -1;
@@ -108,10 +108,10 @@ Index: grub.zol/grub-core/normal/menu.c
        if (timeout_style == TIMEOUT_STYLE_COUNTDOWN && timeout)
  	{
  	  pos = grub_term_save_pos ();
-Index: grub.zol/util/grub-mkconfig.in
+Index: grub/util/grub-mkconfig.in
 ===================================================================
---- grub.zol.orig/util/grub-mkconfig.in	2014-11-16 19:00:16.000000000 +0100
-+++ grub.zol/util/grub-mkconfig.in	2014-11-16 19:01:44.967356854 +0100
+--- grub.orig/util/grub-mkconfig.in	2015-03-23 16:53:13.026796665 +0100
++++ grub/util/grub-mkconfig.in	2015-03-23 16:54:04.118154359 +0100
 @@ -236,7 +236,8 @@
    GRUB_ENABLE_CRYPTODISK \
    GRUB_BADRAM \
@@ -122,10 +122,10 @@ Index: grub.zol/util/grub-mkconfig.in
  
  if test "x${grub_cfg}" != "x"; then
    rm -f "${grub_cfg}.new"
-Index: grub.zol/util/grub.d/00_header.in
+Index: grub/util/grub.d/00_header.in
 ===================================================================
---- grub.zol.orig/util/grub.d/00_header.in	2014-11-16 18:33:36.000000000 +0100
-+++ grub.zol/util/grub.d/00_header.in	2014-11-16 19:02:58.242435649 +0100
+--- grub.orig/util/grub.d/00_header.in	2015-03-23 16:51:48.527858959 +0100
++++ grub/util/grub.d/00_header.in	2015-03-23 16:54:04.118154359 +0100
 @@ -21,6 +21,8 @@
  exec_prefix="@exec_prefix@"
  datarootdir="@datarootdir@"
@@ -232,10 +232,10 @@ Index: grub.zol/util/grub.d/00_header.in
  fi
  EOF
  }
-Index: grub.zol/util/grub.d/10_linux.in
+Index: grub/util/grub.d/10_linux.in
 ===================================================================
---- grub.zol.orig/util/grub.d/10_linux.in	2014-11-16 19:00:44.000000000 +0100
-+++ grub.zol/util/grub.d/10_linux.in	2014-11-16 19:01:44.967356854 +0100
+--- grub.orig/util/grub.d/10_linux.in	2015-03-23 16:53:55.974256743 +0100
++++ grub/util/grub.d/10_linux.in	2015-03-23 16:54:04.118154359 +0100
 @@ -22,6 +22,7 @@
  datarootdir="@datarootdir@"
  ubuntu_recovery="@UBUNTU_RECOVERY@"
@@ -254,10 +254,10 @@ Index: grub.zol/util/grub.d/10_linux.in
    if [ x$type != xrecovery ] ; then
        save_default_entry | grub_add_tab
    fi
-Index: grub.zol/util/grub.d/30_os-prober.in
+Index: grub/util/grub.d/30_os-prober.in
 ===================================================================
---- grub.zol.orig/util/grub.d/30_os-prober.in	2014-11-16 19:00:44.000000000 +0100
-+++ grub.zol/util/grub.d/30_os-prober.in	2014-11-16 19:01:44.971356763 +0100
+--- grub.orig/util/grub.d/30_os-prober.in	2015-03-23 16:53:55.954256993 +0100
++++ grub/util/grub.d/30_os-prober.in	2015-03-23 16:54:04.118154359 +0100
 @@ -20,12 +20,26 @@
  prefix="@prefix@"
  exec_prefix="@exec_prefix@"
@@ -325,7 +325,7 @@ Index: grub.zol/util/grub.d/30_os-prober.in
        onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
        cat << EOF
  menuentry '$(echo "${LONGNAME} $onstr" | grub_quote)' --class hurd --class gnu --class os \$menuentry_id_option 'osprober-gnuhurd-/boot/gnumach.gz-false-$(grub_get_device_id "${DEVICE}")' {
-@@ -348,3 +367,5 @@
+@@ -347,3 +366,5 @@
      ;;
    esac
  done
