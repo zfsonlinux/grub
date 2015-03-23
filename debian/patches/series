@@ -35,7 +35,6 @@ ignore_grub_func_test_failures.patch
 mkconfig_recovery_title.patch
 skip_gettext_strings_test.patch
 elf_bi_endian.patch
-grub-shell-no-pad.patch
 install_powerpc_machtypes.patch
 multiple-raidz-device-detection.txt
 first_device.patch

@@ -1,7 +1,7 @@
 Index: grub/grub-core/fs/zfs/zfs.c
 ===================================================================
---- grub.orig/grub-core/fs/zfs/zfs.c	2015-03-23 16:57:41.987415373 +0100
-+++ grub/grub-core/fs/zfs/zfs.c	2015-03-23 16:58:34.946747676 +0100
+--- grub.orig/grub-core/fs/zfs/zfs.c	2015-03-24 12:35:47.072494328 +0100
++++ grub/grub-core/fs/zfs/zfs.c	2015-03-24 12:37:49.998948934 +0100
 @@ -1,8 +1,10 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -6238,8 +6238,8 @@ Index: grub/grub-core/fs/zfs/zfs.c
  }
 Index: grub/grub-core/fs/zfs/zfs_lz4.c
 ===================================================================
---- grub.orig/grub-core/fs/zfs/zfs_lz4.c	2015-03-23 16:57:41.987415373 +0100
-+++ grub/grub-core/fs/zfs/zfs_lz4.c	2015-03-23 16:58:34.946747676 +0100
+--- grub.orig/grub-core/fs/zfs/zfs_lz4.c	2015-03-24 12:35:47.076494278 +0100
++++ grub/grub-core/fs/zfs/zfs_lz4.c	2015-03-24 12:37:49.998948934 +0100
 @@ -33,12 +33,38 @@
   */
  
@@ -6460,8 +6460,8 @@ Index: grub/grub-core/fs/zfs/zfs_lz4.c
  }
 Index: grub/grub-core/fs/zfs/zfsinfo.c
 ===================================================================
---- grub.orig/grub-core/fs/zfs/zfsinfo.c	2015-03-23 16:57:41.987415373 +0100
-+++ grub/grub-core/fs/zfs/zfsinfo.c	2015-03-23 16:58:34.950747694 +0100
+--- grub.orig/grub-core/fs/zfs/zfsinfo.c	2015-03-24 12:35:47.076494278 +0100
++++ grub/grub-core/fs/zfs/zfsinfo.c	2015-03-24 12:37:49.998948934 +0100
 @@ -195,10 +195,16 @@
    return GRUB_ERR_NONE;
  }
@@ -6793,8 +6793,8 @@ Index: grub/grub-core/fs/zfs/zfsinfo.c
  }
 Index: grub/include/grub/zfs/dmu.h
 ===================================================================
---- grub.orig/include/grub/zfs/dmu.h	2015-03-23 16:57:41.987415373 +0100
-+++ grub/include/grub/zfs/dmu.h	2015-03-23 16:58:19.010949924 +0100
+--- grub.orig/include/grub/zfs/dmu.h	2015-03-24 12:35:47.080494228 +0100
++++ grub/include/grub/zfs/dmu.h	2015-03-24 12:37:49.998948934 +0100
 @@ -22,39 +22,6 @@
  
  #ifndef	_SYS_DMU_H
@@ -6922,8 +6922,8 @@ Index: grub/include/grub/zfs/dmu.h
  #endif	/* _SYS_DMU_H */
 Index: grub/include/grub/zfs/dnode.h
 ===================================================================
---- grub.orig/include/grub/zfs/dnode.h	2015-03-23 16:57:41.987415373 +0100
-+++ grub/include/grub/zfs/dnode.h	2015-03-23 16:58:19.010949924 +0100
+--- grub.orig/include/grub/zfs/dnode.h	2015-03-24 12:35:47.080494228 +0100
++++ grub/include/grub/zfs/dnode.h	2015-03-24 12:37:50.002948883 +0100
 @@ -18,6 +18,7 @@
  /*
   * Copyright 2010 Sun Microsystems, Inc.  All rights reserved.
@@ -6943,8 +6943,8 @@ Index: grub/include/grub/zfs/dnode.h
  
 Index: grub/include/grub/zfs/spa.h
 ===================================================================
---- grub.orig/include/grub/zfs/spa.h	2015-03-23 16:57:41.987415373 +0100
-+++ grub/include/grub/zfs/spa.h	2015-03-23 16:58:19.010949924 +0100
+--- grub.orig/include/grub/zfs/spa.h	2015-03-24 12:35:47.080494228 +0100
++++ grub/include/grub/zfs/spa.h	2015-03-24 12:37:50.002948883 +0100
 @@ -1,7 +1,7 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -7071,8 +7071,8 @@ Index: grub/include/grub/zfs/spa.h
  #endif	/* ! GRUB_ZFS_SPA_HEADER */
 Index: grub/include/grub/zfs/uberblock_impl.h
 ===================================================================
---- grub.orig/include/grub/zfs/uberblock_impl.h	2015-03-23 16:57:41.987415373 +0100
-+++ grub/include/grub/zfs/uberblock_impl.h	2015-03-23 16:58:19.010949924 +0100
+--- grub.orig/include/grub/zfs/uberblock_impl.h	2015-03-24 12:35:47.080494228 +0100
++++ grub/include/grub/zfs/uberblock_impl.h	2015-03-24 12:37:50.002948883 +0100
 @@ -1,6 +1,7 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -7121,8 +7121,8 @@ Index: grub/include/grub/zfs/uberblock_impl.h
  #endif	/* _SYS_UBERBLOCK_IMPL_H */
 Index: grub/include/grub/zfs/vdev_impl.h
 ===================================================================
---- grub.orig/include/grub/zfs/vdev_impl.h	2015-03-23 16:57:41.987415373 +0100
-+++ grub/include/grub/zfs/vdev_impl.h	2015-03-23 16:58:19.010949924 +0100
+--- grub.orig/include/grub/zfs/vdev_impl.h	2015-03-24 12:35:47.080494228 +0100
++++ grub/include/grub/zfs/vdev_impl.h	2015-03-24 12:37:50.002948883 +0100
 @@ -23,6 +23,8 @@
  #ifndef _SYS_VDEV_IMPL_H
  #define	_SYS_VDEV_IMPL_H
@@ -7134,8 +7134,8 @@ Index: grub/include/grub/zfs/vdev_impl.h
  #define	VDEV_PHYS_SIZE		(112 << 10)
 Index: grub/include/grub/zfs/zap_impl.h
 ===================================================================
---- grub.orig/include/grub/zfs/zap_impl.h	2015-03-23 16:57:41.987415373 +0100
-+++ grub/include/grub/zfs/zap_impl.h	2015-03-23 16:58:19.010949924 +0100
+--- grub.orig/include/grub/zfs/zap_impl.h	2015-03-24 12:35:47.080494228 +0100
++++ grub/include/grub/zfs/zap_impl.h	2015-03-24 12:37:50.002948883 +0100
 @@ -1,6 +1,7 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -7166,8 +7166,8 @@ Index: grub/include/grub/zfs/zap_impl.h
  	grub_uint64_t mze_value;
 Index: grub/include/grub/zfs/zfs.h
 ===================================================================
---- grub.orig/include/grub/zfs/zfs.h	2015-03-23 16:57:41.987415373 +0100
-+++ grub/include/grub/zfs/zfs.h	2015-03-23 16:58:19.010949924 +0100
+--- grub.orig/include/grub/zfs/zfs.h	2015-03-24 12:35:47.080494228 +0100
++++ grub/include/grub/zfs/zfs.h	2015-03-24 12:37:50.002948883 +0100
 @@ -1,6 +1,7 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -7224,8 +7224,8 @@ Index: grub/include/grub/zfs/zfs.h
  		  grub_size_t keylen,
 Index: grub/include/grub/zfs/zfs_znode.h
 ===================================================================
---- grub.orig/include/grub/zfs/zfs_znode.h	2015-03-23 16:57:41.987415373 +0100
-+++ grub/include/grub/zfs/zfs_znode.h	2015-03-23 16:58:19.010949924 +0100
+--- grub.orig/include/grub/zfs/zfs_znode.h	2015-03-24 12:35:47.080494228 +0100
++++ grub/include/grub/zfs/zfs_znode.h	2015-03-24 12:37:50.002948883 +0100
 @@ -1,6 +1,7 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -7256,9 +7256,18 @@ Index: grub/include/grub/zfs/zfs_znode.h
  
 Index: grub/grub-core/partmap/gpt.c
 ===================================================================
---- grub.orig/grub-core/partmap/gpt.c	2015-03-23 16:57:41.987415373 +0100
-+++ grub/grub-core/partmap/gpt.c	2015-03-23 16:58:19.018949823 +0100
-@@ -37,6 +37,7 @@
+--- grub.orig/grub-core/partmap/gpt.c	2015-03-24 12:35:47.076494278 +0100
++++ grub/grub-core/partmap/gpt.c	2015-03-24 12:38:05.106751109 +0100
+@@ -24,6 +24,8 @@
+ #include <grub/dl.h>
+ #include <grub/msdos_partition.h>
+ #include <grub/gpt_partition.h>
++#include <grub/zfs/zio.h>
++#include <grub/zfs/vdev_impl.h>
+ #include <grub/i18n.h>
+ 
+ GRUB_MOD_LICENSE ("GPLv3+");
+@@ -37,6 +39,7 @@
  
  #ifdef GRUB_UTIL
  static const grub_gpt_part_type_t grub_gpt_partition_type_bios_boot = GRUB_GPT_PARTITION_TYPE_BIOS_BOOT;
@@ -7266,20 +7275,23 @@ Index: grub/grub-core/partmap/gpt.c
  #endif
  
  /* 512 << 7 = 65536 byte sectors.  */
-@@ -155,7 +156,8 @@
-   disk->partition = p2;
+@@ -162,6 +165,12 @@
+       return 1;
+     }
  
-   /* If there's an embed region, it is in a dedicated partition.  */
--  if (! grub_memcmp (&gptdata.type, &grub_gpt_partition_type_bios_boot, 16))
-+  if (! grub_memcmp (&gptdata.type, &grub_gpt_partition_type_bios_boot, 16) ||
-+      ! grub_memcmp (&gptdata.type, &grub_gpt_partition_type_zfs, 16))
-     {
-       ctx->start = p->start;
-       ctx->len = p->len;
++  if (! grub_memcmp (&gptdata.type, &grub_gpt_partition_type_zfs, 16))
++    {
++      ctx->start = p->start + (VDEV_BOOT_OFFSET >> GRUB_DISK_SECTOR_BITS);
++      ctx->len = (VDEV_BOOT_SIZE >> GRUB_DISK_SECTOR_BITS);
++      return 1;
++    }
+   return 0;
+ }
+ 
 Index: grub/include/grub/gpt_partition.h
 ===================================================================
---- grub.orig/include/grub/gpt_partition.h	2015-03-23 16:57:41.987415373 +0100
-+++ grub/include/grub/gpt_partition.h	2015-03-23 16:58:19.018949823 +0100
+--- grub.orig/include/grub/gpt_partition.h	2015-03-24 12:35:47.080494228 +0100
++++ grub/include/grub/gpt_partition.h	2015-03-24 12:37:50.002948883 +0100
 @@ -50,6 +50,13 @@
  	{ 0x85, 0xD2, 0xE1, 0xE9, 0x04, 0x34, 0xCF, 0xB3 }	\
    }
@@ -7296,8 +7308,8 @@ Index: grub/include/grub/gpt_partition.h
    grub_uint8_t magic[8];
 Index: grub/grub-core/fs/zfs/zfscrypt.c
 ===================================================================
---- grub.orig/grub-core/fs/zfs/zfscrypt.c	2015-03-23 16:58:09.959064667 +0100
-+++ grub/grub-core/fs/zfs/zfscrypt.c	2015-03-23 16:58:34.950747694 +0100
+--- grub.orig/grub-core/fs/zfs/zfscrypt.c	2015-03-24 12:35:47.076494278 +0100
++++ grub/grub-core/fs/zfs/zfscrypt.c	2015-03-24 12:37:50.006948832 +0100
 @@ -265,7 +265,8 @@
  			       mac_out, nonce,
  			       15 - l, m);
