@@ -234,13 +234,17 @@ debian/stamps/build-grub-rescue-pc: debian/stamps/build-grub-pc
 		$(CURDIR)/obj/grub-rescue-pc/rescue-disk
 	# save space for floppy image
 	rm -rf obj/grub-rescue-pc/grub-core/po obj/grub-rescue-pc/unicode.pf2
-	pkgdatadir=$(CURDIR)/obj/grub-rescue-pc \
-		obj/grub-pc/grub-mkrescue \
-		--directory=$(CURDIR)/obj/grub-rescue-pc/grub-core \
-		--locale-directory=$(CURDIR)/obj/grub-rescue-pc/grub-core/po \
-		--output=$(CURDIR)/obj/grub-rescue-pc/grub-rescue-floppy.img \
-		--compress=xz \
-		-- -no-pad $(CURDIR)/obj/grub-rescue-pc/rescue-disk
+
+# DISABLED BECAUSE:
+# obj/grub-pc/grub-mkrescue: warning: Your xorriso doesn't support `--grub2-boot-info'. Some features are disabled. Please use xorriso 1.2.9 or later..
+# obj/grub-pc/grub-mkrescue: warning: Your xorriso doesn't support `--grub2-boot-info'. Your core image is too big. Boot as disk is disabled. Please use xorriso 1.2.9 or later..
+#	pkgdatadir=$(CURDIR)/obj/grub-rescue-pc \
+#		obj/grub-pc/grub-mkrescue \
+#		--directory=$(CURDIR)/obj/grub-rescue-pc/grub-core \
+#		--locale-directory=$(CURDIR)/obj/grub-rescue-pc/grub-core/po \
+#		--output=$(CURDIR)/obj/grub-rescue-pc/grub-rescue-floppy.img \
+#		--compress=xz \
+#		-- -no-pad $(CURDIR)/obj/grub-rescue-pc/rescue-disk
 	touch $@
 
 platform_subst = \
