@@ -11,10 +11,10 @@ Patch-Name: linuxefi_debug.patch
  grub-core/loader/i386/efi/linux.c | 28 +++++++++++++++++++++++++---
  1 file changed, 25 insertions(+), 3 deletions(-)
 
-diff --git a/grub-core/loader/i386/efi/linux.c b/grub-core/loader/i386/efi/linux.c
-index b79e632..a124c5e 100644
---- a/grub-core/loader/i386/efi/linux.c
-+++ b/grub-core/loader/i386/efi/linux.c
+Index: grub/grub-core/loader/i386/efi/linux.c
+===================================================================
+--- grub.orig/grub-core/loader/i386/efi/linux.c	2015-03-24 12:37:02.000000000 +0100
++++ grub/grub-core/loader/i386/efi/linux.c	2015-03-24 12:37:36.279121752 +0100
 @@ -19,6 +19,7 @@
  #include <grub/loader.h>
  #include <grub/file.h>
@@ -23,7 +23,7 @@ index b79e632..a124c5e 100644
  #include <grub/types.h>
  #include <grub/mm.h>
  #include <grub/cpu/linux.h>
-@@ -54,15 +55,27 @@ grub_linuxefi_secure_validate (void *data, grub_uint32_t size)
+@@ -54,15 +55,27 @@
  {
    grub_efi_guid_t guid = SHIM_LOCK_GUID;
    grub_efi_shim_lock_t *shim_lock;
@@ -54,7 +54,7 @@ index b79e632..a124c5e 100644
    return 0;
  }
  
-@@ -147,6 +160,8 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
+@@ -147,6 +160,8 @@
        goto fail;
      }
  
@@ -63,16 +63,16 @@ index b79e632..a124c5e 100644
    params->ramdisk_size = size;
    params->ramdisk_image = (grub_uint32_t)(grub_uint64_t) initrd_mem;
  
-@@ -236,6 +251,8 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
+@@ -236,6 +251,8 @@
        goto fail;
      }
  
 +  grub_dprintf ("linuxefi", "params = %lx\n", (unsigned long) params);
 +
-   memset (params, 0, 16384);
+   grub_memset (params, 0, 16384);
  
    if (grub_file_read (file, &lh, sizeof (lh)) != sizeof (lh))
-@@ -279,6 +296,9 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
+@@ -279,6 +296,9 @@
        goto fail;
      }
  
@@ -82,7 +82,7 @@ index b79e632..a124c5e 100644
    grub_memcpy (linux_cmdline, LINUX_IMAGE, sizeof (LINUX_IMAGE));
    grub_create_loader_cmdline (argc, argv,
                                linux_cmdline + sizeof (LINUX_IMAGE) - 1,
-@@ -304,6 +324,8 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
+@@ -304,6 +324,8 @@
        goto fail;
      }
  
