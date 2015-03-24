@@ -28,11 +28,7 @@ else
 with_check := yes
 endif
 
-ifeq ($(DEB_HOST_ARCH_CPU),ppc64el)
 CC := gcc-4.8
-else
-CC := gcc-4.7
-endif
 
 confflags = PACKAGE_VERSION="$(deb_version)" PACKAGE_STRING="GRUB $(deb_version)" CC=$(CC) TARGET_CC=$(CC) --enable-grub-mkfont
 ifeq ($(DEB_HOST_ARCH_OS),linux)

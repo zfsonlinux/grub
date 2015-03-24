@@ -43,6 +43,4 @@ no_redefine_MIN-MAX.patch
 fix_variable_redeclarations.patch
 zfs.patch
 grub-tester-zfs.patch
-grub-shell.patch
-no_rockridge.patch
 ubuntu10.04_grub.cfg.patch
