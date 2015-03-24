@@ -3,8 +3,21 @@ grub2 (2.02-beta2.9-ZOL6-7aa9f6) unstable; urgency=medium
   * Change versioning - need to make it easier to find the newest one.
   * New upstream grub.
     + Refresh debian/patches/*
+  * Remove the --no-pad option to xorriso in grub-shell. No longer needed
+    with latest Grub (?).
+  * Update some linuxefi patches - 'memset()' -> 'grub_memset()'.
+  * Using '@abs_top_srcdir@' doesn't work - configure (or someone)  still
+    makes it a relative link, making the test fail.
+  * Don't copy files to debian/grub-extras-enabled. Compilation of 915resolution
+    gives:
+      __adddf3 in 915resolution is not defined
+      __divdf3 in 915resolution is not defined
+      __fixdfsi in 915resolution is not defined
+      __floatsidf in 915resolution is not defined
+      __muldf3 in 915resolution is not defined
+      __subdf3 in 915resolution is not defined
 
- -- Turbo Fredriksson <turbo@bayour.com>  Mon, 23 Mar 2015 16:44:28 +0100
+ -- Turbo Fredriksson <turbo@bayour.com>  Tue, 24 Mar 2015 12:41:46 +0100
 
 grub2 (2.02-beta2-gitbac5d-9.ZOL5) unstable; urgency=medium
 
