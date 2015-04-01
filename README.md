@@ -44,6 +44,8 @@ This is done using the command
    ```
    $ ./fix_includes-libspl.sh
    ```
+This is, however, no longer need if using the 0.6.3-41-0f7d2a version or
+newer. It's now done when packaging that.
 
 5. Checkout the branch name or tag name that you want to build.  For example,
 the latest code for Ubuntu 12.04 Raring is:
