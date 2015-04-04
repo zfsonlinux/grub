@@ -1,7 +1,7 @@
 Index: grub/grub-core/fs/zfs/zfs.c
 ===================================================================
---- grub.orig/grub-core/fs/zfs/zfs.c	2015-03-24 12:35:47.072494328 +0100
-+++ grub/grub-core/fs/zfs/zfs.c	2015-03-24 12:37:49.998948934 +0100
+--- grub.orig/grub-core/fs/zfs/zfs.c	2015-04-04 22:48:42.219898039 +0200
++++ grub/grub-core/fs/zfs/zfs.c	2015-04-04 22:49:15.851897464 +0200
 @@ -1,8 +1,10 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -2481,7 +2481,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
 -		buf = (char *) buf + csize;
 -		len -= csize;
 -		idx--;
- 	      }
+-	      }
 -	    for (i = 0; i < failed_devices 
 -		   && recovery_len[i] == recovery_len[0];
 -		 i++);
@@ -2496,7 +2496,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
 -				recovery_idx);
 -		if (err)
 -		  return err;
--	      }
+ 	      }
 -	    err = recovery (recovery_buf, recovery_len[failed_devices - 1],
 -			    failed_devices, redundancy_pow, recovery_idx);
 -	    if (err)
@@ -2766,8 +2766,6 @@ Index: grub/grub-core/fs/zfs/zfs.c
 -  grub_err_t err;
 -  zio_cksum_t zc = bp->blk_cksum;
 -  grub_uint32_t checksum;
--
--  *buf = NULL;
 +  raidz_col_t *rc;
 +  int unexpected_errors = 0;
 +  int parity_errors = 0;
@@ -2779,13 +2777,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +  int code;
 +  grub_err_t err = GRUB_ERR_NONE;
  
--  checksum = (grub_zfs_to_cpu64((bp)->blk_prop, endian) >> 40) & 0xff;
--  comp = (grub_zfs_to_cpu64((bp)->blk_prop, endian)>>32) & 0xff;
--  encrypted = ((grub_zfs_to_cpu64((bp)->blk_prop, endian) >> 60) & 3);
--  lsize = (BP_IS_HOLE(bp) ? 0 :
--	   (((grub_zfs_to_cpu64 ((bp)->blk_prop, endian) & 0xffff) + 1)
--	    << SPA_MINBLOCKSHIFT));
--  psize = get_psize (bp, endian);
+-  *buf = NULL;
 +  for (c = 0; c < (int)rm->rm_cols; c++)
 +    {
 +      rc = &rm->rm_col[c];
@@ -2796,11 +2788,18 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +	  else
 +	    data_errors++;
  
--  if (size)
--    *size = lsize;
+-  checksum = (grub_zfs_to_cpu64((bp)->blk_prop, endian) >> 40) & 0xff;
+-  comp = (grub_zfs_to_cpu64((bp)->blk_prop, endian)>>32) & 0xff;
+-  encrypted = ((grub_zfs_to_cpu64((bp)->blk_prop, endian) >> 60) & 3);
+-  lsize = (BP_IS_HOLE(bp) ? 0 :
+-	   (((grub_zfs_to_cpu64 ((bp)->blk_prop, endian) & 0xffff) + 1)
+-	    << SPA_MINBLOCKSHIFT));
+-  psize = get_psize (bp, endian);
 +	  if (!rc->rc_skipped)
 +	    unexpected_errors++;
-+
+ 
+-  if (size)
+-    *size = lsize;
 +	  total_errors++;
 +	}
 +      else if (c < (int)rm->rm_firstdatacol && !rc->rc_tried)
@@ -3922,7 +3921,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
        err = dnode_get (mosmdn, childobj,
  		       DMU_OT_DSL_DIR_CHILD_MAP, mdn, data);
        if (err)
-@@ -3094,274 +3799,511 @@
+@@ -3094,275 +3799,512 @@
  /* Context for dnode_get_fullpath.  */
  struct dnode_get_fullpath_ctx
  {
@@ -4142,7 +4141,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
 -	  grub_free (fsname);
 -	  grub_free (snapname);
 -	  return err;
- 	}
+-	}
 -
 -      err = zap_lookup (&props_dn, "salt", &ctx.salt, data, 0);
 -      if (err == GRUB_ERR_FILE_NOT_FOUND)
@@ -4150,7 +4149,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
 -	  err = 0;
 -	  grub_errno = 0;
 -	  ctx.salt = 0;
--	}
+ 	}
 -      if (err)
 -	{
 -	  grub_dprintf ("zfs", "failed here\n");
@@ -4401,6 +4400,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
  
 -  found = nvlist_find_value (nvlist, name, DATA_TYPE_UINT64, &nvpair, &size, 0);
 -  if (!found)
+-    return 0;
 +        return (zap_iterate_u64(&dn, check_feature, data, NULL));
 +}
 +
@@ -4658,14 +4658,20 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +
 +  found = nvlist_find_value (nvlist, name, DATA_TYPE_UINT64, &nvpair, &size, 0);
 +  if (!found)
-     return 0;
++    return 0;
    if (size < sizeof (grub_uint64_t))
      {
-@@ -3507,20 +4449,69 @@
+       grub_error (GRUB_ERR_BAD_FS, "invalid uint64");
+@@ -3506,93 +4448,959 @@
+   return ret;
  }
  
- static void
+-static void
 -unmount_device (struct grub_zfs_device_desc *desc)
+-{
+-  unsigned i;
+-  switch (desc->type)
++static void
 +mount_device (struct grub_zfs_device_desc *desc, grub_device_t dev, char *name)
 +{
 +  unsigned i;
@@ -4699,17 +4705,15 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +
 +static void
 +unmount_device (struct grub_zfs_device_desc *desc, int zcached)
- {
-   unsigned i;
++{
++  unsigned i;
 +
 +  if (desc->config)
 +    grub_free (desc->config);
 +
-   switch (desc->type)
-     {
-     case DEVICE_LEAF:
--      if (!desc->original && desc->dev)
--	grub_device_close (desc->dev);
++  switch (desc->type)
++    {
++    case DEVICE_LEAF:
 +      if (desc->dev)
 +	{
 +	  /*
@@ -4726,23 +4730,19 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +      desc->original = 0; /* next caller may use different device */
 +      if (! zcached)
 +	  grub_free (desc->dev_name);
-       return;
-     case DEVICE_RAIDZ:
-     case DEVICE_MIRROR:
-       for (i = 0; i < desc->n_children; i++)
--	unmount_device (&desc->children[i]);
--      grub_free (desc->children);
++      return;
++    case DEVICE_RAIDZ:
++    case DEVICE_MIRROR:
++      for (i = 0; i < desc->n_children; i++)
 +	unmount_device (&desc->children[i], zcached);
-       return;
-     }
- }
-@@ -3529,69 +4520,863 @@
- zfs_unmount (struct grub_zfs_data *data)
- {
-   unsigned i;
--  for (i = 0; i < data->n_devices_attached; i++)
--    unmount_device (&data->devices_attached[i]);
--  grub_free (data->devices_attached);
++      return;
++    }
++}
++
++static void
++zfs_unmount (struct grub_zfs_data *data)
++{
++  unsigned i;
 +
 +  grub_dprintf("zfs", "zfs_unmount: %p\n", data);
 +
@@ -4751,21 +4751,20 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +
 +  grub_free (data->label);
 +  data->label = NULL;
-   grub_free (data->dnode_buf);
++  grub_free (data->dnode_buf);
 +  data->dnode_buf = NULL;
-   grub_free (data->dnode_mdn);
++  grub_free (data->dnode_mdn);
 +  data->dnode_mdn = NULL;
-   grub_free (data->file_buf);
++  grub_free (data->file_buf);
 +  data->file_buf = NULL;
 +  data->file_start = 0;
 +  data->file_end = 0;
 +  data->dnode_start = 0;
 +  data->dnode_end = 0;
 +
-   for (i = 0; i < data->subvol.nkeys; i++)
-     grub_crypto_cipher_close (data->subvol.keyring[i].cipher);
-   grub_free (data->subvol.keyring);
--  grub_free (data);
++  for (i = 0; i < data->subvol.nkeys; i++)
++    grub_crypto_cipher_close (data->subvol.keyring[i].cipher);
++  grub_free (data->subvol.keyring);
 +  data->subvol.nkeys = 0;
 +  data->subvol.keyring = NULL;
 +
@@ -5274,41 +5273,37 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +	}
 +    }
 +  grub_free (ub_array);
- }
- 
- /*
-- * zfs_mount() locates a valid uberblock of the root pool and read in its MOS
-- * to the memory address MOS.
++}
++
++/*
 + * zfs_mount() locates a valid uberblock of the root pool and
 + * read in its MOS to the device grub_zfs_data structure.
 + *
 + * zfs_mount() is called frequently by GRUB2 zfs interfaces, so
 + * a cache mechanism is implemented to save the successful zfs
 + * mount data for devices. This is good for zfs mount performance.
-  *
-  */
- static struct grub_zfs_data *
- zfs_mount (grub_device_t dev)
- {
--  struct grub_zfs_data *data = 0;
--  grub_err_t err;
--  void *osp = 0;
++ *
++ */
++static struct grub_zfs_data *
++zfs_mount (grub_device_t dev)
++{
 +  struct grub_zfs_data *data = NULL;
 +  struct zfs_mount_cache *zcache = NULL;
 +  objset_phys_t *osp = 0;
-   grub_size_t ospsize;
-   grub_zfs_endian_t ub_endian = GRUB_ZFS_UNKNOWN_ENDIAN;
-   uberblock_t *ub;
--  int inserted;
++  grub_size_t ospsize;
++  grub_zfs_endian_t ub_endian = GRUB_ZFS_UNKNOWN_ENDIAN;
++  uberblock_t *ub;
 +  unsigned int i, j;
 +  char *diskname, *partname, *fullname, *pname;
 +  char *features, *config = NULL;
 +  grub_uint64_t u;
 +  grub_err_t err;
 +
++  grub_errno = GRUB_ERR_NONE;
 +  if (! dev->disk)
 +    {
 +      grub_error (GRUB_ERR_BAD_DEVICE, "not a disk");
++      grub_errno = GRUB_ERR_BAD_DEVICE;
 +      return NULL;
 +    }
 +
@@ -5326,6 +5321,8 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +    {
 +      grub_error (err, "Cannot read the pool label from '%s'", fullname);
 +      grub_free (fullname);
++      if (grub_errno == GRUB_ERR_NONE)
++	grub_errno = err;
 +      return NULL;
 +    }
 +
@@ -5335,6 +5332,8 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +      grub_error (err, "Incorrect pool label from '%s'", fullname);
 +      grub_free (fullname);
 +      grub_free (config);
++      if (grub_errno == GRUB_ERR_NONE)
++	grub_errno = GRUB_ERR_BAD_FS;
 +      return NULL;
 +    }
 +
@@ -5343,6 +5342,8 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +      grub_free (fullname);
 +      grub_free (config);
 +      grub_error (GRUB_ERR_BAD_FS, ZPOOL_CONFIG_VERSION " not found");
++      if (grub_errno == GRUB_ERR_NONE)
++	grub_errno = GRUB_ERR_BAD_FS;
 +
 +      return NULL;
 +    }
@@ -5359,6 +5360,8 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +	(unsigned long long) u,
 +	(unsigned long long) SPA_VERSION_ORACLE,
 +	(unsigned long long) SPA_VERSION);
++      if (grub_errno == GRUB_ERR_NONE)
++	grub_errno = GRUB_ERR_NOT_IMPLEMENTED_YET;
 +
 +      return NULL;
 +    }
@@ -5430,6 +5433,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +      grub_free (pname);
 +      grub_free (config);
 +      grub_free (fullname);
++      grub_errno = GRUB_ERR_OUT_OF_MEMORY;
 +      return 0;
 +    }
 +
@@ -5442,58 +5446,52 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +      grub_free (config);
 +      zfs_unmount (data);
 +      grub_free (fullname);
++      if (grub_errno == GRUB_ERR_NONE)
++	grub_errno = GRUB_ERR_BAD_FS;
 +      return NULL;
 +    }
 +  data->guid = u;
 +  grub_dprintf ("zfs", "pool guid: %" PRIxGRUB_UINT64_T "\n", u);
- 
--  if (! dev->disk)
++
 +  if (!grub_zfs_nvlist_lookup_uint64 (config, ZPOOL_CONFIG_POOL_STATE, &u))
-     {
--      grub_error (GRUB_ERR_BAD_DEVICE, "not a disk");
--      return 0;
++    {
 +      grub_dprintf ("zfs", "can't read pool state\n");
 +      grub_free (config);
 +      zfs_unmount (data);
 +      grub_free (fullname);
++      if (grub_errno == GRUB_ERR_NONE)
++	grub_errno = GRUB_ERR_BAD_FS;
 +      return NULL;
-     }
++    }
 +  data->state = u;
- 
--  data = grub_zalloc (sizeof (*data));
--  if (!data)
--    return 0;
--#if 0
--  /* if it's our first time here, zero the best uberblock out */
--  if (data->best_drive == 0 && data->best_part == 0 && find_best_root)
--    grub_memset (&current_uberblock, 0, sizeof (uberblock_t));
--#endif
++
 +  if (!grub_zfs_nvlist_lookup_uint64 (config, ZPOOL_CONFIG_VDEV_CHILDREN, &u))
 +    {
 +      grub_dprintf ("zfs", "can't read vdev children count\n");
 +      grub_free (config);
 +      grub_free (fullname);
 +      zfs_unmount (data);
++      if (grub_errno == GRUB_ERR_NONE)
++	grub_errno = GRUB_ERR_BAD_FS;
 +      return NULL;
 +    }
- 
--  data->n_devices_allocated = 16;
--  data->devices_attached = grub_malloc (sizeof (data->devices_attached[0])
++
 +  /* set up memory for top level vdevs */
 +  data->n_devices_allocated = u;
 +  data->devices_attached = grub_zalloc (sizeof (data->devices_attached[0])
- 					* data->n_devices_allocated);
++					* data->n_devices_allocated);
 +  if (! data->devices_attached)
 +    {
 +      grub_dprintf ("zfs", "can't allocate top level vdevs\n");
 +      grub_free (config);
 +      grub_free (fullname);
 +      zfs_unmount (data);
++      if (grub_errno == GRUB_ERR_NONE)
++	grub_errno = GRUB_ERR_BAD_FS;
 +      return NULL;
 +    }
 +
-   data->n_devices_attached = 0;
--  err = scan_disk (dev, data, 1, &inserted);
++  data->n_devices_attached = 0;
 +
 +  /*
 +   * check if the pool has multiple vdevs/children, add the disks.
@@ -5557,15 +5555,30 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +	}
 +    }
 +
-   if (err)
++  if (err)
      {
+-    case DEVICE_LEAF:
+-      if (!desc->original && desc->dev)
+-	grub_device_close (desc->dev);
+-      return;
+-    case DEVICE_RAIDZ:
+-    case DEVICE_MIRROR:
+-      for (i = 0; i < desc->n_children; i++)
+-	unmount_device (&desc->children[i]);
+-      grub_free (desc->children);
+-      return;
 +      grub_errno = err;
 +      grub_dprintf("zfs", "zfs_mount failed: missing devices\n");
 +      grub_free (config);
-       zfs_unmount (data);
-       return NULL;
++      zfs_unmount (data);
++      return NULL;
      }
+-}
  
+-static void
+-zfs_unmount (struct grub_zfs_data *data)
+-{
+-  unsigned i;
 +  /*
 +   * load the UB now. the obvious issue here is that we should load
 +   * an config based on this UB, so instead we just hope the pool
@@ -5578,7 +5591,33 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +   * asks to use another disk to boot from...
 +   */
 +  grub_dprintf("zfs", "pool: %s\n", data->label);
-+  for (i = 0; i < data->n_devices_attached; i++)
+   for (i = 0; i < data->n_devices_attached; i++)
+-    unmount_device (&data->devices_attached[i]);
+-  grub_free (data->devices_attached);
+-  grub_free (data->dnode_buf);
+-  grub_free (data->dnode_mdn);
+-  grub_free (data->file_buf);
+-  for (i = 0; i < data->subvol.nkeys; i++)
+-    grub_crypto_cipher_close (data->subvol.keyring[i].cipher);
+-  grub_free (data->subvol.keyring);
+-  grub_free (data);
+-}
+-
+-/*
+- * zfs_mount() locates a valid uberblock of the root pool and read in its MOS
+- * to the memory address MOS.
+- *
+- */
+-static struct grub_zfs_data *
+-zfs_mount (grub_device_t dev)
+-{
+-  struct grub_zfs_data *data = 0;
+-  grub_err_t err;
+-  void *osp = 0;
+-  grub_size_t ospsize;
+-  grub_zfs_endian_t ub_endian = GRUB_ZFS_UNKNOWN_ENDIAN;
+-  uberblock_t *ub;
+-  int inserted;
 +    if (data->devices_attached[i].type == DEVICE_LEAF)
 +      {
 +        grub_dprintf("zfs", "  %s\n",
@@ -5599,19 +5638,41 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +	     vdev_uberblock_load(data, desc);
 +	   }
 +      }
-+
+ 
+-  if (! dev->disk)
+-    {
+-      grub_error (GRUB_ERR_BAD_DEVICE, "not a disk");
+-      return 0;
+-    }
 +  grub_free (config);
-+
-   ub = &(data->current_uberblock);
-+
+ 
+-  data = grub_zalloc (sizeof (*data));
+-  if (!data)
+-    return 0;
+-#if 0
+-  /* if it's our first time here, zero the best uberblock out */
+-  if (data->best_drive == 0 && data->best_part == 0 && find_best_root)
+-    grub_memset (&current_uberblock, 0, sizeof (uberblock_t));
+-#endif
++  ub = &(data->current_uberblock);
+ 
+-  data->n_devices_allocated = 16;
+-  data->devices_attached = grub_malloc (sizeof (data->devices_attached[0])
+-					* data->n_devices_allocated);
+-  data->n_devices_attached = 0;
+-  err = scan_disk (dev, data, 1, &inserted);
+-  if (err)
 +  /* did we got UB from any of the disks? */
 +  if (ub->ub_magic == 0)
-+    {
+     {
 +      grub_dprintf("zfs", "we have no uberblock, can not continue\n");
-+      zfs_unmount (data);
-+      return NULL;
-+    }
-+
+       zfs_unmount (data);
++      if (grub_errno == GRUB_ERR_NONE)
++	grub_errno = GRUB_ERR_BAD_FS;
+       return NULL;
+     }
+ 
+-  ub = &(data->current_uberblock);
    ub_endian = (grub_zfs_to_cpu64 (ub->ub_magic, 
  				  GRUB_ZFS_LITTLE_ENDIAN) == UBERBLOCK_MAGIC 
  	       ? GRUB_ZFS_LITTLE_ENDIAN : GRUB_ZFS_BIG_ENDIAN);
@@ -5623,9 +5684,17 @@ Index: grub/grub-core/fs/zfs/zfs.c
      {
 +      grub_dprintf("zfs", "zio_read failed: %s\n", grub_errmsg );
        zfs_unmount (data);
++      if (grub_errno == GRUB_ERR_NONE)
++	grub_errno = err;
        return NULL;
      }
-@@ -3604,18 +5389,47 @@
+ 
+@@ -3601,21 +5409,54 @@
+       grub_error (GRUB_ERR_BAD_FS, "OSP too small");
+       grub_free (osp);
+       zfs_unmount (data);
++      if (grub_errno == GRUB_ERR_NONE)
++	grub_errno = GRUB_ERR_BAD_FS;
        return NULL;
      }
  
@@ -5646,6 +5715,8 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +     check_mos_features(&data->mos, data) != 0)
 +    {
 +      zfs_unmount (data);
++      if (grub_errno == GRUB_ERR_NONE)
++	grub_errno = GRUB_ERR_BAD_FS;
 +      return NULL;
 +    }
 +
@@ -5679,7 +5750,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
    return data;
  }
  
-@@ -3623,40 +5437,70 @@
+@@ -3623,40 +5464,72 @@
  grub_zfs_fetch_nvlist (grub_device_t dev, char **nvlist)
  {
    struct grub_zfs_data *zfs;
@@ -5753,6 +5824,8 @@ Index: grub/grub-core/fs/zfs/zfs.c
 -  *label = grub_zfs_nvlist_lookup_string (nvlist, ZPOOL_CONFIG_POOL_NAME);
 -  grub_free (nvlist);
 +  *label = grub_strdup(data->label);
++  if (*label == NULL)
++    grub_errno = GRUB_ERR_OUT_OF_MEMORY;
    zfs_unmount (data);
    return grub_errno;
  }
@@ -5763,7 +5836,20 @@ Index: grub/grub-core/fs/zfs/zfs.c
  static grub_err_t 
  zfs_uuid (grub_device_t device, char **uuid)
  {
-@@ -3700,7 +5544,8 @@
+@@ -3671,7 +5544,11 @@
+   *uuid = grub_xasprintf ("%016llx", (long long unsigned) data->guid);
+   zfs_unmount (data);
+   if (! *uuid)
+-    return grub_errno;
++    {
++      if (grub_errno == GRUB_ERR_NONE)
++	grub_errno = GRUB_ERR_OUT_OF_MEMORY;
++      return grub_errno;
++    }
+   return GRUB_ERR_NONE;
+ }
+ 
+@@ -3700,7 +5577,8 @@
  
  /*
   * zfs_open() locates a file in the rootpool by following the
@@ -5773,7 +5859,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
   */
  static grub_err_t
  grub_zfs_open (struct grub_file *file, const char *fsfilename)
-@@ -3829,9 +5674,9 @@
+@@ -3829,9 +5707,9 @@
        grub_uint64_t blkid = grub_divmod64 (file->offset + read, blksz, 0);
        grub_free (data->file_buf);
        data->file_buf = 0;
@@ -5785,7 +5871,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
        data->file_buf = t;
        if (err)
  	{
-@@ -3888,6 +5733,42 @@
+@@ -3888,6 +5766,42 @@
    return err;
  }
  
@@ -5828,7 +5914,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
  static grub_err_t
  fill_fs_info (struct grub_dirhook_info *info,
  	      dnode_end_t mdn, struct grub_zfs_data *data)
-@@ -4003,250 +5884,185 @@
+@@ -4003,250 +5917,185 @@
  	{
  	  blkptr_t *bp = &dn.dn.dn_spill;
  
@@ -6212,7 +6298,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
  #ifdef GRUB_UTIL
  static grub_err_t
  grub_zfs_embed (grub_device_t device __attribute__ ((unused)),
-@@ -4279,6 +6095,7 @@
+@@ -4279,6 +6128,7 @@
  }
  #endif
  
@@ -6220,7 +6306,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
  static struct grub_fs grub_zfs_fs = {
    .name = "zfs",
    .dir = grub_zfs_dir,
-@@ -4291,7 +6108,7 @@
+@@ -4291,7 +6141,7 @@
  #ifdef GRUB_UTIL
    .embed = grub_zfs_embed,
    .reserved_first_sector = 1,
@@ -6229,7 +6315,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
  #endif
    .next = 0
  };
-@@ -4307,5 +6124,6 @@
+@@ -4307,5 +6157,6 @@
  
  GRUB_MOD_FINI (zfs)
  {
@@ -6238,8 +6324,8 @@ Index: grub/grub-core/fs/zfs/zfs.c
  }
 Index: grub/grub-core/fs/zfs/zfs_lz4.c
 ===================================================================
---- grub.orig/grub-core/fs/zfs/zfs_lz4.c	2015-03-24 12:35:47.076494278 +0100
-+++ grub/grub-core/fs/zfs/zfs_lz4.c	2015-03-24 12:37:49.998948934 +0100
+--- grub.orig/grub-core/fs/zfs/zfs_lz4.c	2015-04-04 22:48:42.219898039 +0200
++++ grub/grub-core/fs/zfs/zfs_lz4.c	2015-04-04 22:48:51.459897891 +0200
 @@ -33,12 +33,38 @@
   */
  
@@ -6460,8 +6546,8 @@ Index: grub/grub-core/fs/zfs/zfs_lz4.c
  }
 Index: grub/grub-core/fs/zfs/zfsinfo.c
 ===================================================================
---- grub.orig/grub-core/fs/zfs/zfsinfo.c	2015-03-24 12:35:47.076494278 +0100
-+++ grub/grub-core/fs/zfs/zfsinfo.c	2015-03-24 12:37:49.998948934 +0100
+--- grub.orig/grub-core/fs/zfs/zfsinfo.c	2015-04-04 22:48:42.219898039 +0200
++++ grub/grub-core/fs/zfs/zfsinfo.c	2015-04-04 22:48:51.463897891 +0200
 @@ -195,10 +195,16 @@
    return GRUB_ERR_NONE;
  }
@@ -6793,8 +6879,8 @@ Index: grub/grub-core/fs/zfs/zfsinfo.c
  }
 Index: grub/include/grub/zfs/dmu.h
 ===================================================================
---- grub.orig/include/grub/zfs/dmu.h	2015-03-24 12:35:47.080494228 +0100
-+++ grub/include/grub/zfs/dmu.h	2015-03-24 12:37:49.998948934 +0100
+--- grub.orig/include/grub/zfs/dmu.h	2015-04-04 22:48:42.423898033 +0200
++++ grub/include/grub/zfs/dmu.h	2015-04-04 22:48:51.463897891 +0200
 @@ -22,39 +22,6 @@
  
  #ifndef	_SYS_DMU_H
@@ -6922,8 +7008,8 @@ Index: grub/include/grub/zfs/dmu.h
  #endif	/* _SYS_DMU_H */
 Index: grub/include/grub/zfs/dnode.h
 ===================================================================
---- grub.orig/include/grub/zfs/dnode.h	2015-03-24 12:35:47.080494228 +0100
-+++ grub/include/grub/zfs/dnode.h	2015-03-24 12:37:50.002948883 +0100
+--- grub.orig/include/grub/zfs/dnode.h	2015-04-04 22:48:42.423898033 +0200
++++ grub/include/grub/zfs/dnode.h	2015-04-04 22:48:51.463897891 +0200
 @@ -18,6 +18,7 @@
  /*
   * Copyright 2010 Sun Microsystems, Inc.  All rights reserved.
@@ -6943,8 +7029,8 @@ Index: grub/include/grub/zfs/dnode.h
  
 Index: grub/include/grub/zfs/spa.h
 ===================================================================
---- grub.orig/include/grub/zfs/spa.h	2015-03-24 12:35:47.080494228 +0100
-+++ grub/include/grub/zfs/spa.h	2015-03-24 12:37:50.002948883 +0100
+--- grub.orig/include/grub/zfs/spa.h	2015-04-04 22:48:42.423898033 +0200
++++ grub/include/grub/zfs/spa.h	2015-04-04 22:48:51.463897891 +0200
 @@ -1,7 +1,7 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -7071,8 +7157,8 @@ Index: grub/include/grub/zfs/spa.h
  #endif	/* ! GRUB_ZFS_SPA_HEADER */
 Index: grub/include/grub/zfs/uberblock_impl.h
 ===================================================================
---- grub.orig/include/grub/zfs/uberblock_impl.h	2015-03-24 12:35:47.080494228 +0100
-+++ grub/include/grub/zfs/uberblock_impl.h	2015-03-24 12:37:50.002948883 +0100
+--- grub.orig/include/grub/zfs/uberblock_impl.h	2015-04-04 22:48:42.423898033 +0200
++++ grub/include/grub/zfs/uberblock_impl.h	2015-04-04 22:48:51.463897891 +0200
 @@ -1,6 +1,7 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -7121,8 +7207,8 @@ Index: grub/include/grub/zfs/uberblock_impl.h
  #endif	/* _SYS_UBERBLOCK_IMPL_H */
 Index: grub/include/grub/zfs/vdev_impl.h
 ===================================================================
---- grub.orig/include/grub/zfs/vdev_impl.h	2015-03-24 12:35:47.080494228 +0100
-+++ grub/include/grub/zfs/vdev_impl.h	2015-03-24 12:37:50.002948883 +0100
+--- grub.orig/include/grub/zfs/vdev_impl.h	2015-04-04 22:48:42.423898033 +0200
++++ grub/include/grub/zfs/vdev_impl.h	2015-04-04 22:48:51.463897891 +0200
 @@ -23,6 +23,8 @@
  #ifndef _SYS_VDEV_IMPL_H
  #define	_SYS_VDEV_IMPL_H
@@ -7134,8 +7220,8 @@ Index: grub/include/grub/zfs/vdev_impl.h
  #define	VDEV_PHYS_SIZE		(112 << 10)
 Index: grub/include/grub/zfs/zap_impl.h
 ===================================================================
---- grub.orig/include/grub/zfs/zap_impl.h	2015-03-24 12:35:47.080494228 +0100
-+++ grub/include/grub/zfs/zap_impl.h	2015-03-24 12:37:50.002948883 +0100
+--- grub.orig/include/grub/zfs/zap_impl.h	2015-04-04 22:48:42.423898033 +0200
++++ grub/include/grub/zfs/zap_impl.h	2015-04-04 22:48:51.463897891 +0200
 @@ -1,6 +1,7 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -7166,8 +7252,8 @@ Index: grub/include/grub/zfs/zap_impl.h
  	grub_uint64_t mze_value;
 Index: grub/include/grub/zfs/zfs.h
 ===================================================================
---- grub.orig/include/grub/zfs/zfs.h	2015-03-24 12:35:47.080494228 +0100
-+++ grub/include/grub/zfs/zfs.h	2015-03-24 12:37:50.002948883 +0100
+--- grub.orig/include/grub/zfs/zfs.h	2015-04-04 22:48:42.423898033 +0200
++++ grub/include/grub/zfs/zfs.h	2015-04-04 22:48:51.463897891 +0200
 @@ -1,6 +1,7 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -7224,8 +7310,8 @@ Index: grub/include/grub/zfs/zfs.h
  		  grub_size_t keylen,
 Index: grub/include/grub/zfs/zfs_znode.h
 ===================================================================
---- grub.orig/include/grub/zfs/zfs_znode.h	2015-03-24 12:35:47.080494228 +0100
-+++ grub/include/grub/zfs/zfs_znode.h	2015-03-24 12:37:50.002948883 +0100
+--- grub.orig/include/grub/zfs/zfs_znode.h	2015-04-04 22:48:42.423898033 +0200
++++ grub/include/grub/zfs/zfs_znode.h	2015-04-04 22:48:51.463897891 +0200
 @@ -1,6 +1,7 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -7256,8 +7342,8 @@ Index: grub/include/grub/zfs/zfs_znode.h
  
 Index: grub/grub-core/partmap/gpt.c
 ===================================================================
---- grub.orig/grub-core/partmap/gpt.c	2015-03-24 12:35:47.076494278 +0100
-+++ grub/grub-core/partmap/gpt.c	2015-03-24 12:38:05.106751109 +0100
+--- grub.orig/grub-core/partmap/gpt.c	2015-04-04 22:48:42.355898047 +0200
++++ grub/grub-core/partmap/gpt.c	2015-04-04 22:48:51.463897891 +0200
 @@ -24,6 +24,8 @@
  #include <grub/dl.h>
  #include <grub/msdos_partition.h>
@@ -7290,8 +7376,8 @@ Index: grub/grub-core/partmap/gpt.c
  
 Index: grub/include/grub/gpt_partition.h
 ===================================================================
---- grub.orig/include/grub/gpt_partition.h	2015-03-24 12:35:47.080494228 +0100
-+++ grub/include/grub/gpt_partition.h	2015-03-24 12:37:50.002948883 +0100
+--- grub.orig/include/grub/gpt_partition.h	2015-04-04 22:48:42.355898047 +0200
++++ grub/include/grub/gpt_partition.h	2015-04-04 22:48:51.463897891 +0200
 @@ -50,6 +50,13 @@
  	{ 0x85, 0xD2, 0xE1, 0xE9, 0x04, 0x34, 0xCF, 0xB3 }	\
    }
@@ -7308,8 +7394,8 @@ Index: grub/include/grub/gpt_partition.h
    grub_uint8_t magic[8];
 Index: grub/grub-core/fs/zfs/zfscrypt.c
 ===================================================================
---- grub.orig/grub-core/fs/zfs/zfscrypt.c	2015-03-24 12:35:47.076494278 +0100
-+++ grub/grub-core/fs/zfs/zfscrypt.c	2015-03-24 12:37:50.006948832 +0100
+--- grub.orig/grub-core/fs/zfs/zfscrypt.c	2015-04-04 22:48:42.219898039 +0200
++++ grub/grub-core/fs/zfs/zfscrypt.c	2015-04-04 22:48:51.467897890 +0200
 @@ -265,7 +265,8 @@
  			       mac_out, nonce,
  			       15 - l, m);
