@@ -1,3 +1,9 @@
+grub2 (2.02-beta2.9-ZOL9-7aa9f6) jessie; urgency=medium
+
+  * Update uberblock_load, fixing mixed ashift disks.
+
+ -- Turbo Fredriksson <turbo@bayour.com>  Mon, 06 Apr 2015 05:40:18 +0200
+
 grub2 (2.02-beta2.9-ZOL8-7aa9f6) jessie; urgency=medium
 
   * Fix by tsoome: zfs_mount() and other entry points should set grub_errno on failure.
