@@ -1,7 +1,7 @@
 Index: grub/grub-core/fs/zfs/zfs.c
 ===================================================================
---- grub.orig/grub-core/fs/zfs/zfs.c	2015-04-05 18:07:43.826262732 +0200
-+++ grub/grub-core/fs/zfs/zfs.c	2015-04-05 18:08:32.514596423 +0200
+--- grub.orig/grub-core/fs/zfs/zfs.c	2015-04-06 05:00:39.990371105 +0200
++++ grub/grub-core/fs/zfs/zfs.c	2015-04-06 05:01:25.397066080 +0200
 @@ -1,8 +1,10 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -4658,7 +4658,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
  
  char *
  grub_zfs_nvlist_lookup_string (const char *nvlist, const char *name)
-@@ -3506,93 +4448,964 @@
+@@ -3506,93 +4448,965 @@
    return ret;
  }
  
@@ -5221,7 +5221,8 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +  else
 +    ashift = desc->ashift;
 +
-+  grub_dprintf("zfs", "vdev_uberblock_load: ashift: %d\n", ashift);
++  grub_dprintf("zfs", "vdev_uberblock_load: %s ashift: %d\n",
++	       desc->dev_name, ashift);
 +  vdevnum = VDEV_LABELS;
 +
 +  ub_array = grub_zalloc (VDEV_UBERBLOCK_SIZE(ashift));
@@ -5238,7 +5239,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +  else
 +   {
 +     /* grub_disk_get_size() returns sector count */
-+     s = s << ashift;
++     s = s << desc->dev->disk->log_sector_size;
 +     size = P2ALIGN_TYPED(s, sizeof (vdev_label_t), grub_uint64_t);
 +   }
 +
@@ -5622,7 +5623,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
 +    if (data->devices_attached[i].type == DEVICE_LEAF)
 +      {
 +        grub_dprintf("zfs", "  %s\n",
-+		     data->devices_attached[i].dev->disk->name);
++		     data->devices_attached[i].dev_name);
 +	vdev_uberblock_load(data, &data->devices_attached[i]);
 +      }
 +    else
@@ -5690,7 +5691,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
        return NULL;
      }
  
-@@ -3601,21 +5414,54 @@
+@@ -3601,21 +5415,54 @@
        grub_error (GRUB_ERR_BAD_FS, "OSP too small");
        grub_free (osp);
        zfs_unmount (data);
@@ -5751,7 +5752,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
    return data;
  }
  
-@@ -3623,40 +5469,72 @@
+@@ -3623,40 +5470,72 @@
  grub_zfs_fetch_nvlist (grub_device_t dev, char **nvlist)
  {
    struct grub_zfs_data *zfs;
@@ -5837,7 +5838,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
  static grub_err_t 
  zfs_uuid (grub_device_t device, char **uuid)
  {
-@@ -3671,7 +5549,11 @@
+@@ -3671,7 +5550,11 @@
    *uuid = grub_xasprintf ("%016llx", (long long unsigned) data->guid);
    zfs_unmount (data);
    if (! *uuid)
@@ -5850,7 +5851,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
    return GRUB_ERR_NONE;
  }
  
-@@ -3700,7 +5582,8 @@
+@@ -3700,7 +5583,8 @@
  
  /*
   * zfs_open() locates a file in the rootpool by following the
@@ -5860,7 +5861,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
   */
  static grub_err_t
  grub_zfs_open (struct grub_file *file, const char *fsfilename)
-@@ -3829,9 +5712,9 @@
+@@ -3829,9 +5713,9 @@
        grub_uint64_t blkid = grub_divmod64 (file->offset + read, blksz, 0);
        grub_free (data->file_buf);
        data->file_buf = 0;
@@ -5872,7 +5873,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
        data->file_buf = t;
        if (err)
  	{
-@@ -3888,6 +5771,42 @@
+@@ -3888,6 +5772,42 @@
    return err;
  }
  
@@ -5915,7 +5916,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
  static grub_err_t
  fill_fs_info (struct grub_dirhook_info *info,
  	      dnode_end_t mdn, struct grub_zfs_data *data)
-@@ -4003,250 +5922,185 @@
+@@ -4003,250 +5923,185 @@
  	{
  	  blkptr_t *bp = &dn.dn.dn_spill;
  
@@ -6299,7 +6300,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
  #ifdef GRUB_UTIL
  static grub_err_t
  grub_zfs_embed (grub_device_t device __attribute__ ((unused)),
-@@ -4279,6 +6133,7 @@
+@@ -4279,6 +6134,7 @@
  }
  #endif
  
@@ -6307,7 +6308,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
  static struct grub_fs grub_zfs_fs = {
    .name = "zfs",
    .dir = grub_zfs_dir,
-@@ -4291,7 +6146,7 @@
+@@ -4291,7 +6147,7 @@
  #ifdef GRUB_UTIL
    .embed = grub_zfs_embed,
    .reserved_first_sector = 1,
@@ -6316,7 +6317,7 @@ Index: grub/grub-core/fs/zfs/zfs.c
  #endif
    .next = 0
  };
-@@ -4307,5 +6162,6 @@
+@@ -4307,5 +6163,6 @@
  
  GRUB_MOD_FINI (zfs)
  {
@@ -6325,8 +6326,8 @@ Index: grub/grub-core/fs/zfs/zfs.c
  }
 Index: grub/grub-core/fs/zfs/zfs_lz4.c
 ===================================================================
---- grub.orig/grub-core/fs/zfs/zfs_lz4.c	2015-04-05 18:07:43.826262732 +0200
-+++ grub/grub-core/fs/zfs/zfs_lz4.c	2015-04-05 18:08:20.976829822 +0200
+--- grub.orig/grub-core/fs/zfs/zfs_lz4.c	2015-04-06 05:00:39.990371105 +0200
++++ grub/grub-core/fs/zfs/zfs_lz4.c	2015-04-06 05:01:05.439088639 +0200
 @@ -33,12 +33,38 @@
   */
  
@@ -6547,8 +6548,8 @@ Index: grub/grub-core/fs/zfs/zfs_lz4.c
  }
 Index: grub/grub-core/fs/zfs/zfsinfo.c
 ===================================================================
---- grub.orig/grub-core/fs/zfs/zfsinfo.c	2015-04-05 18:07:43.826262732 +0200
-+++ grub/grub-core/fs/zfs/zfsinfo.c	2015-04-05 18:08:20.976829822 +0200
+--- grub.orig/grub-core/fs/zfs/zfsinfo.c	2015-04-06 05:00:39.990371105 +0200
++++ grub/grub-core/fs/zfs/zfsinfo.c	2015-04-06 05:01:05.439088639 +0200
 @@ -195,10 +195,16 @@
    return GRUB_ERR_NONE;
  }
@@ -6880,8 +6881,8 @@ Index: grub/grub-core/fs/zfs/zfsinfo.c
  }
 Index: grub/include/grub/zfs/dmu.h
 ===================================================================
---- grub.orig/include/grub/zfs/dmu.h	2015-04-05 18:07:43.906302763 +0200
-+++ grub/include/grub/zfs/dmu.h	2015-04-05 18:08:20.976829822 +0200
+--- grub.orig/include/grub/zfs/dmu.h	2015-04-06 05:00:40.054403105 +0200
++++ grub/include/grub/zfs/dmu.h	2015-04-06 05:01:05.443090639 +0200
 @@ -22,39 +22,6 @@
  
  #ifndef	_SYS_DMU_H
@@ -7009,8 +7010,8 @@ Index: grub/include/grub/zfs/dmu.h
  #endif	/* _SYS_DMU_H */
 Index: grub/include/grub/zfs/dnode.h
 ===================================================================
---- grub.orig/include/grub/zfs/dnode.h	2015-04-05 18:07:43.906302763 +0200
-+++ grub/include/grub/zfs/dnode.h	2015-04-05 18:08:20.976829822 +0200
+--- grub.orig/include/grub/zfs/dnode.h	2015-04-06 05:00:40.054403105 +0200
++++ grub/include/grub/zfs/dnode.h	2015-04-06 05:01:05.443090639 +0200
 @@ -18,6 +18,7 @@
  /*
   * Copyright 2010 Sun Microsystems, Inc.  All rights reserved.
@@ -7030,8 +7031,8 @@ Index: grub/include/grub/zfs/dnode.h
  
 Index: grub/include/grub/zfs/spa.h
 ===================================================================
---- grub.orig/include/grub/zfs/spa.h	2015-04-05 18:07:43.906302763 +0200
-+++ grub/include/grub/zfs/spa.h	2015-04-05 18:08:20.980831858 +0200
+--- grub.orig/include/grub/zfs/spa.h	2015-04-06 05:00:40.054403105 +0200
++++ grub/include/grub/zfs/spa.h	2015-04-06 05:01:05.443090639 +0200
 @@ -1,7 +1,7 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -7158,8 +7159,8 @@ Index: grub/include/grub/zfs/spa.h
  #endif	/* ! GRUB_ZFS_SPA_HEADER */
 Index: grub/include/grub/zfs/uberblock_impl.h
 ===================================================================
---- grub.orig/include/grub/zfs/uberblock_impl.h	2015-04-05 18:07:43.906302763 +0200
-+++ grub/include/grub/zfs/uberblock_impl.h	2015-04-05 18:08:32.514596423 +0200
+--- grub.orig/include/grub/zfs/uberblock_impl.h	2015-04-06 05:00:40.054403105 +0200
++++ grub/include/grub/zfs/uberblock_impl.h	2015-04-06 05:01:25.397066080 +0200
 @@ -1,6 +1,7 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -7213,8 +7214,8 @@ Index: grub/include/grub/zfs/uberblock_impl.h
  #endif	/* _SYS_UBERBLOCK_IMPL_H */
 Index: grub/include/grub/zfs/vdev_impl.h
 ===================================================================
---- grub.orig/include/grub/zfs/vdev_impl.h	2015-04-05 18:07:43.906302763 +0200
-+++ grub/include/grub/zfs/vdev_impl.h	2015-04-05 18:08:20.980831858 +0200
+--- grub.orig/include/grub/zfs/vdev_impl.h	2015-04-06 05:00:40.054403105 +0200
++++ grub/include/grub/zfs/vdev_impl.h	2015-04-06 05:01:05.443090639 +0200
 @@ -23,6 +23,8 @@
  #ifndef _SYS_VDEV_IMPL_H
  #define	_SYS_VDEV_IMPL_H
@@ -7226,8 +7227,8 @@ Index: grub/include/grub/zfs/vdev_impl.h
  #define	VDEV_PHYS_SIZE		(112 << 10)
 Index: grub/include/grub/zfs/zap_impl.h
 ===================================================================
---- grub.orig/include/grub/zfs/zap_impl.h	2015-04-05 18:07:43.906302763 +0200
-+++ grub/include/grub/zfs/zap_impl.h	2015-04-05 18:08:20.980831858 +0200
+--- grub.orig/include/grub/zfs/zap_impl.h	2015-04-06 05:00:40.054403105 +0200
++++ grub/include/grub/zfs/zap_impl.h	2015-04-06 05:01:05.443090639 +0200
 @@ -1,6 +1,7 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -7258,8 +7259,8 @@ Index: grub/include/grub/zfs/zap_impl.h
  	grub_uint64_t mze_value;
 Index: grub/include/grub/zfs/zfs.h
 ===================================================================
---- grub.orig/include/grub/zfs/zfs.h	2015-04-05 18:07:43.906302763 +0200
-+++ grub/include/grub/zfs/zfs.h	2015-04-05 18:08:20.980831858 +0200
+--- grub.orig/include/grub/zfs/zfs.h	2015-04-06 05:00:40.054403105 +0200
++++ grub/include/grub/zfs/zfs.h	2015-04-06 05:01:05.443090639 +0200
 @@ -1,6 +1,7 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -7316,8 +7317,8 @@ Index: grub/include/grub/zfs/zfs.h
  		  grub_size_t keylen,
 Index: grub/include/grub/zfs/zfs_znode.h
 ===================================================================
---- grub.orig/include/grub/zfs/zfs_znode.h	2015-04-05 18:07:43.906302763 +0200
-+++ grub/include/grub/zfs/zfs_znode.h	2015-04-05 18:08:20.980831858 +0200
+--- grub.orig/include/grub/zfs/zfs_znode.h	2015-04-06 05:00:40.054403105 +0200
++++ grub/include/grub/zfs/zfs_znode.h	2015-04-06 05:01:05.443090639 +0200
 @@ -1,6 +1,7 @@
  /*
   *  GRUB  --  GRand Unified Bootloader
@@ -7348,8 +7349,8 @@ Index: grub/include/grub/zfs/zfs_znode.h
  
 Index: grub/grub-core/partmap/gpt.c
 ===================================================================
---- grub.orig/grub-core/partmap/gpt.c	2015-04-05 18:07:43.882290770 +0200
-+++ grub/grub-core/partmap/gpt.c	2015-04-05 18:08:20.980831858 +0200
+--- grub.orig/grub-core/partmap/gpt.c	2015-04-06 05:00:40.038395103 +0200
++++ grub/grub-core/partmap/gpt.c	2015-04-06 05:01:05.443090639 +0200
 @@ -24,6 +24,8 @@
  #include <grub/dl.h>
  #include <grub/msdos_partition.h>
@@ -7382,8 +7383,8 @@ Index: grub/grub-core/partmap/gpt.c
  
 Index: grub/include/grub/gpt_partition.h
 ===================================================================
---- grub.orig/include/grub/gpt_partition.h	2015-04-05 18:07:43.906302763 +0200
-+++ grub/include/grub/gpt_partition.h	2015-04-05 18:08:20.980831858 +0200
+--- grub.orig/include/grub/gpt_partition.h	2015-04-06 05:00:40.054403105 +0200
++++ grub/include/grub/gpt_partition.h	2015-04-06 05:01:05.443090639 +0200
 @@ -50,6 +50,13 @@
  	{ 0x85, 0xD2, 0xE1, 0xE9, 0x04, 0x34, 0xCF, 0xB3 }	\
    }
@@ -7400,8 +7401,8 @@ Index: grub/include/grub/gpt_partition.h
    grub_uint8_t magic[8];
 Index: grub/grub-core/fs/zfs/zfscrypt.c
 ===================================================================
---- grub.orig/grub-core/fs/zfs/zfscrypt.c	2015-04-05 18:07:43.826262732 +0200
-+++ grub/grub-core/fs/zfs/zfscrypt.c	2015-04-05 18:08:20.980831858 +0200
+--- grub.orig/grub-core/fs/zfs/zfscrypt.c	2015-04-06 05:00:39.990371105 +0200
++++ grub/grub-core/fs/zfs/zfscrypt.c	2015-04-06 05:01:05.443090639 +0200
 @@ -265,7 +265,8 @@
  			       mac_out, nonce,
  			       15 - l, m);
