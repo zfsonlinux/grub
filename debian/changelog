@@ -1,3 +1,9 @@
+grub2 (2.02-beta2.9-ZOL10-7aa9f6) jessie; urgency=medium
+
+  * Fix by tsoome: Reads from vdev's must be aligned by pool ashift
+
+ -- Turbo Fredriksson <turbo@bayour.com>  Tue, 07 Apr 2015 21:38:27 +0200
+
 grub2 (2.02-beta2.9-ZOL9-7aa9f6) jessie; urgency=medium
 
   * Update uberblock_load, fixing mixed ashift disks.
