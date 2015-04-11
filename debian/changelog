@@ -1,3 +1,10 @@
+grub2 (2.02-beta2.9-ZOL11-7aa9f6) jessie; urgency=medium
+
+  * Update the default_grub_d.patch to avoid the
+    "sh: line 0: .: : file not found" message
+
+ -- Turbo Fredriksson <turbo@bayour.com>  Sat, 11 Apr 2015 09:50:56 +0200
+
 grub2 (2.02-beta2.9-ZOL10-7aa9f6) jessie; urgency=medium
 
   * Fix by tsoome: Reads from vdev's must be aligned by pool ashift
