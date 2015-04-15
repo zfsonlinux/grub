@@ -1,3 +1,12 @@
+grub2 (2.02-beta2.9-ZOL12-7aa9f6-wheezy) unstable; urgency=medium
+
+  * New zfs stuff from tsoome (including 1MB block support).
+    + Include grub-core/osdep/unix/getroot.c from tsoome to get support
+      for multi-vdev pools.
+    + Fix for noticing that devices removed from pool is actually removed.
+
+ -- Turbo Fredriksson <turbo@bayour.com>  Wed, 15 Apr 2015 18:17:39 +0200
+
 grub2 (2.02-beta2.9-ZOL11-7aa9f6-wheezy) unstable; urgency=medium
 
   * Update the default_grub_d.patch to avoid the
