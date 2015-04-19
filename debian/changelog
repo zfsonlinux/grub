@@ -2,8 +2,10 @@ grub2 (2.02-beta2.9-ZOL13-677dca-wheezy) unstable; urgency=medium
 
   * Remove the monolitic ZFS patch. Instead replace them with the updated, split patches.
   * Update the multiple-raidz-device-detection by ryao patch.
+    + Fix check for grub_get_libzfs_handle and zpool_open.
   * Refresh the grub-shell.patch to avoid fuzzines.
   * Refresh from grub GIT master.
+  * Fix check for grub_get_libzfs_handle and zpool_open.
 
  -- Turbo Fredriksson <turbo@bayour.com>  Sun, 19 Apr 2015 12:31:21 +0200
 

@@ -36,12 +36,10 @@ mkconfig_recovery_title.patch
 skip_gettext_strings_test.patch
 elf_bi_endian.patch
 install_powerpc_machtypes.patch
-multiple-raidz-device-detection.txt
 first_device.patch
 10_linux_zfs.patch
 no_redefine_MIN-MAX.patch
 fix_variable_redeclarations.patch
-grub-tester-zfs.patch
 grub-shell.patch
 no_rockridge.patch
 ubuntu10.04_grub.cfg.patch
@@ -50,3 +48,5 @@ zfs_0002-lz4-overflow-bug.patch
 zfs_0003-zfs-com.delphix-hole_birth-feature-support.patch
 zfs_0004-zfs-com.delphix-embedded_data-feature-support.patch
 zfs_0005-zfs-extensible_dataset-and-large_blocks-feature-supp.patch
+zfs_0006-multiple-raidz-device-detection.patch
+zfs_0007-grub-tester-zfs.patch

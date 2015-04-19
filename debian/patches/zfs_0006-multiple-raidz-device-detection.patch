@@ -8,8 +8,8 @@ Date:   Wed Nov 12 19:57:08 2014 -0500
 
 Index: grub/grub-core/osdep/unix/getroot.c
 ===================================================================
---- grub.orig/grub-core/osdep/unix/getroot.c	2015-04-19 12:47:14.483508479 +0200
-+++ grub/grub-core/osdep/unix/getroot.c	2015-04-19 12:48:33.943506432 +0200
+--- grub.orig/grub-core/osdep/unix/getroot.c	2015-04-20 14:00:15.296702661 +0200
++++ grub/grub-core/osdep/unix/getroot.c	2015-04-20 14:01:16.470507120 +0200
 @@ -159,43 +159,18 @@
    return path;
  }
@@ -58,7 +58,7 @@ Index: grub/grub-core/osdep/unix/getroot.c
  	error (1, errno, "nvlist_lookup_string (\"path\")");
  
        struct stat st;
-@@ -214,17 +189,48 @@
+@@ -214,17 +189,50 @@
  	  else
  #endif
  	    device = xstrdup (device);
@@ -99,11 +99,13 @@ Index: grub/grub-core/osdep/unix/getroot.c
 +  libzfs_handle_t *libzfs;
 +  nvlist_t *config, *vdev_tree;
 +
-+  libzfs = grub_get_libzfs_handle ();
-+  if (! libzfs)
-+    return NULL;
++  if ((libzfs = grub_get_libzfs_handle ()) == NULL)
++    grub_util_error (_("Failed to initialize libzfs"));
 +
-+  zpool = zpool_open (libzfs, poolname);
++  if ((zpool = zpool_open (libzfs, poolname)) == NULL)
++    grub_util_error (_("Failed to open pool: %s (%s)"), poolname,
++                    libzfs_error_description(libzfs));
++
 +  config = zpool_get_config (zpool, NULL);
 +
 +  if (nvlist_lookup_nvlist (config, "vdev_tree", &vdev_tree) != 0)
