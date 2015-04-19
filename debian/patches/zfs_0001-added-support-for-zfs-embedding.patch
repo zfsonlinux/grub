@@ -1,0 +1,79 @@
+From fc223b5dad3aa78566bf0c8096bda2986ae9223f Mon Sep 17 00:00:00 2001
+From: Toomas Soome <tsoome@me.com>
+Date: Sun, 12 Apr 2015 14:56:02 +0300
+Subject: [PATCH 1/6] added support for zfs embedding
+
+---
+ grub-core/fs/zfs/zfs.c       |    2 +-
+ grub-core/partmap/gpt.c      |    9 +++++++++
+ include/grub/gpt_partition.h |    7 +++++++
+ 3 files changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/grub-core/fs/zfs/zfs.c b/grub-core/fs/zfs/zfs.c
+index 0cbb84b..2689986 100644
+--- a/grub-core/fs/zfs/zfs.c
++++ b/grub-core/fs/zfs/zfs.c
+@@ -4291,7 +4291,7 @@ static struct grub_fs grub_zfs_fs = {
+ #ifdef GRUB_UTIL
+   .embed = grub_zfs_embed,
+   .reserved_first_sector = 1,
+-  .blocklist_install = 0,
++  .blocklist_install = 1,
+ #endif
+   .next = 0
+ };
+diff --git a/grub-core/partmap/gpt.c b/grub-core/partmap/gpt.c
+index 83bcba7..cacc8e8 100644
+--- a/grub-core/partmap/gpt.c
++++ b/grub-core/partmap/gpt.c
+@@ -24,6 +24,8 @@
+ #include <grub/dl.h>
+ #include <grub/msdos_partition.h>
+ #include <grub/gpt_partition.h>
++#include <grub/zfs/zio.h>
++#include <grub/zfs/vdev_impl.h>
+ #include <grub/i18n.h>
+ 
+ GRUB_MOD_LICENSE ("GPLv3+");
+@@ -37,6 +39,7 @@ static const grub_gpt_part_type_t grub_gpt_partition_type_empty = GRUB_GPT_PARTI
+ 
+ #ifdef GRUB_UTIL
+ static const grub_gpt_part_type_t grub_gpt_partition_type_bios_boot = GRUB_GPT_PARTITION_TYPE_BIOS_BOOT;
++static const grub_gpt_part_type_t grub_gpt_partition_type_zfs = GRUB_GPT_PARTITION_TYPE_ZFS;
+ #endif
+ 
+ /* 512 << 7 = 65536 byte sectors.  */
+@@ -162,6 +165,12 @@ find_usable_region (grub_disk_t disk __attribute__ ((unused)),
+       return 1;
+     }
+ 
++  if (! grub_memcmp (&gptdata.type, &grub_gpt_partition_type_zfs, 16))
++    {
++      ctx->start = p->start + (VDEV_BOOT_OFFSET >> GRUB_DISK_SECTOR_BITS);
++      ctx->len = (VDEV_BOOT_SIZE >> GRUB_DISK_SECTOR_BITS);
++      return 1;
++    }
+   return 0;
+ }
+ 
+diff --git a/include/grub/gpt_partition.h b/include/grub/gpt_partition.h
+index 1b32f67..04c9f97 100644
+--- a/include/grub/gpt_partition.h
++++ b/include/grub/gpt_partition.h
+@@ -50,6 +50,13 @@ typedef struct grub_gpt_part_type grub_gpt_part_type_t;
+ 	{ 0x85, 0xD2, 0xE1, 0xE9, 0x04, 0x34, 0xCF, 0xB3 }	\
+   }
+ 
++#define GRUB_GPT_PARTITION_TYPE_ZFS \
++  { grub_cpu_to_le32_compile_time (0x6A898CC3U),\
++      grub_cpu_to_le16_compile_time (0x1DD2), \
++      grub_cpu_to_le16_compile_time (0x11B2),	       \
++	{ 0x99, 0xA6, 0x08, 0x00, 0x20, 0x73, 0x66, 0x31 }	\
++  }
++
+ struct grub_gpt_header
+ {
+   grub_uint8_t magic[8];
+-- 
+1.7.9.2
+

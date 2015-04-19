@@ -1,0 +1,25 @@
+From dc701709573e9bd65d9bb3b8b14b1f79781641c3 Mon Sep 17 00:00:00 2001
+From: Toomas Soome <tsoome@me.com>
+Date: Wed, 15 Apr 2015 23:16:00 +0300
+Subject: [PATCH 2/6] lz4 overflow bug
+
+---
+ grub-core/fs/zfs/zfs_lz4.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/grub-core/fs/zfs/zfs_lz4.c b/grub-core/fs/zfs/zfs_lz4.c
+index 1212a89..ca6445d 100644
+--- a/grub-core/fs/zfs/zfs_lz4.c
++++ b/grub-core/fs/zfs/zfs_lz4.c
+@@ -185,6 +185,8 @@ LZ4_uncompress_unknownOutputSize(const char *source,
+ 		}
+ 		/* copy literals */
+ 		cpy = op + length;
++		if (cpy < op)
++			goto _output_error;
+ 		if ((cpy > oend - COPYLENGTH) ||
+ 		    (ip + length > iend - COPYLENGTH)) {
+ 			if (cpy > oend)
+-- 
+1.7.9.2
+

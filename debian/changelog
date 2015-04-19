@@ -1,3 +1,11 @@
+grub2 (2.02-beta2.9-ZOL13-7aa9f6-wheezy) unstable; urgency=medium
+
+  * Remove the monolitic ZFS patch. Instead replace them with the updated, split patches.
+  * Update the multiple-raidz-device-detection by ryao patch.
+  * Refresh the grub-shell.patch to avoid fuzzines.
+
+ -- Turbo Fredriksson <turbo@bayour.com>  Sun, 19 Apr 2015 12:31:21 +0200
+
 grub2 (2.02-beta2.9-ZOL12-7aa9f6-wheezy) unstable; urgency=medium
 
   * New zfs stuff from tsoome (including 1MB block support).

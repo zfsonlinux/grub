@@ -1,0 +1,52 @@
+From 6198e141a6848a889b776992eb33c43d508f132c Mon Sep 17 00:00:00 2001
+From: Toomas Soome <tsoome@me.com>
+Date: Thu, 16 Apr 2015 00:34:22 +0300
+Subject: [PATCH 3/6] zfs com.delphix:hole_birth feature support
+
+---
+ grub-core/fs/zfs/zfs.c |    6 ++++--
+ include/grub/zfs/spa.h |    4 +++-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/grub-core/fs/zfs/zfs.c b/grub-core/fs/zfs/zfs.c
+index 2689986..a731c3d 100644
+--- a/grub-core/fs/zfs/zfs.c
++++ b/grub-core/fs/zfs/zfs.c
+@@ -280,7 +280,9 @@ grub_crypto_cipher_handle_t (*grub_zfs_load_key) (const struct grub_zfs_key *key
+  */
+ #define MAX_SUPPORTED_FEATURE_STRLEN 50
+ static const char *spa_feature_names[] = {
+-  "org.illumos:lz4_compress",NULL
++  "org.illumos:lz4_compress",
++  "com.delphix:hole_birth",
++  NULL
+ };
+ 
+ static int
+@@ -1751,7 +1753,7 @@ zio_read_gang (blkptr_t * bp, grub_zfs_endian_t endian, dva_t * dva, void *buf,
+ 
+   for (i = 0; i < SPA_GBH_NBLKPTRS; i++)
+     {
+-      if (zio_gb->zg_blkptr[i].blk_birth == 0)
++      if (BP_IS_HOLE(&zio_gb->zg_blkptr[i]))
+ 	continue;
+ 
+       err = zio_read_data (&zio_gb->zg_blkptr[i], endian, buf, data);
+diff --git a/include/grub/zfs/spa.h b/include/grub/zfs/spa.h
+index 7edb8ab..df43b6b 100644
+--- a/include/grub/zfs/spa.h
++++ b/include/grub/zfs/spa.h
+@@ -279,7 +279,9 @@ typedef struct blkptr {
+ 
+ #define	BP_IDENTITY(bp)		(&(bp)->blk_dva[0])
+ #define	BP_IS_GANG(bp)		DVA_GET_GANG(BP_IDENTITY(bp))
+-#define	BP_IS_HOLE(bp)		((bp)->blk_birth == 0)
++#define	DVA_IS_EMPTY(dva)	((dva)->dva_word[0] == 0ULL && \
++				(dva)->dva_word[1] == 0ULL)
++#define	BP_IS_HOLE(bp)		DVA_IS_EMPTY(BP_IDENTITY(bp))
+ 
+ /* BP_IS_RAIDZ(bp) assumes no block compression */
+ #define	BP_IS_RAIDZ(bp)		(DVA_GET_ASIZE(&(bp)->blk_dva[0]) > \
+-- 
+1.7.9.2
+
