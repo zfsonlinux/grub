@@ -22,8 +22,8 @@ Patch-Name: gfxpayload_dynamic.patch
 
 Index: grub/configure.ac
 ===================================================================
---- grub.orig/configure.ac	2015-03-23 16:54:04.114154407 +0100
-+++ grub/configure.ac	2015-03-23 16:54:12.082054236 +0100
+--- grub.orig/configure.ac	2015-04-19 12:49:23.415505144 +0200
++++ grub/configure.ac	2015-04-19 12:49:23.439505144 +0200
 @@ -1689,6 +1689,17 @@
  fi
  AC_SUBST([QUICK_BOOT])
@@ -44,9 +44,9 @@ Index: grub/configure.ac
  AC_SUBST([FONT_SOURCE])
 Index: grub/grub-core/Makefile.core.def
 ===================================================================
---- grub.orig/grub-core/Makefile.core.def	2015-03-23 16:53:35.166518332 +0100
-+++ grub/grub-core/Makefile.core.def	2015-03-23 16:54:12.082054236 +0100
-@@ -885,6 +885,15 @@
+--- grub.orig/grub-core/Makefile.core.def	2015-04-19 12:49:23.267505148 +0200
++++ grub/grub-core/Makefile.core.def	2015-04-19 12:49:23.439505144 +0200
+@@ -883,6 +883,15 @@
  };
  
  module = {
@@ -65,7 +65,7 @@ Index: grub/grub-core/Makefile.core.def
 Index: grub/grub-core/commands/i386/pc/hwmatch.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ grub/grub-core/commands/i386/pc/hwmatch.c	2015-03-23 16:54:12.082054236 +0100
++++ grub/grub-core/commands/i386/pc/hwmatch.c	2015-04-19 12:49:23.439505144 +0200
 @@ -0,0 +1,146 @@
 +/* hwmatch.c - Match hardware against a whitelist/blacklist.  */
 +/*
@@ -215,8 +215,8 @@ Index: grub/grub-core/commands/i386/pc/hwmatch.c
 +}
 Index: grub/util/grub.d/10_linux.in
 ===================================================================
---- grub.orig/util/grub.d/10_linux.in	2015-03-23 16:54:04.118154359 +0100
-+++ grub/util/grub.d/10_linux.in	2015-03-23 16:54:12.082054236 +0100
+--- grub.orig/util/grub.d/10_linux.in	2015-04-19 12:49:23.419505144 +0200
++++ grub/util/grub.d/10_linux.in	2015-04-19 12:49:23.443505144 +0200
 @@ -23,6 +23,7 @@
  ubuntu_recovery="@UBUNTU_RECOVERY@"
  quiet_boot="@QUIET_BOOT@"

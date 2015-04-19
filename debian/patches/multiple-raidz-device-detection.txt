@@ -8,9 +8,9 @@ Date:   Wed Nov 12 19:57:08 2014 -0500
 
 Index: grub/grub-core/osdep/unix/getroot.c
 ===================================================================
---- grub.orig/grub-core/osdep/unix/getroot.c	2015-04-19 12:26:51.783540097 +0200
-+++ grub/grub-core/osdep/unix/getroot.c	2015-04-19 12:28:07.735541733 +0200
-@@ -156,43 +156,18 @@
+--- grub.orig/grub-core/osdep/unix/getroot.c	2015-04-19 12:47:14.483508479 +0200
++++ grub/grub-core/osdep/unix/getroot.c	2015-04-19 12:48:33.943506432 +0200
+@@ -159,43 +159,18 @@
    return path;
  }
  
@@ -58,7 +58,7 @@ Index: grub/grub-core/osdep/unix/getroot.c
  	error (1, errno, "nvlist_lookup_string (\"path\")");
  
        struct stat st;
-@@ -211,17 +186,48 @@
+@@ -214,17 +189,48 @@
  	  else
  #endif
  	    device = xstrdup (device);

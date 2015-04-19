@@ -19,9 +19,9 @@ Patch-Name: linuxefi.patch
 
 Index: grub/grub-core/Makefile.core.def
 ===================================================================
---- grub.orig/grub-core/Makefile.core.def	2015-03-24 13:52:52.966338999 +0100
-+++ grub/grub-core/Makefile.core.def	2015-03-24 13:53:04.950188309 +0100
-@@ -1694,6 +1694,14 @@
+--- grub.orig/grub-core/Makefile.core.def	2015-04-19 12:47:16.307508431 +0200
++++ grub/grub-core/Makefile.core.def	2015-04-19 12:47:56.207507400 +0200
+@@ -1692,6 +1692,14 @@
  };
  
  module = {
@@ -38,8 +38,8 @@ Index: grub/grub-core/Makefile.core.def
    i386_pc = loader/i386/pc/chainloader.c;
 Index: grub/grub-core/kern/efi/mm.c
 ===================================================================
---- grub.orig/grub-core/kern/efi/mm.c	2015-03-24 13:52:52.970338918 +0100
-+++ grub/grub-core/kern/efi/mm.c	2015-03-24 13:53:04.950188309 +0100
+--- grub.orig/grub-core/kern/efi/mm.c	2015-04-19 12:47:16.307508431 +0200
++++ grub/grub-core/kern/efi/mm.c	2015-04-19 12:47:56.207507400 +0200
 @@ -49,6 +49,38 @@
  static grub_efi_uint32_t finish_desc_version;
  int grub_efi_is_finished = 0;
@@ -82,7 +82,7 @@ Index: grub/grub-core/kern/efi/mm.c
 Index: grub/grub-core/loader/i386/efi/linux.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ grub/grub-core/loader/i386/efi/linux.c	2015-03-24 13:53:13.686079005 +0100
++++ grub/grub-core/loader/i386/efi/linux.c	2015-04-19 12:47:56.207507400 +0200
 @@ -0,0 +1,371 @@
 +/*
 + *  GRUB  --  GRand Unified Bootloader
@@ -457,8 +457,8 @@ Index: grub/grub-core/loader/i386/efi/linux.c
 +}
 Index: grub/include/grub/efi/efi.h
 ===================================================================
---- grub.orig/include/grub/efi/efi.h	2015-03-24 13:53:04.854189515 +0100
-+++ grub/include/grub/efi/efi.h	2015-03-24 13:53:04.950188309 +0100
+--- grub.orig/include/grub/efi/efi.h	2015-04-19 12:47:56.115507402 +0200
++++ grub/include/grub/efi/efi.h	2015-04-19 12:47:56.207507400 +0200
 @@ -40,6 +40,9 @@
  void *
  EXPORT_FUNC(grub_efi_allocate_pages) (grub_efi_physical_address_t address,
@@ -471,8 +471,8 @@ Index: grub/include/grub/efi/efi.h
  int
 Index: grub/include/grub/i386/linux.h
 ===================================================================
---- grub.orig/include/grub/i386/linux.h	2015-03-24 13:52:52.974338851 +0100
-+++ grub/include/grub/i386/linux.h	2015-03-24 13:53:04.954188259 +0100
+--- grub.orig/include/grub/i386/linux.h	2015-04-19 12:47:16.307508431 +0200
++++ grub/include/grub/i386/linux.h	2015-04-19 12:47:56.207507400 +0200
 @@ -139,6 +139,7 @@
    grub_uint64_t setup_data;
    grub_uint64_t pref_address;

@@ -13,9 +13,9 @@ Patch-Name: linuxefi_amd64_only.patch
 
 Index: grub/grub-core/Makefile.core.def
 ===================================================================
---- grub.orig/grub-core/Makefile.core.def	2015-03-23 16:53:24.934646964 +0100
-+++ grub/grub-core/Makefile.core.def	2015-03-23 16:53:35.166518332 +0100
-@@ -1697,7 +1697,6 @@
+--- grub.orig/grub-core/Makefile.core.def	2015-04-19 12:47:56.207507400 +0200
++++ grub/grub-core/Makefile.core.def	2015-04-19 12:48:05.311507161 +0200
+@@ -1695,7 +1695,6 @@
    name = linuxefi;
    efi = loader/i386/efi/linux.c;
    efi = lib/cmdline.c;
